@@ -167,6 +167,9 @@ python scripts/copilot_docs_sync.py --output-dir ./copilot_rag_workspace
 | `--output-dir` | Ruta | `./copilot_rag_workspace` | Carpeta de salida para el manifiesto, caché limpio, reportes diff y compendios. |
 | `--force-recheck` | Flag | `False` | Fuerza la re-descarga y re-evaluación de todas las fuentes sin consultar el caché de Git blob SHA. |
 | `--rebuild-all-bundles` | Flag | `False` | Reconstruye todos los compendios de NotebookLM incluso si ningún archivo cambió. |
+| `--workers` | Entero | `8` | Número de hilos concurrentes para descarga acelerada en paralelo. |
+| `--verify` | Flag | `False` | Verifica la integridad de los hashes criptográficos y archivos locales en disco sin llamadas remotas. |
+| `-v`, `--verbose` | Flag | `False` | Activa la salida de registro detallada en nivel DEBUG. |
 
 ### Resultados Generados en `./copilot_rag_workspace/`
 
