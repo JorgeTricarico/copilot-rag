@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vscode-copilot-rag-sync"
+version = "2.0.0"
+description = "Arquitectura de Monitoreo Determinista e Ingeniería de Contexto RAG para el Ecosistema de Agentes de Visual Studio Code Copilot"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Copilot Docs RAG Team"}
+]
+keywords = [
+    "vscode",
+    "copilot",
+    "agents",
+    "rag",
+    "notebooklm",
+    "deterministic-scraping",
+    "sha256"
+]
+dependencies = [
+    "requests>=2.31.0",
+    "beautifulsoup4>=4.12.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "black>=24.0.0",
+    "flake8>=7.0.0"
+]
+
+[project.scripts]
+copilot-docs-sync = "scripts.copilot_docs_sync:main"
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --basetemp=tmp_pytest"
+testpaths = [
+    "tests",
+]
+pythonpath = [
+    ".",
+    "scripts"
+]
