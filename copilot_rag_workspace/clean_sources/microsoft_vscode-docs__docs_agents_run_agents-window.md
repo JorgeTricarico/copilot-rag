@@ -1,0 +1,419 @@
+**MetaDescription**: Start and manage parallel agent sessions, review changes, and finish pull requests in the Agents window.
+
+# Use the Agents window
+
+The Agents window runs agents in a dedicated Visual Studio Code window. Use it to assign higher-level tasks, coordinate work across projects, monitor multiple sessions, and review outcomes in one place.
+
+Both the Agents window and [Chat view](/docs/agents/run/chat-view.md) let you direct agents and review their work. Choose based on whether you want to focus on orchestrating tasks or collaborating over code alongside your editor. For guidance, see [Run agents in VS Code](/docs/agents/run/overview.md#choose-an-interface). This article shows how to start, monitor, review, and finish sessions in the Agents window. For conversation controls shared by both interfaces, see [Use chat in VS Code](/docs/chat/chat-overview.md).
+
+<div class="docs-action" data-show-in-doc="false" data-show-in-sidebar="true" title="Get started with agents">
+Follow a hands-on tutorial to build an app with AI agents in VS Code.
+
+* [Start agentic coding tutorial](/docs/agents/agents-tutorial.md)
+
+</div>
+
+## Prerequisites
+
+* Visual Studio Code installed. [Download VS Code](/download).
+* One of the following authentication options:
+  * Access to GitHub Copilot. Follow the steps in [Set up GitHub Copilot in VS Code](/docs/setup/copilot.md) to sign in and activate your subscription.
+  * A [Claude API key or another supported bring-your-own-key (BYOK) configuration](/docs/agents/run/agent-harnesses.md#claude) to use Claude without GitHub sign-in (Experimental).
+  * An [existing ChatGPT sign-in for Codex](/docs/agents/run/agent-harnesses.md#codex) to use Codex without GitHub sign-in (Experimental).
+  * A [BYOK model](/docs/agent-customization/language-models.md#bring-your-own-language-model-key) configured for use in the Agents window.
+
+## Open the Agents window
+
+The Agents window opens as a dedicated VS Code window alongside your main editor window. To open the Agents window, use one of the following methods:
+
+* Select the **Open in Agents** button in the VS Code title bar
+
+* Run the **Chat: Open Agents window** command from the Command Palette (``Shortcut: workbench.action.showCommands``)
+
+* Select **Try out the new Agents window** link from the VS Code welcome page
+
+* Run `code --agents` from the command line.
+
+* On Windows, right-click the VS Code taskbar icon and select **Agents Window** from the Tasks jump list.
+
+* Open <https://insiders.vscode.dev/agents> in a browser to use the Agents window from any device. See [remote agent sessions](/docs/agents/run/remote-agent-sessions.md#use-the-agents-window-in-the-browser) for setup instructions.
+
+By default, the Agents window requires GitHub authentication to access your Copilot subscription and sessions. If you're already signed in to GitHub in VS Code, you'll also be signed in when the Agents window opens.
+
+> [!NOTE]
+> You can hide the **Open in Agents** button by right-clicking it in the title bar and selecting **Hide 'Open in Agents'**. You can still open the Agents window at any time from the Command Palette or command line.
+
+### Open without GitHub sign-in (Experimental)
+
+On desktop, you can open the Agents window without signing in to GitHub when at least one of these options is available:
+
+* Claude configured with an API key or another supported Claude BYOK option.
+* Codex signed in to ChatGPT.
+* A visible BYOK model configured in VS Code. Enable ``chat.agentHost.byokModels.enabled`` to make BYOK models available in the Agents window.
+
+Enable ``chat.agentHost.allowSignedOutWhenUsable`` before you open the window. This setting is off by default.
+
+To use a ChatGPT subscription, enable ``chat.agentHost.codexAgent.enabled``, open the account menu in the Agents window, and select **Sign in to ChatGPT**. After you sign in, you can sign out of GitHub and continue to use ChatGPT-backed Codex models.
+
+While you're signed out of GitHub, the model picker only shows models from providers with available credentials or keys. Sign in to GitHub from the account menu to add Copilot-backed models. If multiple providers offer a model with the same name, the model picker identifies the provider.
+
+When VS Code discovers an existing Claude configuration, a notification indicates that Claude is available without GitHub sign-in. Dismiss the notification with **X** to hide it for the current window. Select **Don't Show Again** to hide it for future windows on the same machine.
+
+If VS Code doesn't find a provider that can run with its own credentials, the Agents window shows the existing GitHub sign-in experience. Providers, models, and operations that require GitHub authentication prompt you to sign in when you select them. The browser-based Agents window always requires GitHub sign-in.
+
+## Agents window interface overview
+
+The Agents window has the following main areas:
+
+1. **Sessions list**: view and manage sessions across workspaces. By default, sessions are grouped by workspace. Select a session to [make it active](#understand-the-active-session).
+
+1. **Customizations panel**: access agent customizations for your workflow and preferences, and open [Automations](#schedule-recurring-tasks) when enabled.
+
+1. **Chat area**: view and interact with the active agent chat conversation
+
+1. **Changes panel**: review changes for the active session
+
+1. **Files panel**: browse the workspace associated with the active session
+
+![Screenshot of the Agents window interface, showing the sessions list, customizations panel, chat area, changes panel, and files panel.](../images/agents-window/agents-window-ui-annotated.png)
+
+By default, the **Changes** and **Files** views appear in a separate side panel. Files and diffs open in an editor beside the chat or in a modal window.
+
+Supported Copilot canvases `feature(canvases)` open in the editor area. You can reopen a dismissed live canvas from the editor group's **Add Tab (+)** menu. Learn more about [using canvases with the Copilot harness](/docs/agents/run/agent-harnesses.md#use-canvases-with-the-copilot-harness).
+
+## Understand the active session
+
+The Agents window picks up your agent sessions across your workspaces. The **active session** is the session that currently has focus. Its conversation and project context determine what you see and which workspace your actions apply to.
+
+Select a session in the sessions list to open it and make it active. When you [open multiple sessions side by side](#work-with-multiple-sessions), select anywhere in a session view to make that session active. The active session is highlighted in the sessions list.
+
+The following parts of the window update when the active session changes:
+
+| Area | What it shows for the active session |
+|------|--------------------------------------|
+| **Chat** | The conversation history and prompt input. |
+| **Files** | The files in the session's workspace folder or worktree. This view includes all workspace files, not only files changed by the agent. |
+| **Changes** | The changes and Git actions for the session. Use the dropdown to choose the branch changes, uncommitted changes, all changes, or changes from the last agent turn. |
+| **Terminal and Tasks** | Commands and tasks that run in the session's workspace folder or worktree. |
+| **Browser** | Browser tabs and page state that belong to the session. |
+
+[Quick chats](#start-a-quick-chat) aren't associated with a workspace. When a quick chat is active, the workspace-specific **Files** and **Changes** views aren't shown.
+
+## Start an agent session
+
+Start a session for a local folder, GitHub repository, or [remote workspace](/docs/agents/run/remote-agent-sessions.md). You can attach other projects, issues, and pull requests as context before you send the first prompt. For work that doesn't belong to a project, start a [quick chat](#start-a-quick-chat).
+
+To start a new agent session in the Agents window:
+
+1. Select **New** at the top of the sidebar or press ``Shortcut: workbench.action.chat.newChat``. To start directly in a specific workspace, hover over the workspace in the sessions list and select **+** (New Session).
+
+1. Select **Folder** or **Repository** to choose the primary execution workspace for the session. The first folder or repository you select determines where the agent runs and changes files.
+
+    To connect through SSH or a dev tunnel, select **Remote Setup**. If the workspace isn't trusted, review the [Workspace Trust](/docs/editing/workspaces/workspace-trust.md) prompt before you continue.
+
+1. Optionally, attach more context to the request:
+
+    * Select **Folder** or **Repository** to attach more projects as context without adding workspace roots.
+    * Select **Add Context**, and then select **Issue...** or **Pull Request...**. If multiple GitHub repositories are available, select a repository before you choose the issue or pull request.
+    * Paste a GitHub issue or pull request URL directly into the prompt. The URL remains in the prompt, and VS Code automatically adds the item as a context attachment.
+
+    ![Screenshot of the new-session input highlighting the folder name and the Create PR control.](../images/agents-window/new-session-input.png)
+
+1. Choose an available agent harness, and optionally configure the agent, language model, permission level, and isolation mode. For folder isolation in a local Git repository, you can also select an existing local branch to check out before the session starts. The available options depend on the workspace. Learn how to [compare agent harnesses](/docs/agents/run/agent-harnesses.md#compare-agent-harnesses) and [choose where the agent makes changes](#choose-where-an-agent-makes-changes).
+
+1. Type a prompt that describes what you want to accomplish, and press ``Enter`` to submit it to the agent.
+
+    > [!TIP]
+    > To start a session in the background without leaving the current session, press ``Alt+Enter`` or hold ``Alt`` and select **Send**. The new session appears in the sessions list after you send the prompt.
+
+The sessions list shows the session's status and change statistics while it works. The session is also available in the main VS Code window. Learn more about [managing sessions](/docs/agents/run/sessions/manage-sessions.md).
+
+### Choose where an agent makes changes
+
+For a workspace session in the Agents window, choose whether the agent edits your current folder or works in a separate [Git worktree](/docs/sourcecontrol/branches-worktrees.md#understanding-worktrees). Use a worktree to keep an agent's changes separate from your active workspace, especially when you run tasks in parallel.
+
+Code isolation controls where the agent applies file changes. The permission level controls which actions require your approval. A worktree keeps changes out of your active workspace, but it does not restrict commands, network access, or access to files outside the worktree.
+
+| Choice | Choose it for | Considerations |
+|--------|---------------|----------------|
+| **New Worktree** | Parallel tasks that should not modify your active workspace | Starts from committed Git state and requires you to integrate the result |
+| **Folder** | Small, interactive tasks that should use your current files and uncommitted changes | Agent edits appear immediately in your active workspace |
+
+For a walkthrough with separate worktrees for two independent tasks, follow [Delegate two tasks without mixing their changes](/docs/agents/guides/delegate-two-tasks.md).
+
+When you [start a session](#start-an-agent-session), select **New Worktree** and choose the base branch. The base branch provides the initial contents of the new worktree and does not change the branch in your active workspace.
+
+If you leave **New Worktree** unselected, the agent works directly in the selected folder. For a local Git repository with at least one branch, you can select an existing local branch to check out before the agent starts. Checking out a branch changes the branch in your active workspace and requires a clean working tree. Commit or stash your changes before you select another branch. The branch selection is not remembered for later sessions.
+
+Sessions that you start in the Chat view always use the current workspace. **Local** sessions also always apply changes in the active workspace.
+
+In VS Code Insiders, ``sessions.useWorktree`` controls whether **New Worktree** is selected when you create your first workspace session. After you start a session, VS Code remembers your isolation choice across workspaces and uses it instead of this setting.
+
+![Screenshot showing the New Worktree checkbox and base branch control in the Agents window.](../images/agent-harnesses/agents-window-new-worktree.png)
+
+Worktree isolation requires a Git repository with at least one commit. A new worktree contains the committed files from the selected base branch. It does not automatically contain uncommitted tracked changes or untracked files from your primary worktree. Commit changes that the agent needs, or use folder isolation when the task depends on your current uncommitted state.
+
+Git-ignored files, such as `.env` files and installed dependencies, are also absent by default. Use ``git.worktreeIncludeFiles`` to [copy ignored files into new worktrees](/docs/sourcecontrol/branches-worktrees.md#include-files-when-creating-a-worktree). For large ignored folders, ``git.worktreeSymlinkFolders`` (Experimental) can [symlink a folder instead](/docs/sourcecontrol/branches-worktrees.md#symlink-ignored-folders-when-creating-a-worktree). Changes an agent makes through the symlink affect the folder in the original checkout.
+
+Worktree sessions use **Allow all** and don't offer manual approval prompts. Folder sessions offer the [permission levels](/docs/agents/run/approvals.md#permission-levels) supported by the selected harness. For operating system-level file system and network restrictions, configure [agent sandboxing](/docs/agents/run/agent-sandboxing.md).
+
+Dev Container sessions work directly in the container workspace and don't support **New Worktree**. See [Run a session in a Dev Container](#run-a-session-in-a-dev-container).
+
+### Run a session in a Dev Container
+
+`feature(agent-host-dev-containers)`
+
+Run a session in a Dev Container so the agent can build and test with your project's tools and dependencies. Use a local folder or, starting in VS Code 1.139, a folder on an SSH, Tunnel, or WSL host.
+
+This option is available only in the desktop Agents window. Enable ``chat.agentHost.devContainer.enabled``.
+
+Before you start, make sure that:
+
+* [Docker is installed and running](/docs/devcontainers/containers.md#installation) on the machine that contains the project folder, and the Docker CLI is available on that machine's `PATH`. For a remote folder, Docker must run on the remote host.
+* The project folder contains a [Dev Container configuration](/docs/devcontainers/create-dev-container.md) at `.devcontainer/devcontainer.json` or `.devcontainer.json`.
+* For a remote folder, its SSH, Tunnel, or WSL connection is configured in the Agents window, and the source host advertises Dev Container support. Learn about [connecting to remote hosts](/docs/agents/run/remote-agent-sessions.md).
+
+To run a session in a Dev Container:
+
+1. Select **New** at the top of the sidebar.
+
+1. In the workspace picker, expand the menu for an eligible local folder or a folder on a configured SSH, Tunnel, or WSL host, and select **Use Dev Container**.
+
+    The workspace label gains the **- Dev Container** suffix. To switch back before you start the session, expand the folder menu again and select **Use Local** for a local folder or **Use Remote Host** for a remote folder.
+
+1. Choose an available agent harness, configure the session, and enter your prompt.
+
+Dev Container sessions work directly in the container workspace and can't be combined with **New Worktree**. If the container fails to start, review the workspace-specific **Dev Container** channel in the Output view for setup and connection details.
+
+The **Use Dev Container** option isn't available for unsupported hosts or for folders whose source is nested inside another remote environment.
+
+When no session in the container is actively working, waiting for input, or holding an unsent draft, VS Code stops the container after five minutes. Approval prompts count as waiting for input and keep the container running. Continuing a session restarts the container and reconnects it without losing the conversation history.
+
+Use ``chat.agentHost.devContainer.idleTimeout`` to change the inactivity period. The default is `300` seconds. Set the value to `0` to turn off automatic idle shutdown. Marking sessions as done or deleting them can still remove the container.
+
+### Start a session from a pull request
+
+For a local GitHub-backed workspace, start a session from an existing pull request to ask questions about the proposed changes or continue working on the pull request. The session includes the pull request details, changes, and comments as context. It uses an [isolated Git worktree](#choose-where-an-agent-makes-changes) that tracks the pull request branch.
+
+To start a session from a pull request:
+
+1. In the sessions list, group sessions by workspace.
+
+1. Hover over the workspace for the pull request, expand the **+** (New Session) action, and select **New Session from Pull Request**.
+
+    ![Screenshot showing the New Session from Pull Request action and pull request picker in the Agents window.](../images/agents-window/agents-window-new-session-from-pull-request.png)
+
+1. Select a pull request from the list.
+
+    The new session opens with the pull request title. Use the chat to ask questions about the pull request or enter a prompt to make more changes. The **Changes** view shows the pull request changes.
+
+1. Review and validate the changes, then select **Commit Changes** and **Sync Changes** in the title bar.
+
+    **Sync Changes** updates the pull request branch on GitHub, so the existing pull request includes your commits.
+
+> [!NOTE]
+> Pull requests from forks are not supported and don't appear in the pull request picker.
+
+### Remove a pull request from a session
+
+When a pull request is no longer relevant to a session, remove its artifact from the session:
+
+* If the session has one pull request, right-click the pull request pill above the chat input, and then select **Remove Pull Request Artifact from Session**.
+* If the session has multiple pull requests, select the pull requests pill to open the dropdown, and then select **Remove Pull Request Artifact from Session** for the pull request you want to remove.
+
+Removing a pull request artifact only disassociates the artifact from the current session. It doesn't close the pull request on GitHub. If the session has a separate association with the same pull request, such as when you start a session from that pull request, that association remains unchanged.
+
+## Start a quick chat
+
+Quick chats are lightweight chats that aren't scoped to a workspace. Use a quick chat to ask a question or start a task that doesn't belong to a specific project. Quick chats appear in the **Chats** section at the top of the sessions list, separate from your workspace-scoped sessions.
+
+To start a new quick chat in the Agents window:
+
+1. Select **+** on the **Chats** section header (``Shortcut: sessionsView.newQuickChat``) or run **New Quick Chat** from the Command Palette (``Shortcut: workbench.action.showCommands``).
+
+    ![Screenshot showing the quick chats group in the Agents window, with + button to start a new quick chat highlighted.](../images/agents-window/agents-window-quick-chat.png)
+
+1. Choose the agent harness from the dropdown.
+
+1. Enter a prompt in the input box to submit it to the agent. The agent responds in the chat area.
+
+To use speech instead of typing, start [Voice Mode](/docs/configure/accessibility/voice.md#use-voice-mode) from the chat input. Voice Mode works with the active chat or agent session in the Agents window. `feature(voice-mode)`
+
+By default, the **Chats** group stays visible in the sessions list even when it's empty. To hide empty default groups, set ``sessions.list.showEmptyDefaultGroups`` to `false`.
+
+### Continue a quick chat in a workspace
+
+If a quick chat becomes project-specific, attach a local workspace and continue the same conversation. The session retains its title, conversation history, and current request. After workspace setup finishes, the agent automatically continues your request with access to the project files.
+
+> [!NOTE]
+> This option is available for quick chats that use the Copilot or Codex harness. For Codex, use Interactive mode. The target must be a local folder. [Worktree isolation](#choose-where-an-agent-makes-changes) requires a local Git repository with at least one commit.
+
+To continue a quick chat in a workspace:
+
+1. Ask the agent to continue the task in a specific local workspace.
+
+1. When prompted, confirm the folder and choose whether the agent should make changes directly in the folder or use an isolated Git worktree.
+
+1. Review and approve the **Set Workspace** tool confirmation.
+
+    If the folder isn't trusted, review the [Workspace Trust](/docs/editing/workspaces/workspace-trust.md) prompt before you proceed.
+
+1. Wait for workspace setup to finish. The quick chat becomes a workspace session and moves from the **Chats** group to the selected workspace in the sessions list. The agent then continues the original request.
+
+If the chat already has a workspace, see [Move a chat to another folder or worktree](/docs/agents/run/sessions/manage-sessions.md#move-a-chat-to-another-folder-or-worktree) to continue the same task in a different location without starting a new conversation.
+
+## Review and finish an agent session
+
+When an agent finishes a task, make the session active to inspect its workspace and access its validation and Git actions.
+
+### Inspect workspace files and changes
+
+Select **Files** to browse the active session's workspace folder or worktree. Select **Changes** to review branch changes, uncommitted changes, all changes, or changes from the last agent turn. Open a changed file to inspect its diff or leave range-based feedback for the agent.
+
+![Screenshot showing the Changes panel in the Agents window, with the Files and Changes views visible.](../images/agents-window/agents-window-changes.png)
+
+For complete instructions about feedback, revisions, checkpoints, and integrating changes, see [Review AI-generated code edits](/docs/agents/run/review-code-edits.md).
+
+### Validate changes
+
+Use the [integrated browser](/docs/debugtest/integrated-browser.md) to validate web applications in the active session. On desktop, opening a regular `.html` file in the active session opens it in the integrated browser by default. HTML diffs continue to open in the diff editor so you can review changes. You can also select a `localhost` link from the chat or terminal, right-click a file in **Files** and select **Open in Integrated Browser**, or run **Open Integrated Browser** from the Command Palette (``Shortcut: workbench.action.showCommands``). Browser tabs and page state belong to the session where you open them. Learn how agents can [use browser tools](/docs/agents/run/browser-tools.md) to inspect and interact with a web page.
+
+To run a workspace task, select **Tasks** > **Add Task**, and then provide its name, command, run options, and save location. Run configured tasks from the **Tasks** dropdown. To run an ad hoc command in the active session's folder or worktree, select **Open Terminal** in the title bar.
+
+### Commit changes
+
+If the active session has uncommitted changes, select **Commit Changes** in the **Changes** view. VS Code generates a commit message based on the changes and commits all current changes. Depending on the session type, you might also have a **Commit and Sync Changes** action.
+
+### Create a pull request
+
+If the session doesn't already have a pull request, use the **Create PR** form to review the details and choose what happens after creation:
+
+1. Open the **Changes** view, and then select **Create PR**.
+
+    The form opens while VS Code generates a title and description. You can edit these fields without waiting for generation to finish.
+
+1. Review the repository, source branch, base branch, title, and description.
+
+1. To keep the pull request in draft until it is ready for review, select **Create as Draft**.
+
+1. Under **After creation**, choose one of these mutually exclusive options:
+
+    * **Merge Manually**: merge the pull request yourself when it is ready.
+    * **Auto-Merge**: let GitHub merge the pull request when required checks and approvals pass.
+        * **Merge method**: select **Squash**, **Merge Commit**, or **Rebase**.
+    * **[copilot.agent_merge_caps]**: have [copilot.agent_merge] monitor the pull request and ask the agent to address blockers.
+        * **Blockers**: select **Address Reviews**, **Fix CI Failures**, or **Resolve Conflicts and Behind Branches**.
+        * **Merge Pull Request**: select **Off**, **If Unchanged**, or **When Ready**. **Off** leaves the pull request open, **If Unchanged** merges it only if [copilot.agent_merge] makes no changes, and **When Ready** merges it after required checks and approvals pass.
+
+    GitHub auto-merge is unavailable when **Create as Draft** is selected. It also does not fix failed checks or address review feedback.
+
+1. Select **Create PR**.
+
+    Any uncommitted changes are committed and the branch is pushed before the pull request is created.
+
+The form remembers the draft setting, merge options, [copilot.agent_merge] options, and your last action (**Create PR** or **Send Create PR Message**). It does not remember titles or descriptions.
+
+To have the agent create the pull request instead, open the **Pull Request Actions** menu in the **Create PR** form and select **Send Create PR Message**.
+
+This action sends the title, description, draft status, and the **Merge Manually** or **Auto-Merge** choice to the session chat, including the merge method when you select **Auto-Merge**. It does not create the pull request directly. [copilot.agent_merge_caps] options are not included in the message.
+
+### Finish a pull request with [copilot.agent_merge]
+
+`feature(agent-merge)`
+
+[copilot.agent_merge_caps] is an experimental feature that monitors the pull request associated with an agent session and asks the agent to address blockers until the pull request is ready to merge. Depending on how you configure it, [copilot.agent_merge] can:
+
+* Address unresolved review threads, changes-requested reviews, and new comments from repository maintainers or the Copilot pull request reviewer.
+* Fix failed required CI checks.
+* Update a branch that is behind its base branch and resolve merge conflicts.
+* Merge the pull request or add it to the merge queue after the selected maintenance work is complete.
+
+First, enable ``chat.agentMerge.enabled``.
+
+To enable [copilot.agent_merge] for an existing pull request:
+
+1. Open a session that is associated with a pull request. To create one, use the [Create PR form](#create-a-pull-request) or follow the steps in [Start a session from a pull request](#start-a-session-from-a-pull-request).
+
+1. Select **[copilot.agent_merge_caps]** in the title bar, and then select **Enable [copilot.agent_merge]**.
+
+1. From the **[copilot.agent_merge_caps]** menu, configure which blockers the agent should address and whether to merge the pull request when it is ready.
+
+    You can also run **Configure [copilot.agent_merge] for Active Session** from the Command Palette (``Shortcut: workbench.action.showCommands``). For a complete list of options, see the [[copilot.agent_merge] settings](/docs/agents/reference/ai-settings.md#agent-sessions).
+
+While the pull request is a draft, **Mark Ready** is available from the **Changes** view. While [copilot.agent_merge] addresses blockers, select **Mark Ready** from the action menu to make the pull request ready for review. When required checks and actionable review feedback are clear, **Mark Ready** becomes the primary action.
+
+> [!CAUTION]
+> [copilot.agent_merge_caps] starts agent turns, changes and syncs the pull request branch, and consumes model requests. Enabling it changes the session to [Autopilot](/docs/agents/run/approvals.md#how-autopilot-works) with [Assisted permissions](/docs/agents/run/approvals.md#permission-levels). Review the [copilot.agent_merge] options before you enable automatic merging.
+
+[copilot.agent_merge_caps] waits while required checks are pending and checks that the pull request is ready immediately before it merges or adds it to the merge queue. If the session starts tracking a different branch or pull request, [copilot.agent_merge] turns off and requires you to enable it again.
+
+To review the changes from the most recent [copilot.agent_merge] repair cycle, open the **Changes** view and select **[copilot.agent_merge_caps] Changes** from the changeset dropdown. This changeset compares the latest completed [copilot.agent_merge] repair turn with the preceding completed user turn. It remains empty after your latest message until [copilot.agent_merge] completes another repair turn.
+
+To stop monitoring the pull request, select **[copilot.agent_merge_caps]** in the title bar, and then select **Disable [copilot.agent_merge]**.
+
+## Work with multiple sessions
+
+The sessions list shows sessions across all your workspaces. You can group sessions by workspace or time, create custom groups, pin sessions, and rearrange items with drag and drop. Learn how to [organize and manage sessions](/docs/agents/run/sessions/manage-sessions.md#sessions-list).
+
+### Arrange sessions in a grid
+
+Arrange parallel sessions in a two-dimensional grid to monitor progress and compare results. To open another session in the grid:
+
+* To keep the active session visible while you start a new session, hold ``Alt`` (``Option`` on macOS) and select **New**.
+* Right-click a session in the sessions list and select **Open to the Side**.
+* Drag a session from the sessions list into the view area.
+* Hold ``Alt`` and select a session in the sessions list.
+
+Drag a session to the top, bottom, left, or right edge of another session to create a horizontal or vertical split. A placement preview shows where the session appears.
+
+<video src="../images/agents-window/sessions-grid.mp4" title="Video showing agent sessions arranged in a grid in the Agents window." autoplay loop controls muted></video>
+
+Only one session pane is active at a time. Select a pane to make it active and direct the **Files**, **Changes**, **Terminal**, **Tasks**, and browser actions to that session. Selecting another session in the list replaces an unpinned active view.
+
+Open the **Session Layout** submenu from a session header or its overflow menu. From there, you can select **Arrange Sessions in a Balanced Grid**, focus a session in a direction, move the active session, or increase or decrease its width or height. The default directional focus shortcuts are ``Shortcut: sessions.focusSessionLeft``, ``Shortcut: sessions.focusSessionRight``, ``Shortcut: sessions.focusSessionAbove``, and ``Shortcut: sessions.focusSessionBelow``.
+
+Use **Maximize** in the session header to expand the active session, and use **Restore** to return to the grid. These actions are separate from the **Session Layout** submenu.
+
+Press ``Shortcut: sessions.closeAllSessions`` while a session has focus to close all visible panes and return to the new-session view. This action does not delete or archive the sessions.
+
+The Agents window restores conversations, drafts, pane geometry, the active session, and the maximized state after a reload. At narrow or phone width, only the active session is shown. The grid returns when you widen the window.
+
+### Work with multiple chats in a session
+
+With a harness that supports multiple chats, such as Copilot or Claude, use chat tabs and split groups to keep several conversations visible. Arrange interactive peer chats, [side chats](/docs/agents/run/sessions/manage-sessions.md#ask-side-questions), and [read-only subagent chats](/docs/agents/run/subagents.md#agents-window) horizontally or vertically.
+
+The main chat and interactive peer chats are also available in the editor's [Chat view](/docs/agents/run/chat-view.md#switch-chats-within-a-session), where you select them from the **Sessions** view rather than the Agents window chat tabs.
+
+For what chats share, how to create them, and the controls in each interface, see [Run multiple chats in a session](/docs/agents/run/sessions/manage-sessions.md#run-multiple-chats-in-a-session).
+
+## Schedule recurring tasks
+
+`feature(automations)`
+
+Automations run recurring agent tasks from a saved prompt and schedule. Local automations run in your development environment on your computer. Cloud automations `feature(cloud-automations)` run remotely in GitHub and continue when you close VS Code or turn off your computer.
+
+Enable ``chat.automations.enabled``, and then select **Automations** in the sidebar to get started. For cloud execution, also enable ``chat.automations.cloud.enabled``. You can run a task on demand or schedule it to run hourly, daily, or weekly.
+
+Learn how to [choose where an automation runs, create an automation, and review its results](/docs/agents/run/automations.md).
+
+## Configure the Agents window
+
+You can personalize chat, adjust the window layout, configure settings and extensions, and choose how Markdown files open. See [Configure the Agents window](/docs/agents/run/agents-window-configuration.md) for all window-specific options.
+
+## Limitations
+
+* Sessions that use the [experimental Codex integration](/docs/agents/run/agent-harnesses.md#codex) can run in both the Agents window and the main VS Code window. Local harness sessions and Codex sessions from the OpenAI extension run only in the main VS Code window.
+
+* Copilot Cloud sessions are only supported for GitHub-backed repositories. For non-GitHub projects, you can still use Copilot in the Agents window.
+
+* The agents dropdown currently doesn't have the plan agent. You can use the `/plan` command in a Copilot or Claude agent session. In Copilot harness sessions, the plan agent is also automatically invoked when you ask it to create a plan.
+
+* Running multiple chats in a single session is currently supported for sessions that use the Copilot or Claude harness.
+
+* Multi-root sessions are not yet supported in the Agents window. You can ask the agent to work across projects in a single session.
+
+## Next steps
+
+* [Use chat in VS Code](/docs/chat/chat-overview.md) - send and steer requests, add context, and navigate conversations.
+* [Manage agent sessions](/docs/agents/run/sessions/manage-sessions.md) - organize, fork, archive, and export sessions.
+* [Review AI-generated code edits](/docs/agents/run/review-code-edits.md) - inspect, revise, and integrate agent changes.

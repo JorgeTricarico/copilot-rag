@@ -1,0 +1,23002 @@
+# COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
+- **Generado (UTC)**: 2026-10-20T22:05:39.877281+00:00
+- **Total Palabras**: 103,853 / 500,000 máx.
+- **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/auth/authenticate.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/authenticate
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/auth/authenticate.md
+- **SHA256_FINGERPRINT**: `5b7f9f4502d3640fa597c191a28092f46e90fa58545deb7cd1f40286d7ebca5c`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.482209+00:00
+---
+
+**title**: Authentication
+**shortTitle**: Authenticate
+**intro**: >-
+
+## Authentication methods
+
+| Method | Use Case | Copilot Subscription Required |
+|--------|----------|-------------------------------|
+| [GitHub Signed-in User](#github-signed-in-user) | Interactive apps where users sign in with GitHub | Yes |
+| [GitHub OAuth App](#github-oauth-app) | Apps acting on behalf of users via OAuth | Yes |
+| [Environment Variables](#environment-variables) | CI/CD, automation, server-to-server | Yes |
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/server-to-server-tokens) | Organization-attributed automation and direct organization billing | No user subscription; organization policy required |
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok) | Using your own API keys (Microsoft Foundry, OpenAI, and more) | No |
+
+## GitHub signed-in user
+
+This is the default authentication method when running the Copilot CLI interactively. Users authenticate via GitHub OAuth device flow, and the SDK uses their stored credentials.
+
+**How it works:**
+1. User runs `copilot` CLI and signs in via GitHub OAuth
+1. Credentials are stored securely in the system keychain
+1. SDK automatically uses stored credentials
+
+**SDK Configuration:**
+
+**Language (dotnet):**
+
+```csharp
+using GitHub.Copilot;
+
+// Default: uses logged-in user credentials
+await using CopilotClient client = new();
+```
+
+**Language (go):**
+
+```golang
+import copilot "github.com/github/copilot-sdk/go"
+
+// Default: uses logged-in user credentials
+client := copilot.NewClient(nil)
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+
+// Default: uses logged-in user credentials
+var client = new CopilotClient();
+client.start().get();
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient
+
+# Default: uses logged-in user credentials
+client = CopilotClient()
+await client.start()
+```
+
+**Language (rust):**
+
+```rust
+use github_copilot_sdk::{Client, ClientOptions};
+
+// Default: uses logged-in user credentials
+let client = Client::start(ClientOptions::default()).await?;
+```
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+// Default: uses logged-in user credentials
+const client = new CopilotClient();
+```
+
+**When to use:**
+* Desktop applications where users interact directly
+* Development and testing environments
+* Any scenario where a user can sign in interactively
+
+## GitHub OAuth App
+
+Use an OAuth GitHub App to authenticate users through your application and pass their credentials to the SDK. This enables your application to make Copilot API requests on behalf of users who authorize your app.
+
+**How it works:**
+1. User authorizes your OAuth GitHub App
+1. Your app receives a user access token (`gho_` or `ghu_` prefix)
+1. Pass the token to the SDK through its client configuration
+
+**SDK Configuration:**
+
+**Language (dotnet):**
+
+```csharp
+using GitHub.Copilot;
+
+await using var client = new CopilotClient(new CopilotClientOptions
+{
+    GitHubToken = userAccessToken,     // Token from OAuth flow
+    UseLoggedInUser = false,           // Don't use stored CLI credentials
+});
+```
+
+**Language (go):**
+
+```golang
+import copilot "github.com/github/copilot-sdk/go"
+
+client := copilot.NewClient(&copilot.ClientOptions{
+    GitHubToken:       userAccessToken,      // Token from OAuth flow
+    UseLoggedInUser:   copilot.Bool(false),  // Don't use stored CLI credentials
+})
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+
+var client = new CopilotClient(new CopilotClientOptions()
+    .setGitHubToken(userAccessToken)  // Token from OAuth flow
+    .setUseLoggedInUser(false)        // Don't use stored CLI credentials
+);
+client.start().get();
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient
+
+client = CopilotClient({
+    "github_token": user_access_token,  # Token from OAuth flow
+    "use_logged_in_user": False,        # Don't use stored CLI credentials
+})
+await client.start()
+```
+
+**Language (rust):**
+
+```rust
+use github_copilot_sdk::{Client, ClientOptions};
+
+let client = Client::start(
+    ClientOptions::default()
+        .with_github_token(user_access_token)
+        .with_use_logged_in_user(false),
+).await?;
+```
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient({
+    gitHubToken: userAccessToken,  // Token from OAuth flow
+    useLoggedInUser: false,        // Don't use stored CLI credentials
+});
+```
+
+**Supported token types:**
+* `gho_` - OAuth user access tokens
+* `ghu_` - GitHub App user access tokens
+* `github_pat_` - Fine-grained personal access tokens
+
+**Not supported:**
+* `ghp_` - Classic personal access tokens (deprecated)
+
+**When to use:**
+* Web applications where users sign in via GitHub
+* SaaS applications building on top of Copilot
+* Any multi-user application where you need to make requests on behalf of different users
+
+For more information, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/github-oauth).
+
+## Rotating session-scoped GitHub tokens
+
+For multi-user services and integrations, set a token provider on each session instead of storing one long-lived token. The runtime calls the provider for the effective GitHub host and identifies the request as `initial` or `refresh`. The session ID is absent only when a cloud session has not received its ID yet.
+
+Return a tagged token result or an explicit cancellation. Every token result must include `expiresIn`: the positive number of seconds remaining when the callback completes. Production GitHub tokens typically last eight hours, so `8 * 60 * 60` is a common value. Do not set both the static per-session token and the provider.
+
+**Language (typescript):**
+
+```typescript
+const session = await client.createSession({
+    gitHubTokenProvider: async ({ host, sessionId, reason }) => {
+        const token = await acquireGitHubToken({ host, sessionId, reason });
+        return {
+            kind: "token",
+            accessToken: token.value,
+            expiresIn: token.secondsRemaining,
+        };
+    },
+});
+```
+
+**Language (python):**
+
+```python
+async def provide_github_token(args):
+    token = await acquire_github_token(
+        host=args["host"],
+        session_id=args["session_id"],
+        reason=args["reason"],
+    )
+    return {
+        "kind": "token",
+        "accessToken": token.value,
+        "expiresIn": token.seconds_remaining,
+    }
+
+session = await client.create_session(github_token_provider=provide_github_token)
+```
+
+**Language (go):**
+
+```golang
+session, err := client.CreateSession(ctx, &copilot.SessionConfig{
+	GitHubTokenProvider: func(args copilot.GitHubTokenProviderArgs) (*copilot.GitHubTokenProviderResult, error) {
+		token, secondsRemaining, err := acquireGitHubToken(args.Host, args.SessionID, args.Reason)
+		if err != nil {
+			return nil, err
+		}
+		return copilot.GitHubTokenResult(&copilot.GitHubToken{
+			AccessToken: token,
+			ExpiresIn:   secondsRemaining,
+		}), nil
+	},
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+await using var session = await client.CreateSessionAsync(new SessionConfig
+{
+    GitHubTokenProvider = async args =>
+    {
+        var token = await AcquireGitHubTokenAsync(args.Host, args.SessionId, args.Reason);
+        return GitHubTokenProviderResult.FromToken(new GitHubToken
+        {
+            AccessToken = token.Value,
+            ExpiresIn = token.SecondsRemaining,
+        });
+    },
+});
+```
+
+**Language (java):**
+
+```java
+var session = client.createSession(new SessionConfig()
+    .setGitHubTokenProvider(args ->
+        acquireGitHubToken(args.host(), args.sessionId(), args.reason())
+            .thenApply(token -> GitHubTokenProviderResult.token(
+                token.value(), token.secondsRemaining())))
+    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+).get();
+```
+
+**Language (rust):**
+
+```rust
+let provider = Arc::new(|args: GitHubTokenProviderArgs| async move {
+    let token = acquire_github_token(&args.host, args.session_id.as_ref(), args.reason).await?;
+    Ok(GitHubTokenProviderResult::Token(GitHubToken::new(
+        token.value,
+        token.seconds_remaining,
+    )))
+});
+
+let session = client
+    .create_session(SessionConfig::default().with_github_token_provider(provider))
+    .await?;
+```
+
+The runtime performs the `initial` acquisition as part of session creation or resume. A cancelled acquisition, provider error, invalid response, or token without a stable account identity rejects the create or resume operation. The runtime does not fall back to ambient authentication.
+
+After the session is established, the runtime performs async preflight before each credential-consuming operation. It requests a `refresh` when the current token has one hour or less remaining. Idle sessions are not refreshed until their next credential-consuming operation. The runtime does not use background timers, rejection-driven replay, 401/403 challenge propagation, or upscope for this callback.
+
+## Environment variables
+
+For automation, CI/CD pipelines, and server-to-server scenarios, you can authenticate using environment variables.
+
+For organization-attributed automation that should not use a user's personal access token, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/server-to-server-tokens).
+
+**Supported environment variables (in priority order):**
+1. `COPILOT_GITHUB_TOKEN` - Recommended for explicit Copilot usage
+1. `GH_TOKEN` - GitHub CLI compatible
+1. `GITHUB_TOKEN` - GitHub Actions compatible
+
+**How it works:**
+1. Set one of the supported environment variables with a valid token
+1. The SDK automatically detects and uses the token
+
+**SDK Configuration:**
+
+No code changes needed—the SDK automatically detects environment variables:
+
+**Language (dotnet):**
+
+```csharp
+using GitHub.Copilot;
+
+// Token is read from environment variable automatically
+await using CopilotClient client = new();
+```
+
+**Language (go):**
+
+```golang
+import copilot "github.com/github/copilot-sdk/go"
+
+// Token is read from environment variable automatically
+client := copilot.NewClient(nil)
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+
+// Token is read from environment variable automatically
+var client = new CopilotClient();
+client.start().get();
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient
+
+# Token is read from environment variable automatically
+client = CopilotClient()
+await client.start()
+```
+
+**Language (rust):**
+
+```rust
+use github_copilot_sdk::{Client, ClientOptions};
+
+// Token is read from environment variable automatically
+let client = Client::start(ClientOptions::default()).await?;
+```
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+// Token is read from environment variable automatically
+const client = new CopilotClient();
+```
+
+**When to use:**
+* CI/CD pipelines (GitHub Actions, Jenkins, and more)
+* Automated testing
+* Server-side applications with service accounts
+* Development when you don't want to use interactive login
+
+## BYOK (bring your own key)
+
+BYOK allows you to use your own API keys from model providers like Microsoft Foundry, OpenAI, or Anthropic. This bypasses GitHub Copilot authentication entirely.
+
+**Key benefits:**
+* No GitHub Copilot subscription required
+* Use enterprise model deployments
+* Direct billing with your model provider
+* Support for Microsoft Foundry, OpenAI, Anthropic, and OpenAI-compatible endpoints
+
+**See the [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok) for complete details**, including:
+* Microsoft Foundry setup
+* Provider configuration options
+* Limitations and considerations
+* Complete code examples
+
+## Authentication priority
+
+When multiple authentication methods are available, the SDK uses them in this priority order:
+
+1. **Explicit `gitHubToken`** - Token passed directly to the SDK client or session configuration
+1. **Direct API token** - `GITHUB_COPILOT_API_TOKEN` with `COPILOT_API_URL`
+1. **Environment variable tokens** - `COPILOT_GITHUB_TOKEN` → `GH_TOKEN` → `GITHUB_TOKEN`
+1. **Stored OAuth credentials** - From previous `copilot` CLI login
+1. **GitHub CLI** - `gh auth` credentials
+
+For multi-user server mode, pass a per-session `gitHubToken` so each session runs with the correct GitHub identity; see [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy).
+
+## Disabling auto-login
+
+To prevent the SDK from automatically using stored credentials or `gh` CLI auth, configure it to disable logged-in-user fallback:
+
+**Language (dotnet):**
+
+```csharp
+await using var client = new CopilotClient(new CopilotClientOptions
+{
+    UseLoggedInUser = false,  // Only use explicit tokens
+});
+```
+
+**Language (go):**
+
+```golang
+client := copilot.NewClient(&copilot.ClientOptions{
+    UseLoggedInUser: copilot.Bool(false),  // Only use explicit tokens
+})
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+
+var client = new CopilotClient(new CopilotClientOptions()
+    .setUseLoggedInUser(false)  // Only use explicit tokens
+);
+client.start().get();
+```
+
+**Language (python):**
+
+```python
+client = CopilotClient({
+    "use_logged_in_user": False,  # Only use explicit tokens
+})
+```
+
+**Language (rust):**
+
+```rust
+use github_copilot_sdk::{Client, ClientOptions};
+
+let client = Client::start(
+    ClientOptions::default().with_use_logged_in_user(false),
+).await?;
+```
+
+**Language (typescript):**
+
+```typescript
+const client = new CopilotClient({
+    useLoggedInUser: false,  // Only use explicit tokens
+});
+```
+
+## Next steps
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok) - Learn how to use your own API keys
+* [AUTOTITLE](/copilot/get-started/sdk-quickstart) - Build your first Copilot-powered app
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/mcp) - Connect to external tools
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/auth/byok.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/byok
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/auth/byok.md
+- **SHA256_FINGERPRINT**: `6a5670e214da0f4b3c9256e5087090eecf1e09b3489e66c011bacfc724523bdf`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.507156+00:00
+---
+
+**title**: BYOK (bring your own key)
+**shortTitle**: BYOK
+**intro**: >-
+
+## Supported providers
+
+| Provider | Type Value | Notes |
+|----------|------------|-------|
+| OpenAI | `"openai"` | OpenAI API and OpenAI-compatible endpoints |
+| Microsoft Foundry / Azure OpenAI | `"openai"` or `"azure"` | Use `"openai"` for `/openai/v1/`; use `"azure"` for native Azure endpoints |
+| Anthropic | `"anthropic"` | Claude models |
+| Ollama | `"openai"` | Local models via OpenAI-compatible API |
+| Microsoft Foundry Local | `"openai"` | Run AI models locally on your device via OpenAI-compatible API |
+| Other OpenAI-compatible | `"openai"` | vLLM, LiteLLM, etc. |
+
+## Quick start: Microsoft Foundry
+
+Microsoft Foundry is a common BYOK deployment target for enterprises. Here's a complete example:
+
+**Language (python):**
+
+```python
+import asyncio
+import os
+from copilot import CopilotClient
+from copilot.session import PermissionHandler
+
+FOUNDRY_MODEL_URL = "https://<resource-name>.openai.azure.com/openai/v1/"
+# Set FOUNDRY_API_KEY environment variable
+
+async def main():
+    client = CopilotClient()
+    await client.start()
+
+    session = await client.create_session(on_permission_request=PermissionHandler.approve_all, model="gpt-5.2-codex", provider={
+        "type": "openai",
+        "base_url": FOUNDRY_MODEL_URL,
+        "wire_api": "responses",  # Use "completions" for older models
+        "api_key": os.environ["FOUNDRY_API_KEY"],
+    })
+
+    done = asyncio.Event()
+
+    def on_event(event):
+        if event.type.value == "assistant.message":
+            print(event.data.content)
+        elif event.type.value == "session.idle":
+            done.set()
+
+    session.on(on_event)
+    await session.send("What is 2+2?")
+    await done.wait()
+
+    await session.disconnect()
+    await client.stop()
+
+asyncio.run(main())
+```
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const FOUNDRY_MODEL_URL = "https://<resource-name>.openai.azure.com/openai/v1/";
+
+const client = new CopilotClient();
+const session = await client.createSession({
+    model: "gpt-5.2-codex",  // Your deployment name
+    provider: {
+        type: "openai",
+        baseUrl: FOUNDRY_MODEL_URL,
+        wireApi: "responses",  // Use "completions" for older models
+        apiKey: process.env.FOUNDRY_API_KEY,
+    },
+});
+
+session.on("assistant.message", (event) => {
+    console.log(event.data.content);
+});
+
+await session.sendAndWait({ prompt: "What is 2+2?" });
+await client.stop();
+```
+
+**Language (go):**
+
+```golang
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    copilot "github.com/github/copilot-sdk/go"
+)
+
+func main() {
+    ctx := context.Background()
+    client := copilot.NewClient(nil)
+    if err := client.Start(ctx); err != nil {
+        panic(err)
+    }
+    defer client.Stop()
+
+    session, err := client.CreateSession(ctx, &copilot.SessionConfig{
+        Model: "gpt-5.2-codex",  // Your deployment name
+        Provider: &copilot.ProviderConfig{
+            Type:    "openai",
+            BaseURL: "https://<resource-name>.openai.azure.com/openai/v1/",
+            WireAPI: "responses",  // Use "completions" for older models
+            APIKey:  os.Getenv("FOUNDRY_API_KEY"),
+        },
+    })
+    if err != nil {
+        panic(err)
+    }
+
+    response, err := session.SendAndWait(ctx, copilot.MessageOptions{
+        Prompt: "What is 2+2?",
+    })
+    if err != nil {
+        panic(err)
+    }
+
+    if d, ok := response.Data.(*copilot.AssistantMessageData); ok {
+        fmt.Println(d.Content)
+    }
+}
+```
+
+**Language (dotnet):**
+
+```csharp
+using GitHub.Copilot;
+
+await using var client = new CopilotClient();
+await using var session = await client.CreateSessionAsync(new SessionConfig
+{
+    Model = "gpt-5.2-codex",  // Your deployment name
+    Provider = new ProviderConfig
+    {
+        Type = "openai",
+        BaseUrl = "https://<resource-name>.openai.azure.com/openai/v1/",
+        WireApi = "responses",  // Use "completions" for older models
+        ApiKey = Environment.GetEnvironmentVariable("FOUNDRY_API_KEY"),
+    },
+});
+
+var response = await session.SendAndWaitAsync(new MessageOptions
+{
+    Prompt = "What is 2+2?",
+});
+Console.WriteLine(response?.Data.Content);
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+
+var client = new CopilotClient();
+client.start().get();
+
+var session = client.createSession(new SessionConfig()
+    .setModel("gpt-5.2-codex")  // Your deployment name
+    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+    .setProvider(new ProviderConfig()
+        .setType("openai")
+        .setBaseUrl("https://<resource-name>.openai.azure.com/openai/v1/")
+        .setWireApi("responses")  // Use "completions" for older models
+        .setApiKey(System.getenv("FOUNDRY_API_KEY")))
+).get();
+
+var response = session.sendAndWait(new MessageOptions()
+    .setPrompt("What is 2+2?")).get();
+System.out.println(response.getData().content());
+
+client.stop().get();
+```
+
+## Provider configuration reference
+
+### ProviderConfig fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `type` | `"openai"` \| `"azure"` \| `"anthropic"` | Provider type (default: `"openai"`) |
+| `baseUrl` / `base_url` | string | **Required.** API endpoint URL |
+| `apiKey` / `api_key` | string | API key (optional for local providers like Ollama) |
+| `apiKeyCommand` / `api_key_command` | string | Command run by the runtime before each provider request to obtain a fresh API key. Also exposed as `ApiKeyCommand` in .NET and `APIKeyCommand` in Go. Credential-command failures fail the turn before sending a model request. |
+| `bearerToken` / `bearer_token` | string | Bearer token auth (takes precedence over apiKey) |
+| `bearerTokenProvider` / `bearer_token_provider` | callback | Returns a bearer token on demand (takes precedence over `apiKey`, `apiKeyCommand`, and `bearerToken`; the command does not run) |
+| `wireApi` / `wire_api` | `"completions"` \| `"responses"` | Select `"completions"` for broad model compatibility (the Chat Completions API); select `"responses"` for multi-turn state management, tool namespacing, and reasoning support (the Responses API). Anthropic models always use the Messages API regardless of this setting. |
+| `azure.apiVersion` / `azure.api_version` | string | Azure API version. When set, the runtime uses the versioned deployment route; when omitted, it uses the GA versionless `v1` route. |
+
+### Wire API format
+
+The `wireApi` setting determines which OpenAI API format to use:
+
+* **`"completions"`** (default) - Chat Completions API (`/chat/completions`) for broad model compatibility.
+* **`"responses"`** - Responses API for multi-turn state management, tool namespacing, and reasoning support.
+
+Anthropic models always use the Anthropic Messages API regardless of this setting.
+
+### Type-specific notes
+
+**OpenAI (`type: "openai"`)**
+* Works with OpenAI API and any OpenAI-compatible endpoint
+* `baseUrl` should include the full path (e.g., `https://api.openai.com/v1`)
+
+**Azure (`type: "azure"`)**
+* Use for native Azure OpenAI endpoints
+* `baseUrl` / `base_url` accepts a resource host or a full project URL, such as `https://<host>/api/projects/hosted-agents-ncus`, with or without a trailing slash.
+* The runtime preserves the project prefix when constructing Azure API paths. For `wireApi: "responses"` with `azure.apiVersion` omitted, the project URL above produces `https://<host>/api/projects/hosted-agents-ncus/openai/v1/responses`. Project URLs require an updated Copilot CLI runtime.
+
+**Anthropic (`type: "anthropic"`)**
+* For direct Anthropic API access
+* Uses Claude-specific API format
+
+## Example configurations
+
+### OpenAI direct
+
+```typescript
+provider: {
+    type: "openai",
+    baseUrl: "https://api.openai.com/v1",
+    apiKey: process.env.OPENAI_API_KEY,
+}
+```
+
+### Azure OpenAI (native Azure endpoint)
+
+Use `type: "azure"` for endpoints at `*.openai.azure.com`:
+
+```typescript
+provider: {
+    type: "azure",
+    baseUrl: "https://my-resource.openai.azure.com",  // Resource host or full project URL
+    apiKey: process.env.AZURE_OPENAI_KEY,
+    azure: {
+        apiVersion: "2024-10-21",
+    },
+}
+```
+
+### Microsoft Foundry (OpenAI-compatible endpoint)
+
+For Microsoft Foundry deployments with `/openai/v1/` endpoints, use `type: "openai"`:
+
+```typescript
+provider: {
+    type: "openai",
+    baseUrl: "https://<resource-name>.openai.azure.com/openai/v1/",
+    apiKey: process.env.FOUNDRY_API_KEY,
+    wireApi: "responses",  // For GPT-5 series models
+}
+```
+
+### Ollama (local)
+
+```typescript
+provider: {
+    type: "openai",
+    baseUrl: "http://localhost:11434/v1",
+    // No apiKey needed for local Ollama
+}
+```
+
+### Microsoft Foundry Local
+
+[Microsoft Foundry Local](https://foundrylocal.ai) lets you run AI models locally on your own device with an OpenAI-compatible API. Install it via the Foundry Local CLI, then point the SDK at your local endpoint:
+
+```typescript
+provider: {
+    type: "openai",
+    baseUrl: "http://localhost:<PORT>/v1",
+    // No apiKey needed for local Foundry Local
+}
+```
+
+> [!NOTE]
+> Foundry Local starts on a **dynamic port**—the port is not fixed. Use `foundry service status` to confirm the port the service is currently listening on, then use that port in your `baseUrl`.
+
+To get started with Foundry Local:
+
+```bash
+# Windows: Install Foundry Local CLI (requires winget)
+winget install Microsoft.FoundryLocal
+
+# macOS / Linux: see https://foundrylocal.ai for installation instructions
+# List available models
+foundry model list
+
+# Run a model (starts the local server automatically)
+foundry model run phi-4-mini
+
+# Check the port the service is running on
+foundry service status
+```
+
+### Anthropic
+
+```typescript
+provider: {
+    type: "anthropic",
+    baseUrl: "https://api.anthropic.com",
+    apiKey: process.env.ANTHROPIC_API_KEY,
+}
+```
+
+### Bearer token authentication
+
+Some providers require bearer token authentication instead of API keys. Supply a static token with `bearerToken`, or supply a `bearerTokenProvider` callback that the GitHub Copilot SDK runtime invokes before outbound provider requests. The callback or identity library it wraps manages token caching and refresh.
+
+Use `bearerToken` when your application already has a token:
+
+```typescript
+provider: {
+    type: "openai",
+    baseUrl: "https://<resource-name>.openai.azure.com/openai/v1/",
+    bearerToken: process.env.MY_BEARER_TOKEN,  // Sets Authorization header
+}
+```
+
+> [!NOTE]
+> The `bearerToken` option accepts a **static token string** only. The SDK does not refresh this token automatically. If your token expires, requests will fail and you'll need to create a new session with a fresh token.
+
+Use `bearerTokenProvider` to acquire tokens on demand:
+
+```typescript
+provider: {
+    type: "openai",
+    baseUrl: "https://my-custom-endpoint.example.com/v1",
+    bearerTokenProvider: async () => {
+        return await acquireBearerToken();
+    },
+}
+```
+
+For more details about acquiring and refreshing Microsoft Entra bearer tokens, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/azure-managed-identity).
+
+## Custom model listing
+
+When using BYOK, the CLI server may not know which models your provider supports. You can supply a custom `onListModels` handler at the client level so that `client.listModels()` returns your provider's models in the standard `ModelInfo` format. This lets downstream consumers discover available models without querying the CLI.
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+import type { ModelInfo } from "@github/copilot-sdk";
+
+const client = new CopilotClient({
+    onListModels: () => [
+        {
+            id: "my-custom-model",
+            name: "My Custom Model",
+            capabilities: {
+                supports: { vision: false, reasoningEffort: false },
+                limits: { max_context_window_tokens: 128000 },
+            },
+        },
+    ],
+});
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient
+from copilot.client import ModelInfo, ModelCapabilities, ModelSupports, ModelLimits
+
+client = CopilotClient(
+    on_list_models=lambda: [
+        ModelInfo(
+            id="my-custom-model",
+            name="My Custom Model",
+            capabilities=ModelCapabilities(
+                supports=ModelSupports(vision=False, reasoning_effort=False),
+                limits=ModelLimits(max_context_window_tokens=128000),
+            ),
+        )
+    ],
+)
+```
+
+**Language (go):**
+
+```golang
+package main
+
+import (
+    "context"
+    copilot "github.com/github/copilot-sdk/go"
+)
+
+func main() {
+    client := copilot.NewClient(&copilot.ClientOptions{
+        OnListModels: func(ctx context.Context) ([]copilot.ModelInfo, error) {
+            return []copilot.ModelInfo{
+                {
+                    ID:   "my-custom-model",
+                    Name: "My Custom Model",
+                    Capabilities: copilot.ModelCapabilities{
+                        Supports: copilot.ModelSupports{Vision: false, ReasoningEffort: false},
+                        Limits:   copilot.ModelLimits{MaxContextWindowTokens: copilot.Int(128000)},
+                    },
+                },
+            }, nil
+        },
+    })
+    _ = client
+}
+```
+
+**Language (dotnet):**
+
+```csharp
+using GitHub.Copilot;
+
+var client = new CopilotClient(new CopilotClientOptions
+{
+    OnListModels = (ct) => Task.FromResult<IList<ModelInfo>>(new List<ModelInfo>
+    {
+        new()
+        {
+            Id = "my-custom-model",
+            Name = "My Custom Model",
+            Capabilities = new ModelCapabilities
+            {
+                Supports = new ModelSupports { Vision = false, ReasoningEffort = false },
+                Limits = new ModelLimits { MaxContextWindowTokens = 128000 }
+            }
+        }
+    })
+});
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+var client = new CopilotClient(new CopilotClientOptions()
+    .setOnListModels(() -> CompletableFuture.completedFuture(List.of(
+        new ModelInfo()
+            .setId("my-custom-model")
+            .setName("My Custom Model")
+            .setCapabilities(new ModelCapabilities()
+                .setSupports(new ModelSupports().setVision(false).setReasoningEffort(false))
+                .setLimits(new ModelLimits().setMaxContextWindowTokens(128000)))
+    )))
+);
+```
+
+Results are cached after the first call, just like the default behavior. The handler completely replaces the CLI's `models.list` RPC—no fallback to the server occurs.
+
+## Limitations
+
+### Feature limitations
+
+Some Copilot features may behave differently with BYOK:
+
+* **Model availability** - Only models supported by your provider are available
+* **Rate limiting** - Subject to your provider's rate limits, not Copilot's
+* **Usage tracking** - Usage is tracked by your provider, not GitHub Copilot
+* **Premium requests** - Do not count against Copilot premium request quotas
+
+### Provider-specific limitations
+
+| Provider | Limitations |
+|----------|-------------|
+| [Microsoft Foundry Local](https://foundrylocal.ai) | Local only; model availability depends on device hardware; no API key required |
+| Ollama | No API key; local only; model support varies |
+| OpenAI | Subject to OpenAI rate limits and quotas |
+
+## Troubleshooting
+
+### "Model not specified" error
+
+When using BYOK, the `model` parameter is **required**:
+
+```typescript
+// ❌ Error: Model required with custom provider
+const session = await client.createSession({
+    provider: { type: "openai", baseUrl: "..." },
+});
+
+// ✅ Correct: Model specified
+const session = await client.createSession({
+    model: "gpt-4",  // Required!
+    provider: { type: "openai", baseUrl: "..." },
+});
+```
+
+### Azure endpoint type confusion
+
+For Azure OpenAI endpoints (`*.openai.azure.com`), use the correct type:
+
+```typescript
+// ❌ Wrong: Using "openai" type with native Azure endpoint
+provider: {
+    type: "openai",  // This won't work correctly
+    baseUrl: "https://my-resource.openai.azure.com",
+}
+
+// ✅ Correct: Using "azure" type
+provider: {
+    type: "azure",
+    baseUrl: "https://my-resource.openai.azure.com",
+}
+```
+
+However, if your Microsoft Foundry deployment provides an OpenAI-compatible endpoint path (for example, `/openai/v1/`), use `type: "openai"`:
+
+```typescript
+// ✅ Correct: OpenAI-compatible Microsoft Foundry endpoint
+provider: {
+    type: "openai",
+    baseUrl: "https://your-resource.openai.azure.com/openai/v1/",
+}
+```
+
+### Connection refused (Ollama)
+
+Ensure Ollama is running and accessible:
+
+```bash
+# Check Ollama is running
+curl http://localhost:11434/v1/models
+
+# Start Ollama if not running
+ollama serve
+```
+
+### Connection refused (Foundry Local)
+
+Foundry Local uses a dynamic port that may change between restarts. Confirm the active port:
+
+```bash
+# Check the service status and port
+foundry service status
+```
+
+Update your `baseUrl` to match the port shown in the output. If the service is not running, start a model to launch it:
+
+```bash
+foundry model run phi-4-mini
+```
+
+### Authentication failed
+
+1. Verify your API key is correct and not expired
+1. Check the `baseUrl` matches your provider's expected format
+1. For bearer tokens, ensure the full token is provided (not just a prefix)
+
+## Next steps
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth) - Learn about all authentication methods
+* [AUTOTITLE](/copilot/get-started/sdk-quickstart) - Build your first Copilot-powered app
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/auth/index.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/auth/index.md
+- **SHA256_FINGERPRINT**: `1dacf48dba0b7c5b04b25616c210d9a2d9abd5491f53b1f22cd094487087724f`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.519301+00:00
+---
+
+**title**: Authentication
+**intro**: >-
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/auth/server-to-server-tokens.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/server-to-server-tokens
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/auth/server-to-server-tokens.md
+- **SHA256_FINGERPRINT**: `5eb8a9364b1278d41473cb1f2f3bed783bba94ec02b170b70f2ab6e4ceb94629`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.629264+00:00
+---
+
+**title**: Server-to-server authentication
+**shortTitle**: Server To Server Tokens
+**intro**: >-
+
+## GitHub Actions
+
+For workflows in an organization-owned repository, grant the built-in token permission to make Copilot requests:
+
+```yaml
+permissions:
+  contents: read
+  copilot-requests: write
+
+jobs:
+  copilot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses:
+      - run: your-application
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+The organization's **Allow use of Copilot CLI billed to the organization** policy must be enabled. This approach needs no GitHub App or stored authentication secret. For details, see [AUTOTITLE](/copilot/how-tos/copilot-cli/use-copilot-cli-in-actions).
+
+## Other services and CI systems
+
+For services outside GitHub Actions:
+
+1. Create a GitHub App with the **Copilot Requests** repository permission set to **Read & write**.
+1. Install it on the organization that should be billed. The current Copilot permission check requires **All repositories** access.
+1. [AUTOTITLE](/apps/creating-github-apps/authenticating-with-a-github-app/generating-an-installation-access-token-for-a-github-app) with a repository ID and the Copilot permission:
+
+   ```json
+   {
+     "repository_ids": [123456789],
+     "permissions": {
+       "copilot_requests": "write"
+     }
+   }
+   ```
+
+1. Pass the resulting `ghs_` token to the runtime as `COPILOT_GITHUB_TOKEN`.
+
+The organization must be enabled for Copilot requests from GitHub App installations. Installation tokens expire after one hour.
+
+> [!WARNING]
+> Do not pass an installation token through the SDK's `gitHubToken`, `github_token`, or equivalent option. That option is for user tokens. Installation tokens must use the runtime environment authentication path.
+
+## Configure the runtime
+
+The following examples assume the minted token is in `INSTALLATION_TOKEN`. They pass it only to the child runtime and disable fallback to stored user credentials.
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient, RuntimeConnection } from "@github/copilot-sdk";
+
+const token = process.env.INSTALLATION_TOKEN;
+if (!token) throw new Error("INSTALLATION_TOKEN is required");
+
+const client = new CopilotClient({
+    connection: RuntimeConnection.forStdio(),
+    env: {
+        ...process.env,
+        COPILOT_GITHUB_TOKEN: token,
+    },
+    useLoggedInUser: false,
+});
+```
+
+**Language (python):**
+
+```python
+import os
+
+from copilot import CopilotClient, RuntimeConnection
+
+client = CopilotClient(
+    connection=RuntimeConnection.for_stdio(),
+    env={**os.environ, "COPILOT_GITHUB_TOKEN": os.environ["INSTALLATION_TOKEN"]},
+    use_logged_in_user=False,
+)
+```
+
+**Language (go):**
+
+```golang
+package main
+
+import (
+	"log"
+	"os"
+
+	copilot "github.com/github/copilot-sdk/go"
+)
+
+func main() {
+	token, ok := os.LookupEnv("INSTALLATION_TOKEN")
+	if !ok {
+		log.Fatal("INSTALLATION_TOKEN is required")
+	}
+	client := copilot.NewClient(&copilot.ClientOptions{
+		Connection:      copilot.StdioConnection{},
+		Env:             append(os.Environ(), "COPILOT_GITHUB_TOKEN="+token),
+		UseLoggedInUser: copilot.Bool(false),
+	})
+	_ = client
+}
+```
+
+**Language (rust):**
+
+```rust
+use github_copilot_sdk::{ClientOptions, Transport};
+
+fn main() {
+    let token = std::env::var("INSTALLATION_TOKEN").expect("INSTALLATION_TOKEN is required");
+    let options = ClientOptions::new()
+        .with_transport(Transport::Stdio)
+        .with_env([("COPILOT_GITHUB_TOKEN", token)])
+        .with_use_logged_in_user(false);
+    drop(options);
+}
+```
+
+**Language (dotnet):**
+
+```csharp
+using System.Collections;
+using GitHub.Copilot;
+
+var token = Environment.GetEnvironmentVariable("INSTALLATION_TOKEN")
+    ?? throw new InvalidOperationException("INSTALLATION_TOKEN is required");
+var environment = Environment.GetEnvironmentVariables()
+    .Cast<DictionaryEntry>()
+    .ToDictionary(entry => (string)entry.Key, entry => entry.Value?.ToString() ?? "");
+environment["COPILOT_GITHUB_TOKEN"] = token;
+
+await using var client = new CopilotClient(new CopilotClientOptions
+{
+    Connection = RuntimeConnection.ForStdio(),
+    Environment = environment,
+    UseLoggedInUser = false,
+});
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.CopilotClientOptions;
+import java.util.HashMap;
+import java.util.Objects;
+
+var environment = new HashMap<>(System.getenv());
+var token = Objects.requireNonNull(
+    System.getenv("INSTALLATION_TOKEN"), "INSTALLATION_TOKEN is required");
+environment.put("COPILOT_GITHUB_TOKEN", token);
+
+try (var client = new CopilotClient(new CopilotClientOptions()
+        .setEnvironment(environment)
+        .setUseLoggedInUser(false))) {
+    // Use the client.
+}
+```
+
+For in-process FFI, set `COPILOT_GITHUB_TOKEN` in the host environment before loading the runtime; per-client environment options are not supported. For an existing runtime URI, set it on that runtime process.
+
+## Refresh tokens
+
+Mint a new installation token before the current token expires. For a child process, restart the SDK client with the new environment. For an in-process or existing runtime, restart the host runtime with the new token.
+
+## Billing
+
+Usage is attributed and billed to the account that owns the GitHub App installation. Use an organization installation for organization billing; a user-account installation attributes usage to that user.
+
+## Troubleshooting
+
+| Symptom | Check |
+|---|---|
+| `401 Unauthorized` | Confirm the organization supports GitHub App installation authentication for Copilot. |
+| `403 Resource not accessible by integration` or an error mentioning user information | Confirm the installation token is in `COPILOT_GITHUB_TOKEN`, not the SDK's explicit token option. |
+| `403 Forbidden` from the Copilot API | Confirm the token request contains `repository_ids` and `copilot_requests: write`. |
+| `403 Forbidden` with the required token request | Confirm the app installation has **All repositories** access, then mint a new token. |
+| Requested model is unavailable | Confirm the organization's Copilot policy allows the model and the bundled runtime supports it. |
+| Wrong account billed | Confirm the installation belongs to the intended organization. |
+
+## Further reading
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/authenticate): other authentication methods and priority
+* [AUTOTITLE](/apps/creating-github-apps/authenticating-with-a-github-app/generating-an-installation-access-token-for-a-github-app): GitHub App token creation
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/agent-loop.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/agent-loop
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/agent-loop.md
+- **SHA256_FINGERPRINT**: `3ecff1b5ae6727c4f03a19071a6da265fb2cc4b794eabbb9c4fdb00e1e35ae41`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.604131+00:00
+---
+
+**title**: The agent loop
+**shortTitle**: Agent Loop
+**intro**: >-
+
+## Architecture
+
+![Diagram: Graph diagram showing the described process.](/assets/images/help/copilot/copilot-sdk/features-agent-loop-diagram-0.png)
+
+The **SDK** is a transport layer—it sends your prompt to the **Copilot CLI** over JSON-RPC and surfaces events back to your app. The **CLI** is the orchestrator that runs the agentic tool-use loop, making one or more LLM API calls until the task is done.
+
+## The tool-use loop
+
+When you call `session.send({ prompt })`, the CLI enters a loop:
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/features-agent-loop-diagram-1.png)
+
+The model sees the **full conversation history** on each call—system prompt, user message, and all prior tool calls and results.
+
+**Key insight:** Each iteration of this loop is exactly one LLM API call, visible as one `assistant.turn_start` / `assistant.turn_end` pair in the event log. There are no hidden calls.
+
+## Turns—what they are
+
+A **turn** is a single LLM API call and its consequences:
+
+1. The CLI sends the conversation history to the LLM
+1. The LLM responds (possibly with tool requests)
+1. If tools were requested, the CLI executes them
+1. `assistant.turn_end` is emitted
+
+A single user message typically results in **multiple turns**. For example, a question like "how does X work in this codebase?" might produce:
+
+| Turn | What the model does | toolRequests? |
+|------|-------------------|---------------|
+| 1 | Calls `grep` and `glob` to search the codebase | ✅ Yes |
+| 2 | Reads specific files based on search results | ✅ Yes |
+| 3 | Reads more files for deeper context | ✅ Yes |
+| 4 | Produces the final text answer | ❌ No → loop ends |
+
+The model decides on each turn whether to request more tools or produce a final answer. Each call sees the **full accumulated context** (all prior tool calls and results), so it can make an informed decision about whether it has enough information.
+
+## Event flow for a multi-turn interaction
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/features-agent-loop-diagram-2.png)
+
+## Who triggers each turn?
+
+| Actor | Responsibility |
+|-------|---------------|
+| **Your app** | Sends the initial prompt via `session.send()` |
+| **Copilot CLI** | Runs the tool-use loop—executes tools and feeds results back to the LLM for the next turn |
+| **LLM** | Decides whether to request tools (continue looping) or produce a final response (stop) |
+| **SDK** | Passes events through; does not control the loop |
+
+The CLI is purely mechanical: "model asked for tools → execute → call model again." The **model** is the decision-maker for when to stop.
+
+## `session.idle` vs `session.task_complete`
+
+These are two different completion signals with very different guarantees:
+
+### `session.idle`
+
+* **Always emitted** when the tool-use loop ends
+* **Ephemeral**: not persisted to disk, not replayed on session resume
+* Means: "the agent has stopped processing and is ready for the next message"
+* **Use this** as your reliable "done" signal
+
+The SDK's `sendAndWait()` method waits for this event:
+
+```typescript
+// Blocks until session.idle fires
+const response = await session.sendAndWait({ prompt: "Fix the bug" });
+```
+
+### `session.task_complete`
+
+* **Optionally emitted**: requires the model to explicitly signal it
+* **Persisted**: saved to the session event log on disk
+* Means: "the agent considers the overall task fulfilled"
+* Carries an optional `summary` field
+
+```typescript
+session.on("session.task_complete", (event) => {
+    console.log("Task done:", event.data.summary);
+});
+```
+
+### Autopilot mode: the CLI nudges for `task_complete`
+
+In **autopilot mode** (headless/autonomous operation), the CLI actively tracks whether the model has called `task_complete`. If the tool-use loop ends without it, the CLI injects a synthetic user message nudging the model:
+
+> *"You have not yet marked the task as complete using the task_complete tool. If you were planning, stop planning and start implementing. You aren't done until you have fully completed the task."*
+
+This effectively restarts the tool-use loop—the model sees the nudge as a new user message and continues working. The nudge also instructs the model **not** to call `task_complete` prematurely:
+
+* Don't call it if you have open questions—make decisions and keep working
+* Don't call it if you hit an error—try to resolve it
+* Don't call it if there are remaining steps—complete them first
+
+This creates a **two-level completion mechanism** in autopilot:
+1. The model calls `task_complete` with a summary → CLI emits `session.task_complete` → done
+1. The model stops without calling it → CLI nudges → model continues or calls `task_complete`
+
+### Why `task_complete` might not appear
+
+In **interactive mode** (normal chat), the CLI does not nudge for `task_complete`. The model may skip it entirely. Common reasons:
+
+* **Conversational Q&A**: The model answers a question and simply stops—there's no discrete "task" to complete
+* **Model discretion**: The model produces a final text response without calling the task-complete signal
+* **Interrupted sessions**: The session ends before the model reaches a completion point
+
+The CLI emits `session.idle` regardless, because it's a mechanical signal (the loop ended), not a semantic one (the model thinks it's done).
+
+### Which should you use?
+
+| Use case | Signal |
+|----------|--------|
+| "Wait for the agent to finish processing" | `session.idle` ✅ |
+| "Know when a coding task is done" | `session.task_complete` (best-effort) |
+| "Timeout/error handling" | `session.idle` + `session.error` ✅ |
+
+## Counting LLM calls
+
+The number of `assistant.turn_start` / `assistant.turn_end` pairs in the event log equals the total number of LLM API calls made. There are no hidden calls for planning, evaluation, or completion checking.
+
+To inspect turn count for a session:
+
+```bash
+# Count turns in a session's event log
+grep -c "assistant.turn_start" ~/.copilot/session-state/<sessionId>/events.jsonl
+```
+
+## Further reading
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/streaming-events): Full field-level reference for every event type
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/session-persistence): How sessions are saved and resumed
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/hooks): Intercepting events in the loop (permissions, tools)
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/changing-tools.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/changing-tools
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/changing-tools.md
+- **SHA256_FINGERPRINT**: `9a35e617944b87959b2b3a5464aa7ba7626d464fddaa107236bdc0925ef6cf57`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.525660+00:00
+---
+
+**title**: Changing tools during a session
+**shortTitle**: Changing Tools
+**intro**: >-
+
+> **Experimental.** Tool replacement wraps the experimental `session.tools.set` RPC and requires a runtime that supports it.
+
+## Replace this client's tools
+
+Pass the complete set of tools this client should supply. It replaces the tools the client supplied when the session was created or resumed, or in an earlier replacement. Built-in, MCP, and plugin tools, and tools that other clients connected to the same session supply, are unaffected. Pass an empty list to remove all of this client's tools.
+
+Tools are defined exactly as they are for creating a session, and a tool without a handler behaves the same way it does there.
+
+**Language (typescript):**
+
+```typescript
+import { defineTool } from "@github/copilot-sdk";
+import { z } from "zod";
+
+const searchIssues = defineTool("search_issues", {
+    description: "Search the issues shown on the current page",
+    parameters: z.object({ query: z.string().describe("Search text") }),
+    handler: async ({ query }) => findIssues(query),
+});
+
+// Supply only the tools the current page provides.
+await session.setTools([searchIssues]);
+
+// Remove all of this client's tools.
+await session.setTools([]);
+```
+
+**Language (python):**
+
+```python
+from pydantic import BaseModel, Field
+from copilot.tools import define_tool
+
+class SearchIssuesParams(BaseModel):
+    query: str = Field(description="Search text")
+
+@define_tool(description="Search the issues shown on the current page")
+async def search_issues(params: SearchIssuesParams) -> str:
+    return await find_issues(params.query)
+
+# Supply only the tools the current page provides.
+await session.set_tools([search_issues])
+
+# Remove all of this client's tools.
+await session.set_tools([])
+```
+
+**Language (go):**
+
+```golang
+type SearchIssuesParams struct {
+	Query string `json:"query" jsonschema:"Search text"`
+}
+
+searchIssues := copilot.DefineTool(
+	"search_issues",
+	"Search the issues shown on the current page",
+	func(params SearchIssuesParams, inv copilot.ToolInvocation) (string, error) {
+		return findIssues(params.Query)
+	},
+)
+
+// Supply only the tools the current page provides.
+if err := session.SetTools(ctx, []copilot.Tool{searchIssues}); err != nil {
+	log.Fatal(err)
+}
+
+// Remove all of this client's tools.
+if err := session.SetTools(ctx, nil); err != nil {
+	log.Fatal(err)
+}
+```
+
+**Language (dotnet):**
+
+```csharp
+var searchIssues = CopilotTool.DefineTool(
+    ([Description("Search text")] string query) => FindIssues(query),
+    factoryOptions: new AIFunctionFactoryOptions
+    {
+        Name = "search_issues",
+        Description = "Search the issues shown on the current page",
+    });
+
+// Supply only the tools the current page provides.
+await session.SetToolsAsync([searchIssues]);
+
+// Remove all of this client's tools.
+await session.SetToolsAsync([]);
+```
+
+`SetToolsAsync` raises the `GHCP001` experimental diagnostic, which you suppress with `#pragma warning disable GHCP001` or a project-level `<NoWarn>GHCP001</NoWarn>`.
+
+**Language (java):**
+
+```java
+var searchIssues = ToolDefinition.create(
+    "search_issues",
+    "Search the issues shown on the current page",
+    Map.of(
+        "type", "object",
+        "properties", Map.of("query", Map.of("type", "string", "description", "Search text")),
+        "required", List.of("query")),
+    invocation -> CompletableFuture.completedFuture(
+        findIssues((String) invocation.getArguments().get("query"))));
+
+// Supply only the tools the current page provides.
+session.setTools(List.of(searchIssues)).get();
+
+// Remove all of this client's tools.
+session.setTools(List.of()).get();
+```
+
+`setTools` is `@CopilotExperimental`, so the consuming class or method must opt in with `@AllowCopilotExperimental`. See [Using experimental APIs](https://github.com/github/copilot-sdk/tree/main/java/README.md#using-experimental-apis).
+
+**Language (rust):**
+
+```rust
+#[derive(Deserialize, JsonSchema)]
+struct SearchIssuesParams {
+    /// Search text
+    query: String,
+}
+
+let search_issues = define_tool(
+    "search_issues",
+    "Search the issues shown on the current page",
+    |_inv, params: SearchIssuesParams| async move {
+        Ok(ToolResult::Text(find_issues(&params.query).await))
+    },
+);
+
+// Supply only the tools the current page provides.
+session.set_tools(vec![search_issues]).await?;
+
+// Remove all of this client's tools.
+session.set_tools(Vec::new()).await?;
+```
+
+## When the new tools take effect
+
+- **Model requests.** The runtime offers the new tools from the agent's next model request. That request can be part of a turn that is already in progress.
+- **Handlers.** As soon as the runtime accepts the replacement, every tool call the session dispatches uses the new handlers. Calls that are already running finish on the handlers that started them.
+- **Rejection.** If the runtime rejects the replacement, the call fails and the previous tools and handlers stay in place. The runtime rejects tool names with invalid characters and names that another connected client already supplies.
+- **Ordering.** Concurrent replacements on the same session are applied one at a time, in the order they're made.
+- **Cancellation.** In SDKs that let you cancel the call, cancelling it while an earlier replacement is still in flight sends nothing. Once the request is sent, cancelling only stops the wait: if the runtime accepts the replacement, the new handlers still take effect.
+
+## Replacing tools during a turn
+
+A model request that is already in flight was made with the previous tools, so the agent can still call a tool you just removed. The session doesn't answer that call, because another connected client might supply a tool with the same name, so the call can stay pending until the turn is aborted.
+
+If a running turn might still call a tool you remove, replace tools while the session is idle, for example after the `session.idle` event, or abort the turn first. Replacing a tool's handler under the same name is safe during a turn: calls dispatched after the runtime accepts the replacement use the new handler.
+
+## SDK reference
+
+| SDK | Method |
+|---|---|
+| TypeScript | `session.setTools(tools)` |
+| Python | `await session.set_tools(tools)` |
+| Go | `session.SetTools(ctx, tools)` |
+| .NET | `await session.SetToolsAsync(tools, cancellationToken)` |
+| Java | `session.setTools(tools)`, which returns a `CompletableFuture<Void>` |
+| Rust | `session.set_tools(tools).await` |
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/citations.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/citations
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/citations.md
+- **SHA256_FINGERPRINT**: `bedafdf7f704279be8ba9c2931faf74a58cd646239b75a9799387c88cd7867a8`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.640920+00:00
+---
+
+**title**: Citations
+**shortTitle**: Citations
+**intro**: >-
+
+> [!WARNING]
+> Citations are experimental. The option name, event payload, and provider coverage can change in a future release.
+
+## How citations work
+
+Citations are produced by the model provider, not by the SDK. The flow has three parts:
+
+1. Your application supplies citable material, such as a document attachment or a tool result that carries source content.
+1. The runtime marks that material as citable on the wire when `enableCitations` is on. For Anthropic models, file attachments are sent as `document` blocks with citations enabled.
+1. The model returns citation metadata, and the runtime normalizes it into a provider-agnostic `citations` object on the final `assistant.message` event.
+
+Provider support is limited. The `provider` field on each source records where the citation came from:
+
+| Provider value | Meaning |
+|---|---|
+| `anthropic` | Citation produced by an Anthropic (Claude) model response |
+| `openai` | Citation produced by an OpenAI model response |
+| `client` | Citation synthesized by the runtime from tool output |
+
+> [!NOTE]
+> Turning on `enableCitations` does not guarantee that a response contains citations. Models emit them only when the response is grounded in citable source material. Always treat the `citations` field as optional.
+
+## Enable citations on a session
+
+Set the option on session create, and set it again on resume if you want citations after a restart.
+
+**Language (typescript):**
+
+```typescript
+const session = await client.createSession({
+    onPermissionRequest: approveAll,
+    enableCitations: true,
+});
+
+const resumed = await client.resumeSession(session.sessionId, {
+    onPermissionRequest: approveAll,
+    enableCitations: true,
+});
+```
+
+**Language (python):**
+
+```python
+session = await client.create_session(
+    on_permission_request=PermissionHandler.approve_all,
+    enable_citations=True,
+)
+
+resumed = await client.resume_session(
+    session.session_id,
+    on_permission_request=PermissionHandler.approve_all,
+    enable_citations=True,
+)
+```
+
+**Language (go):**
+
+```golang
+session, err := client.CreateSession(ctx, &copilot.SessionConfig{
+	OnPermissionRequest: copilot.PermissionHandler.ApproveAll,
+	EnableCitations:     copilot.Bool(true),
+})
+
+resumed, err := client.ResumeSession(ctx, session.SessionID, &copilot.ResumeSessionConfig{
+	OnPermissionRequest: copilot.PermissionHandler.ApproveAll,
+	EnableCitations:     copilot.Bool(true),
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+var session = await client.CreateSessionAsync(new SessionConfig
+{
+    OnPermissionRequest = PermissionHandler.ApproveAll,
+    EnableCitations = true,
+});
+
+var resumed = await client.ResumeSessionAsync(session.SessionId, new ResumeSessionConfig
+{
+    OnPermissionRequest = PermissionHandler.ApproveAll,
+    EnableCitations = true,
+});
+```
+
+**Language (java):**
+
+```java
+CopilotSession session = client
+        .createSession(new SessionConfig()
+                .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+                .setEnableCitations(true))
+        .get();
+
+CopilotSession resumed = client
+        .resumeSession(session.getSessionId(), new ResumeSessionConfig()
+                .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+                .setEnableCitations(true))
+        .get();
+```
+
+**Language (rust):**
+
+```rust
+let session = client
+    .create_session(
+        SessionConfig::new()
+            .approve_all_permissions()
+            .with_enable_citations(true),
+    )
+    .await?;
+
+let resumed = client
+    .resume_session(
+        ResumeSessionConfig::new(session.id().clone())
+            .approve_all_permissions()
+            .with_enable_citations(true),
+    )
+    .await?;
+```
+
+## Read citations from assistant messages
+
+Citations arrive on the final `assistant.message` event, not on `assistant.message_delta` events. Wait for the final message before you render source markers.
+
+**Language (typescript):**
+
+```typescript
+session.on((event) => {
+    if (event.type !== "assistant.message" || !event.data.citations) {
+        return;
+    }
+
+    const { sources, spans } = event.data.citations;
+    const sourceById = new Map(sources.map((source) => [source.id, source]));
+
+    for (const span of spans) {
+        const quoted = event.data.content.slice(span.startIndex, span.endIndex);
+        for (const reference of span.references) {
+            const source = sourceById.get(reference.sourceId);
+            const label = source?.title ?? source?.url ?? source?.path ?? source?.id;
+            console.log(`"${quoted}" — ${label}`);
+        }
+    }
+});
+```
+
+**Language (python):**
+
+```python
+from copilot.session_events import SessionEventType
+
+def utf16_slice(text: str, start: int, end: int) -> str:
+    """Slice by UTF-16 code units, which is how span offsets are measured."""
+    units = text.encode("utf-16-le")
+    return units[start * 2 : end * 2].decode("utf-16-le")
+
+def handle(event):
+    if event.type != SessionEventType.ASSISTANT_MESSAGE or not event.data.citations:
+        return
+
+    sources = {source.id: source for source in event.data.citations.sources}
+
+    for span in event.data.citations.spans:
+        quoted = utf16_slice(event.data.content, span.start_index, span.end_index)
+        for reference in span.references:
+            source = sources[reference.source_id]
+            label = source.title or source.url or source.path or source.id
+            print(f'"{quoted}" — {label}')
+
+session.on(handle)
+```
+
+**Language (go):**
+
+```golang
+// import "unicode/utf16"
+
+session.On(func(event copilot.SessionEvent) {
+	d, ok := event.Data.(*copilot.AssistantMessageData)
+	if !ok || d.Citations == nil {
+		return
+	}
+
+	sources := map[string]copilot.CitationSource{}
+	for _, source := range d.Citations.Sources {
+		sources[source.ID] = source
+	}
+
+	// Span offsets are UTF-16 code units, so index the UTF-16 view of the content.
+	units := utf16.Encode([]rune(d.Content))
+
+	for _, span := range d.Citations.Spans {
+		quoted := string(utf16.Decode(units[span.StartIndex:span.EndIndex]))
+		for _, reference := range span.References {
+			source := sources[reference.SourceID]
+			label := source.ID
+			switch {
+			case source.Title != nil:
+				label = *source.Title
+			case source.URL != nil:
+				label = *source.URL
+			case source.Path != nil:
+				label = *source.Path
+			}
+			fmt.Printf("%q — %s\n", quoted, label)
+		}
+	}
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+session.On<SessionEvent>(evt =>
+{
+    if (evt is not AssistantMessageEvent message || message.Data.Citations is null)
+    {
+        return;
+    }
+
+    var sources = message.Data.Citations.Sources.ToDictionary(source => source.Id);
+
+    foreach (var span in message.Data.Citations.Spans)
+    {
+        var quoted = message.Data.Content[(int)span.StartIndex..(int)span.EndIndex];
+        foreach (var reference in span.References)
+        {
+            var source = sources[reference.SourceId];
+            var label = source.Title ?? source.Url ?? source.Path ?? source.Id;
+            Console.WriteLine($"\"{quoted}\" — {label}");
+        }
+    }
+});
+```
+
+**Language (java):**
+
+```java
+session.on(AssistantMessageEvent.class, event -> {
+    Citations citations = event.getData().citations();
+    if (citations == null) {
+        return;
+    }
+
+    Map<String, CitationSource> sources = citations.sources().stream()
+            .collect(Collectors.toMap(CitationSource::id, source -> source));
+
+    for (CitationSpan span : citations.spans()) {
+        String quoted = event.getData().content()
+                .substring(span.startIndex().intValue(), span.endIndex().intValue());
+        for (CitationReference reference : span.references()) {
+            CitationSource source = sources.get(reference.sourceId());
+            String label = source.title() != null ? source.title()
+                    : source.url() != null ? source.url()
+                    : source.path() != null ? source.path()
+                    : source.id();
+            System.out.printf("\"%s\" — %s%n", quoted, label);
+        }
+    }
+});
+```
+
+**Language (rust):**
+
+```rust
+use github_copilot_sdk::session_events::AssistantMessageData;
+use std::collections::HashMap;
+
+let mut events = session.subscribe();
+
+while let Ok(event) = events.recv().await {
+    if event.event_type != "assistant.message" {
+        continue;
+    }
+
+    let Some(data) = event.typed_data::<AssistantMessageData>() else {
+        continue;
+    };
+    let Some(citations) = data.citations.as_ref() else {
+        continue;
+    };
+
+    let sources: HashMap<&str, _> = citations
+        .sources
+        .iter()
+        .map(|source| (source.id.as_str(), source))
+        .collect();
+
+    // Span offsets are UTF-16 code units, so index the UTF-16 view of the content.
+    let units: Vec<u16> = data.content.encode_utf16().collect();
+
+    for span in &citations.spans {
+        let quoted = String::from_utf16_lossy(
+            &units[span.start_index as usize..span.end_index as usize],
+        );
+        for reference in &span.references {
+            let Some(source) = sources.get(reference.source_id.as_str()) else {
+                continue;
+            };
+            let label = source
+                .title
+                .as_deref()
+                .or(source.url.as_deref())
+                .or(source.path.as_deref())
+                .unwrap_or(source.id.as_str());
+            println!("\"{quoted}\" — {label}");
+        }
+    }
+}
+```
+
+## Citation payload reference
+
+The `citations` object separates deduplicated sources from the spans that reference them, so a source cited five times appears once in `sources`.
+
+| Type | Field | Description |
+|---|---|---|
+| `Citations` | `sources` | Deduplicated set of sources referenced by the citation spans |
+| `Citations` | `spans` | Spans of generated text annotated with their supporting sources |
+| `CitationSource` | `id` | Stable, turn-scoped identifier referenced by `CitationReference.sourceId` |
+| `CitationSource` | `provider` | System that produced the citation: `anthropic`, `openai`, or `client` |
+| `CitationSource` | `title?` | Human-readable title of the source |
+| `CitationSource` | `url?` | URL of the source, when it is a web resource |
+| `CitationSource` | `path?` | File path relative to the agent workspace root, when the source is a file |
+| `CitationSpan` | `startIndex` | Start offset in the final message content (UTF-16 code units, zero-based, inclusive) |
+| `CitationSpan` | `endIndex` | End offset in the final message content (UTF-16 code units, zero-based, exclusive) |
+| `CitationSpan` | `references` | The sources that support this span |
+| `CitationReference` | `sourceId` | Identifier of the `CitationSource` this reference points to |
+| `CitationReference` | `citedText?` | Exact text from the source that supports the span, when the model provides it |
+| `CitationReference` | `location?` | Location within the source that supports the span |
+| `CitationReference` | `providerMetadata?` | Provider-native correlation data, passed through opaquely |
+
+> [!TIP]
+> Span offsets are measured in UTF-16 code units against the final `content` string. TypeScript, Java, and .NET strings are already UTF-16, so you can slice them directly. Python strings are indexed by Unicode code point and Go and Rust strings are UTF-8, so convert the content to UTF-16 code units before slicing, as the examples above do.
+
+### Citation locations
+
+`CitationReference.location` is a discriminated union keyed on `type`:
+
+| Location type | Fields | Use |
+|---|---|---|
+| `char` | `startIndex`, `endIndex` | Character range within the source text |
+| `page` | `startPage`, `endPage` | Page range within a paginated document |
+| `block` | `startBlock`, `endBlock` | Content-block range within a structured document |
+
+## Provide citable sources
+
+Citations need source material the model can attribute. There are two ways to supply it.
+
+### Attach documents to a message
+
+When citations are enabled and the session uses an Anthropic provider, file attachments are sent as `document` blocks with citations turned on, so the model can cite passages from them.
+
+```typescript
+await session.sendAndWait({
+    prompt: "Summarize the attached PDF and cite the passages you used.",
+    attachments: [
+        {
+            type: "blob",
+            data: pdfBase64,
+            displayName: "quarterly-report.pdf",
+            mimeType: "application/pdf",
+        },
+    ],
+});
+```
+
+See [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/image-input) for the attachment API and the `file` and `blob` attachment shapes.
+
+### Return citable sources from a tool
+
+Tool results carry an experimental `citableSources` array. Each entry supplies `content` that the model can cite, along with an `id` and optional `title`, `url`, and `path`. These sources are persisted with the tool result, so they survive session resume, and citations built from them are tagged with the `client` provider.
+
+## Limitations
+
+* Citations are experimental in every SDK and are not covered by compatibility guarantees.
+* Coverage depends on the model provider. A session configured for a provider without citation support emits no `citations` payload.
+* Citations are only present on the final `assistant.message` event, so streaming consumers cannot render them mid-response.
+* Public code and IP-duplication citations are not part of this surface.
+
+## Further reading
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/streaming-events): subscribe to session events and narrow event types
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/image-input): attach files and in-memory blobs to a message
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/session-persistence): resume sessions and re-apply session options
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/compatibility): SDK and CLI feature matrix
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/client-info.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/client-info
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/client-info.md
+- **SHA256_FINGERPRINT**: `8e740a8cd7aaaadaa9e07248a7469b802fbc79c3b1aaa205ee86c3e74552aed7`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.634120+00:00
+---
+
+**title**: Client info
+**shortTitle**: Client Info
+**intro**: >-
+
+## When to set client info
+
+Set client info when your SDK application represents a distinct product, service, or integration whose runtime activity should be attributed consistently.
+
+Leave client info unset for scripts, one-off tools, and jobs that do not represent a distinct application. The runtime then keeps its default attribution.
+
+Client info has four optional string fields. Set the fields you know and omit the rest. The SDK includes client info in the `server.connect` handshake only when at least one field has a non-empty value.
+
+| Field | Example | Meaning |
+|---|---|---|
+| `applicationName` | `"vscode"` | Name of the application using the SDK |
+| `applicationVersion` | `"1.124.2"` | Version of the application using the SDK |
+| `integrationName` | `"copilot-chat"` | Name of the extension, plugin, or other application sub-part using the SDK |
+| `integrationVersion` | `"0.54.0"` | Version of that extension, plugin, or application sub-part |
+
+For a standalone application without a distinct integration, set only the application fields. For example, a developer portal could set `applicationName` to `"acme-developer-portal"` and `applicationVersion` to `"2.4.0"`, leaving both integration fields unset.
+
+The SDK sends client info once when it establishes the connection. The identity applies for the lifetime of that connection.
+
+## Configure client info
+
+Pass client info when you create the client:
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient({
+  clientInfo: {
+    applicationName: "vscode",
+    applicationVersion: "1.124.2",
+    integrationName: "copilot-chat",
+    integrationVersion: "0.54.0",
+  },
+});
+
+await client.start();
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient
+
+client = CopilotClient(
+    client_info={
+        "application_name": "vscode",
+        "application_version": "1.124.2",
+        "integration_name": "copilot-chat",
+        "integration_version": "0.54.0",
+    },
+)
+await client.start()
+```
+
+**Language (go):**
+
+```golang
+client := copilot.NewClient(&copilot.ClientOptions{
+    ClientInfo: &copilot.ClientInfo{
+        ApplicationName:    "vscode",
+        ApplicationVersion: "1.124.2",
+        IntegrationName:    "copilot-chat",
+        IntegrationVersion: "0.54.0",
+    },
+})
+if err := client.Start(ctx); err != nil {
+    return err
+}
+```
+
+**Language (dotnet):**
+
+```csharp
+using GitHub.Copilot;
+
+await using var client = new CopilotClient(new CopilotClientOptions
+{
+    ClientInfo = new CopilotClientInfo
+    {
+        ApplicationName = "vscode",
+        ApplicationVersion = "1.124.2",
+        IntegrationName = "copilot-chat",
+        IntegrationVersion = "0.54.0",
+    },
+});
+
+await client.StartAsync();
+```
+
+**Language (java):**
+
+```java
+var options = new CopilotClientOptions()
+    .setClientInfo(new ClientInfo()
+        .setApplicationName("vscode")
+        .setApplicationVersion("1.124.2")
+        .setIntegrationName("copilot-chat")
+        .setIntegrationVersion("0.54.0"));
+
+var client = new CopilotClient(options);
+client.start().get();
+```
+
+**Language (rust):**
+
+```rust
+use github_copilot_sdk::{Client, ClientInfo, ClientOptions};
+
+let client = Client::start(
+    ClientOptions::new().with_client_info(
+        ClientInfo::new()
+            .with_application_name("vscode")
+            .with_application_version("1.124.2")
+            .with_integration_name("copilot-chat")
+            .with_integration_version("0.54.0"),
+    ),
+)
+.await?;
+```
+
+## Notes
+
+* Client info is advisory. The runtime can ignore values that do not match the expected format, such as an invalid version string.
+* Setting client info changes how the runtime attributes its telemetry. It does not change what the runtime records.
+* If every field is unset or empty, the SDK omits client info from the handshake and the runtime keeps its default attribution.
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/cloud-sessions.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/cloud-sessions
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/cloud-sessions.md
+- **SHA256_FINGERPRINT**: `c2dbcc9af1de7e572e3c97bf58493ea01d03a9fc7253f8d8eb388250f8e38886`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.529682+00:00
+---
+
+**title**: Cloud sessions
+**shortTitle**: Cloud Sessions
+**intro**: >-
+
+## Prerequisites
+
+Before creating a cloud session, make sure:
+
+* The user has Copilot access with cloud-agent entitlement.
+* The session can authenticate to GitHub, either with a user token or a logged-in Copilot CLI identity.
+* You can associate the session with a GitHub repository. This is optional in the SDK type, but recommended so the cloud agent has the correct repository context.
+* Organization policies allow remote control and viewing sessions from cloud surfaces.
+
+## Creating a cloud session
+
+Set the create-session `cloud` option to create a cloud session. You can include repository metadata to associate the cloud session with a GitHub repository.
+
+### TypeScript
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient();
+await client.start();
+
+const session = await client.createSession({
+  onPermissionRequest: async () => ({ kind: "approve-once" }),
+  cloud: {
+    repository: {
+      owner: "github",
+      name: "copilot-sdk",
+      branch: "main",
+    },
+  },
+});
+```
+
+### Python
+
+```python
+from copilot import (
+    CloudSessionOptions,
+    CloudSessionRepository,
+    CopilotClient,
+    PermissionHandler,
+)
+
+client = CopilotClient()
+await client.start()
+
+session = await client.create_session(
+    on_permission_request=PermissionHandler.approve_all,
+    cloud=CloudSessionOptions(
+        repository=CloudSessionRepository(
+            owner="github",
+            name="copilot-sdk",
+            branch="main",
+        )
+    ),
+)
+```
+
+### Go
+
+```golang
+client := copilot.NewClient(nil)
+if err := client.Start(ctx); err != nil {
+    return err
+}
+
+session, err := client.CreateSession(ctx, &copilot.SessionConfig{
+    Cloud: &copilot.CloudSessionOptions{
+        Repository: &copilot.CloudSessionRepository{
+            Owner:  "github",
+            Name:   "copilot-sdk",
+            Branch: "main",
+        },
+    },
+    OnPermissionRequest: func(req copilot.PermissionRequest, inv copilot.PermissionInvocation) (rpc.PermissionDecision, error) {
+        return &rpc.PermissionDecisionApproveOnce{}, nil
+    },
+})
+_ = session
+```
+
+### .NET
+
+```csharp
+await using var client = new CopilotClient();
+
+var session = await client.CreateSessionAsync(new SessionConfig
+{
+    Cloud = new CloudSessionOptions
+    {
+        Repository = new CloudSessionRepository
+        {
+            Owner = "github",
+            Name = "copilot-sdk",
+            Branch = "main",
+        },
+    },
+    OnPermissionRequest = (req, inv) =>
+        Task.FromResult(PermissionDecision.ApproveOnce()),
+});
+```
+
+### Java
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+
+try (var client = new CopilotClient()) {
+    client.start().get();
+
+    var session = client.createSession(
+        new SessionConfig()
+            .setCloud(new CloudSessionOptions()
+                .setRepository(new CloudSessionRepository()
+                    .setOwner("github")
+                    .setName("copilot-sdk")
+                    .setBranch("main")))
+            .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+    ).get();
+}
+```
+
+### Rust
+
+```rust
+use std::sync::Arc;
+use github_copilot_sdk::{CloudSessionOptions, CloudSessionRepository, SessionConfig};
+use github_copilot_sdk::handler::ApproveAllHandler;
+
+let session = client.create_session(
+    SessionConfig::default()
+        .with_cloud(CloudSessionOptions::with_repository(
+            CloudSessionRepository::new("github", "copilot-sdk").with_branch("main"),
+        ))
+        .with_permission_handler(Arc::new(ApproveAllHandler)),
+).await?;
+```
+
+## Sending the first prompt
+
+Cloud sessions initialize in two phases: `createSession` resolves as soon as the agent has reserved the task, but the remote `copilot-agent` worker takes another second or two to connect and emit `session.start`. If you call `session.send` before that, the runtime's `RemoteSession.send` throws `"Remote session is still starting"`, but the schema wrapper is fire-and-forget and **silently swallows the error** while still returning a fresh `messageId` to your code. The prompt is dropped on the server and never reaches the worker.
+
+To send reliably, subscribe to events **before** sending and await the first `session.start` event whose `producer` is `"copilot-agent"`:
+
+```typescript
+import { CopilotClient, type CopilotSession } from "@github/copilot-sdk";
+
+const client = new CopilotClient();
+await client.start();
+
+const session: CopilotSession = await client.createSession({
+  streaming: true, // required for assistant.message_delta to fire
+  cloud: { repository: { owner: "github", name: "copilot-sdk" } },
+  onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+
+// Subscribe BEFORE sending so you don't miss the start event.
+const ready = new Promise<void>((resolve) => {
+  const off = session.on("session.start", (event) => {
+    if (event.data?.producer === "copilot-agent") {
+      off();
+      resolve();
+    }
+  });
+});
+
+await ready;
+await session.send({ prompt: "Summarize the README" });
+```
+
+A few notes:
+
+* Set `streaming: true` on `createSession` so the runtime emits `assistant.message_delta` events. Without it, the only assistant signal you get is the final `assistant.message` — fine for batch use, but the chat will look frozen if you're rendering a live UI. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/streaming-events).
+* Only the **first** `session.send` is sensitive to this race. Subsequent sends on the same session work normally because the runtime keeps `hasSessionStarted` set for the life of the session.
+* Apply a timeout (e.g. 60 s) around the `ready` promise so a stuck session doesn't hang your app forever.
+* The same pattern works in every SDK language — subscribe to `session.start`, check `producer === "copilot-agent"`, then call `send`.
+
+## Accessing the agent session URL
+
+Cloud sessions are inherently remote: once the worker connects, the session is published to `https://github.com/copilot/tasks/{sessionId}` and the runtime emits a `session.info` event with the URL. You do **not** need to call `remote.enable()`— that API is only for syncing a local session to GitHub.
+
+Capture the URL by subscribing to `session.info` and filtering by `infoType: "remote"`:
+
+```typescript
+session.on("session.info", (event) => {
+  if (event.data?.infoType === "remote" && event.data.url) {
+    console.log("Open from web or mobile:", event.data.url);
+    // For example, surface in your UI as a shareable link or QR code.
+  }
+});
+```
+
+The event fires shortly after `session.start`. If your renderer mounts after the event has already fired, persist the URL alongside the session record in your app's state and rehydrate on remount — the runtime does not re-emit `session.info` on its own.
+
+For the same wiring on local sessions promoted via `remote: true`, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/remote-sessions).
+
+## Repository association
+
+The `cloud.repository` object associates the cloud session with a GitHub repository:
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `owner` | Yes | Repository owner or organization. |
+| `name` | Yes | Repository name. |
+| `branch` | No | Branch to use for repository context. Omit it to let the runtime choose the default branch or current repository context. |
+
+Repository association is optional in the SDK type, but include it whenever your app knows the target repository. It helps the session appear with the right repository context in the agents panel and gives the cloud agent a clearer starting point.
+
+Use `branch` when the work should start from a specific branch. If your app is creating sessions from pull requests, issue triage flows, or deployment workflows, pass the branch that matches the user-visible task.
+
+## Resuming a cloud session
+
+The `cloud` option only applies when creating a new session. To resume an existing cloud session, use the standard resume API for the SDK language:
+
+```typescript
+const session = await client.resumeSession("session-id", {
+  onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+Do not pass `cloud` again on resume. The saved session metadata determines that the session is cloud-backed, and resume follows the normal session resume path.
+
+## Org policies and entitlements
+
+Cloud session creation can fail when the user or organization is not entitled to cloud-agent execution or when organization-level policies block the flow. In particular, policies for cloud sandbox can prevent clients from creating the cloud task.
+
+When this happens, the runtime reports a `"policy_blocked"` failure reason for cloud task creation. Treat this as an authorization or policy outcome, not as a transient infrastructure failure.
+
+In TypeScript, check for the reason before retrying:
+
+```typescript
+try {
+  await client.createSession({ cloud: { repository } });
+} catch (error) {
+  if ((error as { reason?: string }).reason === "policy_blocked") {
+    // Show an admin-facing message or link to org policy settings.
+  }
+  throw error;
+}
+```
+
+In languages where SDK errors are represented differently, inspect the surfaced error reason or code and handle `"policy_blocked"` explicitly. Retrying without a policy change is not expected to succeed.
+
+## Integration ID and routing
+
+Cloud sessions are stamped with a `Copilot-Integration-Id` header derived from the `GITHUB_COPILOT_INTEGRATION_ID` environment variable. This integration ID is used for routing, attribution, and integration-specific behavior.
+
+For multi-user server guidance and full integration ID details, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy).
+
+SDK-created cloud sessions are routed to the `copilot-developer-sandbox` agent slug. The name is an internal routing slug for the cloud agent and does not mean the session uses the local Windows sandbox.
+
+## Advanced: `COPILOT_MC_BASE_URL`
+
+By default, the runtime derives the agent session base URL from the configured Copilot API URL. Set `COPILOT_MC_BASE_URL` only when you need to override that session endpoint.
+
+This may be required for GitHub Enterprise Server deployments. Confirm the correct value and support status with your GitHub representative before relying on it in production.
+
+```shell
+COPILOT_MC_BASE_URL="https://example.com/agents"
+```
+
+## Cloud sessions vs. remote sessions
+
+| Capability | Remote sessions | Cloud sessions |
+|------------|-----------------|----------------|
+| Execution location | Local machine or your server | GitHub-hosted compute |
+| Session role | Shares a local session to GitHub web/mobile | Creates and routes the hosted session |
+| SDK option | `remote: true` on the client or session | `cloud: { ... }` on create session |
+| Resume path | Standard resume | Standard resume |
+| Windows sandbox relation | Unrelated | Unrelated |
+
+Use remote sessions when the session should execute where the SDK runtime is already running, but also be accessible from the agents panel on GitHub. Use cloud sessions when the session should execute on GitHub-hosted compute.
+
+## Troubleshooting
+
+| Symptom | Likely cause | What to check |
+|---------|--------------|---------------|
+| Cloud session creation returns `"policy_blocked"` | Organization policy blocks remote control or view from cloud flows | Check org Copilot policies and user entitlement |
+| Session creates without repository context | `cloud.repository` was omitted | Pass `owner`, `name`, and optionally `branch` |
+| Resume ignores a new `cloud` option | `cloud` only applies to new sessions | Resume the existing session normally |
+| Confusion with sandbox settings | Windows sandbox and cloud sessions are separate | Do not use `SANDBOX=true` for cloud execution |
+| `session.send` resolves with a `messageId` but no `assistant.*` events fire and no prompt appears in the session log | The session.send raced ahead of `session.start` from the remote worker; the runtime swallowed the prompt | Await the first `session.start` event with `producer === "copilot-agent"` before sending. See [Sending the first prompt](#sending-the-first-prompt) |
+| Live UI never updates even though the cloud worker is processing | `streaming` was not set on `createSession`, so only the final `assistant.message` is emitted | Set `streaming: true` on `createSession` and re-launch |
+| Cloud session works but no shareable URL appears in your UI | App never subscribed to `session.info` for the URL | Subscribe to `session.info` and filter `infoType === "remote"`. See [Accessing the agent session URL](#accessing-the-agent-session-url) |
+
+## See also
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/remote-sessions): share locally hosted sessions to the agents panel on GitHub
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/streaming-events): subscribe to `assistant.*` deltas for live UI rendering
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy): integration IDs and server deployment patterns
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth): configure GitHub authentication for SDK sessions
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/context-management.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/context-management
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/context-management.md
+- **SHA256_FINGERPRINT**: `edd743355b9be7f6a1f8e439bab38d5002003d2efd61fd61fd31a0fda593f3f7`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.805618+00:00
+---
+
+**title**: Context clearing and terminal tools
+**shortTitle**: Context Management
+**intro**: >-
+
+Context clearing is different from creating a new session: it preserves the session identity, system and developer messages, configuration, and event log while removing the model-facing conversation.
+
+> [!IMPORTANT]
+> `clearContext` is a tool-handler primitive. The runtime rejects calls made without a tool call in flight, calls with an empty seed prompt, and calls on remote sessions.
+
+## Define a context-clearing tool
+
+A successful context-clearing tool should be terminal. Otherwise, the agent loop may make another model call against the newly cleared window before starting the seeded turn.
+
+```typescript
+import { approveAll, CopilotClient, defineTool } from "@github/copilot-sdk";
+import type { CopilotSession } from "@github/copilot-sdk";
+import { z } from "zod";
+
+const client = new CopilotClient();
+let session: CopilotSession;
+
+session = await client.createSession({
+  onPermissionRequest: approveAll,
+  tools: [
+    defineTool("clear_context", {
+      description: "Clear the conversation and start a fresh context window",
+      parameters: z.object({ prompt: z.string() }),
+      isTerminal: true,
+      defer: "never",
+      handler: async ({ prompt }) => {
+        const { messagesCleared } =
+          await session.rpc.history.clearContext({ prompt });
+        return `Cleared ${messagesCleared} messages.`;
+      },
+    }),
+  ],
+});
+```
+
+The required `prompt` becomes the first user message in the fresh context. A successful clear emits `session.context_cleared` with the number of removed messages and the initial message.
+
+## Terminal-tool behavior
+
+`isTerminal` ends the current agent turn only when the tool succeeds. A failure, denial, rejection, timeout, or input-validation error remains visible to the model so it can recover or retry.
+
+The option follows each language's naming conventions:
+
+| SDK | Tool option |
+|---|---|
+| Node.js | `isTerminal` |
+| Python | `is_terminal` |
+| Go | `IsTerminal` |
+| .NET | `CopilotToolOptions.IsTerminal` |
+| Java | `ToolDefinition.isTerminal(true)` or `@CopilotTool(isTerminal = true)` |
+| Rust | `with_is_terminal(true)` |
+
+Use terminality only for tools whose successful completion should end the turn. Ordinary tools should leave it unset.
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/custom-agents.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/custom-agents
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/custom-agents.md
+- **SHA256_FINGERPRINT**: `20fd2796d15f4bf5686f0e2892b7d17bff59a5f0d1c1a01f1a142a8dcfaa060d`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.741656+00:00
+---
+
+**title**: Custom agents and sub-agent orchestration
+**shortTitle**: Custom Agents
+**intro**: >-
+
+## Overview
+
+Custom agents are lightweight agent definitions you attach to a session. Each agent has its own system prompt, tool restrictions, and optional MCP servers. When a user's request matches an agent's expertise, the Copilot runtime automatically delegates to that agent as a **sub-agent**—running it in an isolated context while streaming lifecycle events back to the parent session.
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/features-custom-agents-diagram-0.png)
+
+| Concept | Description |
+|---------|-------------|
+| **Custom agent** | A named agent config with its own prompt and tool set |
+| **Sub-agent** | A custom agent invoked by the runtime to handle part of a task |
+| **Inference** | The runtime's ability to auto-select an agent based on the user's intent |
+| **Parent session** | The session that spawned the sub-agent; receives all lifecycle events |
+
+## Defining custom agents
+
+To discover Markdown definitions from versioned packages or vendored folders, use `agentDirectories` or [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/customization-locations).
+
+Pass `customAgents` when creating a session. Each agent needs at minimum a `name` and `prompt`.
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient();
+await client.start();
+
+const session = await client.createSession({
+    model: "gpt-5.4",
+    customAgents: [
+        {
+            name: "researcher",
+            displayName: "Research Agent",
+            description: "Explores codebases and answers questions using read-only tools",
+            tools: ["grep", "glob", "view"],
+            prompt: "You are a research assistant. Analyze code and answer questions. Do not modify any files.",
+        },
+        {
+            name: "editor",
+            displayName: "Editor Agent",
+            description: "Makes targeted code changes",
+            tools: ["view", "edit", "bash"],
+            prompt: "You are a code editor. Make minimal, surgical changes to files as requested.",
+        },
+    ],
+    onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient, PermissionDecisionApproveOnce
+
+client = CopilotClient()
+await client.start()
+
+session = await client.create_session(
+    on_permission_request=lambda req, inv: PermissionDecisionApproveOnce(),
+    model="gpt-5.4",
+    custom_agents=[
+        {
+            "name": "researcher",
+            "display_name": "Research Agent",
+            "description": "Explores codebases and answers questions using read-only tools",
+            "tools": ["grep", "glob", "view"],
+            "prompt": "You are a research assistant. Analyze code and answer questions. Do not modify any files.",
+        },
+        {
+            "name": "editor",
+            "display_name": "Editor Agent",
+            "description": "Makes targeted code changes",
+            "tools": ["view", "edit", "bash"],
+            "prompt": "You are a code editor. Make minimal, surgical changes to files as requested.",
+        },
+    ],
+)
+```
+
+**Language (go):**
+
+```golang
+ctx := context.Background()
+client := copilot.NewClient(nil)
+client.Start(ctx)
+
+session, _ := client.CreateSession(ctx, &copilot.SessionConfig{
+    Model: "gpt-5.4",
+    CustomAgents: []copilot.CustomAgentConfig{
+        {
+            Name:        "researcher",
+            DisplayName: "Research Agent",
+            Description: "Explores codebases and answers questions using read-only tools",
+            Tools:       []string{"grep", "glob", "view"},
+            Prompt:      "You are a research assistant. Analyze code and answer questions. Do not modify any files.",
+        },
+        {
+            Name:        "editor",
+            DisplayName: "Editor Agent",
+            Description: "Makes targeted code changes",
+            Tools:       []string{"view", "edit", "bash"},
+            Prompt:      "You are a code editor. Make minimal, surgical changes to files as requested.",
+        },
+    },
+    OnPermissionRequest: func(req copilot.PermissionRequest, inv copilot.PermissionInvocation) (rpc.PermissionDecision, error) {
+        return &rpc.PermissionDecisionApproveOnce{}, nil
+    },
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+using GitHub.Copilot;
+using GitHub.Copilot.Rpc;
+
+await using var client = new CopilotClient();
+await using var session = await client.CreateSessionAsync(new SessionConfig
+{
+    Model = "gpt-5.4",
+    CustomAgents = new List<CustomAgentConfig>
+    {
+        new()
+        {
+            Name = "researcher",
+            DisplayName = "Research Agent",
+            Description = "Explores codebases and answers questions using read-only tools",
+            Tools = new List<string> { "grep", "glob", "view" },
+            Prompt = "You are a research assistant. Analyze code and answer questions. Do not modify any files.",
+        },
+        new()
+        {
+            Name = "editor",
+            DisplayName = "Editor Agent",
+            Description = "Makes targeted code changes",
+            Tools = new List<string> { "view", "edit", "bash" },
+            Prompt = "You are a code editor. Make minimal, surgical changes to files as requested.",
+        },
+    },
+    OnPermissionRequest = (req, inv) =>
+        Task.FromResult(PermissionDecision.ApproveOnce()),
+});
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+import java.util.List;
+
+try (var client = new CopilotClient()) {
+    client.start().get();
+
+    var session = client.createSession(
+        new SessionConfig()
+            .setModel("gpt-5.4")
+            .setCustomAgents(List.of(
+                new CustomAgentConfig()
+                    .setName("researcher")
+                    .setDisplayName("Research Agent")
+                    .setDescription("Explores codebases and answers questions using read-only tools")
+                    .setTools(List.of("grep", "glob", "view"))
+                    .setPrompt("You are a research assistant. Analyze code and answer questions. Do not modify any files."),
+                new CustomAgentConfig()
+                    .setName("editor")
+                    .setDisplayName("Editor Agent")
+                    .setDescription("Makes targeted code changes")
+                    .setTools(List.of("view", "edit", "bash"))
+                    .setPrompt("You are a code editor. Make minimal, surgical changes to files as requested.")
+            ))
+            .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+    ).get();
+}
+```
+
+## Configuration reference
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `name` | `string` | ✅ | Unique identifier for the agent |
+| `displayName` | `string` | | Human-readable name shown in events |
+| `description` | `string` | | What the agent does—helps the runtime select it |
+| `tools` | `string[]` or `null` | | Tool names the agent can use. `null` or omitted = all tools |
+| `prompt` | `string` | ✅ | System prompt for the agent |
+| `mcpServers` | `object` | | MCP server configurations specific to this agent |
+| `infer` | `boolean` | | Whether the runtime can auto-select this agent (default: `true`) |
+| `skills` | `string[]` | | Skill names to preload into the agent's context at startup |
+| `model` | `string` | | Model identifier to use while this agent runs |
+| `reasoningEffort` | `string` | | Reasoning effort to use while this agent runs. When omitted, the SDK sends no per-agent override and the runtime resolves the effort (see note below) |
+
+> [!TIP]
+> A good `description` helps the runtime match user intent to the right agent. Be specific about the agent's expertise and capabilities.
+
+Set `model` and `reasoningEffort` to override the parent session's model settings while a custom agent runs. When `reasoningEffort` is omitted, the SDK sends no per-agent override and the runtime resolves the effort from its own precedence: a per-call client option, the resolved model's default, or the agent definition all take priority; otherwise the runtime inherits the parent session's effort only when the subagent runs the same model as the parent. When the subagent resolves to a different model, it falls back to that model's default instead of inheriting the parent's effort. Python uses `reasoning_effort`, .NET uses `ReasoningEffort`, Go uses `ReasoningEffort`, Java uses `setReasoningEffort`, and Rust uses `with_reasoning_effort`.
+
+In addition to per-agent configuration above, you can set `agent` on the **session config** itself to pre-select which custom agent is active when the session starts. See [Selecting an Agent at Session Creation](#selecting-an-agent-at-session-creation) below.
+
+| Session Config Property | Type | Description |
+|-------------------------|------|-------------|
+| `agent` | `string` | Name of the custom agent to pre-select at session creation. Must match a `name` in `customAgents`. |
+
+## Per-agent skills
+
+You can preload skills into an agent's context using the `skills` property. When specified, the **full content** of each listed skill is eagerly injected into the agent's context at startup—the agent doesn't need to invoke a skill tool; the instructions are already present. Skills are **opt-in**: agents receive no skills by default, and sub-agents do not inherit skills from the parent. Skill names are resolved from the session-level `skillDirectories`.
+
+```typescript
+const session = await client.createSession({
+    skillDirectories: ["./skills"],
+    customAgents: [
+        {
+            name: "security-auditor",
+            description: "Security-focused code reviewer",
+            prompt: "Focus on OWASP Top 10 vulnerabilities",
+            skills: ["security-scan", "dependency-check"],
+        },
+        {
+            name: "docs-writer",
+            description: "Technical documentation writer",
+            prompt: "Write clear, concise documentation",
+            skills: ["markdown-lint"],
+        },
+    ],
+    onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+In this example, `security-auditor` starts with `security-scan` and `dependency-check` already injected into its context, while `docs-writer` starts with `markdown-lint`. An agent without a `skills` field receives no skill content.
+
+## Selecting an agent at session creation
+
+You can pass `agent` in the session config to pre-select which custom agent should be active when the session starts. The value must match the `name` of one of the agents defined in `customAgents`.
+
+This is equivalent to calling `session.rpc.agent.select()` after creation, but avoids the extra API call and ensures the agent is active from the very first prompt.
+
+**Language (typescript):**
+
+```typescript
+const session = await client.createSession({
+    customAgents: [
+        {
+            name: "researcher",
+            prompt: "You are a research assistant. Analyze code and answer questions.",
+        },
+        {
+            name: "editor",
+            prompt: "You are a code editor. Make minimal, surgical changes.",
+        },
+    ],
+    agent: "researcher", // Pre-select the researcher agent
+});
+```
+
+**Language (python):**
+
+```python
+session = await client.create_session(
+    on_permission_request=PermissionHandler.approve_all,
+    custom_agents=[
+        {
+            "name": "researcher",
+            "prompt": "You are a research assistant. Analyze code and answer questions.",
+        },
+        {
+            "name": "editor",
+            "prompt": "You are a code editor. Make minimal, surgical changes.",
+        },
+    ],
+    agent="researcher",  # Pre-select the researcher agent
+)
+```
+
+**Language (go):**
+
+```golang
+session, _ := client.CreateSession(ctx, &copilot.SessionConfig{
+    CustomAgents: []copilot.CustomAgentConfig{
+        {
+            Name:   "researcher",
+            Prompt: "You are a research assistant. Analyze code and answer questions.",
+        },
+        {
+            Name:   "editor",
+            Prompt: "You are a code editor. Make minimal, surgical changes.",
+        },
+    },
+    Agent: "researcher", // Pre-select the researcher agent
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+var session = await client.CreateSessionAsync(new SessionConfig
+{
+    CustomAgents = new List<CustomAgentConfig>
+    {
+        new() { Name = "researcher", Prompt = "You are a research assistant. Analyze code and answer questions." },
+        new() { Name = "editor", Prompt = "You are a code editor. Make minimal, surgical changes." },
+    },
+    Agent = "researcher", // Pre-select the researcher agent
+});
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.rpc.*;
+import java.util.List;
+
+var session = client.createSession(
+    new SessionConfig()
+        .setCustomAgents(List.of(
+            new CustomAgentConfig()
+                .setName("researcher")
+                .setPrompt("You are a research assistant. Analyze code and answer questions."),
+            new CustomAgentConfig()
+                .setName("editor")
+                .setPrompt("You are a code editor. Make minimal, surgical changes.")
+        ))
+        .setAgent("researcher") // Pre-select the researcher agent
+        .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+).get();
+```
+
+## How sub-agent delegation works
+
+When you send a prompt to a session with custom agents, the runtime evaluates whether to delegate to a sub-agent:
+
+1. **Intent matching**—The runtime analyzes the user's prompt against each agent's `name` and `description`
+1. **Agent selection**—If a match is found and `infer` is not `false`, the runtime selects the agent
+1. **Isolated execution**—The sub-agent runs with its own prompt and restricted tool set
+1. **Event streaming**—Lifecycle events (`subagent.started`, `subagent.completed`, etc.) stream back to the parent session
+1. **Result integration**—The sub-agent's output is incorporated into the parent agent's response
+
+### Controlling inference
+
+By default, all custom agents are available for automatic selection (`infer: true`). Set `infer: false` to prevent the runtime from auto-selecting an agent—useful for agents you only want invoked through explicit user requests:
+
+```typescript
+{
+    name: "dangerous-cleanup",
+    description: "Deletes unused files and dead code",
+    tools: ["bash", "edit", "view"],
+    prompt: "You clean up codebases by removing dead code and unused files.",
+    infer: false, // Only invoked when user explicitly asks for this agent
+}
+```
+
+## Listening to sub-agent events
+
+When a sub-agent runs, the parent session emits lifecycle events. Subscribe to these events to build UIs that visualize agent activity.
+
+Sub-agent-originated session events share the parent session stream and include envelope-level `agentId`. Root/main agent events and session-level events omit `agentId`, so renderers can keep the parent response separate from sub-agent traces by checking the event envelope.
+
+### Event types
+
+| Event | Emitted when | Data |
+|-------|-------------|------|
+| `subagent.selected` | Runtime selects an agent for the task | `agentName`, `agentDisplayName`, `tools` |
+| `subagent.started` | Sub-agent begins execution | `toolCallId`, `agentName`, `agentDisplayName`, `agentDescription`, `model?` |
+| `subagent.completed` | Sub-agent finishes successfully | `toolCallId`, `agentName`, `agentDisplayName`, `model?`, `durationMs?`, `totalTokens?`, `totalToolCalls?` |
+| `subagent.failed` | Sub-agent encounters an error | `toolCallId`, `agentName`, `agentDisplayName`, `error`, `model?`, `durationMs?`, `totalTokens?`, `totalToolCalls?` |
+| `subagent.deselected` | Runtime switches away from the sub-agent |—|
+
+### Subscribing to events
+
+**Language (typescript):**
+
+```typescript
+session.on((event) => {
+    switch (event.type) {
+        case "subagent.started":
+            console.log(`▶ Sub-agent started: ${event.data.agentDisplayName}`);
+            console.log(`  Description: ${event.data.agentDescription}`);
+            console.log(`  Tool call ID: ${event.data.toolCallId}`);
+            break;
+
+        case "subagent.completed":
+            console.log(`✅ Sub-agent completed: ${event.data.agentDisplayName}`);
+            if (event.data.durationMs !== undefined) console.log(`  Duration: ${event.data.durationMs}ms`);
+            if (event.data.totalTokens !== undefined) console.log(`  Tokens: ${event.data.totalTokens}`);
+            if (event.data.totalToolCalls !== undefined) console.log(`  Tool calls: ${event.data.totalToolCalls}`);
+            break;
+
+        case "subagent.failed":
+            console.log(`❌ Sub-agent failed: ${event.data.agentDisplayName}`);
+            console.log(`  Error: ${event.data.error}`);
+            if (event.data.durationMs !== undefined) console.log(`  Duration: ${event.data.durationMs}ms`);
+            break;
+
+        case "subagent.selected":
+            console.log(`🎯 Agent selected: ${event.data.agentDisplayName}`);
+            console.log(`  Tools: ${event.data.tools?.join(", ") ?? "all"}`);
+            break;
+
+        case "subagent.deselected":
+            console.log("↩ Agent deselected, returning to parent");
+            break;
+    }
+});
+
+const response = await session.sendAndWait({
+    prompt: "Research how authentication works in this codebase",
+});
+```
+
+**Language (python):**
+
+```python
+def handle_event(event):
+    if event.type == "subagent.started":
+        print(f"▶ Sub-agent started: {event.data.agent_display_name}")
+        print(f"  Description: {event.data.agent_description}")
+    elif event.type == "subagent.completed":
+        print(f"✅ Sub-agent completed: {event.data.agent_display_name}")
+    elif event.type == "subagent.failed":
+        print(f"❌ Sub-agent failed: {event.data.agent_display_name}")
+        print(f"  Error: {event.data.error}")
+    elif event.type == "subagent.selected":
+        tools = event.data.tools or "all"
+        print(f"🎯 Agent selected: {event.data.agent_display_name} (tools: {tools})")
+
+unsubscribe = session.on(handle_event)
+
+response = await session.send_and_wait("Research how authentication works in this codebase")
+```
+
+**Language (go):**
+
+```golang
+session.On(func(event copilot.SessionEvent) {
+    switch d := event.Data.(type) {
+    case *copilot.SubagentStartedData:
+        fmt.Printf("▶ Sub-agent started: %s\n", d.AgentDisplayName)
+        fmt.Printf("  Description: %s\n", d.AgentDescription)
+        fmt.Printf("  Tool call ID: %s\n", d.ToolCallID)
+    case *copilot.SubagentCompletedData:
+        fmt.Printf("✅ Sub-agent completed: %s\n", d.AgentDisplayName)
+    case *copilot.SubagentFailedData:
+        fmt.Printf("❌ Sub-agent failed: %s — %v\n", d.AgentDisplayName, d.Error)
+    case *copilot.SubagentSelectedData:
+        fmt.Printf("🎯 Agent selected: %s\n", d.AgentDisplayName)
+    }
+})
+
+_, err := session.SendAndWait(ctx, copilot.MessageOptions{
+    Prompt: "Research how authentication works in this codebase",
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+using var subscription = session.On<SessionEvent>(evt =>
+{
+    switch (evt)
+    {
+        case SubagentStartedEvent started:
+            Console.WriteLine($"▶ Sub-agent started: {started.Data.AgentDisplayName}");
+            Console.WriteLine($"  Description: {started.Data.AgentDescription}");
+            Console.WriteLine($"  Tool call ID: {started.Data.ToolCallId}");
+            break;
+        case SubagentCompletedEvent completed:
+            Console.WriteLine($"✅ Sub-agent completed: {completed.Data.AgentDisplayName}");
+            break;
+        case SubagentFailedEvent failed:
+            Console.WriteLine($"❌ Sub-agent failed: {failed.Data.AgentDisplayName} — {failed.Data.Error}");
+            break;
+        case SubagentSelectedEvent selected:
+            Console.WriteLine($"🎯 Agent selected: {selected.Data.AgentDisplayName}");
+            break;
+    }
+});
+
+await session.SendAndWaitAsync(new MessageOptions
+{
+    Prompt = "Research how authentication works in this codebase"
+});
+```
+
+**Language (java):**
+
+```java
+session.on(event -> {
+    if (event instanceof SubagentStartedEvent e) {
+        System.out.println("▶ Sub-agent started: " + e.getData().agentDisplayName());
+        System.out.println("  Description: " + e.getData().agentDescription());
+        System.out.println("  Tool call ID: " + e.getData().toolCallId());
+    } else if (event instanceof SubagentCompletedEvent e) {
+        System.out.println("✅ Sub-agent completed: " + e.getData().agentName());
+    } else if (event instanceof SubagentFailedEvent e) {
+        System.out.println("❌ Sub-agent failed: " + e.getData().agentName());
+        System.out.println("  Error: " + e.getData().error());
+    } else if (event instanceof SubagentSelectedEvent e) {
+        System.out.println("🎯 Agent selected: " + e.getData().agentDisplayName());
+    } else if (event instanceof SubagentDeselectedEvent e) {
+        System.out.println("↩ Agent deselected, returning to parent");
+    }
+});
+
+var response = session.sendAndWait(
+    new MessageOptions().setPrompt("Research how authentication works in this codebase")
+).get();
+```
+
+## Building an agent tree UI
+
+Sub-agent events include `toolCallId` fields that let you reconstruct the execution tree. Here's a pattern for tracking agent activity:
+
+```typescript
+interface AgentNode {
+    toolCallId: string;
+    name: string;
+    displayName: string;
+    status: "running" | "completed" | "failed";
+    error?: string;
+    startedAt: Date;
+    completedAt?: Date;
+}
+
+const agentTree = new Map<string, AgentNode>();
+
+session.on((event) => {
+    if (event.type === "subagent.started") {
+        agentTree.set(event.data.toolCallId, {
+            toolCallId: event.data.toolCallId,
+            name: event.data.agentName,
+            displayName: event.data.agentDisplayName,
+            status: "running",
+            startedAt: new Date(event.timestamp),
+        });
+    }
+
+    if (event.type === "subagent.completed") {
+        const node = agentTree.get(event.data.toolCallId);
+        if (node) {
+            node.status = "completed";
+            node.completedAt = new Date(event.timestamp);
+        }
+    }
+
+    if (event.type === "subagent.failed") {
+        const node = agentTree.get(event.data.toolCallId);
+        if (node) {
+            node.status = "failed";
+            node.error = event.data.error;
+            node.completedAt = new Date(event.timestamp);
+        }
+    }
+
+    // Render your UI with the updated tree
+    renderAgentTree(agentTree);
+});
+```
+
+## Scoping tools per agent
+
+Use the `tools` property to restrict which tools an agent can access. This is essential for security and for keeping agents focused:
+
+```typescript
+const session = await client.createSession({
+    customAgents: [
+        {
+            name: "reader",
+            description: "Read-only exploration of the codebase",
+            tools: ["grep", "glob", "view"],  // No write access
+            prompt: "You explore and analyze code. Never suggest modifications directly.",
+        },
+        {
+            name: "writer",
+            description: "Makes code changes",
+            tools: ["view", "edit", "bash"],   // Write access
+            prompt: "You make precise code changes as instructed.",
+        },
+        {
+            name: "unrestricted",
+            description: "Full access agent for complex tasks",
+            tools: null,                        // All tools available
+            prompt: "You handle complex multi-step tasks using any available tools.",
+        },
+    ],
+});
+```
+
+> [!NOTE]
+> When `tools` is `null` or omitted, the agent inherits access to all tools configured on the session. Use explicit tool lists to enforce the principle of least privilege.
+
+## Agent-exclusive tools
+
+Use the `defaultAgent` property on the session configuration to hide specific tools from the default agent (the built-in agent that handles turns when no custom agent is selected). This forces the main agent to delegate to sub-agents when those tools' capabilities are needed, keeping the main agent's context clean.
+
+This is useful when:
+* Certain tools generate large amounts of context that would overwhelm the main agent
+* You want the main agent to act as an orchestrator, delegating heavy work to specialized sub-agents
+* You need strict separation between orchestration and execution
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient, defineTool, approveAll } from "@github/copilot-sdk";
+import { z } from "zod";
+
+const heavyContextTool = defineTool("analyze-codebase", {
+    description: "Performs deep analysis of the codebase, generating extensive context",
+    parameters: z.object({ query: z.string() }),
+    handler: async ({ query }) => {
+        // ... expensive analysis that returns lots of data
+        return { analysis: "..." };
+    },
+});
+
+const session = await client.createSession({
+    tools: [heavyContextTool],
+    defaultAgent: {
+        excludedTools: ["analyze-codebase"],
+    },
+    customAgents: [
+        {
+            name: "researcher",
+            description: "Deep codebase analysis agent with access to heavy-context tools",
+            tools: ["analyze-codebase"],
+            prompt: "You perform thorough codebase analysis using the analyze-codebase tool.",
+        },
+    ],
+});
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient
+from copilot.tools import Tool
+
+heavy_tool = Tool(
+    name="analyze-codebase",
+    description="Performs deep analysis of the codebase",
+    handler=analyze_handler,
+    parameters={"type": "object", "properties": {"query": {"type": "string"}}},
+)
+
+session = await client.create_session(
+    tools=[heavy_tool],
+    default_agent={"excluded_tools": ["analyze-codebase"]},
+    custom_agents=[
+        {
+            "name": "researcher",
+            "description": "Deep codebase analysis agent",
+            "tools": ["analyze-codebase"],
+            "prompt": "You perform thorough codebase analysis.",
+        },
+    ],
+    on_permission_request=approve_all,
+)
+```
+
+**Language (go):**
+
+```golang
+session, err := client.CreateSession(ctx, &copilot.SessionConfig{
+    Tools: []copilot.Tool{heavyTool},
+    DefaultAgent: &copilot.DefaultAgentConfig{
+        ExcludedTools: []string{"analyze-codebase"},
+    },
+    CustomAgents: []copilot.CustomAgentConfig{
+        {
+            Name:        "researcher",
+            Description: "Deep codebase analysis agent",
+            Tools:       []string{"analyze-codebase"},
+            Prompt:      "You perform thorough codebase analysis.",
+        },
+    },
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+var session = await client.CreateSessionAsync(new SessionConfig
+{
+    Tools = [analyzeCodebaseTool],
+    DefaultAgent = new DefaultAgentConfig
+    {
+        ExcludedTools = ["analyze-codebase"],
+    },
+    CustomAgents =
+    [
+        new CustomAgentConfig
+        {
+            Name = "researcher",
+            Description = "Deep codebase analysis agent",
+            Tools = ["analyze-codebase"],
+            Prompt = "You perform thorough codebase analysis.",
+        },
+    ],
+});
+```
+
+### How it works
+
+Tools listed in `defaultAgent.excludedTools`:
+
+1. **Are registered**—their handlers are available for execution
+1. **Are hidden** from the main agent's tool list—the LLM won't see or call them directly
+1. **Remain available** to any custom sub-agent that includes them in its `tools` array
+
+### Interaction with other tool filters
+
+`defaultAgent.excludedTools` is orthogonal to the session-level `availableTools` and `excludedTools`:
+
+| Filter | Scope | Effect |
+|--------|-------|--------|
+| `availableTools` | Session-wide | Allowlist—only these tools exist for anyone |
+| `excludedTools` | Session-wide | Blocklist—these tools are blocked for everyone |
+| `defaultAgent.excludedTools` | Main agent only | These tools are hidden from the main agent but available to sub-agents |
+
+Precedence:
+1. Session-level `availableTools`/`excludedTools` are applied first (globally)
+1. `defaultAgent.excludedTools` is applied on top, further restricting the main agent only
+
+> [!NOTE]
+> If a tool is in both `excludedTools` (session-level) and `defaultAgent.excludedTools`, the session-level exclusion takes precedence—the tool is unavailable to everyone.
+
+## Attaching MCP servers to agents
+
+Each custom agent can have its own MCP (Model Context Protocol) servers, giving it access to specialized data sources:
+
+```typescript
+const session = await client.createSession({
+    customAgents: [
+        {
+            name: "db-analyst",
+            description: "Analyzes database schemas and queries",
+            prompt: "You are a database expert. Use the database MCP server to analyze schemas.",
+            mcpServers: {
+                "database": {
+                    command: "npx",
+                    args: ["-y", "@modelcontextprotocol/server-postgres", "postgresql://localhost/mydb"],
+                },
+            },
+        },
+    ],
+});
+```
+
+## Patterns and best practices
+
+### Pair a researcher with an editor
+
+A common pattern is to define a read-only researcher agent and a write-capable editor agent. The runtime delegates exploration tasks to the researcher and modification tasks to the editor:
+
+```typescript
+customAgents: [
+    {
+        name: "researcher",
+        description: "Analyzes code structure, finds patterns, and answers questions",
+        tools: ["grep", "glob", "view"],
+        prompt: "You are a code analyst. Thoroughly explore the codebase to answer questions.",
+    },
+    {
+        name: "implementer",
+        description: "Implements code changes based on analysis",
+        tools: ["view", "edit", "bash"],
+        prompt: "You make minimal, targeted code changes. Always verify changes compile.",
+    },
+]
+```
+
+### Keep agent descriptions specific
+
+The runtime uses the `description` to match user intent. Vague descriptions lead to poor delegation:
+
+```typescript
+// ❌ Too vague — runtime can't distinguish from other agents
+{ description: "Helps with code" }
+
+// ✅ Specific — runtime knows when to delegate
+{ description: "Analyzes Python test coverage and identifies untested code paths" }
+```
+
+### Handle failures gracefully
+
+Sub-agents can fail. Always listen for `subagent.failed` events and handle them in your application:
+
+```typescript
+session.on((event) => {
+    if (event.type === "subagent.failed") {
+        logger.error(`Agent ${event.data.agentName} failed: ${event.data.error}`);
+        // Show error in UI, retry, or fall back to parent agent
+    }
+});
+```
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/customization-locations.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/customization-locations
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/customization-locations.md
+- **SHA256_FINGERPRINT**: `7684819092a4b707cd8c3961f23eb5ea01770e34299d5e0537cb362fa63cb71f`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.728717+00:00
+---
+
+**title**: Customization discovery locations
+**shortTitle**: Customization Locations
+**intro**: >-
+
+## Repository settings
+
+Declare checkout-relative directories in `.github/copilot/settings.json`:
+
+```json
+{
+  "skillDirectories": ["node_modules/@example/team/skills"],
+  "agentDirectories": ["vendor/team/agents"],
+  "instructionDirectories": ["vendor/team/instructions"],
+  "hookDirectories": ["vendor/team/hooks"]
+}
+```
+
+Each list adds discovery locations for its own customization type. Conventional locations continue to work. A key in `.github/copilot/settings.local.json` replaces only that repository list; an empty list removes its repository contribution. Omitted keys inherit the checked-in list. Repository lists don't replace SDK inputs or existing user skill directories.
+
+Repository paths must be nonempty, literal directories within the declaring checkout. Absolute paths, home or environment-variable expansion, globs, and escapes outside the checkout are rejected. Links and junctions are allowed only when their resolved roots and discovered descendants remain inside the checkout. A missing directory is reported and can be discovered after installation and an explicit customization reload. Copilot doesn't install packages or watch these directories.
+
+File content from repository-defined discovery locations is read through a validated, opened file handle. Retargeting a link outside the checkout between discovery and invocation doesn't authorize reading its new target.
+
+Repository locations require trust covering the declaring checkout root and remain subject to each customization type's existing discovery switches, disabled entries, and managed policy. Persisted trust for only a subdirectory doesn't authorize its parent checkout's settings. Listing a location doesn't enable a disabled customization type or grant filesystem access.
+
+In the CLI, remembered folder trust refreshes repository customizations in the current session, even if model catalog initialization failed. `/skills reload` also rechecks persisted trust and repository discovery settings.
+
+## SDK inputs
+
+Session creation, resume, and option updates accept the same four lists. TypeScript and Java use `skillDirectories`, `agentDirectories`, `instructionDirectories`, and `hookDirectories`. Python and Rust use snake case; Go and .NET use Pascal case.
+
+SDK directories can be outside the checkout. Leading and trailing whitespace is trimmed, and blank entries are ignored. Relative SDK paths resolve once against the request's effective working directory when supplied. Changing the working directory doesn't move retained SDK roots. Supplying a new relative list uses the new effective working directory. An empty list clears only the explicit SDK contribution; omission or `null` leaves it unchanged during an update.
+
+If adopting a `hookDirectories` replacement fails or is canceled before the new hook service takes ownership, the previous directory option and live hook service remain in place. Overlapping failed updates restore the retained value rather than another failed update's directories. A failed update doesn't roll back a newer accepted update.
+
+Explicit agent and file-hook directories don't require ambient configuration discovery. `enableFileHooks` controls repository-origin hooks, including conventional `.github/hooks`, but not explicit SDK hook directories or callback `hooks`. Managed restrictions and hook disables still apply.
+
+Directory inputs are discovery configuration, not general filesystem grants. They don't widen `additionalDirectories`. Existing file-hook sandbox rules remain in effect.
+
+Loading active local skills adds read-only grants for their contributing SDK skill directories under the runtime's skill-resource policy. Empty, ignored, and disabled skill sources don't add those grants. Repository-defined skill directories don't add them.
+
+## File formats and precedence
+
+| Type | Discovered content |
+| --- | --- |
+| Skills | A direct `SKILL.md` bundle or recursively discovered topmost bundles |
+| Agents | Existing Markdown agent definitions |
+| Repository instructions | Recursive `*.instructions.md` files, with existing frontmatter and `applyTo` matching |
+| Hooks | Existing hook JSON configurations |
+
+Repository instruction directories don't import package `AGENTS.md` hierarchies or `.claude/rules`. Existing SDK instruction-directory formats remain supported. Each subsystem preserves its existing source precedence. Overlapping hook file references are deduplicated; distinct authored actions aren't collapsed because their commands happen to match.
+
+File-backed command hooks receive `COPILOT_HOOK_DIR`, the directory containing their configuration file. Use it to locate adjacent scripts and resources. Hook working-directory semantics don't change: they remain anchored to the consuming workspace. `COPILOT_HOOK_DIR` is an execution environment variable, not JSON template expansion; `COPILOT_PLUGIN_ROOT` retains its separate plugin-root behavior. Inline hooks and SDK callbacks don't gain a fabricated configuration directory.
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/fleet-mode.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/fleet-mode
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/fleet-mode.md
+- **SHA256_FINGERPRINT**: `39b2f154384ce6df007665396d2c80d269721c8969b65ac8dc946d7ede52db56`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.744931+00:00
+---
+
+**title**: Fleet mode
+**shortTitle**: Fleet Mode
+**intro**: >-
+
+## When to use fleet mode
+
+Fleet mode is useful when the work can be decomposed before execution and each unit can run without waiting for the others.
+
+Good fits include:
+
+* Multi-file refactors where each worker owns a file, package, or language SDK.
+* Batch reviews where each worker checks a separate diff, module, or alert group.
+* Parallel research across independent repositories, services, or feature areas.
+* Documentation refreshes where each worker owns a page or topic.
+* Migration tasks where each worker can validate its own slice and report back.
+
+Avoid fleet mode for:
+
+* Sequential tasks where step 2 needs the concrete output from step 1.
+* Tightly coupled edits where workers would contend for the same files.
+* Small tasks that one synchronous sub-agent or the parent agent can finish quickly.
+* Tasks that require continuous shared reasoning rather than clear ownership.
+
+Fleet mode works best when the parent session can create clear units of work, assign one owner per unit, and define what each worker must return.
+
+## Starting fleet mode
+
+The SDK exposes fleet mode through the session RPC namespace in several languages. The binding is experimental in the generated RPC surface; pin both the SDK and the Copilot CLI runtime if your application depends on it.
+
+### From within a session
+
+The wire method is `session.fleet.start`. The optional `prompt` is combined with the runtime's fleet orchestration instructions.
+
+**Language (typescript):**
+
+```typescript
+const result = await session.rpc.fleet.start({
+    prompt: "Refactor each SDK package independently, then summarize the changes.",
+});
+
+if (result.started) {
+    console.log("Fleet mode started");
+}
+```
+
+**Language (python):**
+
+```python
+from copilot.rpc import FleetStartRequest
+
+result = await session.rpc.fleet.start(
+    FleetStartRequest(
+        prompt="Review each service independently, then summarize the risks."
+    )
+)
+
+if result.started:
+    print("Fleet mode started")
+```
+
+**Language (go):**
+
+```golang
+prompt := "Update each package independently, then report validation results."
+result, err := session.RPC.Fleet.Start(ctx, &rpc.FleetStartRequest{
+    Prompt: &prompt,
+})
+if err != nil {
+    return err
+}
+if result.Started {
+    fmt.Println("Fleet mode started")
+}
+```
+
+**Language (dotnet):**
+
+```csharp
+var result = await session.Rpc.Fleet.StartAsync(
+    "Audit each project independently, then summarize the findings.");
+
+if (result.Started)
+{
+    Console.WriteLine("Fleet mode started");
+}
+```
+
+**Language (rust):**
+
+```rust
+use github_copilot_sdk::rpc::FleetStartRequest;
+
+let result = session
+    .rpc()
+    .fleet()
+    .start(FleetStartRequest {
+        prompt: Some("Research each crate independently, then summarize the plan.".into()),
+    })
+    .await?;
+
+if result.started {
+    println!("Fleet mode started");
+}
+```
+
+Native typed bindings for fleet mode were verified in Node.js/TypeScript, Python, Go, .NET, and Rust. A Java binding was not found in `java/src/main/java` on this branch, so Java examples are omitted until that surface is available.
+
+### From plan mode
+
+Plan-mode UIs can start fleet deployment by returning the `autopilot_fleet` exit action. The generated session event types describe it as:
+
+```typescript
+type ExitPlanModeAction =
+  | "exit_only"
+  | "interactive"
+  | "autopilot"
+  /** Exit plan mode and continue with parallel autonomous workers. */
+  | "autopilot_fleet";
+```
+
+Use this when a user approves a plan that already contains independent work items. Use `autopilot` for a single autonomous worker and `interactive` when the user should stay in the loop.
+
+## How sub-agents coordinate
+
+Fleet mode relies on explicit coordination state instead of implicit shared memory. The parent agent decomposes the work into todos, each sub-agent owns one todo, and the orchestrator dispatches workers whose dependencies are already complete.
+
+The canonical schema is:
+
+```sql
+CREATE TABLE todos (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    status TEXT DEFAULT 'pending'
+);
+
+CREATE TABLE todo_deps (
+    todo_id TEXT,
+    depends_on TEXT,
+    PRIMARY KEY (todo_id, depends_on)
+);
+```
+
+Each todo moves through a small state machine:
+
+```text
+pending -> in_progress -> done
+                       \-> blocked
+```
+
+A sub-agent should:
+
+1. Claim exactly one ready todo by setting `status = 'in_progress'`.
+1. Work only on that todo's scope.
+1. Store its result in the conversation or relevant task output.
+1. Set `status = 'done'` when complete.
+1. Set `status = 'blocked'` when it cannot proceed, and include the reason.
+
+The orchestrator can find work whose dependencies are satisfied with a query like:
+
+```sql
+SELECT t.*
+FROM todos t
+WHERE t.status = 'pending'
+  AND NOT EXISTS (
+      SELECT 1
+      FROM todo_deps td
+      JOIN todos dep ON td.depends_on = dep.id
+      WHERE td.todo_id = t.id
+        AND dep.status != 'done'
+  );
+```
+
+This pattern gives every worker a clear owner and lets the parent session reason about what is ready, running, complete, or blocked.
+
+## Lifecycle hooks
+
+Fleet mode invokes sub-agents through the runtime's task mechanism. The runtime emits hook activity for sub-agent tool calls: the runtime 1.0.52 changelog notes that `preToolUse`, `postToolUse`, `subagentStart`, and `subagentStop` fire correctly for sub-agent tool calls.
+
+All six SDKs expose typed sub-agent lifecycle hooks: Node.js uses `onSubagentStart` and `onSubagentStop`, Python and Rust use `on_subagent_start` and `on_subagent_stop`, Go and .NET use `OnSubagentStart` and `OnSubagentStop`, and Java uses `setOnSubagentStart` and `setOnSubagentStop`. Register them when creating or resuming a session. The start hook can prepend `additionalContext` to the child's first prompt; the stop hook can request another child turn with a block reason or replace the response reported to the parent.
+
+For passive status updates, subscribe to the generic session event stream. It includes `subagent.started`, `subagent.completed`, `subagent.failed`, `subagent.selected`, and `subagent.deselected`:
+
+**Language (typescript):**
+
+```typescript
+session.on((event) => {
+    if (event.type === "subagent.started") {
+        console.log(`Started ${event.data.agentDisplayName}`);
+    }
+
+    if (event.type === "subagent.completed") {
+        console.log(`Completed ${event.data.agentDisplayName}`);
+    }
+});
+```
+
+**Language (python):**
+
+```python
+def handle_event(event):
+    if event.type == "subagent.started":
+        print(f"Started {event.data.agent_display_name}")
+    elif event.type == "subagent.completed":
+        print(f"Completed {event.data.agent_display_name}")
+
+unsubscribe = session.on(handle_event)
+```
+
+For hook configuration that is already exposed at the SDK layer, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/hooks). For sub-agent event payloads, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/custom-agents).
+
+## Plugin sub-agents
+
+The runtime can load plugins with `--plugin-dir`. Plugins loaded this way can register their agents as available `task(agent_type=...)` sub-agent types in prompt mode, which means fleet mode can dispatch to those plugin-provided worker types.
+
+This is currently a runtime-level configuration pattern rather than a documented SDK-level registration API. Configure the Copilot CLI runtime with the plugin directory, then connect the SDK client to that runtime. Native SDK helpers for registering plugin sub-agent types may be added in the future.
+
+Conceptually, a fleet prompt can then ask for a specific worker type:
+
+```text
+Use task(agent_type="security-review") for each independent package.
+Run the workers in parallel and summarize only high-confidence findings.
+```
+
+Keep plugin-provided sub-agent types narrow and descriptive so the orchestrator can choose them reliably.
+
+## Best practices
+
+* Decompose the work into independent units before starting fleet mode.
+* Minimize dependencies between todos; dependencies reduce parallelism.
+* Give each todo a durable ID, a clear title, and a complete description.
+* Make each sub-agent own exactly one todo at a time.
+* Use background sub-agents for truly parallel work.
+* Use synchronous sub-agent calls for serialized steps or validation gates.
+* Provide each sub-agent with complete context; sub-agents are stateless across calls.
+* Include file paths, commands, expected outputs, and constraints in each worker prompt.
+* Do not dispatch a single background sub-agent; prefer a synchronous call or batch multiple workers in parallel.
+* Avoid assigning overlapping files to different workers unless the parent agent will reconcile conflicts explicitly.
+* Require every worker to report what it changed, how it validated the change, and what remains blocked.
+* Have the parent agent verify the combined result after workers finish.
+
+## Limitations and open questions
+
+* Fleet mode is exposed through generated session RPC bindings and is marked experimental in several SDKs.
+* The SQL todos pattern is the canonical coordination model in the runtime guidance, but whether it is a stable extensibility contract for SDK consumers is still an open question.
+* Sub-agent lifecycle hook inputs identify the parent session but do not yet carry a shared tool-call ID for correlating with `subagent.*` events.
+* Plugin sub-agent registration is configured at the runtime layer through `--plugin-dir`; no SDK-level plugin registration helper was verified on this branch.
+* Java native typed bindings for `session.fleet.start` were not found in the Java SDK source on this branch.
+* Fleet mode does not remove the need for parent-agent review. Parallel workers can produce inconsistent assumptions that the orchestrator must reconcile.
+
+## See also
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/custom-agents)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/hooks)
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/hooks.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/hooks
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/hooks.md
+- **SHA256_FINGERPRINT**: `55502b931d5bbd67a6c21c38b92d08bc08090b5f669490e22357d746aed461ff`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.765557+00:00
+---
+
+**title**: Working with hooks
+**shortTitle**: Hooks
+**intro**: >-
+
+## Overview
+
+A hook is a callback you register once when creating a session. The SDK invokes it at a well-defined point in the conversation lifecycle, passes contextual input, and optionally accepts output that modifies the session's behavior.
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/features-hooks-diagram-0.png)
+
+| Hook                                                                | When it fires                       | What you can do                            |
+| ------------------------------------------------------------------- | ----------------------------------- | ------------------------------------------ |
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/session-lifecycle#session-start-hook)     | Session begins (new or resumed)     | Inject context, load preferences           |
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/user-prompt-submitted)        | User sends a message                | Rewrite prompts, add context, filter input |
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/user-prompt-transformed)    | Runtime builds the model prompt     | Inspect or replace model-facing content    |
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/pre-tool-use)                          | Before a tool executes              | Allow / deny / modify the call             |
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/post-tool-use)                        | After a tool returns (success only) | Transform results, redact secrets, audit   |
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/post-tool-use#failure-variant) | After a tool returns a failure      | Inject retry guidance, log failures        |
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/session-lifecycle#session-end-hook)         | Session ends                        | Clean up, record metrics                   |
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/error-handling)                     | An error is raised                  | Custom logging, retry logic, alerts        |
+
+All hooks are **optional**—register only the ones you need. Returning `null` (or the language equivalent) from any hook tells the SDK to continue with default behavior.
+
+File-based repository hooks and repository hook settings are loaded only after the workspace is trusted. User hooks remain available before workspace trust is granted.
+
+## Repository hooks from additional directories
+
+Repository filesystem hooks are separate from the SDK callbacks described in
+this guide. To load them from additional directories during local session
+creation or cold resume, supply `additionalDirectories`; CLI `--add-dir` also participates by default.
+`DISABLE_ADDITIONAL_DIRECTORY_HOOKS=true` restores primary-only scope;
+`enableFileHooks` can enable or disable repository hooks through `session.rpc.options.update`; explicit SDK hook directories and callbacks are independent.
+
+Discovery uses each accepted directory's containing Git root, or the directory
+itself when it is outside a Git repository. For example, supplying
+`B\packages\core` inside repository `B` admits `B\.github\hooks` and B's repository
+hook settings, not just configuration inside `B\packages\core`.
+
+> [!WARNING]
+> Supply only trusted startup directories. This authorizes hook commands
+> and hook-provided prompts from all eligible startup directories without
+> additional per-directory or per-hook approval. Later file-access grants
+> do not authorize hooks. Existing managed policy, hook-disable controls, and
+> sandbox rules still apply; they do not make malicious hook content safe.
+
+Later directory grants do not add hook sources. A cold resume must resupply the
+directories; later grants or escape-hatch updates cannot change retained
+authorization.
+
+## Registering hooks
+
+Callback `hooks` remain separate from file-backed `hookDirectories`. For packaged hook configurations and adjacent resources, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/customization-locations).
+
+### Agent-scoped declarative hooks
+
+Custom agents can declare a `hooks` event map in `.agent.md` frontmatter or in
+the SDK's custom-agent configuration. These are declarative command or HTTP
+actions, not SDK callback functions. They run only while that agent is selected,
+in addition to applicable session, user, repository, plugin, and managed-policy
+hooks. Changing or clearing the selected agent changes the scoped hooks for the
+next invocation without changing other sessions or concurrent subagents.
+
+```yaml
+---
+name: formatter
+description: Formats changed files
+hooks:
+  PostToolUse:
+    - type: command
+      command: ./scripts/format-changed-files.sh
+      windows: ./scripts/format-changed-files.ps1
+---
+Format the files you change.
+```
+
+Both runtime event names such as `postToolUse` and supported VS Code aliases
+such as `PostToolUse` are accepted. `command` supplies the fallback shell command;
+`windows`, `linux`, and `osx` override it on the corresponding platform. Hook
+commands are relative to the executing session's repository root, unless they
+set an explicit working directory. Hook payloads and decisions follow the
+runtime's existing hook contracts.
+
+When a local agent runs as a subagent, its scoped `Stop` (`agentStop`) actions
+run at `SubagentStop` instead of ordinary turn stop. An explicit `SubagentStop`
+action on that agent still observes its own children. Stop callbacks receive
+`stop_hook_active: true` after a prior block. After eight consecutive scoped
+Stop continuations, the runtime ignores further scoped blocks and accepts the
+child's final response unless a parent lifecycle hook still blocks completion.
+
+Repository and inherited-agent hooks require workspace admission. Agent
+discovery or selection does not itself grant trust. Existing hook-disable
+settings, enterprise restrictions, sandbox permissions, and timeouts also apply
+to scoped actions. SDK-provided agents cannot claim managed-plugin privileges.
+Remote or organization-hosted agent definitions do not execute scoped hooks,
+and scoped Stop dispatch is supported for local runtime subagents, not external
+AHP participants.
+
+Unsupported event names are reported before event selection. Action preparation
+errors affect only their declared event; shared and managed-policy hooks still run.
+
+Pass a `hooks` object when you create (or resume) a session. Every example below follows this pattern.
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient();
+await client.start();
+
+const session = await client.createSession({
+  hooks: {
+    onSessionStart: async (input, invocation) => {
+      /* ... */
+    },
+    onPreToolUse: async (input, invocation) => {
+      /* ... */
+    },
+    onPostToolUse: async (input, invocation) => {
+      /* ... */
+    },
+    // ... add only the hooks you need
+  },
+  onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient, PermissionDecisionApproveOnce
+
+client = CopilotClient()
+await client.start()
+
+session = await client.create_session(
+    on_permission_request=lambda req, inv: PermissionDecisionApproveOnce(),
+    hooks={
+        "on_session_start": on_session_start,
+        "on_pre_tool_use":  on_pre_tool_use,
+        "on_post_tool_use": on_post_tool_use,
+        # ... add only the hooks you need
+    },
+)
+```
+
+**Language (go):**
+
+```golang
+client := copilot.NewClient(nil)
+
+session, err := client.CreateSession(ctx, &copilot.SessionConfig{
+    Hooks: &copilot.SessionHooks{
+        OnSessionStart: onSessionStart,
+        OnPreToolUse:   onPreToolUse,
+        OnPostToolUse:  onPostToolUse,
+        // ... add only the hooks you need
+    },
+    OnPermissionRequest: func(req copilot.PermissionRequest, inv copilot.PermissionInvocation) (rpc.PermissionDecision, error) {
+        return &rpc.PermissionDecisionApproveOnce{}, nil
+    },
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+var client = new CopilotClient();
+
+var session = await client.CreateSessionAsync(new SessionConfig
+{
+    Hooks = new SessionHooks
+    {
+        OnSessionStart = onSessionStart,
+        OnPreToolUse   = onPreToolUse,
+        OnPostToolUse  = onPostToolUse,
+        // ... add only the hooks you need
+    },
+    OnPermissionRequest = (req, inv) =>
+        Task.FromResult(PermissionDecision.ApproveOnce()),
+});
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+import java.util.concurrent.CompletableFuture;
+
+try (var client = new CopilotClient()) {
+    client.start().get();
+
+    var hooks = new SessionHooks()
+        .setOnSessionStart((input, inv) -> CompletableFuture.completedFuture(null))
+        .setOnPreToolUse((input, inv) -> CompletableFuture.completedFuture(null))
+        .setOnPostToolUse((input, inv) -> CompletableFuture.completedFuture(null));
+        // ... add only the hooks you need
+
+    var session = client.createSession(
+        new SessionConfig()
+            .setHooks(hooks)
+            .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+    ).get();
+}
+```
+
+> [!TIP]
+> Every hook handler receives an `invocation` parameter containing the `sessionId`, which is useful for correlating logs and maintaining per-session state.
+
+## Use case: permission control
+
+Use `onPreToolUse` to build a permission layer that decides which tools the agent may run, what arguments are allowed, and whether the user should be prompted before execution.
+
+### Allow-list a safe set of tools
+
+**Language (typescript):**
+
+```typescript
+const READ_ONLY_TOOLS = ["read_file", "glob", "grep", "view"];
+
+const session = await client.createSession({
+  hooks: {
+    onPreToolUse: async (input) => {
+      if (!READ_ONLY_TOOLS.includes(input.toolName)) {
+        return {
+          permissionDecision: "deny",
+          permissionDecisionReason: `Only read-only tools are allowed. "${input.toolName}" was blocked.`,
+        };
+      }
+      return { permissionDecision: "allow" };
+    },
+  },
+  onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+**Language (python):**
+
+```python
+from copilot import PermissionDecisionApproveOnce
+
+READ_ONLY_TOOLS = ["read_file", "glob", "grep", "view"]
+
+async def on_pre_tool_use(input_data, invocation):
+    if input_data["toolName"] not in READ_ONLY_TOOLS:
+        return {
+            "permissionDecision": "deny",
+            "permissionDecisionReason":
+                f'Only read-only tools are allowed. "{input_data["toolName"]}" was blocked.',
+        }
+    return {"permissionDecision": "allow"}
+
+session = await client.create_session(
+    on_permission_request=lambda req, inv: PermissionDecisionApproveOnce(),
+    hooks={"on_pre_tool_use": on_pre_tool_use},
+)
+```
+
+**Language (go):**
+
+```golang
+readOnlyTools := map[string]bool{"read_file": true, "glob": true, "grep": true, "view": true}
+
+session, _ := client.CreateSession(ctx, &copilot.SessionConfig{
+    Hooks: &copilot.SessionHooks{
+        OnPreToolUse: func(input copilot.PreToolUseHookInput, inv copilot.HookInvocation) (*copilot.PreToolUseHookOutput, error) {
+            if !readOnlyTools[input.ToolName] {
+                return &copilot.PreToolUseHookOutput{
+                    PermissionDecision:       "deny",
+                    PermissionDecisionReason: fmt.Sprintf("Only read-only tools are allowed. %q was blocked.", input.ToolName),
+                }, nil
+            }
+            return &copilot.PreToolUseHookOutput{PermissionDecision: "allow"}, nil
+        },
+    },
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+var readOnlyTools = new HashSet<string> { "read_file", "glob", "grep", "view" };
+
+var session = await client.CreateSessionAsync(new SessionConfig
+{
+    Hooks = new SessionHooks
+    {
+        OnPreToolUse = (input, invocation) =>
+        {
+            if (!readOnlyTools.Contains(input.ToolName))
+            {
+                return Task.FromResult<PreToolUseHookOutput?>(new PreToolUseHookOutput
+                {
+                    PermissionDecision = "deny",
+                    PermissionDecisionReason = $"Only read-only tools are allowed. \"{input.ToolName}\" was blocked.",
+                });
+            }
+            return Task.FromResult<PreToolUseHookOutput?>(
+                new PreToolUseHookOutput { PermissionDecision = "allow" });
+        },
+    },
+});
+```
+
+**Language (java):**
+
+```java
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+
+import com.github.copilot.rpc.PermissionHandler;
+import com.github.copilot.rpc.SessionConfig;
+import com.github.copilot.rpc.SessionHooks;
+import com.github.copilot.rpc.PreToolUseHookOutput;
+var readOnlyTools = Set.of("read_file", "glob", "grep", "view");
+
+var hooks = new SessionHooks()
+    .setOnPreToolUse((input, invocation) -> {
+        if (!readOnlyTools.contains(input.getToolName())) {
+            return CompletableFuture.completedFuture(
+                PreToolUseHookOutput.deny(
+                    "Only read-only tools are allowed. \"" + input.getToolName() + "\" was blocked.")
+            );
+        }
+        return CompletableFuture.completedFuture(PreToolUseHookOutput.allow());
+    });
+
+var session = client.createSession(
+    new SessionConfig()
+        .setHooks(hooks)
+        .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+).get();
+```
+
+### Restrict file access to specific directories
+
+```typescript
+const ALLOWED_DIRS = ["/home/user/projects", "/tmp"];
+
+const session = await client.createSession({
+  hooks: {
+    onPreToolUse: async (input) => {
+      if (["read_file", "write_file", "edit"].includes(input.toolName)) {
+        const filePath = (input.toolArgs as { path: string }).path;
+        const allowed = ALLOWED_DIRS.some((dir) => filePath.startsWith(dir));
+
+        if (!allowed) {
+          return {
+            permissionDecision: "deny",
+            permissionDecisionReason: `Access to "${filePath}" is outside the allowed directories.`,
+          };
+        }
+      }
+      return { permissionDecision: "allow" };
+    },
+  },
+  onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+### Ask the user before destructive operations
+
+```typescript
+const DESTRUCTIVE_TOOLS = ["delete_file", "shell", "bash"];
+
+const session = await client.createSession({
+  hooks: {
+    onPreToolUse: async (input) => {
+      if (DESTRUCTIVE_TOOLS.includes(input.toolName)) {
+        return { permissionDecision: "ask" };
+      }
+      return { permissionDecision: "allow" };
+    },
+  },
+  onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+Returning `"ask"` delegates the decision to the user at runtime—useful for destructive actions where you want a human in the loop.
+
+## Use case: auditing and compliance
+
+Combine `onPreToolUse`, `onPostToolUse`, and the session lifecycle hooks to build a complete audit trail that records every action the agent takes.
+
+### Structured audit log
+
+**Language (typescript):**
+
+```typescript
+interface AuditEntry {
+  timestamp: Date;
+  sessionId: string;
+  event: string;
+  toolName?: string;
+  toolArgs?: unknown;
+  toolResult?: unknown;
+  prompt?: string;
+}
+
+const auditLog: AuditEntry[] = [];
+
+const session = await client.createSession({
+  hooks: {
+    onSessionStart: async (input, invocation) => {
+      auditLog.push({
+        timestamp: input.timestamp,
+        sessionId: invocation.sessionId,
+        event: "session_start",
+      });
+      return null;
+    },
+    onUserPromptSubmitted: async (input, invocation) => {
+      auditLog.push({
+        timestamp: input.timestamp,
+        sessionId: invocation.sessionId,
+        event: "user_prompt",
+        prompt: input.prompt,
+      });
+      return null;
+    },
+    onPreToolUse: async (input, invocation) => {
+      auditLog.push({
+        timestamp: input.timestamp,
+        sessionId: invocation.sessionId,
+        event: "tool_call",
+        toolName: input.toolName,
+        toolArgs: input.toolArgs,
+      });
+      return { permissionDecision: "allow" };
+    },
+    onPostToolUse: async (input, invocation) => {
+      auditLog.push({
+        timestamp: input.timestamp,
+        sessionId: invocation.sessionId,
+        event: "tool_result",
+        toolName: input.toolName,
+        toolResult: input.toolResult,
+      });
+      return null;
+    },
+    onSessionEnd: async (input, invocation) => {
+      auditLog.push({
+        timestamp: input.timestamp,
+        sessionId: invocation.sessionId,
+        event: "session_end",
+      });
+
+      // Persist the log — swap this with your own storage backend
+      await fs.promises.writeFile(
+        `audit-${invocation.sessionId}.json`,
+        JSON.stringify(auditLog, null, 2),
+      );
+      return null;
+    },
+  },
+  onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+**Language (python):**
+
+```python
+import json, aiofiles
+from copilot import PermissionDecisionApproveOnce
+
+audit_log = []
+
+async def on_session_start(input_data, invocation):
+    audit_log.append({
+        "timestamp": input_data["timestamp"].isoformat(),
+        "session_id": invocation["session_id"],
+        "event": "session_start",
+    })
+    return None
+
+async def on_user_prompt_submitted(input_data, invocation):
+    audit_log.append({
+        "timestamp": input_data["timestamp"].isoformat(),
+        "session_id": invocation["session_id"],
+        "event": "user_prompt",
+        "prompt": input_data["prompt"],
+    })
+    return None
+
+async def on_pre_tool_use(input_data, invocation):
+    audit_log.append({
+        "timestamp": input_data["timestamp"].isoformat(),
+        "session_id": invocation["session_id"],
+        "event": "tool_call",
+        "tool_name": input_data["toolName"],
+        "tool_args": input_data["toolArgs"],
+    })
+    return {"permissionDecision": "allow"}
+
+async def on_post_tool_use(input_data, invocation):
+    audit_log.append({
+        "timestamp": input_data["timestamp"].isoformat(),
+        "session_id": invocation["session_id"],
+        "event": "tool_result",
+        "tool_name": input_data["toolName"],
+        "tool_result": input_data["toolResult"],
+    })
+    return None
+
+async def on_session_end(input_data, invocation):
+    audit_log.append({
+        "timestamp": input_data["timestamp"].isoformat(),
+        "session_id": invocation["session_id"],
+        "event": "session_end",
+    })
+    async with aiofiles.open(f"audit-{invocation['session_id']}.json", "w") as f:
+        await f.write(json.dumps(audit_log, indent=2))
+    return None
+
+session = await client.create_session(
+    on_permission_request=lambda req, inv: PermissionDecisionApproveOnce(),
+    hooks={
+        "on_session_start": on_session_start,
+        "on_user_prompt_submitted": on_user_prompt_submitted,
+        "on_pre_tool_use": on_pre_tool_use,
+        "on_post_tool_use": on_post_tool_use,
+        "on_session_end": on_session_end,
+    },
+)
+```
+
+### Redact secrets from tool results
+
+```typescript
+const SECRET_PATTERNS = [
+  /(?:api[_-]?key|token|secret|password)\s*[:=]\s*["']?[\w\-\.]+["']?/gi,
+];
+
+const session = await client.createSession({
+  hooks: {
+    onPostToolUse: async (input) => {
+      if (typeof input.toolResult !== "string") return null;
+
+      let redacted = input.toolResult;
+      for (const pattern of SECRET_PATTERNS) {
+        redacted = redacted.replace(pattern, "[REDACTED]");
+      }
+
+      return redacted !== input.toolResult
+        ? { modifiedResult: redacted }
+        : null;
+    },
+  },
+  onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+## Use case: notifications and sounds
+
+Hooks fire in your application's process, so you can trigger any side-effect—desktop notifications, sounds, Slack messages, or webhook calls.
+
+### Desktop notification on session events
+
+**Language (typescript):**
+
+```typescript
+import notifier from "node-notifier"; // npm install node-notifier
+
+const session = await client.createSession({
+  hooks: {
+    onSessionEnd: async (input, invocation) => {
+      notifier.notify({
+        title: "Copilot Session Complete",
+        message: `Session ${invocation.sessionId.slice(0, 8)} finished (${input.reason}).`,
+      });
+      return null;
+    },
+    onErrorOccurred: async (input) => {
+      notifier.notify({
+        title: "Copilot Error",
+        message: input.error.slice(0, 200),
+      });
+      return null;
+    },
+  },
+  onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+**Language (python):**
+
+```python
+import subprocess
+from copilot import PermissionDecisionApproveOnce
+
+async def on_session_end(input_data, invocation):
+    sid = invocation["session_id"][:8]
+    reason = input_data["reason"]
+    subprocess.Popen([
+        "notify-send", "Copilot Session Complete",
+        f"Session {sid} finished ({reason}).",
+    ])
+    return None
+
+async def on_error_occurred(input_data, invocation):
+    subprocess.Popen([
+        "notify-send", "Copilot Error",
+        input_data["error"][:200],
+    ])
+    return None
+
+session = await client.create_session(
+    on_permission_request=lambda req, inv: PermissionDecisionApproveOnce(),
+    hooks={
+        "on_session_end": on_session_end,
+        "on_error_occurred": on_error_occurred,
+    },
+)
+```
+
+### Play a sound when a tool finishes
+
+```typescript
+import { exec } from "node:child_process";
+
+const session = await client.createSession({
+  hooks: {
+    onPostToolUse: async (input) => {
+      // macOS: play a system sound after every tool call
+      exec("afplay /System/Library/Sounds/Pop.aiff");
+      return null;
+    },
+    onErrorOccurred: async () => {
+      exec("afplay /System/Library/Sounds/Basso.aiff");
+      return null;
+    },
+  },
+  onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+### Post to Slack on errors
+
+```typescript
+const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL!;
+
+const session = await client.createSession({
+  hooks: {
+    onErrorOccurred: async (input, invocation) => {
+      if (!input.recoverable) {
+        await fetch(SLACK_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            text: `🚨 Unrecoverable error in session \`${invocation.sessionId.slice(0, 8)}\`:\n\`\`\`${input.error}\`\`\``,
+          }),
+        });
+      }
+      return null;
+    },
+  },
+  onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+## Use case: prompt enrichment
+
+Use `onSessionStart` and `onUserPromptSubmitted` to automatically inject context so users don't have to repeat themselves.
+
+### Inject project metadata at session start
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onSessionStart: async (input) => {
+      const pkg = JSON.parse(
+        await fs.promises.readFile("package.json", "utf-8"),
+      );
+      return {
+        additionalContext: [
+          `Project: ${pkg.name} v${pkg.version}`,
+          `Node: ${process.version}`,
+          `Working directory: ${input.workingDirectory}`,
+        ].join("\n"),
+      };
+    },
+  },
+  onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+### Expand shorthand commands in prompts
+
+```typescript
+const SHORTCUTS: Record<string, string> = {
+  "/fix": "Find and fix all errors in the current file",
+  "/test": "Write comprehensive unit tests for this code",
+  "/explain": "Explain this code in detail",
+  "/refactor": "Refactor this code to improve readability",
+};
+
+const session = await client.createSession({
+  hooks: {
+    onUserPromptSubmitted: async (input) => {
+      for (const [shortcut, expansion] of Object.entries(SHORTCUTS)) {
+        if (input.prompt.startsWith(shortcut)) {
+          const rest = input.prompt.slice(shortcut.length).trim();
+          return { modifiedPrompt: rest ? `${expansion}: ${rest}` : expansion };
+        }
+      }
+      return null;
+    },
+  },
+  onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+## Use case: error handling and recovery
+
+The `onErrorOccurred` hook gives you a chance to react to failures—whether that means retrying, notifying a human, or gracefully shutting down.
+
+### Retry transient model errors
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onErrorOccurred: async (input) => {
+      if (input.errorContext === "model_call" && input.recoverable) {
+        return {
+          errorHandling: "retry",
+          retryCount: 3,
+          userNotification: "Temporary model issue — retrying...",
+        };
+      }
+      return null;
+    },
+  },
+  onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+### Friendly error messages
+
+```typescript
+const FRIENDLY_MESSAGES: Record<string, string> = {
+  model_call: "The AI model is temporarily unavailable. Please try again.",
+  tool_execution: "A tool encountered an error. Check inputs and try again.",
+  system: "A system error occurred. Please try again later.",
+};
+
+const session = await client.createSession({
+  hooks: {
+    onErrorOccurred: async (input) => {
+      return {
+        userNotification: FRIENDLY_MESSAGES[input.errorContext] ?? input.error,
+      };
+    },
+  },
+  onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+## Use case: session metrics
+
+Track how long sessions run, how many tools are invoked, and why sessions end—useful for dashboards and cost monitoring.
+
+**Language (typescript):**
+
+```typescript
+const metrics = new Map<
+  string,
+  { start: Date; toolCalls: number; prompts: number }
+>();
+
+const session = await client.createSession({
+  hooks: {
+    onSessionStart: async (input, invocation) => {
+      metrics.set(invocation.sessionId, {
+        start: input.timestamp,
+        toolCalls: 0,
+        prompts: 0,
+      });
+      return null;
+    },
+    onUserPromptSubmitted: async (_input, invocation) => {
+      metrics.get(invocation.sessionId)!.prompts++;
+      return null;
+    },
+    onPreToolUse: async (_input, invocation) => {
+      metrics.get(invocation.sessionId)!.toolCalls++;
+      return { permissionDecision: "allow" };
+    },
+    onSessionEnd: async (input, invocation) => {
+      const m = metrics.get(invocation.sessionId)!;
+      const durationSec =
+        (input.timestamp.getTime() - m.start.getTime()) / 1000;
+
+      console.log(
+        `Session ${invocation.sessionId.slice(0, 8)}: ` +
+          `${durationSec.toFixed(1)}s, ${m.prompts} prompts, ` +
+          `${m.toolCalls} tool calls, ended: ${input.reason}`,
+      );
+
+      metrics.delete(invocation.sessionId);
+      return null;
+    },
+  },
+  onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+**Language (python):**
+
+```python
+from copilot import PermissionDecisionApproveOnce
+
+session_metrics = {}
+
+async def on_session_start(input_data, invocation):
+    session_metrics[invocation["session_id"]] = {
+        "start": input_data["timestamp"],
+        "tool_calls": 0,
+        "prompts": 0,
+    }
+    return None
+
+async def on_user_prompt_submitted(input_data, invocation):
+    session_metrics[invocation["session_id"]]["prompts"] += 1
+    return None
+
+async def on_pre_tool_use(input_data, invocation):
+    session_metrics[invocation["session_id"]]["tool_calls"] += 1
+    return {"permissionDecision": "allow"}
+
+async def on_session_end(input_data, invocation):
+    m = session_metrics.pop(invocation["session_id"])
+    duration = (input_data["timestamp"] - m["start"]).total_seconds()
+    sid = invocation["session_id"][:8]
+    print(
+        f"Session {sid}: {duration:.1f}s, {m['prompts']} prompts, "
+        f"{m['tool_calls']} tool calls, ended: {input_data['reason']}"
+    )
+    return None
+
+session = await client.create_session(
+    on_permission_request=lambda req, inv: PermissionDecisionApproveOnce(),
+    hooks={
+        "on_session_start": on_session_start,
+        "on_user_prompt_submitted": on_user_prompt_submitted,
+        "on_pre_tool_use": on_pre_tool_use,
+        "on_session_end": on_session_end,
+    },
+)
+```
+
+## Combining hooks
+
+Hooks compose naturally. A single `hooks` object can handle permissions **and** auditing **and** notifications—each hook does its own job.
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onSessionStart: async (input) => {
+      console.log(`[audit] session started in ${input.workingDirectory}`);
+      return { additionalContext: "Project uses TypeScript and Vitest." };
+    },
+    onPreToolUse: async (input) => {
+      console.log(`[audit] tool requested: ${input.toolName}`);
+      if (input.toolName === "shell") {
+        return { permissionDecision: "ask" };
+      }
+      return { permissionDecision: "allow" };
+    },
+    onPostToolUse: async (input) => {
+      console.log(`[audit] tool completed: ${input.toolName}`);
+      return null;
+    },
+    onErrorOccurred: async (input) => {
+      console.error(`[alert] ${input.errorContext}: ${input.error}`);
+      return null;
+    },
+    onSessionEnd: async (input, invocation) => {
+      console.log(
+        `[audit] session ${invocation.sessionId.slice(0, 8)} ended: ${input.reason}`,
+      );
+      return null;
+    },
+  },
+  onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+## Best practices
+
+1. **Keep hooks fast.** Every hook runs inline—slow hooks delay the conversation. Offload heavy work (database writes, HTTP calls) to a background queue when possible.
+
+1. **Return `null` when you have nothing to change.** This tells the SDK to proceed with defaults and avoids unnecessary object allocation.
+
+1. **Be explicit with permission decisions.** Returning `{ permissionDecision: "allow" }` is clearer than returning `null`, even though both allow the tool.
+
+1. **Don't swallow critical errors.** It's fine to suppress recoverable tool errors, but always log or alert on unrecoverable ones.
+
+1. **Use `additionalContext` instead of `modifiedPrompt` when possible.** Appending context preserves the user's original intent while still guiding the model.
+
+1. **Scope state by session ID.** If you track per-session data, key it on `invocation.sessionId` and clean up in `onSessionEnd`.
+
+## Reference
+
+For full type definitions, input/output field tables, and additional examples for every hook, see the API reference:
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/hooks-overview)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/pre-tool-use)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/post-tool-use)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/user-prompt-submitted)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/user-prompt-transformed)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/session-lifecycle)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/error-handling)
+
+## See also
+
+* [AUTOTITLE](/copilot/get-started/sdk-quickstart)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/custom-agents)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/streaming-events)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/debugging)
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/image-input.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/image-input
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/image-input.md
+- **SHA256_FINGERPRINT**: `9ff04bafec1430fc641304a39e2e9e0ff86229fc97727350e72cef04bdaee006`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.811688+00:00
+---
+
+**title**: Image input
+**shortTitle**: Image Input
+**intro**: >-
+
+* **File attachment** (`type: "file"`): provide an absolute path; the runtime reads the file from disk, converts it to base64, and sends it to the LLM.
+* **Blob attachment** (`type: "blob"`): provide base64-encoded data directly; useful when the image is already in memory (e.g., screenshots, generated images, or data from an API).
+
+## Overview
+
+![Diagram: Sequence diagram showing the described process.](/assets/images/help/copilot/copilot-sdk/features-image-input-diagram-0.png)
+
+| Concept | Description |
+|---------|-------------|
+| **File attachment** | An attachment with `type: "file"` and an absolute `path` to an image on disk |
+| **Blob attachment** | An attachment with `type: "blob"`, base64-encoded `data`, and a `mimeType`—no disk I/O needed |
+| **Automatic encoding** | For file attachments, the runtime reads the image and converts it to base64 automatically |
+| **Auto-resize** | The runtime automatically resizes or quality-reduces images that exceed model-specific limits |
+| **Vision capability** | The model must have `capabilities.supports.vision = true` to process images |
+
+## Quick start—file attachment
+
+Attach an image file to any message using the file attachment type. The path must be an absolute path to an image on disk.
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient();
+await client.start();
+
+const session = await client.createSession({
+    model: "gpt-5.4",
+    onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+
+await session.send({
+    prompt: "Describe what you see in this image",
+    attachments: [
+        {
+            type: "file",
+            path: "/absolute/path/to/screenshot.png",
+        },
+    ],
+});
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient, PermissionDecisionApproveOnce
+
+client = CopilotClient()
+await client.start()
+
+session = await client.create_session(
+    on_permission_request=lambda req, inv: PermissionDecisionApproveOnce(),
+    model="gpt-5.4",
+)
+
+await session.send(
+    "Describe what you see in this image",
+    attachments=[
+        {
+            "type": "file",
+            "path": "/absolute/path/to/screenshot.png",
+        },
+    ],
+)
+```
+
+**Language (go):**
+
+```golang
+ctx := context.Background()
+client := copilot.NewClient(nil)
+client.Start(ctx)
+
+session, _ := client.CreateSession(ctx, &copilot.SessionConfig{
+    Model: "gpt-5.4",
+    OnPermissionRequest: func(req copilot.PermissionRequest, inv copilot.PermissionInvocation) (rpc.PermissionDecision, error) {
+        return &rpc.PermissionDecisionApproveOnce{}, nil
+    },
+})
+
+path := "/absolute/path/to/screenshot.png"
+session.Send(ctx, copilot.MessageOptions{
+    Prompt: "Describe what you see in this image",
+    Attachments: []copilot.Attachment{
+        &copilot.AttachmentFile{
+            DisplayName: "screenshot.png",
+            Path:        path,
+        },
+    },
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+using GitHub.Copilot;
+using GitHub.Copilot.Rpc;
+
+await using var client = new CopilotClient();
+await using var session = await client.CreateSessionAsync(new SessionConfig
+{
+    Model = "gpt-5.4",
+    OnPermissionRequest = (req, inv) =>
+        Task.FromResult(PermissionDecision.ApproveOnce()),
+});
+
+await session.SendAsync(new MessageOptions
+{
+    Prompt = "Describe what you see in this image",
+    Attachments = new List<Attachment>
+    {
+        new AttachmentFile
+        {
+            Path = "/absolute/path/to/screenshot.png",
+            DisplayName = "screenshot.png",
+        },
+    },
+});
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+import java.util.List;
+
+try (var client = new CopilotClient()) {
+    client.start().get();
+
+    var session = client.createSession(
+        new SessionConfig()
+            .setModel("gpt-5.4")
+            .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+    ).get();
+
+    session.send(new MessageOptions()
+        .setPrompt("Describe what you see in this image")
+        .setAttachments(List.of(
+            new Attachment("file", "/absolute/path/to/screenshot.png", "screenshot.png")
+        ))
+    ).get();
+}
+```
+
+## Quick start—blob attachment
+
+When you already have image data in memory (e.g., a screenshot captured by your app, or an image fetched from an API), use a blob attachment to send it directly without writing to disk.
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient();
+await client.start();
+
+const session = await client.createSession({
+    model: "gpt-5.4",
+    onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+
+const base64ImageData = "..."; // your base64-encoded image
+await session.send({
+    prompt: "Describe what you see in this image",
+    attachments: [
+        {
+            type: "blob",
+            data: base64ImageData,
+            mimeType: "image/png",
+            displayName: "screenshot.png",
+        },
+    ],
+});
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient, PermissionDecisionApproveOnce
+
+client = CopilotClient()
+await client.start()
+
+session = await client.create_session(
+    on_permission_request=lambda req, inv: PermissionDecisionApproveOnce(),
+    model="gpt-5.4",
+)
+
+base64_image_data = "..."  # your base64-encoded image
+await session.send(
+    "Describe what you see in this image",
+    attachments=[
+        {
+            "type": "blob",
+            "data": base64_image_data,
+            "mimeType": "image/png",
+            "displayName": "screenshot.png",
+        },
+    ],
+)
+```
+
+**Language (go):**
+
+```golang
+mimeType := "image/png"
+displayName := "screenshot.png"
+session.Send(ctx, copilot.MessageOptions{
+    Prompt: "Describe what you see in this image",
+    Attachments: []copilot.Attachment{
+        &copilot.AttachmentBlob{
+            Data:        &base64ImageData, // base64-encoded string
+            MIMEType:    mimeType,
+            DisplayName: &displayName,
+        },
+    },
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+await session.SendAsync(new MessageOptions
+{
+    Prompt = "Describe what you see in this image",
+    Attachments = new List<Attachment>
+    {
+        new AttachmentBlob
+        {
+            Data = base64ImageData,
+            MimeType = "image/png",
+            DisplayName = "screenshot.png",
+        },
+    },
+});
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+import java.util.List;
+
+try (var client = new CopilotClient()) {
+    client.start().get();
+
+    var session = client.createSession(
+        new SessionConfig()
+            .setModel("gpt-5.4")
+            .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+    ).get();
+
+    var base64ImageData = "..."; // your base64-encoded image
+    session.send(new MessageOptions()
+        .setPrompt("Describe what you see in this image")
+        .setAttachments(List.of(
+            new BlobAttachment()
+                .setData(base64ImageData)
+                .setMimeType("image/png")
+                .setDisplayName("screenshot.png")
+        ))
+    ).get();
+}
+```
+
+## Supported formats
+
+Supported image formats include JPG, PNG, GIF, and other common image types. For file attachments, the runtime reads the image from disk and converts it as needed. For blob attachments, you provide the base64 data and MIME type directly. Use PNG or JPEG for best results, as these are the most widely supported formats.
+
+The model's `capabilities.limits.vision.supported_media_types` field lists the exact MIME types it accepts.
+
+## Automatic processing
+
+The runtime automatically processes images to fit within the model's constraints. No manual resizing is required.
+
+* Images that exceed the model's dimension or size limits are automatically resized (preserving aspect ratio) or quality-reduced.
+* If an image cannot be brought within limits after processing, it is skipped and not sent to the LLM.
+* The model's `capabilities.limits.vision.max_prompt_image_size` field indicates the maximum image size in bytes.
+
+You can check these limits at runtime via the model capabilities object. For the best experience, use reasonably-sized PNG or JPEG images.
+
+## Vision model capabilities
+
+Not all models support vision. Check the model's capabilities before sending images.
+
+### Capability fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `capabilities.supports.vision` | `boolean` | Whether the model can process image inputs |
+| `capabilities.limits.vision.supported_media_types` | `string[]` | MIME types the model accepts (e.g., `["image/png", "image/jpeg"]`) |
+| `capabilities.limits.vision.max_prompt_images` | `number` | Maximum number of images per prompt |
+| `capabilities.limits.vision.max_prompt_image_size` | `number` | Maximum image size in bytes |
+
+### Vision limits type
+
+```typescript
+vision?: {
+    supported_media_types: string[];
+    max_prompt_images: number;
+    max_prompt_image_size: number; // bytes
+};
+```
+
+## Receiving image results
+
+When tools return images (e.g., screenshots or generated charts), the result contains `"image"` content blocks with base64-encoded data.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `type` | `"image"` | Content block type discriminator |
+| `data` | `string` | Base64-encoded image data |
+| `mimeType` | `string` | MIME type (e.g., `"image/png"`) |
+
+These image blocks appear in `tool.execution_complete` event results. See the [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/streaming-events) guide for the full event lifecycle.
+
+## Tips and limitations
+
+| Tip | Details |
+|-----|---------|
+| **Use PNG or JPEG directly** | Avoids conversion overhead—these are sent to the LLM as-is |
+| **Keep images reasonably sized** | Large images may be quality-reduced, which can lose important details |
+| **Use absolute paths for file attachments** | The runtime reads files from disk; relative paths may not resolve correctly |
+| **Use blob attachments for in-memory data** | When you already have base64 data (e.g., screenshots, API responses), blob avoids unnecessary disk I/O |
+| **Check vision support first** | Sending images to a non-vision model wastes tokens without visual understanding |
+| **Multiple images are supported** | Attach several attachments in one message, up to the model's `max_prompt_images` limit |
+| **SVG is not supported** | SVG files are text-based and excluded from image processing |
+
+## See also
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/streaming-events): event lifecycle including tool result content blocks
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/steering-and-queueing): sending follow-up messages with attachments
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/index.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/index.md
+- **SHA256_FINGERPRINT**: `b8cff66f1e7464183149df3ae8cbc0e178db95d840a55a7e1234e5145dc8751d`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.815335+00:00
+---
+
+**title**: Features
+**intro**: >-
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/mcp.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/mcp
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/mcp.md
+- **SHA256_FINGERPRINT**: `73ce559751004b132dd623a8d6c6c79009f7f40ed3afbe750ef84352c5833a94`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.979943+00:00
+---
+
+**title**: Using MCP servers with the GitHub Copilot SDK
+**shortTitle**: MCP
+**intro**: >-
+
+> [!NOTE]
+> This is an evolving feature. See [issue #36](https://github.com/github/copilot-sdk/issues/36) for ongoing discussion.
+
+## What is MCP?
+
+[Model Context Protocol (MCP)](https://modelcontextprotocol.io/) is an open standard for connecting AI assistants to external tools and data sources. MCP servers can:
+
+* Execute code or scripts
+* Query databases
+* Access file systems
+* Call external APIs
+* And much more
+
+## Server types
+
+The SDK supports two types of MCP servers:
+
+| Type | Description | Use Case |
+|------|-------------|----------|
+| **Local/Stdio** | Runs as a subprocess, communicates via stdin/stdout | Local tools, file access, custom scripts |
+| **HTTP/SSE** | Remote server accessed via HTTP | Shared services, cloud-hosted tools |
+
+## Configuration
+
+### Inspect configuration and lifecycle
+
+`session.rpc.mcp.listConfigured()` is a parameterless, passive inventory read.
+It does not start or restart servers, authenticate, apply sandbox policy, or
+wait for server startup. Configuration discovery and policy filtering determine
+which servers appear and their `enabled` values.
+
+This experimental RPC requires an aligned SDK/runtime release. Its earlier
+prerelease response allowed `live` to be omitted; SDKs using the required
+lifecycle contract do not support that older response shape. When supplying
+an external runtime, update it alongside the SDK. The overall protocol version
+is unchanged and does not identify this experimental contract revision.
+
+Every entry includes `live.status`. A configured server with no materialized
+runtime server reports the existing `not_configured` status, even when
+`enabled` is `true`. A runtime server that was explicitly stopped reports
+`stopped`. Materialized servers report their actual lifecycle, including
+`pending`, `connected`, `needs-auth`, and `failed`; failures include `live.error`
+when available.
+
+Configuration and lifecycle describe different facts. If a server's URL,
+authentication, or configuration source changes while an old connection remains
+alive, inventory still reports that connection's actual lifecycle. A
+`connected` status does not mean the latest configuration has been applied.
+The runtime owns this observation; clients must not substitute cached state
+based only on the server name.
+
+Inventory retries concurrent graph replacement a bounded number of times and
+returns an error if it cannot obtain a consistent snapshot. It never omits
+`live` to hide a graph race.
+
+A name-only `startServer` or `restartServer` resolves and initializes only the
+requested server after a cold session resume without first calling `list`.
+This includes user and plugin configurations and the built-in GitHub server
+configured through `githubMcpToolConfig`. It does not start other configured
+servers or override disabled state, authentication requirements, sandbox policy,
+or configuration-source precedence.
+
+### Node.js / TypeScript
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient();
+const session = await client.createSession({
+    model: "gpt-5",
+    mcpServers: {
+        // Local MCP server (stdio)
+        "my-local-server": {
+            type: "local",
+            command: "node",
+            args: ["./mcp-server.js"],
+            env: { DEBUG: "true" },
+            cwd: "./servers",
+            tools: ["*"],  // "*" = all tools, [] = none, or list specific tools
+            timeout: 30000,
+        },
+        // Remote MCP server (HTTP)
+        "github": {
+            type: "http",
+            url: "https://api.githubcopilot.com/mcp/",
+            headers: { "Authorization": "Bearer ${TOKEN}" },
+            tools: ["*"],
+        },
+    },
+});
+```
+
+### Python
+
+```python
+import asyncio
+from copilot import CopilotClient
+from copilot.session import PermissionHandler
+
+async def main():
+    client = CopilotClient()
+    await client.start()
+
+    session = await client.create_session(on_permission_request=PermissionHandler.approve_all, model="gpt-5", mcp_servers={
+        # Local MCP server (stdio)
+        "my-local-server": {
+            "type": "local",
+            "command": "python",
+            "args": ["./mcp_server.py"],
+            "env": {"DEBUG": "true"},
+            "cwd": "./servers",
+            "tools": ["*"],
+            "timeout": 30000,
+        },
+        # Remote MCP server (HTTP)
+        "github": {
+            "type": "http",
+            "url": "https://api.githubcopilot.com/mcp/",
+            "headers": {"Authorization": "Bearer ${TOKEN}"},
+            "tools": ["*"],
+        },
+    })
+
+    response = await session.send_and_wait("List my recent GitHub notifications")
+    print(response.data.content)
+
+    await client.stop()
+
+asyncio.run(main())
+```
+
+### Go
+
+```golang
+package main
+
+import (
+    "context"
+    "log"
+    copilot "github.com/github/copilot-sdk/go"
+)
+
+func main() {
+    ctx := context.Background()
+    client := copilot.NewClient(nil)
+    if err := client.Start(ctx); err != nil {
+        log.Fatal(err)
+    }
+    defer client.Stop()
+
+    session, err := client.CreateSession(ctx, &copilot.SessionConfig{
+        Model: "gpt-5",
+        MCPServers: map[string]copilot.MCPServerConfig{
+            "my-local-server": copilot.MCPStdioServerConfig{
+                Command: "node",
+                Args:    []string{"./mcp-server.js"},
+                Tools:   []string{"*"},
+            },
+        },
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer session.Disconnect()
+
+    // Use the session...
+}
+```
+
+### .NET
+
+```csharp
+using GitHub.Copilot;
+
+await using var client = new CopilotClient();
+await using var session = await client.CreateSessionAsync(new SessionConfig
+{
+    Model = "gpt-5",
+    McpServers = new Dictionary<string, McpServerConfig>
+    {
+        ["my-local-server"] = new McpStdioServerConfig
+        {
+            Command = "node",
+            Args = new List<string> { "./mcp-server.js" },
+            Tools = new List<string> { "*" },
+        },
+    },
+});
+```
+
+## Disabling configured servers per session
+
+Set `disabledMcpServers` to exact MCP server names that must not run in a session.
+The setting is scoped to the individual create or resume request; it does not
+modify global MCP settings or the server configuration.
+
+```typescript
+const session = await client.createSession({
+    mcpServers: {
+        filesystem: { type: "local", command: "npx", args: ["-y", "@modelcontextprotocol/server-filesystem", "."] },
+        github: { type: "http", url: "https://api.githubcopilot.com/mcp/" },
+    },
+    disabledMcpServers: ["github"],
+});
+```
+
+| SDK | Configuration property |
+| --- | --- |
+| Node.js | `disabledMcpServers` |
+| Python | `disabled_mcp_servers` |
+| Go | `DisabledMCPServers` |
+| .NET | `DisabledMcpServers` |
+| Java | `setDisabledMcpServers(...)` |
+| Rust | `with_disabled_mcp_servers(...)` |
+
+On session creation and a **cold** resume, disabled servers are not started and
+the runtime does not initiate their authentication. A resident resume cannot
+undo a server that the runtime has already spawned. Names are matched exactly.
+
+## Listing and retrieving prompts
+
+The experimental generated MCP namespace exposes the wire JSON-RPC methods
+`session.mcp.prompts.list` and `session.mcp.prompts.get`. Use the language-specific
+SDK accessors below to call them. These methods target one connected server in the
+current session; they do not combine results from multiple servers.
+
+| SDK | List prompts | Get a prompt |
+| --- | --- | --- |
+| Node.js | `session.rpc.mcp.prompts.list(...)` | `session.rpc.mcp.prompts.get(...)` |
+| Python | `session.rpc.mcp.prompts.list(...)` | `session.rpc.mcp.prompts.get(...)` |
+| Go | `session.RPC.MCP.Prompts().List(...)` | `session.RPC.MCP.Prompts().Get(...)` |
+| .NET | `session.Rpc.Mcp.Prompts.ListAsync(...)` | `session.Rpc.Mcp.Prompts.GetAsync(...)` |
+| Java | `session.getRpc().mcp.prompts.list(...)` | `session.getRpc().mcp.prompts.get(...)` |
+| Rust | `session.rpc().mcp().prompts().list(...)` | `session.rpc().mcp().prompts().get(...)` |
+
+Listing requires `serverName` and accepts an optional opaque `cursor`. Each
+call returns one page of typed prompt definitions and an optional `nextCursor`.
+Pass that cursor in another list call to request the next page. Definitions
+include names, optional titles and descriptions, and argument definitions.
+An omitted argument `required` flag remains distinct from `false`.
+
+Getting a prompt requires `serverName` and `promptName`, with an optional
+`arguments` dictionary whose values are strings. Omitting `arguments` leaves the
+MCP request's arguments absent; passing `{}` sends an explicitly empty dictionary.
+The runtime preserves this distinction for the server. The result contains an optional
+description and ordered messages with typed roles and opaque JSON `content`.
+Inspect each content block's `type` before interpreting it; content is not
+flattened into text. Nested resources, annotations, metadata, unfamiliar content
+types, and additional content fields retain their JSON structure. Server
+extensions on typed descriptors, messages, and result envelopes are available under
+`additionalProperties`. A server extension itself named `additionalProperties`
+is preserved as an entry inside that map, not merged into it.
+The protocol's top-level `resultType: "complete"` discriminator is consumed by
+the runtime; it is not returned as an SDK field or a server extension.
+Requests fail explicitly if the runtime cannot preserve the raw response,
+including stdio response frames exceeding the 1 MiB capture limit.
+
+The returned prompt messages are not automatically sent to the model or used to
+execute tools or fetch referenced resources. Your application decides how to
+use the result.
+While generating that result, an MCP server can request sampling or elicitation
+through multi round-trip continuations. These requests use the same configured
+host responders as other MCP operations; prompt retrieval does not grant
+additional permission or bypass the host's decision. A missing responder or
+responder error fails the request, and an elicitation decline is returned to the
+server unchanged. State-only continuations do not invoke either responder.
+
+After an existing `mcp.prompts.list_changed` session event, list the named
+server's prompts again to refresh your application's view.
+
+## Tool configuration
+
+You can control which tools are available to an MCP server using the `tools` field.
+
+### Allow all tools
+
+Use `"*"` to enable all tools provided by the MCP server:
+
+```typescript
+tools: ["*"]
+```
+
+### Allow specific tools
+
+Provide a list of tool names to restrict access:
+
+```typescript
+tools: ["bash", "edit"]
+```
+
+Only the listed tools will be available to the agent.
+
+### Disable all tools
+
+Use an empty array to disable all tools:
+
+```typescript
+tools: []
+```
+
+### Notes
+
+* The `tools` field defines which tools are allowed.
+* There is no separate `allow` or `disallow` configuration—tool access is controlled directly through this list.
+
+## Quick start: filesystem MCP server
+
+Here's a complete working example using the official [`@modelcontextprotocol/server-filesystem`](https://www.npmjs.com/package/@modelcontextprotocol/server-filesystem) MCP server:
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+async function main() {
+    const client = new CopilotClient();
+
+    // Create session with filesystem MCP server
+    const session = await client.createSession({
+        mcpServers: {
+            filesystem: {
+                type: "local",
+                command: "npx",
+                args: ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"],
+                tools: ["*"],
+            },
+        },
+    });
+
+    console.log("Session created:", session.sessionId);
+
+    // The model can now use filesystem tools
+    const result = await session.sendAndWait({
+        prompt: "List the files in the allowed directory",
+    });
+
+    console.log("Response:", result?.data?.content);
+
+    await session.disconnect();
+    await client.stop();
+}
+
+main();
+```
+
+**Output:**
+
+```text
+Session created: 18b3482b-bcba-40ba-9f02-ad2ac949a59a
+Response: The allowed directory is `/tmp`, which contains various files
+and subdirectories including temporary system files, log files, and
+directories for different applications.
+```
+
+> [!TIP]
+> You can use any MCP server from the [MCP Servers Directory](https://github.com/modelcontextprotocol/servers). Popular options include `@modelcontextprotocol/server-github`, `@modelcontextprotocol/server-sqlite`, and `@modelcontextprotocol/server-puppeteer`.
+
+## Configuration options
+
+### Local/stdio server
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `type` | `"local"` or `"stdio"` | No | Server type (defaults to local) |
+| `command` | `string` | Yes | Command to execute |
+| `args` | `string[]` | Yes | Command arguments |
+| `env` | `object` | No | Environment variables |
+| `cwd` | `string` | No | Working directory |
+| `tools` | `string[]` | No | Tools to enable (`["*"]` for all, `[]` for none) |
+| `timeout` | `number` | No | Timeout in milliseconds |
+
+### Remote server (HTTP/SSE)
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `type` | `"http"` or `"sse"` | Yes | Server type |
+| `url` | `string` | Yes | Server URL |
+| `headers` | `object` | No | HTTP headers (e.g., for auth) |
+| `oauthClientId` | `string` | No | Non-empty client ID for a statically configured OAuth client |
+| `oauthScopes` | `string[]` | No | Non-empty array of valid RFC 6749 scope tokens. Requires `oauthClientId`; used when the server challenge omits scope or provides an empty scope, before protected-resource metadata fallback |
+| `oauthPublicClient` | `boolean` | No | Whether the configured OAuth client is public and does not require a client secret |
+| `oauthGrantType` | `string` | No | OAuth grant type for the configured client, such as `client_credentials` |
+| `tools` | `string[]` | No | Tools to enable |
+| `timeout` | `number` | No | Timeout in milliseconds |
+
+## OAuth ownership for remote servers
+
+Choose one OAuth ownership model for each authentication attempt:
+
+1. **Runtime-managed loopback**: Call `session.mcp.oauth.login` without a
+   redirect URI. The runtime opens a local callback listener and owns discovery,
+   PKCE, state validation, token exchange, persistence, refresh, and reconnect.
+1. **Runtime-managed hosted callback**: Call `session.mcp.oauth.login` with a
+   trusted public HTTPS redirect URI. Your host receives the callback, but the
+   runtime continues to own the OAuth protocol and credentials.
+1. **Host-managed OAuth**: Use the SDK's MCP authentication request handler and
+   return a host-acquired access token. Your host owns authorization and refresh.
+
+Do not register a host-managed OAuth handler for an authentication attempt that
+uses a runtime-managed hosted callback. Wait until the remote server enters the
+`needs-auth` state, then call the generated `session.rpc.mcp.oauth.login` method
+directly with the server name and callback URI:
+
+```jsonc
+{
+    "serverName": "remote-mcp",
+    "redirectUri": "https://agent.example.com/oauth/callback"
+}
+```
+
+The selected static, CIMD, or dynamically registered OAuth client must advertise
+that exact URI. The URI must use HTTPS and must not contain a query or fragment.
+When browser interaction is required, the result contains `authorizationUrl`
+and `authorizationId`. Open `authorizationUrl` in the user's browser and retain
+`authorizationId` with the target session.
+
+After the authorization server redirects to your endpoint, call the generated
+`session.rpc.mcp.oauth.complete` method:
+
+```jsonc
+{
+    "authorizationId": "<opaque-state>",
+    "callbackUrl": "https://agent.example.com/oauth/callback?code=...&state=..."
+}
+```
+
+Construct `callbackUrl` from the configured public redirect origin and path plus
+the callback's original query. Do not pass an internal service URL or trust
+client-supplied `Forwarded` or `X-Forwarded-*` headers. The runtime validates the
+origin, port, path, state, and OAuth response before accepting delivery. Token
+exchange, persistence, and MCP reconnect then continue asynchronously.
+
+### Handing a rejected access token back to the runtime
+
+For a host OAuth request with `reason: "refresh"` and
+`runtimeRefreshSupported: true`, your handler can return
+`{ "kind": "runtimeRefresh" }` instead of acquiring a replacement access token.
+The runtime performs noninteractive renewal using its existing saved grant
+inside the original authorization operation. It does not start a new consent
+flow or call the independent `authenticationStateChanged` refresh RPC.
+The replacement retains its saved-grant provenance, so later scoped stored-token
+adoption remains available. A token supplied directly by a host is not marked as
+a stored token and cannot be overwritten by that adoption path.
+
+Only return this response when the pending request advertises support. A missing
+capability is false and retains the legacy token/cancellation contract. If a
+handler returns the handoff for a request without the capability, the SDK sends
+`cancelled` instead, so the pending request does not remain open. A supplied
+token takes precedence over the handoff, and a cancellation stays a cancellation.
+
+| SDK | Capability | Handoff result |
+| --- | --- | --- |
+| Node.js | `request.runtimeRefreshSupported` | `{ kind: "runtimeRefresh" }` |
+| Python | `request["runtimeRefreshSupported"]` | `{"kind": "runtimeRefresh"}` |
+| Go | `MCPAuthRuntimeRefreshHandler` capability argument | `MCPAuthResultRuntimeRefresh()` |
+| .NET | `McpAuthContext.RuntimeRefreshSupported` | `McpAuthResult.RefreshInRuntime()` |
+| Java | `McpAuthHandler.handleWithRuntimeRefresh` capability argument | `McpAuthResponse.runtimeRefresh()` |
+| Rust | `McpAuthHandler::handle_with_runtime_refresh` | `McpAuthResponse::RuntimeRefresh` |
+
+Response acceptance acknowledges the handoff, not refresh, reconnect, or tool
+completion. For an accepted handoff, `mcp.oauth_completed` is emitted once, when
+the original authorization reservation reaches its terminal outcome. Its
+`outcome` uses only the existing values: `token` when recovery succeeded, and
+`cancelled` when it was cancelled or failed. The persisted
+`mcp.oauth_recovery_completed` event carries the same `requestId` and
+`serverName` and distinguishes the terminal outcome, including reconnect:
+`succeeded`, `cancelled`, or `failed`. SDK versions that predate this event
+receive it as an unknown event type.
+
+Until the runtime accepts a `runtimeRefresh` response, existing replies keep
+their earlier meaning. A host `{ kind: "cancelled" }` reply declines the
+request; for a `refresh` request, the runtime can then request reauthorization.
+If no host replies, the runtime falls back to its ordinary local OAuth handling,
+including cached credentials, and emits no `mcp.oauth_recovery_completed` event.
+This change does not reclassify a host `cancelled` reply as Stop. The original
+invocation is preserved only through an accepted `runtimeRefresh` handoff.
+
+After acceptance, the original
+invocation can retry after credential installation and reconnect pass the
+existing session, configuration, policy, and permission fences. Stopping the
+main turn or ending the session cancels the original authorization reservation;
+the stopped invocation cannot later retry or publish a result. An already-issued
+rotating-grant exchange can finish persisting its replacement after cancellation,
+but cannot install stale credentials, reconnect, or resume the canceled
+invocation.
+
+An unavailable saved grant or failed refresh terminates the original invocation
+without requesting interactive reauthorization. A failed reconnect also
+terminates the invocation; successfully obtaining a token is not a successful
+tool result.
+
+Concurrent invocations join the exact in-flight authorization attempt and receive
+its terminal result. A connected server, a retained access token, or a later
+successful attempt is not evidence that their attempt succeeded. Each surviving
+invocation still rechecks its own catalog and tool permission before retrying;
+joined failure does not start another interactive authorization.
+
+OAuth HTTP deadlines apply to individual requests, not the complete handoff or
+grant-storage settlement. Cancellation can return before an issued exchange
+settles, and session disposal waits for tracked settlement workers. There is no
+overall settlement deadline, so hosts must not treat cancellation, handoff
+acceptance, or an HTTP timeout as proof that all storage work has finished.
+
+## Session-scoped MCP diagnostics
+
+Set `diagnostics: { sources: { mcp: { level: "debug" } } }` when you create or
+resume a session to opt in to MCP diagnostics. Every source defaults to `off`.
+The enabled levels are `error`, `warning`, `info`, `debug`, and `trace`. This
+setting is separate from the client's process-level `logLevel`.
+
+> [!WARNING]
+> Diagnostic entries can contain user-provided or server-provided content at
+> every enabled level: `warning` and above can include server stderr, while
+> `debug` and `trace` can additionally include MCP payloads, tool arguments,
+> and paths. Treat every entry as sensitive. Do not automatically upload entries
+> as telemetry or export them without deliberate host action.
+
+The generated `session.rpc.diagnostics` API lets hosts configure and read
+session-scoped, bounded in-memory diagnostics. MCP is the first and currently
+only supported source. Explicitly select it with `sources: ["mcp"]` when reading;
+reading does not enable capture. Use one stoppable read loop
+per output surface and retain its cursor. A read loop owns its cursor and
+presentation; the runtime owns capture, filtering, retention, cursor expiry,
+and wakeups.
+
+```typescript
+import { approveAll, CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient();
+const stop = new AbortController();
+const appendLine = (line: string) => console.log(line);
+
+await client.start();
+const session = await client.createSession({
+    onPermissionRequest: approveAll,
+    diagnostics: { sources: { mcp: { level: "debug" } } },
+});
+
+try {
+    let cursor: string | undefined;
+    while (!stop.signal.aborted) {
+        const page = await session.rpc.diagnostics.read({
+            sources: ["mcp"],
+            cursor,
+            max: 100,
+            waitMs: 30_000,
+        });
+        if (page.cursorStatus === "expired") {
+            appendLine("MCP diagnostic entries were dropped.");
+        }
+        for (const entry of page.entries) {
+            const detail = entry.details.data ? ` ${entry.details.data}` : "";
+            appendLine(
+                `${entry.timestamp} [${entry.level}] [${entry.source}:${entry.details.serverName}] ${entry.message}${detail}`,
+            );
+        }
+        cursor = page.cursor;
+    }
+} finally {
+    await session.disconnect();
+    await client.stop();
+}
+```
+
+The abort signal stops the loop after its current bounded read completes; it is
+not passed to the RPC call. Disabling capture wakes an outstanding read.
+
+MCP startup is lazy: enabling or reading diagnostics does not start a server.
+Configure `mcpServers` on session creation, then either use the session normally
+or call `session.rpc.mcp.startServer({ serverName })` for an installed server
+to troubleshoot initialization without making a model request.
+
+Each record has `source: "mcp"`, timestamp, severity, message, and optional
+`agentId` for non-root agents. Its typed `details` contains the lifecycle,
+protocol, HTTP, or stderr category, server name, a fresh `connectionId` for each
+connection attempt, and optional protocol direction and diagnostic data.
+MCP retention is capped at 1,024 records and 4 MiB per session. Individual encoded
+records are capped at 16 KiB and carry `truncated` when shortened. Reads default
+to 100 records, accept a maximum of 500, and do not consume other readers' data.
+Use `droppedCount`, when present on an expired cursor, to show the known loss.
+Every successful read returns a cursor and cursor status, including empty
+reads. Keep the returned cursor even when no records arrive. A cursor belongs
+to its source selection; start without a cursor when changing that selection.
+Missing, empty, duplicate, or unsupported sources are rejected, as are malformed
+cursors and invalid numeric bounds. Neither records nor capture settings are
+saved in session history.
+
+Call `session.rpc.diagnostics.configure({ sources: { mcp: { level: "off" } } })`
+to disable MCP capture and clear its retained buffer. Configuration updates only
+the explicitly named sources and returns the effective source levels. Empty or
+unknown source configuration is rejected; adding another supported source in
+the future will not implicitly opt an existing caller into it.
+
+Stop the host's read loop too; reads while logging
+is off return immediately rather than waiting. An outstanding long poll wakes
+when logging is disabled. Omitting `diagnostics` during a resident resume
+preserves its current configuration; a cold-loaded session requires a new opt-in.
+Enabling diagnostics from the initial `off` state can begin capture for an
+already-live MCP connection. After diagnostics have been disabled with
+`configure({ sources: { mcp: { level: "off" } } })`, re-enabling can resume capture for the same
+live connection and its existing connection ID. Records that were already in
+flight when diagnostics were disabled are discarded.
+
+The runtime removes configured and structurally recognized credentials from HTTP
+diagnostics before entries reach this API, but this is not a guarantee that
+arbitrary server-provided secrets are absent. It does not expose request or
+response header maps. Only selected metadata, such as `Content-Type`, `Accept`,
+and `MCP-Protocol-Version`, is eligible for capture, but its values are still
+untrusted and can contain sensitive content. Authentication headers, cookies,
+session IDs, query values, URL userinfo, and fragments are omitted. URL paths
+are retained for troubleshooting, so do not place credentials in path segments.
+Protocol payloads and stderr can also contain user content or arbitrary
+server-provided secrets.
+
+## Troubleshooting
+
+### Tools not showing up or not being invoked
+
+1. **Verify the MCP server starts correctly**
+   * Check that the command and args are correct
+   * Ensure the server process doesn't crash on startup
+   * Look for error output in stderr
+
+1. **Check tool configuration**
+   * Make sure `tools` is set to `["*"]` or lists the specific tools you need
+   * An empty array `[]` means no tools are enabled
+
+1. **Verify connectivity for remote servers**
+   * Ensure the URL is accessible
+   * Check that authentication headers are correct
+
+### Common issues
+
+| Issue | Solution |
+|-------|----------|
+| "MCP server not found" | Verify the command path is correct and executable |
+| "Connection refused" (HTTP) | Check the URL and ensure the server is running |
+| "Timeout" errors | Increase the `timeout` value or check server performance |
+| Tools work but aren't called | Ensure your prompt clearly requires the tool's functionality |
+
+For detailed debugging guidance, see the **[AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging)**.
+
+## Related resources
+
+* [Model Context Protocol Specification](https://modelcontextprotocol.io/)
+* [MCP Servers Directory](https://github.com/modelcontextprotocol/servers) - Community MCP servers
+* [GitHub MCP Server](https://github.com/github/github-mcp-server) - Official GitHub MCP server
+* [AUTOTITLE](/copilot/get-started/sdk-quickstart) - SDK basics and custom tools
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/debugging) - SDK-wide debugging
+
+## See also
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging) - Detailed MCP troubleshooting
+* [Issue #9](https://github.com/github/copilot-sdk/issues/9) - Original MCP tools usage question
+* [Issue #36](https://github.com/github/copilot-sdk/issues/36) - MCP documentation tracking issue
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/plugin-directories.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/plugin-directories
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/plugin-directories.md
+- **SHA256_FINGERPRINT**: `e72168cc8541e115684b506e428731c233f45fce6b72d79efb1072d12efe8a62`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.833924+00:00
+---
+
+**title**: Plugin directories
+**shortTitle**: Plugin Directories
+**intro**: >-
+
+This guide explains the plugin folder layout, how to load a plugin from a directory, when to use plugin directories vs. registering individual extensions, and how to make plugin sets deterministic.
+
+## When to use plugin directories
+
+Use a plugin directory when you want to:
+
+* **Distribute a bundle of capabilities** as one unit — e.g., a "TypeScript reviewer" pack with a skill, a `preToolUse` hook that enforces lint, and a custom agent that runs the reviewer.
+* **Vendor capability packs into a repository** so every clone of the host application loads the same extensions deterministically.
+* **Develop a plugin locally** before publishing it to a marketplace.
+* **Override or extend** a marketplace-installed plugin with a local checkout for testing.
+
+If you only need to add a single MCP server, a single hook, or a single custom agent, you can register it inline via the SDK config (`mcpServers`, `hooks`, `customAgents`). Plugin directories are most useful once you have three or more related extensions that ship together.
+
+## Plugin folder layout
+
+The Copilot CLI scans each plugin directory for a `plugin.json` manifest or a root-level `SKILL.md`. A minimal plugin looks like this:
+
+```text
+my-plugin/
+├── plugin.json              # manifest (required unless using SKILL.md only)
+├── SKILL.md                 # optional: top-level skill
+├── hooks.json               # optional: hooks config
+├── .mcp.json                # optional: MCP server config
+├── agents/                  # optional: custom agents (one .md file per agent)
+│   └── code-reviewer.md
+└── skills/                  # optional: additional skills
+    └── lint-fix/
+        └── SKILL.md
+```
+
+The manifest may also live at `.github/plugin.json` or `.github/plugin/plugin.json` so plugins can sit inside an existing repository without changing its root layout. Each subsystem (hooks, MCP, LSP, skills, agents) has its own loader and is optional — a plugin only needs the parts it contributes.
+
+For the full manifest schema, see the runtime documentation referenced from your CLI's `/plugin` slash command.
+
+## Loading a plugin directory from the SDK
+
+Plugin directories are loaded by passing `--plugin-dir <path>` to the Copilot CLI when the SDK spawns it. Each language exposes this through the runtime connection's extra-args option. The flag can be repeated to load multiple plugins.
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient, RuntimeConnection } from "@github/copilot-sdk";
+
+const client = new CopilotClient({
+  connection: RuntimeConnection.forStdio({
+    args: [
+      "--plugin-dir", "./plugins/code-reviewer",
+      "--plugin-dir", "./plugins/lint-fix",
+    ],
+  }),
+});
+
+await client.start();
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient, StdioRuntimeConnection
+
+client = CopilotClient(
+    connection=StdioRuntimeConnection(
+        args=(
+            "--plugin-dir", "./plugins/code-reviewer",
+            "--plugin-dir", "./plugins/lint-fix",
+        ),
+    ),
+)
+await client.start()
+```
+
+**Language (go):**
+
+```golang
+client := copilot.NewClient(&copilot.ClientOptions{
+    Connection: copilot.StdioConnection{
+        Args: []string{
+            "--plugin-dir", "./plugins/code-reviewer",
+            "--plugin-dir", "./plugins/lint-fix",
+        },
+    },
+})
+if err := client.Start(ctx); err != nil {
+    return err
+}
+```
+
+**Language (dotnet):**
+
+```csharp
+using GitHub.Copilot;
+
+await using var client = new CopilotClient(new CopilotClientOptions
+{
+    Connection = RuntimeConnection.ForStdio(args: new[]
+    {
+        "--plugin-dir", "./plugins/code-reviewer",
+        "--plugin-dir", "./plugins/lint-fix",
+    }),
+});
+
+await client.StartAsync();
+```
+
+**Language (java):**
+
+```java
+var options = new CopilotClientOptions()
+    .setCliArgs(new String[] {
+        "--plugin-dir", "./plugins/code-reviewer",
+        "--plugin-dir", "./plugins/lint-fix",
+    });
+
+var client = new CopilotClient(options);
+client.start().get();
+```
+
+**Language (rust):**
+
+```rust
+use github_copilot_sdk::{Client, ClientOptions};
+
+let client = Client::start(
+    ClientOptions::new().with_extra_args([
+        "--plugin-dir", "./plugins/code-reviewer",
+        "--plugin-dir", "./plugins/lint-fix",
+    ]),
+)
+.await?;
+```
+
+> The example above uses an stdio runtime connection — the default when the SDK bundles the CLI. If you connect to an external runtime via a URL (`forUri` / `ForUri`), pass `--plugin-dir` to the long-running CLI server when you start it; the SDK does not forward `--plugin-dir` to runtimes it didn't spawn.
+
+## Per-session plugin directories
+
+`--plugin-dir` is a launch argument, so it fixes one plugin set for the CLI process and every session created against it. When sessions need different plugin sets, or when the SDK is connected to a runtime it did not spawn, pass the directories on the session config instead. They travel in the `session.create` and `session.resume` payloads over JSON-RPC rather than as process arguments, so they reach an external runtime the same way the startup option does.
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient();
+await client.start();
+
+const session = await client.createSession({
+  pluginDirectories: ["./plugins/code-reviewer"],
+});
+```
+
+Relative paths resolve against `workingDirectory`, or the runtime working directory when that is unset, so absolute paths are recommended. Entries that do not resolve are logged and skipped rather than failing session creation. The option is an explicit opt-in, which means plugin agents and rules load even when `enableConfigDiscovery` is false. Assets loaded this way sit between project sources and personal or home sources in the session-wide precedence order.
+
+The equivalent option in each SDK is:
+
+| SDK | Session option |
+|---|---|
+| Node.js / TypeScript | `pluginDirectories: string[]` |
+| Python | `plugin_directories=[...]` |
+| Go | `PluginDirectories: []string{...}` |
+| .NET | `PluginDirectories = [...]` |
+| Java | `.setPluginDirectories(List.of(...))` |
+| Rust | `.with_plugin_directories([...])` |
+
+## Trusted host-bundled plugin directories
+
+Applications that ship their own trusted plugins can register them as a client startup option. The SDK sends the complete ordered set after connecting and verifying the protocol, before `start` returns or any session can be created. Paths must be absolute; leaving the option unset or empty makes no RPC call.
+
+The equivalent option in each SDK is:
+
+| SDK | Startup option |
+|---|---|
+| Node.js / TypeScript | `builtinPluginDirectories: string[]` |
+| Python | `builtin_plugin_directories=[...]` |
+| Go | `BuiltinPluginDirectories: []string{...}` |
+| .NET | `BuiltinPluginDirectories = [...]` |
+| Java | `.setBuiltinPluginDirectories(List.of(Path.of(...)))` |
+| Rust | `.with_builtin_plugin_directories([...])` |
+
+This is a trust boundary for plugins bundled and controlled by the host application. It is distinct from `--plugin-dir`, which is a CLI process launch argument for explicitly loading ordinary plugin directories. The startup option also works when connecting to an existing runtime because it is sent over JSON-RPC rather than forwarded as a process argument.
+
+## What a plugin can contribute
+
+Loading a plugin directory makes its extensions visible to every session created by the client. The runtime merges plugin-provided extensions with anything you register inline:
+
+| Plugin contributes | Visible to session as |
+|---|---|
+| Skills (`SKILL.md`, `skills/*/SKILL.md`) | Items in `session.skills.list()`; injectable by name |
+| Custom agents (`agents/*.md`) | Dispatchable via the `task(agent_type=...)` tool |
+| Hooks (`hooks.json`) | Fired alongside hooks registered via the SDK |
+| MCP servers (`.mcp.json`) | Tools and resources reachable through `session.mcp.*` |
+| LSP servers (`.lsp.json`) | Initialized via `session.lsp.initialize(...)` |
+
+Plugin agents are first-class sub-agents in [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/fleet-mode): a parent agent can dispatch them by `agent_type`, and the runtime fires the `subagentStart` / `subagentStop` hooks for them like any other sub-agent.
+
+## Plugin-dir vs marketplace plugins
+
+The runtime has two ways to install plugins, and both end up looking the same to a session:
+
+* **Marketplace / direct-repo plugins** are installed persistently through the CLI's `/plugin` slash command or the underlying `installedPlugins` user setting. They are *ambient* — every session that runs against the same user config sees them, and they participate in plugin discovery rules.
+* **`--plugin-dir` plugins** are *explicit and ephemeral* — they only apply to the CLI process you launched with that flag. They take precedence over ambient discovery and are de-duplicated against marketplace entries with the same cache path, so the same plugin won't load twice when both surfaces reference it.
+
+For SDK-driven applications, `--plugin-dir` is usually the right choice: it keeps the plugin set under your application's control instead of depending on per-machine user state.
+
+## Making plugin sets deterministic
+
+When the host machine may have other plugins installed (marketplace or personal), set `COPILOT_PLUGIN_DIR_ONLY=true` in the runtime's environment to suppress automatic plugin discovery. Only the directories you pass via `--plugin-dir` will load.
+
+<details open>
+<summary><strong>Node.js / TypeScript</strong></summary>
+
+```typescript
+process.env.COPILOT_PLUGIN_DIR_ONLY = "true";
+
+const client = new CopilotClient({
+  connection: RuntimeConnection.forStdio({
+    args: ["--plugin-dir", "./plugins/code-reviewer"],
+  }),
+});
+await client.start();
+```
+
+</details>
+
+Use this in CI, in headless server deployments, and anywhere you want a reproducible plugin set that doesn't depend on the host's user configuration.
+
+## Inspecting which plugins loaded
+
+Once a session is created, list the active plugins to confirm a directory was picked up correctly:
+
+<details open>
+<summary><strong>Node.js / TypeScript</strong></summary>
+
+```typescript
+const plugins = await session.rpc.plugins.list();
+for (const plugin of plugins.plugins) {
+  console.log(`${plugin.name} (${plugin.enabled ? "enabled" : "disabled"})`);
+}
+```
+
+</details>
+
+Plugins loaded via `--plugin-dir` appear in this list with their cache path set to the directory you provided. Marketplace installs are tagged with their registry source.
+
+## Retrying plugins required by managed settings
+
+When managed settings require plugins through `enabledPlugins`, the runtime installs or updates them before chat messages. If that fails, the session emits a `session.warning` with `warningType: "managed_plugins"` and waits an hour, or until the managed settings change, before trying again. The experimental `session.rpc.plugins.retryManaged()` tries again right away, for example from a Retry action next to that warning.
+
+Call it with no arguments to retry every plugin the managed settings require, or pass `plugin@marketplace` specs in `plugins` to retry only those. The result has one entry per plugin with a `status`: `installed`, `updated`, `already_present`, `failed`, `deferred`, or `not_required`. `failed` and `deferred` entries include an `error`. The session also emits the usual `session.info` progress and `session.warning` failure events.
+
+<details open>
+<summary><strong>Node.js / TypeScript</strong></summary>
+
+```typescript
+// Retry every plugin the managed settings require, for example from a Retry action.
+const result = await session.rpc.plugins.retryManaged();
+for (const entry of result.plugins) {
+  console.log(`${entry.spec}: ${entry.status}${entry.error ? ` (${entry.error})` : ""}`);
+}
+
+// Or retry only the required plugins that are still missing.
+const { plugins } = await session.rpc.plugins.list();
+const missing = plugins
+  .filter((plugin) => plugin.managedDesiredEnabled === true && plugin.installed === false)
+  .map((plugin) => `${plugin.name}@${plugin.marketplace}`);
+await session.rpc.plugins.retryManaged({ plugins: missing });
+```
+
+</details>
+
+Runtimes that do not prepare managed plugins for the session reject the call.
+
+## Troubleshooting
+
+* **"no plugin.json or SKILL.md found in &lt;dir&gt;"** — the directory exists but doesn't qualify as a plugin. Add a `plugin.json` manifest at the root (or under `.github/`), or include a top-level `SKILL.md`.
+* **Plugin loaded but agents/skills not visible** — make sure the plugin manifest declares the agents/skills it contributes, or use the implicit layout (`agents/*.md`, `skills/*/SKILL.md`). Then call `session.rpc.skills.reload()` to pick up changes without restarting.
+* **Duplicate hooks firing** — the runtime de-duplicates by `cache_path`, but only when the same directory is referenced both as a marketplace install and a `--plugin-dir`. If two different directories contain the same plugin, both will load. Remove one or use `COPILOT_PLUGIN_DIR_ONLY=true`.
+* **`--plugin-dir` ignored when connecting to an external runtime** — the SDK only forwards extra args when it spawns the CLI itself. For external runtimes (`forUri`/`ForUri`), pass `--plugin-dir` on the command line that starts the runtime server.
+
+## Related
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/custom-agents): write agents that ship inside a plugin's `agents/` folder.
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/skills): how `SKILL.md` files are loaded, and the skill-tier ordering rules.
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/hooks): hooks defined by a plugin fire alongside SDK-registered hooks.
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/mcp): plugin-provided MCP servers integrate the same way as inline registrations.
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/fleet-mode): plugin-provided agents are dispatchable as sub-agents.
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/remote-sessions.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/remote-sessions
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/remote-sessions.md
+- **SHA256_FINGERPRINT**: `c7e21be349b96237b719766ebe89cb051764dec61f0d5111833b9f0d67964f1f`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.983811+00:00
+---
+
+**title**: Remote sessions
+**shortTitle**: Remote Sessions
+**intro**: Remote sessions sync to GitHub so users can access locally running Copilot sessions from the agents panel or on mobile. When enabled, the SDK produces a URL to the session log that can be shared as a link or QR code.
+
+For running sessions on GitHub-hosted compute, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/cloud-sessions).
+
+## Prerequisites
+
+* The user must be authenticated (GitHub token or logged-in user)
+* The session's working directory must be a GitHub repository
+
+## Enabling remote sessions
+
+### Always-on (client-level)
+
+Set `enableRemoteSessions: true` when creating the client. Every session in a GitHub repo automatically gets a remote URL.
+
+#### TypeScript
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient({ enableRemoteSessions: true });
+const session = await client.createSession({
+  workingDirectory: "/path/to/github-repo",
+  onPermissionRequest: async () => ({ allowed: true }),
+});
+
+session.on("session.info", (event) => {
+  if (event.data.infoType === "remote") {
+    console.log("Remote URL:", event.data.url);
+  }
+});
+```
+
+#### Python
+
+```python
+from copilot import CopilotClient
+
+client = CopilotClient(enable_remote_sessions=True)
+session = await client.create_session(
+    working_directory="/path/to/github-repo",
+    on_permission_request=lambda req: {"allowed": True},
+)
+
+def on_event(event):
+    if event.type == "session.info" and event.data.info_type == "remote":
+        print(f"Remote URL: {event.data.url}")
+
+session.on(on_event)
+```
+
+#### Go
+
+```golang
+client := copilot.NewClient(&copilot.ClientOptions{EnableRemoteSessions: true})
+session, _ := client.CreateSession(ctx, &copilot.SessionConfig{
+    WorkingDirectory: "/path/to/github-repo",
+    OnPermissionRequest: func(req copilot.PermissionRequest, inv copilot.PermissionInvocation) (rpc.PermissionDecision, error) {
+        return &rpc.PermissionDecisionApproveOnce{}, nil
+    },
+})
+
+session.On(func(event copilot.SessionEvent) {
+    if event.Type == "session.info" {
+        // Check infoType and extract URL
+    }
+})
+```
+
+#### C#
+
+```csharp
+var client = new CopilotClient(new CopilotClientOptions { EnableRemoteSessions = true });
+var session = await client.CreateSessionAsync(new SessionConfig
+{
+    WorkingDirectory = "/path/to/github-repo",
+    OnPermissionRequest = (req, inv) =>
+        Task.FromResult(PermissionDecision.ApproveOnce()),
+});
+
+session.On((SessionEvent e) =>
+{
+    if (e is SessionInfoEvent info && info.Data.InfoType == "remote")
+    {
+        Console.WriteLine($"Remote URL: {info.Data.Url}");
+    }
+});
+```
+
+#### Rust
+
+```rust
+use github_copilot_sdk::{Client, ClientOptions, SessionConfig};
+use github_copilot_sdk::handler::PermissionResult;
+
+let client = Client::start(
+    ClientOptions::new().with_enable_remote_sessions(true)
+).await?;
+let session = client.create_session(
+    SessionConfig::new("/path/to/github-repo")
+        .with_permission_handler(|_req, _inv| async {
+            Ok(PermissionResult::approve_once())
+        }),
+).await?;
+
+let mut events = session.subscribe();
+while let Ok(event) = events.recv().await {
+    if event.event_type == "session.info" {
+        // Check info_type and extract URL
+    }
+}
+```
+
+### On-demand (per-session toggle)
+
+Use `session.rpc.remote.enable()` to start remote access mid-session, and `session.rpc.remote.disable()` to stop it. This is equivalent to the CLI's `/remote on` and `/remote off` commands.
+
+#### TypeScript
+
+```typescript
+const result = await session.rpc.remote.enable();
+console.log("Remote URL:", result.url);
+
+// Later: stop sharing
+await session.rpc.remote.disable();
+```
+
+#### Python
+
+```python
+result = await session.rpc.remote.enable()
+print(f"Remote URL: {result.url}")
+
+# Later: stop sharing
+await session.rpc.remote.disable()
+```
+
+#### Go
+
+```golang
+result, err := session.RPC.Remote.Enable(ctx)
+if result.URL != nil {
+    fmt.Println("Remote URL:", *result.URL)
+}
+
+// Later: stop sharing
+err = session.RPC.Remote.Disable(ctx)
+```
+
+#### C#
+
+```csharp
+var result = await session.Rpc.Remote.EnableAsync();
+Console.WriteLine($"Remote URL: {result.Url}");
+
+// Later: stop sharing
+await session.Rpc.Remote.DisableAsync();
+```
+
+#### Rust
+
+```rust
+let result = session.rpc().remote().enable().await?;
+if let Some(url) = &result.url {
+    println!("Remote URL: {url}");
+}
+
+// Later: stop sharing
+session.rpc().remote().disable().await?;
+```
+
+## QR code generation
+
+The remote URL can be rendered as a QR code for easy mobile access. The SDK provides the URL—use your preferred QR code library:
+
+* **TypeScript**: [qrcode](https://www.npmjs.com/package/qrcode)
+* **Python**: [qrcode](https://pypi.org/project/qrcode/)
+* **Go**: [go-qrcode](https://github.com/skip2/go-qrcode)
+* **C#**: [QRCoder](https://www.nuget.org/packages/QRCoder)
+* **Rust**: [qrcode](https://crates.io/crates/qrcode)
+
+## Notes
+
+* The `enableRemoteSessions` client option applies when the SDK starts the runtime, either as a child process or as an in-process host. It is ignored when connecting to an already-running runtime.
+* If the working directory is not a GitHub repository, remote setup is silently skipped (always-on mode) or returns an error (on-demand mode).
+* Remote sessions require authentication. Ensure `gitHubToken` or `useLoggedInUser` is configured.
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/session-limits.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/session-limits
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/session-limits.md
+- **SHA256_FINGERPRINT**: `76ee7a6d6fdbd9380c910b7f291a150e8b00c1ab754466406fc27d597c97b367`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.957815+00:00
+---
+
+**title**: Session limits
+**shortTitle**: Session Limits
+**intro**: >-
+
+## Configure a session limit
+
+Set `maxAiCredits` to the AI Credits soft cap for the session's current accounting window. Usage is checked after model calls return, so one response can exceed the configured value before the runtime blocks the next model call. The SDK forwards this value to the Copilot CLI when it creates or resumes the session.
+
+**Language (typescript):**
+
+```typescript
+const session = await client.createSession({
+    onPermissionRequest: approveAll,
+    sessionLimits: {
+        maxAiCredits: 30,
+    },
+});
+
+const resumed = await client.resumeSession(session.sessionId, {
+    onPermissionRequest: approveAll,
+    sessionLimits: {
+        maxAiCredits: 30,
+    },
+});
+```
+
+**Language (python):**
+
+```python
+session = await client.create_session(
+    on_permission_request=PermissionHandler.approve_all,
+    session_limits={
+        "max_ai_credits": 30,
+    },
+)
+
+resumed = await client.resume_session(
+    session.session_id,
+    on_permission_request=PermissionHandler.approve_all,
+    session_limits={
+        "max_ai_credits": 30,
+    },
+)
+```
+
+**Language (go):**
+
+```golang
+session, err := client.CreateSession(ctx, &copilot.SessionConfig{
+	OnPermissionRequest: copilot.PermissionHandler.ApproveAll,
+	SessionLimits: &rpc.SessionLimitsConfig{
+		MaxAiCredits: copilot.Float64(30),
+	},
+})
+
+resumed, err := client.ResumeSession(ctx, session.SessionID, &copilot.ResumeSessionConfig{
+	OnPermissionRequest: copilot.PermissionHandler.ApproveAll,
+	SessionLimits: &rpc.SessionLimitsConfig{
+		MaxAiCredits: copilot.Float64(30),
+	},
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+var session = await client.CreateSessionAsync(new SessionConfig
+{
+    OnPermissionRequest = PermissionHandler.ApproveAll,
+    SessionLimits = new SessionLimitsConfig
+    {
+        MaxAiCredits = 30,
+    },
+});
+
+var resumed = await client.ResumeSessionAsync(session.SessionId, new ResumeSessionConfig
+{
+    OnPermissionRequest = PermissionHandler.ApproveAll,
+    SessionLimits = new SessionLimitsConfig
+    {
+        MaxAiCredits = 30,
+    },
+});
+```
+
+**Language (java):**
+
+```java
+CopilotSession session = client
+        .createSession(new SessionConfig()
+                .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+                .setSessionLimits(new SessionLimitsConfig(30.0)))
+        .get();
+
+CopilotSession resumed = client
+        .resumeSession(session.getSessionId(), new ResumeSessionConfig()
+                .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+                .setSessionLimits(new SessionLimitsConfig(30.0)))
+        .get();
+```
+
+**Language (rust):**
+
+```rust
+let limits = SessionLimitsConfig {
+    max_ai_credits: Some(30.0),
+};
+
+let session = client
+    .create_session(
+        SessionConfig::default()
+            .approve_all_permissions()
+            .with_session_limits(limits.clone()),
+    )
+    .await?;
+
+let resumed = client
+    .resume_session(
+        ResumeSessionConfig::new(session.id().clone())
+            .approve_all_permissions()
+            .with_session_limits(limits),
+    )
+    .await?;
+```
+
+## Observe budget events
+
+Applications can subscribe to session events to update UI when the soft cap changes or the session reaches the exhausted-budget flow.
+
+| Event type | When it is emitted | Important fields |
+|---|---|---|
+| `session.session_limits_changed` | Active session limits changed. A `null` `sessionLimits` value means no limits are active. | `sessionLimits.maxAiCredits?` |
+| `session.usage_checkpoint` | The runtime records durable aggregate usage for resume and accounting. | `totalNanoAiu`, `totalPremiumRequests?` |
+| `session_limits_exhausted.requested` | The session reached the exhausted-budget flow and needs a user decision before continuing. | `requestId`, `maxAiCredits`, `usedAiCredits` |
+| `session_limits_exhausted.completed` | The exhausted-limit prompt was resolved. | `requestId`, `response.action`, `response.additionalAiCredits?`, `response.maxAiCredits?` |
+
+Use the generated event types for the SDK language you are using. For example, TypeScript narrows by `event.type`:
+
+```typescript
+session.on((event) => {
+    if (event.type === "session_limits_exhausted.requested") {
+        showBudgetDialog({
+            requestId: event.data.requestId,
+            maxAiCredits: event.data.maxAiCredits,
+            usedAiCredits: event.data.usedAiCredits,
+        });
+    }
+});
+```
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/session-persistence.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/session-persistence
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/session-persistence.md
+- **SHA256_FINGERPRINT**: `c3cba602c47ff2a53ab4730b74886229dade58b0b79bbb129ef28f2186cc73db`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.971664+00:00
+---
+
+**title**: Session resume and persistence
+**shortTitle**: Session Persistence
+**intro**: >-
+
+## How sessions work
+
+When you create a session, the Copilot CLI maintains conversation history, tool state, and planning context. By default, this state lives in memory and disappears when the session ends. With persistence enabled, you can resume sessions across restarts, container migrations, or even different client instances.
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/features-session-persistence-diagram-0.png)
+
+| State | What happens |
+|-------|--------------|
+| **Create** | `session_id` assigned |
+| **Active** | Send prompts, tool calls, responses |
+| **Paused** | State saved to disk |
+| **Resume** | State loaded from disk |
+
+## Quick start: creating a resumable session
+
+The key to resumable sessions is providing your own `session_id`. Without one, the SDK generates a random ID and the session can't be resumed later.
+
+### TypeScript
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient();
+
+// Create a session with a meaningful ID
+const session = await client.createSession({
+  sessionId: "user-123-task-456",
+  model: "gpt-5.2-codex",
+});
+
+// Do some work...
+await session.sendAndWait({ prompt: "Analyze my codebase" });
+
+// Session state is automatically persisted
+// You can safely close the client
+```
+
+### Python
+
+```python
+from copilot import CopilotClient
+from copilot.session import PermissionHandler
+
+client = CopilotClient()
+await client.start()
+
+# Create a session with a meaningful ID
+session = await client.create_session(on_permission_request=PermissionHandler.approve_all, model="gpt-5.2-codex", session_id="user-123-task-456")
+
+# Do some work...
+await session.send_and_wait("Analyze my codebase")
+
+# Session state is automatically persisted
+```
+
+### Go
+
+```golang
+ctx := context.Background()
+client := copilot.NewClient(nil)
+
+// Create a session with a meaningful ID
+session, _ := client.CreateSession(ctx, &copilot.SessionConfig{
+    SessionID: "user-123-task-456",
+    Model:     "gpt-5.2-codex",
+})
+
+// Do some work...
+session.SendAndWait(ctx, copilot.MessageOptions{Prompt: "Analyze my codebase"})
+
+// Session state is automatically persisted
+```
+
+### C# (.NET)
+
+```csharp
+using GitHub.Copilot;
+
+var client = new CopilotClient();
+
+// Create a session with a meaningful ID
+var session = await client.CreateSessionAsync(new SessionConfig
+{
+    SessionId = "user-123-task-456",
+    Model = "gpt-5.2-codex",
+});
+
+// Do some work...
+await session.SendAndWaitAsync(new MessageOptions { Prompt = "Analyze my codebase" });
+
+// Session state is automatically persisted
+```
+
+## Resuming a session
+
+Later—minutes, hours, or even days—you can resume the session from where you left off.
+
+### Remembered permissions with a session filesystem
+
+When you configure a custom `sessionFs` provider, runtime-owned durable permission choices use provider storage rather than the runtime host's configuration. The files live under the provider's `sessionStatePath` and retain their existing formats:
+
+* `permissions.json`: A top-level `locations` map retaining the existing `tool_approvals` and `allowed_directories` fields
+* `settings.json`: Top-level `allowedUrls` for `approve-permanently` URL approvals and `sandbox` for saved sandbox preferences
+* `config.json`: Top-level `trustedFolders` for remembered folder trust and `sandboxOnboardingShown` for the first-enable sandbox message
+
+Location keys are normalized provider directory paths, such as `/workspace`, without an added prefix. The runtime resolves them lexically using provider path conventions, without inspecting the host filesystem or discovering host Git repositories. An approval saved for `/workspace` is not automatically selected when the working directory is `/workspace/sub`.
+
+Provider-backed folder trust also uses lexical paths: a trusted folder covers itself and its descendants, not linked Git worktrees at other paths. Trust those worktree paths explicitly.
+
+There is no additional session-ID partition inside these files. Sessions that access the same backing files share remembered choices. Use separate provider namespaces when sessions or tenants must not share grants. With a namespace per session, permanent choices survive that session's resumes but do not automatically carry over to new sessions. To restore a session's persisted choices on resume, reconnect it to the same namespace.
+
+Consent updates are serialized per provider endpoint and file within one runtime process. Separate endpoints do not block each other. If different provider endpoints or runtime processes share backing files, the application must coordinate concurrent updates; the runtime cannot infer that those files are shared.
+
+These operations never import, update, or fall back to the host's `permissions-config.json`, `settings.json`, or `config.json`, including when provider reads or writes fail. Existing-format files supplied through the provider are read directly.
+
+As with host configuration, URL approvals are read only from `settings.json`. A legacy `allowedUrls` field in `config.json` is ignored; `config.json` remains the global-state file for remembered folder trust and the sandbox onboarding marker.
+
+Storage routing does not change permission lifetimes, URL denial precedence, or session policy behavior. Approve-once and approve-for-session do not become permanent grants.
+
+Saved sandbox preferences are restored on create and resume. Later explicit SDK `options.update` calls can change the live sandbox configuration without rewriting the saved preference.
+
+Without `sessionFs`, SDK applications in both `empty` and `copilot-cli` modes retain existing host-backed persistence. This includes the existing behavior where permanent URL consent saves host settings and grants access in the live session, but a fresh SDK session does not automatically load the host URL allowlist.
+
+See [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy#sessionfs) for provider isolation responsibilities.
+
+### Transcript recovery
+
+The resume option `allowTranscriptRecovery` controls recovery when the runtime loads a
+transcript from storage. It defaults to `true` in all modes. With `false`, a load that
+would discard damaged records or move `session.start` fails with JSON-RPC error `-32075`
+without rewriting the transcript. An intact final record without a newline is accepted.
+
+Records skipped for forward compatibility still count when checking persisted order.
+If such records precede `session.start`, recovery must move the start record ahead of
+them. A transcript containing only skipped records is not empty and cannot be recovered
+without a valid `session.start`.
+
+When recovery is allowed, the returned session exposes `transcriptRecovery`, including
+the invalid line numbers, whether `session.start` moved, and a planned byte-exact backup
+path. Loading alone does not write that backup; the next durable append performs the
+repair and backup.
+
+> [!NOTE]
+> This option applies to a new transcript load, not to the lifetime of a session.
+> Reconnecting to a session already resident in the runtime reuses its live history
+> without revalidating storage or rejecting recovery authorized by an earlier resume.
+> The recovery report describes the load that performed recovery, not every subsequent
+> reconnect.
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/features-session-persistence-diagram-1.png)
+
+### TypeScript
+
+```typescript
+// Resume from a different client instance (or after restart)
+const session = await client.resumeSession("user-123-task-456");
+
+// Continue where you left off
+await session.sendAndWait({ prompt: "What did we discuss earlier?" });
+```
+
+### Python
+
+```python
+# Resume from a different client instance (or after restart)
+session = await client.resume_session("user-123-task-456", on_permission_request=PermissionHandler.approve_all)
+
+# Continue where you left off
+await session.send_and_wait("What did we discuss earlier?")
+```
+
+### Go
+
+```golang
+ctx := context.Background()
+
+// Resume from a different client instance (or after restart)
+session, _ := client.ResumeSession(ctx, "user-123-task-456", nil)
+
+// Continue where you left off
+session.SendAndWait(ctx, copilot.MessageOptions{Prompt: "What did we discuss earlier?"})
+```
+
+### C# (.NET)
+
+```csharp
+// Resume from a different client instance (or after restart)
+var session = await client.ResumeSessionAsync("user-123-task-456");
+
+// Continue where you left off
+await session.SendAndWaitAsync(new MessageOptions { Prompt = "What did we discuss earlier?" });
+```
+
+## Resume options
+
+When resuming a session, you can optionally reconfigure many settings. This is useful when you need to change the model, update tool configurations, or modify behavior.
+
+| Option | Description |
+|--------|-------------|
+| `model` | Change the model for the resumed session |
+| `systemMessage` | Override or extend the system prompt |
+| `availableTools` | Restrict which tools are available |
+| `excludedTools` | Disable specific tools |
+| `provider` | Re-provide BYOK credentials (required for BYOK sessions) |
+| `capi.autoTier` | Override the persisted Auto routing preference |
+| `capi.enableWebSocketResponses` | Choose the Responses API transport for the resumed session |
+| `reasoningEffort` | Adjust reasoning effort level |
+| `streaming` | Enable/disable streaming responses |
+| `workingDirectory` | Change the working directory |
+| `configDir` | Override configuration directory |
+| `mcpServers` | Configure MCP servers |
+| `customAgents` | Configure custom agents |
+| `agent` | Pre-select a custom agent by name |
+| `skillDirectories` | Directories to load skills from |
+| `disabledSkills` | Skills to disable |
+| `infiniteSessions` | Configure infinite session behavior |
+
+### Auto tier persistence
+
+With `model: "auto"`, the optional `capi.autoTier` setting selects an Auto routing preference: `efficiency`, `balance`, `intelligence`, or `fast`. In Python, use `capi={"auto_tier": "balance"}`. This setting applies to V2 Auto routing; V1 Auto requests are unchanged.
+
+When the runtime's default-off `DYNAMIC_AUTO_TIERS` feature is enabled, the session's `model.list` RPC also returns optional `auto` metadata from the provider's `/meta` endpoint. Use the enabled descriptors with `type: "auto"` to discover additional supported tier identifiers, their display names, descriptions, and ordering. The existing selection methods and JSON fields accept these identifiers. A discovery failure does not fall back to `/models`, and a successful response without `auto` metadata provides no selectable Auto tiers.
+
+To populate a model picker before any session exists, enable `DYNAMIC_AUTO_TIERS` in the runtime's environment (for example, the `env` client option). The server-level `models.list` RPC (`client.rpc.models.list()` in Node.js) then returns the same `auto` metadata from the same `/meta` response, with the same no-fallback behavior. The server-level listing reads the flag the runtime resolved at startup, not per-session feature flags or experiment assignments, so set the flag where you launch the runtime. With the flag disabled, `models.list` is unchanged and omits `auto`.
+
+Treat tier identifiers as extensible values, not a closed enumeration. Existing named values remain available; for additional identifiers, use strings in Node.js and Python, `AutoTier("premium-v2")` in Go, `new AutoTier("premium-v2")` in .NET, `AutoTier::Custom` in Rust, or `AutoTier.fromValue` in Java. The provider's `defaultTier` describes its default routing without creating a committed SDK preference.
+
+If a persisted tier is removed or disabled, resume preserves the explicit preference rather than replacing it with the provider's default. Select an available replacement before activating Auto routing.
+
+The CLI also preserves settings-derived preferences during startup, even when a tier is unavailable or dynamic discovery is disabled. You can then select a replacement in the model picker. Explicit SDK create and resume preferences are still validated before the operation succeeds, and Auto activation always validates availability against the resolved discovery mode.
+
+When a create or resume request includes `expAssignments`, the runtime installs those assignments before validating an explicit Auto preference. Validation, discovery, and activation use the same resolved feature decision.
+
+`fast` is an integrator-only latency preset, not a first-party GitHub Copilot product preference. Fast is not validated against the `/meta` tier catalog when configuring a session. The SDK does not decide Fast eligibility, inspect client identity, choose it as a default, or fall back to another tier when a runtime does not support it—an older runtime returns its native error unchanged.
+
+The runtime persists the selected tier, so applications do not need to resend it on every resume:
+
+* Omitting the tier when creating a session uses the runtime's default routing behavior.
+* A cold resume restores the persisted tier. Supplying an explicit tier overrides the restored value for the new activation.
+* When resuming a session already resident in the runtime, omitting the tier preserves the current selection and supplying the same tier is a no-op. Supplying a different tier requests a safe switch that the runtime applies after the resume succeeds; it cannot change a turn that is already in flight.
+* Older sessions without a persisted tier retain default routing behavior.
+
+Tier selection is not a live model-switch operation. The SDK forwards the preference; the runtime owns persistence and validation.
+
+The `session.start` and `session.resume` events expose the selected tier in their optional `data.autoTier` field (`data.auto_tier` in Python). When no tier is selected, the field is omitted.
+
+### Changing the Auto tier during a session
+
+Call `setAutoTier` to change the routing preference on a live session without changing the selected model. Pass `null` (Python `None`, Go `nil`) to return to the provider's default Auto routing.
+
+```typescript
+const result = await session.setAutoTier("intelligence");
+if (result.status === "pending") {
+  // Accepted, but not yet in effect.
+}
+```
+
+The runtime does not apply the preference immediately. It records the request and commits it only when a later user turn using the `auto` model successfully obtains a usable model from the provider. A `pending` status therefore confirms that the request was accepted, not that it took effect. Only the most recent request survives: a new request replaces any earlier one that no turn has claimed yet.
+
+If an older request is still validating when a newer preference request or reset arrives, the older call fails with a superseded-request error instead of replacing the newer intent.
+
+Watch for the outcome through these events:
+
+* `session.model_change` when the preference commits.
+* `session.auto_tier_switch_failed` when it does not. This event is ephemeral, so the runtime never persists or replays it on resume. Its `reason` field is one of `policy_rejected`, `request_failed`, `setup_failed`, or `unsupported`, and the previously effective preference stays active.
+
+You can also read the authoritative state at any time through the session's `model.getCurrent` RPC method, which reports the committed `autoTier`, any unclaimed `pendingAutoTier`, and the `activatingAutoTier` currently claimed by an in-progress activation.
+
+| SDK | Change the tier | Return to provider-default routing |
+|-----|-----------------|------------------------------------|
+| Node.js | `session.setAutoTier("balance")` | `session.setAutoTier(null)` |
+| Python | `session.set_auto_tier("balance")` | `session.set_auto_tier(None)` |
+| Go | `session.SetAutoTier(ctx, &tier)` | `session.SetAutoTier(ctx, nil)` |
+| .NET | `session.SetAutoTierAsync(AutoTier.Balance)` | `session.SetAutoTierAsync(null)` |
+| Rust | `session.set_auto_tier(Some(AutoTier::Balance))` | `session.set_auto_tier(None)` |
+| Java | `session.setAutoTier(AutoTier.BALANCE)` | `session.setAutoTier(null)` |
+
+To select the `auto` model and its routing preference in a single call, stage the tier on the model switch instead. The runtime rejects this option when the model is anything other than `auto`.
+
+| SDK | Stage a tier with the switch | Reset to provider-default routing |
+|-----|------------------------------|-----------------------------------|
+| Node.js | `setModel("auto", { autoTier: "balance" })` | `setModel("auto", { autoTier: null })` |
+| Python | `set_model("auto", auto_tier="balance")` | `set_model("auto", auto_tier=None)` |
+| Go | `SetModelOptions{AutoTier: &tier}` | `SetModelOptions{ResetAutoTier: true}` |
+| .NET | `new SetModelOptions { AutoTier = AutoTier.Balance }` | `new SetModelOptions { ResetAutoTier = true }` |
+| Rust | `SetModelOptions::default().with_auto_tier(AutoTier::Balance)` | `SetModelOptions::default().with_reset_auto_tier()` |
+| Java | `new SetModelOptions().setModel("auto").setAutoTier(AutoTier.BALANCE)` | `new SetModelOptions().setModel("auto").setResetAutoTier(true)` |
+
+Node.js, Python, and Rust express all three states in a single value: Node.js and Python because `null`/`None` is distinguishable from an omitted argument, and Rust because `AutoTierPreference::Reset` is a distinct variant of the same option. Go, .NET, and Java have no way to distinguish "reset" from "unset" in one value, so they carry a separate reset flag. Omitting both always means "leave the current preference alone."
+
+### Responses transport on resume
+
+The optional `capi.enableWebSocketResponses` setting chooses the transport for the CAPI Responses API. It defaults to `true`, so the WebSocket transport is used whenever the selected model advertises the `ws:/responses` endpoint. Setting it to `false` falls back to the HTTP transport. In Python, use `capi={"enable_web_socket_responses": False}`.
+
+Supply it on the resume call when you need it. It is worth setting when WebSocket connections fail behind a proxy, and when a resumed session reports `400 input item ID does not belong to this connection`, which is specific to the WebSocket transport.
+
+```typescript
+const session = await client.resumeSession("user-123-task-456", {
+  capi: { enableWebSocketResponses: false },
+});
+```
+
+Setting this to `false` is equivalent to the `COPILOT_CLI_DISABLE_WEBSOCKET_RESPONSES` environment variable, which has the opposite polarity.
+
+### Example: changing model on resume
+
+```typescript
+// Resume with a different model
+const session = await client.resumeSession("user-123-task-456", {
+  model: "claude-sonnet-4",  // Switch to a different model
+  reasoningEffort: "high",   // Increase reasoning effort
+});
+```
+
+## Using BYOK (bring your own key) with resumed sessions
+
+When using your own API keys, you must re-provide the provider configuration when resuming. API keys are never persisted to disk for security reasons.
+
+```typescript
+// Original session with BYOK
+const session = await client.createSession({
+  sessionId: "user-123-task-456",
+  model: "gpt-5.2-codex",
+  provider: {
+    type: "azure",
+    endpoint: "https://my-resource.openai.azure.com",
+    apiKey: process.env.AZURE_OPENAI_KEY,
+    deploymentId: "my-gpt-deployment",
+  },
+});
+
+// When resuming, you MUST re-provide the provider config
+const resumed = await client.resumeSession("user-123-task-456", {
+  provider: {
+    type: "azure",
+    endpoint: "https://my-resource.openai.azure.com",
+    apiKey: process.env.AZURE_OPENAI_KEY,  // Required again
+    deploymentId: "my-gpt-deployment",
+  },
+});
+```
+
+## What gets persisted?
+
+Session state is saved to `~/.copilot/session-state/{sessionId}/`:
+
+```text
+~/.copilot/session-state/
+└── user-123-task-456/
+    ├── checkpoints/           # Conversation history snapshots
+    │   ├── 001.json          # Initial state
+    │   ├── 002.json          # After first interaction
+    │   └── ...               # Incremental checkpoints
+    ├── plan.md               # Agent's planning state (if any)
+    └── files/                # Session artifacts
+        ├── analysis.md       # Files the agent created
+        └── notes.txt         # Working documents
+```
+
+| Data | Persisted? | Notes |
+|------|------------|-------|
+| Conversation history | ✅ Yes | Full message thread |
+| Tool call results | ✅ Yes | Cached for context |
+| Agent planning state | ✅ Yes | `plan.md` file |
+| Session artifacts | ✅ Yes | In `files/` directory |
+| Provider/API keys | ❌ No | Security: must re-provide |
+| In-memory tool state | ❌ No | Tools should be stateless |
+
+## Session ID best practices
+
+Choose session IDs that encode ownership and purpose. This makes auditing and cleanup much easier.
+
+| Pattern | Example | Use Case |
+|---------|---------|----------|
+| ❌ `abc123` | Random IDs | Hard to audit, no ownership info |
+| ✅ `user-{userId}-{taskId}` | `user-alice-pr-review-42` | Multi-user apps |
+| ✅ `tenant-{tenantId}-{workflow}` | `tenant-acme-onboarding` | Multi-tenant SaaS |
+| ✅ `{userId}-{taskId}-{timestamp}` | `alice-deploy-1706932800` | Time-based cleanup |
+
+**Benefits of structured IDs:**
+* Easy to audit: "Show all sessions for user alice"
+* Easy to clean up: "Delete all sessions older than X"
+* Natural access control: Parse user ID from session ID
+
+### Example: generating session IDs
+
+```typescript
+function createSessionId(userId: string, taskType: string): string {
+  const timestamp = Date.now();
+  return `${userId}-${taskType}-${timestamp}`;
+}
+
+const sessionId = createSessionId("alice", "code-review");
+// → "alice-code-review-1706932800000"
+```
+
+```python
+import time
+
+def create_session_id(user_id: str, task_type: str) -> str:
+    timestamp = int(time.time())
+    return f"{user_id}-{task_type}-{timestamp}"
+
+session_id = create_session_id("alice", "code-review")
+# → "alice-code-review-1706932800"
+```
+
+## Managing session lifecycle
+
+### Listing active sessions
+
+```typescript
+// List all sessions
+const sessions = await client.listSessions();
+console.log(`Found ${sessions.length} sessions`);
+
+for (const session of sessions) {
+  console.log(`- ${session.sessionId} (created: ${session.createdAt})`);
+}
+
+// Filter sessions by repository
+const repoSessions = await client.listSessions({ repository: "owner/repo" });
+```
+
+### Cleaning up old sessions
+
+```typescript
+async function cleanupExpiredSessions(maxAgeMs: number) {
+  const sessions = await client.listSessions();
+  const now = Date.now();
+
+  for (const session of sessions) {
+    const age = now - new Date(session.createdAt).getTime();
+    if (age > maxAgeMs) {
+      await client.deleteSession(session.sessionId);
+      console.log(`Deleted expired session: ${session.sessionId}`);
+    }
+  }
+}
+
+// Clean up sessions older than 24 hours
+await cleanupExpiredSessions(24 * 60 * 60 * 1000);
+```
+
+### Disconnecting from a session (`disconnect`)
+
+When a task completes, disconnect from the session explicitly rather than waiting for timeouts. This releases in-memory resources but **preserves session data on disk**, so the session can still be resumed later:
+
+```typescript
+try {
+  // Do work...
+  await session.sendAndWait({ prompt: "Complete the task" });
+
+  // Task complete — release in-memory resources (session can be resumed later)
+  await session.disconnect();
+} catch (error) {
+  // Clean up even on error
+  await session.disconnect();
+  throw error;
+}
+```
+
+Each SDK also provides idiomatic automatic cleanup patterns:
+
+| Language | Pattern | Example |
+|----------|---------|---------|
+| **TypeScript** | `Symbol.asyncDispose` | `await using session = await client.createSession(config);` |
+| **Python** | `async with` context manager | `async with await client.create_session(on_permission_request=handler) as session:` |
+| **C#** | `IAsyncDisposable` | `await using var session = await client.CreateSessionAsync(config);` |
+| **Go** | `defer` | `defer session.Disconnect()` |
+
+> [!NOTE]
+> `destroy()` is deprecated in favor of `disconnect()`. Existing code using `destroy()` will continue to work but should be migrated.
+
+### Permanently deleting a session (`deleteSession`)
+
+To permanently remove a session and all its data from disk (conversation history, planning state, artifacts), use `deleteSession`. This is irreversible—the session **cannot** be resumed after deletion:
+
+```typescript
+// Permanently remove session data
+await client.deleteSession("user-123-task-456");
+```
+
+> **`disconnect()` vs `deleteSession()`:** `disconnect()` releases in-memory resources but keeps session data on disk for later resumption. `deleteSession()` permanently removes everything, including files on disk.
+
+## Automatic cleanup: idle timeout
+
+By default, sessions have **no idle timeout** and live indefinitely until explicitly disconnected or deleted. You can optionally configure a server-wide idle timeout via `CopilotClientOptions.sessionIdleTimeoutSeconds`:
+
+```typescript
+const client = new CopilotClient({
+  sessionIdleTimeoutSeconds: 30 * 60, // 30 minutes
+});
+```
+
+When a timeout is configured, sessions without activity for that duration are automatically cleaned up. Set to `0` or omit to disable.
+
+> [!NOTE]
+> This option only applies when the SDK spawns the runtime process. When connecting to an existing server via `cliUrl`, the server's own timeout configuration applies.
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/features-session-persistence-diagram-2.png)
+
+Sessions with active work (running commands, background agents) are always protected from idle cleanup, regardless of the timeout setting.
+
+Listen for idle events to react to session inactivity:
+
+```typescript
+session.on("session.idle", (event) => {
+  console.log(`Session idle for ${event.idleDurationMs}ms`);
+});
+```
+
+## Deployment patterns
+
+### Pattern 1: one CLI server per user (recommended)
+
+Best for: Strong isolation, multi-tenant environments, Azure Dynamic Sessions.
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/features-session-persistence-diagram-3.png)
+
+**Benefits:** ✅ Complete isolation | ✅ Simple security | ✅ Easy scaling
+
+### Pattern 2: shared CLI server (resource efficient)
+
+Best for: Internal tools, trusted environments, resource-constrained setups.
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/features-session-persistence-diagram-4.png)
+
+**Requirements:**
+* ⚠️ Unique session IDs per user
+* ⚠️ Application-level access control
+* ⚠️ Session ID validation before operations
+
+```typescript
+// Application-level access control for shared CLI
+async function resumeSessionWithAuth(
+  client: CopilotClient,
+  sessionId: string,
+  currentUserId: string
+): Promise<Session> {
+  // Parse user from session ID
+  const [sessionUserId] = sessionId.split("-");
+
+  if (sessionUserId !== currentUserId) {
+    throw new Error("Access denied: session belongs to another user");
+  }
+
+  return client.resumeSession(sessionId);
+}
+```
+
+## Azure dynamic sessions
+
+For serverless/container deployments where containers can restart or migrate:
+
+### Mount persistent storage
+
+The session state directory must be mounted to persistent storage:
+
+```yaml
+# Azure Container Instance example
+containers:
+  - name: copilot-agent
+    image: my-agent:latest
+    volumeMounts:
+      - name: session-storage
+        mountPath: /home/app/.copilot/session-state
+
+volumes:
+  - name: session-storage
+    azureFile:
+      shareName: copilot-sessions
+      storageAccountName: myaccount
+```
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/features-session-persistence-diagram-5.png)
+
+**Session survives container restarts!**
+
+## Infinite sessions for long-running workflows
+
+For workflows that might exceed context limits, enable infinite sessions with automatic compaction:
+
+```typescript
+const session = await client.createSession({
+  sessionId: "long-workflow-123",
+  infiniteSessions: {
+    enabled: true,
+    backgroundCompactionThreshold: 0.80,  // Start compaction at 80% context
+    bufferExhaustionThreshold: 0.95,      // Block at 95% if needed
+  },
+});
+```
+
+> [!NOTE]
+> Thresholds are context utilization ratios (0.0-1.0), not absolute token counts. See the [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/compatibility) for details.
+
+## Limitations and considerations
+
+| Limitation | Description | Mitigation |
+|------------|-------------|------------|
+| **BYOK re-authentication** | API keys aren't persisted | Store keys in your secret manager; provide on resume |
+| **Writable storage** | `~/.copilot/session-state/` must be writable | Mount persistent volume in containers |
+| **No session locking** | Concurrent access to same session is undefined | Implement application-level locking or queue |
+| **Tool state not persisted** | In-memory tool state is lost | Design tools to be stateless or persist their own state |
+
+### Handling concurrent access
+
+The SDK doesn't provide built-in session locking. If multiple clients might access the same session:
+
+```typescript
+// Option 1: Application-level locking with Redis
+import Redis from "ioredis";
+
+const redis = new Redis();
+
+async function withSessionLock<T>(
+  sessionId: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const lockKey = `session-lock:${sessionId}`;
+  const acquired = await redis.set(lockKey, "locked", "NX", "EX", 300);
+
+  if (!acquired) {
+    throw new Error("Session is in use by another client");
+  }
+
+  try {
+    return await fn();
+  } finally {
+    await redis.del(lockKey);
+  }
+}
+
+// Usage
+await withSessionLock("user-123-task-456", async () => {
+  const session = await client.resumeSession("user-123-task-456");
+  await session.sendAndWait({ prompt: "Continue the task" });
+});
+```
+
+## Summary
+
+| Feature | How to Use |
+|---------|------------|
+| **Create resumable session** | Provide your own `sessionId` |
+| **Resume session** | `client.resumeSession(sessionId)` |
+| **BYOK resume** | Re-provide `provider` config |
+| **List sessions** | `client.listSessions(filter?)` |
+| **Disconnect from active session** | `session.disconnect()`—releases in-memory resources; session data on disk is preserved for resumption |
+| **Delete session permanently** | `client.deleteSession(sessionId)`—permanently removes all session data from disk; cannot be resumed |
+| **Containerized deployment** | Mount `~/.copilot/session-state/` to persistent storage |
+
+## Next steps
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/hooks-overview) - Customize session behavior with hooks
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/compatibility) - SDK vs CLI feature comparison
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/debugging) - Troubleshoot session issues
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/skills.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/skills
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/skills.md
+- **SHA256_FINGERPRINT**: `8edf8fe9415f4984f25b2c89d7dd4f311efeedc71455361420e71b9c70c5d9b4`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.067204+00:00
+---
+
+**title**: Custom skills
+**shortTitle**: Skills
+**intro**: >-
+
+## Overview
+
+A skill is a named directory containing a `SKILL.md` file—a markdown document that provides instructions to Copilot. When loaded, the skill's content is injected into the session context.
+
+Skills allow you to:
+* Package domain expertise into reusable modules
+* Share specialized behaviors across projects
+* Organize complex agent configurations
+* Enable/disable capabilities per session
+
+## Loading skills
+
+Specify directories containing skills when creating a session:
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient();
+const session = await client.createSession({
+    model: "gpt-5.4",
+    skillDirectories: [
+        "./skills/code-review",
+        "./skills/documentation",
+    ],
+    onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+
+// Copilot now has access to skills in those directories
+await session.sendAndWait({ prompt: "Review this code for security issues" });
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient, PermissionDecisionApproveOnce
+
+async def main():
+    client = CopilotClient()
+    await client.start()
+
+    session = await client.create_session(
+        on_permission_request=lambda req, inv: PermissionDecisionApproveOnce(),
+        model="gpt-5.4",
+        skill_directories=[
+            "./skills/code-review",
+            "./skills/documentation",
+        ],
+    )
+
+    # Copilot now has access to skills in those directories
+    await session.send_and_wait("Review this code for security issues")
+
+    await client.stop()
+```
+
+**Language (go):**
+
+```golang
+package main
+
+import (
+    "context"
+    "log"
+    copilot "github.com/github/copilot-sdk/go"
+    "github.com/github/copilot-sdk/go/rpc"
+)
+
+func main() {
+    ctx := context.Background()
+    client := copilot.NewClient(nil)
+    if err := client.Start(ctx); err != nil {
+        log.Fatal(err)
+    }
+    defer client.Stop()
+
+    session, err := client.CreateSession(ctx, &copilot.SessionConfig{
+        Model: "gpt-5.4",
+        SkillDirectories: []string{
+            "./skills/code-review",
+            "./skills/documentation",
+        },
+        OnPermissionRequest: func(req copilot.PermissionRequest, inv copilot.PermissionInvocation) (rpc.PermissionDecision, error) {
+            return &rpc.PermissionDecisionApproveOnce{}, nil
+        },
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // Copilot now has access to skills in those directories
+    _, err = session.SendAndWait(ctx, copilot.MessageOptions{
+        Prompt: "Review this code for security issues",
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+}
+```
+
+**Language (dotnet):**
+
+```csharp
+using GitHub.Copilot;
+using GitHub.Copilot.Rpc;
+
+await using var client = new CopilotClient();
+await using var session = await client.CreateSessionAsync(new SessionConfig
+{
+    Model = "gpt-5.4",
+    SkillDirectories = new List<string>
+    {
+        "./skills/code-review",
+        "./skills/documentation",
+    },
+    OnPermissionRequest = (req, inv) =>
+        Task.FromResult(PermissionDecision.ApproveOnce()),
+});
+
+// Copilot now has access to skills in those directories
+await session.SendAndWaitAsync(new MessageOptions
+{
+    Prompt = "Review this code for security issues"
+});
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+import java.util.List;
+
+try (var client = new CopilotClient()) {
+    client.start().get();
+
+    var session = client.createSession(
+        new SessionConfig()
+            .setModel("gpt-5.4")
+            .setSkillDirectories(List.of(
+                "./skills/code-review",
+                "./skills/documentation"
+            ))
+            .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+    ).get();
+
+    // Copilot now has access to skills in those directories
+    session.sendAndWait(new MessageOptions()
+        .setPrompt("Review this code for security issues")
+    ).get();
+}
+```
+
+## Disabling skills
+
+Disable specific skills while keeping others active:
+
+**Language (typescript):**
+
+```typescript
+const session = await client.createSession({
+    skillDirectories: ["./skills"],
+    disabledSkills: ["experimental-feature", "deprecated-tool"],
+});
+```
+
+**Language (python):**
+
+```python
+from copilot.session import PermissionHandler
+
+session = await client.create_session(
+    on_permission_request=PermissionHandler.approve_all,
+    skill_directories=["./skills"],
+    disabled_skills=["experimental-feature", "deprecated-tool"],
+)
+```
+
+**Language (go):**
+
+```golang
+session, _ := client.CreateSession(context.Background(), &copilot.SessionConfig{
+    SkillDirectories: []string{"./skills"},
+    DisabledSkills:   []string{"experimental-feature", "deprecated-tool"},
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+var session = await client.CreateSessionAsync(new SessionConfig
+{
+    SkillDirectories = new List<string> { "./skills" },
+    DisabledSkills = new List<string> { "experimental-feature", "deprecated-tool" },
+});
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.rpc.*;
+import java.util.List;
+
+var session = client.createSession(
+    new SessionConfig()
+        .setSkillDirectories(List.of("./skills"))
+        .setDisabledSkills(List.of("experimental-feature", "deprecated-tool"))
+        .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+).get();
+```
+
+## Skill directory structure
+
+Each skill is a named subdirectory containing a `SKILL.md` file:
+
+```text
+skills/
+├── code-review/
+│   └── SKILL.md
+└── documentation/
+    └── SKILL.md
+```
+
+The `skillDirectories` option points to the parent directory (e.g., `./skills`). The CLI discovers all `SKILL.md` files in immediate subdirectories.
+
+### SKILL.md format
+
+A `SKILL.md` file is a markdown document with optional YAML frontmatter:
+
+```markdown
+---
+name: code-review
+description: Specialized code review capabilities
+---
+
+# Code Review Guidelines
+
+When reviewing code, always check for:
+
+1. **Security vulnerabilities** - SQL injection, XSS, etc.
+2. **Performance issues** - N+1 queries, memory leaks
+3. **Code style** - Consistent formatting, naming conventions
+4. **Test coverage** - Are critical paths tested?
+
+Provide specific line-number references and suggested fixes.
+```
+
+The frontmatter fields:
+* **`name`**: The skill's identifier (used with `disabledSkills` to selectively disable it). If omitted, the directory name is used.
+* **`description`**: A short description of what the skill does.
+
+The markdown body contains the instructions that are injected into the session context when the skill is loaded.
+
+## Skill providers (experimental)
+
+> [!NOTE]
+> Skill providers are experimental. The API can change in future SDK releases.
+
+A skill provider serves skills from your application's own storage, such as a database in a multi-tenant service, instead of `SKILL.md` files on disk. Provider skills join the session's skill catalog alongside file-based skills. The model loads them on demand through the `skill` tool, and users can invoke them like any other skill.
+
+A provider implements two operations:
+
+* **List skills**: returns catalog metadata for every skill: a `name`, a `description`, and optionally `userInvocable`, `disableModelInvocation`, and `argumentHint`. The runtime calls it when it loads the session's skills.
+* **Read skill**: returns the markdown for one skill, or a not-found result if the skill no longer exists. The runtime calls it only when the skill is loaded.
+
+Pass the provider when you create or resume a session:
+
+**Language (typescript):**
+
+```typescript
+import { approveAll, CopilotClient, type SkillProvider } from "@github/copilot-sdk";
+
+const releaseSkills = new Map([
+    [
+        "release-notes",
+        {
+            description: "Writes release notes in the team's format.",
+            markdown: "Group changes by feature area and link each pull request.",
+        },
+    ],
+]);
+
+const skillProvider: SkillProvider = {
+    listSkills: () =>
+        [...releaseSkills].map(([name, skill]) => ({ name, description: skill.description })),
+    readSkill: (name) => releaseSkills.get(name)?.markdown ?? null,
+};
+
+const client = new CopilotClient();
+const session = await client.createSession({
+    onPermissionRequest: approveAll,
+    skillProvider,
+});
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient, SkillProviderDescriptor
+from copilot.session import PermissionHandler
+
+RELEASE_SKILLS = {
+    "release-notes": (
+        "Writes release notes in the team's format.",
+        "Group changes by feature area and link each pull request.",
+    ),
+}
+
+class ReleaseSkills:
+    async def list_skills(self) -> list[SkillProviderDescriptor]:
+        return [
+            SkillProviderDescriptor(name=name, description=description)
+            for name, (description, _) in RELEASE_SKILLS.items()
+        ]
+
+    async def read_skill(self, name: str) -> str | None:
+        skill = RELEASE_SKILLS.get(name)
+        return skill[1] if skill else None
+
+async def main():
+    client = CopilotClient()
+    await client.start()
+    session = await client.create_session(
+        on_permission_request=PermissionHandler.approve_all,
+        skill_provider=ReleaseSkills(),
+    )
+```
+
+**Language (go):**
+
+```golang
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	copilot "github.com/github/copilot-sdk/go"
+	"github.com/github/copilot-sdk/go/rpc"
+)
+
+type releaseSkill struct {
+	description string
+	markdown    string
+}
+
+type releaseSkills map[string]releaseSkill
+
+func (s releaseSkills) ListSkills(ctx context.Context) ([]rpc.SkillProviderDescriptor, error) {
+	descriptors := make([]rpc.SkillProviderDescriptor, 0, len(s))
+	for name, skill := range s {
+		descriptors = append(descriptors, rpc.SkillProviderDescriptor{Name: name, Description: skill.description})
+	}
+	return descriptors, nil
+}
+
+func (s releaseSkills) ReadSkill(ctx context.Context, name string) (string, error) {
+	skill, ok := s[name]
+	if !ok {
+		return "", fmt.Errorf("%w: %s", copilot.ErrSkillNotFound, name)
+	}
+	return skill.markdown, nil
+}
+
+func main() {
+	ctx := context.Background()
+	client := copilot.NewClient(nil)
+	session, err := client.CreateSession(ctx, &copilot.SessionConfig{
+		OnPermissionRequest: copilot.PermissionHandler.ApproveAll,
+		SkillProvider: releaseSkills{
+			"release-notes": {
+				description: "Writes release notes in the team's format.",
+				markdown:    "Group changes by feature area and link each pull request.",
+			},
+		},
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	_ = session
+}
+```
+
+**Language (dotnet):**
+
+```csharp
+#pragma warning disable GHCP001 // Skill providers are experimental.
+using GitHub.Copilot;
+using GitHub.Copilot.Rpc;
+
+public sealed class ReleaseSkills : ISkillProvider
+{
+    private readonly Dictionary<string, (string Description, string Markdown)> _skills = new()
+    {
+        ["release-notes"] = (
+            "Writes release notes in the team's format.",
+            "Group changes by feature area and link each pull request."),
+    };
+
+    public Task<IReadOnlyList<SkillProviderDescriptor>> ListSkillsAsync(CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyList<SkillProviderDescriptor>>(
+            _skills.Select(skill => new SkillProviderDescriptor
+            {
+                Name = skill.Key,
+                Description = skill.Value.Description,
+            }).ToList());
+
+    public Task<string?> ReadSkillAsync(string name, CancellationToken cancellationToken) =>
+        Task.FromResult(_skills.TryGetValue(name, out var skill) ? skill.Markdown : null);
+}
+
+public static class SkillProviderExample
+{
+    public static async Task RunAsync(CopilotClient client)
+    {
+        await using var session = await client.CreateSessionAsync(new SessionConfig
+        {
+            OnPermissionRequest = PermissionHandler.ApproveAll,
+            SkillProvider = new ReleaseSkills(),
+        });
+    }
+}
+```
+
+The .NET skill provider types raise the `GHCP001` experimental diagnostic. Suppress it with `#pragma warning disable GHCP001` or a project-level `<NoWarn>GHCP001</NoWarn>`.
+
+**Language (java):**
+
+```java
+import com.github.copilot.AllowCopilotExperimental;
+import com.github.copilot.CopilotClient;
+import com.github.copilot.CopilotSession;
+import com.github.copilot.SkillProvider;
+import com.github.copilot.SkillProviderDescriptor;
+import com.github.copilot.rpc.PermissionHandler;
+import com.github.copilot.rpc.SessionConfig;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
+@AllowCopilotExperimental
+class ReleaseSkills implements SkillProvider {
+    private final Map<String, String> markdown = Map.of(
+            "release-notes", "Group changes by feature area and link each pull request.");
+
+    @Override
+    public CompletableFuture<List<SkillProviderDescriptor>> listSkills() {
+        return CompletableFuture.completedFuture(List.of(new SkillProviderDescriptor(
+                "release-notes", "Writes release notes in the team's format.", null, null, null)));
+    }
+
+    @Override
+    public CompletableFuture<String> readSkill(String name) {
+        return CompletableFuture.completedFuture(markdown.get(name));
+    }
+}
+
+@AllowCopilotExperimental
+class SkillProviderExample {
+    static CopilotSession createSession(CopilotClient client) throws Exception {
+        return client.createSession(new SessionConfig()
+                .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+                .setSkillProvider(new ReleaseSkills()))
+                .get();
+    }
+}
+```
+
+The Java skill provider API is `@CopilotExperimental`, so the consuming class or method must opt in with `@AllowCopilotExperimental` (or compile with `-Acopilot.experimental.allowed=true`). See [Using experimental APIs](https://github.com/github/copilot-sdk/tree/main/java/README.md#using-experimental-apis).
+
+**Language (rust):**
+
+```rust
+use std::sync::Arc;
+
+use async_trait::async_trait;
+use github_copilot_sdk::{Error, SessionConfig, SkillProvider, SkillProviderDescriptor};
+
+struct ReleaseSkills;
+
+#[async_trait]
+impl SkillProvider for ReleaseSkills {
+    async fn list_skills(&self) -> Result<Vec<SkillProviderDescriptor>, Error> {
+        Ok(vec![SkillProviderDescriptor {
+            name: "release-notes".into(),
+            description: "Writes release notes in the team's format.".into(),
+            ..Default::default()
+        }])
+    }
+
+    async fn read_skill(&self, name: &str) -> Result<Option<String>, Error> {
+        Ok((name == "release-notes")
+            .then(|| "Group changes by feature area and link each pull request.".to_string()))
+    }
+}
+
+let session = client
+    .create_session(
+        SessionConfig::default()
+            .approve_all_permissions()
+            .with_skill_provider(Arc::new(ReleaseSkills)),
+    )
+    .await?;
+```
+
+### Provider skill content
+
+Read skill returns the skill's `SKILL.md` text. YAML frontmatter is optional:
+
+* Without frontmatter, the whole text is the skill body, and all metadata comes from the listed skill.
+* With frontmatter, an omitted field inherits the listed value. A field that you include must match the listed value, or the skill fails to load.
+* `allowed-tools` is read only from frontmatter.
+* If the first line of the text is `---`, the runtime parses it as frontmatter, so don't start a body-only skill with a Markdown thematic break.
+
+By default, provider skills are text-only: they have no base directory, so they can't reference bundled scripts, templates, or other files. To give a provider skill such files, see [Supporting files](#supporting-files-experimental). `skills.list` reports provider skills with the source `sdk` and an empty `path`, with or without supporting files.
+
+### Supporting files (experimental)
+
+A provider skill can come with supporting files, such as scripts, references, templates, and assets, the same way a file-based skill's folder can. Your application keeps each skill's files in a folder it controls and sets `directory` on the listed skill to that folder's absolute path.
+
+When the model activates the skill, the runtime lists the folder the same way it lists a file-based skill's folder. The model gets the same "Base directory for this skill" line and related-files list that a file-based skill gets, in place of the text-only notice, and reads the files with its ordinary file tools. The runtime never reads, copies, or writes the files itself.
+
+```typescript
+import { approveAll, CopilotClient, type SkillProvider } from "@github/copilot-sdk";
+
+const skillProvider: SkillProvider = {
+    listSkills: () => [
+        {
+            name: "release-notes",
+            description: "Writes release notes in the team's format.",
+            directory: "/srv/skills/release-notes",
+        },
+    ],
+    readSkill: (name) =>
+        name === "release-notes"
+            ? "Run `python3 scripts/changelog.py` and fill in `templates/notes.md`."
+            : null,
+};
+
+const client = new CopilotClient();
+const session = await client.createSession({
+    onPermissionRequest: approveAll,
+    skillProvider,
+});
+```
+
+Each SDK sets the folder on its listed-skill type:
+
+| SDK | Field |
+|---|---|
+| Node.js | `directory: "/srv/skills/release-notes"` |
+| Python | `directory="/srv/skills/release-notes"` |
+| Go | `Directory: copilot.String("/srv/skills/release-notes")` |
+| .NET | `Directory = "/srv/skills/release-notes"` |
+| Java | The sixth `SkillProviderDescriptor` constructor argument |
+| Rust | `directory: Some("/srv/skills/release-notes".into())` |
+
+#### Where the folder lives
+
+Put all of a skill's files under its `directory`, one folder per skill. The folder must be reachable where the runtime runs:
+
+* **Local disk.** Without a session filesystem, `directory` is a path on the machine or container that runs the runtime. The model can read the files with any file tool, and it can run scripts.
+* **Session filesystem ([AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy#sessionfs)).** With a `sessionFs` handler, `directory` uses the handler's path conventions, and your handler serves the files; the runtime lists the folder through it. `view`, `create`, `edit`, and `apply_patch` reach the files. `grep`, `glob`, and shell commands don't, so scripts can't run. The Java SDK has no `sessionFs`, so Java providers use local disk.
+
+The runtime lists the folder after read skill returns, so you can create the folder lazily in read skill. If the folder is missing or empty, or can't be listed within 15 seconds of the runtime calling read skill, the model still gets the base directory line, with no related-files list, as for a file-based skill. If your `sessionFs` handler is disconnected when the runtime lists skills, those skills are text-only until the next listing.
+
+#### Access
+
+* **Local disk.** From the time skills are listed, the runtime treats each enabled provider skill's `directory` like a configured `skillDirectories` folder: reads under it skip the outside-workspace path prompt, and sandboxed processes get read-only access to it. Reads still go to your permission handler, as they do for file-based skills. Don't return a broad directory, such as your home folder or a folder that holds every tenant's files.
+* **Session filesystem.** The runtime adds no access for the folder. Have your permission handler approve reads under it, and when the sandbox is on, add the folder to the sandbox's `readonlyPaths`.
+
+Your application owns the folder: where it lives, how long it exists, cleaning it up, and keeping the model from changing it. The read-only access covers only sandboxed processes. Outside the sandbox, or when the folder is inside the workspace, the model can write to it unless your permission handler, or your `sessionFs` handler, refuses.
+
+#### Writing the skill
+
+* Refer to supporting files by their path relative to the skill's folder, such as `references/guide.md`. The model is told the folder's absolute path.
+* Run scripts through an interpreter, such as `python3 scripts/changelog.py` or `bash scripts/build.sh`, as [Using scripts in skills](https://agentskills.io/skill-creation/using-scripts) describes. Scripts run only when the folder is on local disk.
+
+#### Rules and limits
+
+* `directory` must be absolute in the session's path conventions; on a Windows-style session filesystem it needs a drive or UNC prefix. It's resolved the way file tools resolve paths, so `.` and `..` segments and repeated or trailing separators are removed, and it can't resolve to a filesystem root. It counts toward the catalog's 1 MiB metadata limit, and it isn't shown in skill catalogs. An invalid `directory` rejects the whole catalog, like any other invalid listed skill.
+* The related-files list follows the file-based rules: build and dependency folders, such as `node_modules`, `bin`, `obj`, and `dist`, are hidden; a folder with more than 50 entries is summarized; files nested more than 10 folders deep are not listed; `SKILL.md` is never listed; and at most 100 files are shown.
+* After the conversation is compacted, the model keeps the skill's instructions but not its folder path. Invoking the skill again shows it. File-based skills keep their path.
+* Supporting files need a Copilot CLI at least as new as the SDK release that adds them. An older CLI rejects the whole skill catalog when any listed skill has a `directory`. Providers that don't set `directory` work with older CLIs.
+
+### Serving existing SKILL.md files
+
+To serve `SKILL.md` files that you already have, such as files stored in a database, parse each file's YAML frontmatter once to build its catalog entry, then return the file unchanged from read skill:
+
+* Map `name` and `description` to the listed skill's `name` and `description`. Both are required in the catalog; the runtime doesn't fall back to a folder name or the skill body.
+* Map `user-invocable`, `disable-model-invocation`, and `argument-hint` to the matching optional fields when the frontmatter sets them.
+* Return the original text, frontmatter included, from read skill. Because the listed values came from the same frontmatter, they match, and the runtime still reads `allowed-tools` from it.
+
+### Trusting provider content
+
+Treat provider skills like skill directories: their content is trusted input. The model follows a skill's instructions, and the frontmatter controls how the skill is invoked. `allowed-tools` doesn't grant permissions in SDK sessions. The runtime reports it in the `allowedTools` field of the `skill.invoked` event, and your permission handler still decides every tool request.
+
+Don't serve text that end users or other tenants can edit unless you would let them author a skill file. If you build skills from user input, generate the frontmatter yourself instead of passing user-supplied frontmatter through.
+
+### Provider limits and errors
+
+The runtime validates the provider's catalog and content:
+
+* Names must match `^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$` and be unique, ignoring case.
+* A catalog can contain at most 1,024 skills and 1 MiB of metadata. Each description and argument hint can be at most 1,024 characters.
+* Each skill's markdown can be at most 1 MiB of UTF-8.
+* Each call must complete within 30 seconds. When the runtime stops waiting for a call, because it timed out, the session ended, or a resume replaced the provider, it cancels the request and ignores any later result. Each SDK passes that cancellation to your provider in its usual way:
+
+  | SDK | Cancellation signal |
+  |---|---|
+  | Node.js | The `signal` (`AbortSignal`) in the options passed to `listSkills` and `readSkill` is aborted. |
+  | Python | The provider's `asyncio` task is cancelled with `asyncio.CancelledError`. Synchronous providers run to completion. |
+  | Go | The call's `context.Context` is cancelled. |
+  | .NET | The call's `CancellationToken` is cancelled. |
+  | Java | The returned `CompletableFuture` is cancelled with `cancel(true)`, which doesn't interrupt running work. |
+  | Rust | The provider future is dropped. |
+
+  These signals cover calls that the runtime cancels. When the connection closes or the client is force-stopped, the .NET, Java, and Rust SDKs also cancel calls that are still running. The Node.js, Python, and Go SDKs don't: a running call continues until it returns, and the SDK discards its result.
+
+If listing fails or returns an invalid catalog, the runtime reports the problem in the `errors` list returned by `skills.reload`. A failed reload keeps the provider skills from the last successful list. If reading a skill fails, the `skill` tool reports a generic load failure to the model. The SDK never forwards the text of errors your provider throws or returns, so that text can't leak into the conversation.
+
+### Provider lifecycle
+
+A provider is bound to one session:
+
+* A provider enables skills unless you set `enableSkills` to `false`, which keeps the provider bound but never called. In `mode: "empty"`, skills stay disabled until you set `enableSkills` to `true`.
+* The provider is never persisted. Pass it again when you resume a session. Resuming without a provider removes it from the session. Extensions that join the session don't change it.
+* A provider skill with the same name as a file-based skill replaces the file-based skill, and `skills.reload` reports a warning.
+* Sub-agents use their parent session's provider.
+* The runtime can call the provider concurrently, for example from the `skill` tool, user invocations, and custom agents that preload skills, so both operations must be safe for concurrent use.
+* Cloud sessions don't support skill providers. The SDK rejects the configuration before it creates the session.
+
+## Configuration options
+
+### SessionConfig skill fields
+
+| Language | Field | Type | Description |
+|----------|-------|------|-------------|
+| Node.js | `skillDirectories` | `string[]` | Directories to load skills from |
+| Node.js | `disabledSkills` | `string[]` | Skills to disable |
+| Node.js | `skillProvider` | `SkillProvider` | Experimental provider for SDK-supplied skills |
+| Python | `skill_directories` | `list[str]` | Directories to load skills from |
+| Python | `disabled_skills` | `list[str]` | Skills to disable |
+| Python | `skill_provider` | `SkillProvider` | Experimental provider for SDK-supplied skills |
+| Go | `SkillDirectories` | `[]string` | Directories to load skills from |
+| Go | `DisabledSkills` | `[]string` | Skills to disable |
+| Go | `SkillProvider` | `SkillProvider` | Experimental provider for SDK-supplied skills |
+| .NET | `SkillDirectories` | `List<string>` | Directories to load skills from |
+| .NET | `DisabledSkills` | `List<string>` | Skills to disable |
+| .NET | `SkillProvider` | `ISkillProvider` | Experimental provider for SDK-supplied skills |
+| Java | `setSkillProvider` | `SkillProvider` | Experimental provider for SDK-supplied skills |
+| Rust | `with_skill_provider` | `Arc<dyn SkillProvider>` | Experimental provider for SDK-supplied skills |
+
+### Built-in skills and `mode: "empty"`
+
+The runtime ships with a set of bundled **built-in** skills that are eligible by
+default. When you run the client in `mode: "empty"` (the recommended baseline for
+[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy)), the SDK excludes every
+runtime-bundled built-in skill: it sends an empty `includedBuiltinSkills` list on
+the post-create and post-resume options patch, alongside the empty
+`installedPlugins` list.
+
+This exclusion is the default, not a permanent restriction. To allow selected
+runtime-bundled skills, set `includedBuiltinSkills` (or the language-specific
+casing) to their names. You can also opt into your **own** custom skills under
+`mode: "empty"`—enable skills and pass your own `skillDirectories`—and those
+remain fully usable, including a custom skill that shares a name with a built-in.
+Under `mode: "copilot-cli"` the field is omitted unless you set the option.
+
+Custom skill directories are scanned when skills first load, including directories
+that are missing or empty at that point. Filesystem changes in those directories
+do not automatically refresh the catalog on later turns. After adding, editing,
+or removing skills, call your session's `skills.reload` RPC:
+
+| SDK | Reload call |
+|-----|-------------|
+| Node.js | `await session.rpc.skills.reload()` |
+| Python | `await session.rpc.skills.reload()` |
+| Go | `session.RPC.Skills.Reload(ctx)` |
+| .NET | `await session.Rpc.Skills.ReloadAsync()` |
+| Java | `session.getRpc().skills.reload().join()` |
+| Rust | `session.rpc().skills().reload().await?` |
+
+Changing the configured skill directories also refreshes the catalog.
+
+## Best practices
+
+1. **Organize by domain** - Group related skills together (e.g., `skills/security/`, `skills/testing/`)
+
+1. **Use frontmatter** - Include `name` and `description` in YAML frontmatter for clarity
+
+1. **Document dependencies** - Note any tools or MCP servers a skill requires
+
+1. **Test skills in isolation** - Verify skills work before combining them
+
+1. **Use relative paths** - Keep skills portable across environments
+
+## Combining with other features
+
+### Skills + custom agents
+
+Skills listed in an agent's `skills` field are **eagerly preloaded**—their full content is injected into the agent's context at startup, so the agent has access to the skill instructions immediately without needing to invoke a skill tool. Skill names are resolved from the session-level `skillDirectories`.
+
+```typescript
+const session = await client.createSession({
+    skillDirectories: ["./skills/security"],
+    customAgents: [{
+        name: "security-auditor",
+        description: "Security-focused code reviewer",
+        prompt: "Focus on OWASP Top 10 vulnerabilities",
+        skills: ["security-scan", "dependency-check"],
+    }],
+    onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+> [!NOTE]
+> Skills are opt-in—when `skills` is omitted, no skill content is injected. Sub-agents do not inherit skills from the parent; you must list them explicitly per agent.
+
+### Skills + MCP servers
+
+Skills can complement MCP server capabilities:
+
+```typescript
+const session = await client.createSession({
+    skillDirectories: ["./skills/database"],
+    mcpServers: {
+        postgres: {
+            type: "local",
+            command: "npx",
+            args: ["-y", "@modelcontextprotocol/server-postgres"],
+            tools: ["*"],
+        },
+    },
+    onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+```
+
+## Troubleshooting
+
+### Skills not loading
+
+1. **Check path exists** - Verify the skill directory path is correct and contains subdirectories with `SKILL.md` files
+1. **Check permissions** - Ensure the SDK can read the directory
+1. **Check SKILL.md format** - Verify the markdown is well-formed and any YAML frontmatter uses valid syntax
+1. **Enable debug logging** - Set `logLevel: "debug"` to see skill loading logs
+
+### Skill conflicts
+
+If multiple skills provide conflicting instructions:
+* Use `disabledSkills` to exclude conflicting skills
+* Reorganize skill directories to avoid overlaps
+
+## See also
+
+* [AUTOTITLE](/copilot/get-started/sdk-quickstart#create-custom-agents) - Define specialized AI personas
+* [AUTOTITLE](/copilot/get-started/sdk-quickstart#step-4-add-a-custom-tool) - Build your own tools
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/mcp) - Connect external tool providers
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/steering-and-queueing.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/steering-and-queueing
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/steering-and-queueing.md
+- **SHA256_FINGERPRINT**: `275625ce8d9ff9903e58c3b73e3b3a7addedc417bb77bf9f20bf3390a4137e42`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.990093+00:00
+---
+
+**title**: Steering and queueing
+**shortTitle**: Steering And Queueing
+**intro**: >-
+
+## Overview
+
+When a session is actively processing a turn, incoming messages can be delivered in one of two modes via the `mode` field on `MessageOptions`:
+
+| Mode | Behavior | Use case |
+|------|----------|----------|
+| `"immediate"` (steering) | Injected into the **current** LLM turn | "Actually, don't create that file—use a different approach" |
+| `"enqueue"` (queueing) | Queued and processed **after** the current turn finishes | "After this, also fix the tests" |
+
+![Diagram: Sequence diagram showing the described process.](/assets/images/help/copilot/copilot-sdk/features-steering-and-queueing-diagram-0.png)
+
+## Message provenance
+
+Set the optional source when forwarding a message from another agent. An identified agent source serializes as `agent-<id>`. Leave source unset for ordinary human sends to preserve runtime defaults. Both send and send-and-wait APIs support source with `"enqueue"` and `"immediate"` delivery.
+
+| SDK | Identified agent source |
+|-----|-------------------------|
+| Node.js / TypeScript | `source: "agent-sender-id"` |
+| Python | `source=AgentMessageSource("sender-id")` |
+| Go | `Source: copilot.MessageSourceAgent("sender-id")` |
+| .NET | `Source = MessageSource.Agent("sender-id")` |
+| Java | `.setSource(MessageSource.agent("sender-id"))` |
+| Rust | `.with_source(MessageSource::Agent("sender-id".into()))` |
+
+The typed APIs also support `user` and `system`. Use `system` for internal application context, not as a substitute for an identified agent. Agent provenance lets the runtime distinguish agent input from human authorization while retaining its agent-message steering behavior. Derive the sender ID from trusted application metadata, never from message text.
+
+Source identifies origin. Delivery mode requests urgency. Neither requires the recipient to produce a visible reply, and source does not set billing flags. The runtime applies its existing scheduling rules. Rust callers using the typed RPC API can also pass `MessageSource` to `rpc::SendRequest::with_source(...)`.
+
+A successful high-level `send` acknowledgement returns a message ID and confirms acceptance, not that the recipient has consumed the message. Do not automatically resend an accepted message merely because no reply appears. Send-and-wait can complete on an idle event without an assistant message.
+
+> [!WARNING]
+> Remote backends do not necessarily preserve source end to end. The agent session can include source in its local echo without carrying it in the remote HTTP request. A local source event does not prove that the remote worker received the same provenance.
+
+## Steering (immediate mode)
+
+Steering sends a message that is injected directly into the agent's current turn. The agent sees the message in real time and adjusts its response accordingly—useful for course-correcting without aborting the turn.
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient();
+await client.start();
+
+const session = await client.createSession({
+    model: "gpt-5.4",
+    onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+
+// Start a long-running task
+const msgId = await session.send({
+    prompt: "Refactor the authentication module to use sessions",
+});
+
+// While the agent is working, steer it
+await session.send({
+    prompt: "Actually, use JWT tokens instead of sessions",
+    mode: "immediate",
+});
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient, PermissionDecisionApproveOnce
+
+async def main():
+    client = CopilotClient()
+    await client.start()
+
+    session = await client.create_session(
+        on_permission_request=lambda req, inv: PermissionDecisionApproveOnce(),
+        model="gpt-5.4",
+    )
+
+    # Start a long-running task
+    msg_id = await session.send(
+        "Refactor the authentication module to use sessions",
+    )
+
+    # While the agent is working, steer it
+    await session.send(
+        "Actually, use JWT tokens instead of sessions",
+        mode="immediate",
+    )
+
+    await client.stop()
+```
+
+**Language (go):**
+
+```golang
+package main
+
+import (
+    "context"
+    "log"
+    copilot "github.com/github/copilot-sdk/go"
+    "github.com/github/copilot-sdk/go/rpc"
+)
+
+func main() {
+    ctx := context.Background()
+    client := copilot.NewClient(nil)
+    if err := client.Start(ctx); err != nil {
+        log.Fatal(err)
+    }
+    defer client.Stop()
+
+    session, err := client.CreateSession(ctx, &copilot.SessionConfig{
+        Model: "gpt-5.4",
+        OnPermissionRequest: func(req copilot.PermissionRequest, inv copilot.PermissionInvocation) (rpc.PermissionDecision, error) {
+            return &rpc.PermissionDecisionApproveOnce{}, nil
+        },
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // Start a long-running task
+    _, err = session.Send(ctx, copilot.MessageOptions{
+        Prompt: "Refactor the authentication module to use sessions",
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // While the agent is working, steer it
+    _, err = session.Send(ctx, copilot.MessageOptions{
+        Prompt: "Actually, use JWT tokens instead of sessions",
+        Mode:   "immediate",
+    })
+    if err != nil {
+        log.Fatal(err)
+    }
+}
+```
+
+**Language (dotnet):**
+
+```csharp
+using GitHub.Copilot;
+using GitHub.Copilot.Rpc;
+
+await using var client = new CopilotClient();
+await using var session = await client.CreateSessionAsync(new SessionConfig
+{
+    Model = "gpt-5.4",
+    OnPermissionRequest = (req, inv) =>
+        Task.FromResult(PermissionDecision.ApproveOnce()),
+});
+
+// Start a long-running task
+var msgId = await session.SendAsync(new MessageOptions
+{
+    Prompt = "Refactor the authentication module to use sessions"
+});
+
+// While the agent is working, steer it
+await session.SendAsync(new MessageOptions
+{
+    Prompt = "Actually, use JWT tokens instead of sessions",
+    Mode = "immediate"
+});
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+
+try (var client = new CopilotClient()) {
+    client.start().get();
+
+    var session = client.createSession(
+        new SessionConfig()
+            .setModel("gpt-5.4")
+            .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+    ).get();
+
+    // Start a long-running task
+    session.send(new MessageOptions()
+        .setPrompt("Refactor the authentication module to use sessions")
+    ).get();
+
+    // While the agent is working, steer it
+    session.send(new MessageOptions()
+        .setPrompt("Actually, use JWT tokens instead of sessions")
+        .setMode("immediate")
+    ).get();
+}
+```
+
+### How steering works internally
+
+1. The message is added to the runtime's `ImmediatePromptProcessor` queue
+1. Before the next LLM request within the current turn, the processor injects the message into the conversation
+1. The agent sees the steering message as a new user message and adjusts its response
+1. If the turn completes before the steering message is processed, it is automatically moved to the regular queue for the next turn
+
+> [!NOTE]
+> Steering messages are best-effort within the current turn. If the agent has already committed to a tool call, the steering takes effect after that call completes but still within the same turn.
+
+## Queueing (enqueue mode)
+
+Queueing buffers messages to be processed sequentially after the current turn finishes. Each queued message starts its own full turn. This is the default mode—if you omit `mode`, the SDK uses `"enqueue"`.
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient();
+await client.start();
+
+const session = await client.createSession({
+    model: "gpt-5.4",
+    onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+
+// Send an initial task
+await session.send({ prompt: "Set up the project structure" });
+
+// Queue follow-up tasks while the agent is busy
+await session.send({
+    prompt: "Add unit tests for the auth module",
+    mode: "enqueue",
+});
+
+await session.send({
+    prompt: "Update the README with setup instructions",
+    mode: "enqueue",
+});
+
+// Messages are processed in FIFO order after each turn completes
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient, PermissionDecisionApproveOnce
+
+async def main():
+    client = CopilotClient()
+    await client.start()
+
+    session = await client.create_session(
+        on_permission_request=lambda req, inv: PermissionDecisionApproveOnce(),
+        model="gpt-5.4",
+    )
+
+    # Send an initial task
+    await session.send("Set up the project structure")
+
+    # Queue follow-up tasks while the agent is busy
+    await session.send(
+        "Add unit tests for the auth module",
+        mode="enqueue",
+    )
+
+    await session.send(
+        "Update the README with setup instructions",
+        mode="enqueue",
+    )
+
+    # Messages are processed in FIFO order after each turn completes
+    await client.stop()
+```
+
+**Language (go):**
+
+```golang
+// Send an initial task
+session.Send(ctx, copilot.MessageOptions{
+    Prompt: "Set up the project structure",
+})
+
+// Queue follow-up tasks while the agent is busy
+session.Send(ctx, copilot.MessageOptions{
+    Prompt: "Add unit tests for the auth module",
+    Mode:   "enqueue",
+})
+
+session.Send(ctx, copilot.MessageOptions{
+    Prompt: "Update the README with setup instructions",
+    Mode:   "enqueue",
+})
+
+// Messages are processed in FIFO order after each turn completes
+```
+
+**Language (dotnet):**
+
+```csharp
+// Send an initial task
+await session.SendAsync(new MessageOptions
+{
+    Prompt = "Set up the project structure"
+});
+
+// Queue follow-up tasks while the agent is busy
+await session.SendAsync(new MessageOptions
+{
+    Prompt = "Add unit tests for the auth module",
+    Mode = "enqueue"
+});
+
+await session.SendAsync(new MessageOptions
+{
+    Prompt = "Update the README with setup instructions",
+    Mode = "enqueue"
+});
+
+// Messages are processed in FIFO order after each turn completes
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+
+try (var client = new CopilotClient()) {
+    client.start().get();
+
+    var session = client.createSession(
+        new SessionConfig()
+            .setModel("gpt-5.4")
+            .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+    ).get();
+
+    // Send an initial task
+    session.send(new MessageOptions().setPrompt("Set up the project structure")).get();
+
+    // Queue follow-up tasks while the agent is busy
+    session.send(new MessageOptions()
+        .setPrompt("Add unit tests for the auth module")
+        .setMode("enqueue")
+    ).get();
+
+    session.send(new MessageOptions()
+        .setPrompt("Update the README with setup instructions")
+        .setMode("enqueue")
+    ).get();
+
+    // Messages are processed in FIFO order after each turn completes
+}
+```
+
+### How queueing works internally
+
+1. The message is added to the session's `itemQueue` as a `QueuedItem`
+1. When the current turn completes and the session becomes idle, `processQueuedItems()` runs
+1. Items are dequeued in FIFO order—each message triggers a full agentic turn
+1. If a steering message was pending when the turn ended, it is moved to the front of the queue
+1. Processing continues until the queue is empty, then the session emits an idle event
+
+## Combining steering and queueing
+
+You can use both patterns together in a single session. Steering affects the current turn while queued messages wait for their own turns:
+
+**Language (typescript):**
+
+```typescript
+const session = await client.createSession({
+    model: "gpt-5.4",
+    onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+
+// Start a task
+await session.send({ prompt: "Refactor the database layer" });
+
+// Steer the current work
+await session.send({
+    prompt: "Make sure to keep backwards compatibility with the v1 API",
+    mode: "immediate",
+});
+
+// Queue a follow-up for after this turn
+await session.send({
+    prompt: "Now add migration scripts for the schema changes",
+    mode: "enqueue",
+});
+```
+
+**Language (python):**
+
+```python
+session = await client.create_session(
+    on_permission_request=lambda req, inv: PermissionDecisionApproveOnce(),
+    model="gpt-5.4",
+)
+
+# Start a task
+await session.send("Refactor the database layer")
+
+# Steer the current work
+await session.send(
+    "Make sure to keep backwards compatibility with the v1 API",
+    mode="immediate",
+)
+
+# Queue a follow-up for after this turn
+await session.send(
+    "Now add migration scripts for the schema changes",
+    mode="enqueue",
+)
+```
+
+## Choosing between steering and queueing
+
+| Scenario | Pattern | Why |
+|----------|---------|-----|
+| Agent is going down the wrong path | **Steering** | Redirects the current turn without losing progress |
+| You thought of something the agent should also do | **Queueing** | Doesn't disrupt current work; runs next |
+| Agent is about to make a mistake | **Steering** | Intervenes before the mistake is committed |
+| You want to chain multiple tasks | **Queueing** | FIFO ordering ensures predictable execution |
+| You want to add context to the current task | **Steering** | Agent incorporates it into its current reasoning |
+| You want to batch unrelated requests | **Queueing** | Each gets its own full turn with clean context |
+
+## Building a UI with steering and queueing
+
+Here's a pattern for building an interactive UI that supports both modes:
+
+```typescript
+import { CopilotClient, CopilotSession } from "@github/copilot-sdk";
+
+interface PendingMessage {
+    prompt: string;
+    mode: "immediate" | "enqueue";
+    sentAt: Date;
+}
+
+class InteractiveChat {
+    private session: CopilotSession;
+    private isProcessing = false;
+    private pendingMessages: PendingMessage[] = [];
+
+    constructor(session: CopilotSession) {
+        this.session = session;
+
+        session.on((event) => {
+            if (event.type === "session.idle") {
+                this.isProcessing = false;
+                this.onIdle();
+            }
+            if (event.type === "assistant.message") {
+                this.renderMessage(event);
+            }
+        });
+    }
+
+    async sendMessage(prompt: string): Promise<void> {
+        if (!this.isProcessing) {
+            this.isProcessing = true;
+            await this.session.send({ prompt });
+            return;
+        }
+
+        // Session is busy — let the user choose how to deliver
+        // Your UI would present this choice (e.g., buttons, keyboard shortcuts)
+    }
+
+    async steer(prompt: string): Promise<void> {
+        this.pendingMessages.push({
+            prompt,
+            mode: "immediate",
+            sentAt: new Date(),
+        });
+        await this.session.send({ prompt, mode: "immediate" });
+    }
+
+    async enqueue(prompt: string): Promise<void> {
+        this.pendingMessages.push({
+            prompt,
+            mode: "enqueue",
+            sentAt: new Date(),
+        });
+        await this.session.send({ prompt, mode: "enqueue" });
+    }
+
+    private onIdle(): void {
+        this.pendingMessages = [];
+        // Update UI to show session is ready for new input
+    }
+
+    private renderMessage(event: unknown): void {
+        // Render assistant message in your UI
+    }
+}
+```
+
+## API reference
+
+### MessageOptions
+
+| Language | Field | Type | Default | Description |
+|----------|-------|------|---------|-------------|
+| Node.js | `mode` | `"enqueue" \| "immediate"` | `"enqueue"` | Message delivery mode |
+| Python | `mode` | `Literal["enqueue", "immediate"]` | `"enqueue"` | Message delivery mode |
+| Go | `Mode` | `string` | `"enqueue"` | Message delivery mode |
+| .NET | `Mode` | `string?` | `"enqueue"` | Message delivery mode |
+
+### Delivery modes
+
+| Mode | Effect | During active turn | During idle |
+|------|--------|-------------------|-------------|
+| `"enqueue"` | Queue for next turn | Waits in FIFO queue | Starts a new turn immediately |
+| `"immediate"` | Inject into current turn | Injected before next LLM call | Starts a new turn immediately |
+
+> [!NOTE]
+> When the session is idle (not processing), both modes behave identically—the message starts a new turn immediately.
+
+## Best practices
+
+1. **Default to queueing**—Use `"enqueue"` (or omit `mode`) for most messages. It's predictable and doesn't risk disrupting in-progress work.
+
+1. **Reserve steering for corrections**—Use `"immediate"` when the agent is actively doing the wrong thing and you need to redirect it before it goes further.
+
+1. **Keep steering messages concise**—The agent needs to quickly understand the course correction. Long, complex steering messages may confuse the current context.
+
+1. **Don't over-steer**—Multiple rapid steering messages can degrade turn quality. If you need to change direction significantly, consider aborting the turn and starting fresh.
+
+1. **Show queue state in your UI**—Display the number of queued messages so users know what's pending. Listen for idle events to clear the display.
+
+1. **Handle the steering-to-queue fallback**—If a steering message arrives after the turn completes, it's automatically moved to the queue. Design your UI to reflect this transition.
+
+## See also
+
+* [AUTOTITLE](/copilot/get-started/sdk-quickstart): Set up a session and send messages
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/custom-agents): Define specialized agents with scoped tools
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/hooks-overview): React to session lifecycle events
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/session-persistence): Resume sessions across restarts
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/streaming-events.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/streaming-events
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/streaming-events.md
+- **SHA256_FINGERPRINT**: `4aeb2ac8e855a79f96f0b5bf4073826fbb68d3ea61aafdab73ce6f3262b1c782`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.034385+00:00
+---
+
+**title**: Streaming session events
+**shortTitle**: Streaming Events
+**intro**: >-
+
+## Overview
+
+When `streaming: true` is set on a session, the SDK emits **ephemeral** events in real time (deltas, progress updates) alongside **persisted** events (complete messages, tool results). All events share a common envelope and carry a `data` payload whose shape depends on the event `type`.
+
+![Diagram: Sequence diagram showing the described process.](/assets/images/help/copilot/copilot-sdk/features-streaming-events-diagram-0.png)
+
+| Concept | Description |
+|---------|-------------|
+| **Ephemeral event** | Transient; streamed in real time but **not** persisted to the session log. Not replayed on session resume. |
+| **Persisted event** | Saved to the session event log on disk. Replayed when resuming a session. |
+| **Delta event** | An ephemeral streaming chunk (text or reasoning). Accumulate deltas to build the complete content. |
+| **`parentId` chain** | Each event's `parentId` points to the previous event, forming a linked list you can walk. |
+
+## Event envelope
+
+Every session event, regardless of type, includes these fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `string` (UUID v4) | Unique event identifier |
+| `timestamp` | `string` (ISO 8601) | When the event was created |
+| `parentId` | `string \| null` | ID of the previous event in the chain; `null` for the first event |
+| `agentId` | `string?` | Sub-agent instance ID for sub-agent-originated events; absent for root/main agent and session-level events |
+| `ephemeral` | `boolean?` | `true` for transient events; absent or `false` for persisted events |
+| `type` | `string` | Event type discriminator (see tables below) |
+| `data` | `object` | Event-specific payload |
+
+## Subscribing to events
+
+**Language (typescript):**
+
+```typescript
+// All events
+session.on((event) => {
+    console.log(event.type, event.data);
+});
+
+// Specific event type — data is narrowed automatically
+session.on("assistant.message_delta", (event) => {
+    process.stdout.write(event.data.deltaContent);
+});
+```
+
+**Language (python):**
+
+```python
+from copilot.session_events import SessionEventType
+
+def handle(event):
+    if event.type == SessionEventType.ASSISTANT_MESSAGE_DELTA:
+        print(event.data.delta_content, end="", flush=True)
+
+session.on(handle)
+```
+
+**Language (go):**
+
+```golang
+session.On(func(event copilot.SessionEvent) {
+    if d, ok := event.Data.(*copilot.AssistantMessageDeltaData); ok {
+        fmt.Print(d.DeltaContent)
+    }
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+session.On<SessionEvent>(evt =>
+{
+    if (evt is AssistantMessageDeltaEvent delta)
+    {
+        Console.Write(delta.Data.DeltaContent);
+    }
+});
+```
+
+**Language (java):**
+
+```java
+// All events
+session.on(event -> System.out.println(event.getType()));
+
+// Specific event type — data is narrowed to the matching class
+session.on(AssistantMessageDeltaEvent.class, event ->
+    System.out.print(event.getData().deltaContent())
+);
+```
+
+> [!TIP]
+> **(Python / Go)** These SDKs use separate, per-event data types (for example, `AssistantMessageDeltaData`), so only the relevant fields exist on each type.
+>
+> [!TIP]
+> **(.NET)** The .NET SDK uses separate, strongly-typed data classes per event (e.g., `AssistantMessageDeltaData`), so only the relevant fields exist on each type.
+>
+> [!TIP]
+> **(TypeScript)** The TypeScript SDK uses a discriminated union—when you match on `event.type`, the `data` payload is automatically narrowed to the correct shape.
+
+## Subscribing before a session starts
+
+A session can emit events before its create or resume call returns. The agent may already be working—especially on resume with `continuePendingWork`—and ephemeral events such as `session.idle` are never written to the session log, so `getMessages` cannot recover them afterwards. A subscription installed after the session handle exists misses that startup window.
+
+> [!TIP]
+> **(Rust)** `Client::prepare_session` and `Client::prepare_resume_session` return a `PreparedSession` that owns the session's event channel before any protocol activity happens. Subscribe first, then call `start()`.
+
+```rust
+use github_copilot_sdk::{Client, SessionConfig};
+
+async fn create_without_missing_startup_events(
+    client: &Client,
+) -> Result<(), github_copilot_sdk::Error> {
+    let prepared = client.prepare_session(
+        SessionConfig::default().with_event_buffer_capacity(2048),
+    )?;
+
+    // Installed before any wire activity: nothing is dropped for lack of a receiver.
+    let mut events = prepared.subscribe();
+    tokio::spawn(async move {
+        while let Ok(event) = events.recv().await {
+            println!("{}", event.event_type);
+        }
+    });
+
+    let session = prepared.start().await?;
+    let _ = session;
+    Ok(())
+}
+```
+
+`prepare_*` is synchronous and inert: it validates the buffer capacity, allocates a local channel, and does nothing else. No session is registered and nothing reaches the CLI until `start()` is first polled. Dropping a prepared session that was never started leaves no state behind and closes its subscriptions; dropping the `start()` future cancels the in-flight startup and unregisters the session, so a retry with the same session ID succeeds. Cleanup is scoped to the exact registration the abandoned startup owned, so it cannot evict a retry that has already taken over the same session ID.
+
+Startup buffering is worth planning for:
+
+* The event buffer is finite—512 events unless `event_buffer_capacity` overrides it. A capacity of `0` is rejected with an invalid-config error rather than clamped.
+* Slow subscribers observe a `Lagged` error reporting how many events were skipped. They never apply backpressure to the session's event loop.
+* Consumers that need a lossless view of a large startup burst must either configure a capacity that covers it or drain the subscription concurrently with `start()`.
+
+> [!NOTE]
+> For cloud sessions where the server assigns the session ID, the SDK cannot route notifications until the create response arrives and the ID is known. Events emitted before that point are not routable to any session. The guarantee is narrower: routed events are never dropped for lack of an installed receiver. Pin `session_id` on the config to get routing—and full pre-response coverage—from the first byte.
+
+## Render only the parent agent response
+
+Sub-agent events share the parent session stream and include envelope-level `agentId`. Root/main agent events and session-level events omit `agentId`, so main-chat renderers can ignore assistant events where `agentId` is set and route those events to traces or progress UI instead.
+
+**Language (typescript):**
+
+```typescript
+import type { CopilotSession } from "@github/copilot-sdk";
+
+export function subscribeParentResponse(session: CopilotSession): void {
+    session.on("assistant.message_delta", (event) => {
+        if (!event.agentId) {
+            process.stdout.write(event.data.deltaContent);
+        }
+    });
+}
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotSession, SessionEvent, SessionEventType
+from copilot.session_events import AssistantMessageDeltaData
+
+def subscribe_parent_response(session: CopilotSession) -> None:
+    def handle(event: SessionEvent) -> None:
+        if event.type == SessionEventType.ASSISTANT_MESSAGE_DELTA and event.agent_id is None:
+            data = event.data
+            if isinstance(data, AssistantMessageDeltaData):
+                print(data.delta_content, end="", flush=True)
+
+    session.on(handle)
+```
+
+**Language (go):**
+
+```golang
+package example
+
+import (
+	"fmt"
+
+	copilot "github.com/github/copilot-sdk/go"
+)
+
+func subscribeParentResponse(session *copilot.Session) {
+	session.On(func(event copilot.SessionEvent) {
+		if event.AgentID != nil {
+			return
+		}
+
+		if d, ok := event.Data.(*copilot.AssistantMessageDeltaData); ok {
+			fmt.Print(d.DeltaContent)
+		}
+	})
+}
+```
+
+**Language (dotnet):**
+
+```csharp
+using System;
+using GitHub.Copilot;
+
+static class ParentAgentResponseExample
+{
+    public static void SubscribeParentResponse(CopilotSession session)
+    {
+        session.On<AssistantMessageDeltaEvent>(evt =>
+        {
+            if (evt.AgentId is null)
+            {
+                Console.Write(evt.Data.DeltaContent);
+            }
+        });
+    }
+}
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotSession;
+import com.github.copilot.generated.AssistantMessageDeltaEvent;
+
+final class ParentAgentResponseExample {
+    static void subscribeParentResponse(CopilotSession session) {
+        session.on(AssistantMessageDeltaEvent.class, event -> {
+            if (event.getAgentId() == null) {
+                System.out.print(event.getData().deltaContent());
+            }
+        });
+    }
+}
+```
+
+**Language (rust):**
+
+```rust
+use github_copilot_sdk::session::Session;
+
+async fn subscribe_parent_response(session: &Session) {
+    let mut events = session.subscribe();
+
+    while let Ok(event) = events.recv().await {
+        if event.event_type == "assistant.message_delta" && event.agent_id.is_none() {
+            if let Some(delta) = event.data.get("deltaContent").and_then(|v| v.as_str()) {
+                print!("{delta}");
+            }
+        }
+    }
+}
+```
+
+## Assistant events
+
+These events track the agent's response lifecycle—from turn start through streaming chunks to the final message.
+
+### `assistant.turn_start`
+
+Emitted when the agent begins processing a turn.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `turnId` | `string` | ✅ | Turn identifier (typically a stringified turn number) |
+| `interactionId` | `string` | | CAPI interaction ID for telemetry correlation |
+
+### `assistant.intent`
+
+Ephemeral. Short description of what the agent is currently doing, updated as it works.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `intent` | `string` | ✅ | Human-readable intent (e.g., "Exploring codebase") |
+
+### `assistant.reasoning`
+
+Complete extended thinking block from the model. Emitted after reasoning is finished.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `reasoningId` | `string` | ✅ | Unique identifier for this reasoning block |
+| `content` | `string` | ✅ | The complete extended thinking text |
+
+### `assistant.reasoning_delta`
+
+Ephemeral. Incremental chunk of the model's extended thinking, streamed in real time.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `reasoningId` | `string` | ✅ | Matches the corresponding `assistant.reasoning` event |
+| `deltaContent` | `string` | ✅ | Text chunk to append to reasoning content |
+
+### `assistant.message`
+
+The assistant's complete response for this LLM call. May include tool invocation requests.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `messageId` | `string` | ✅ | Unique identifier for this message |
+| `content` | `string` | ✅ | The assistant's text response |
+| `toolRequests` | `ToolRequest[]` | | Tool calls the assistant wants to make (see below) |
+| `reasoningOpaque` | `string` | | Encrypted extended thinking (Anthropic models); session-bound |
+| `reasoningText` | `string` | | Readable reasoning text from extended thinking |
+| `encryptedContent` | `string` | | Encrypted reasoning content (OpenAI models); session-bound |
+| `phase` | `string` | | Generation phase (e.g., `"thinking"` vs `"response"`) |
+| `outputTokens` | `number` | | Actual output token count from the API response |
+| `interactionId` | `string` | | CAPI interaction ID for telemetry |
+| `parentToolCallId` | `string` | | Deprecated. Use envelope-level `agentId` for sub-agent attribution |
+
+**`ToolRequest` fields:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `toolCallId` | `string` | ✅ | Unique ID for this tool call |
+| `name` | `string` | ✅ | Tool name (e.g., `"bash"`, `"edit"`, `"grep"`) |
+| `arguments` | `object` | | Parsed arguments for the tool |
+| `type` | `"function" \| "custom"` | | Call type; defaults to `"function"` when absent |
+
+### `assistant.message_delta`
+
+Ephemeral. Incremental chunk of the assistant's text response, streamed in real time.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `messageId` | `string` | ✅ | Matches the corresponding `assistant.message` event |
+| `deltaContent` | `string` | ✅ | Text chunk to append to the message |
+| `parentToolCallId` | `string` | | Deprecated. Use envelope-level `agentId` for sub-agent attribution |
+
+### `assistant.turn_end`
+
+Emitted when the agent finishes a turn (all tool executions complete, final response delivered).
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `turnId` | `string` | ✅ | Matches the corresponding `assistant.turn_start` event |
+
+### `assistant.usage`
+
+Ephemeral. Token usage and cost information for an individual API call.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `model` | `string` | ✅ | Model identifier (e.g., `"gpt-5.4"`) |
+| `inputTokens` | `number` | | Input tokens consumed |
+| `outputTokens` | `number` | | Output tokens produced |
+| `reasoningTokens` | `number` | | Output tokens used for reasoning/chain-of-thought (subset of `outputTokens`) |
+| `cacheReadTokens` | `number` | | Tokens read from prompt cache |
+| `cacheWriteTokens` | `number` | | Tokens written to prompt cache |
+| `cacheExpiresAt` | `string` | | ISO 8601 timestamp when the prompt cache for this model call expires |
+| `contentFilterTriggered` | `boolean` | | Whether the response was blocked or truncated by content filtering (`finish_reason === 'content_filter'`) |
+| `finishReason` | `string` | | Model finish reason (e.g., `"stop"`, `"length"`, `"tool_calls"`, `"content_filter"`) |
+| `cost` | `number` | | Model multiplier cost for billing |
+| `duration` | `number` | | API call duration in milliseconds |
+| `timeToFirstTokenMs` | `number` | | Time from request dispatch to first token received (streaming latency) |
+| `interTokenLatencyMs` | `number` | | Average latency between consecutive tokens (streaming throughput) |
+| `reasoningEffort` | `string` | | Reasoning effort level used for this call (e.g., `"low"`, `"medium"`, `"high"`) |
+| `initiator` | `string` | | What triggered this call (e.g., `"sub-agent"`); absent for user-initiated |
+| `apiCallId` | `string` | | Completion ID from the provider (e.g., `chatcmpl-abc123`) |
+| `serviceRequestId` | `string` | | Copilot service request ID (`x-copilot-service-request-id`) for CAPI log correlation |
+| `apiEndpoint` | `"/chat/completions" \| "/v1/messages" \| "/responses" \| "ws:/responses"` | | API endpoint used for the model call; useful for observability and cost attribution. `ws:/responses` is the websocket variant of the responses API |
+| `providerCallId` | `string` | | GitHub request tracing ID (`x-github-request-id`) |
+| `parentToolCallId` | `string` | | Deprecated. Use envelope-level `agentId` for sub-agent attribution |
+| `quotaSnapshots` | `Record<string, QuotaSnapshot>` | | Per-quota resource usage, keyed by quota identifier |
+| `copilotUsage` | `CopilotUsage` | | Itemized token cost breakdown from the API |
+
+### `assistant.streaming_delta`
+
+Ephemeral. Low-level network progress indicator—total bytes received from the streaming API response.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `totalResponseSizeBytes` | `number` | ✅ | Cumulative bytes received so far |
+
+## Tool execution events
+
+These events track the full lifecycle of each tool invocation—from the model requesting a tool call through execution to completion.
+
+### `tool.execution_start`
+
+Emitted when a tool begins executing.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `toolCallId` | `string` | ✅ | Unique identifier for this tool call |
+| `toolName` | `string` | ✅ | Name of the tool (e.g., `"bash"`, `"edit"`, `"grep"`) |
+| `arguments` | `object` | | Parsed arguments passed to the tool |
+| `mcpServerName` | `string` | | MCP server name, when the tool is provided by an MCP server |
+| `mcpToolName` | `string` | | Original tool name on the MCP server |
+| `parentToolCallId` | `string` | | Deprecated. Use envelope-level `agentId` for sub-agent attribution |
+
+### `tool.execution_partial_result`
+
+Deprecated. Use `tool.shell_output` for live terminal output. This ephemeral event remains emitted alongside the replacement during migration; subscribe to only one representation to avoid displaying the same output twice.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `toolCallId` | `string` | ✅ | Matches the corresponding `tool.execution_start` |
+| `partialOutput` | `string` | ✅ | Bounded, cumulative replacement snapshot with stdout and stderr merged; not an append-only chunk |
+
+### `tool.shell_output`
+
+Ephemeral. Append-only output from an attached terminal command or a user-requested terminal command. Each event contains newly observed, secret-filtered text, without the separators or markers used to format final tool results for the model.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `toolCallId` | `string` | ✅ | Identifies the originating tool call |
+| `text` | `string` | ✅ | New text to append, not a replacement snapshot |
+| `stream` | `"stdout" \| "stderr" \| "terminal"` | | Output source; omitted means `"stdout"`. `"terminal"` identifies inherently merged PTY output, whose stdout/stderr origin cannot be recovered |
+| `sequence` | `number` | ✅ | Starts at zero and increases across all streams for this tool call, in observed publication order |
+
+Accumulate `text` separately by `toolCallId` and `stream`, or join the chunks in sequence order for a combined display. A sequence number identifies duplicates and missing chunks; it does not establish exact ordering between independent operating-system writes. A late subscriber can receive a first sequence greater than zero.
+
+These events are live-only: they are not persisted or replayed after resume. Final `tool.execution_complete` results, model-facing formatting, and detached command capture are unchanged. Text can contain terminal control sequences; renderers must apply their normal terminal-text handling.
+
+An attached terminal command can keep running after `tool.execution_complete` when it runs asynchronously or continues beyond `initial_wait`. Output received while it continues uses the original `toolCallId` and continues the same `sequence`, rather than restarting at zero. Consumers that display only active calls must ignore chunks received after completion instead of recreating completed-call state.
+
+Secret filtering operates on each decoded chunk. The runtime does not artificially split lines, but operating-system reads can divide a line or secret across chunks; cross-chunk secret reconstruction is not provided.
+
+### `tool.execution_progress`
+
+Ephemeral. Human-readable progress status from a running tool (e.g., MCP server progress notifications).
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `toolCallId` | `string` | ✅ | Matches the corresponding `tool.execution_start` |
+| `progressMessage` | `string` | ✅ | Progress status message |
+
+### `tool.execution_complete`
+
+Emitted when a tool finishes executing—successfully or with an error.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `toolCallId` | `string` | ✅ | Matches the corresponding `tool.execution_start` |
+| `success` | `boolean` | ✅ | Whether execution succeeded |
+| `model` | `string` | | Model that generated this tool call |
+| `interactionId` | `string` | | CAPI interaction ID |
+| `isUserRequested` | `boolean` | | `true` when the user explicitly requested this tool call |
+| `result` | `Result` | | Present on success, and on failure when the tool returned content with its error (see below) |
+| `error` | `{ message, code? }` | | Present on failure |
+| `toolTelemetry` | `object` | | Tool-specific telemetry (e.g., CodeQL check counts) |
+| `parentToolCallId` | `string` | | Deprecated. Use envelope-level `agentId` for sub-agent attribution |
+
+**`Result` fields:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `content` | `string` | ✅ | Concise result sent to the LLM (may be truncated for token efficiency) |
+| `detailedContent` | `string` | | Full result for display, preserving complete content like diffs |
+| `contents` | `ContentBlock[]` | | Structured content blocks (text, terminal, image, audio, resource) |
+
+### `tool.user_requested`
+
+Emitted when the user explicitly requests a tool invocation (rather than the model choosing to call one).
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `toolCallId` | `string` | ✅ | Unique identifier for this tool call |
+| `toolName` | `string` | ✅ | Name of the tool the user wants to invoke |
+| `arguments` | `object` | | Arguments for the invocation |
+
+## Session lifecycle events
+
+### `session.idle`
+
+Ephemeral. The agent has finished all processing and is ready for the next message. This is the signal that a turn is fully complete.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `aborted` | `boolean` | | True when the preceding turn was cancelled via abort signal |
+
+### `session.error`
+
+An error occurred during session processing.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `errorType` | `string` | ✅ | Error category (e.g., `"authentication"`, `"quota"`, `"rate_limit"`) |
+| `message` | `string` | ✅ | Human-readable error message |
+| `stack` | `string` | | Error stack trace |
+| `statusCode` | `number` | | HTTP status code from the upstream request |
+| `providerCallId` | `string` | | GitHub request tracing ID for server-side log correlation |
+
+### `session.compaction_start`
+
+Context window compaction has begun. **Data payload is empty (`{}`)**.
+
+### `session.compaction_complete`
+
+Context window compaction finished.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `success` | `boolean` | ✅ | Whether compaction succeeded |
+| `error` | `string` | | Error message if compaction failed |
+| `preCompactionTokens` | `number` | | Tokens before compaction |
+| `postCompactionTokens` | `number` | | Tokens after compaction |
+| `preCompactionMessagesLength` | `number` | | Message count before compaction |
+| `messagesRemoved` | `number` | | Messages removed |
+| `tokensRemoved` | `number` | | Tokens removed |
+| `summaryContent` | `string` | | LLM-generated summary of compacted history |
+| `checkpointNumber` | `number` | | Checkpoint snapshot number created for recovery |
+| `checkpointPath` | `string` | | File path where the checkpoint was stored |
+| `compactionTokensUsed` | `{ input, output, cachedInput }` | | Token usage for the compaction LLM call |
+| `requestId` | `string` | | GitHub request tracing ID for the compaction call |
+
+### `session.title_changed`
+
+Ephemeral. The session's auto-generated title was updated.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `title` | `string` | ✅ | New session title |
+
+### `session.context_changed`
+
+The session's working directory or repository context changed.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `cwd` | `string` | ✅ | Current working directory |
+| `gitRoot` | `string` | | Git repository root |
+| `repository` | `string` | | Repository in `"owner/name"` format |
+| `branch` | `string` | | Current git branch |
+
+### `session.usage_info`
+
+Ephemeral. Context window utilization snapshot.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `tokenLimit` | `number` | ✅ | Maximum tokens for the model's context window |
+| `currentTokens` | `number` | ✅ | Current tokens in the context window |
+| `messagesLength` | `number` | ✅ | Current message count in the conversation |
+
+### `session.session_limits_changed`
+
+Session limits changed for the current accounting window. A `null` `sessionLimits` value means no limits are active.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `sessionLimits` | `SessionLimitsConfig \| null` | ✅ | Current session limits, or `null` when no limits are active |
+| `sessionLimits.maxAiCredits` | `number` | | Maximum AI Credits allowed across the session's current accounting window |
+
+### `session.usage_checkpoint`
+
+Durable aggregate usage checkpoint used to reconstruct accounting when a session is resumed.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `totalNanoAiu` | `number` | ✅ | Session-wide accumulated nano-AI units cost at checkpoint time |
+| `totalPremiumRequests` | `number` | | Total number of premium API requests used at checkpoint time |
+
+### `session.task_complete`
+
+The agent has completed its assigned task.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `summary` | `string` | | Summary of the completed task |
+
+### `session.shutdown`
+
+The session has ended.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `shutdownType` | `"routine" \| "error"` | ✅ | Normal shutdown or crash |
+| `errorReason` | `string` | | Error description when `shutdownType` is `"error"` |
+| `totalPremiumRequests` | `number` | ✅ | Total premium API requests used |
+| `totalApiDurationMs` | `number` | ✅ | Cumulative API call time in milliseconds |
+| `sessionStartTime` | `number` | ✅ | Unix timestamp (ms) when the session started |
+| `codeChanges` | `{ linesAdded, linesRemoved, filesModified }` | ✅ | Aggregate code change metrics |
+| `modelMetrics` | `Record<string, ModelMetric>` | ✅ | Per-model usage breakdown |
+| `currentModel` | `string` | | Model selected at shutdown time |
+
+## Permission and user input events
+
+These events are emitted when the agent needs approval or input from the user before continuing.
+
+### `permission.requested`
+
+The agent needs permission to perform an action (run a command, write a file, etc.).
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `requestId` | `string` | ✅ | Use this to respond via `session.respondToPermission()` |
+| `permissionRequest` | `PermissionRequest` | ✅ | Details of the permission being requested |
+
+The `permissionRequest` is a discriminated union on `kind`:
+
+| `kind` | Key Fields | Description |
+|--------|------------|-------------|
+| `"shell"` | `fullCommandText`, `intention`, `commands[]`, `possiblePaths[]` | Execute a shell command |
+| `"write"` | `fileName`, `diff`, `intention`, `newFileContents?`, `fileEdits?` | Write/modify a file |
+| `"read"` | `path`, `intention` | Read a file or directory |
+| `"mcp"` | `serverName`, `toolName`, `toolTitle`, `args?`, `readOnly` | Call an MCP tool |
+| `"url"` | `url`, `intention` | Fetch a URL |
+| `"memory"` | `subject`, `fact`, `citations` | Store a memory |
+| `"custom-tool"` | `toolName`, `toolDescription`, `args?` | Call a custom tool |
+
+All `kind` variants also include an optional `toolCallId` linking back to the tool call that triggered the request.
+
+Write requests can also include `fileEdits` in both `permissionRequest` and `promptRequest`. Each entry contains an optional `before` and `after` snapshot, each with an absolute `path` in the session filesystem namespace and complete UTF-8 `content`. A missing `before` means creation; a missing `after` means deletion. An empty `content` string represents an empty file, not an unavailable preview. A move can have different paths on its two sides. When a move overwrites an existing destination, separate entries describe the source deletion and destination replacement.
+
+These snapshots describe the planned operation, not a later read of the live filesystem. The runtime omits `fileEdits` when it cannot provide a complete text preview, including requests made before reading a sandbox-protected file, non-UTF-8 contents, or an unreadable or non-regular move destination, such as a named pipe. Do not infer a deletion from an empty legacy `newFileContents` value. The existing fields and approval choices remain available to consumers that do not use previews.
+
+### `permission.completed`
+
+A permission request was resolved.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `requestId` | `string` | ✅ | Matches the corresponding `permission.requested` |
+| `result.kind` | `string` | ✅ | One of: `"approved"`, `"denied-by-rules"`, `"denied-interactively-by-user"`, `"denied-no-approval-rule-and-could-not-request-from-user"`, `"denied-by-content-exclusion-policy"` |
+
+### `user_input.requested`
+
+Ephemeral. The agent is asking the user a question.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `requestId` | `string` | ✅ | Use this to respond via `session.respondToUserInput()` |
+| `question` | `string` | ✅ | The question to present to the user |
+| `choices` | `string[]` | | Predefined choices for the user |
+| `allowFreeform` | `boolean` | | Whether free-form text input is allowed |
+
+### `user_input.completed`
+
+Ephemeral. A user input request was resolved.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `requestId` | `string` | ✅ | Matches the corresponding `user_input.requested` |
+
+### `elicitation.requested`
+
+Ephemeral. The agent needs structured form input from the user (MCP elicitation protocol).
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `requestId` | `string` | ✅ | Use this to respond via `session.respondToElicitation()` |
+| `message` | `string` | ✅ | Description of what information is needed |
+| `mode` | `"form"` | | Elicitation mode (currently only `"form"`) |
+| `requestedSchema` | `{ type: "object", properties, required? }` | ✅ | JSON Schema describing the form fields |
+
+### `elicitation.completed`
+
+Ephemeral. An elicitation request was resolved.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `requestId` | `string` | ✅ | Matches the corresponding `elicitation.requested` |
+
+## Sub-agent and skill events
+
+### `subagent.started`
+
+A custom agent was invoked as a sub-agent.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `toolCallId` | `string` | ✅ | Parent tool call that spawned this sub-agent |
+| `agentName` | `string` | ✅ | Internal name of the sub-agent |
+| `agentDisplayName` | `string` | ✅ | Human-readable display name |
+| `agentDescription` | `string` | ✅ | Description of what the sub-agent does |
+| `model` | `string` | | Model the sub-agent will run with, when known at start |
+
+### `subagent.completed`
+
+A sub-agent finished successfully.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `toolCallId` | `string` | ✅ | Matches the corresponding `subagent.started` |
+| `agentName` | `string` | ✅ | Internal name |
+| `agentDisplayName` | `string` | ✅ | Display name |
+| `model` | `string` | | Model used by the sub-agent |
+| `durationMs` | `number` | | Wall-clock execution duration in milliseconds |
+| `totalTokens` | `number` | | Total input and output tokens consumed |
+| `totalToolCalls` | `number` | | Total tool calls made |
+
+### `subagent.failed`
+
+A sub-agent encountered an error.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `toolCallId` | `string` | ✅ | Matches the corresponding `subagent.started` |
+| `agentName` | `string` | ✅ | Internal name |
+| `agentDisplayName` | `string` | ✅ | Display name |
+| `error` | `string` | ✅ | Error message |
+| `model` | `string` | | Model selected for the sub-agent, when known |
+| `durationMs` | `number` | | Wall-clock execution duration in milliseconds |
+| `totalTokens` | `number` | | Total input and output tokens consumed before failure |
+| `totalToolCalls` | `number` | | Total tool calls made before failure |
+
+### `subagent.selected`
+
+A custom agent was selected (inferred) to handle the current request.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `agentName` | `string` | ✅ | Internal name of the selected agent |
+| `agentDisplayName` | `string` | ✅ | Display name |
+| `tools` | `string[] \| null` | ✅ | Tool names available to this agent; `null` for all tools |
+
+### `subagent.deselected`
+
+A custom agent was deselected, returning to the default agent. **Data payload is empty (`{}`)**.
+
+### `skill.invoked`
+
+A skill was activated for the current conversation.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `name` | `string` | ✅ | Skill name |
+| `path` | `string` | ✅ | File path to the SKILL.md definition |
+| `content` | `string` | ✅ | Full skill content injected into the conversation |
+| `allowedTools` | `string[]` | | Tools listed in the skill's `allowed-tools` frontmatter. The SDK doesn't approve them automatically; your permission handler still decides. The Copilot CLI auto-approves them while the skill is active. |
+| `pluginName` | `string` | | Plugin the skill originated from |
+| `pluginVersion` | `string` | | Plugin version |
+
+## Other events
+
+### `abort`
+
+The current turn was aborted.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `reason` | `string` | ✅ | Why the turn was aborted (e.g., `"user initiated"`) |
+
+### `user.message`
+
+The user sent a message. Recorded for the session timeline.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `content` | `string` | ✅ | The user's message text |
+| `transformedContent` | `string` | | Transformed version after preprocessing |
+| `attachments` | `Attachment[]` | | File, directory, selection, blob, or GitHub reference attachments |
+| `source` | `string` | | Message source identifier |
+| `agentMode` | `string` | | Agent mode: `"interactive"`, `"plan"`, `"autopilot"`, or `"shell"` |
+| `interactionId` | `string` | | CAPI interaction ID |
+
+### `system.message`
+
+A system or developer prompt was injected into the conversation.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `content` | `string` | ✅ | The prompt text |
+| `role` | `"system" \| "developer"` | ✅ | Message role |
+| `name` | `string` | | Source identifier |
+| `metadata` | `{ promptVersion?, variables? }` | | Prompt template metadata |
+
+### `external_tool.requested`
+
+The agent wants to invoke an external tool (one provided by the SDK consumer).
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `requestId` | `string` | ✅ | Use this to respond via `session.respondToExternalTool()` |
+| `sessionId` | `string` | ✅ | Session this request belongs to |
+| `toolCallId` | `string` | ✅ | Tool call ID for this invocation |
+| `toolName` | `string` | ✅ | Name of the external tool |
+| `arguments` | `object` | | Arguments for the tool |
+
+### `external_tool.completed`
+
+An external tool request was resolved.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `requestId` | `string` | ✅ | Matches the corresponding `external_tool.requested` |
+
+### `exit_plan_mode.requested`
+
+Ephemeral. The agent has created a plan and wants to exit plan mode.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `requestId` | `string` | ✅ | Use this to respond via `session.respondToExitPlanMode()` |
+| `summary` | `string` | ✅ | Summary of the plan |
+| `planContent` | `string` | ✅ | Full plan file content |
+| `actions` | `string[]` | ✅ | Available user actions (e.g., approve, edit, reject) |
+| `recommendedAction` | `string` | ✅ | Suggested action |
+
+### `exit_plan_mode.completed`
+
+Ephemeral. An exit plan mode request was resolved.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `requestId` | `string` | ✅ | Matches the corresponding `exit_plan_mode.requested` |
+
+### `command.queued`
+
+Ephemeral. A slash command was queued for execution.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `requestId` | `string` | ✅ | Use this to respond via `session.respondToQueuedCommand()` |
+| `command` | `string` | ✅ | The slash command text (e.g., `/help`, `/clear`) |
+
+### `command.completed`
+
+Ephemeral. A queued command was resolved.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `requestId` | `string` | ✅ | Matches the corresponding `command.queued` |
+
+### `session_limits_exhausted.requested`
+
+Ephemeral. The current session budget was exhausted and the runtime needs a user decision before continuing.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `requestId` | `string` | ✅ | Use this ID when responding to the pending exhausted-limit request |
+| `maxAiCredits` | `number` | ✅ | Configured max AI Credits for the current accounting window |
+| `usedAiCredits` | `number` | ✅ | AI Credits already consumed in the current accounting window |
+
+### `session_limits_exhausted.completed`
+
+Ephemeral. A pending exhausted-limit request was resolved.
+
+| Data Field | Type | Required | Description |
+|------------|------|----------|-------------|
+| `requestId` | `string` | ✅ | Matches the corresponding `session_limits_exhausted.requested` event |
+| `response.action` | `"add" \| "set" \| "unset" \| "cancel"` | ✅ | Action selected for the exhausted-limit request |
+| `response.additionalAiCredits` | `number` | | AI Credits to add to the current max when `response.action` is `"add"` |
+| `response.maxAiCredits` | `number` | | New absolute max AI Credits when `response.action` is `"set"` |
+
+## Quick reference: agentic turn flow
+
+A typical agentic turn emits events in this order:
+
+```text
+assistant.turn_start          → Turn begins
+├── assistant.intent          → What the agent plans to do (ephemeral)
+├── assistant.reasoning_delta → Streaming thinking chunks (ephemeral, repeated)
+├── assistant.reasoning       → Complete thinking block
+├── assistant.message_delta   → Streaming response chunks (ephemeral, repeated)
+├── assistant.message         → Complete response (may include toolRequests)
+├── assistant.usage           → Token usage for this API call (ephemeral)
+│
+├── [If tools were requested:]
+│   ├── permission.requested  → Needs user approval
+│   ├── permission.completed  → Approval result
+│   ├── tool.execution_start  → Tool begins
+│   ├── tool.shell_output              → Stream-tagged terminal output (ephemeral, repeated)
+│   ├── tool.execution_progress        → Progress updates (ephemeral, repeated)
+│   ├── tool.execution_complete        → Tool finished
+│   │
+│   └── [Agent loops: more reasoning → message → tool calls...]
+│
+assistant.turn_end            → Turn complete
+session.idle                  → Ready for next message (ephemeral)
+```
+
+## All event types at a glance
+
+This table lists key `data` payload fields. Common envelope fields are documented above.
+
+| Event Type | Ephemeral | Category | Key Data Fields |
+|------------|-----------|----------|-----------------|
+| `assistant.turn_start` | | Assistant | `turnId`, `interactionId?` |
+| `assistant.intent` | ✅ | Assistant | `intent` |
+| `assistant.reasoning` | | Assistant | `reasoningId`, `content` |
+| `assistant.reasoning_delta` | ✅ | Assistant | `reasoningId`, `deltaContent` |
+| `assistant.streaming_delta` | ✅ | Assistant | `totalResponseSizeBytes` |
+| `assistant.message` | | Assistant | `messageId`, `content`, `toolRequests?`, `outputTokens?`, `phase?` |
+| `assistant.message_delta` | ✅ | Assistant | `messageId`, `deltaContent` |
+| `assistant.turn_end` | | Assistant | `turnId` |
+| `assistant.usage` | ✅ | Assistant | `model`, `apiEndpoint?`, `inputTokens?`, `outputTokens?`, `cost?`, `duration?` |
+| `tool.user_requested` | | Tool | `toolCallId`, `toolName`, `arguments?` |
+| `tool.execution_start` | | Tool | `toolCallId`, `toolName`, `arguments?`, `mcpServerName?` |
+| `tool.execution_partial_result` | ✅ | Tool | `toolCallId`, `partialOutput` |
+| `tool.shell_output` | ✅ | Tool | `toolCallId`, `text`, `stream?`, `sequence` |
+| `tool.execution_progress` | ✅ | Tool | `toolCallId`, `progressMessage` |
+| `tool.execution_complete` | | Tool | `toolCallId`, `success`, `result?`, `error?` |
+| `session.idle` | ✅ | Session | `aborted?` |
+| `session.error` | | Session | `errorType`, `message`, `statusCode?` |
+| `session.compaction_start` | | Session | *(empty)* |
+| `session.compaction_complete` | | Session | `success`, `preCompactionTokens?`, `summaryContent?` |
+| `session.title_changed` | ✅ | Session | `title` |
+| `session.context_changed` | | Session | `cwd`, `gitRoot?`, `repository?`, `branch?` |
+| `session.usage_info` | ✅ | Session | `tokenLimit`, `currentTokens`, `messagesLength` |
+| `session.session_limits_changed` | | Session | `sessionLimits` |
+| `session.usage_checkpoint` | | Session | `totalNanoAiu`, `totalPremiumRequests?` |
+| `session.task_complete` | | Session | `summary?` |
+| `session.shutdown` | | Session | `shutdownType`, `codeChanges`, `modelMetrics` |
+| `permission.requested` | | Permission | `requestId`, `permissionRequest` |
+| `permission.completed` | | Permission | `requestId`, `result.kind` |
+| `user_input.requested` | ✅ | User Input | `requestId`, `question`, `choices?` |
+| `user_input.completed` | ✅ | User Input | `requestId` |
+| `elicitation.requested` | ✅ | User Input | `requestId`, `message`, `requestedSchema` |
+| `elicitation.completed` | ✅ | User Input | `requestId` |
+| `subagent.started` | | Sub-Agent | `toolCallId`, `agentName`, `agentDisplayName`, `model?` |
+| `subagent.completed` | | Sub-Agent | `toolCallId`, `agentName`, `agentDisplayName`, `model?`, `durationMs?`, `totalTokens?`, `totalToolCalls?` |
+| `subagent.failed` | | Sub-Agent | `toolCallId`, `agentName`, `error`, `model?`, `durationMs?`, `totalTokens?`, `totalToolCalls?` |
+| `subagent.selected` | | Sub-Agent | `agentName`, `agentDisplayName`, `tools` |
+| `subagent.deselected` | | Sub-Agent | *(empty)* |
+| `skill.invoked` | | Skill | `name`, `path`, `content`, `allowedTools?` |
+| `abort` | | Control | `reason` |
+| `user.message` | | User | `content`, `attachments?`, `agentMode?` |
+| `system.message` | | System | `content`, `role` |
+| `external_tool.requested` | | External Tool | `requestId`, `toolName`, `arguments?` |
+| `external_tool.completed` | | External Tool | `requestId` |
+| `command.queued` | ✅ | Command | `requestId`, `command` |
+| `command.completed` | ✅ | Command | `requestId` |
+| `session_limits_exhausted.requested` | ✅ | Session | `requestId`, `maxAiCredits`, `usedAiCredits` |
+| `session_limits_exhausted.completed` | ✅ | Session | `requestId`, `response.action` |
+| `exit_plan_mode.requested` | ✅ | Plan Mode | `requestId`, `summary`, `planContent`, `actions` |
+| `exit_plan_mode.completed` | ✅ | Plan Mode | `requestId` |
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/usage-and-billing.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/usage-and-billing
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/usage-and-billing.md
+- **SHA256_FINGERPRINT**: `a66196729b11fed32120f6af95387ce963cb40b8475a9f083a26ae32af4c00bd`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.026723+00:00
+---
+
+**title**: Usage and billing metrics
+**shortTitle**: Usage And Billing
+**intro**: >-
+
+> [!TIP]
+> Each example is functionally equivalent across languages. The TypeScript snippet is expanded by default; select your language from the collapsible blocks to see the same logic in that SDK.
+
+## Overview
+
+The SDK surfaces usage data through two complementary mechanisms:
+
+* **Session events**: ephemeral events the runtime emits as a turn runs. Subscribe to these for real-time, per-API-call data.
+* **RPC methods**: request/response calls you make on demand. Use these to snapshot accumulated totals or look up account-level quota.
+
+The table below maps each signal to the API that exposes it.
+
+| Signal | API | Scope | Type |
+|---|---|---|---|
+| Per-call token counts | `assistant.usage` event | Session | Event |
+| Context-window utilization | `session.usage_info` event | Session | Event |
+| Context-window breakdown (on demand) | `session.metadata.contextInfo` | Session | RPC |
+| Accumulated AI credit and token totals | `session.usage.getMetrics` | Session | RPC |
+| Per-model AI credit pricing | `models.list` | Server | RPC |
+| Account quota and premium interactions | `account.getQuota` | Server | RPC |
+| Session-owned provider quota observations | `session.quota.get` and `session.quota.refresh` | Session | RPC |
+| Provider admission-state updates | `session.quota_observation` | Session | Event |
+
+`session.quota.get` reads local runtime state; `session.quota.refresh` refreshes the provider catalogs and quota sources. Both return `providerQuotas`, keyed by provider identity, quota ID, and observation kind. The runtime keeps one observation store. The legacy `snapshots` field is a derived compatibility view of authoritative budgets, not a second source of quota state.
+
+Provider cardinality is an emergent property of actual usage and observations supplied to the seam. This API neither knows nor enforces how many providers a user may use: it records and projects zero, one, or many entries identically. Producers supply stable provider/account-scoped references; usage adds model identity, and quota adds quota identity and observation kind. `get()` returns the full known collection, so callers can select an exact key, a subset, or all entries without provider-specific methods. Acquisition uses the sources supplied by the upstream account/model layer; it does not manufacture a union or impose a selected-provider filter on reads.
+
+Check `observationKind`, `quantityKind`, and `acquisitionStatus` before interpreting a reading. An `authoritative_budget` can supply progress and reset metadata. An `advisory_balance` reports independent signed 64-bit quantities without promising a percentage, reset window, or post-call balance. An `admission_state` reports permission/capacity at request admission and carries no quantities; it does not replace an account balance. Preserve missing values and explicit nulls rather than converting them to zero. A failed or unavailable acquisition is not quota exhaustion.
+
+For Microsoft 365 Copilot, access and capacity are service verdicts, while quantities are advisory. For example, `allowed`/`available` with both quantities explicitly zero means **0 / 0 AIC reported**, not 100% consumed or inconsistent state. A missing entitlement is different from a zero entitlement. The `-1` entitlement sentinel means unlimited entitlement without changing the reported capacity state. Inference headers can reflect cached admission state; neither those headers nor an on-demand quota refresh establish the charge for the preceding call.
+
+Usage totals belong to a session, not the active account. In the CLI, switching away from a non-empty Microsoft 365 Copilot session requires starting a new session. The previous session retains its usage and history for resume; the new session starts its own totals.
+
+> [!NOTE]
+> `session.quota`, `session.usage.getMetrics`, `session.metadata.contextInfo`, and `session.metadata.recomputeContextTokens` are marked experimental in the generated RPC surface. In .NET they raise the `GHCP001` experimental diagnostic, which you suppress with `#pragma warning disable GHCP001` or a project-level `<NoWarn>GHCP001</NoWarn>`. Pin both the SDK and the Copilot CLI runtime if your application depends on them.
+
+The field tables below list only the fields used in the examples on this page. The complete, always-current field reference is the generated SDK types plus [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/streaming-events), which is regenerated from the CLI schema on every dependency bump. Treat those as the source of truth and this page as a task-oriented guide.
+
+## Per-call token counts
+
+The `assistant.usage` event is emitted once for every model API call in a turn (including calls made by sub-agents). It carries the token counts and the billing multiplier for that single call.
+
+The example below uses these fields. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/streaming-events#assistantusage) for the full list, including cache, reasoning, latency, and tracing fields.
+
+| Field | Type | Description |
+|---|---|---|
+| `model` | `string` | Model identifier for this call |
+| `inputTokens` | `number` | Input tokens consumed |
+| `outputTokens` | `number` | Output tokens produced |
+| `cost` | `number` | Premium request multiplier applied to this call |
+
+> [!TIP]
+> `assistant.usage` is ephemeral, so it is delivered live but not replayed when you resume a session. To read accumulated totals after the fact, call `session.usage.getMetrics` (see [Accumulated AI credit and token totals](#accumulated-ai-credit-and-token-totals)).
+
+**Language (typescript):**
+
+```typescript
+session.on("assistant.usage", (event) => {
+    const { model, inputTokens, outputTokens, cost } = event.data;
+    console.log(
+        `${model}: in=${inputTokens ?? 0} out=${outputTokens ?? 0} cost=${cost ?? 0}`,
+    );
+});
+```
+
+**Language (python):**
+
+```python
+def on_usage(event):
+    if event.type == SessionEventType.ASSISTANT_USAGE:
+        data = event.data
+        print(f"{data.model}: in={data.input_tokens or 0} out={data.output_tokens or 0} cost={data.cost or 0}")
+
+session.on(on_usage)
+```
+
+**Language (go):**
+
+```golang
+session.On(func(event copilot.SessionEvent) {
+    d, ok := event.Data.(*copilot.AssistantUsageData)
+    if !ok {
+        return
+    }
+    in, out, cost := int64(0), int64(0), float64(0)
+    if d.InputTokens != nil {
+        in = *d.InputTokens
+    }
+    if d.OutputTokens != nil {
+        out = *d.OutputTokens
+    }
+    if d.Cost != nil {
+        cost = *d.Cost
+    }
+    fmt.Printf("%s: in=%d out=%d cost=%g\n", d.Model, in, out, cost)
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+session.On<AssistantUsageEvent>(evt =>
+{
+    var data = evt.Data;
+    Console.WriteLine(
+        $"{data.Model}: in={data.InputTokens ?? 0} out={data.OutputTokens ?? 0} cost={data.Cost ?? 0}");
+});
+```
+
+**Language (java):**
+
+```java
+session.on(AssistantUsageEvent.class, event -> {
+    var data = event.getData();
+    long in = data.inputTokens() != null ? data.inputTokens() : 0;
+    long out = data.outputTokens() != null ? data.outputTokens() : 0;
+    double cost = data.cost() != null ? data.cost() : 0.0;
+    System.out.printf("%s: in=%d out=%d cost=%s%n", data.model(), in, out, cost);
+});
+```
+
+**Language (rust):**
+
+```rust
+use github_copilot_sdk::session_events::AssistantUsageData;
+
+let mut events = session.subscribe();
+while let Ok(event) = events.recv().await {
+    if event.event_type == "assistant.usage" {
+        if let Some(data) = event.typed_data::<AssistantUsageData>() {
+            println!(
+                "{}: in={} out={} cost={}",
+                data.model,
+                data.input_tokens.unwrap_or(0),
+                data.output_tokens.unwrap_or(0),
+                data.cost.unwrap_or(0.0),
+            );
+        }
+    }
+}
+```
+
+## Context-window utilization
+
+Token counts tell you what each call consumed. Context-window utilization tells you how full the model's prompt window is right now—useful for showing a progress bar or warning the user before automatic compaction kicks in.
+
+### Live updates with `session.usage_info`
+
+The runtime emits a `session.usage_info` event whenever the context-window size changes. The example uses `currentTokens` and `tokenLimit`; see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/streaming-events#sessionusage_info) for the complete payload.
+
+| Field | Type | Description |
+|---|---|---|
+| `currentTokens` | `number` | Tokens currently in the context window |
+| `tokenLimit` | `number` | Maximum tokens for the model's context window |
+
+**Language (typescript):**
+
+```typescript
+session.on("session.usage_info", (event) => {
+    const { currentTokens, tokenLimit } = event.data;
+    const pct = Math.round((currentTokens / tokenLimit) * 100);
+    console.log(`Context: ${currentTokens}/${tokenLimit} (${pct}%)`);
+});
+```
+
+**Language (python):**
+
+```python
+def on_usage_info(event):
+    if event.type == SessionEventType.SESSION_USAGE_INFO:
+        data = event.data
+        pct = round(data.current_tokens / data.token_limit * 100)
+        print(f"Context: {data.current_tokens}/{data.token_limit} ({pct}%)")
+
+session.on(on_usage_info)
+```
+
+**Language (go):**
+
+```golang
+session.On(func(event copilot.SessionEvent) {
+    d, ok := event.Data.(*copilot.SessionUsageInfoData)
+    if !ok {
+        return
+    }
+    pct := int(float64(d.CurrentTokens) / float64(d.TokenLimit) * 100)
+    fmt.Printf("Context: %d/%d (%d%%)\n", d.CurrentTokens, d.TokenLimit, pct)
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+session.On<SessionUsageInfoEvent>(evt =>
+{
+    var pct = (int)Math.Round((double)evt.Data.CurrentTokens / evt.Data.TokenLimit * 100);
+    Console.WriteLine($"Context: {evt.Data.CurrentTokens}/{evt.Data.TokenLimit} ({pct}%)");
+});
+```
+
+**Language (java):**
+
+```java
+session.on(SessionUsageInfoEvent.class, event -> {
+    var data = event.getData();
+    long pct = Math.round((double) data.currentTokens() / data.tokenLimit() * 100);
+    System.out.printf("Context: %d/%d (%d%%)%n", data.currentTokens(), data.tokenLimit(), pct);
+});
+```
+
+**Language (rust):**
+
+```rust
+use github_copilot_sdk::session_events::SessionUsageInfoData;
+
+let mut events = session.subscribe();
+while let Ok(event) = events.recv().await {
+    if event.event_type == "session.usage_info" {
+        if let Some(data) = event.typed_data::<SessionUsageInfoData>() {
+            let pct = (data.current_tokens as f64 / data.token_limit as f64 * 100.0) as i64;
+            println!("Context: {}/{} ({}%)", data.current_tokens, data.token_limit, pct);
+        }
+    }
+}
+```
+
+### On-demand breakdown with `session.metadata.contextInfo`
+
+Events only fire when the context changes. To read the current breakdown at any moment—for example, right after resuming a session—call `session.metadata.contextInfo`. Pass `0` for `promptTokenLimit` to use the runtime default; pass `0` for `outputTokenLimit` if the value is unknown.
+
+The result's `contextInfo` is `null` until the session has been initialized (the system prompt and tool metadata have been cached). It breaks the total down into `systemTokens`, `conversationTokens`, and `toolDefinitionsTokens`, alongside the `promptTokenLimit`.
+
+**Language (typescript):**
+
+```typescript
+const { contextInfo } = await session.rpc.metadata.contextInfo({
+    promptTokenLimit: 0,
+    outputTokenLimit: 0,
+});
+
+if (contextInfo) {
+    console.log(
+        `Total ${contextInfo.totalTokens}/${contextInfo.promptTokenLimit} ` +
+            `(system=${contextInfo.systemTokens}, conversation=${contextInfo.conversationTokens})`,
+    );
+}
+```
+
+**Language (python):**
+
+```python
+result = await session.rpc.metadata.context_info(
+    MetadataContextInfoRequest(prompt_token_limit=0, output_token_limit=0)
+)
+info = result.context_info
+
+if info is not None:
+    print(
+        f"Total {info.total_tokens}/{info.prompt_token_limit} "
+        f"(system={info.system_tokens}, conversation={info.conversation_tokens})"
+    )
+```
+
+**Language (go):**
+
+```golang
+result, _ := session.RPC.Metadata.ContextInfo(ctx, &rpc.MetadataContextInfoRequest{
+    PromptTokenLimit: 0,
+    OutputTokenLimit: 0,
+})
+
+if info := result.ContextInfo; info != nil {
+    fmt.Printf("Total %d/%d (system=%d, conversation=%d)\n",
+        info.TotalTokens, info.PromptTokenLimit, info.SystemTokens, info.ConversationTokens)
+}
+```
+
+**Language (dotnet):**
+
+```csharp
+var result = await session.Rpc.Metadata.ContextInfoAsync(promptTokenLimit: 0, outputTokenLimit: 0);
+var info = result.ContextInfo;
+
+if (info is not null)
+{
+    Console.WriteLine(
+        $"Total {info.TotalTokens}/{info.PromptTokenLimit} " +
+        $"(system={info.SystemTokens}, conversation={info.ConversationTokens})");
+}
+```
+
+**Language (java):**
+
+```java
+var result = session.getRpc().metadata
+    .contextInfo(new SessionMetadataContextInfoParams(null, 0L, 0L, null))
+    .join();
+var info = result.contextInfo();
+
+if (info != null) {
+    System.out.printf("Total %d/%d (system=%d, conversation=%d)%n",
+        info.totalTokens(), info.promptTokenLimit(), info.systemTokens(), info.conversationTokens());
+}
+```
+
+**Language (rust):**
+
+```rust
+use github_copilot_sdk::rpc::MetadataContextInfoRequest;
+
+let result = session
+    .rpc()
+    .metadata()
+    .context_info(MetadataContextInfoRequest {
+        prompt_token_limit: 0,
+        output_token_limit: 0,
+        selected_model: None,
+    })
+    .await?;
+
+if let Some(info) = result.context_info {
+    println!(
+        "Total {}/{} (system={}, conversation={})",
+        info.total_tokens, info.prompt_token_limit, info.system_tokens, info.conversation_tokens,
+    );
+}
+```
+
+## Accumulated AI credit and token totals
+
+`session.usage.getMetrics` returns the running totals for the whole session in a single call. This is the cleanest way to read AI credit cost, because it aggregates every API call (main agent and sub-agents) for you.
+
+The example uses the fields below. The generated `UsageGetMetricsResult` type is the full reference.
+
+| Field | Type | Description |
+|---|---|---|
+| `totalNanoAiu` | `number` | Session-wide AI credit cost, in nano-AI units |
+| `totalPremiumRequestCost` | `number` | Premium request cost across all models, after multipliers |
+| `modelMetrics` | `Record<string, ModelMetric>` | Per-model breakdown; each entry has `usage.inputTokens`, `usage.outputTokens`, and `totalNanoAiu` |
+
+> [!NOTE]
+> Cost is reported in **nano-AI units** (the field is named `totalNanoAiu`). The exact conversion to AI credits and the precise meaning of premium request accounting are defined by GitHub Copilot billing, not by the SDK—treat [GitHub's Copilot billing documentation](/copilot/managing-copilot/understanding-and-managing-copilot-usage) as the source of truth and verify before surfacing currency-like values to users. The examples divide by `1e9` as a convenience, following the SI `nano` prefix; confirm this matches current billing before relying on it. The `modelMetrics` and `tokenDetails` maps are keyed by runtime strings (model IDs and token-type names) that the SDK type system does not validate.
+
+**Language (typescript):**
+
+```typescript
+const metrics = await session.rpc.usage.getMetrics();
+
+const aiCredits = (metrics.totalNanoAiu ?? 0) / 1e9;
+console.log(`AI credits used: ${aiCredits.toFixed(6)}`);
+console.log(`Premium requests: ${metrics.totalPremiumRequestCost}`);
+
+for (const [model, m] of Object.entries(metrics.modelMetrics)) {
+    if (!m) continue;
+    console.log(
+        `${model}: in=${m.usage.inputTokens} out=${m.usage.outputTokens} ` +
+            `nanoAiu=${m.totalNanoAiu ?? 0}`,
+    );
+}
+```
+
+**Language (python):**
+
+```python
+metrics = await session.rpc.usage.get_metrics()
+
+ai_credits = (metrics.total_nano_aiu or 0) / 1e9
+print(f"AI credits used: {ai_credits:.6f}")
+print(f"Premium requests: {metrics.total_premium_request_cost}")
+
+for model, m in metrics.model_metrics.items():
+    print(f"{model}: in={m.usage.input_tokens} out={m.usage.output_tokens} nanoAiu={m.total_nano_aiu or 0}")
+```
+
+**Language (go):**
+
+```golang
+metrics, _ := session.RPC.Usage.GetMetrics(ctx)
+
+aiCredits := float64(0)
+if metrics.TotalNanoAiu != nil {
+    aiCredits = *metrics.TotalNanoAiu / 1e9
+}
+fmt.Printf("AI credits used: %.6f\n", aiCredits)
+fmt.Printf("Premium requests: %v\n", metrics.TotalPremiumRequestCost)
+
+for model, m := range metrics.ModelMetrics {
+    nanoAiu := float64(0)
+    if m.TotalNanoAiu != nil {
+        nanoAiu = *m.TotalNanoAiu
+    }
+    fmt.Printf("%s: in=%d out=%d nanoAiu=%v\n", model, m.Usage.InputTokens, m.Usage.OutputTokens, nanoAiu)
+}
+```
+
+**Language (dotnet):**
+
+```csharp
+var metrics = await session.Rpc.Usage.GetMetricsAsync();
+
+var aiCredits = (metrics.TotalNanoAiu ?? 0) / 1e9;
+Console.WriteLine($"AI credits used: {aiCredits:F6}");
+Console.WriteLine($"Premium requests: {metrics.TotalPremiumRequestCost}");
+
+foreach (var (model, m) in metrics.ModelMetrics)
+{
+    Console.WriteLine(
+        $"{model}: in={m.Usage.InputTokens} out={m.Usage.OutputTokens} nanoAiu={m.TotalNanoAiu ?? 0}");
+}
+```
+
+**Language (java):**
+
+```java
+var metrics = session.getRpc().usage.getMetrics().join();
+
+double aiCredits = metrics.totalNanoAiu() != null ? metrics.totalNanoAiu() / 1e9 : 0;
+System.out.printf("AI credits used: %.6f%n", aiCredits);
+System.out.printf("Premium requests: %s%n", metrics.totalPremiumRequestCost());
+
+metrics.modelMetrics().forEach((model, m) -> {
+    double nanoAiu = m.totalNanoAiu() != null ? m.totalNanoAiu() : 0;
+    System.out.printf("%s: in=%d out=%d nanoAiu=%s%n",
+        model, m.usage().inputTokens(), m.usage().outputTokens(), nanoAiu);
+});
+```
+
+**Language (rust):**
+
+```rust
+let metrics = session.rpc().usage().get_metrics().await?;
+
+let ai_credits = metrics.total_nano_aiu.unwrap_or(0.0) / 1e9;
+println!("AI credits used: {ai_credits:.6}");
+println!("Premium requests: {}", metrics.total_premium_request_cost);
+
+for (model, m) in &metrics.model_metrics {
+    let nano_aiu = m.total_nano_aiu.unwrap_or(0.0);
+    println!(
+        "{model}: in={} out={} nanoAiu={nano_aiu}",
+        m.usage.input_tokens, m.usage.output_tokens,
+    );
+}
+```
+
+## Per-model AI credit pricing
+
+To estimate cost before you run a turn, read each model's token prices from `models.list`. This is a server-scoped call on the client, so it does not need a session. Prices are expressed in AI credits per billing batch of tokens. The generated `ModelBillingTokenPrices` type lists every field, including `cachePrice`.
+
+| Field | Type | Description |
+|---|---|---|
+| `billing.multiplier` | `number` | Premium request cost multiplier relative to the base rate |
+| `billing.tokenPrices.inputPrice` | `number` | AI credit cost per batch of input tokens |
+| `billing.tokenPrices.outputPrice` | `number` | AI credit cost per batch of output tokens |
+| `billing.tokenPrices.batchSize` | `number` | Number of tokens per billing batch |
+
+> [!NOTE]
+> Price values change as plans and models evolve. Read them at runtime as shown below; never hard-code the numbers into your application.
+
+**Language (typescript):**
+
+```typescript
+const { models } = await client.rpc.models.list({});
+
+for (const model of models) {
+    const prices = model.billing?.tokenPrices;
+    if (!prices) continue;
+    console.log(
+        `${model.id}: input=${prices.inputPrice} output=${prices.outputPrice} ` +
+            `per ${prices.batchSize} tokens (x${model.billing?.multiplier ?? 1})`,
+    );
+}
+```
+
+**Language (python):**
+
+```python
+result = await client.rpc.models.list(ModelsListRequest())
+
+for model in result.models:
+    prices = model.billing.token_prices if model.billing else None
+    if prices is None:
+        continue
+    multiplier = model.billing.multiplier if model.billing else 1
+    print(
+        f"{model.id}: input={prices.input_price} output={prices.output_price} "
+        f"per {prices.batch_size} tokens (x{multiplier})"
+    )
+```
+
+**Language (go):**
+
+```golang
+list, _ := client.RPC.Models.List(ctx, &rpc.ModelsListRequest{})
+
+for _, model := range list.Models {
+    if model.Billing == nil || model.Billing.TokenPrices == nil {
+        continue
+    }
+    prices := model.Billing.TokenPrices
+    multiplier := 1.0
+    if model.Billing.Multiplier != nil {
+        multiplier = *model.Billing.Multiplier
+    }
+    in, out := 0.0, 0.0
+    if prices.InputPrice != nil {
+        in = *prices.InputPrice
+    }
+    if prices.OutputPrice != nil {
+        out = *prices.OutputPrice
+    }
+    batch := int64(0)
+    if prices.BatchSize != nil {
+        batch = *prices.BatchSize
+    }
+    fmt.Printf("%s: input=%v output=%v per %d tokens (x%v)\n", model.ID, in, out, batch, multiplier)
+}
+```
+
+**Language (dotnet):**
+
+```csharp
+var list = await client.Rpc.Models.ListAsync();
+
+foreach (var model in list.Models)
+{
+    var prices = model.Billing?.TokenPrices;
+    if (prices is null) continue;
+    Console.WriteLine(
+        $"{model.Id}: input={prices.InputPrice} output={prices.OutputPrice} " +
+        $"per {prices.BatchSize} tokens (x{model.Billing?.Multiplier ?? 1})");
+}
+```
+
+**Language (java):**
+
+```java
+var list = client.getRpc().models.list().join();
+
+for (var model : list.models()) {
+    var billing = model.billing();
+    if (billing == null || billing.tokenPrices() == null) {
+        continue;
+    }
+    var prices = billing.tokenPrices();
+    double multiplier = billing.multiplier() != null ? billing.multiplier() : 1;
+    System.out.printf("%s: input=%s output=%s per %d tokens (x%s)%n",
+        model.id(), prices.inputPrice(), prices.outputPrice(), prices.batchSize(), multiplier);
+}
+```
+
+**Language (rust):**
+
+```rust
+let list = client.rpc().models().list().await?;
+
+for model in &list.models {
+    let Some(billing) = &model.billing else { continue };
+    let Some(prices) = &billing.token_prices else { continue };
+    let multiplier = billing.multiplier.unwrap_or(1.0);
+    println!(
+        "{}: input={} output={} per {} tokens (x{multiplier})",
+        model.id,
+        prices.input_price.unwrap_or(0.0),
+        prices.output_price.unwrap_or(0.0),
+        prices.batch_size.unwrap_or(0),
+    );
+}
+```
+
+## Account quota and premium interactions
+
+`account.getQuota` reports the authenticated user's remaining Copilot entitlement. The result's `quotaSnapshots` map is keyed by quota type—commonly `premium_interactions`, `chat`, and `completions`. Use it to show users how much of their monthly allowance is left, or to gate work before they hit a limit.
+
+The example uses the fields below; the generated `AccountQuotaSnapshot` type is the full reference. The `quotaSnapshots` keys are runtime strings that the SDK type system does not validate, so guard your lookups.
+
+| Field | Type | Description |
+|---|---|---|
+| `entitlementRequests` | `number` | Requests included in the entitlement, or `-1` for unlimited |
+| `usedRequests` | `number` | Requests used so far this period |
+| `remainingPercentage` | `number` | Percentage of the entitlement remaining |
+| `resetDate` | `string` | ISO 8601 date when the quota resets |
+
+> [!TIP]
+> To read quota for a specific user rather than the connection's global auth context (for example, in a multi-tenant backend), pass that user's GitHub token to `getQuota`. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy).
+
+**Language (typescript):**
+
+```typescript
+const { quotaSnapshots } = await client.rpc.account.getQuota({});
+const premium = quotaSnapshots["premium_interactions"];
+
+if (premium) {
+    console.log(
+        `Premium interactions: ${premium.usedRequests}/${premium.entitlementRequests} ` +
+            `(${premium.remainingPercentage.toFixed(1)}% left, resets ${premium.resetDate ?? "n/a"})`,
+    );
+}
+```
+
+**Language (python):**
+
+```python
+result = await client.rpc.account.get_quota(AccountGetQuotaRequest())
+premium = result.quota_snapshots.get("premium_interactions")
+
+if premium is not None:
+    print(
+        f"Premium interactions: {premium.used_requests}/{premium.entitlement_requests} "
+        f"({premium.remaining_percentage:.1f}% left, resets {premium.reset_date or 'n/a'})"
+    )
+```
+
+**Language (go):**
+
+```golang
+result, _ := client.RPC.Account.GetQuota(ctx, &rpc.AccountGetQuotaRequest{})
+
+if premium, ok := result.QuotaSnapshots["premium_interactions"]; ok {
+    resets := "n/a"
+    if premium.ResetDate != nil {
+        resets = premium.ResetDate.Format(time.RFC3339)
+    }
+    fmt.Printf("Premium interactions: %d/%d (%.1f%% left, resets %s)\n",
+        premium.UsedRequests, premium.EntitlementRequests, premium.RemainingPercentage, resets)
+}
+```
+
+**Language (dotnet):**
+
+```csharp
+var result = await client.Rpc.Account.GetQuotaAsync();
+
+if (result.QuotaSnapshots.TryGetValue("premium_interactions", out var premium))
+{
+    Console.WriteLine(
+        $"Premium interactions: {premium.UsedRequests}/{premium.EntitlementRequests} " +
+        $"({premium.RemainingPercentage:F1}% left, resets {premium.ResetDate?.ToString("o") ?? "n/a"})");
+}
+```
+
+**Language (java):**
+
+```java
+var result = client.getRpc().account.getQuota().join();
+var premium = result.quotaSnapshots().get("premium_interactions");
+
+if (premium != null) {
+    System.out.printf("Premium interactions: %d/%d (%.1f%% left, resets %s)%n",
+        premium.usedRequests(), premium.entitlementRequests(),
+        premium.remainingPercentage(), premium.resetDate());
+}
+```
+
+**Language (rust):**
+
+```rust
+let result = client.rpc().account().get_quota().await?;
+
+if let Some(premium) = result.quota_snapshots.get("premium_interactions") {
+    let resets = premium.reset_date.as_deref().unwrap_or("n/a");
+    println!(
+        "Premium interactions: {}/{} ({:.1}% left, resets {resets})",
+        premium.used_requests, premium.entitlement_requests, premium.remaining_percentage,
+    );
+}
+```
+
+## Choosing the right API
+
+Use this summary to decide which API fits your use case:
+
+* **Render a live cost or token meter as a turn runs**: subscribe to `assistant.usage` and `session.usage_info`.
+* **Show a final cost summary after a turn or session**: call `session.usage.getMetrics`.
+* **Display context-window usage on resume, before any new turn**: call `session.metadata.contextInfo`.
+* **Estimate cost before running work**: read `models.list` token prices.
+* **Warn users before they exhaust their plan**: call `account.getQuota`.
+
+## Further reading
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/streaming-events): full field-level reference for `assistant.usage`, `session.usage_info`, and every other session event
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/observability): export usage data to OpenTelemetry for cost attribution
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy): resolve per-user quota and models with a GitHub token
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/hooks/error-handling.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/hooks/error-handling
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/hooks/error-handling.md
+- **SHA256_FINGERPRINT**: `a278f49650f863c7005fb1cb99cf3b84807333416ac9182da8173bfd94c23991`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.121757+00:00
+---
+
+**title**: Error handling hook
+**shortTitle**: Error Handling
+**intro**: >-
+
+* Implement custom error logging
+* Track error patterns
+* Provide user-friendly error messages
+* Trigger alerts for critical errors
+
+## Hook signature
+
+**Language (typescript):**
+
+```typescript
+type ErrorOccurredHandler = (
+  input: ErrorOccurredHookInput,
+  invocation: HookInvocation
+) => Promise<ErrorOccurredHookOutput | null | undefined>;
+```
+
+**Language (python):**
+
+```python
+ErrorOccurredHandler = Callable[
+    [ErrorOccurredHookInput, dict[str, str]],
+    Awaitable[ErrorOccurredHookOutput | None]
+]
+```
+
+**Language (go):**
+
+```golang
+type ErrorOccurredHandler func(
+    input ErrorOccurredHookInput,
+    invocation HookInvocation,
+) (*ErrorOccurredHookOutput, error)
+```
+
+**Language (dotnet):**
+
+```csharp
+public delegate Task<ErrorOccurredHookOutput?> ErrorOccurredHandler(
+    ErrorOccurredHookInput input,
+    HookInvocation invocation);
+```
+
+**Language (java):**
+
+```java
+// Note: Java SDK does not have an onErrorOccurred hook.
+// Use EventErrorPolicy and EventErrorHandler instead:
+//
+// session.setEventErrorPolicy(EventErrorPolicy.SUPPRESS_AND_LOG_ERRORS);
+// session.setEventErrorHandler((event, ex) -> {
+//     System.err.println("Error in " + event.getType() + ": " + ex.getMessage());
+// });
+//
+// See the "Basic Error Logging" example below for a complete snippet.
+```
+
+## Input
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `timestamp` | number | Unix timestamp when the error occurred |
+| `cwd` | string | Current working directory |
+| `error` | string | Error message |
+| `errorContext` | string | Where the error occurred: `"model_call"`, `"tool_execution"`, `"system"`, or `"user_input"` |
+| `recoverable` | boolean | Whether the error can potentially be recovered from |
+
+## Output
+
+Return `null` or `undefined` to use default error handling. Otherwise, return an object with:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `suppressOutput` | boolean | If true, don't show error output to user |
+| `errorHandling` | string | How to handle: `"retry"`, `"skip"`, or `"abort"` |
+| `retryCount` | number | Number of times to retry (if errorHandling is `"retry"`) |
+| `userNotification` | string | Custom message to show the user |
+
+## Examples
+
+### Basic error logging
+
+**Language (typescript):**
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onErrorOccurred: async (input, invocation) => {
+      console.error(`[${invocation.sessionId}] Error: ${input.error}`);
+      console.error(`  Context: ${input.errorContext}`);
+      console.error(`  Recoverable: ${input.recoverable}`);
+      return null;
+    },
+  },
+});
+```
+
+**Language (python):**
+
+```python
+from copilot.session import PermissionHandler
+
+async def on_error_occurred(input_data, invocation):
+    print(f"[{invocation['session_id']}] Error: {input_data['error']}")
+    print(f"  Context: {input_data['errorContext']}")
+    print(f"  Recoverable: {input_data['recoverable']}")
+    return None
+
+session = await client.create_session(on_permission_request=PermissionHandler.approve_all, hooks={"on_error_occurred": on_error_occurred})
+```
+
+**Language (go):**
+
+```golang
+session, _ := client.CreateSession(context.Background(), &copilot.SessionConfig{
+    Hooks: &copilot.SessionHooks{
+        OnErrorOccurred: func(input copilot.ErrorOccurredHookInput, inv copilot.HookInvocation) (*copilot.ErrorOccurredHookOutput, error) {
+            fmt.Printf("[%s] Error: %s\n", inv.SessionID, input.Error)
+            fmt.Printf("  Context: %s\n", input.ErrorContext)
+            fmt.Printf("  Recoverable: %v\n", input.Recoverable)
+            return nil, nil
+        },
+    },
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+var session = await client.CreateSessionAsync(new SessionConfig
+{
+    Hooks = new SessionHooks
+    {
+        OnErrorOccurred = (input, invocation) =>
+        {
+            Console.Error.WriteLine($"[{invocation.SessionId}] Error: {input.Error}");
+            Console.Error.WriteLine($"  Context: {input.ErrorContext}");
+            Console.Error.WriteLine($"  Recoverable: {input.Recoverable}");
+            return Task.FromResult<ErrorOccurredHookOutput?>(null);
+        },
+    },
+});
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.*;
+import com.github.copilot.rpc.*;
+
+// Note: Java SDK does not have an onErrorOccurred hook.
+// Use EventErrorPolicy and EventErrorHandler instead:
+
+var session = client.createSession(
+    new SessionConfig()
+        .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+).get();
+
+session.setEventErrorPolicy(EventErrorPolicy.SUPPRESS_AND_LOG_ERRORS);
+session.setEventErrorHandler((event, ex) -> {
+    System.err.println("[" + session.getSessionId() + "] Error: " + ex.getMessage());
+    System.err.println("  Event: " + event.getType());
+});
+```
+
+### Send errors to monitoring service
+
+```typescript
+import { captureException } from "@sentry/node"; // or your monitoring service
+
+const session = await client.createSession({
+  hooks: {
+    onErrorOccurred: async (input, invocation) => {
+      captureException(new Error(input.error), {
+        tags: {
+          sessionId: invocation.sessionId,
+          errorContext: input.errorContext,
+        },
+        extra: {
+          error: input.error,
+          recoverable: input.recoverable,
+          cwd: input.cwd,
+        },
+      });
+
+      return null;
+    },
+  },
+});
+```
+
+### User-friendly error messages
+
+```typescript
+const ERROR_MESSAGES: Record<string, string> = {
+  "model_call": "There was an issue communicating with the AI model. Please try again.",
+  "tool_execution": "A tool failed to execute. Please check your inputs and try again.",
+  "system": "A system error occurred. Please try again later.",
+  "user_input": "There was an issue with your input. Please check and try again.",
+};
+
+const session = await client.createSession({
+  hooks: {
+    onErrorOccurred: async (input) => {
+      const friendlyMessage = ERROR_MESSAGES[input.errorContext];
+
+      if (friendlyMessage) {
+        return {
+          userNotification: friendlyMessage,
+        };
+      }
+
+      return null;
+    },
+  },
+});
+```
+
+### Suppress non-critical errors
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onErrorOccurred: async (input) => {
+      // Suppress tool execution errors that are recoverable
+      if (input.errorContext === "tool_execution" && input.recoverable) {
+        console.log(`Suppressed recoverable error: ${input.error}`);
+        return { suppressOutput: true };
+      }
+      return null;
+    },
+  },
+});
+```
+
+### Add recovery context
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onErrorOccurred: async (input) => {
+      if (input.errorContext === "tool_execution") {
+        return {
+          userNotification: `
+The tool failed. Here are some recovery suggestions:
+- Check if required dependencies are installed
+- Verify file paths are correct
+- Try a simpler approach
+          `.trim(),
+        };
+      }
+
+      if (input.errorContext === "model_call" && input.error.includes("rate")) {
+        return {
+          errorHandling: "retry",
+          retryCount: 3,
+          userNotification: "Rate limit hit. Retrying...",
+        };
+      }
+
+      return null;
+    },
+  },
+});
+```
+
+### Track error patterns
+
+```typescript
+interface ErrorStats {
+  count: number;
+  lastOccurred: number;
+  contexts: string[];
+}
+
+const errorStats = new Map<string, ErrorStats>();
+
+const session = await client.createSession({
+  hooks: {
+    onErrorOccurred: async (input, invocation) => {
+      const key = `${input.errorContext}:${input.error.substring(0, 50)}`;
+
+      const existing = errorStats.get(key) || {
+        count: 0,
+        lastOccurred: 0,
+        contexts: [],
+      };
+
+      existing.count++;
+      existing.lastOccurred = input.timestamp;
+      existing.contexts.push(invocation.sessionId);
+
+      errorStats.set(key, existing);
+
+      // Alert if error is recurring
+      if (existing.count >= 5) {
+        console.warn(`Recurring error detected: ${key} (${existing.count} times)`);
+      }
+
+      return null;
+    },
+  },
+});
+```
+
+### Alert on critical errors
+
+```typescript
+const CRITICAL_CONTEXTS = ["system", "model_call"];
+
+const session = await client.createSession({
+  hooks: {
+    onErrorOccurred: async (input, invocation) => {
+      if (CRITICAL_CONTEXTS.includes(input.errorContext) && !input.recoverable) {
+        await sendAlert({
+          level: "critical",
+          message: `Critical error in session ${invocation.sessionId}`,
+          error: input.error,
+          context: input.errorContext,
+          timestamp: new Date(input.timestamp).toISOString(),
+        });
+      }
+
+      return null;
+    },
+  },
+});
+```
+
+### Combine with other hooks for context
+
+```typescript
+const sessionContext = new Map<string, { lastTool?: string; lastPrompt?: string }>();
+
+const session = await client.createSession({
+  hooks: {
+    onPreToolUse: async (input, invocation) => {
+      const ctx = sessionContext.get(invocation.sessionId) || {};
+      ctx.lastTool = input.toolName;
+      sessionContext.set(invocation.sessionId, ctx);
+      return { permissionDecision: "allow" };
+    },
+
+    onUserPromptSubmitted: async (input, invocation) => {
+      const ctx = sessionContext.get(invocation.sessionId) || {};
+      ctx.lastPrompt = input.prompt.substring(0, 100);
+      sessionContext.set(invocation.sessionId, ctx);
+      return null;
+    },
+
+    onErrorOccurred: async (input, invocation) => {
+      const ctx = sessionContext.get(invocation.sessionId);
+
+      console.error(`Error in session ${invocation.sessionId}:`);
+      console.error(`  Error: ${input.error}`);
+      console.error(`  Context: ${input.errorContext}`);
+      if (ctx?.lastTool) {
+        console.error(`  Last tool: ${ctx.lastTool}`);
+      }
+      if (ctx?.lastPrompt) {
+        console.error(`  Last prompt: ${ctx.lastPrompt}...`);
+      }
+
+      return null;
+    },
+  },
+});
+```
+
+## Best practices
+
+1. **Always log errors** - Even if you suppress them from users, keep logs for debugging.
+
+1. **Categorize errors** - Use `errorType` to handle different errors appropriately.
+
+1. **Don't swallow critical errors** - Only suppress errors you're certain are non-critical.
+
+1. **Keep hooks fast** - Error handling shouldn't slow down recovery.
+
+1. **Provide helpful context** - When errors occur, `additionalContext` can help the model recover.
+
+1. **Monitor error patterns** - Track recurring errors to identify systemic issues.
+
+## See also
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/session-lifecycle)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/debugging)
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/hooks/hooks-overview.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/hooks/hooks-overview
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/hooks/hooks-overview.md
+- **SHA256_FINGERPRINT**: `ef40478faa28c12f3d44ac89c1d3294b7378ca2890f468ec6a6a3835df2de6f5`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.051835+00:00
+---
+
+**title**: Session hooks
+**shortTitle**: Hooks Overview
+**intro**: >-
+
+* **Control tool execution** - approve, deny, or modify tool calls
+* **Transform results** - modify tool outputs before they're processed
+* **Add context** - inject additional information at session start
+* **Handle errors** - implement custom error handling
+* **Audit and log** - track all interactions for compliance
+
+For filesystem hooks loaded from additional startup directories rather than
+registered SDK callbacks, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/hooks#repository-hooks-from-additional-directories).
+
+## Available hooks
+
+| Hook | Trigger | Use Case |
+|------|---------|----------|
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/pre-tool-use) | Before a tool executes | Permission control, argument validation |
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/post-tool-use) | After a tool executes (success only) | Result transformation, logging |
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/post-tool-use#failure-variant) | After a tool execution whose result was a failure | Inject retry guidance, log failures |
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/user-prompt-submitted) | When user sends a message | Prompt modification, filtering |
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/user-prompt-transformed) | After runtime prompt transformation | Inspect or replace model-facing content |
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/session-lifecycle#session-start-hook) | Session begins | Add context, configure session |
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/session-lifecycle#session-end-hook) | Session ends | Cleanup, analytics |
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/error-handling) | Error happens | Custom error handling |
+| [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/session-lifecycle#agent-stop-hook) | Top-level agent naturally stops | Validate completion or request another turn |
+
+## Quick start
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient();
+
+const session = await client.createSession({
+  hooks: {
+    onPreToolUse: async (input) => {
+      console.log(`Tool called: ${input.toolName}`);
+      // Allow all tools
+      return { permissionDecision: "allow" };
+    },
+    onPostToolUse: async (input) => {
+      console.log(`Tool result: ${JSON.stringify(input.toolResult)}`);
+      return null; // No modifications
+    },
+    onSessionStart: async (input) => {
+      return { additionalContext: "User prefers concise answers." };
+    },
+  },
+});
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient
+from copilot.session import PermissionHandler
+
+async def main():
+    client = CopilotClient()
+    await client.start()
+
+    async def on_pre_tool_use(input_data, invocation):
+        print(f"Tool called: {input_data['toolName']}")
+        return {"permissionDecision": "allow"}
+
+    async def on_post_tool_use(input_data, invocation):
+        print(f"Tool result: {input_data['toolResult']}")
+        return None
+
+    async def on_session_start(input_data, invocation):
+        return {"additionalContext": "User prefers concise answers."}
+
+    session = await client.create_session(on_permission_request=PermissionHandler.approve_all, hooks={
+            "on_pre_tool_use": on_pre_tool_use,
+            "on_post_tool_use": on_post_tool_use,
+            "on_session_start": on_session_start,
+        })
+```
+
+**Language (go):**
+
+```golang
+package main
+
+import (
+    "context"
+    "fmt"
+    copilot "github.com/github/copilot-sdk/go"
+)
+
+func main() {
+    client := copilot.NewClient(nil)
+
+    session, _ := client.CreateSession(context.Background(), &copilot.SessionConfig{
+        Hooks: &copilot.SessionHooks{
+            OnPreToolUse: func(input copilot.PreToolUseHookInput, inv copilot.HookInvocation) (*copilot.PreToolUseHookOutput, error) {
+                fmt.Printf("Tool called: %s\n", input.ToolName)
+                return &copilot.PreToolUseHookOutput{
+                    PermissionDecision: "allow",
+                }, nil
+            },
+            OnPostToolUse: func(input copilot.PostToolUseHookInput, inv copilot.HookInvocation) (*copilot.PostToolUseHookOutput, error) {
+                fmt.Printf("Tool result: %v\n", input.ToolResult)
+                return nil, nil
+            },
+            OnSessionStart: func(input copilot.SessionStartHookInput, inv copilot.HookInvocation) (*copilot.SessionStartHookOutput, error) {
+                return &copilot.SessionStartHookOutput{
+                    AdditionalContext: "User prefers concise answers.",
+                }, nil
+            },
+        },
+    })
+    _ = session
+}
+```
+
+**Language (dotnet):**
+
+```csharp
+using GitHub.Copilot;
+
+var client = new CopilotClient();
+
+var session = await client.CreateSessionAsync(new SessionConfig
+{
+    Hooks = new SessionHooks
+    {
+        OnPreToolUse = (input, invocation) =>
+        {
+            Console.WriteLine($"Tool called: {input.ToolName}");
+            return Task.FromResult<PreToolUseHookOutput?>(
+                new PreToolUseHookOutput { PermissionDecision = "allow" }
+            );
+        },
+        OnPostToolUse = (input, invocation) =>
+        {
+            Console.WriteLine($"Tool result: {input.ToolResult}");
+            return Task.FromResult<PostToolUseHookOutput?>(null);
+        },
+        OnSessionStart = (input, invocation) =>
+        {
+            return Task.FromResult<SessionStartHookOutput?>(
+                new SessionStartHookOutput { AdditionalContext = "User prefers concise answers." }
+            );
+        },
+    },
+});
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.*;
+import com.github.copilot.rpc.*;
+import java.util.concurrent.CompletableFuture;
+
+try (var client = new CopilotClient()) {
+    client.start().get();
+
+    var hooks = new SessionHooks()
+        .setOnPreToolUse((input, invocation) -> {
+            System.out.println("Tool called: " + input.getToolName());
+            return CompletableFuture.completedFuture(PreToolUseHookOutput.allow());
+        })
+        .setOnPostToolUse((input, invocation) -> {
+            System.out.println("Tool result: " + input.getToolResult());
+            return CompletableFuture.completedFuture(null);
+        })
+        .setOnSessionStart((input, invocation) -> {
+            return CompletableFuture.completedFuture(
+                new SessionStartHookOutput("User prefers concise answers.", null)
+            );
+        });
+
+    var session = client.createSession(
+        new SessionConfig()
+            .setHooks(hooks)
+            .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+    ).get();
+}
+```
+
+## Hook invocation context
+
+Every hook receives an `invocation` parameter with context about the current session:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `sessionId` | string | The ID of the current session |
+
+This allows hooks to maintain state or perform session-specific logic.
+
+## Common patterns
+
+### Logging all tool calls
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onPreToolUse: async (input) => {
+      console.log(`[${new Date().toISOString()}] Tool: ${input.toolName}, Args: ${JSON.stringify(input.toolArgs)}`);
+      return { permissionDecision: "allow" };
+    },
+    onPostToolUse: async (input) => {
+      console.log(`[${new Date().toISOString()}] Result: ${JSON.stringify(input.toolResult)}`);
+      return null;
+    },
+  },
+});
+```
+
+### Blocking dangerous tools
+
+```typescript
+const BLOCKED_TOOLS = ["shell", "bash", "exec"];
+
+const session = await client.createSession({
+  hooks: {
+    onPreToolUse: async (input) => {
+      if (BLOCKED_TOOLS.includes(input.toolName)) {
+        return {
+          permissionDecision: "deny",
+          permissionDecisionReason: "Shell access is not permitted",
+        };
+      }
+      return { permissionDecision: "allow" };
+    },
+  },
+});
+```
+
+### Adding user context
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onSessionStart: async () => {
+      const userPrefs = await loadUserPreferences();
+      return {
+        additionalContext: `User preferences: ${JSON.stringify(userPrefs)}`,
+      };
+    },
+  },
+});
+```
+
+## Hook guides
+
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/pre-tool-use)** - Control tool execution permissions
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/post-tool-use)** - Transform tool results
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/user-prompt-submitted)** - Modify user prompts
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/user-prompt-transformed)** - Replace model-facing prompts
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/session-lifecycle)** - Session start and end
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/session-lifecycle#agent-stop-hook)** - Validate completion before the agent stops
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/error-handling)** - Custom error handling
+
+## See also
+
+* [AUTOTITLE](/copilot/get-started/sdk-quickstart)
+* [AUTOTITLE](/copilot/get-started/sdk-quickstart#step-4-add-a-custom-tool)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/debugging)
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/hooks/index.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/hooks
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/hooks/index.md
+- **SHA256_FINGERPRINT**: `08b87ed090abba06db89108895cf02bb179466639e9adb28b80ca69e7f192ea1`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.150868+00:00
+---
+
+**title**: Use hooks
+**intro**: Detailed API reference for each session hook in the GitHub Copilot SDK.
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/hooks/post-tool-use.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/hooks/post-tool-use
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/hooks/post-tool-use.md
+- **SHA256_FINGERPRINT**: `a9ec2591f7c19694d829c3f5833cabff2d8127ef73edd9d4ccd216ed7f24c87d`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.166994+00:00
+---
+
+**title**: Post-tool use hook
+**shortTitle**: Post Tool Use
+**intro**: >-
+
+* Transform or filter tool results
+* Log tool execution for auditing
+* Add context based on results
+* Suppress results from the conversation
+
+> **Failure variant** — `onPostToolUse` only fires for successful tool executions. To observe **failed** tool calls, register `onPostToolUseFailure` (`on_post_tool_use_failure` in Python, `OnPostToolUseFailure` in Go/.NET, `on_post_tool_use_failure` in Rust). The handler receives `{ sessionId, toolName, toolArgs, error, timestamp, workingDirectory }` — the `error` field is a string extracted from the tool's failure result — and may return `{ additionalContext: string }` to inject extra guidance for the model (e.g. retry hints). See the [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/hooks-overview) for the full list.
+> <a id="failure-variant"></a>
+
+## Hook signature
+
+**Language (typescript):**
+
+```typescript
+type PostToolUseHandler = (
+  input: PostToolUseHookInput,
+  invocation: HookInvocation,
+) => Promise<PostToolUseHookOutput | null | undefined>;
+```
+
+**Language (python):**
+
+```python
+PostToolUseHandler = Callable[
+    [PostToolUseHookInput, dict[str, str]],
+    Awaitable[PostToolUseHookOutput | None]
+]
+```
+
+**Language (go):**
+
+```golang
+type PostToolUseHandler func(
+    input PostToolUseHookInput,
+    invocation HookInvocation,
+) (*PostToolUseHookOutput, error)
+```
+
+**Language (dotnet):**
+
+```csharp
+public delegate Task<PostToolUseHookOutput?> PostToolUseHandler(
+    PostToolUseHookInput input,
+    HookInvocation invocation);
+```
+
+**Language (java):**
+
+```java
+@FunctionalInterface
+public interface PostToolUseHandler {
+    CompletableFuture<PostToolUseHookOutput> handle(
+        PostToolUseHookInput input,
+        HookInvocation invocation);
+}
+```
+
+## Input
+
+| Field              | Type               | Description                            |
+| ------------------ | ------------------ | -------------------------------------- |
+| `timestamp`        | SDK timestamp type | When the hook was triggered            |
+| `workingDirectory` | string             | Current working directory              |
+| `toolName`         | string             | Name of the tool that was called       |
+| `toolArgs`         | object             | Arguments that were passed to the tool |
+| `toolResult`       | object             | Result returned by the tool            |
+
+## Output
+
+Return `null` or `undefined` to pass through the result unchanged. Otherwise, return an object with any of these fields:
+
+| Field               | Type    | Description                                  |
+| ------------------- | ------- | -------------------------------------------- |
+| `modifiedResult`    | object  | Modified result to use instead of original   |
+| `additionalContext` | string  | Extra context injected into the conversation |
+| `suppressOutput`    | boolean | If true, result won't appear in conversation |
+
+## Examples
+
+### Log all tool results
+
+**Language (typescript):**
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onPostToolUse: async (input, invocation) => {
+      console.log(`[${invocation.sessionId}] Tool: ${input.toolName}`);
+      console.log(`  Args: ${JSON.stringify(input.toolArgs)}`);
+      console.log(`  Result: ${JSON.stringify(input.toolResult)}`);
+      return null; // Pass through unchanged
+    },
+  },
+});
+```
+
+**Language (python):**
+
+```python
+from copilot.session import PermissionHandler
+
+async def on_post_tool_use(input_data, invocation):
+    print(f"[{invocation['session_id']}] Tool: {input_data['toolName']}")
+    print(f"  Args: {input_data['toolArgs']}")
+    print(f"  Result: {input_data['toolResult']}")
+    return None  # Pass through unchanged
+
+session = await client.create_session(on_permission_request=PermissionHandler.approve_all, hooks={"on_post_tool_use": on_post_tool_use})
+```
+
+**Language (go):**
+
+```golang
+session, _ := client.CreateSession(context.Background(), &copilot.SessionConfig{
+    Hooks: &copilot.SessionHooks{
+        OnPostToolUse: func(input copilot.PostToolUseHookInput, inv copilot.HookInvocation) (*copilot.PostToolUseHookOutput, error) {
+            fmt.Printf("[%s] Tool: %s\n", inv.SessionID, input.ToolName)
+            fmt.Printf("  Args: %v\n", input.ToolArgs)
+            fmt.Printf("  Result: %v\n", input.ToolResult)
+            return nil, nil
+        },
+    },
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+var session = await client.CreateSessionAsync(new SessionConfig
+{
+    Hooks = new SessionHooks
+    {
+        OnPostToolUse = (input, invocation) =>
+        {
+            Console.WriteLine($"[{invocation.SessionId}] Tool: {input.ToolName}");
+            Console.WriteLine($"  Args: {input.ToolArgs}");
+            Console.WriteLine($"  Result: {input.ToolResult}");
+            return Task.FromResult<PostToolUseHookOutput?>(null);
+        },
+    },
+});
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.*;
+import com.github.copilot.rpc.*;
+import java.util.concurrent.CompletableFuture;
+
+var hooks = new SessionHooks()
+    .setOnPostToolUse((input, invocation) -> {
+        System.out.println("[" + invocation.getSessionId() + "] Tool: " + input.getToolName());
+        System.out.println("  Args: " + input.getToolArgs());
+        System.out.println("  Result: " + input.getToolResult());
+        return CompletableFuture.completedFuture(null);
+    });
+
+var session = client.createSession(
+    new SessionConfig()
+        .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+        .setHooks(hooks)
+).get();
+```
+
+### Redact sensitive data
+
+```typescript
+const SENSITIVE_PATTERNS = [
+  /api[_-]?key["\s:=]+["']?[\w-]+["']?/gi,
+  /password["\s:=]+["']?[\w-]+["']?/gi,
+  /secret["\s:=]+["']?[\w-]+["']?/gi,
+];
+
+const session = await client.createSession({
+  hooks: {
+    onPostToolUse: async (input) => {
+      if (typeof input.toolResult === "string") {
+        let redacted = input.toolResult;
+        for (const pattern of SENSITIVE_PATTERNS) {
+          redacted = redacted.replace(pattern, "[REDACTED]");
+        }
+
+        if (redacted !== input.toolResult) {
+          return { modifiedResult: redacted };
+        }
+      }
+      return null;
+    },
+  },
+});
+```
+
+### Truncate large results
+
+```typescript
+const MAX_RESULT_LENGTH = 10000;
+
+const session = await client.createSession({
+  hooks: {
+    onPostToolUse: async (input) => {
+      const resultStr = JSON.stringify(input.toolResult);
+
+      if (resultStr.length > MAX_RESULT_LENGTH) {
+        return {
+          modifiedResult: {
+            truncated: true,
+            originalLength: resultStr.length,
+            content: resultStr.substring(0, MAX_RESULT_LENGTH) + "...",
+          },
+          additionalContext: `Note: Result was truncated from ${resultStr.length} to ${MAX_RESULT_LENGTH} characters.`,
+        };
+      }
+      return null;
+    },
+  },
+});
+```
+
+### Add context based on results
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onPostToolUse: async (input) => {
+      // If a file read returned an error, add helpful context
+      if (input.toolName === "read_file" && input.toolResult?.error) {
+        return {
+          additionalContext:
+            "Tip: If the file doesn't exist, consider creating it or checking the path.",
+        };
+      }
+
+      // If shell command failed, add debugging hint
+      if (input.toolName === "shell" && input.toolResult?.exitCode !== 0) {
+        return {
+          additionalContext:
+            "The command failed. Check if required dependencies are installed.",
+        };
+      }
+
+      return null;
+    },
+  },
+});
+```
+
+### Filter error stack traces
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onPostToolUse: async (input) => {
+      if (input.toolResult?.error && input.toolResult?.stack) {
+        // Remove internal stack trace details
+        return {
+          modifiedResult: {
+            error: input.toolResult.error,
+            // Keep only first 3 lines of stack
+            stack: input.toolResult.stack.split("\n").slice(0, 3).join("\n"),
+          },
+        };
+      }
+      return null;
+    },
+  },
+});
+```
+
+### Audit trail for compliance
+
+```typescript
+interface AuditEntry {
+  timestamp: Date;
+  sessionId: string;
+  toolName: string;
+  args: unknown;
+  result: unknown;
+  success: boolean;
+}
+
+const auditLog: AuditEntry[] = [];
+
+const session = await client.createSession({
+  hooks: {
+    onPostToolUse: async (input, invocation) => {
+      auditLog.push({
+        timestamp: input.timestamp,
+        sessionId: invocation.sessionId,
+        toolName: input.toolName,
+        args: input.toolArgs,
+        result: input.toolResult,
+        success: !input.toolResult?.error,
+      });
+
+      // Optionally persist to database/file
+      await saveAuditLog(auditLog);
+
+      return null;
+    },
+  },
+});
+```
+
+### Suppress noisy results
+
+```typescript
+const NOISY_TOOLS = ["list_directory", "search_codebase"];
+
+const session = await client.createSession({
+  hooks: {
+    onPostToolUse: async (input) => {
+      if (NOISY_TOOLS.includes(input.toolName)) {
+        // Summarize instead of showing full result
+        const items = Array.isArray(input.toolResult)
+          ? input.toolResult
+          : input.toolResult?.items || [];
+
+        return {
+          modifiedResult: {
+            summary: `Found ${items.length} items`,
+            firstFew: items.slice(0, 5),
+          },
+        };
+      }
+      return null;
+    },
+  },
+});
+```
+
+## Best practices
+
+1. **Return `null` when no changes needed** - This is more efficient than returning an empty object or the same result.
+
+1. **Be careful with result modification** - Changing results can affect how the model interprets tool output. Only modify when necessary.
+
+1. **Use `additionalContext` for hints** - Instead of modifying results, add context to help the model interpret them.
+
+1. **Consider privacy when logging** - Tool results may contain sensitive data. Apply redaction before logging.
+
+1. **Keep hooks fast** - Post-tool hooks run synchronously. Heavy processing should be done asynchronously or batched.
+
+## See also
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/pre-tool-use)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/error-handling)
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/hooks/pre-tool-use.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/hooks/pre-tool-use
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/hooks/pre-tool-use.md
+- **SHA256_FINGERPRINT**: `14624e6056d83aee60f6d7cc24b418df83050d58208efe5f3226af71001aa21a`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.280644+00:00
+---
+
+**title**: Pre-tool use hook
+**shortTitle**: Pre Tool Use
+**intro**: The `onPreToolUse` hook is called **before** a tool executes. Use it to:
+
+* Approve or deny tool execution
+* Modify tool arguments
+* Add context for the tool
+* Suppress tool output from the conversation
+
+## Hook signature
+
+**Language (typescript):**
+
+```typescript
+type PreToolUseHandler = (
+  input: PreToolUseHookInput,
+  invocation: HookInvocation
+) => Promise<PreToolUseHookOutput | null | undefined>;
+```
+
+**Language (python):**
+
+```python
+PreToolUseHandler = Callable[
+    [PreToolUseHookInput, dict[str, str]],
+    Awaitable[PreToolUseHookOutput | None]
+]
+```
+
+**Language (go):**
+
+```golang
+type PreToolUseHandler func(
+    input PreToolUseHookInput,
+    invocation HookInvocation,
+) (*PreToolUseHookOutput, error)
+```
+
+**Language (dotnet):**
+
+```csharp
+public delegate Task<PreToolUseHookOutput?> PreToolUseHandler(
+    PreToolUseHookInput input,
+    HookInvocation invocation);
+```
+
+**Language (java):**
+
+```java
+@FunctionalInterface
+public interface PreToolUseHandler {
+    CompletableFuture<PreToolUseHookOutput> handle(
+        PreToolUseHookInput input,
+        HookInvocation invocation);
+}
+```
+
+## Input
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `timestamp` | number | Unix timestamp when the hook was triggered |
+| `cwd` | string | Current working directory |
+| `toolName` | string | Name of the tool being called |
+| `toolArgs` | object | Arguments passed to the tool |
+
+## Output
+
+Return `null` or `undefined` to allow the tool to execute with no changes. Otherwise, return an object with any of these fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `permissionDecision` | `"allow"` \| `"deny"` \| `"ask"` | Whether to allow the tool call |
+| `permissionDecisionReason` | string | Explanation shown to user (for deny/ask) |
+| `modifiedArgs` | object | Modified arguments to pass to the tool |
+| `additionalContext` | string | Extra context injected into the conversation |
+| `suppressOutput` | boolean | If true, tool output won't appear in conversation |
+
+### Permission decisions
+
+| Decision | Behavior |
+|----------|----------|
+| `"allow"` | Tool executes normally |
+| `"deny"` | Tool is blocked, reason shown to user |
+| `"ask"` | User is prompted to approve (interactive mode) |
+
+### Skipping permission prompts for trusted custom tools
+
+If you define a custom tool that is safe to run without prompting, set `skipPermission: true` on the tool definition. Use this for trusted, app-owned tools whose inputs are already constrained by your application; use `onPreToolUse` when you need per-call policy checks or argument validation.
+
+```typescript
+const getWeather = defineTool("get_weather", {
+  description: "Get weather for a location.",
+  parameters: {
+    type: "object",
+    properties: { location: { type: "string" } },
+    required: ["location"],
+  },
+  skipPermission: true,
+  handler: async ({ location }) => ({ forecast: `Sunny in ${location}` }),
+});
+```
+
+## Examples
+
+### Allow all tools (logging only)
+
+**Language (typescript):**
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onPreToolUse: async (input, invocation) => {
+      console.log(`[${invocation.sessionId}] Calling ${input.toolName}`);
+      console.log(`  Args: ${JSON.stringify(input.toolArgs)}`);
+      return { permissionDecision: "allow" };
+    },
+  },
+});
+```
+
+**Language (python):**
+
+```python
+from copilot.session import PermissionHandler
+
+async def on_pre_tool_use(input_data, invocation):
+    print(f"[{invocation['session_id']}] Calling {input_data['toolName']}")
+    print(f"  Args: {input_data['toolArgs']}")
+    return {"permissionDecision": "allow"}
+
+session = await client.create_session(on_permission_request=PermissionHandler.approve_all, hooks={"on_pre_tool_use": on_pre_tool_use})
+```
+
+**Language (go):**
+
+```golang
+session, _ := client.CreateSession(context.Background(), &copilot.SessionConfig{
+    Hooks: &copilot.SessionHooks{
+        OnPreToolUse: func(input copilot.PreToolUseHookInput, inv copilot.HookInvocation) (*copilot.PreToolUseHookOutput, error) {
+            fmt.Printf("[%s] Calling %s\n", inv.SessionID, input.ToolName)
+            fmt.Printf("  Args: %v\n", input.ToolArgs)
+            return &copilot.PreToolUseHookOutput{
+                PermissionDecision: "allow",
+            }, nil
+        },
+    },
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+var session = await client.CreateSessionAsync(new SessionConfig
+{
+    Hooks = new SessionHooks
+    {
+        OnPreToolUse = (input, invocation) =>
+        {
+            Console.WriteLine($"[{invocation.SessionId}] Calling {input.ToolName}");
+            Console.WriteLine($"  Args: {input.ToolArgs}");
+            return Task.FromResult<PreToolUseHookOutput?>(
+                new PreToolUseHookOutput { PermissionDecision = "allow" }
+            );
+        },
+    },
+});
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.*;
+import com.github.copilot.rpc.*;
+import java.util.concurrent.CompletableFuture;
+
+var hooks = new SessionHooks()
+    .setOnPreToolUse((input, invocation) -> {
+        System.out.println("[" + invocation.getSessionId() + "] Calling " + input.getToolName());
+        System.out.println("  Args: " + input.getToolArgs());
+        return CompletableFuture.completedFuture(PreToolUseHookOutput.allow());
+    });
+
+var session = client.createSession(
+    new SessionConfig()
+        .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+        .setHooks(hooks)
+).get();
+```
+
+### Block specific tools
+
+```typescript
+const BLOCKED_TOOLS = ["shell", "bash", "write_file", "delete_file"];
+
+const session = await client.createSession({
+  hooks: {
+    onPreToolUse: async (input) => {
+      if (BLOCKED_TOOLS.includes(input.toolName)) {
+        return {
+          permissionDecision: "deny",
+          permissionDecisionReason: `Tool '${input.toolName}' is not permitted in this environment`,
+        };
+      }
+      return { permissionDecision: "allow" };
+    },
+  },
+});
+```
+
+### Modify tool arguments
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onPreToolUse: async (input) => {
+      // Add a default timeout to all shell commands
+      if (input.toolName === "shell" && input.toolArgs) {
+        const args = input.toolArgs as { command: string; timeout?: number };
+        return {
+          permissionDecision: "allow",
+          modifiedArgs: {
+            ...args,
+            timeout: args.timeout ?? 30000, // Default 30s timeout
+          },
+        };
+      }
+      return { permissionDecision: "allow" };
+    },
+  },
+});
+```
+
+### Restrict file access to specific directories
+
+```typescript
+const ALLOWED_DIRECTORIES = ["/home/user/projects", "/tmp"];
+
+const session = await client.createSession({
+  hooks: {
+    onPreToolUse: async (input) => {
+      if (input.toolName === "read_file" || input.toolName === "write_file") {
+        const args = input.toolArgs as { path: string };
+        const isAllowed = ALLOWED_DIRECTORIES.some(dir =>
+          args.path.startsWith(dir)
+        );
+
+        if (!isAllowed) {
+          return {
+            permissionDecision: "deny",
+            permissionDecisionReason: `Access to '${args.path}' is not permitted. Allowed directories: ${ALLOWED_DIRECTORIES.join(", ")}`,
+          };
+        }
+      }
+      return { permissionDecision: "allow" };
+    },
+  },
+});
+```
+
+### Suppress verbose tool output
+
+```typescript
+const VERBOSE_TOOLS = ["list_directory", "search_files"];
+
+const session = await client.createSession({
+  hooks: {
+    onPreToolUse: async (input) => {
+      return {
+        permissionDecision: "allow",
+        suppressOutput: VERBOSE_TOOLS.includes(input.toolName),
+      };
+    },
+  },
+});
+```
+
+### Add context based on tool
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onPreToolUse: async (input) => {
+      if (input.toolName === "query_database") {
+        return {
+          permissionDecision: "allow",
+          additionalContext: "Remember: This database uses PostgreSQL syntax. Always use parameterized queries.",
+        };
+      }
+      return { permissionDecision: "allow" };
+    },
+  },
+});
+```
+
+## Best practices
+
+1. **Always return a decision** - Returning `null` allows the tool, but being explicit with `{ permissionDecision: "allow" }` is clearer.
+
+1. **Provide helpful denial reasons** - When denying, explain why so users understand:
+
+   ```typescript
+   return {
+     permissionDecision: "deny",
+     permissionDecisionReason: "Shell commands require approval. Please describe what you want to accomplish.",
+   };
+   ```
+
+1. **Be careful with argument modification** - Ensure modified args maintain the expected schema for the tool.
+
+1. **Consider performance** - Pre-tool hooks run synchronously before each tool call. Keep them fast.
+
+1. **Use `suppressOutput` judiciously** - Suppressing output means the model won't see the result, which may affect conversation quality.
+
+## See also
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/post-tool-use)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/debugging)
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/hooks/session-lifecycle.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/hooks/session-lifecycle
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/hooks/session-lifecycle.md
+- **SHA256_FINGERPRINT**: `32eda1f8c607212ed9e132d0ee46e55110ccc9cb85fd1c8053c3915323f7cbd3`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.225421+00:00
+---
+
+**title**: Session lifecycle hooks
+**shortTitle**: Session Lifecycle
+**intro**: >-
+
+* Initialize context when sessions begin
+* Clean up resources when sessions end
+* Track session metrics and analytics
+* Configure session behavior dynamically
+
+## Session start hook
+
+The `onSessionStart` hook is called when a session begins (new or resumed).
+
+### Hook signature
+
+**Language (typescript):**
+
+```typescript
+type SessionStartHandler = (
+  input: SessionStartHookInput,
+  invocation: HookInvocation
+) => Promise<SessionStartHookOutput | null | undefined>;
+```
+
+**Language (python):**
+
+```python
+SessionStartHandler = Callable[
+    [SessionStartHookInput, dict[str, str]],
+    Awaitable[SessionStartHookOutput | None]
+]
+```
+
+**Language (go):**
+
+```golang
+type SessionStartHandler func(
+    input SessionStartHookInput,
+    invocation HookInvocation,
+) (*SessionStartHookOutput, error)
+```
+
+**Language (dotnet):**
+
+```csharp
+public delegate Task<SessionStartHookOutput?> SessionStartHandler(
+    SessionStartHookInput input,
+    HookInvocation invocation);
+```
+
+**Language (java):**
+
+```java
+@FunctionalInterface
+public interface SessionStartHandler {
+    CompletableFuture<SessionStartHookOutput> handle(
+        SessionStartHookInput input,
+        HookInvocation invocation);
+}
+```
+
+### Input
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `timestamp` | number | Unix timestamp when the hook was triggered |
+| `cwd` | string | Current working directory |
+| `source` | `"startup"` \| `"resume"` \| `"new"` | How the session was started |
+| `initialPrompt` | string \| undefined | The initial prompt if provided |
+
+### Output
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `additionalContext` | string | Context to add at session start |
+| `modifiedConfig` | object | Override session configuration |
+
+### Examples
+
+#### Add project context at start
+
+**Language (typescript):**
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onSessionStart: async (input, invocation) => {
+      console.log(`Session ${invocation.sessionId} started (${input.source})`);
+
+      const projectInfo = await detectProjectType(input.cwd);
+
+      return {
+        additionalContext: `
+This is a ${projectInfo.type} project.
+Main language: ${projectInfo.language}
+Package manager: ${projectInfo.packageManager}
+        `.trim(),
+      };
+    },
+  },
+});
+```
+
+**Language (python):**
+
+```python
+from copilot.session import PermissionHandler
+
+async def on_session_start(input_data, invocation):
+    print(f"Session {invocation['session_id']} started ({input_data['source']})")
+
+    project_info = await detect_project_type(input_data["cwd"])
+
+    return {
+        "additionalContext": f"""
+This is a {project_info['type']} project.
+Main language: {project_info['language']}
+Package manager: {project_info['packageManager']}
+        """.strip()
+    }
+
+session = await client.create_session(on_permission_request=PermissionHandler.approve_all, hooks={"on_session_start": on_session_start})
+```
+
+#### Handle session resume
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onSessionStart: async (input, invocation) => {
+      if (input.source === "resume") {
+        // Load previous session state
+        const previousState = await loadSessionState(invocation.sessionId);
+
+        return {
+          additionalContext: `
+Session resumed. Previous context:
+- Last topic: ${previousState.lastTopic}
+- Open files: ${previousState.openFiles.join(", ")}
+          `.trim(),
+        };
+      }
+      return null;
+    },
+  },
+});
+```
+
+#### Load user preferences
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onSessionStart: async () => {
+      const preferences = await loadUserPreferences();
+
+      const contextParts = [];
+
+      if (preferences.language) {
+        contextParts.push(`Preferred language: ${preferences.language}`);
+      }
+      if (preferences.codeStyle) {
+        contextParts.push(`Code style: ${preferences.codeStyle}`);
+      }
+      if (preferences.verbosity === "concise") {
+        contextParts.push("Keep responses brief and to the point.");
+      }
+
+      return {
+        additionalContext: contextParts.join("\n"),
+      };
+    },
+  },
+});
+```
+
+## Session end hook
+
+The `onSessionEnd` hook is called when a session ends.
+
+A standalone SDK session remains active between prompts. Completing a prompt does not end the session; disconnect or dispose the session to run its end hook.
+
+### Hook signature
+
+**Language (typescript):**
+
+```typescript
+type SessionEndHandler = (
+  input: SessionEndHookInput,
+  invocation: HookInvocation
+) => Promise<SessionEndHookOutput | null | undefined>;
+```
+
+**Language (python):**
+
+```python
+SessionEndHandler = Callable[
+    [SessionEndHookInput, dict[str, str]],
+    Awaitable[SessionEndHookOutput | None]
+]
+```
+
+**Language (go):**
+
+```golang
+type SessionEndHandler func(
+    input SessionEndHookInput,
+    invocation HookInvocation,
+) (*SessionEndHookOutput, error)
+```
+
+**Language (dotnet):**
+
+```csharp
+public delegate Task<SessionEndHookOutput?> SessionEndHandler(
+    SessionEndHookInput input,
+    HookInvocation invocation);
+```
+
+**Language (java):**
+
+```java
+@FunctionalInterface
+public interface SessionEndHandler {
+    CompletableFuture<SessionEndHookOutput> handle(
+        SessionEndHookInput input,
+        HookInvocation invocation);
+}
+```
+
+### Input
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `timestamp` | number | Unix timestamp when the hook was triggered |
+| `cwd` | string | Current working directory |
+| `reason` | string | Why the session ended (see below) |
+| `finalMessage` | string \| undefined | The last message from the session |
+| `error` | string \| undefined | Error message if session ended due to error |
+
+#### End reasons
+
+| Reason | Description |
+|--------|-------------|
+| `"complete"` | Session completed normally |
+| `"error"` | Session ended due to an error |
+| `"abort"` | Session was aborted by user or code |
+| `"timeout"` | Session timed out |
+| `"user_exit"` | User explicitly ended the session |
+
+### Output
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `suppressOutput` | boolean | Suppress the final session output |
+| `cleanupActions` | string[] | List of cleanup actions to perform |
+| `sessionSummary` | string | Summary of the session for logging/analytics |
+
+### Examples
+
+#### Track session metrics
+
+**Language (typescript):**
+
+```typescript
+const sessionStartTimes = new Map<string, number>();
+
+const session = await client.createSession({
+  hooks: {
+    onSessionStart: async (input, invocation) => {
+      sessionStartTimes.set(invocation.sessionId, input.timestamp);
+      return null;
+    },
+    onSessionEnd: async (input, invocation) => {
+      const startTime = sessionStartTimes.get(invocation.sessionId);
+      const duration = startTime ? input.timestamp - startTime : 0;
+
+      await recordMetrics({
+        sessionId: invocation.sessionId,
+        duration,
+        endReason: input.reason,
+      });
+
+      sessionStartTimes.delete(invocation.sessionId);
+      return null;
+    },
+  },
+});
+```
+
+**Language (python):**
+
+```python
+from copilot.session import PermissionHandler
+
+session_start_times = {}
+
+async def on_session_start(input_data, invocation):
+    session_start_times[invocation["session_id"]] = input_data["timestamp"]
+    return None
+
+async def on_session_end(input_data, invocation):
+    start_time = session_start_times.get(invocation["session_id"])
+    duration = input_data["timestamp"] - start_time if start_time else 0
+
+    await record_metrics({
+        "session_id": invocation["session_id"],
+        "duration": duration,
+        "end_reason": input_data["reason"],
+    })
+
+    session_start_times.pop(invocation["session_id"], None)
+    return None
+
+session = await client.create_session(on_permission_request=PermissionHandler.approve_all, hooks={
+        "on_session_start": on_session_start,
+        "on_session_end": on_session_end,
+    })
+```
+
+#### Clean up resources
+
+```typescript
+const sessionResources = new Map<string, { tempFiles: string[] }>();
+
+const session = await client.createSession({
+  hooks: {
+    onSessionStart: async (input, invocation) => {
+      sessionResources.set(invocation.sessionId, { tempFiles: [] });
+      return null;
+    },
+    onSessionEnd: async (input, invocation) => {
+      const resources = sessionResources.get(invocation.sessionId);
+
+      if (resources) {
+        // Clean up temp files
+        for (const file of resources.tempFiles) {
+          await fs.unlink(file).catch(() => {});
+        }
+        sessionResources.delete(invocation.sessionId);
+      }
+
+      console.log(`Session ${invocation.sessionId} ended: ${input.reason}`);
+      return null;
+    },
+  },
+});
+```
+
+#### Save session state for resume
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onSessionEnd: async (input, invocation) => {
+      if (input.reason !== "error") {
+        // Save state for potential resume
+        await saveSessionState(invocation.sessionId, {
+          endTime: input.timestamp,
+          cwd: input.cwd,
+          reason: input.reason,
+        });
+      }
+      return null;
+    },
+  },
+});
+```
+
+#### Log session summary
+
+```typescript
+const sessionData: Record<string, { prompts: number; tools: number; startTime: number }> = {};
+
+const session = await client.createSession({
+  hooks: {
+    onSessionStart: async (input, invocation) => {
+      sessionData[invocation.sessionId] = {
+        prompts: 0,
+        tools: 0,
+        startTime: input.timestamp
+      };
+      return null;
+    },
+    onUserPromptSubmitted: async (_, invocation) => {
+      sessionData[invocation.sessionId].prompts++;
+      return null;
+    },
+    onPreToolUse: async (_, invocation) => {
+      sessionData[invocation.sessionId].tools++;
+      return { permissionDecision: "allow" };
+    },
+    onSessionEnd: async (input, invocation) => {
+      const data = sessionData[invocation.sessionId];
+      console.log(`
+Session Summary:
+  ID: ${invocation.sessionId}
+  Duration: ${(input.timestamp - data.startTime) / 1000}s
+  Prompts: ${data.prompts}
+  Tool calls: ${data.tools}
+  End reason: ${input.reason}
+      `.trim());
+
+      delete sessionData[invocation.sessionId];
+      return null;
+    },
+  },
+});
+```
+
+## Agent stop hook
+
+The agent stop hook runs when the top-level agent naturally reaches the end of a turn. It is separate from `onSessionEnd`: the session remains active, and the hook can request another agent turn.
+
+| Language | Handler |
+|----------|---------|
+| Node.js / TypeScript | `onAgentStop` |
+| Python | `on_agent_stop` |
+| Go | `OnAgentStop` |
+| .NET | `OnAgentStop` |
+| Rust | `on_agent_stop` |
+| Java | `setOnAgentStop` |
+
+### Input
+
+The public member names follow each language's casing conventions:
+
+| Meaning | Node.js / Python | Go / .NET | Rust | Java |
+|---------|------------------|-----------|------|------|
+| Why the agent stopped, such as `end_turn` | `stopReason` | `StopReason` | `stop_reason` | `getStopReason()` |
+| Path to the on-disk session transcript | `transcriptPath` | `TranscriptPath` | `transcript_path` | `getTranscriptPath()` |
+| Whether an earlier block decision already forced this continuation | `stopHookActive` | `StopHookActive` | `stop_hook_active` | `getStopHookActive()` |
+
+### Output
+
+Return no output to let the agent stop. Return a block decision to enqueue another user message and continue:
+
+```json
+{
+  "decision": "block",
+  "reason": "Run the final validation and fix any failures."
+}
+```
+
+Use the active-stop member listed above to avoid repeatedly blocking an agent that has already continued because of this hook. The runtime also caps consecutive block decisions.
+
+## Best practices
+
+1. **Keep `onSessionStart` fast** - Users are waiting for the session to be ready.
+
+1. **Handle all end reasons** - Don't assume sessions end cleanly; handle errors and aborts.
+
+1. **Clean up resources** - Use `onSessionEnd` to free any resources allocated during the session.
+
+1. **Store minimal state** - If tracking session data, keep it lightweight.
+
+1. **Make cleanup idempotent** - `onSessionEnd` might not be called if the process crashes.
+
+## See also
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/error-handling)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/debugging)
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/hooks/user-prompt-submitted.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/hooks/user-prompt-submitted
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/hooks/user-prompt-submitted.md
+- **SHA256_FINGERPRINT**: `925e8aad98856bd763092e7b047f7c82f38ad85356abdd6cf5800dea706bf56e`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.182568+00:00
+---
+
+**title**: User prompt submitted hook
+**shortTitle**: User Prompt Submitted
+**intro**: >-
+
+* Modify or enhance user prompts
+* Add context before processing
+* Filter or validate user input
+* Implement prompt templates
+
+## Hook signature
+
+**Language (typescript):**
+
+```typescript
+type UserPromptSubmittedHandler = (
+  input: UserPromptSubmittedHookInput,
+  invocation: HookInvocation
+) => Promise<UserPromptSubmittedHookOutput | null | undefined>;
+```
+
+**Language (python):**
+
+```python
+UserPromptSubmittedHandler = Callable[
+    [UserPromptSubmittedHookInput, dict[str, str]],
+    Awaitable[UserPromptSubmittedHookOutput | None]
+]
+```
+
+**Language (go):**
+
+```golang
+type UserPromptSubmittedHandler func(
+    input UserPromptSubmittedHookInput,
+    invocation HookInvocation,
+) (*UserPromptSubmittedHookOutput, error)
+```
+
+**Language (dotnet):**
+
+```csharp
+public delegate Task<UserPromptSubmittedHookOutput?> UserPromptSubmittedHandler(
+    UserPromptSubmittedHookInput input,
+    HookInvocation invocation);
+```
+
+**Language (java):**
+
+```java
+@FunctionalInterface
+public interface UserPromptSubmittedHandler {
+    CompletableFuture<UserPromptSubmittedHookOutput> handle(
+        UserPromptSubmittedHookInput input,
+        HookInvocation invocation);
+}
+```
+
+## Input
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `timestamp` | number | Unix timestamp when the hook was triggered |
+| `cwd` | string | Current working directory |
+| `prompt` | string | The user's submitted prompt |
+
+## Output
+
+Return `null` or `undefined` to use the prompt unchanged. Otherwise, return an object with any of these fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `modifiedPrompt` | string | Modified prompt to use instead of original |
+| `additionalContext` | string | Extra context added to the conversation |
+| `suppressOutput` | boolean | If true, suppress the assistant's response output |
+| `decision` | `"block"` | Refuse the prompt (see [Blocking a prompt](#blocking-a-prompt)) |
+| `reason` | string | Why the prompt was blocked; required with `decision` |
+
+### Blocking a prompt
+
+Return a block decision to refuse the prompt:
+
+```json
+{
+  "decision": "block",
+  "reason": "Prompts may not include credentials."
+}
+```
+
+No model turn runs and no user message is recorded. The session emits an ephemeral `session.warning` with `warningType: "policy_blocked"` that carries the reason. The public member names follow each language's conventions:
+
+| Meaning | Node.js / Python | Go / .NET | Rust | Java |
+|---------|------------------|-----------|------|------|
+| Block the prompt | `decision: "block"` | `Decision = "block"` | `decision: Some("block".into())` | `UserPromptSubmittedHookOutput.block(reason)` |
+| Why it was blocked | `reason` | `Reason` | `reason` | the `reason` argument |
+
+In Go, an empty `Reason` is omitted from the output, and the prompt is blocked only when a reason is present.
+
+## Examples
+
+### Log all user prompts
+
+**Language (typescript):**
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onUserPromptSubmitted: async (input, invocation) => {
+      console.log(`[${invocation.sessionId}] User: ${input.prompt}`);
+      return null; // Pass through unchanged
+    },
+  },
+});
+```
+
+**Language (python):**
+
+```python
+from copilot.session import PermissionHandler
+
+async def on_user_prompt_submitted(input_data, invocation):
+    print(f"[{invocation['session_id']}] User: {input_data['prompt']}")
+    return None
+
+session = await client.create_session(on_permission_request=PermissionHandler.approve_all, hooks={"on_user_prompt_submitted": on_user_prompt_submitted})
+```
+
+**Language (go):**
+
+```golang
+session, _ := client.CreateSession(context.Background(), &copilot.SessionConfig{
+    Hooks: &copilot.SessionHooks{
+        OnUserPromptSubmitted: func(input copilot.UserPromptSubmittedHookInput, inv copilot.HookInvocation) (*copilot.UserPromptSubmittedHookOutput, error) {
+            fmt.Printf("[%s] User: %s\n", inv.SessionID, input.Prompt)
+            return nil, nil
+        },
+    },
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+var session = await client.CreateSessionAsync(new SessionConfig
+{
+    Hooks = new SessionHooks
+    {
+        OnUserPromptSubmitted = (input, invocation) =>
+        {
+            Console.WriteLine($"[{invocation.SessionId}] User: {input.Prompt}");
+            return Task.FromResult<UserPromptSubmittedHookOutput?>(null);
+        },
+    },
+});
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.*;
+import com.github.copilot.rpc.*;
+import java.util.concurrent.CompletableFuture;
+
+var hooks = new SessionHooks()
+    .setOnUserPromptSubmitted((input, invocation) -> {
+        System.out.println("[" + invocation.getSessionId() + "] User: " + input.prompt());
+        return CompletableFuture.completedFuture(null);
+    });
+
+var session = client.createSession(
+    new SessionConfig()
+        .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+        .setHooks(hooks)
+).get();
+```
+
+### Add project context
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onUserPromptSubmitted: async (input) => {
+      const projectInfo = await getProjectInfo();
+
+      return {
+        additionalContext: `
+Project: ${projectInfo.name}
+Language: ${projectInfo.language}
+Framework: ${projectInfo.framework}
+        `.trim(),
+      };
+    },
+  },
+});
+```
+
+### Expand shorthand commands
+
+```typescript
+const SHORTCUTS: Record<string, string> = {
+  "/fix": "Please fix the errors in the code",
+  "/explain": "Please explain this code in detail",
+  "/test": "Please write unit tests for this code",
+  "/refactor": "Please refactor this code to improve readability and maintainability",
+};
+
+const session = await client.createSession({
+  hooks: {
+    onUserPromptSubmitted: async (input) => {
+      for (const [shortcut, expansion] of Object.entries(SHORTCUTS)) {
+        if (input.prompt.startsWith(shortcut)) {
+          const rest = input.prompt.slice(shortcut.length).trim();
+          return {
+            modifiedPrompt: `${expansion}${rest ? `: ${rest}` : ""}`,
+          };
+        }
+      }
+      return null;
+    },
+  },
+});
+```
+
+### Content filtering
+
+```typescript
+const BLOCKED_PATTERNS = [
+  /password\s*[:=]/i,
+  /api[_-]?key\s*[:=]/i,
+  /secret\s*[:=]/i,
+];
+
+const session = await client.createSession({
+  hooks: {
+    onUserPromptSubmitted: async (input) => {
+      for (const pattern of BLOCKED_PATTERNS) {
+        if (pattern.test(input.prompt)) {
+          // Refuse the prompt; the reason reaches the client as a session.warning
+          return {
+            decision: "block",
+            reason: "Please don't include sensitive credentials in your prompts. Use environment variables instead.",
+          };
+        }
+      }
+      return null;
+    },
+  },
+});
+```
+
+### Enforce prompt length limits
+
+```typescript
+const MAX_PROMPT_LENGTH = 10000;
+
+const session = await client.createSession({
+  hooks: {
+    onUserPromptSubmitted: async (input) => {
+      if (input.prompt.length > MAX_PROMPT_LENGTH) {
+        // Truncate the prompt and add context
+        return {
+          modifiedPrompt: input.prompt.substring(0, MAX_PROMPT_LENGTH),
+          additionalContext: `Note: The original prompt was ${input.prompt.length} characters and was truncated to ${MAX_PROMPT_LENGTH} characters.`,
+        };
+      }
+      return null;
+    },
+  },
+});
+```
+
+### Add user preferences
+
+```typescript
+interface UserPreferences {
+  codeStyle: "concise" | "verbose";
+  preferredLanguage: string;
+  experienceLevel: "beginner" | "intermediate" | "expert";
+}
+
+const session = await client.createSession({
+  hooks: {
+    onUserPromptSubmitted: async (input) => {
+      const prefs: UserPreferences = await loadUserPreferences();
+
+      const contextParts = [];
+
+      if (prefs.codeStyle === "concise") {
+        contextParts.push("User prefers concise code with minimal comments.");
+      } else {
+        contextParts.push("User prefers verbose code with detailed comments.");
+      }
+
+      if (prefs.experienceLevel === "beginner") {
+        contextParts.push("Explain concepts in simple terms.");
+      }
+
+      return {
+        additionalContext: contextParts.join(" "),
+      };
+    },
+  },
+});
+```
+
+### Usage threshold notices
+
+```typescript
+const promptTimestamps: number[] = [];
+const NOTICE_THRESHOLD = 10; // prompts
+const RATE_WINDOW = 60000; // 1 minute
+
+const session = await client.createSession({
+  hooks: {
+    onUserPromptSubmitted: async (input) => {
+      const now = Date.now();
+
+      // Remove timestamps outside the window
+      while (promptTimestamps.length > 0 && promptTimestamps[0] < now - RATE_WINDOW) {
+        promptTimestamps.shift();
+      }
+
+      promptTimestamps.push(now);
+      if (promptTimestamps.length >= NOTICE_THRESHOLD) {
+        // This is advisory context for the model, not an enforced rate limit.
+        // Enforce hard limits before calling session.send().
+        return {
+          additionalContext: `The user has sent ${promptTimestamps.length} prompts in the last minute. Suggest waiting before sending more.`,
+        };
+      }
+
+      return null;
+    },
+  },
+});
+```
+
+### Prompt templates
+
+```typescript
+const TEMPLATES: Record<string, (args: string) => string> = {
+  "bug:": (desc) => `I found a bug: ${desc}
+
+Please help me:
+1. Understand why this is happening
+2. Suggest a fix
+3. Explain how to prevent similar bugs`,
+
+  "feature:": (desc) => `I want to implement this feature: ${desc}
+
+Please:
+1. Outline the implementation approach
+2. Identify potential challenges
+3. Provide sample code`,
+};
+
+const session = await client.createSession({
+  hooks: {
+    onUserPromptSubmitted: async (input) => {
+      for (const [prefix, template] of Object.entries(TEMPLATES)) {
+        if (input.prompt.toLowerCase().startsWith(prefix)) {
+          const args = input.prompt.slice(prefix.length).trim();
+          return {
+            modifiedPrompt: template(args),
+          };
+        }
+      }
+      return null;
+    },
+  },
+});
+```
+
+## Best practices
+
+1. **Preserve user intent** - When modifying prompts, ensure the core intent remains clear.
+
+1. **Be transparent about modifications** - If you significantly change a prompt, consider logging or notifying the user.
+
+1. **Use `additionalContext` over `modifiedPrompt`** - Adding context is less intrusive than rewriting the prompt.
+
+1. **Use `additionalContext` for advisory guidance**: This hook cannot reject a prompt or enforce policy. Enforce hard limits before calling `session.send()`.
+
+1. **Keep processing fast** - This hook runs on every user message. Avoid slow operations.
+
+## See also
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/session-lifecycle)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/pre-tool-use)
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/hooks/user-prompt-transformed.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/hooks/user-prompt-transformed
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/hooks/user-prompt-transformed.md
+- **SHA256_FINGERPRINT**: `c8a69432b2ddfc565e9fe8b4a5c6faa13142a6a00eac3444d82de3bdb2218d76`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.231345+00:00
+---
+
+**title**: User prompt transformed hook
+**shortTitle**: User Prompt Transformed
+**intro**: >-
+
+Use it when you need to inspect or replace the exact model-facing prompt. The `prompt` input contains the user prompt after any `userPromptSubmitted` hooks have run, while `transformedPrompt` also contains runtime-generated context such as `<current_datetime>`.
+
+## Input and output
+
+| Input field | Type | Description |
+| --- | --- | --- |
+| `sessionId` | string | Runtime session ID |
+| `timestamp` | date/time | Time the hook was invoked |
+| `cwd` / `workingDirectory` | string | Current working directory |
+| `prompt` | string | Prompt after `userPromptSubmitted` hooks |
+| `transformedPrompt` | string | Model-facing prompt after runtime transformations |
+
+Return no value to leave the transformed prompt unchanged. Return `modifiedTransformedPrompt` to replace the content that is stored in session history and sent to the model.
+
+## Examples
+
+**Language (typescript):**
+
+```typescript
+const session = await client.createSession({
+  hooks: {
+    onUserPromptTransformed: async (input) => ({
+      modifiedTransformedPrompt: redact(input.transformedPrompt),
+    }),
+  },
+});
+```
+
+**Language (python):**
+
+```python
+session = await client.create_session(
+    hooks={
+        "on_user_prompt_transformed": lambda input_data, invocation: {
+            "modifiedTransformedPrompt": redact(input_data["transformedPrompt"])
+        }
+    }
+)
+```
+
+**Language (go):**
+
+```golang
+session, err := client.CreateSession(ctx, &copilot.SessionConfig{
+	Hooks: &copilot.SessionHooks{
+		OnUserPromptTransformed: func(input copilot.UserPromptTransformedHookInput, invocation copilot.HookInvocation) (*copilot.UserPromptTransformedHookOutput, error) {
+			return &copilot.UserPromptTransformedHookOutput{
+				ModifiedTransformedPrompt: copilot.String(redact(input.TransformedPrompt)),
+			}, nil
+		},
+	},
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+var session = await client.CreateSessionAsync(new SessionConfig
+{
+    Hooks = new SessionHooks
+    {
+        OnUserPromptTransformed = (input, invocation) =>
+            Task.FromResult<UserPromptTransformedHookOutput?>(new()
+            {
+                ModifiedTransformedPrompt = Redact(input.TransformedPrompt),
+            }),
+    },
+});
+```
+
+**Language (java):**
+
+```java
+var hooks = new SessionHooks().setOnUserPromptTransformed((input, invocation) ->
+    CompletableFuture.completedFuture(
+        new UserPromptTransformedHookOutput(redact(input.transformedPrompt()))));
+
+var session = client.createSession(new SessionConfig().setHooks(hooks)).get();
+```
+
+**Language (rust):**
+
+```rust
+#[async_trait]
+impl SessionHooks for MyHooks {
+    async fn on_user_prompt_transformed(
+        &self,
+        input: UserPromptTransformedInput,
+        _ctx: HookContext,
+    ) -> Option<UserPromptTransformedOutput> {
+        Some(UserPromptTransformedOutput {
+            modified_transformed_prompt: Some(redact(&input.transformed_prompt)),
+        })
+    }
+}
+
+let session = client
+    .create_session(SessionConfig::default().with_hooks(Arc::new(MyHooks)))
+    .await?;
+```
+
+The replacement is persisted as the user message content, so resumed sessions replay the modified content unchanged.
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/index.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/index.md
+- **SHA256_FINGERPRINT**: `5fdeefa70ec57a33308ff76fea7628f9d1ef68ffd9853a1756c737a46e40739f`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.341197+00:00
+---
+
+**title**: Copilot SDK
+**intro**: >-
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/integrations/index.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/integrations
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/integrations/index.md
+- **SHA256_FINGERPRINT**: `ec41399174a0ddf2ea6a31469f8efaaab6882ba9b42effe917b31ea452640cad`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.373980+00:00
+---
+
+**title**: Integrations
+**intro**: Guides for using the GitHub Copilot SDK with other platforms and frameworks.
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/integrations/microsoft-agent-framework.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/integrations/microsoft-agent-framework
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/integrations/microsoft-agent-framework.md
+- **SHA256_FINGERPRINT**: `e7f2eec04e5110f413d2a793893071d56b14cd61d79666ce6e7bc7f69ea7cdac`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.403831+00:00
+---
+
+**title**: Microsoft agent framework integration
+**shortTitle**: Microsoft Agent Framework
+**intro**: >-
+
+## Overview
+
+The Microsoft Agent Framework is the unified successor to Semantic Kernel and AutoGen. It provides a standard interface for building, orchestrating, and deploying AI agents. Dedicated integration packages let you wrap a Copilot SDK client as a first-class MAF agent—interchangeable with any other agent provider in the framework.
+
+| Concept | Description |
+|---------|-------------|
+| **Microsoft Agent Framework** | Open-source framework for single- and multi-agent orchestration in .NET and Python |
+| **Agent provider** | A backend that powers an agent (Copilot, Azure OpenAI, Anthropic, etc.) |
+| **Orchestrator** | A MAF component that coordinates agents in sequential, concurrent, or handoff workflows |
+| **A2A protocol** | Agent-to-Agent communication standard supported by the framework |
+
+> [!NOTE]
+> MAF integration packages are available for **.NET** and **Python**. For TypeScript, Go, Java, and Rust, use the Copilot SDK directly—the standard SDK APIs already provide tool calling, streaming, and custom agents.
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+* A working [AUTOTITLE](/copilot/get-started/sdk-quickstart) in your language of choice
+* A GitHub Copilot subscription (Individual, Business, or Enterprise)
+* The Copilot CLI installed or available via the SDK's bundled CLI
+
+## Installation
+
+Install the Copilot SDK alongside the MAF integration package for your language:
+
+**Language (dotnet):**
+
+```shell
+dotnet add package GitHub.Copilot.SDK
+dotnet add package Microsoft.Agents.AI.GitHub.Copilot --prerelease
+```
+
+**Language (python):**
+
+```shell
+pip install copilot-sdk agent-framework-github-copilot
+```
+
+**Language (java):**
+
+> [!NOTE]
+> The Java SDK does not have a dedicated MAF integration package. Use the standard Copilot SDK directly—it provides tool calling, streaming, and custom agents out of the box.
+
+```xml
+
+<dependency>
+    <groupId>com.github</groupId>
+    <artifactId>copilot-sdk-java</artifactId>
+    <version>${copilot.sdk.version}</version>
+</dependency>
+```
+
+## Basic usage
+
+Wrap the Copilot SDK client as a MAF agent with a single method call. The resulting agent conforms to the framework's standard interface and can be used anywhere a MAF agent is expected.
+
+**Language (dotnet):**
+
+```csharp
+using GitHub.Copilot;
+using Microsoft.Agents.AI;
+
+await using var copilotClient = new CopilotClient();
+await copilotClient.StartAsync();
+
+// Wrap as a MAF agent
+AIAgent agent = copilotClient.AsAIAgent();
+
+// Use the standard MAF interface
+string response = await agent.RunAsync("Explain how dependency injection works in ASP.NET Core");
+Console.WriteLine(response);
+```
+
+**Language (python):**
+
+```python
+from agent_framework.github import GitHubCopilotAgent
+
+async def main():
+    agent = GitHubCopilotAgent(
+        default_options={
+            "instructions": "You are a helpful coding assistant.",
+        }
+    )
+
+    async with agent:
+        result = await agent.run("Explain how dependency injection works in FastAPI")
+        print(result)
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+
+var client = new CopilotClient();
+client.start().get();
+
+var session = client.createSession(new SessionConfig()
+    .setModel("gpt-5.4")
+    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+).get();
+
+var response = session.sendAndWait(new MessageOptions()
+    .setPrompt("Explain how dependency injection works in Spring Boot")).get();
+System.out.println(response.getData().content());
+
+client.stop().get();
+```
+
+## Adding custom tools
+
+Extend your Copilot agent with custom function tools. Tools defined through the standard Copilot SDK are automatically available when the agent runs inside MAF.
+
+**Language (dotnet):**
+
+```csharp
+using GitHub.Copilot;
+using Microsoft.Extensions.AI;
+using Microsoft.Agents.AI;
+
+// Define a custom tool
+AIFunction weatherTool = CopilotTool.DefineTool(
+    (string location) => $"The weather in {location} is sunny with a high of 25°C.",
+    factoryOptions: new AIFunctionFactoryOptions
+    {
+        Name = "GetWeather",
+        Description = "Get the current weather for a given location.",
+    }
+);
+
+await using var copilotClient = new CopilotClient();
+await copilotClient.StartAsync();
+
+// Create agent with tools
+AIAgent agent = copilotClient.AsAIAgent(new AIAgentOptions
+{
+    Tools = new[] { weatherTool },
+});
+
+string response = await agent.RunAsync("What's the weather like in Seattle?");
+Console.WriteLine(response);
+```
+
+**Language (python):**
+
+```python
+from agent_framework.github import GitHubCopilotAgent
+
+def get_weather(location: str) -> str:
+    """Get the current weather for a given location."""
+    return f"The weather in {location} is sunny with a high of 25°C."
+
+async def main():
+    agent = GitHubCopilotAgent(
+        default_options={
+            "instructions": "You are a helpful assistant with access to weather data.",
+        },
+        tools=[get_weather],
+    )
+
+    async with agent:
+        result = await agent.run("What's the weather like in Seattle?")
+        print(result)
+```
+
+You can also use Copilot SDK's native tool definition alongside MAF tools:
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient, defineTool } from "@github/copilot-sdk";
+
+const getWeather = defineTool("GetWeather", {
+    description: "Get the current weather for a given location.",
+    parameters: {
+        type: "object",
+        properties: {
+            location: { type: "string", description: "City name" },
+        },
+        required: ["location"],
+    },
+    handler: async ({ location }: { location: string }) =>
+        `The weather in ${location} is sunny, 25°C.`,
+});
+
+const client = new CopilotClient();
+const session = await client.createSession({
+    model: "gpt-5.4",
+    tools: [getWeather],
+    onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+
+await session.sendAndWait({ prompt: "What's the weather like in Seattle?" });
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
+var getWeather = ToolDefinition.create(
+    "GetWeather",
+    "Get the current weather for a given location.",
+    Map.of(
+        "type", "object",
+        "properties", Map.of(
+            "location", Map.of("type", "string", "description", "City name")),
+        "required", List.of("location")),
+    invocation -> {
+        var location = (String) invocation.getArguments().get("location");
+        return CompletableFuture.completedFuture(
+            "The weather in " + location + " is sunny, 25°C.");
+    });
+
+try (var client = new CopilotClient()) {
+    client.start().get();
+
+    var session = client.createSession(new SessionConfig()
+        .setModel("gpt-5.4")
+        .setTools(List.of(getWeather))
+        .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+    ).get();
+
+    session.sendAndWait(new MessageOptions()
+        .setPrompt("What's the weather like in Seattle?")).get();
+}
+```
+
+## Multi-agent workflows
+
+The primary benefit of MAF integration is composing Copilot alongside other agent providers in orchestrated workflows. Use the framework's built-in orchestrators to create pipelines where different agents handle different steps.
+
+### Sequential workflow
+
+Run agents one after another, passing output from one to the next:
+
+**Language (dotnet):**
+
+```csharp
+using GitHub.Copilot;
+using Microsoft.Agents.AI;
+using Microsoft.Agents.AI.Orchestration;
+
+await using var copilotClient = new CopilotClient();
+await copilotClient.StartAsync();
+
+// Copilot agent for code review
+AIAgent reviewer = copilotClient.AsAIAgent(new AIAgentOptions
+{
+    Instructions = "You review code for bugs, security issues, and best practices. Be thorough.",
+});
+
+// Azure OpenAI agent for generating documentation
+AIAgent documentor = AIAgent.FromOpenAI(new OpenAIAgentOptions
+{
+    Model = "gpt-5.4",
+    Instructions = "You write clear, concise documentation for code changes.",
+});
+
+// Compose in a sequential pipeline
+var pipeline = new SequentialOrchestrator(new[] { reviewer, documentor });
+
+string result = await pipeline.RunAsync(
+    "Review and document this pull request: added retry logic to the HTTP client"
+);
+Console.WriteLine(result);
+```
+
+**Language (python):**
+
+```python
+from agent_framework.github import GitHubCopilotAgent
+from agent_framework.openai import OpenAIAgent
+from agent_framework.orchestration import SequentialOrchestrator
+
+async def main():
+    # Copilot agent for code review
+    reviewer = GitHubCopilotAgent(
+        default_options={
+            "instructions": "You review code for bugs, security issues, and best practices.",
+        }
+    )
+
+    # OpenAI agent for documentation
+    documentor = OpenAIAgent(
+        model="gpt-5.4",
+        instructions="You write clear, concise documentation for code changes.",
+    )
+
+    # Compose in a sequential pipeline
+    pipeline = SequentialOrchestrator(agents=[reviewer, documentor])
+
+    async with pipeline:
+        result = await pipeline.run(
+            "Review and document this PR: added retry logic to the HTTP client"
+        )
+        print(result)
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+
+// Java uses the standard SDK directly — no MAF orchestrator needed
+var client = new CopilotClient();
+client.start().get();
+
+// Step 1: Code review session
+var reviewer = client.createSession(new SessionConfig()
+    .setModel("gpt-5.4")
+    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+).get();
+
+var review = reviewer.sendAndWait(new MessageOptions()
+    .setPrompt("Review this PR for bugs, security issues, and best practices: "
+        + "added retry logic to the HTTP client")).get();
+
+// Step 2: Documentation session using review output
+var documentor = client.createSession(new SessionConfig()
+    .setModel("gpt-5.4")
+    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+).get();
+
+var docs = documentor.sendAndWait(new MessageOptions()
+    .setPrompt("Write documentation for these changes: " + review.getData().content())).get();
+System.out.println(docs.getData().content());
+
+client.stop().get();
+```
+
+### Concurrent workflow
+
+Run multiple agents in parallel and aggregate their results:
+
+**Language (dotnet):**
+
+```csharp
+using GitHub.Copilot;
+using Microsoft.Agents.AI;
+using Microsoft.Agents.AI.Orchestration;
+
+await using var copilotClient = new CopilotClient();
+await copilotClient.StartAsync();
+
+AIAgent securityReviewer = copilotClient.AsAIAgent(new AIAgentOptions
+{
+    Instructions = "Focus exclusively on security vulnerabilities and risks.",
+});
+
+AIAgent performanceReviewer = copilotClient.AsAIAgent(new AIAgentOptions
+{
+    Instructions = "Focus exclusively on performance bottlenecks and optimization opportunities.",
+});
+
+// Run both reviews concurrently
+var concurrent = new ConcurrentOrchestrator(new[] { securityReviewer, performanceReviewer });
+
+string combinedResult = await concurrent.RunAsync(
+    "Analyze this database query module for issues"
+);
+Console.WriteLine(combinedResult);
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+import java.util.concurrent.CompletableFuture;
+
+// Java uses CompletableFuture for concurrent execution
+var client = new CopilotClient();
+client.start().get();
+
+var securitySession = client.createSession(new SessionConfig()
+    .setModel("gpt-5.4")
+    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+).get();
+
+var perfSession = client.createSession(new SessionConfig()
+    .setModel("gpt-5.4")
+    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+).get();
+
+// Run both reviews concurrently
+var securityFuture = securitySession.sendAndWait(new MessageOptions()
+    .setPrompt("Focus on security vulnerabilities in this database query module"));
+var perfFuture = perfSession.sendAndWait(new MessageOptions()
+    .setPrompt("Focus on performance bottlenecks in this database query module"));
+
+CompletableFuture.allOf(securityFuture, perfFuture).get();
+
+System.out.println("Security: " + securityFuture.get().getData().content());
+System.out.println("Performance: " + perfFuture.get().getData().content());
+
+client.stop().get();
+```
+
+## Streaming responses
+
+When building interactive applications, stream agent responses to show real-time output. The MAF integration preserves the Copilot SDK's streaming capabilities.
+
+**Language (dotnet):**
+
+```csharp
+using GitHub.Copilot;
+using Microsoft.Agents.AI;
+
+await using var copilotClient = new CopilotClient();
+await copilotClient.StartAsync();
+
+AIAgent agent = copilotClient.AsAIAgent(new AIAgentOptions
+{
+    Streaming = true,
+});
+
+await foreach (var chunk in agent.RunStreamingAsync("Write a quicksort implementation in C#"))
+{
+    Console.Write(chunk);
+}
+Console.WriteLine();
+```
+
+**Language (python):**
+
+```python
+from agent_framework.github import GitHubCopilotAgent
+
+async def main():
+    agent = GitHubCopilotAgent(
+        default_options={"streaming": True}
+    )
+
+    async with agent:
+        async for chunk in agent.run_streaming("Write a quicksort in Python"):
+            print(chunk, end="", flush=True)
+        print()
+```
+
+You can also stream directly through the Copilot SDK without MAF:
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient();
+const session = await client.createSession({
+    model: "gpt-5.4",
+    streaming: true,
+    onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+
+session.on("assistant.message_delta", (event) => {
+    process.stdout.write(event.data.deltaContent ?? "");
+});
+
+await session.sendAndWait({ prompt: "Write a quicksort implementation in TypeScript" });
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+
+var client = new CopilotClient();
+client.start().get();
+
+var session = client.createSession(new SessionConfig()
+    .setModel("gpt-5.4")
+    .setStreaming(true)
+    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+).get();
+
+session.on(AssistantMessageDeltaEvent.class, event -> {
+    System.out.print(event.getData().deltaContent());
+});
+
+session.sendAndWait(new MessageOptions()
+    .setPrompt("Write a quicksort implementation in Java")).get();
+System.out.println();
+
+client.stop().get();
+```
+
+## Configuration reference
+
+### MAF agent options
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `Instructions` / `instructions` | `string` | System prompt for the agent |
+| `Tools` / `tools` | `AIFunction[]` / `list` | Custom function tools available to the agent |
+| `Streaming` / `streaming` | `bool` | Enable streaming responses |
+| `Model` / `model` | `string` | Override the default model |
+
+### Copilot SDK options (passed through)
+
+All standard [AUTOTITLE](/copilot/get-started/sdk-quickstart) options are still available when creating the underlying Copilot client. The MAF wrapper delegates to the SDK under the hood:
+
+| SDK Feature | MAF Support |
+|-------------|-------------|
+| Custom tools (`DefineTool` / `AIFunctionFactory`) | ✅ Merged with MAF tools |
+| MCP servers | ✅ Configured on the SDK client |
+| Custom agents / sub-agents | ✅ Available within the Copilot agent |
+| Infinite sessions | ✅ Configured on the SDK client |
+| Model selection | ✅ Overridable per agent or per call |
+| Streaming | ✅ Full delta event support |
+
+## Best practices
+
+### Choose the right level of integration
+
+Use the MAF wrapper when you need to compose Copilot with other providers in orchestrated workflows. If your application only uses Copilot, the standalone SDK is simpler and gives you full control:
+
+```typescript
+// Standalone SDK — full control, simpler setup
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient();
+const session = await client.createSession({
+    model: "gpt-5.4",
+    onPermissionRequest: async () => ({ kind: "approve-once" }),
+});
+const response = await session.sendAndWait({ prompt: "Explain this code" });
+```
+
+### Keep agents focused
+
+When building multi-agent workflows, give each agent a specific role with clear instructions. Avoid overlapping responsibilities:
+
+```typescript
+// ❌ Too vague — overlapping roles
+const agents = [
+    { instructions: "Help with code" },
+    { instructions: "Assist with programming" },
+];
+
+// ✅ Focused — clear separation of concerns
+const agents = [
+    { instructions: "Review code for security vulnerabilities. Flag SQL injection, XSS, and auth issues." },
+    { instructions: "Optimize code performance. Focus on algorithmic complexity and memory usage." },
+];
+```
+
+### Handle errors at the orchestration level
+
+Wrap agent calls in error handling, especially in multi-agent workflows where one agent's failure shouldn't block the entire pipeline:
+
+```csharp
+try
+{
+    string result = await pipeline.RunAsync("Analyze this module");
+    Console.WriteLine(result);
+}
+catch (AgentException ex)
+{
+    Console.Error.WriteLine($"Agent {ex.AgentName} failed: {ex.Message}");
+    // Fall back to single-agent mode or retry
+}
+```
+
+## See also
+
+* [AUTOTITLE](/copilot/get-started/sdk-quickstart): initial Copilot SDK setup
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/custom-agents): define specialized sub-agents within the SDK
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/skills): reusable prompt modules
+* [Microsoft Agent Framework documentation](https://learn.microsoft.com/en-us/agent-framework/agents/providers/github-copilot): official MAF docs for the Copilot provider
+* [Blog: Build AI Agents with GitHub Copilot SDK and Microsoft Agent Framework](https://devblogs.microsoft.com/semantic-kernel/build-ai-agents-with-github-copilot-sdk-and-microsoft-agent-framework/)
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/observability/index.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/observability
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/observability/index.md
+- **SHA256_FINGERPRINT**: `50a08c26bba6336628328086713562e68c75fb265ba658ad55d1880b02e53478`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.451051+00:00
+---
+
+**title**: Observability
+**intro**: Monitor and debug your GitHub Copilot SDK applications.
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/observability/opentelemetry.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/observability/opentelemetry
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/observability/opentelemetry.md
+- **SHA256_FINGERPRINT**: `5d5adf54aa20b24a7bc2c3d5c39343813f1f376957c7f465317054c7eab18976`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.377782+00:00
+---
+
+**title**: OpenTelemetry instrumentation for Copilot SDK
+**shortTitle**: Opentelemetry
+**intro**: >-
+
+## Built-in telemetry support
+
+The SDK has built-in support for configuring OpenTelemetry on the CLI process and propagating W3C Trace Context between the SDK and CLI. Provide a `TelemetryConfig` when creating the client to opt in:
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient({
+  telemetry: {
+    otlpEndpoint: "http://localhost:4318",
+  },
+});
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient
+
+client = CopilotClient(
+    telemetry={
+        "otlp_endpoint": "http://localhost:4318",
+    },
+)
+```
+
+**Language (go):**
+
+```golang
+client := copilot.NewClient(&copilot.ClientOptions{
+    Telemetry: &copilot.TelemetryConfig{
+        OTLPEndpoint: "http://localhost:4318",
+    },
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+var client = new CopilotClient(new CopilotClientOptions
+{
+    Telemetry = new TelemetryConfig
+    {
+        OtlpEndpoint = "http://localhost:4318",
+    },
+});
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+
+var client = new CopilotClient(new CopilotClientOptions()
+    .setTelemetry(new TelemetryConfig()
+        .setOtlpEndpoint("http://localhost:4318"))
+);
+```
+
+**Language (rust):**
+
+```rust
+use github_copilot_sdk::{Client, ClientOptions, TelemetryConfig};
+
+let client = Client::start(ClientOptions::new()
+    .with_telemetry(TelemetryConfig::new()
+        .with_otlp_endpoint("http://localhost:4318"))
+).await?;
+```
+
+### TelemetryConfig options
+
+| Option | Node.js | Python | Go | .NET | Java | Rust | Description |
+|---|---|---|---|---|---|---|---|
+| OTLP endpoint | `otlpEndpoint` | `otlp_endpoint` | `OTLPEndpoint` | `OtlpEndpoint` | `otlpEndpoint` | `otlp_endpoint` | OTLP HTTP endpoint URL |
+| OTLP protocol | `otlpProtocol` | `otlp_protocol` | `OTLPProtocol` | `OtlpProtocol` | `otlpProtocol` | `otlp_protocol` | OTLP HTTP protocol for all signals: `"http/json"` or `"http/protobuf"` |
+| File path | `filePath` | `file_path` | `FilePath` | `FilePath` | `filePath` | `file_path` | File path for JSON-lines trace output |
+| Exporter type | `exporterType` | `exporter_type` | `ExporterType` | `ExporterType` | `exporterType` | `exporter_type` | `"otlp-http"` or `"file"` |
+| Source name | `sourceName` | `source_name` | `SourceName` | `SourceName` | `sourceName` | `source_name` | Instrumentation scope name |
+| Capture content | `captureContent` | `capture_content` | `CaptureContent` | `CaptureContent` | `captureContent` | `capture_content` | Whether to capture message content |
+
+The OTLP protocol field configures the CLI's `"otlp-http"` exporter for all signals. Leave it unset to use the CLI default, or set it to `"http/protobuf"` to export protobuf over HTTP.
+
+### Skill and command telemetry
+
+The runtime follows the [GenAI skill semantic conventions](https://github.com/open-telemetry/semantic-conventions-genai/commit/771e3210f7518694666834f7243573b8018c7a4f)
+by refining existing `execute_tool` spans, not adding a separate skill
+operation. A loader is named `execute_tool skill {skill}`. An unambiguously
+identified resource or script is named
+`execute_tool {tool} {skill} {resource}`, with a skill-relative resource name.
+Other command spans append the actual known launcher name.
+
+* `gen_ai.skill.name` and `gen_ai.skill.resource.name`: Available independently of content capture
+* `gen_ai.skill.description` and `gen_ai.skill.source.uri`: Require content capture through `TelemetryConfig`
+* `process.executable.name`: The directly launched executable, such as the shell launcher, not a guessed command token
+* `process.executable.path`: An absolute known path; requires content capture
+* `process.exit.code`: An integer, including zero, when a command-executing tool reports an exit; unavailable exits and pre-spawn failures are omitted
+
+Poll tools do not inherit process attributes from the command they read.
+Sandboxed executable identities are omitted when the sandbox backend does
+not expose them. A nonzero exit does not imply that the tool itself failed.
+Skill definitions and directory listings are not named skill resources.
+Preloaded skills produce invocation events without a fabricated tool span.
+Repeated preparation of the same selected-agent skill context emits one receipt;
+changed content or provenance emits another. Child sessions report their own
+preloads independently. Detached command spans identify the directly spawned
+Unix `sh` supervisor or selected Windows PowerShell executable.
+
+Custom tools that override built-in names do not inherit native skill or process
+attributes. Visible, enabled skills still own resources when model invocation
+is disabled. Script attribution uses the post-hook command and the selected
+shell's directory; it is omitted when startup scripts or profiles make the
+execution context uncertain.
+
+While managed telemetry settings are unresolved, pending tracking buffers only
+capture-independent tool facts. Descriptions, source URIs, and executable paths
+observed before the policy resolves are omitted, even if capture is later enabled.
+The final policy governs replay; disabled or cancelled tracking discards the buffer.
+
+These are breaking telemetry-name changes: use `gen_ai.skill.name` instead
+of `github.copilot.tool.parameters.skill_name` or
+`github.copilot.skill.name`, and use `gen_ai.skill.source.uri` instead of
+`github.copilot.skill.path`. Local source values are file URIs, not bare paths.
+The `github.copilot.skill.invoked` event and its content, source-category,
+trigger, and plugin fields remain Copilot-specific. Skill content retains its
+existing capture gate.
+
+The skill attributes and span refinements have Development stability; the
+process attributes have Release Candidate stability.
+
+### Trace context propagation
+
+> **Most users don't need this.** The `TelemetryConfig` above is all you need to collect traces from the CLI. The trace context propagation described in this section is an **advanced feature** for applications that create their own OpenTelemetry spans and want them to appear in the **same distributed trace** as the CLI's spans.
+
+The SDK can propagate W3C Trace Context (`traceparent`/`tracestate`) on JSON-RPC payloads so that your application's spans and the CLI's spans are linked in one distributed trace. This is useful when, for example, you want to see a "handle tool call" span in your app nested inside the CLI's "execute tool" span, or show the SDK call as a child of your request-handling span.
+
+For cost attribution alongside traces, subscribe to `assistant.usage` events and inspect `apiEndpoint` (`AssistantUsageApiEndpoint`) to see whether a turn used Chat Completions, Responses, or Anthropic Messages; see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/streaming-events).
+
+#### SDK → CLI (outbound)
+
+For **Node.js**, provide an `onGetTraceContext` callback on the client options. This is only needed if your application already uses `@opentelemetry/api` and you want to link your spans with the CLI's spans. The SDK calls this callback before `session.create`, `session.resume`, and `session.send` RPCs:
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+import { propagation, context } from "@opentelemetry/api";
+
+const client = new CopilotClient({
+  telemetry: { otlpEndpoint: "http://localhost:4318" },
+  onGetTraceContext: () => {
+    const carrier: Record<string, string> = {};
+    propagation.inject(context.active(), carrier);
+    return carrier; // { traceparent: "00-...", tracestate: "..." }
+  },
+});
+```
+
+For **Python**, **Go**, and **.NET**, trace context injection is automatic when the respective OpenTelemetry/Activity API is configured—no callback is needed.
+
+#### CLI → SDK (inbound)
+
+When the CLI invokes a tool handler, the `traceparent` and `tracestate` from the CLI's span are available in all languages:
+
+* **Go**: The `ToolInvocation.TraceContext` field is a `context.Context` with the trace already restored—use it directly as the parent for your spans.
+* **Python**: Trace context is automatically restored around the handler via `trace_context()`—child spans are parented to the CLI's span automatically.
+* **.NET**: Trace context is automatically restored via `RestoreTraceContext()`—child `Activity` instances are parented to the CLI's span automatically.
+* **Node.js**: Since the SDK has no OpenTelemetry dependency, `traceparent` and `tracestate` are passed as raw strings on the `ToolInvocation` object. Restore the context manually if needed:
+
+```typescript
+import { defineTool } from "@github/copilot-sdk";
+import { propagation, context, trace } from "@opentelemetry/api";
+
+const myTool = defineTool("my-tool", {
+  description: "Do work",
+  handler: async (args, invocation) => {
+    // Restore the CLI's trace context as the active context
+    const carrier = {
+      traceparent: invocation.traceparent,
+      tracestate: invocation.tracestate,
+    };
+    const parentCtx = propagation.extract(context.active(), carrier);
+
+    // Create a child span under the CLI's span
+    const tracer = trace.getTracer("my-app");
+    return context.with(parentCtx, () =>
+      tracer.startActiveSpan("my-tool", async (span) => {
+        try {
+          const result = await doWork(args);
+          return result;
+        } finally {
+          span.end();
+        }
+      })
+    );
+  },
+});
+
+// Tool handlers are registered when the session is created.
+const session = await client.createSession({ tools: [myTool] });
+```
+
+### Per-language dependencies
+
+| Language | Dependency | Notes |
+|---|---|---|
+| Node.js |—| No dependency; provide `onGetTraceContext` callback for outbound propagation |
+| Python | `opentelemetry-api` | Install with `pip install copilot-sdk[telemetry]` |
+| Go | `go.opentelemetry.io/otel` | Required dependency |
+| .NET |—| Uses built-in `System.Diagnostics.Activity` |
+| Java | `io.opentelemetry:opentelemetry-api` | Add this dependency for SDK-based setup; trace context injection is automatic when the OpenTelemetry Java agent or SDK is configured |
+
+## References
+
+* [OpenTelemetry GenAI Semantic Conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/)
+* [OpenTelemetry MCP Semantic Conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/mcp/)
+* [OpenTelemetry Python SDK](https://opentelemetry.io/docs/instrumentation/python/)
+* [Copilot SDK Documentation](https://github.com/github/copilot-sdk)
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/setup/azure-managed-identity.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/azure-managed-identity
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/setup/azure-managed-identity.md
+- **SHA256_FINGERPRINT**: `efe11e73b5c2771ecf96aa03fa60caf67f87b48c7a8c8955805b264e437add94`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.492380+00:00
+---
+
+**title**: Azure Managed Identity with BYOK
+**shortTitle**: Azure Managed Identity
+**intro**: >-
+
+This guide shows how to use Azure Identity SDK APIs to authenticate with Microsoft Foundry models through the GitHub Copilot SDK. Most languages use `DefaultAzureCredential`; Rust uses `DeveloperToolsCredential` locally and `ManagedIdentityCredential` in Azure.
+
+## How it works
+
+Microsoft Foundry's OpenAI-compatible endpoint (`https://<resource-name>.openai.azure.com/openai/v1/`) accepts bearer tokens from Microsoft Entra ID in place of static API keys. This guide uses a token provider callback so the GitHub Copilot SDK runtime can request fresh tokens on demand.
+
+Using Python as an example, the flow is:
+
+1. Configure `DefaultAzureCredential` for your environment.
+1. Pass a callback, in `bearer_token_provider` of the BYOK provider configuration, that uses `DefaultAzureCredential` to obtain a token for the `https://ai.azure.com/.default` scope.
+1. Let the GitHub Copilot SDK request fresh tokens on demand through that callback.
+
+![Diagram: Sequence diagram showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-azure-managed-identity-diagram-0.png)
+
+## Code samples
+
+### Prerequisites
+
+Install the Azure Identity and GitHub Copilot SDK packages for your language:
+
+**Language (dotnet):**
+
+```bash
+dotnet add package GitHub.Copilot.SDK
+dotnet add package Azure.Core
+```
+
+**Language (go):**
+
+```bash
+go get github.com/github/copilot-sdk/go
+go get github.com/Azure/azure-sdk-for-go/sdk/azidentity
+```
+
+**Language (java):**
+
+```xml
+<dependency>
+    <groupId>com.github</groupId>
+    <artifactId>copilot-sdk-java</artifactId>
+    <version>${copilot.sdk.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>com.azure</groupId>
+    <artifactId>azure-identity</artifactId>
+    <version>${azure.identity.version}</version>
+</dependency>
+```
+
+**Language (python):**
+
+```bash
+pip install github-copilot-sdk azure-identity
+```
+
+**Language (rust):**
+
+```bash
+cargo add github-copilot-sdk azure_identity azure_core
+cargo add tokio --features macros,rt-multi-thread
+```
+
+**Language (typescript):**
+
+```bash
+npm install @github/copilot-sdk @azure/identity
+```
+
+### Use a token provider callback
+
+Use this approach when you want the GitHub Copilot SDK runtime to request fresh tokens on demand through a callback that you provide. The Azure Identity SDK handles token caching and refresh timing.
+
+Here are language-specific implementations:
+
+**Language (dotnet):**
+
+```csharp
+using Azure.Core;
+using Azure.Identity;
+using GitHub.Copilot;
+
+DefaultAzureCredential credential = new(
+    DefaultAzureCredential.DefaultEnvironmentVariableName);
+await using CopilotClient client = new();
+string foundryUrl = Environment.GetEnvironmentVariable("FOUNDRY_RESOURCE_URL")!;
+
+await using CopilotSession session = await client.CreateSessionAsync(new SessionConfig
+{
+    Model = "gpt-5.5",
+    Provider = new ProviderConfig
+    {
+        Type = "openai",
+        BaseUrl = $"{foundryUrl}/openai/v1/",
+        BearerTokenProvider = async _ =>
+        {
+            AccessToken token = await credential.GetTokenAsync(
+                new TokenRequestContext(["https://ai.azure.com/.default"]));
+            return token.Token;
+        },
+        WireApi = "responses",
+    },
+});
+
+AssistantMessageEvent? response = await session.SendAndWaitAsync(
+    new MessageOptions { Prompt = "Hello from Managed Identity!" });
+Console.WriteLine(response?.Data.Content);
+```
+
+**Language (go):**
+
+```golang
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"os"
+	"time"
+
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
+	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
+	copilot "github.com/github/copilot-sdk/go"
+)
+func main() {
+	opts := azidentity.DefaultAzureCredentialOptions{RequireAzureTokenCredentials: true}
+	credential, err := azidentity.NewDefaultAzureCredential(&opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	getBearerToken := func(args copilot.ProviderTokenArgs) (string, error) {
+		token, err := credential.GetToken(context.Background(), policy.TokenRequestOptions{
+			Scopes: []string{"https://ai.azure.com/.default"},
+		})
+		if err != nil {
+			return "", err
+		}
+		return token.Token, nil
+	}
+
+	client := copilot.NewClient(nil)
+	if err := client.Start(context.Background()); err != nil {
+		log.Fatal(err)
+	}
+	defer client.Stop()
+
+	foundryURL := os.Getenv("FOUNDRY_RESOURCE_URL")
+
+	session, err := client.CreateSession(context.Background(), &copilot.SessionConfig{
+		Model: "gpt-5.5",
+		Provider: &copilot.ProviderConfig{
+			Type:                "openai",
+			BaseURL:             fmt.Sprintf("%s/openai/v1/", foundryURL),
+			BearerTokenProvider: getBearerToken,
+			WireAPI:             "responses",
+		},
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer session.Disconnect()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+
+	response, err := session.SendAndWait(ctx, copilot.MessageOptions{
+		Prompt: "Hello from Managed Identity!",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if response != nil {
+		if data, ok := response.Data.(*copilot.AssistantMessageData); ok {
+			fmt.Println(data.Content)
+		}
+	}
+}
+```
+
+**Language (java):**
+
+```java
+import com.azure.core.credential.TokenRequestContext;
+import com.azure.identity.AzureIdentityEnvVars;
+import com.azure.identity.DefaultAzureCredentialBuilder;
+import com.github.copilot.CopilotClient;
+import com.github.copilot.generated.AssistantMessageEvent;
+import com.github.copilot.rpc.BearerTokenProvider;
+import com.github.copilot.rpc.MessageOptions;
+import com.github.copilot.rpc.ProviderConfig;
+import com.github.copilot.rpc.SessionConfig;
+
+public class ManagedIdentityExample {
+    public static void main(String[] args) throws Exception {
+        var credential = new DefaultAzureCredentialBuilder()
+                .requireEnvVars(AzureIdentityEnvVars.AZURE_TOKEN_CREDENTIALS)
+                .build();
+        BearerTokenProvider tokenProvider = providerArgs ->
+            credential
+                .getToken(new TokenRequestContext().addScopes("https://ai.azure.com/.default"))
+                .map(accessToken -> accessToken.getToken())
+                .toFuture();
+        String foundryUrl = System.getenv("FOUNDRY_RESOURCE_URL");
+
+        try (var client = new CopilotClient()) {
+            client.start().get();
+
+            var session = client.createSession(new SessionConfig()
+                    .setModel("gpt-5.5")
+                    .setProvider(new ProviderConfig()
+                            .setType("openai")
+                            .setBaseUrl(foundryUrl + "/openai/v1/")
+                            .setBearerTokenProvider(tokenProvider)
+                            .setWireApi("responses")))
+                .get();
+
+            AssistantMessageEvent response = session
+                    .sendAndWait(new MessageOptions().setPrompt("Hello from Managed Identity!"))
+                    .get();
+            System.out.println(response.getData().content());
+
+            session.disconnect().get();
+        }
+    }
+}
+```
+
+**Language (python):**
+
+```python
+import asyncio
+import os
+
+from azure.identity.aio import DefaultAzureCredential
+from copilot import CopilotClient
+from copilot.session import PermissionHandler, ProviderConfig
+
+async def main():
+    credential = DefaultAzureCredential(require_envvar=True)
+    async def get_bearer_token(_args) -> str:
+        token = await credential.get_token("https://ai.azure.com/.default")
+        return token.token
+
+    foundry_url = os.environ["FOUNDRY_RESOURCE_URL"]
+
+    client = CopilotClient()
+    await client.start()
+
+    session = await client.create_session(
+        on_permission_request=PermissionHandler.approve_all,
+        model="gpt-5.5",
+        provider=ProviderConfig(
+            type="openai",
+            base_url=f"{foundry_url.rstrip('/')}/openai/v1/",
+            bearer_token_provider=get_bearer_token,
+            wire_api="responses",
+        ),
+    )
+
+    response = await session.send_and_wait("Hello from Managed Identity!")
+    print(response.data.content)
+
+    await client.stop()
+    await credential.close()
+
+asyncio.run(main())
+```
+
+**Language (rust):**
+
+```rust
+use std::sync::Arc;
+
+use azure_core::credentials::TokenCredential;
+use azure_identity::{DeveloperToolsCredential, ManagedIdentityCredential};
+use github_copilot_sdk::{BearerTokenError, Client, ClientOptions, MessageOptions, ProviderTokenArgs};
+use github_copilot_sdk::types::{ProviderConfig, SessionConfig};
+
+fn credential_for_environment() -> azure_core::Result<Arc<dyn TokenCredential>> {
+    match std::env::var("AZURE_TOKEN_CREDENTIALS").as_deref() {
+        Ok("ManagedIdentityCredential") => Ok(ManagedIdentityCredential::new(None)?),
+        _ => Ok(DeveloperToolsCredential::new(None)?),
+    }
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let credential = credential_for_environment()?;
+    let foundry_url = std::env::var("FOUNDRY_RESOURCE_URL")?;
+
+    let get_bearer_token = {
+        let credential = credential.clone();
+        move |_args: ProviderTokenArgs| {
+            let credential = credential.clone();
+            async move {
+                let token = credential
+                    .get_token(&["https://ai.azure.com/.default"], None)
+                    .await
+                    .map_err(|err| BearerTokenError::message(err.to_string()))?;
+                Ok(token.token.secret().to_string())
+            }
+        }
+    };
+
+    let mut provider = ProviderConfig::default();
+    provider.provider_type = Some("openai".to_string());
+    provider.base_url = format!("{}/openai/v1/", foundry_url.trim_end_matches('/'));
+    provider.bearer_token_provider = Some(Arc::new(get_bearer_token));
+    provider.wire_api = Some("responses".to_string());
+
+    let mut config = SessionConfig::default();
+    config.model = Some("gpt-5.5".to_string());
+    config.provider = Some(provider);
+
+    let client = Client::start(ClientOptions::default()).await?;
+    let session = client.create_session(config).await?;
+
+    session
+        .send_and_wait(MessageOptions::new("Hello from Managed Identity!"))
+        .await?;
+
+    session.disconnect().await?;
+    client.stop().await?;
+    Ok(())
+}
+```
+
+**Language (typescript):**
+
+```typescript
+import { DefaultAzureCredential } from "@azure/identity";
+import { CopilotClient } from "@github/copilot-sdk";
+
+const credential = new DefaultAzureCredential({
+  requiredEnvVars: ["AZURE_TOKEN_CREDENTIALS"],
+});
+const getBearerToken = async () => {
+  const tokenResponse = await credential.getToken("https://ai.azure.com/.default");
+  return tokenResponse.token;
+};
+
+const client = new CopilotClient();
+
+const session = await client.createSession({
+  model: "gpt-5.5",
+  provider: {
+    type: "openai",
+    baseUrl: `${process.env.FOUNDRY_RESOURCE_URL}/openai/v1/`,
+    bearerTokenProvider: getBearerToken,
+    wireApi: "responses",
+  },
+});
+
+const response = await session.sendAndWait({ prompt: "Hello from Managed Identity!" });
+console.log(response?.data.content);
+
+await client.stop();
+```
+
+## Environment configuration
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `AZURE_TOKEN_CREDENTIALS` | When running in **Azure**, set it to `ManagedIdentityCredential`. When running **locally**, set it to either `dev` or a developer tool credential name, such as `AzureCliCredential`. | `ManagedIdentityCredential` |
+| `AZURE_CLIENT_ID` | *Optional.* When running in **Azure**, set this to the client ID of a User-assigned Managed Identity when using `ManagedIdentityCredential`. If not set, Azure uses the System-assigned Managed Identity. | `11111111-2222-3333-4444-555555555555` |
+| `FOUNDRY_RESOURCE_URL` | Your Microsoft Foundry resource URL | `https://<my-resource>.openai.azure.com` |
+
+No API key environment variable is needed—authentication is handled by Azure Identity credentials. In .NET, Go, Java, Python, and TypeScript, `DefaultAzureCredential` automatically supports:
+
+* **Managed Identity** (System-assigned or User-assigned): for Azure-hosted apps
+* **Azure CLI** (`az login`): for local development
+* **Environment variables** (`AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_CLIENT_SECRET`): for service principals
+* **Workload Identity**: for Kubernetes
+
+In .NET, Go, Java, Python, and TypeScript, `ManagedIdentityCredential` reads `AZURE_CLIENT_ID` to select a User-assigned Managed Identity. Rust is an exception in this guide.
+
+In Rust, use `DeveloperToolsCredential` for local development and `ManagedIdentityCredential` when running in Azure. For other languages, see the `DefaultAzureCredential` documentation for the full credential chain:
+
+* [.NET](https://aka.ms/azsdk/net/identity/credential-chains#defaultazurecredential-overview)
+* [Go](https://aka.ms/azsdk/go/identity/credential-chains#defaultazurecredential-overview)
+* [Java](https://aka.ms/azsdk/java/identity/credential-chains#defaultazurecredential-overview)
+* [Python](https://aka.ms/azsdk/python/identity/credential-chains#defaultazurecredential-overview)
+* [TypeScript](https://aka.ms/azsdk/js/identity/credential-chains#defaultazurecredential-overview)
+
+## When to use this pattern
+
+| Scenario | Recommendation |
+|----------|----------------|
+| Azure-hosted app with Managed Identity | ✅ Use this pattern |
+| App with existing Microsoft Entra service principal | ✅ Use this pattern |
+| Local development with `az login` | ✅ Use this pattern |
+| Non-Azure environment with static API key | Use [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok) |
+| GitHub Copilot subscription available | Use [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/github-oauth) |
+
+## See also
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok): Static API key configuration
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/backend-services): Server-side deployment
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/setup/backend-services.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/backend-services
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/setup/backend-services.md
+- **SHA256_FINGERPRINT**: `3486b6e501a08917426eaafe617022422c934b7b96a1ae3554b900c28be7ed20`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.448450+00:00
+---
+
+**title**: Backend services setup
+**shortTitle**: Backend Services
+**intro**: >-
+
+**Best for:** Web app backends, API services, internal tools, CI/CD integrations, any server-side workload.
+
+## How it works
+
+Instead of the SDK spawning a CLI child process, you run the CLI independently in **headless server mode**. Your backend connects to it over TCP using the `Connection` option (`URIConnection`).
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-backend-services-diagram-0.png)
+
+**Key characteristics:**
+* CLI runs as a persistent server process (not spawned per request)
+* SDK connects over TCP—CLI and app can run in different containers
+* Multiple SDK clients can share one CLI server
+* Works with any auth method (GitHub tokens, env vars, BYOK)
+
+For multi-user server mode, configure SDK clients with `mode: "empty"`, pass user credentials per session, and explicitly allow tools for each session. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy) for the full pattern.
+
+## Architecture: auto-managed vs. external CLI
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-backend-services-diagram-1.png)
+
+## Step 1: start the CLI in headless mode
+
+Run the CLI as a background server:
+
+```bash
+# Start with a specific port
+copilot --headless --port 4321
+
+# Or let it pick a random port (prints the URL)
+copilot --headless
+# Output: Listening on http://localhost:52431
+```
+
+By default the headless server only accepts connections from loopback (`127.0.0.1`). To accept connections from other hosts—for example from another machine on your network—bind to a non-loopback address with `--host`:
+
+```bash
+copilot --headless --host 0.0.0.0 --port 4321
+```
+
+For production, run it as a system service or in a container.
+
+> [!NOTE]
+> There is no official pre-built Docker image for the Copilot CLI. You can build your own from the [GitHub releases](https://github.com/github/copilot-cli/releases):
+
+```dockerfile
+FROM debian:bookworm-slim
+ARG COPILOT_VERSION=1.0.7
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates wget \
+    && ARCH=$(dpkg --print-architecture) \
+    && case "${ARCH}" in amd64) COPILOT_ARCH="x64" ;; arm64) COPILOT_ARCH="arm64" ;; *) echo "Unsupported: ${ARCH}" && exit 1 ;; esac \
+    && wget -q "https://github.com/github/copilot-cli/releases/download/v${COPILOT_VERSION}/copilot-linux-${COPILOT_ARCH}.tar.gz" \
+    && tar -xzf "copilot-linux-${COPILOT_ARCH}.tar.gz" \
+    && mv copilot /usr/local/bin/ \
+    && rm "copilot-linux-${COPILOT_ARCH}.tar.gz" \
+    && apt-get purge -y wget && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
+ENTRYPOINT ["copilot"]
+```
+
+```bash
+# Build the image
+docker build --build-arg COPILOT_VERSION=1.0.7 -t copilot-cli:latest .
+
+# For remote deployments (Kubernetes, ACI, etc.), push to your registry
+docker tag copilot-cli:latest your-registry/copilot-cli:latest
+docker push your-registry/copilot-cli:latest
+```
+
+```bash
+# Docker — must bind to 0.0.0.0 so the container's published port is reachable
+docker run -d --name copilot-cli \
+    -p 4321:4321 \
+    -e COPILOT_GITHUB_TOKEN="$TOKEN" \
+    copilot-cli:latest \
+    --headless --host 0.0.0.0 --port 4321
+
+# systemd
+[Service]
+ExecStart=/usr/local/bin/copilot --headless --port 4321
+Environment=COPILOT_GITHUB_TOKEN=your-token
+Restart=always
+```
+
+## Step 2: connect the SDK
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient, RuntimeConnection } from "@github/copilot-sdk";
+
+const client = new CopilotClient({
+    connection: RuntimeConnection.forUri("localhost:4321"),
+    mode: "empty",
+});
+
+const session = await client.createSession({
+    sessionId: `user-${userId}-${Date.now()}`,
+    model: "gpt-5.4",
+    availableTools: ["custom:*"],
+    gitHubToken: user.githubToken,
+});
+
+const response = await session.sendAndWait({ prompt: req.body.message });
+res.json({ content: response?.data.content });
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient, RuntimeConnection
+from copilot.session import PermissionHandler
+
+client = CopilotClient(
+    connection=RuntimeConnection.for_uri("localhost:4321"),
+)
+await client.start()
+
+session = await client.create_session(on_permission_request=PermissionHandler.approve_all, model="gpt-5.4", session_id=f"user-{user_id}-{int(time.time())}")
+
+response = await session.send_and_wait(message)
+```
+
+**Language (go):**
+
+```golang
+client := copilot.NewClient(&copilot.ClientOptions{
+    Connection: copilot.URIConnection{URL: "localhost:4321"},
+})
+client.Start(ctx)
+defer client.Stop()
+
+session, _ := client.CreateSession(ctx, &copilot.SessionConfig{
+    SessionID: fmt.Sprintf("user-%s-%d", userID, time.Now().Unix()),
+    Model:     "gpt-5.4",
+})
+
+response, _ := session.SendAndWait(ctx, copilot.MessageOptions{Prompt: message})
+```
+
+**Language (dotnet):**
+
+```csharp
+var client = new CopilotClient(new CopilotClientOptions
+{
+    Connection = RuntimeConnection.ForUri("localhost:4321"),
+});
+
+await using var session = await client.CreateSessionAsync(new SessionConfig
+{
+    SessionId = $"user-{userId}-{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}",
+    Model = "gpt-5.4",
+});
+
+var response = await session.SendAndWaitAsync(
+    new MessageOptions { Prompt = message });
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+
+var userId = "user1";
+var message = "Hello!";
+
+var client = new CopilotClient(new CopilotClientOptions()
+    .setCliUrl("localhost:4321")
+);
+
+try {
+    client.start().get();
+
+    var session = client.createSession(new SessionConfig()
+        .setSessionId(String.format("user-%s-%d", userId, System.currentTimeMillis() / 1000))
+        .setModel("gpt-5.4")
+        .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+    ).get();
+
+    var response = session.sendAndWait(new MessageOptions()
+        .setPrompt(message)).get();
+} finally {
+    client.stop().get();
+}
+```
+
+## Authentication for backend services
+
+### Environment variable tokens
+
+The simplest approach—set a token on the CLI server:
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-backend-services-diagram-2.png)
+
+```bash
+# All requests use this token
+export COPILOT_GITHUB_TOKEN="gho_service_account_token"
+copilot --headless --port 4321
+```
+
+### Per-user tokens (OAuth)
+
+Pass individual user tokens when creating sessions. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/github-oauth) for the full flow.
+
+```typescript
+const client = new CopilotClient({
+    connection: RuntimeConnection.forUri("localhost:4321"),
+    mode: "empty",
+});
+
+// Your API receives user tokens from your auth layer
+app.post("/chat", authMiddleware, async (req, res) => {
+    const session = await client.createSession({
+        sessionId: `user-${req.user.id}-chat`,
+        model: "gpt-5.4",
+        availableTools: ["custom:*"],
+        gitHubToken: req.user.githubToken,
+    });
+
+    const response = await session.sendAndWait({
+        prompt: req.body.message,
+    });
+
+    res.json({ content: response?.data.content });
+});
+```
+
+### BYOK (no GitHub auth)
+
+Use your own API keys for the model provider. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok) for details.
+
+```typescript
+const client = new CopilotClient({
+    connection: RuntimeConnection.forUri("localhost:4321"),
+});
+
+const session = await client.createSession({
+    model: "gpt-5.4",
+    provider: {
+        type: "openai",
+        baseUrl: "https://api.openai.com/v1",
+        apiKey: process.env.OPENAI_API_KEY,
+    },
+});
+```
+
+## Common backend patterns
+
+### Web API with Express
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-backend-services-diagram-3.png)
+
+```typescript
+import express from "express";
+import { CopilotClient, RuntimeConnection } from "@github/copilot-sdk";
+
+const app = express();
+app.use(express.json());
+
+// Single shared CLI connection for multi-user server mode
+const client = new CopilotClient({
+    connection: RuntimeConnection.forUri(process.env.CLI_URL || "localhost:4321"),
+    mode: "empty",
+});
+
+app.post("/api/chat", async (req, res) => {
+    const { sessionId, message } = req.body;
+
+    // Create or resume session
+    let session;
+    try {
+        session = await client.resumeSession(sessionId);
+    } catch {
+        session = await client.createSession({
+            sessionId,
+            model: "gpt-5.4",
+            availableTools: ["custom:*"],
+            gitHubToken: req.user.githubToken,
+        });
+    }
+
+    const response = await session.sendAndWait({ prompt: message });
+    res.json({
+        sessionId,
+        content: response?.data.content,
+    });
+});
+
+app.listen(3000);
+```
+
+### Background worker
+
+```typescript
+import { CopilotClient, RuntimeConnection } from "@github/copilot-sdk";
+
+const client = new CopilotClient({
+    connection: RuntimeConnection.forUri(process.env.CLI_URL || "localhost:4321"),
+});
+
+// Process jobs from a queue
+async function processJob(job: Job) {
+    const session = await client.createSession({
+        sessionId: `job-${job.id}`,
+        model: "gpt-5.4",
+    });
+
+    const response = await session.sendAndWait({
+        prompt: job.prompt,
+    });
+
+    await saveResult(job.id, response?.data.content);
+    await session.disconnect();  // Clean up after job completes
+}
+```
+
+### Docker compose deployment
+
+```yaml
+version: "3.8"
+
+services:
+  copilot-cli:
+    image: copilot-cli:latest  # See "Step 1" above for how to build this image
+    command: ["--headless", "--host", "0.0.0.0", "--port", "4321"]
+    environment:
+      - COPILOT_GITHUB_TOKEN=${COPILOT_GITHUB_TOKEN}
+    ports:
+      - "4321:4321"
+    restart: always
+    volumes:
+      - session-data:/root/.copilot/session-state
+
+  api:
+    build: .
+    environment:
+      - CLI_URL=copilot-cli:4321
+    depends_on:
+      - copilot-cli
+    ports:
+      - "3000:3000"
+
+volumes:
+  session-data:
+```
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-backend-services-diagram-4.png)
+
+## Health checks
+
+Monitor the CLI server's health:
+
+```typescript
+// Periodic health check
+async function checkCLIHealth(): Promise<boolean> {
+    try {
+        const status = await client.getStatus();
+        return status !== undefined;
+    } catch {
+        return false;
+    }
+}
+```
+
+## Session cleanup
+
+Backend services should actively clean up sessions to avoid resource leaks:
+
+```typescript
+// Clean up expired sessions periodically
+async function cleanupSessions(maxAgeMs: number) {
+    const sessions = await client.listSessions();
+    const now = Date.now();
+
+    for (const session of sessions) {
+        const age = now - new Date(session.createdAt).getTime();
+        if (age > maxAgeMs) {
+            await client.deleteSession(session.sessionId);
+        }
+    }
+}
+
+// Run every hour
+setInterval(() => cleanupSessions(24 * 60 * 60 * 1000), 60 * 60 * 1000);
+```
+
+## Limitations
+
+| Limitation | Details |
+|------------|---------|
+| **Single CLI server = single point of failure** | See [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling) for HA patterns |
+| **No built-in auth between SDK and CLI** | Secure the network path (same host, VPC, etc.) |
+| **Session state on local disk** | Mount persistent storage for container restarts |
+| **No idle timeout by default** | Pass `--session-idle-timeout <seconds>` to the CLI server to automatically clean up inactive sessions |
+
+## When to move on
+
+| Need | Next Guide |
+|------|-----------|
+| Multiple CLI servers / high availability | [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling) |
+| SDK isolation for concurrent users | [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy) |
+| GitHub account auth for users | [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/github-oauth) |
+| Your own model keys | [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok) |
+
+## Next steps
+
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy)**: Configure SDK isolation for concurrent users
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling)**: Handle more users, add redundancy
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/features/session-persistence)**: Resume sessions across restarts
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/github-oauth)**: Add user authentication
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/setup/bundled-cli.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/bundled-cli
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/setup/bundled-cli.md
+- **SHA256_FINGERPRINT**: `943b06fab59f2186e8e78fc31a5aab32c999b7e0320b00e4b3db6147d86b9376`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.548321+00:00
+---
+
+**title**: Default setup (bundled CLI)
+**shortTitle**: Bundled CLI
+**intro**: >-
+
+The Python SDK recommends a one-time download step after installation:
+
+```bash
+python -m copilot download-runtime
+```
+
+This downloads the matching runtime and caches it locally. If you skip this step, the SDK will attempt to download it automatically on first use as a fallback.
+
+**Best for:** Most applications—desktop apps, standalone tools, CLI utilities, prototypes, and more.
+
+## How it works
+
+When you install the SDK, the Copilot runtime is included automatically (Node.js, .NET) or downloaded via `python -m copilot download-runtime` (Python). The SDK starts it as a child process and communicates over stdio. There's nothing extra to configure.
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-bundled-cli-diagram-0.png)
+
+**Key characteristics:**
+* CLI binary is included with the SDK—no separate install needed
+* The SDK manages the CLI version to ensure compatibility
+* Users authenticate through your app (or use env vars / BYOK)
+* Sessions are managed per-user on their machine
+
+## Quick start
+
+> [!NOTE]
+> Each SDK has a minimum language runtime requirement—see the Prerequisites section of the [Node.js](https://github.com/github/copilot-sdk/tree/main/nodejs/README.md#prerequisites), [Python](https://github.com/github/copilot-sdk/tree/main/python/README.md#prerequisites), [Go](https://github.com/github/copilot-sdk/tree/main/go/README.md#prerequisites), [Rust](https://github.com/github/copilot-sdk/tree/main/rust/README.md#prerequisites), [Java](https://github.com/github/copilot-sdk/tree/main/java/README.md#prerequisites), or [.NET](https://github.com/github/copilot-sdk/tree/main/dotnet/README.md#prerequisites) README—since an unsupported runtime (e.g. Python below the stated floor) can cause `pip`/package managers to silently resolve an outdated SDK release instead of reporting a version conflict.
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient();
+
+const session = await client.createSession({ model: "gpt-5.4" });
+const response = await session.sendAndWait({ prompt: "Hello!" });
+console.log(response?.data.content);
+
+await client.stop();
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient
+from copilot.session import PermissionHandler
+
+client = CopilotClient()
+await client.start()
+
+session = await client.create_session(on_permission_request=PermissionHandler.approve_all, model="gpt-5.4")
+response = await session.send_and_wait("Hello!")
+print(response.data.content)
+
+await client.stop()
+```
+
+**Language (go):**
+
+> [!NOTE]
+> Unlike Node.js, Python, and .NET, the Go SDK does not include a CLI as an automatic dependency. With no explicit path, `NewClient(nil)` uses an embedded CLI when available, then falls back to `copilot` on `PATH`. To embed a CLI, run the [bundler tool](https://github.com/github/copilot-sdk/tree/main/go/README.md#distributing-your-application-with-an-embedded-github-copilot-cli) at build time. You can also set `COPILOT_CLI_PATH` or point a `Connection` at an existing binary. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/local-cli) for details.
+
+```golang
+client := copilot.NewClient(nil)
+if err := client.Start(ctx); err != nil {
+    log.Fatal(err)
+}
+defer client.Stop()
+
+session, _ := client.CreateSession(ctx, &copilot.SessionConfig{Model: "gpt-5.4"})
+response, _ := session.SendAndWait(ctx, copilot.MessageOptions{Prompt: "Hello!"})
+if d, ok := response.Data.(*copilot.AssistantMessageData); ok {
+    fmt.Println(d.Content)
+}
+```
+
+**Language (dotnet):**
+
+```csharp
+await using var client = new CopilotClient();
+await using var session = await client.CreateSessionAsync(
+    new SessionConfig { Model = "gpt-5.4" });
+
+var response = await session.SendAndWaitAsync(
+    new MessageOptions { Prompt = "Hello!" });
+Console.WriteLine(response?.Data.Content);
+```
+
+**Language (java):**
+
+> [!NOTE]
+> The Java SDK does not bundle or embed the Copilot CLI. Install the CLI separately and either make `copilot` available on your `PATH` or set its location with `setCliPath(...)` (or connect to a running CLI server with `setCliUrl(...)`).
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+
+var client = new CopilotClient(new CopilotClientOptions()
+    // Point to the CLI binary installed on the system
+    .setCliPath("/path/to/vendor/copilot")
+);
+client.start().get();
+
+var session = client.createSession(new SessionConfig()
+    .setModel("gpt-5.4")
+    .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+).get();
+
+var response = session.sendAndWait(new MessageOptions()
+    .setPrompt("Hello!")).get();
+System.out.println(response.getData().content());
+
+client.stop().get();
+```
+
+## Authentication strategies
+
+You need to decide how your users will authenticate. Here are the common patterns:
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-bundled-cli-diagram-1.png)
+
+### Option A: user's signed-in credentials (simplest)
+
+The user signs in to the CLI once, and your app uses those credentials. No extra code needed—this is the default behavior.
+
+```typescript
+const client = new CopilotClient();
+// Default: uses signed-in user credentials
+```
+
+### Option B: token via environment variable
+
+Ship your app with instructions to set a token, or set it programmatically:
+
+```typescript
+const client = new CopilotClient({
+    env: {
+        COPILOT_GITHUB_TOKEN: getUserToken(),  // Your app provides the token
+    },
+});
+```
+
+### Option C: BYOK (no GitHub auth needed)
+
+If you manage your own model provider keys, users don't need GitHub accounts at all:
+
+```typescript
+const client = new CopilotClient();
+
+const session = await client.createSession({
+    model: "gpt-5.4",
+    provider: {
+        type: "openai",
+        baseUrl: "https://api.openai.com/v1",
+        apiKey: process.env.OPENAI_API_KEY,
+    },
+});
+```
+
+See the **[AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok)** for full details.
+
+## Session management
+
+Apps typically want named sessions so users can resume conversations:
+
+```typescript
+const client = new CopilotClient();
+
+// Create a session tied to the user's project
+const sessionId = `project-${projectName}`;
+const session = await client.createSession({
+    sessionId,
+    model: "gpt-5.4",
+});
+
+// User closes app...
+// Later, resume where they left off
+const resumed = await client.resumeSession(sessionId);
+```
+
+Session state persists at `~/.copilot/session-state/{sessionId}/`.
+
+## When to move on
+
+| Need | Next Guide |
+|------|-----------|
+| Users signing in with GitHub accounts | [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/github-oauth) |
+| Run on a server instead of user machines | [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/backend-services) |
+| Use your own model keys | [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok) |
+
+## Next steps
+
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok)**: Use your own model provider keys
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/features/session-persistence)**: Advanced session management
+* **[AUTOTITLE](/copilot/get-started/sdk-quickstart)**: Build a complete app
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/setup/choosing-a-setup-path.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/choosing-a-setup-path
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/setup/choosing-a-setup-path.md
+- **SHA256_FINGERPRINT**: `78ee92bb461e5c0a4d631c2fb552a73e569a5005a8f3b352b49aa26a25b2ff31`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.550927+00:00
+---
+
+**title**: Setup guides
+**shortTitle**: Choosing A Setup Path
+**intro**: >-
+
+## Architecture at a glance
+
+Every Copilot SDK integration follows the same core pattern: your application talks to the SDK, which communicates with the Copilot CLI over JSON-RPC. What changes across setups is **where the CLI runs**, **how users authenticate**, and **how sessions are managed**.
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-choosing-a-setup-path-diagram-0.png)
+
+The setup guides below help you configure each layer for your scenario.
+
+## Who are you?
+
+### 🧑‍💻 Hobbyist
+
+You're building a personal assistant, side project, or experimental app. You want the simplest path to getting Copilot in your code.
+
+**Start with:**
+1. **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/bundled-cli)**—The SDK includes the CLI automatically—just install and go
+1. **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/local-cli)**—Use your own CLI binary or running instance (advanced)
+
+### 🏢 Internal app developer
+
+You're building tools for your team or company. Users are employees who need to authenticate with their enterprise GitHub accounts or org memberships.
+
+**Start with:**
+1. **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/github-oauth)**—Let employees sign in with their GitHub accounts
+1. **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/backend-services)**—Run the SDK in your internal services
+
+**If scaling beyond a single server:**
+1. **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy)**—Configure SDK options for multi-user server mode
+1. **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling)**—Handle multiple users and services
+
+### 🚀 App developer (ISV)
+
+You're building a product for customers. You need to handle authentication for your users—either through GitHub or by managing identity yourself.
+
+**Start with:**
+1. **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/github-oauth)**—Let customers sign in with GitHub
+1. **[AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok)**—Manage identity yourself with your own model keys
+1. **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/backend-services)**—Power your product from server-side code
+
+**For production:**
+1. **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy)**—Use `mode: "empty"`, per-session tokens, and isolated runtime state
+1. **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling)**—Serve many customers reliably
+
+### 🏗️ Platform developer
+
+You're embedding Copilot into a platform—APIs, developer tools, or infrastructure that other developers build on. You need fine-grained control over sessions, scaling, and multi-tenancy.
+
+**Start with:**
+1. **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/backend-services)**—Core server-side integration
+1. **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy)**—SDK-level isolation, per-session auth, and shared runtime options
+1. **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling)**—Session isolation, horizontal scaling, persistence
+
+**Depending on your auth model:**
+1. **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/github-oauth)**—For GitHub-authenticated users
+1. **[AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok)**—For self-managed identity and model access
+
+## Decision matrix
+
+Use this table to find the right guides based on what you need to do:
+
+| What you need | Guide |
+|---------------|-------|
+| Getting started quickly | [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/bundled-cli) |
+| Use your own CLI binary or server | [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/local-cli) |
+| Users sign in with GitHub | [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/github-oauth) |
+| Use your own model keys (OpenAI, Azure, and more) | [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok) |
+| Azure BYOK with Managed Identity (no API keys) | [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/azure-managed-identity) |
+| Run the SDK on a server | [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/backend-services) |
+| Host the runtime inside your application process (no separate CLI process) | [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/in-process-runtime) *(experimental)* |
+| Configure SDK options for concurrent users | [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy) |
+| Serve multiple users / scale horizontally | [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling) |
+
+## Configuration comparison
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-choosing-a-setup-path-diagram-1.png)
+
+## Prerequisites
+
+All guides assume you have:
+
+* **One of the SDKs** installed (Node.js, Python, and .NET SDKs include the CLI automatically):
+  * Node.js: `npm install @github/copilot-sdk`
+  * Python: `pip install github-copilot-sdk`
+  * Go: `go get github.com/github/copilot-sdk/go` (requires separate CLI installation)
+  * .NET: `dotnet add package GitHub.Copilot.SDK`
+
+If you're brand new, start with the **[AUTOTITLE](/copilot/get-started/sdk-quickstart)** first, then come back here for production configuration.
+
+## Next steps
+
+Pick the guide that matches your situation from the [decision matrix](#decision-matrix) above, or start with the persona description closest to your role.
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/setup/github-oauth.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/github-oauth
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/setup/github-oauth.md
+- **SHA256_FINGERPRINT**: `55674175c2d5ca22637bab20febe2e8c65fafc50f3cf8f940cceef76ed5396b0`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.596661+00:00
+---
+
+**title**: GitHub OAuth setup
+**shortTitle**: GitHub OAuth
+**intro**: >-
+
+**Best for:** Multi-user apps, internal tools with org access control, SaaS products, apps where users have GitHub accounts.
+
+## How it works
+
+You create a GitHub OAuth App (or GitHub App), users authorize it, and you pass their access token to the SDK. Copilot requests are made on behalf of each authenticated user, using their Copilot subscription.
+
+![Diagram: Sequence diagram showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-github-oauth-diagram-0.png)
+
+**Key characteristics:**
+* Each user authenticates with their own GitHub account
+* Copilot usage is billed to each user's subscription
+* Supports GitHub organizations and enterprise accounts
+* Your app never handles model API keys—GitHub manages everything
+
+## Architecture
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-github-oauth-diagram-1.png)
+
+## Step 1: create a GitHub OAuth app
+
+1. Go to **GitHub Settings → Developer Settings → OAuth Apps → New OAuth App**
+   (or for organizations: **Organization Settings → Developer Settings**)
+
+1. Fill in:
+   * **Application name**: Your app's name
+   * **Homepage URL**: Your app's URL
+   * **Authorization callback URL**: Your OAuth callback endpoint (e.g., `https://yourapp.com/auth/callback`)
+
+1. Note your **Client ID** and generate a **Client Secret**
+
+> **GitHub App vs OAuth App:** Both work. GitHub Apps offer finer-grained permissions and are recommended for new projects. OAuth Apps are simpler to set up. The token flow is the same from the SDK's perspective.
+
+## Step 2: implement the OAuth flow
+
+Your application handles the standard GitHub OAuth flow. Here's the server-side token exchange:
+
+```typescript
+// Server-side: Exchange authorization code for user token
+async function handleOAuthCallback(code: string): Promise<string> {
+    const response = await fetch("https://github.com/login/oauth/access_token", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        },
+        body: JSON.stringify({
+            client_id: process.env.GITHUB_CLIENT_ID,
+            client_secret: process.env.GITHUB_CLIENT_SECRET,
+            code,
+        }),
+    });
+
+    const data = await response.json();
+    return data.access_token; // gho_xxxx or ghu_xxxx
+}
+```
+
+## Step 3: pass the token to the SDK
+
+Create an SDK client for each authenticated user, passing their token:
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+// Create a client for an authenticated user
+function createClientForUser(userToken: string): CopilotClient {
+    return new CopilotClient({
+        gitHubToken: userToken,
+        useLoggedInUser: false,  // Don't fall back to CLI login
+    });
+}
+
+// Usage
+const client = createClientForUser("gho_user_access_token");
+const session = await client.createSession({
+    sessionId: `user-${userId}-session`,
+    model: "gpt-5.4",
+});
+
+const response = await session.sendAndWait({ prompt: "Hello!" });
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient
+from copilot.session import PermissionHandler
+
+def create_client_for_user(user_token: str) -> CopilotClient:
+    return CopilotClient({
+        "github_token": user_token,
+        "use_logged_in_user": False,
+    })
+
+# Usage
+client = create_client_for_user("gho_user_access_token")
+await client.start()
+
+session = await client.create_session(on_permission_request=PermissionHandler.approve_all, model="gpt-5.4", session_id=f"user-{user_id}-session")
+
+response = await session.send_and_wait("Hello!")
+```
+
+**Language (go):**
+
+```golang
+func createClientForUser(userToken string) *copilot.Client {
+    return copilot.NewClient(&copilot.ClientOptions{
+        GitHubToken:     userToken,
+        UseLoggedInUser: copilot.Bool(false),
+    })
+}
+
+// Usage
+client := createClientForUser("gho_user_access_token")
+client.Start(ctx)
+defer client.Stop()
+
+session, _ := client.CreateSession(ctx, &copilot.SessionConfig{
+    SessionID: fmt.Sprintf("user-%s-session", userID),
+    Model:     "gpt-5.4",
+})
+response, _ := session.SendAndWait(ctx, copilot.MessageOptions{Prompt: "Hello!"})
+```
+
+**Language (dotnet):**
+
+```csharp
+CopilotClient CreateClientForUser(string userToken) =>
+    new CopilotClient(new CopilotClientOptions
+    {
+        GitHubToken = userToken,
+        UseLoggedInUser = false,
+    });
+
+// Usage
+await using var client = CreateClientForUser("gho_user_access_token");
+await using var session = await client.CreateSessionAsync(new SessionConfig
+{
+    SessionId = $"user-{userId}-session",
+    Model = "gpt-5.4",
+});
+
+var response = await session.SendAndWaitAsync(
+    new MessageOptions { Prompt = "Hello!" });
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+
+CopilotClient createClientForUser(String userToken) throws Exception {
+    var client = new CopilotClient(new CopilotClientOptions()
+        .setGitHubToken(userToken)
+        .setUseLoggedInUser(false)
+    );
+    client.start().get();
+    return client;
+}
+
+// Usage — use try-with-resources to ensure cleanup
+var userId = "user1";
+try (var client = createClientForUser("gho_user_access_token")) {
+    var session = client.createSession(new SessionConfig()
+        .setSessionId(String.format("user-%s-session", userId))
+        .setModel("gpt-5.4")
+        .setOnPermissionRequest(PermissionHandler.APPROVE_ALL)
+    ).get();
+
+    var response = session.sendAndWait(new MessageOptions()
+        .setPrompt("Hello!")).get();
+}
+```
+
+## Enterprise and organization access
+
+GitHub OAuth naturally supports enterprise scenarios. When users authenticate with GitHub, their org memberships and enterprise associations come along.
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-github-oauth-diagram-2.png)
+
+### Verify organization membership
+
+After OAuth, check that the user belongs to your organization:
+
+```typescript
+async function verifyOrgMembership(
+    token: string,
+    requiredOrg: string
+): Promise<boolean> {
+    const response = await fetch("https://api.github.com/user/orgs", {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    const orgs = await response.json();
+    return orgs.some((org: any) => org.login === requiredOrg);
+}
+
+// In your auth flow
+const token = await handleOAuthCallback(code);
+if (!await verifyOrgMembership(token, "my-company")) {
+    throw new Error("User is not a member of the required organization");
+}
+const client = createClientForUser(token);
+```
+
+### Enterprise managed users (EMU)
+
+For GitHub Enterprise Managed Users, the flow is identical—EMU users authenticate through GitHub OAuth like any other user. Their enterprise policies (IP restrictions, SAML SSO) are enforced by GitHub automatically.
+
+```typescript
+// No special SDK configuration needed for EMU
+// Enterprise policies are enforced server-side by GitHub
+const client = new CopilotClient({
+    gitHubToken: emuUserToken,  // Works the same as regular tokens
+    useLoggedInUser: false,
+});
+```
+
+## Supported token types
+
+| Token Prefix | Source | Works? |
+|-------------|--------|--------|
+| `gho_` | OAuth user access token | ✅ |
+| `ghu_` | GitHub App user access token | ✅ |
+| `github_pat_` | Fine-grained personal access token | ✅ |
+| `ghp_` | Classic personal access token | ❌ (deprecated) |
+
+## Token lifecycle
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-github-oauth-diagram-3.png)
+
+**Important:** Your application is responsible for token storage, refresh, and expiration handling. The SDK uses whatever token you provide—it doesn't manage the OAuth lifecycle.
+
+### Token refresh pattern
+
+```typescript
+async function getOrRefreshToken(userId: string): Promise<string> {
+    const stored = await tokenStore.get(userId);
+
+    if (stored && !isExpired(stored)) {
+        return stored.accessToken;
+    }
+
+    if (stored?.refreshToken) {
+        const refreshed = await refreshGitHubToken(stored.refreshToken);
+        await tokenStore.set(userId, refreshed);
+        return refreshed.accessToken;
+    }
+
+    throw new Error("User must re-authenticate");
+}
+```
+
+## Multi-user patterns
+
+### One client per user (recommended)
+
+Each user gets their own SDK client with their own token. This provides the strongest isolation.
+
+```typescript
+const clients = new Map<string, CopilotClient>();
+
+function getClientForUser(userId: string, token: string): CopilotClient {
+    if (!clients.has(userId)) {
+        clients.set(userId, new CopilotClient({
+            gitHubToken: token,
+            useLoggedInUser: false,
+        }));
+    }
+    return clients.get(userId)!;
+}
+```
+
+### Shared CLI with per-request tokens
+
+For a lighter resource footprint, you can run a single external CLI server and pass tokens per session. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/backend-services) for this pattern.
+
+## Limitations
+
+| Limitation | Details |
+|------------|---------|
+| **Copilot subscription required** | Each user needs an active Copilot subscription |
+| **Token management is your responsibility** | Store, refresh, and handle expiration |
+| **GitHub account required** | Users must have GitHub accounts |
+| **Rate limits per user** | Subject to each user's Copilot rate limits |
+
+## When to move on
+
+| Need | Next Guide |
+|------|-----------|
+| Users without GitHub accounts | [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok) |
+| Run the SDK on servers | [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/backend-services) |
+| Handle many concurrent users | [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling) |
+
+## Next steps
+
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/authenticate)**: Full auth method reference
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/backend-services)**: Run the SDK server-side
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling)**: Handle many users at scale
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/setup/in-process-runtime.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/in-process-runtime
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/setup/in-process-runtime.md
+- **SHA256_FINGERPRINT**: `9c0f381b77bf00020a135c71c0a5aca9476ec72fe691958cda9c116b46f9d7c1`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.680220+00:00
+---
+
+**title**: Run the Copilot runtime in process
+**shortTitle**: In Process Runtime
+**intro**: >-
+
+> [!WARNING]
+> In-process hosting is experimental in every SDK. Test startup, model turns, and shutdown behavior on every operating system and architecture that you deploy.
+
+## When to use in-process hosting
+
+In-process hosting is a good fit when:
+
+* Your application must run without a separate runtime process.
+* You want the SDK to own the runtime lifecycle.
+* You can ship a native library for each deployment platform.
+* Process-wide environment and working-directory settings are acceptable.
+
+Use the [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/bundled-cli) when process isolation and the most established deployment path are more important. Use a [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/backend-services) when multiple application instances must connect to a shared runtime over TCP.
+
+## How it works
+
+The SDK loads the Copilot runtime native library and binds its fixed C ABI. All SDK methods continue to use the existing `Content-Length`-framed JSON-RPC protocol over an in-memory connection.
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-in-process-runtime-diagram-0.png)
+
+The runtime:
+
+* Runs in the application process without Node.js, a child process, a TCP port, or a connection token.
+* Supports the same sessions, streaming events, tools, hooks, permissions, and server-to-client requests as other transports.
+* Can invoke SDK callbacks from native worker threads. The SDK handles thread marshalling and callback lifetime.
+* Keeps the loaded native library and its worker pool available for the lifetime of the application process.
+
+## SDK requirements
+
+All SDKs expose an explicit in-process connection option. Some languages require additional build or package configuration.
+
+| SDK | Connection option | Additional requirement |
+|-----|-------------------|------------------------|
+| TypeScript | `RuntimeConnection.forInProcess()` | None when the package includes a compatible runtime bundle |
+| Python | `RuntimeConnection.for_inprocess()` | Pre-download with `python -m copilot download-runtime --in-process` when runtime download is unavailable during startup |
+| Go | `copilot.InProcessConnection{}` | Build with `-tags copilot_inprocess` |
+| .NET | `RuntimeConnection.ForInProcess()` | Allow the `GHCP001` experimental API diagnostic |
+| Rust | `Transport::InProcess` | Enable the `bundled-in-process` Cargo feature |
+| Java | `RuntimeConnection.forInProcess()` | Add JNA, a platform runtime classifier, and experimental API opt-in |
+
+The native runtime bundle must match the host operating system, CPU architecture, and, on Linux, C library. Unsupported hosts fail during runtime resolution or startup instead of falling back to a child process.
+
+## Configure an in-process connection
+
+Pass the language-specific connection option when you create the client.
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient, RuntimeConnection } from "@github/copilot-sdk";
+
+const client = new CopilotClient({
+  connection: RuntimeConnection.forInProcess(),
+});
+
+await client.start();
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient, RuntimeConnection
+
+client = CopilotClient(
+    connection=RuntimeConnection.for_inprocess(),
+)
+
+await client.start()
+```
+
+**Language (go):**
+
+```golang
+client := copilot.NewClient(&copilot.ClientOptions{
+    Connection: copilot.InProcessConnection{},
+})
+
+if err := client.Start(context.Background()); err != nil {
+    log.Fatal(err)
+}
+defer client.Stop()
+```
+
+**Language (dotnet):**
+
+```csharp
+#pragma warning disable GHCP001
+
+var client = new CopilotClient(new CopilotClientOptions
+{
+    Connection = RuntimeConnection.ForInProcess(),
+});
+
+await client.StartAsync();
+```
+
+**Language (rust):**
+
+```rust
+let options = ClientOptions::default()
+    .with_transport(Transport::InProcess);
+
+let client = Client::start(options).await?;
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.AllowCopilotExperimental;
+
+@AllowCopilotExperimental
+public class Example {
+    public void run() throws Exception {
+        CopilotClientOptions options = new CopilotClientOptions()
+            .setConnection(RuntimeConnection.forInProcess());
+
+        CopilotClient client = new CopilotClient(options);
+        client.start().join();
+    }
+}
+```
+
+`RuntimeConnection.forInProcess()` is `@CopilotExperimental`, so the consuming class or method must opt in with `@AllowCopilotExperimental` (or compile with `-Acopilot.experimental.allowed=true`). See [Using experimental APIs](https://github.com/github/copilot-sdk/tree/main/java/README.md#using-experimental-apis).
+
+You can also set `COPILOT_SDK_DEFAULT_CONNECTION=inprocess` before starting the application. The SDK uses this value only when the client does not specify a connection explicitly. An invalid value causes startup to fail.
+
+Prefer explicit client configuration in application code. Use the environment variable when deployment configuration must select the transport without changing the application.
+
+## Configure the runtime
+
+The SDK converts supported typed client options into native runtime arguments and host-scoped environment values. Depending on the SDK, these options include:
+
+* Authentication token and logged-in-user fallback.
+* Copilot base directory.
+* Log level.
+* Session idle timeout.
+* Remote session mode.
+
+The in-process runtime receives a snapshot of the host environment plus supported SDK-managed overrides. It does not mutate the host environment.
+
+Set process-wide values before creating the first in-process client. This includes environment variables that are not represented by typed client options and the application's current working directory.
+
+## Runtime library resolution
+
+Each SDK first looks for a compatible bundled or cached runtime library. You can set `COPILOT_CLI_PATH` to point into a compatible Copilot runtime package when you need to provide the runtime separately.
+
+Only one native runtime library path and version can normally be loaded in a process. Starting another client with the same loaded library is supported, but attempting to load a different runtime library fails.
+
+For production deployments:
+
+1. Build and test the application for each target platform.
+1. Ensure that the matching native runtime artifact is included in the deployed package or available through the SDK's runtime download mechanism.
+1. Start at least one session and complete a model turn in a deployment smoke test.
+1. Stop clients gracefully before the application exits.
+
+## Lifecycle behavior
+
+Starting an in-process client loads the native library, creates a runtime host, opens an in-memory connection, and performs the normal SDK protocol-version handshake.
+
+During graceful shutdown, the SDK:
+
+1. Closes active sessions.
+1. Requests normal runtime shutdown over JSON-RPC.
+1. Closes the JSON-RPC and native connections.
+1. Releases the runtime host.
+
+The native library can remain loaded until the application process exits. Do not depend on unloading and replacing the runtime library after first use.
+
+## Limitations
+
+In-process hosting has these current constraints:
+
+* **Experimental API**: behavior and packaging requirements can change between releases.
+* **Shared process state**: all clients share the host process environment, current working directory, native library, and runtime worker pool.
+* **Restricted process options**: SDK options for an arbitrary environment, working directory, telemetry configuration, executable path, or CLI arguments are rejected where applicable. Configure process-global values on the host process and use supported typed options for runtime settings.
+* **No per-client working directory**: the runtime uses the hosting process working directory.
+* **One runtime version per process**: loading another native library path or version is not supported.
+* **Platform maturity varies**: some SDK and platform combinations have reduced model-turn or shutdown coverage. Validate the exact combination that you deploy.
+
+## Further reading
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/choosing-a-setup-path): compare in-process hosting with other deployment models
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/bundled-cli): run the bundled runtime in a managed child process
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/backend-services): connect applications to a shared runtime over TCP
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/session-lifecycle): handle session start and end events
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/setup/index.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/setup/index.md
+- **SHA256_FINGERPRINT**: `1d958137b95c8265a3f41d5b5319bd73e78916a810134b0c8b37217d0574d691`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.579926+00:00
+---
+
+**title**: Set up Copilot SDK
+**intro**: Configure and deploy the GitHub Copilot SDK for your use case.
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/setup/local-cli.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/local-cli
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/setup/local-cli.md
+- **SHA256_FINGERPRINT**: `7c2af4ac1517cef9446c33c5890aa200272e834eaceb087723c45f31c1124045`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.577913+00:00
+---
+
+**title**: Local CLI setup
+**shortTitle**: Local CLI
+**intro**: >-
+
+**Use when:** You need to pin a specific CLI version, or work with the Go SDK (which does not include a CLI automatically).
+
+## How it works
+
+By default, the Node.js, Python, and .NET SDKs include their own CLI dependency (see [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/bundled-cli)). If you need to override this—for example, to use a system-installed CLI—you can use the `Connection` option.
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-local-cli-diagram-0.png)
+
+**Key characteristics:**
+* You explicitly provide the CLI binary path
+* You are responsible for CLI version compatibility with the SDK
+* Authentication uses the signed-in user's credentials from the system keychain (or env vars)
+* Communication happens over stdio
+
+## Configuration
+
+### Using a local CLI binary
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient({
+    cliPath: "/usr/local/bin/copilot",
+});
+
+const session = await client.createSession({ model: "gpt-5.4" });
+const response = await session.sendAndWait({ prompt: "Hello!" });
+console.log(response?.data.content);
+
+await client.stop();
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient
+from copilot.session_events import AssistantMessageData
+from copilot.session import PermissionHandler
+
+client = CopilotClient({
+    "cli_path": "/usr/local/bin/copilot",
+})
+await client.start()
+
+session = await client.create_session(on_permission_request=PermissionHandler.approve_all, model="gpt-5.4")
+response = await session.send_and_wait("Hello!")
+if response:
+    match response.data:
+        case AssistantMessageData() as data:
+            print(data.content)
+
+await client.stop()
+```
+
+**Language (go):**
+
+> [!NOTE]
+> The Go SDK does not ship a CLI automatically. Install `copilot` on `PATH`, set the `COPILOT_CLI_PATH` environment variable, embed a CLI with the [bundler tool](https://github.com/github/copilot-sdk/tree/main/go/README.md#distributing-your-application-with-an-embedded-github-copilot-cli), or point `StdioConnection.Path` at an installed binary.
+
+```golang
+client := copilot.NewClient(&copilot.ClientOptions{
+    Connection: copilot.StdioConnection{Path: "/usr/local/bin/copilot"},
+})
+if err := client.Start(ctx); err != nil {
+    log.Fatal(err)
+}
+defer client.Stop()
+
+session, _ := client.CreateSession(ctx, &copilot.SessionConfig{Model: "gpt-5.4"})
+response, _ := session.SendAndWait(ctx, copilot.MessageOptions{Prompt: "Hello!"})
+if response != nil {
+    if d, ok := response.Data.(*copilot.AssistantMessageData); ok {
+        fmt.Println(d.Content)
+    }
+}
+```
+
+**Language (dotnet):**
+
+```csharp
+var client = new CopilotClient(new CopilotClientOptions
+{
+    Connection = RuntimeConnection.ForStdio(path: "/usr/local/bin/copilot"),
+});
+
+await using var session = await client.CreateSessionAsync(
+    new SessionConfig { Model = "gpt-5.4" });
+
+var response = await session.SendAndWaitAsync(
+    new MessageOptions { Prompt = "Hello!" });
+Console.WriteLine(response?.Data.Content);
+```
+
+## Additional options
+
+```typescript
+const client = new CopilotClient({
+    cliPath: "/usr/local/bin/copilot",
+
+    // Set log level for debugging
+    logLevel: "debug",
+
+    // Pass extra CLI arguments
+    cliArgs: ["--log-dir=/tmp/copilot-logs"],
+
+    // Set working directory
+    cwd: "/path/to/project",
+});
+```
+
+## Using environment variables
+
+Instead of the keychain, you can authenticate via environment variables. This is useful for CI or when you don't want interactive login.
+
+```bash
+# Set one of these (in priority order):
+export COPILOT_GITHUB_TOKEN="gho_xxxx"   # Recommended
+export GH_TOKEN="gho_xxxx"               # GitHub CLI compatible
+export GITHUB_TOKEN="gho_xxxx"           # GitHub Actions compatible
+```
+
+The SDK picks these up automatically—no code changes needed.
+
+## Managing sessions
+
+Sessions default to ephemeral. To create resumable sessions, provide your own session ID:
+
+```typescript
+// Create a named session
+const session = await client.createSession({
+    sessionId: "my-project-analysis",
+    model: "gpt-5.4",
+});
+
+// Later, resume it
+const resumed = await client.resumeSession("my-project-analysis");
+```
+
+Session state is stored locally at `~/.copilot/session-state/{sessionId}/`.
+
+## Limitations
+
+| Limitation | Details |
+|------------|---------|
+| **Version compatibility** | You must ensure your CLI version is compatible with the SDK |
+| **Single user** | Credentials are tied to whoever signed in to the CLI |
+| **Local only** | The CLI runs on the same machine as your app |
+| **No multi-tenant** | Can't serve multiple users from one CLI instance |
+
+## Next steps
+
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/bundled-cli)**: Use the SDK's built-in CLI (recommended for most use cases)
+* **[AUTOTITLE](/copilot/get-started/sdk-quickstart)**: Build a complete interactive app
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/authenticate)**: All auth methods in detail
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/setup/multi-tenancy.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/multi-tenancy
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/setup/multi-tenancy.md
+- **SHA256_FINGERPRINT**: `d72cd60702f11d06ee44b47102f600db092634f51e466ff4fca044a69c8faef6`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.749437+00:00
+---
+
+**title**: Multi-tenancy and server deployments
+**shortTitle**: Multi Tenancy
+**intro**: >-
+
+**Best for:** SaaS products, partner integrations, internal platforms, and backend services that handle concurrent users.
+
+## Use this guide when
+
+Use this guide when you are building:
+
+* A multi-user SaaS product that embeds Copilot-powered agents
+* A backend for a partner integration, such as a Copilot Studio or Fabric-style pattern
+* Any server that handles concurrent users, workspaces, tenants, or requests
+* A shared runtime where multiple SDK clients connect to one Copilot runtime process
+
+This guide is a sister to [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling). Use that guide for topology, load-balancing, and storage patterns. Use this guide for SDK-level options and runtime isolation choices.
+
+## Key SDK options
+
+| Option | Use it for | Notes |
+|--------|------------|-------|
+| `mode: "empty"` | Disabling ambient OS tools and CLI defaults | Required for multi-user or shared scenarios. |
+| `sessionIdleTimeoutSeconds` | Cleaning idle sessions | Set a server-side timeout for long-running processes. |
+| `baseDirectory` | Isolating `COPILOT_HOME` per runtime instance | Ignored when connecting to an existing runtime. |
+| `sessionFs` | Routing session filesystem storage off local disk | Pair with per-session filesystem providers. |
+| `RuntimeConnection.forUri(url)` | Sharing one already-running runtime | Language names vary; see samples below. |
+| Per-session GitHub token or provider | Scoping auth to the requesting user | Prefer a rotating provider for short-lived credentials; use a static `gitHubToken` only when rotation is unnecessary. |
+
+For callback-backed credentials, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/authenticate#rotating-session-scoped-github-tokens). Each session owns its provider registration, so concurrent sessions can use different GitHub hosts and accounts without sharing callback state.
+
+### `mode: "empty"`
+
+`mode: "empty"` disables optional Copilot CLI behavior by default. In multi-user server mode, this is the safe baseline because your application must explicitly decide which tools, MCP servers, skills, and workspace paths a session can access.
+
+Do not use the default `mode: "copilot-cli"` for shared servers. That mode is intended for CLI-like coding agents and can expose ambient host filesystem capabilities.
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient, RuntimeConnection } from "@github/copilot-sdk";
+
+// baseDirectory and sessionIdleTimeoutSeconds apply when the SDK spawns the
+// runtime. With RuntimeConnection.forUri(...) configure COPILOT_HOME and the
+// idle timeout on the runtime process itself.
+const client = new CopilotClient({
+    mode: "empty",
+    connection: RuntimeConnection.forUri(process.env.COPILOT_RUNTIME_URL!),
+});
+
+const session = await client.createSession({
+    sessionId: `user-${user.id}-${crypto.randomUUID()}`,
+    model: "gpt-5.4",
+    availableTools: ["custom:lookupOrder", "custom:createTicket"],
+    gitHubToken: user.githubToken,
+});
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient, RuntimeConnection
+from copilot.session import PermissionHandler
+
+client = CopilotClient(
+    mode="empty",
+    base_directory=f"/var/lib/my-app/copilot/{runtime_instance_id}",
+    session_idle_timeout_seconds=900,
+    connection=RuntimeConnection.for_uri(runtime_url),
+)
+await client.start()
+
+session = await client.create_session(
+    session_id=f"user-{user.id}-{request_id}",
+    model="gpt-5.4",
+    available_tools=["custom:lookupOrder", "custom:createTicket"],
+    github_token=user.github_token,
+    on_permission_request=PermissionHandler.approve_all,
+)
+```
+
+**Language (go):**
+
+```golang
+client := copilot.NewClient(&copilot.ClientOptions{
+    Mode:                      copilot.ModeEmpty,
+    BaseDirectory:             fmt.Sprintf("/var/lib/my-app/copilot/%s", runtimeInstanceID),
+    SessionIdleTimeoutSeconds: 900,
+    Connection:                copilot.URIConnection{URL: runtimeURL},
+})
+
+session, err := client.CreateSession(ctx, &copilot.SessionConfig{
+    SessionID:      fmt.Sprintf("user-%s-%s", user.ID, requestID),
+    Model:          "gpt-5.4",
+    AvailableTools: []string{"custom:lookupOrder", "custom:createTicket"},
+    GitHubToken:    user.GitHubToken,
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+var client = new CopilotClient(new CopilotClientOptions
+{
+    Mode = CopilotClientMode.Empty,
+    BaseDirectory = $"/var/lib/my-app/copilot/{runtimeInstanceId}",
+    SessionIdleTimeoutSeconds = 900,
+    Connection = RuntimeConnection.ForUri(runtimeUrl),
+});
+
+await using var session = await client.CreateSessionAsync(new SessionConfig
+{
+    SessionId = $"user-{user.Id}-{requestId}",
+    Model = "gpt-5.4",
+    AvailableTools = ["custom:lookupOrder", "custom:createTicket"],
+    GitHubToken = user.GitHubToken,
+});
+```
+
+**Language (java):**
+
+```java
+// setCopilotHome and setSessionIdleTimeoutSeconds are ignored when
+// setCliUrl is used; configure those on the runtime process instead.
+var client = new CopilotClient(new CopilotClientOptions()
+    .setMode(CopilotClientMode.EMPTY)
+    .setCliUrl(runtimeUrl)
+);
+
+var session = client.createSession(new SessionConfig()
+    .setSessionId("user-" + user.id() + "-" + requestId)
+    .setModel("gpt-5.4")
+    .setAvailableTools(List.of("custom:lookupOrder", "custom:createTicket"))
+    .setGitHubToken(user.gitHubToken())
+).get();
+```
+
+**Language (rust):**
+
+```rust
+use std::path::PathBuf;
+use github_copilot_sdk::{Client, ClientOptions, Transport};
+use github_copilot_sdk::mode::ClientMode;
+use github_copilot_sdk::types::SessionConfig;
+
+let client = Client::start(
+    ClientOptions::new()
+        .with_mode(ClientMode::Empty)
+        .with_base_directory(PathBuf::from(format!(
+            "/var/lib/my-app/copilot/{runtime_instance_id}"
+        )))
+        .with_session_idle_timeout_seconds(900)
+        .with_transport(Transport::External {
+            host: runtime_host.to_string(),
+            port: runtime_port,
+            connection_token: None,
+        }),
+).await?;
+
+let session = client.create_session(
+    SessionConfig::default()
+        .with_session_id(format!("user-{}-{request_id}", user.id))
+        .with_model("gpt-5.4")
+        .with_available_tools(["custom:lookupOrder", "custom:createTicket"])
+        .with_github_token(user.github_token),
+).await?;
+```
+
+### `sessionIdleTimeoutSeconds`
+
+Set `sessionIdleTimeoutSeconds` on servers so inactive sessions are cleaned up automatically. This prevents zombie sessions in long-running processes and reduces memory and filesystem pressure.
+
+| Language | Public option |
+|----------|---------------|
+| TypeScript | `sessionIdleTimeoutSeconds` |
+| Python | `session_idle_timeout_seconds` |
+| Go | `SessionIdleTimeoutSeconds` |
+| .NET | `SessionIdleTimeoutSeconds` |
+| Java | `setSessionIdleTimeoutSeconds(...)` |
+| Rust | `with_session_idle_timeout_seconds(...)` |
+
+Use a value that matches your product's conversation lifetime. For chat backends, 15 to 30 minutes is usually a good starting point. For workflow agents, use a longer timeout and explicit deletion when the workflow completes.
+
+### `baseDirectory`
+
+`baseDirectory` sets `COPILOT_HOME` for a runtime instance. Use it to isolate runtime state, credentials, and session data per process, pod, worker, or tenant boundary.
+
+```typescript
+const client = new CopilotClient({
+    mode: "empty",
+    baseDirectory: `/var/lib/my-app/copilot/runtime-${process.env.HOSTNAME}`,
+    sessionIdleTimeoutSeconds: 900,
+});
+```
+
+The runtime stores session state under the configured `COPILOT_HOME`, including `session-state/{sessionId}`. If your app runs multiple runtime instances, give each instance a distinct directory unless you intentionally use shared storage.
+
+When the SDK connects to an already-running runtime with `RuntimeConnection.forUri(url)`, `baseDirectory` is ignored by the SDK client. Configure `COPILOT_HOME` on the runtime process instead.
+
+### `sessionFs`
+
+`sessionFs` registers a custom session filesystem provider so session-scoped file I/O can be routed through application storage instead of the runtime's local disk. Use it when local disk is ephemeral, when session state needs to live in object storage, or when a platform needs to enforce tenant-aware storage paths.
+
+```typescript
+const client = new CopilotClient({
+    mode: "empty",
+    sessionFs: {
+        initialCwd: "/workspace",
+        sessionStatePath: "/session-state",
+        conventions: "posix",
+    },
+});
+```
+
+For languages that expose a provider callback, configure `sessionFs` at the client level and provide a per-session filesystem handler when creating or resuming a session. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/session-persistence) for persistence concepts and storage trade-offs.
+
+Runtime-owned durable permission choices also use the session filesystem. Under the provider's `sessionStatePath`, `permissions.json` retains its top-level `locations` map with `tool_approvals` and `allowed_directories`; `settings.json` stores top-level `allowedUrls` and `sandbox`; and `config.json` stores top-level `trustedFolders`.
+
+URL approvals are read only from `settings.json`; legacy user-setting fields such as `allowedUrls` in `config.json` are ignored, matching host behavior.
+
+Location keys are normalized provider directory paths, with no added prefix. Resolution follows the provider's path conventions without inspecting the host filesystem or discovering host Git repositories. `/workspace` and `/workspace/sub` select different location entries.
+
+The runtime does not add session-ID partitions to these files or change their sharing granularity. Sessions accessing the same files in the same provider namespace share remembered grants. Your application must use distinct namespaces for tenants or sessions that require isolation, authorize access to each namespace, and reconnect resumed sessions to their original namespace.
+
+With a separate namespace per session, permanent grants survive that session's resumes rather than becoming tenant-wide grants for new sessions. Sharing grants across sessions requires sharing the consent files while keeping other session state separate. The runtime serializes consent updates only within the same provider endpoint and process; applications that share backing files across endpoints or processes must coordinate concurrent updates.
+
+The runtime blocks direct provider-backed file writes to the lexical approval-metadata paths as defense in depth, not as a tamper-proof storage boundary. Providers must not expose writable aliases (such as symlinks or Windows 8.3 short names) to approval metadata through agent file tools. Shell tools do not run through SessionFS, and their commands are not checked against its virtual metadata paths. If your application separately exposes the provider's backing storage to shell execution or other arbitrary code, your host must protect that storage.
+
+Session filesystem approval operations never import or fall back to remembered permissions from the host's `permissions-config.json`, URL or sandbox settings from `settings.json`, or folder trust from `config.json`. They do not update those host files, even when the provider has no approvals or reports an error. A provider error is not permission to use host consent. URL deny rules remain authoritative, and folder trust uses provider paths without host Git discovery.
+
+Approve-once, approve-for-session, rejections, and session policy changes retain their existing lifetimes and event-replay behavior. Storage routing does not turn them into new permanent grants. Protect session transcripts, including durable permission events, with the same tenant isolation as approval metadata.
+
+This boundary applies only to sessions using a session filesystem provider. All SDK applications without `sessionFs`, in both `empty` and `copilot-cli` modes, and ordinary CLI sessions retain existing host-backed persistence for remembered locations, permanent URL approvals, folder trust, and sandbox settings.
+
+Verified public SDK surfaces:
+
+| Language | Client-level config | Per-session provider |
+|----------|---------------------|----------------------|
+| TypeScript | `sessionFs` | `createSessionFsAdapter` / provider callbacks |
+| Python | `session_fs` | `create_session_fs_handler` |
+| Go | `SessionFS` | `CreateSessionFSProvider` |
+| .NET | `SessionFs` | `CreateSessionFsProvider` |
+| Rust | `with_session_fs(...)` | `with_session_fs_provider(...)` |
+
+Java does not currently expose a verified public `sessionFs` option, so this guide does not show a Java `sessionFs` sample.
+
+### `RuntimeConnection.forUri(url)`
+
+Use an external runtime connection when multiple SDK clients should share one already-running runtime. This is common in backend services where the runtime process is managed separately from request handlers.
+
+| Language | External runtime connection |
+|----------|-----------------------------|
+| TypeScript | `RuntimeConnection.forUri(url)` |
+| Python | `RuntimeConnection.for_uri(url)` |
+| Go | `copilot.URIConnection{URL: url}` |
+| .NET | `RuntimeConnection.ForUri(url)` |
+| Java | `setCliUrl(url)` |
+| Rust | `Transport::External { host, port, connection_token }` |
+
+External runtimes manage their own process-level authentication and storage. Pass per-session tokens on `createSession` or `resumeSession` when you need user-specific auth.
+
+### Per-session `gitHubToken`
+
+Set `gitHubToken` on each session to scope GitHub auth to the requesting user. This is different from a client-level token, which authenticates the runtime process.
+
+```typescript
+const session = await client.createSession({
+    sessionId: `user-${user.id}-support`,
+    model: "gpt-5.4",
+    availableTools: ["custom:*"],
+    gitHubToken: user.githubToken,
+});
+```
+
+Use per-session tokens for content exclusion, model routing, quota checks, and user-specific Copilot access. Avoid sharing one service token across users unless your product intentionally uses service-account semantics.
+
+## Integration ID
+
+Partners building branded agents can set an integration ID for agent session requests. The runtime reads `GITHUB_COPILOT_INTEGRATION_ID` and stamps it as the `Copilot-Integration-Id` HTTP header on every agent session request.
+
+```bash
+GITHUB_COPILOT_INTEGRATION_ID=my-product-agent copilot --headless --port 4321
+```
+
+The default integration ID is `copilot-developer-cli`. Use a stable value such as `my-product-agent` for attribution and routing. The integration ID is currently configured by environment variable only; it is not a first-class SDK option.
+
+If the SDK spawns the runtime, pass the environment variable through the client environment option. If you connect with `RuntimeConnection.forUri(url)`, set the environment variable on the runtime process itself.
+
+## Session-level isolation guarantees
+
+Session-level isolation means the runtime keeps user-specific model and state information scoped to a session, not in global shared state.
+
+| Surface | Isolation behavior |
+|---------|--------------------|
+| Model list cache | Per-session. Model lookup uses the session's model list cache. |
+| Session state | Per session ID under `COPILOT_HOME/session-state/{sessionId}`. |
+| GitHub identity | Per-session when `gitHubToken` is set on the session. |
+| Tools | Explicit in `mode: "empty"`; ambient in `mode: "copilot-cli"`. |
+| Skills | In `mode: "empty"` no runtime-bundled built-in skills are eligible by default; callers can allow selected built-ins or opt into their own custom skills. Ambient in `mode: "copilot-cli"`. |
+| Host filesystem | Shared by the runtime process if host tools are available. |
+
+`mode: "empty"` is what makes shared runtime patterns viable: no ambient OS tools are exposed unless your application registers or allows them. With `mode: "copilot-cli"`, OS filesystem access is shared through the host process, so do not use that mode for multi-user server mode.
+
+Under `mode: "empty"` the SDK excludes every runtime-bundled built-in skill by default (it sends an empty `includedBuiltinSkills` list on the post-create/post-resume options patch, alongside the empty `installedPlugins` list). Set `includedBuiltinSkills` (or the language-specific casing) to explicitly allow selected built-ins, just as `availableTools` allows selected runtime-bundled tools. A caller can also opt into its **own** custom skills—for example by enabling skills and pointing at its own skill directories—and those remain usable.
+
+Session state is stored under `COPILOT_HOME/session-state/{sessionId}` unless you route it through `sessionFs`. Use unique session IDs that include your own tenant or user boundary, and enforce access control before resuming or deleting sessions.
+
+## Pattern comparison
+
+| Pattern | Use when | Trade-offs |
+|---------|----------|------------|
+| Pattern 1: isolated CLI per user | You need the strongest isolation boundary or separate process credentials per user. | Strong isolation; higher resource cost. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling). |
+| Pattern 2: shared CLI with `mode: "empty"` | You want one runtime to serve many users while your app controls tools, auth, and session IDs. | Efficient; requires careful tool registration, per-session tokens, and application-level access checks. |
+| Pattern 3: hybrid | You route compute-heavy work to cloud sessions and light work to local sessions. | Flexible; requires workload routing and policy handling. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/cloud-sessions). |
+
+### Pattern 2: shared CLI with `mode: "empty"`
+
+In this pattern, all users connect through your backend to one runtime pool. The application performs user authentication, chooses a session ID, passes the user's GitHub token on the session, and provides an explicit tool allowlist.
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-multi-tenancy-diagram-0.png)
+
+Use these rules:
+
+* Always start the client or runtime in `mode: "empty"`.
+* Use unique session IDs and store ownership metadata in your application database.
+* Check ownership before `resumeSession`, `deleteSession`, or any UI action that references a session ID.
+* Pass `gitHubToken` per session when requests should run as the user.
+* Register only the tools the session needs, and prefer source-qualified allowlists such as `custom:*` or `mcp:search_docs`.
+* Set `sessionIdleTimeoutSeconds` and delete completed workflow sessions explicitly.
+
+## Common pitfalls
+
+* Forgetting `mode: "empty"`. The default `copilot-cli` mode exposes CLI-style behavior and may expose the host filesystem through ambient tools.
+* Not setting `sessionIdleTimeoutSeconds`. Long-running servers can accumulate idle sessions if they do not clean them up.
+* Sharing one `gitHubToken` across users instead of passing a per-session token.
+* Trusting client-provided session IDs without checking ownership in your backend.
+* Setting `baseDirectory` on a client that connects to an existing runtime and expecting it to move runtime storage. Configure the runtime process instead.
+* Allowing broad tool patterns such as `builtin:*` without reviewing whether each tool is appropriate for your users.
+
+## See also
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling): deployment topologies, storage patterns, and isolation comparisons
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/backend-services): running the runtime in headless server mode
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok): using your own model provider credentials
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/cloud-sessions): routing selected work to cloud sessions
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/session-persistence): managing resumable session state
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features): tools, events, hooks, and advanced SDK features
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/setup/scaling.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/scaling
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/setup/scaling.md
+- **SHA256_FINGERPRINT**: `b8090a42849e074b1c68daefa6bc4f97f5871f6205f5859cbf38a5885df3b5c7`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.664156+00:00
+---
+
+**title**: Scaling and multi-tenancy
+**shortTitle**: Scaling
+**intro**: >-
+
+For SDK-level options and patterns, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy).
+
+**Best for:** Platform developers, SaaS builders, any deployment serving more than a handful of concurrent users.
+
+## Core concepts
+
+Before choosing a pattern, understand three dimensions of scaling:
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-scaling-diagram-0.png)
+
+## Session isolation patterns
+
+### Pattern 1: isolated CLI per user
+
+Each user gets their own CLI server instance. Strongest isolation—a user's sessions, memory, and processes are completely separated.
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-scaling-diagram-1.png)
+
+**When to use:**
+* Multi-tenant SaaS where data isolation is critical
+* Users with different auth credentials
+* Compliance requirements (SOC 2, HIPAA)
+
+```typescript
+// CLI pool manager — one CLI per user
+class CLIPool {
+    private instances = new Map<string, { client: CopilotClient; port: number }>();
+    private nextPort = 5000;
+
+    async getClientForUser(userId: string, token?: string): Promise<CopilotClient> {
+        if (this.instances.has(userId)) {
+            return this.instances.get(userId)!.client;
+        }
+
+        const port = this.nextPort++;
+
+        // Spawn a dedicated CLI for this user
+        await spawnCLI(port, token);
+
+        const client = new CopilotClient({
+            cliUrl: `localhost:${port}`,
+        });
+
+        this.instances.set(userId, { client, port });
+        return client;
+    }
+
+    async releaseUser(userId: string): Promise<void> {
+        const instance = this.instances.get(userId);
+        if (instance) {
+            await instance.client.stop();
+            this.instances.delete(userId);
+        }
+    }
+}
+```
+
+### Pattern 2: shared CLI with session isolation
+
+Multiple users share one CLI server but have isolated sessions via unique session IDs. Lighter on resources, but weaker isolation.
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-scaling-diagram-2.png)
+
+**When to use:**
+* Internal tools with trusted users
+* Resource-constrained environments
+* Lower isolation requirements
+
+```typescript
+const sharedClient = new CopilotClient({
+    cliUrl: "localhost:4321",
+});
+
+// Enforce session isolation through naming conventions
+function getSessionId(userId: string, purpose: string): string {
+    return `${userId}-${purpose}-${Date.now()}`;
+}
+
+// Access control: ensure users can only access their own sessions
+async function resumeSessionWithAuth(
+    sessionId: string,
+    currentUserId: string
+): Promise<Session> {
+    const [sessionUserId] = sessionId.split("-");
+    if (sessionUserId !== currentUserId) {
+        throw new Error("Access denied: session belongs to another user");
+    }
+    return sharedClient.resumeSession(sessionId);
+}
+```
+
+### Pattern 3: shared sessions (collaborative)
+
+Multiple users interact with the same session—like a shared chat room with Copilot.
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-scaling-diagram-3.png)
+
+**When to use:**
+* Team collaboration tools
+* Shared code review sessions
+* Pair programming assistants
+
+> ⚠️ **Important:** The SDK doesn't provide built-in session locking. You **must** serialize access to prevent concurrent writes to the same session.
+
+```typescript
+import Redis from "ioredis";
+
+const redis = new Redis();
+
+async function withSessionLock<T>(
+    sessionId: string,
+    fn: () => Promise<T>,
+    timeoutSec = 300
+): Promise<T> {
+    const lockKey = `session-lock:${sessionId}`;
+    const lockId = crypto.randomUUID();
+
+    // Acquire lock
+    const acquired = await redis.set(lockKey, lockId, "NX", "EX", timeoutSec);
+    if (!acquired) {
+        throw new Error("Session is in use by another user");
+    }
+
+    try {
+        return await fn();
+    } finally {
+        // Release lock (only if we still own it)
+        const currentLock = await redis.get(lockKey);
+        if (currentLock === lockId) {
+            await redis.del(lockKey);
+        }
+    }
+}
+
+// Usage: serialize access to shared session
+app.post("/team-chat", authMiddleware, async (req, res) => {
+    const result = await withSessionLock("team-project-review", async () => {
+        const session = await client.resumeSession("team-project-review");
+        return session.sendAndWait({ prompt: req.body.message });
+    });
+
+    res.json({ content: result?.data.content });
+});
+```
+
+## Comparison of isolation patterns
+
+| | Isolated CLI Per User | Shared CLI + Session Isolation | Shared Sessions |
+|---|---|---|---|
+| **Isolation** | ✅ Complete | ⚠️ Logical | ❌ Shared |
+| **Resource usage** | High (CLI per user) | Low (one CLI) | Low (one CLI + session) |
+| **Complexity** | Medium | Low | High (locking) |
+| **Auth flexibility** | ✅ Per-user tokens | ⚠️ Service token | ⚠️ Service token |
+| **Best for** | Multi-tenant SaaS | Internal tools | Collaboration |
+
+## Horizontal scaling
+
+### Multiple CLI servers behind a load balancer
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-scaling-diagram-4.png)
+
+**Key requirement:** Session state must be on **shared storage** so any CLI server can resume any session.
+
+```typescript
+// Route sessions to CLI servers
+class CLILoadBalancer {
+    private servers: string[];
+    private currentIndex = 0;
+
+    constructor(servers: string[]) {
+        this.servers = servers;
+    }
+
+    // Round-robin selection
+    getNextServer(): string {
+        const server = this.servers[this.currentIndex];
+        this.currentIndex = (this.currentIndex + 1) % this.servers.length;
+        return server;
+    }
+
+    // Sticky sessions: same user always hits same server
+    getServerForUser(userId: string): string {
+        const hash = this.hashCode(userId);
+        return this.servers[hash % this.servers.length];
+    }
+
+    private hashCode(str: string): number {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = (hash << 5) - hash + str.charCodeAt(i);
+            hash |= 0;
+        }
+        return Math.abs(hash);
+    }
+}
+
+const lb = new CLILoadBalancer([
+    "cli-1:4321",
+    "cli-2:4321",
+    "cli-3:4321",
+]);
+
+app.post("/chat", async (req, res) => {
+    const server = lb.getServerForUser(req.user.id);
+    const client = new CopilotClient({ cliUrl: server });
+
+    const session = await client.createSession({
+        sessionId: `user-${req.user.id}-chat`,
+        model: "gpt-5.4",
+    });
+
+    const response = await session.sendAndWait({ prompt: req.body.message });
+    res.json({ content: response?.data.content });
+});
+```
+
+### Sticky sessions vs. shared storage
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-scaling-diagram-5.png)
+
+**Sticky sessions** are simpler—pin users to specific CLI servers. No shared storage needed, but load distribution is uneven.
+
+**Shared storage** enables any CLI to handle any session. Better load distribution, but requires networked storage for `~/.copilot/session-state/`.
+
+## Vertical scaling
+
+### Tuning a single CLI server
+
+A single CLI server can handle many concurrent sessions. Key considerations:
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-scaling-diagram-6.png)
+
+**Session lifecycle management** is key to vertical scaling:
+
+```typescript
+// Limit concurrent active sessions
+class SessionManager {
+    private activeSessions = new Map<string, Session>();
+    private maxConcurrent: number;
+
+    constructor(maxConcurrent = 50) {
+        this.maxConcurrent = maxConcurrent;
+    }
+
+    async getSession(sessionId: string): Promise<Session> {
+        // Return existing active session
+        if (this.activeSessions.has(sessionId)) {
+            return this.activeSessions.get(sessionId)!;
+        }
+
+        // Enforce concurrency limit
+        if (this.activeSessions.size >= this.maxConcurrent) {
+            await this.evictOldestSession();
+        }
+
+        // Create or resume
+        const session = await client.createSession({
+            sessionId,
+            model: "gpt-5.4",
+        });
+
+        this.activeSessions.set(sessionId, session);
+        return session;
+    }
+
+    private async evictOldestSession(): Promise<void> {
+        const [oldestId] = this.activeSessions.keys();
+        const session = this.activeSessions.get(oldestId)!;
+        // Session state is persisted automatically — safe to disconnect
+        await session.disconnect();
+        this.activeSessions.delete(oldestId);
+    }
+}
+```
+
+## Ephemeral vs. persistent sessions
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-scaling-diagram-7.png)
+
+### Ephemeral sessions
+
+For stateless API endpoints where each request is independent:
+
+```typescript
+app.post("/api/analyze", async (req, res) => {
+    const session = await client.createSession({
+        model: "gpt-5.4",
+    });
+
+    try {
+        const response = await session.sendAndWait({
+            prompt: req.body.prompt,
+        });
+        res.json({ result: response?.data.content });
+    } finally {
+        await session.disconnect();  // Clean up immediately
+    }
+});
+```
+
+### Persistent sessions
+
+For conversational interfaces or long-running workflows:
+
+```typescript
+// Create a resumable session
+app.post("/api/chat/start", async (req, res) => {
+    const sessionId = `user-${req.user.id}-${Date.now()}`;
+
+    const session = await client.createSession({
+        sessionId,
+        model: "gpt-5.4",
+        infiniteSessions: {
+            enabled: true,
+            backgroundCompactionThreshold: 0.80,
+        },
+    });
+
+    res.json({ sessionId });
+});
+
+// Continue the conversation
+app.post("/api/chat/message", async (req, res) => {
+    const session = await client.resumeSession(req.body.sessionId);
+    const response = await session.sendAndWait({ prompt: req.body.message });
+
+    res.json({ content: response?.data.content });
+});
+
+// Clean up when done
+app.post("/api/chat/end", async (req, res) => {
+    await client.deleteSession(req.body.sessionId);
+    res.json({ success: true });
+});
+```
+
+## Container deployments
+
+### Kubernetes with persistent storage
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: copilot-cli
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: copilot-cli
+  template:
+    metadata:
+      labels:
+        app: copilot-cli
+    spec:
+      containers:
+        - name: copilot-cli
+          image: your-registry/copilot-cli:latest  # See backend-services.md for how to build and push this image
+          args: ["--headless", "--host", "0.0.0.0", "--port", "4321"]
+          env:
+            - name: COPILOT_GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: copilot-secrets
+                  key: github-token
+          ports:
+            - containerPort: 4321
+          volumeMounts:
+            - name: session-state
+              mountPath: /root/.copilot/session-state
+      volumes:
+        - name: session-state
+          persistentVolumeClaim:
+            claimName: copilot-sessions-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: copilot-cli
+spec:
+  selector:
+    app: copilot-cli
+  ports:
+    - port: 4321
+      targetPort: 4321
+```
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-scaling-diagram-8.png)
+
+### Azure Container Instances
+
+```yaml
+containers:
+  - name: copilot-cli
+    image: your-registry/copilot-cli:latest  # See backend-services.md for how to build and push this image
+    command: ["copilot", "--headless", "--host", "0.0.0.0", "--port", "4321"]
+    volumeMounts:
+      - name: session-storage
+        mountPath: /root/.copilot/session-state
+
+volumes:
+  - name: session-storage
+    azureFile:
+      shareName: copilot-sessions
+      storageAccountName: myaccount
+```
+
+## Production checklist
+
+![Diagram: Flowchart showing the described process.](/assets/images/help/copilot/copilot-sdk/setup-scaling-diagram-9.png)
+
+| Concern | Recommendation |
+|---------|---------------|
+| **Session cleanup** | Run periodic cleanup to delete sessions older than your TTL |
+| **Health checks** | Ping the CLI server periodically; restart if unresponsive |
+| **Storage** | Mount persistent volumes for `~/.copilot/session-state/` |
+| **Secrets** | Use your platform's secret manager (Vault, K8s Secrets, etc.) |
+| **Monitoring** | Track active session count, response latency, error rates |
+| **Locking** | Use Redis or similar for shared session access |
+| **Shutdown** | Drain active sessions before stopping CLI servers |
+
+## Limitations
+
+| Limitation | Details |
+|------------|---------|
+| **No built-in session locking** | Implement application-level locking for concurrent access |
+| **No built-in load balancing** | Use external LB or service mesh |
+| **Session state is file-based** | Requires shared filesystem for multi-server setups |
+| **No idle timeout by default** | Pass `--session-idle-timeout <seconds>` to the CLI server to automatically clean up inactive sessions |
+| **CLI is single-process** | Scale by adding more CLI server instances, not threads |
+
+## Next steps
+
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/features/session-persistence)**: Deep dive on resumable sessions
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/backend-services)**: Core server-side setup
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/github-oauth)**: Multi-user authentication
+* **[AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok)**: Use your own model provider
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/troubleshooting/compatibility.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/troubleshooting/compatibility
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/troubleshooting/compatibility.md
+- **SHA256_FINGERPRINT**: `bd7c2e16170df33c19435c9930ae50c88974810ddd63d2ef48339012e764b4d5`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.760966+00:00
+---
+
+**title**: SDK and CLI compatibility
+**shortTitle**: Compatibility
+**intro**: >-
+
+## Overview
+
+The Copilot SDK communicates with the CLI via JSON-RPC protocol. Features must be explicitly exposed through this protocol to be available in the SDK. Many interactive CLI features are terminal-specific and not available programmatically.
+
+## Feature comparison
+
+### ✅ Available in SDK
+
+| Feature | SDK Method | Notes |
+|---------|------------|-------|
+| **Session Management** | | |
+| Create session | `createSession()` | Full config support |
+| Resume session | `resumeSession()` | With infinite session workspaces |
+| Disconnect session | `disconnect()` | Release in-memory resources |
+| Destroy session *(deprecated)* | `destroy()` | Use `disconnect()` instead |
+| Delete session | `deleteSession()` | Remove from storage |
+| List sessions | `listSessions()` | All stored sessions |
+| Get last session | `getLastSessionId()` | For quick resume |
+| Get foreground session | `getForegroundSessionId()` | Multi-session coordination |
+| Set foreground session | `setForegroundSessionId()` | Multi-session coordination |
+| **Messaging** | | |
+| Send message | `send()` | With attachments |
+| Send and wait | `sendAndWait()` | Blocks until complete |
+| Steering (immediate mode) | `send({ mode: "immediate" })` | Inject mid-turn without aborting |
+| Queueing (enqueue mode) | `send({ mode: "enqueue" })` | Buffer for sequential processing (default) |
+| File attachments | `send({ attachments: [{ type: "file", path }] })` | Images auto-encoded and resized |
+| Directory attachments | `send({ attachments: [{ type: "directory", path }] })` | Attach directory context |
+| Get history | `getEvents()` | All session events |
+| Abort | `abort()` | Cancel in-flight request |
+| **Tools** | | |
+| Register custom tools | `registerTools()` | Full JSON Schema support |
+| Replace custom tools (mid-session) | `session.setTools()` | Experimental; see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/changing-tools) |
+| Tool permission control | `onPreToolUse` hook | Allow/deny/ask |
+| Tool result modification | `onPostToolUse` hook | Transform results |
+| Available/excluded tools | `availableTools`, `excludedTools` config | Filter tools |
+| **Models** | | |
+| List models | `listModels()` | With capabilities, billing, policy |
+| Set model (at creation) | `model` in session config | Per-session |
+| Switch model (mid-session) | `session.setModel()` | Also via `session.rpc.model.switchTo()` |
+| Get current model | `session.rpc.model.getCurrent()` | Query active model |
+| Reasoning effort | `reasoningEffort` config | For supported models |
+| **Agent Mode** | | |
+| Get current mode | `session.rpc.mode.get()` | Returns current mode |
+| Set mode | `session.rpc.mode.set()` | Switch between modes |
+| **Plan Management** | | |
+| Read plan | `session.rpc.plan.read()` | Get plan.md content and path |
+| Update plan | `session.rpc.plan.update()` | Write plan.md content |
+| Delete plan | `session.rpc.plan.delete()` | Remove plan.md |
+| **Workspace Files** | | |
+| List workspace files | `session.rpc.workspace.listFiles()` | Files in session workspace |
+| Read workspace file | `session.rpc.workspace.readFile()` | Read file content |
+| Create workspace file | `session.rpc.workspace.createFile()` | Create file in workspace |
+| **Authentication** | | |
+| Get auth status | `getAuthStatus()` | Check login state |
+| Use token | `gitHubToken` option | Programmatic auth |
+| **Connectivity** | | |
+| Ping | `client.ping()` | Health check with server timestamp |
+| Get server status | `client.getStatus()` | Protocol version and server info |
+| **MCP Servers** | | |
+| Local/stdio servers | `mcpServers` config | Spawn processes |
+| Remote HTTP/SSE | `mcpServers` config | Connect to services |
+| **Hooks** | | |
+| Pre-tool use | `onPreToolUse` | Permission, modify args |
+| Post-tool use (success) | `onPostToolUse` | Modify results |
+| Post-tool use (failure) | `onPostToolUseFailure` | Observe failed tool calls, inject retry guidance |
+| User prompt | `onUserPromptSubmitted` | Modify prompts |
+| Session start/end | `onSessionStart`, `onSessionEnd` | Lifecycle with source/reason |
+| Error handling | `onErrorOccurred` | Custom handling |
+| **Events** | | |
+| All session events | `on()`, `once()` | 40+ event types |
+| Streaming | `streaming: true` | Delta events |
+| **Session Config** | | |
+| Custom agents | `customAgents` config | Define specialized agents |
+| System message | `systemMessage` config | Append or replace |
+| Custom provider | `provider` config | BYOK support |
+| Infinite sessions | `infiniteSessions` config | Auto-compaction |
+| Permission handler | `onPermissionRequest` | Approve/deny requests; optionally attach a `decisionContext` for auto-approval telemetry |
+| User input handler | `onUserInputRequest` | Handle ask_user |
+| Skills | `skillDirectories` config | Custom skills |
+| Disabled skills | `disabledSkills` config | Disable specific skills |
+| Config directory | `configDir` config | Override default config location |
+| Client name | `clientName` config | Identify app in User-Agent |
+| Working directory | `workingDirectory` config | Set session cwd |
+| Additional directories | `additionalDirectories` config | Grant session access beyond the working directory; re-supply on resume |
+| **Experimental** | | |
+| Agent management | `session.rpc.agent.*` | List, select, deselect, get current agent |
+| Fleet mode | `session.rpc.fleet.start()` | Parallel sub-agent execution; see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/fleet-mode) |
+| Manual compaction | `session.rpc.history.compact()` | Trigger compaction on demand |
+| Context clearing | `session.rpc.history.clearContext()` | Replace conversation context from a terminal tool |
+| History truncation | `session.rpc.history.truncate()` | Remove events from a point onward |
+| Session forking | `server.rpc.sessions.fork()` | Fork a session at a point in history |
+
+### ❌ Not available in SDK (CLI-only)
+
+| Feature | CLI Command/Option | Reason |
+|---------|-------------------|--------|
+| **Session Export** | | |
+| Export to file | `--share`, `/share` | Not in protocol |
+| Export to gist | `--share-gist`, `/share gist` | Not in protocol |
+| **Interactive UI** | | |
+| Slash commands | `/help`, `/clear`, `/exit`, etc. | TUI-only |
+| Agent picker dialog | `/agent` | Interactive UI |
+| Diff mode dialog | `/diff` | Interactive UI |
+| Feedback dialog | `/feedback` | Interactive UI |
+| Theme picker | `/theme` | Terminal UI |
+| Model picker | `/model` | Interactive UI (use SDK `setModel()` instead) |
+| Copy to clipboard | `/copy` | Terminal-specific |
+| Context management | `/context` | Interactive UI |
+| **Research & History** | | |
+| Deep research | `/research` | TUI workflow with web search |
+| Session history tools | `/chronicle` | Standup, tips, improve, reindex |
+| **Terminal Features** | | |
+| Color output | `--no-color` | Terminal-specific |
+| Screen reader mode | `--screen-reader` | Accessibility |
+| Rich diff rendering | `--plain-diff` | Terminal rendering |
+| Startup banner | `--banner` | Visual element |
+| Streamer mode | `/streamer-mode` | TUI display mode |
+| Alternate screen buffer | `--alt-screen`, `--no-alt-screen` | Terminal rendering |
+| Mouse support | `--mouse`, `--no-mouse` | Terminal input |
+| **Path/Permission Shortcuts** | | |
+| Allow all paths | `--allow-all-paths` | Use permission handler |
+| Allow all URLs | `--allow-all-urls` | Use permission handler |
+| Allow all permissions | `--yolo`, `--allow-all`, `/allow-all` | Use permission handler |
+| Granular tool permissions | `--allow-tool`, `--deny-tool` | Use `onPreToolUse` hook |
+| URL access control | `--allow-url`, `--deny-url` | Use permission handler |
+| Reset allowed tools | `/reset-allowed-tools` | TUI command |
+| **Directory Management** | | |
+| Add directory | `/add-dir`, `--add-dir` | Configure in session |
+| List directories | `/list-dirs` | TUI command |
+| Change directory | `/cwd` | TUI command |
+| **Plugin/MCP Management** | | |
+| Plugin commands | `/plugin` | Interactive management |
+| MCP server management | `/mcp` | Interactive UI |
+| **Account Management** | | |
+| Login flow | `/login`, `copilot auth login` | OAuth device flow |
+| Logout | `/logout`, `copilot auth logout` | Direct CLI |
+| User info | `/user` | TUI command |
+| **Session Operations** | | |
+| Clear conversation | `/clear` | TUI-only |
+| Plan view | `/plan` | TUI-only (use SDK `session.rpc.plan.*` instead) |
+| Session management | `/session`, `/resume`, `/rename` | TUI workflow |
+| Fleet mode (interactive) | `/fleet` | TUI-only (use SDK `session.rpc.fleet.start()` instead) |
+| **Skills Management** | | |
+| Manage skills | `/skills` | Interactive UI |
+| **Task Management** | | |
+| View background tasks | `/tasks` | TUI command |
+| **Usage & Stats** | | |
+| Token usage | `/usage` | Subscribe to usage events |
+| **Code Review** | | |
+| Review changes | `/review` | TUI command |
+| **Delegation** | | |
+| Delegate to PR | `/delegate` | TUI workflow |
+| **Terminal Setup** | | |
+| Shell integration | `/terminal-setup` | Shell-specific |
+| **Development** | | |
+| Toggle experimental | `/experimental`, `--experimental` | Runtime flag |
+| Custom instructions control | `--no-custom-instructions` | CLI flag |
+| Diagnose session | `/diagnose` | TUI command |
+| View/manage instructions | `/instructions` | TUI command |
+| Collect debug logs | `/collect-debug-logs` | Diagnostic tool |
+| Reindex workspace | `/reindex` | TUI command |
+| IDE integration | `/ide` | IDE-specific workflow |
+| **Non-interactive Mode** | | |
+| Prompt mode | `-p`, `--prompt` | Single-shot execution |
+| Interactive prompt | `-i`, `--interactive` | Auto-execute then interactive |
+| Silent output | `-s`, `--silent` | Script-friendly |
+| Continue session | `--continue` | Resume most recent |
+| Agent selection | `--agent <agent>` | CLI flag |
+
+## Workarounds
+
+### Fleet mode
+
+Fleet mode is available through `session.rpc.fleet.start()` for SDK applications that want the runtime to dispatch parallel sub-agents for a larger objective. Use it when independent subtasks can run concurrently and then be summarized by the main session. For a full guide, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/fleet-mode).
+
+### Session export
+
+The `--share` option is not available via SDK. Workarounds:
+
+1. **Collect events manually** - Subscribe to session events and build your own export:
+
+   ```typescript
+   const events: SessionEvent[] = [];
+   session.on((event) => events.push(event));
+   // ... after conversation ...
+   const messages = await session.getEvents();
+   // Format as markdown yourself
+   ```
+
+1. **Use CLI directly for export** - Run the CLI with `--share` for one-off exports.
+
+### Permission control
+
+The SDK uses a **deny-by-default** permission model. All permission requests (file writes, shell commands, URL fetches, etc.) are denied unless your app provides an `onPermissionRequest` handler.
+
+Instead of `--allow-all-paths` or `--yolo`, use the permission handler:
+
+```typescript
+const session = await client.createSession({
+  onPermissionRequest: approveAll,
+});
+```
+
+### Token usage tracking
+
+Instead of `/usage`, subscribe to usage events:
+
+```typescript
+session.on("assistant.usage", (event) => {
+  console.log("Tokens used:", {
+    input: event.data.inputTokens,
+    output: event.data.outputTokens,
+  });
+});
+```
+
+### Context compaction
+
+Instead of `/compact`, configure automatic compaction or trigger it manually:
+
+```typescript
+// Automatic compaction via config
+const session = await client.createSession({
+  infiniteSessions: {
+    enabled: true,
+    backgroundCompactionThreshold: 0.80,  // Start background compaction at 80% context utilization
+    bufferExhaustionThreshold: 0.95,      // Block and compact at 95% context utilization
+  },
+});
+
+// Manual compaction (experimental)
+const result = await session.rpc.history.compact();
+console.log(`Removed ${result.tokensRemoved} tokens, ${result.messagesRemoved} messages`);
+```
+
+> [!NOTE]
+> Thresholds are context utilization ratios (0.0-1.0), not absolute token counts.
+
+### Plan management
+
+Read and write session plans programmatically:
+
+```typescript
+// Read the current plan
+const plan = await session.rpc.plan.read();
+if (plan.exists) {
+  console.log(plan.content);
+}
+
+// Update the plan
+await session.rpc.plan.update({ content: "# My Plan\n- Step 1\n- Step 2" });
+
+// Delete the plan
+await session.rpc.plan.delete();
+```
+
+### Message steering
+
+Inject a message into the current LLM turn without aborting:
+
+```typescript
+// Steer the agent mid-turn
+await session.send({ prompt: "Focus on error handling first", mode: "immediate" });
+
+// Default: enqueue for next turn
+await session.send({ prompt: "Next, add tests" });
+```
+
+## Protocol limitations
+
+The SDK can only access features exposed through the CLI's JSON-RPC protocol. If you need a CLI feature that's not available:
+
+1. **Check for alternatives** - Many features have SDK equivalents (see workarounds above)
+1. **Use the CLI directly** - For one-off operations, invoke the CLI
+1. **Request the feature** - Open an issue to request protocol support
+
+## Version compatibility
+
+| SDK Protocol Range | CLI Protocol Version | Compatibility |
+|--------------------|---------------------|---------------|
+| v2–v3 | v3 | Full support |
+| v2–v3 | v2 | Supported with automatic v2 adapters |
+
+The SDK negotiates protocol versions with the CLI at startup. The SDK supports protocol versions 2 through 3. When connecting to a v2 CLI server, the SDK automatically adapts `tool.call` and `permission.request` messages to the v3 event model—no code changes required.
+
+Check versions at runtime:
+
+```typescript
+const status = await client.getStatus();
+console.log("Protocol version:", status.protocolVersion);
+```
+
+## See also
+
+* [AUTOTITLE](/copilot/get-started/sdk-quickstart)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/hooks-overview)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/mcp)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/debugging)
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/troubleshooting/debugging.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/troubleshooting/debugging
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/troubleshooting/debugging.md
+- **SHA256_FINGERPRINT**: `fa642ac0f9b4a51870f057b06b43a5796dbdde6fac80a5b906a8709219d5c781`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.817862+00:00
+---
+
+**title**: Debugging guide
+**shortTitle**: Debugging
+**intro**: >-
+
+## Table of contents
+
+* [Enable Debug Logging](#enable-debug-logging)
+* [Common Issues](#common-issues)
+* [MCP Server Debugging](#mcp-server-debugging)
+* [Connection Issues](#connection-issues)
+* [Tool Execution Issues](#tool-execution-issues)
+* [Platform-Specific Issues](#platform-specific-issues)
+
+## Enable debug logging
+
+The first step in debugging is enabling verbose logging to see what's happening under the hood.
+
+**Language (typescript):**
+
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+
+const client = new CopilotClient({
+  logLevel: "debug",  // Options: "none", "error", "warning", "info", "debug", "all"
+});
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient
+
+client = CopilotClient(log_level="debug")
+```
+
+**Language (go):**
+
+```golang
+import copilot "github.com/github/copilot-sdk/go"
+
+client := copilot.NewClient(&copilot.ClientOptions{
+    LogLevel: "debug",
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+using GitHub.Copilot;
+using Microsoft.Extensions.Logging;
+
+// Using ILogger
+var loggerFactory = LoggerFactory.Create(builder =>
+{
+    builder.SetMinimumLevel(LogLevel.Debug);
+    builder.AddConsole();
+});
+
+var client = new CopilotClient(new CopilotClientOptions
+{
+    LogLevel = "debug",
+    Logger = loggerFactory.CreateLogger<CopilotClient>()
+});
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.*;
+
+var client = new CopilotClient(new CopilotClientOptions()
+    .setLogLevel("debug")
+);
+```
+
+### Log directory
+
+The SDK-managed out-of-process runtime writes redacted
+`process-<timestamp>-<pid>.log` files under the Copilot home's `logs` directory
+by default in `copilot-cli` mode. SDKs in `empty` mode do not set the logging
+opt-in, but an inherited setting can still enable it; session events remain
+available to `collectLogs`. An explicitly selected older CLI executable may
+ignore this setting. You can specify a custom log location with `--log-dir`;
+`collectLogs` searches the configured directory. In-process connections do
+not start a separate logging process.
+
+**Language (typescript):**
+
+```typescript
+const client = new CopilotClient({
+  cliArgs: ["--log-dir", "/path/to/logs"],
+});
+```
+
+**Language (python):**
+
+```python
+from copilot import CopilotClient, RuntimeConnection
+
+client = CopilotClient(
+    connection=RuntimeConnection.for_stdio(args=["--log-dir", "/path/to/logs"])
+)
+```
+
+**Language (go):**
+
+```golang
+client := copilot.NewClient(&copilot.ClientOptions{
+    Connection: copilot.StdioConnection{
+        Args: []string{"--log-dir", "/path/to/logs"},
+    },
+})
+```
+
+**Language (dotnet):**
+
+```csharp
+var client = new CopilotClient(new CopilotClientOptions
+{
+    Connection = RuntimeConnection.ForStdio(args: new[] { "--log-dir", "/path/to/logs" })
+});
+```
+
+**Language (java):**
+
+```java
+import com.github.copilot.CopilotClient;
+import com.github.copilot.rpc.CopilotClientOptions;
+
+var client = new CopilotClient(new CopilotClientOptions()
+    .setCliArgs(new String[] {"--log-dir", "/path/to/logs"}));
+```
+
+## Common issues
+
+### "CLI not found" / "Copilot: command not found"
+
+**Cause:** The Copilot CLI is not installed or not in PATH.
+
+**Solution:**
+
+1. Install the CLI: [Installation guide](/copilot/how-tos/set-up/install-copilot-cli)
+
+1. Verify installation:
+
+   ```bash
+   copilot --version
+   ```
+
+1. Or specify the full path:
+
+**Language (typescript):**
+
+   ```typescript
+   const client = new CopilotClient({
+     cliPath: "/usr/local/bin/copilot",
+   });
+   ```
+
+**Language (python):**
+
+   ```python
+   client = CopilotClient({"cli_path": "/usr/local/bin/copilot"})
+   ```
+
+**Language (go):**
+
+   ```golang
+   client := copilot.NewClient(&copilot.ClientOptions{
+       Connection: copilot.StdioConnection{Path: "/usr/local/bin/copilot"},
+   })
+   ```
+
+**Language (dotnet):**
+
+   ```csharp
+   var client = new CopilotClient(new CopilotClientOptions
+   {
+       CliPath = "/usr/local/bin/copilot"
+   });
+   ```
+
+**Language (java):**
+
+   ```java
+   var client = new CopilotClient(new CopilotClientOptions()
+       .setCliPath("/usr/local/bin/copilot")
+   );
+   ```
+
+### "Not authenticated"
+
+**Cause:** The CLI is not authenticated with GitHub.
+
+**Solution:**
+
+1. Authenticate the CLI:
+
+   ```bash
+   copilot auth login
+   ```
+
+1. Or provide a token programmatically:
+
+**Language (typescript):**
+
+   ```typescript
+   const client = new CopilotClient({
+     gitHubToken: process.env.GITHUB_TOKEN,
+   });
+   ```
+
+**Language (python):**
+
+   ```python
+   import os
+   client = CopilotClient({"github_token": os.environ.get("GITHUB_TOKEN")})
+   ```
+
+**Language (go):**
+
+   ```golang
+   client := copilot.NewClient(&copilot.ClientOptions{
+       GitHubToken: os.Getenv("GITHUB_TOKEN"),
+   })
+   ```
+
+**Language (dotnet):**
+
+   ```csharp
+   var client = new CopilotClient(new CopilotClientOptions
+   {
+       GitHubToken = Environment.GetEnvironmentVariable("GITHUB_TOKEN")
+   });
+   ```
+
+**Language (java):**
+
+   ```java
+   var client = new CopilotClient(new CopilotClientOptions()
+       .setGitHubToken(System.getenv("GITHUB_TOKEN"))
+   );
+   ```
+
+### "Session not found"
+
+**Cause:** Attempting to use a session that was destroyed or doesn't exist.
+
+**Solution:**
+
+1. Ensure you're not calling methods after `disconnect()`:
+
+   ```typescript
+   await session.disconnect();
+   // Don't use session after this!
+   ```
+
+1. For resuming sessions, verify the session ID exists:
+
+   ```typescript
+   const sessions = await client.listSessions();
+   console.log("Available sessions:", sessions);
+   ```
+
+### "Connection refused" / "ECONNREFUSED"
+
+**Cause:** The CLI server process crashed or failed to start.
+
+**Solution:**
+
+1. Check if the CLI runs correctly standalone:
+
+   ```bash
+   copilot --server --stdio
+   ```
+
+1. Check for port conflicts if using TCP mode:
+
+   ```typescript
+   const client = new CopilotClient({
+     useStdio: false,
+     port: 0,  // Use random available port
+   });
+   ```
+
+## MCP server debugging
+
+MCP (Model Context Protocol) servers can be tricky to debug. For comprehensive MCP debugging guidance, see the dedicated **[AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging)**.
+
+### Quick MCP checklist
+
+* [ ] MCP server executable exists and runs independently
+* [ ] Command path is correct (use absolute paths)
+* [ ] Tools are enabled: `tools: ["*"]`
+* [ ] Server responds to `initialize` request correctly
+* [ ] Working directory (`cwd`) is set if needed
+
+### Test your MCP server
+
+Before integrating with the SDK, verify your MCP server works:
+
+```bash
+echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"1.0"}}}' | /path/to/your/mcp-server
+```
+
+See [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging) for detailed troubleshooting.
+
+## Connection issues
+
+### stdio vs TCP mode
+
+The SDK supports two transport modes:
+
+| Mode | Description | Use Case |
+|------|-------------|----------|
+| **Stdio** (default) | CLI runs as subprocess, communicates via pipes | Local development, single process |
+| **TCP** | CLI runs separately, communicates via TCP socket | Multiple clients, remote CLI |
+
+**Stdio mode (default):**
+
+```typescript
+const client = new CopilotClient({
+  useStdio: true,  // This is the default
+});
+```
+
+**TCP mode:**
+
+```typescript
+const client = new CopilotClient({
+  useStdio: false,
+  port: 8080,  // Or 0 for random port
+});
+```
+
+**Connect to existing server:**
+
+```typescript
+const client = new CopilotClient({
+  cliUrl: "localhost:8080",  // Connect to running server
+});
+```
+
+### Diagnosing connection failures
+
+1. **Check client state:**
+
+   ```typescript
+   console.log("Connection state:", client.getState());
+   // Should be "connected" after start()
+   ```
+
+1. **Listen for state changes:**
+
+   ```typescript
+   client.on("stateChange", (state) => {
+     console.log("State changed to:", state);
+   });
+   ```
+
+1. **Verify CLI process is running:**
+
+   ```bash
+   # Check for copilot processes
+   ps aux | grep copilot
+   ```
+
+## Tool execution issues
+
+### Custom tool not being called
+
+1. **Verify tool registration:**
+
+   ```typescript
+   const session = await client.createSession({
+     tools: [myTool],
+   });
+
+   // Check registered tools
+   console.log("Registered tools:", session.getTools?.());
+   ```
+
+1. **Check tool schema is valid JSON Schema:**
+
+   ```typescript
+   const myTool = {
+     name: "get_weather",
+     description: "Get weather for a location",
+     parameters: {
+       type: "object",
+       properties: {
+         location: { type: "string", description: "City name" },
+       },
+       required: ["location"],
+     },
+     handler: async (args) => {
+       return { temperature: 72 };
+     },
+   };
+   ```
+
+1. **Ensure handler returns valid result:**
+
+   ```typescript
+   handler: async (args) => {
+     // Must return something JSON-serializable
+     return { success: true, data: "result" };
+
+     // Don't return undefined or non-serializable objects
+   }
+   ```
+
+### Tool errors not surfacing
+
+Subscribe to error events:
+
+```typescript
+session.on("tool.execution_error", (event) => {
+  console.error("Tool error:", event.data);
+});
+
+session.on("error", (event) => {
+  console.error("Session error:", event.data);
+});
+```
+
+## Platform-specific issues
+
+### Windows
+
+1. **Path separators:** Use raw strings or forward slashes:
+
+   ```csharp
+   CliPath = @"C:\Program Files\GitHub\copilot.exe"
+   // or
+   CliPath = "C:/Program Files/GitHub/copilot.exe"
+   ```
+
+1. **PATHEXT resolution:** The SDK handles this automatically, but if issues persist:
+
+   ```csharp
+   // Explicitly specify .exe
+   Command = "myserver.exe"  // Not just "myserver"
+   ```
+
+1. **Console encoding:** Ensure UTF-8 for proper JSON handling:
+
+   ```csharp
+   Console.OutputEncoding = System.Text.Encoding.UTF8;
+   ```
+
+### macOS
+
+1. **Gatekeeper issues:** If CLI is blocked:
+
+   ```bash
+   xattr -d com.apple.quarantine /path/to/copilot
+   ```
+
+1. **PATH issues in GUI apps:** GUI applications may not inherit shell PATH:
+
+   ```typescript
+   const client = new CopilotClient({
+     cliPath: "/opt/homebrew/bin/copilot",  // Full path
+   });
+   ```
+
+### Linux
+
+1. **Permission issues:**
+
+   ```bash
+   chmod +x /path/to/copilot
+   ```
+
+1. **Missing libraries:** Check for required shared libraries:
+
+   ```bash
+   ldd /path/to/copilot
+   ```
+
+## Getting help
+
+If you're still stuck:
+
+1. **Collect debug information:**
+   * SDK version
+   * CLI version (`copilot --version`)
+   * Operating system
+   * Debug logs
+   * Minimal reproduction code
+
+1. **Search existing issues:** [GitHub Issues](https://github.com/github/copilot-sdk/issues)
+
+1. **Open a new issue** with the collected information
+
+## See also
+
+* [AUTOTITLE](/copilot/get-started/sdk-quickstart)
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/mcp) - MCP configuration and setup
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging) - Detailed MCP troubleshooting
+* [API Reference](https://github.com/github/copilot-sdk)
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/troubleshooting/index.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/troubleshooting
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/troubleshooting/index.md
+- **SHA256_FINGERPRINT**: `0509cb6f76d02576c7ad88fa59171620206b05874799c3e2c03efab456a1e3ba`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.892337+00:00
+---
+
+**title**: Troubleshooting
+**intro**: Diagnose and resolve issues with the GitHub Copilot SDK.
+
+
+---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging.md
+- **SHA256_FINGERPRINT**: `1b1aeea97920d2af1b1e3fbe8fc973300a993d338aad755a2700332fab1ea231`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.896384+00:00
+---
+
+**title**: MCP server debugging guide
+**shortTitle**: MCP Debugging
+**intro**: >-
+
+## Table of contents
+
+* [Quick Diagnostics](#quick-diagnostics)
+* [Testing MCP Servers Independently](#testing-mcp-servers-independently)
+* [Common Issues](#common-issues)
+* [Platform-Specific Issues](#platform-specific-issues)
+* [Advanced Debugging](#advanced-debugging)
+
+## Quick diagnostics
+
+### Checklist
+
+Before diving deep, verify these basics:
+
+* [ ] MCP server executable exists and is runnable
+* [ ] Command path is correct (use absolute paths when in doubt)
+* [ ] Tools are enabled (`tools: ["*"]` or specific tool names)
+* [ ] Server implements MCP protocol correctly (responds to `initialize`)
+* [ ] No firewall/antivirus blocking the process (Windows)
+
+### Enable MCP debug logging
+
+Add environment variables to your MCP server config:
+
+```typescript
+mcpServers: {
+  "my-server": {
+    type: "local",
+    command: "/path/to/server",
+    args: [],
+    env: {
+      MCP_DEBUG: "1",
+      DEBUG: "*",
+      NODE_DEBUG: "mcp",  // For Node.js MCP servers
+    },
+  },
+}
+```
+
+## Testing MCP servers independently
+
+Always test your MCP server outside the SDK first.
+
+### Manual protocol test
+
+Send an `initialize` request via stdin:
+
+```bash
+# Unix/macOS
+echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"1.0"}}}' | /path/to/your/mcp-server
+
+# Windows (PowerShell)
+'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"1.0"}}}' | C:\path\to\your\mcp-server.exe
+```
+
+**Expected response:**
+
+```json
+{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2024-11-05","capabilities":{"tools":{}},"serverInfo":{"name":"your-server","version":"1.0"}}}
+```
+
+### Test tool listing
+
+After initialization, request the tools list:
+
+```bash
+echo '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' | /path/to/your/mcp-server
+```
+
+**Expected response:**
+
+```json
+{"jsonrpc":"2.0","id":2,"result":{"tools":[{"name":"my_tool","description":"Does something","inputSchema":{...}}]}}
+```
+
+### Interactive testing script
+
+Create a test script to interactively debug your MCP server:
+
+```bash
+#!/bin/bash
+# test-mcp.sh
+
+SERVER="$1"
+
+# Initialize
+echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"1.0"}}}'
+
+# Send initialized notification
+echo '{"jsonrpc":"2.0","method":"notifications/initialized"}'
+
+# List tools
+echo '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}'
+
+# Keep stdin open
+cat
+```
+
+Usage:
+
+```bash
+./test-mcp.sh | /path/to/mcp-server
+```
+
+## Common issues
+
+### Server not starting
+
+**Symptoms:** No tools appear, no errors in logs.
+
+**Causes & Solutions:**
+
+| Cause | Solution |
+|-------|----------|
+| Wrong command path | Use absolute path: `/usr/local/bin/server` |
+| Missing executable permission | Run `chmod +x /path/to/server` |
+| Missing dependencies | Check with `ldd` (Linux) or run manually |
+| Working directory issues | Set `cwd` in config |
+
+**Debug by running manually:**
+
+```bash
+# Run exactly what the SDK would run
+cd /expected/working/dir
+/path/to/command arg1 arg2
+```
+
+### Server starts but tools don't appear
+
+**Symptoms:** Server process runs but no tools are available.
+
+**Causes & Solutions:**
+
+1. **Tools not enabled in config:**
+
+   ```typescript
+   mcpServers: {
+     "server": {
+       // ...
+       tools: ["*"],  // Must be "*" or list of tool names
+     },
+   }
+   ```
+
+1. **Server doesn't expose tools:**
+   * Test with `tools/list` request manually
+   * Check server implements `tools/list` method
+
+1. **Initialization handshake fails:**
+   * Server must respond to `initialize` correctly
+   * Server must handle `notifications/initialized`
+
+### Tools listed but never called
+
+**Symptoms:** Tools appear in debug logs but model doesn't use them.
+
+**Causes & Solutions:**
+
+1. **Prompt doesn't clearly need the tool:**
+
+   ```typescript
+   // Too vague
+   await session.sendAndWait({ prompt: "What's the weather?" });
+
+   // Better - explicitly mentions capability
+   await session.sendAndWait({
+     prompt: "Use the weather tool to get the current temperature in Seattle"
+   });
+   ```
+
+1. **Tool description unclear:**
+
+   ```typescript
+   // Bad - model doesn't know when to use it
+   { name: "do_thing", description: "Does a thing" }
+
+   // Good - clear purpose
+   { name: "get_weather", description: "Get current weather conditions for a city. Returns temperature, humidity, and conditions." }
+   ```
+
+1. **Tool schema issues:**
+   * Ensure `inputSchema` is valid JSON Schema
+   * Required fields must be in `required` array
+
+### Timeout errors
+
+**Symptoms:** `MCP tool call timed out` errors.
+
+**Solutions:**
+
+1. **Increase timeout:**
+
+   ```typescript
+   mcpServers: {
+     "slow-server": {
+       // ...
+       timeout: 300000,  // 5 minutes
+     },
+   }
+   ```
+
+1. **Optimize server performance:**
+   * Add progress logging to identify bottleneck
+   * Consider async operations
+   * Check for blocking I/O
+
+1. **For long-running tools**, consider streaming responses if supported.
+
+### JSON-RPC errors
+
+**Symptoms:** Parse errors, invalid request errors.
+
+**Common causes:**
+
+1. **Server writes to stdout incorrectly:**
+   * Debug output going to stdout instead of stderr
+   * Extra newlines or whitespace
+
+   ```typescript
+   // Wrong - pollutes stdout
+   console.log("Debug info");
+
+   // Correct - use stderr for debug
+   console.error("Debug info");
+   ```
+
+1. **Encoding issues:**
+   * Ensure UTF-8 encoding
+   * No BOM (Byte Order Mark)
+
+1. **Message framing:**
+   * Each message must be a complete JSON object
+   * Newline-delimited (one message per line)
+
+## Platform-specific issues
+
+### Windows
+
+#### .NET console apps / tools
+
+```csharp
+// Correct configuration for .NET exe
+["my-dotnet-server"] = new McpStdioServerConfig
+{
+    Command = @"C:\Tools\MyServer\MyServer.exe",  // Full path with .exe
+    Args = new List<string>(),
+    WorkingDirectory = @"C:\Tools\MyServer",  // Set working directory
+    Tools = new List<string> { "*" },
+}
+
+// For dotnet tool (DLL)
+["my-dotnet-tool"] = new McpStdioServerConfig
+{
+    Command = "dotnet",
+    Args = new List<string> { @"C:\Tools\MyTool\MyTool.dll" },
+    WorkingDirectory = @"C:\Tools\MyTool",
+    Tools = new List<string> { "*" },
+}
+```
+
+#### npx commands
+
+```csharp
+// Windows needs cmd /c for npx
+["filesystem"] = new McpStdioServerConfig
+{
+    Command = "cmd",
+    Args = new List<string> { "/c", "npx", "-y", "@modelcontextprotocol/server-filesystem", "C:\\allowed\\path" },
+    Tools = new List<string> { "*" },
+}
+```
+
+#### Path issues
+
+* Use raw strings (`@"C:\path"`) or forward slashes (`"C:/path"`)
+* Avoid spaces in paths when possible
+* If spaces required, ensure proper quoting
+
+#### Antivirus/firewall
+
+Windows Defender or other AV may block:
+* New executables
+* Processes communicating via stdin/stdout
+
+**Solution:** Add exclusions for your MCP server executable.
+
+### macOS
+
+#### Gatekeeper blocking
+
+```bash
+# If the server is blocked
+xattr -d com.apple.quarantine /path/to/mcp-server
+```
+
+#### Homebrew paths
+
+```typescript
+// GUI apps may not have /opt/homebrew in PATH
+mcpServers: {
+  "my-server": {
+    command: "/opt/homebrew/bin/node",  // Full path
+    args: ["/path/to/server.js"],
+  },
+}
+```
+
+### Linux
+
+#### Permission issues
+
+```bash
+chmod +x /path/to/mcp-server
+```
+
+#### Missing shared libraries
+
+```bash
+# Check dependencies
+ldd /path/to/mcp-server
+
+# Install missing libraries
+apt install libfoo  # Debian/Ubuntu
+yum install libfoo  # RHEL/CentOS
+```
+
+## Advanced debugging
+
+### Capture all MCP traffic
+
+Create a wrapper script to log all communication:
+
+```bash
+#!/bin/bash
+# mcp-debug-wrapper.sh
+
+LOG="./mcp-debug-$(date +%s).log"
+ACTUAL_SERVER="$1"
+shift
+
+echo "=== MCP Debug Session ===" >> "$LOG"
+echo "Server: $ACTUAL_SERVER" >> "$LOG"
+echo "Args: $@" >> "$LOG"
+echo "=========================" >> "$LOG"
+
+# Tee stdin/stdout to log file
+tee -a "$LOG" | "$ACTUAL_SERVER" "$@" 2>> "$LOG" | tee -a "$LOG"
+```
+
+Use it:
+
+```typescript
+mcpServers: {
+  "debug-server": {
+    command: "/path/to/mcp-debug-wrapper.sh",
+    args: ["/actual/server/path", "arg1", "arg2"],
+  },
+}
+```
+
+### Inspect with MCP inspector
+
+Use the official MCP Inspector tool:
+
+```bash
+npx @modelcontextprotocol/inspector /path/to/your/mcp-server
+```
+
+This provides a web UI to:
+* Send test requests
+* View responses
+* Inspect tool schemas
+
+### Protocol version mismatches
+
+Check your server supports the protocol version the SDK uses:
+
+```json
+// In initialize response, check protocolVersion
+{"result":{"protocolVersion":"2024-11-05",...}}
+```
+
+If versions don't match, update your MCP server library.
+
+## Debugging checklist
+
+When opening an issue or asking for help, collect:
+
+* [ ] SDK language and version
+* [ ] CLI version (`copilot --version`)
+* [ ] MCP server type (Node.js, Python, .NET, Go, Rust, and more)
+* [ ] Full MCP server configuration (redact secrets)
+* [ ] Result of manual `initialize` test
+* [ ] Result of manual `tools/list` test
+* [ ] Debug logs from SDK
+* [ ] Any error messages
+
+## See also
+
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/mcp) - Configuration and setup
+* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/debugging) - SDK-wide debugging
+* [MCP Specification](https://modelcontextprotocol.io/) - Official protocol docs
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/ai-extensibility-overview.md
+- **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/ai-extensibility-overview
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/ai-extensibility-overview.md
+- **SHA256_FINGERPRINT**: `1201c2236af60ea2660035133479fa32c33e1a7086055832394f8e14769719a9`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.493840+00:00
+---
+
+**MetaDescription**: Overview of how to extend the AI features in your Visual Studio Code extension by using the Language Model, Tools, and Chat APIs.
+
+# AI extensibility in VS Code
+
+This article provides an overview of AI extensibility options in Visual Studio Code, helping you choose the right approach for your extension.
+
+VS Code includes powerful AI features that enhance the coding experience:
+
+- **Code completion**: Offers inline code suggestions as you type
+- **Agent mode**: Enables AI to autonomously plan and execute development tasks with specialized tools
+- **Chat**: Lets developers use natural language to ask questions or make edits in codebase through chat interfaces
+- **Smart actions**: Use AI-enhanced actions for common development tasks, integrated throughout the editor
+
+You can extend and customize each of these built-in capabilities to create tailored AI experiences that meet the specific needs of your users.
+
+## Why extend AI in VS Code?
+
+Adding AI capabilities to your extension brings several benefits to your users:
+
+- **Domain-specific knowledge in agent mode**: Let agent mode access your company's data sources and services
+- **Enhanced user experience**: Provide intelligent assistance tailored to your extension's domain
+- **Domain specialization**: Create AI features specific to a programming language, framework, or domain
+- **Extend chat capabilities**: Add specialized tools or assistants to the chat interface for more powerful interactions
+- **Improved developer productivity**: Enhance common developer tasks, like debugging, code reviewing or testing, with AI capabilities
+
+## Extend the chat experience
+
+### Language model tool
+
+Language model tools enable you to extend agent mode in VS Code with domain-specific capabilities. In agent mode, these tools are automatically invoked based on the user's chat prompt to perform specialized tasks or retrieve information from a data source or service. Users can also reference these tools explicitly in their chat prompt by #-mentioning the tool.
+
+To implement a language model tool, use the [Language Model Tools API](/api/extension-guides/ai/tools) within your VS Code extension. A language model tool can access all VS Code extension APIs and provide deep integration with the editor.
+
+**Key benefits**:
+
+- Domain-specific capabilities as part of an autonomous coding workflow
+- Your tool implementation can use VS Code APIs since it runs in the extension host process
+- Easy distribution and deployment via the Visual Studio Marketplace
+
+**Key considerations**:
+
+- Remote deployment requires the extension to implement the client-server communication
+- Reuse across different tools requires modular design and implementation
+
+### MCP tool
+
+Model Context Protocol (MCP) tools provide a way to integrate external services with language models by using a standardized protocol. In agent mode, these tools are automatically invoked based on the user's chat prompt to perform specialized tasks or retrieve information from external data sources.
+
+MCP tools run outside of VS Code, either locally on the user's machine or as a remote service. Users can add MCP tools through JSON configuration or VS Code extension can configure them programmatically. You can implement MCP tools through various language SDKs and deployment options.
+
+As MCP tools run outside of VS Code, they do not have access to the VS Code extension APIs.
+
+**Key benefits**:
+
+- Add domain-specific capabilities as part of an autonomous coding workflow
+- Local and remote deployment options
+- Reuse MCP servers in other MCP clients
+
+**Key considerations**:
+
+- No access to VS Code extension APIs
+- Distribution and deployment require users to set up the MCP server
+
+### Chat participant
+
+Chat participants are specialized assistants that enable users to extend ask mode with domain-specific experts. In chat, users can invoke a chat participant by @-mentioning it and passing in a natural language prompt about a particular topic or domain. The chat participant is responsible for handling the entire chat interaction.
+
+To implement a chat participant, use the [Chat API](/api/extension-guides/ai/chat) within your VS Code extension. A chat participant can access all VS Code extension APIs and provide deep integration with the editor.
+
+**Key benefits**:
+
+- Control the end-to-end interaction flow
+- Running in the extension host process allows access to VS Code extension APIs
+- Easy distribution and deployment via the Visual Studio Marketplace
+
+**Key considerations**:
+
+- Remote deployment requires the extension to implement the client-server communication
+- Reuse across different tools requires modular design and implementation
+
+## Build your own AI-powered features
+
+VS Code gives you direct programmatic access to AI models for creating custom AI-powered features in your extensions. This approach enables you to build editor-specific interactions that use AI capabilities without relying on the chat interface.
+
+To use language models directly, use the [Language Model API](/api/extension-guides/ai/language-model) within your VS Code extension. You can incorporate these AI capabilities into any extension feature, such as code actions, hover providers, custom views, and more.
+
+**Key benefits**:
+
+- Integrate AI capabilities into existing extension features or build new ones
+- Running in the extension host process allows access to VS Code extension APIs
+- Easy distribution and deployment via the Visual Studio Marketplace
+
+**Key considerations**:
+
+- Reuse across different experiences requires modular design and implementation
+
+## Decide which option to use
+
+When choosing the right approach for extending AI in your VS Code extension, consider the following guidelines:
+
+1. **Choose Language Model Tool when**:
+    - You want to extend chat in VS Code with specialized capabilities
+    - You want automatic invocation based on user intent in agent mode
+    - You want access to VS Code APIs for deep integration in VS Code
+    - You want to distribute your tool through the VS Code Marketplace
+
+1. **Choose MCP Tool when**:
+    - You want to extend chat in VS Code with specialized capabilities
+    - You want automatic invocation based on user intent in agent mode
+    - You don't need to integrate with VS Code APIs
+    - Your tool needs to work across different environments (not just VS Code)
+    - Your tool should run remotely or locally
+
+1. **Choose Chat Participant when**:
+    - You want to extend ask mode with a specialized assistant with domain expertise
+    - You need to customize the entire interaction flow and response behavior
+    - You want access to VS Code APIs for deep integration in VS Code
+    - You want to distribute your tool through the VS Code Marketplace
+
+1. **Choose Language Model API when**:
+    - You want to integrate AI capabilities into existing extension features
+    - You're building UI experiences outside the chat interface
+    - You need direct programmatic control over AI model requests
+
+## Next steps
+
+Choose the approach that best fits your extension's goals:
+
+- [Implement a language model tool](/api/extension-guides/ai/tools)
+- [Register MCP tools in your VS Code extension](/api/extension-guides/ai/mcp)
+- [Integrate AI in your extension with the Language Model API](/api/extension-guides/ai/language-model)
+- [Implement a chat participant](/api/extension-guides/ai/chat)
+- [Extend code completions with the Inline Completions API](/api/references/vscode-api#InlineCompletionItemProvider)
+
+### Sample projects
+
+- [Chat sample](https://github.com/microsoft/vscode-extension-samples/tree/main/chat-sample): Extension with agent mode tool and chat participant
+- [Code tutor chat participant tutorial](/api/extension-guides/ai/chat-tutorial): Building a specialized chat assistant
+- [AI-powered code annotations tutorial](/api/extension-guides/ai/language-model-tutorial): Step-by-step guide for using the Language Model API
+- [MCP extension sample](https://github.com/microsoft/vscode-extension-samples/blob/main/mcp-extension-sample): Extension that registers an MCP tool
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/chat-tutorial.md
+- **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/chat-tutorial
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/chat-tutorial.md
+- **SHA256_FINGERPRINT**: `5cc0c15157e286279d300f1deced997783623695d3f541d85e64b943bc78d719`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.533926+00:00
+---
+
+**MetaDescription**: Tutorial that walks you through creating a GitHub Copilot chat participant in VS Code by using the Chat API.
+
+# Tutorial: Build a code tutorial chat participant with the Chat API
+
+In this tutorial, you'll learn how to create a Visual Studio Code extension that integrates with the GitHub Copilot Chat experience. You'll use the Chat extension API to contribute a chat participant. Your participant will be a code tutor that can provide explanations and sample exercises for programming concepts.
+
+## Prerequisites
+
+You'll need the following tools and accounts to complete this tutorial:
+
+- [Visual Studio Code](https://code.visualstudio.com/download)
+- [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat)
+- [Node.js](https://nodejs.org/en/download/)
+
+## Step 1: Set up your project
+
+First, generate the extension project by using Yeoman and the VS Code Extension Generator.
+
+```bash
+npx --package yo --package generator-code -- yo code
+```
+
+Select the following options to complete the setup:
+
+```bash
+# ? What type of extension do you want to create? New Extension (TypeScript)
+# ? What's the name of your extension? Code Tutor
+
+### Press <Enter> to choose default for all options below ###
+
+# ? What's the identifier of your extension? code-tutor
+# ? What's the description of your extension? LEAVE BLANK
+# ? Initialize a git repository? Yes
+# ? Bundle the source code with webpack? No
+# ? Which package manager to use? npm
+
+# ? Do you want to open the new folder with Visual Studio Code? Open with `code`
+```
+
+Once your extension project is generated, there are two files you will be working in: `extension.ts` and `package.json`, which you can learn more about in the [Extension Anatomy docs](/api/get-started/extension-anatomy#extension-file-structure). As a quick overview:
+
+- `extension.ts` is the main entry point for your extension and contains the logic for your chat participant.
+- `package.json` contains the metadata for your extension, such as the name and description of your participant.
+
+Delete the auto-generated code in the `extension.ts` `activate()` method. This is where you will place our logic for our chat participant.
+
+## Step 2: Register a Chat participant
+
+In the `package.json` file, replace the auto-generated `contributes` section with the following:
+
+```json
+"contributes":{
+    "chatParticipants": [
+    {
+        "id": "chat-tutorial.code-tutor",
+        "fullName": "Code Tutor",
+        "name": "tutor",
+        "description": "What can I teach you?",
+        "isSticky": true
+    }
+    ]
+}
+```
+
+This code registers a chat participant with the following attributes:
+
+- Unique ID `chat-tutorial.code-tutor`, which will be referenced in the code
+- Full name `Code Tutor`, which will be shown in the title area of a response from your participant
+- Name `tutor`, which will be used to reference the chat participant as `@tutor` in the Chat view
+- Description "What can I teach you?", which will be shown in the chat input field as a placeholder text
+
+Finally, setting `isSticky: true` will automatically prepend the participant name in the chat input field after the user has started interacting with the participant.
+
+## Step 3: Craft the prompt
+
+Now that the participant is registered, you can start implementing the logic for the code tutor. In the `extension.ts` file, you will define a prompt for the requests.
+
+Crafting a good prompt is the key to getting the best response from your participant. Check out [this article](https://platform.openai.com/docs/guides/prompt-engineering) for tips on prompt engineering.
+
+Your code tutor should emulate a real-world tutor by guiding the student to understand the concept instead of providing direct answers. Additionally, the tutor should remain focused on the topic and refrain from answering non-programming questions.
+
+Consider the following two prompts. Which is more likely to give the specified behavior?
+
+1. > You are a helpful code tutor. Your job is to teach the user with simple descriptions and sample code of the concept.
+2. > You are a helpful code tutor. Your job is to teach the user with simple descriptions and sample code of the concept. Respond with a guided overview of the concept in a series of messages. Do not give the user the answer directly, but guide them to find the answer themselves. If the user asks a non-programming question, politely decline to respond.
+
+The second prompt is more specific and gives the participant a clear direction on how to respond. Add this prompt in the `extension.ts` file.
+
+```ts
+const BASE_PROMPT = 'You are a helpful code tutor. Your job is to teach the user with simple descriptions and sample code of the concept. Respond with a guided overview of the concept in a series of messages. Do not give the user the answer directly, but guide them to find the answer themselves. If the user asks a non-programming question, politely decline to respond.';
+```
+
+## Step 4: Implement the request handler
+
+Now that the prompt is selected, you need to implement the request handler. This is what will process the user's chat request. You will define the request handler, perform logic for processing the request, and return a response to the user.
+
+First, define the handler:
+
+```ts
+// define a chat handler
+const handler: vscode.ChatRequestHandler = async (request: vscode.ChatRequest, context: vscode.ChatContext, stream: vscode.ChatResponseStream, token: vscode.CancellationToken) => {
+
+    return;
+}
+```
+
+Within the body of this handler, initialize the prompt and a `messages` array with the prompt. Then, send in what the user typed in the chat box. You can access this through `request.prompt`.
+
+Send the request using `request.model.sendRequest`, which will send the request using the currently selected model. Finally, stream the response to the user.
+
+```ts
+// define a chat handler
+const handler: vscode.ChatRequestHandler = async (request: vscode.ChatRequest, context: vscode.ChatContext, stream: vscode.ChatResponseStream, token: vscode.CancellationToken) => {
+
+    // initialize the prompt
+    let prompt = BASE_PROMPT;
+
+    // initialize the messages array with the prompt
+    const messages = [
+        vscode.LanguageModelChatMessage.User(prompt),
+    ];
+
+    // add in the user's message
+    messages.push(vscode.LanguageModelChatMessage.User(request.prompt));
+
+    // send the request
+    const chatResponse = await request.model.sendRequest(messages, {}, token);
+
+    // stream the response
+    for await (const fragment of chatResponse.text) {
+        stream.markdown(fragment);
+    }
+
+    return;
+};
+```
+
+## Step 5: Create the chat participant
+
+Once the handler is implemented, the last step is to create the chat participant by using the `createChatParticipant` method in the Chat extension API. Make sure to use the same ID that you used in the `package.json`.
+
+You should further customize your participant by adding an icon for it. This will show in the Chat view when interacting with the participant.
+
+```ts
+// define a chat handler
+const handler: vscode.ChatRequestHandler = async (request: vscode.ChatRequest, context: vscode.ChatContext, stream: vscode.ChatResponseStream, token: vscode.CancellationToken) => {
+
+    // initialize the prompt
+    let prompt = BASE_PROMPT;
+
+    // initialize the messages array with the prompt
+    const messages = [
+        vscode.LanguageModelChatMessage.User(prompt),
+    ];
+
+    // add in the user's message
+    messages.push(vscode.LanguageModelChatMessage.User(request.prompt));
+
+    // send the request
+    const chatResponse = await request.model.sendRequest(messages, {}, token);
+
+    // stream the response
+    for await (const fragment of chatResponse.text) {
+        stream.markdown(fragment);
+    }
+
+    return;
+};
+
+// create participant
+const tutor = vscode.chat.createChatParticipant("chat-tutorial.code-tutor", handler);
+
+// add icon to participant
+tutor.iconPath = vscode.Uri.joinPath(context.extensionUri, 'tutor.jpeg');
+```
+
+## Step 6: Run the code
+
+You are now ready to try out your chat participant!
+Press ``F5`` to run the code. A new window of VS Code will open with your chat participant.
+
+In the Copilot Chat pane, you can now invoke your participant by typing `@tutor`!
+
+![Participant in Chat pane](../images/ai/chat-tutorial/participant.png)
+
+Test it out by typing what you want to learn about. You should see a response giving you an overview of the concept!
+
+If you type a related message to continue the conversation, you'll notice that the participant doesn't give a follow-up response based on your conversation. That's because our current participant is only sending in the user's current message, and not the participant message history.
+
+In the screenshot below, the tutor correctly responds with a starting explanation of stacks. However, in the follow-up, it does not understand that the user is continuing the conversation to see an implementation of stacks in Python, so it instead gives a generic response about Python.
+
+![Participant with no message history](../images/ai/chat-tutorial/participant-no-message-history.png)
+
+## Step 7: Add message history for more context
+
+One of the biggest values of Copilot Chat is the ability to iterate over several messages to get the best response. To do this, you want to send in the participant's message history to the chat request. You can access this through `context.history`.
+
+You'll need to retrieve that history and add it to the `messages` array. You will need to do this before the `request.prompt` is added.
+
+```ts
+// define a chat handler
+const handler: vscode.ChatRequestHandler = async (request: vscode.ChatRequest, context: vscode.ChatContext, stream: vscode.ChatResponseStream, token: vscode.CancellationToken) => {
+
+    // initialize the prompt
+    let prompt = BASE_PROMPT;
+
+    // initialize the messages array with the prompt
+    const messages = [
+        vscode.LanguageModelChatMessage.User(prompt),
+    ];
+
+    // get all the previous participant messages
+    const previousMessages = context.history.filter(
+        (h) => h instanceof vscode.ChatResponseTurn
+    );
+
+    // add the previous messages to the messages array
+    previousMessages.forEach((m) => {
+        let fullMessage = '';
+        m.response.forEach((r) => {
+            const mdPart = r as vscode.ChatResponseMarkdownPart;
+            fullMessage += mdPart.value.value;
+        });
+        messages.push(vscode.LanguageModelChatMessage.Assistant(fullMessage));
+    });
+
+    // add in the user's message
+    messages.push(vscode.LanguageModelChatMessage.User(request.prompt));
+
+    // send the request
+    const chatResponse = await request.model.sendRequest(messages, {}, token);
+
+    // stream the response
+    for await (const fragment of chatResponse.text) {
+        stream.markdown(fragment);
+    }
+
+    return;
+};
+```
+
+Now when you run the code, you can have a conversation with your participant with all the context of the previous messages! In the screenshot below, the participant correctly understands that the user is requesting to see an implementation of stacks in Python.
+
+![Participant with message history](../images/ai/chat-tutorial/participant-message-history.png)
+
+## Step 8: Add a command
+
+Now that the basic participant is implemented, you can extend it by adding a command. Commands are a shorthand notation for common user intents, and are indicated by the `/` symbol. The extension can then use the command to prompt the language model accordingly.
+
+It would be great to add a command to prompt your tutor to give a practice exercise for a concept. You'll need to register the command in the `package.json` file and implement the logic in `extension.ts`. You can name the command `exercise` so that it can be invoked by typing `/exercise`.
+
+In `package.json` add the `commands` property to the `chatParticipants` property. Here, you'll specify the name of the command and a quick description:
+
+```json
+"contributes": {
+    "chatParticipants": [
+      {
+        "id": "chat-tutorial.code-tutor",
+        "fullName": "Code Tutor",
+        "name": "tutor",
+        "description": "What can I teach you?",
+        "isSticky": true,
+        "commands": [
+          {
+            "name": "exercise",
+            "description": "Provide exercises to practice a concept."
+          }
+        ]
+      }
+    ]
+  },
+```
+
+To implement the logic for getting sample exercises from the tutor, the simplest way is to change the prompt that you send in to the request. Create a new prompt, `EXERCISES_PROMPT`, that asks the participant to return sample exercises. Here's an example of what that could look like:
+
+```ts
+const EXERCISES_PROMPT = 'You are a helpful tutor. Your job is to teach the user with fun, simple exercises that they can complete in the editor. Your exercises should start simple and get more complex as the user progresses. Move one concept at a time, and do not move on to the next concept until the user provides the correct answer. Give hints in your exercises to help the user learn. If the user is stuck, you can provide the answer and explain why it is the answer. If the user asks a non-programming question, politely decline to respond.';
+```
+
+In the request handler, you then need to add logic to detect that the user referenced the command. You can do this through the `request.command` property.
+
+If the command is referenced, update the prompt to the newly created `EXERCISES_PROMPT`
+
+```ts
+// define a chat handler
+const handler: vscode.ChatRequestHandler = async (request: vscode.ChatRequest, context: vscode.ChatContext, stream: vscode.ChatResponseStream, token: vscode.CancellationToken) => {
+
+    // initialize the prompt
+    let prompt = BASE_PROMPT;
+
+    if (request.command === 'exercise') {
+        prompt = EXERCISES_PROMPT;
+    }
+
+    // initialize the messages array with the prompt
+    const messages = [
+        vscode.LanguageModelChatMessage.User(prompt),
+    ];
+
+    // get all the previous participant messages
+    const previousMessages = context.history.filter(
+        (h) => h instanceof vscode.ChatResponseTurn
+    );
+
+    // add the previous messages to the messages array
+    previousMessages.forEach((m) => {
+        let fullMessage = '';
+        m.response.forEach((r) => {
+            const mdPart = r as vscode.ChatResponseMarkdownPart;
+            fullMessage += mdPart.value.value;
+        });
+        messages.push(vscode.LanguageModelChatMessage.Assistant(fullMessage));
+    });
+
+    // add in the user's message
+    messages.push(vscode.LanguageModelChatMessage.User(request.prompt));
+
+    // send the request
+    const chatResponse = await request.model.sendRequest(messages, {}, token);
+
+    // stream the response
+    for await (const fragment of chatResponse.text) {
+        stream.markdown(fragment);
+    }
+
+    return;
+};
+```
+
+And that's all that needs to be added! The rest of the logic to get the message history, send the request, and stream the request all stays the same.
+
+Now you can type `/exercise`, which will bring up your chat participant, and you can get interactive exercises to practice coding!
+
+![Participant with a slash command](../images/ai/chat-tutorial/exercise-command.png)
+
+## Next steps
+
+Congratulations! You have successfully created a chat participant that can provide explanations and sample exercises for programming concepts. You can further extend your participant by fine-tuning the prompts, adding more slash commands, or leveraging other APIs like the [Language Model API](/api/extension-guides/ai/language-model). Once ready, you can also publish your extension to the [Visual Studio Code Marketplace](https://marketplace.visualstudio.com/vscode).
+
+You can find the complete source code for this tutorial in the [vscode-extensions-sample repository](https://github.com/microsoft/vscode-extension-samples/tree/main/chat-tutorial).
+
+## Related content
+
+- [Chat API extension guide](/api/extension-guides/ai/chat)
+- [Tutorial: Generate AI-powered code annotations by using the Language Model API](/api/extension-guides/ai/language-model-tutorial)
+- [Language Model API extension guide](/api/extension-guides/ai/language-model)
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/chat.md
+- **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/chat
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/chat.md
+- **SHA256_FINGERPRINT**: `7b986c0b841ab01614e1740b05656318cff9d58f7cb3eae3947d800b73a96818`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.541848+00:00
+---
+
+**MetaDescription**: A guide to creating an AI extension in Visual Studio Code
+
+# Chat Participant API
+
+Chat participants are specialized assistants that enable users to extend [chat in VS Code](/docs/chat/chat-overview) with domain-specific experts. Users invoke a chat participant by @-mentioning it, and the participant is then responsible for handling the user's natural language prompt.
+
+In this extension guide, you learn how to create a chat participant by using the Chat Participant API.
+
+VS Code has several built-in chat participants like `@vscode`, `@terminal`, or `@workspace`. They are optimized to answer questions about their respective domains.
+
+Chat participants are different from [language model tools](/api/extension-guides/ai/tools) that are invoked as part of the LLM orchestrating the steps needed to resolve the user's chat prompt. Chat participants receive the user's prompt and orchestrate the tasks that are needed themselves.
+
+## Why implement a chat participant in your extension?
+
+Implementing a chat participant in your extension has several benefits:
+
+- **Extend chat** with specialized, domain-specific knowledge and expertise. For example, the built-in `@vscode` participant has knowledge about VS Code and its extension APIs.
+- **Own conversation** by managing the end-to-end user chat prompt and response.
+- **Deeply integrate with VS Code** by using the broad set of extension APIs. For example, use the [debug APIs](/api/extension-guides/debugger-extension) to get the current debugging context and use it as part of the tool's functionality.
+- **Distribute and deploy** chat participants via the Visual Studio Marketplace, providing a reliable and seamless experience for users. Users don't need a separate installation and update process.
+
+You might consider implementing a [language model tool](/api/extension-guides/ai/tools) or [MCP server](/api/extension-guides/ai/mcp) if you want to provide domain-specific capabilities that can be invoked automatically as part of an autonomous, agentic coding session. See the [AI Extensibility Overview](/api/extension-guides/ai/ai-extensibility-overview) for details on the different options and how to decide which approach to use.
+
+## Parts of the chat user experience
+
+The following screenshot shows the different chat concepts in the Visual Studio Code chat experience for the sample extension.
+
+![Chat concepts explanation](../images/ai/chat/chat.png)
+
+1. Use the `@` syntax to invoke the `@cat` chat participant
+1. Use the `/` syntax to call the `/teach` command
+1. User-provided query, also known as the user prompt
+1. Icon and participant `fullName` that indicate that Copilot is using the `@cat` chat participant
+1. Markdown response, provided by `@cat`
+1. Code fragment included in the markdown response
+1. Button included in the `@cat` response, the button invokes a VS Code command
+1. Suggested [follow-up questions](#4-register-follow-up-requests) provided by the chat participant
+1. Chat input field with the placeholder text provided by the chat participant's `description` property
+
+## Create a chat participant
+
+Implementing a chat participant consists of the following parts:
+
+1. Define the chat participant in the `package.json` file of your extension.
+1. Implement a request handler to process the user's chat prompt and return a response.
+1. (Optional) Implement chat slash commands to provide users with a shorthand notation for common tasks.
+1. (Optional) Define suggested follow-up questions.
+1. (Optional) Implement participant detection where VS Code automatically routes a chat request to the appropriate chat participant without explicit mention from the user.
+
+You can get started with a [basic example project](https://github.com/microsoft/vscode-extension-samples/tree/main/chat-sample).
+
+![Diagram showing how extension can contribute to chat](../images/ai/chat/diagram.png)
+
+### 1. Register the chat participant
+
+The first step to create a chat extension is to register it in your `package.json`, with the following properties:
+
+- `id`: A unique identifier for the chat participant, as defined in the `package.json` file.
+- `name`: A short name for the chat participant, used for @-mentions in the chat.
+- `fullName`: The full name of the chat participant, displayed in the title area of the response.
+- `description`: A brief description of the chat participant's purpose, used as placeholder text in the chat input field.
+- `isSticky`: A boolean value indicating whether the chat participant is persistent in the chat input field after responding.
+
+```json
+"contributes": {
+        "chatParticipants": [
+            {
+                "id": "chat-sample.my-participant",
+                "name": "my-participant",
+                "fullName": "My Participant",
+                "description": "What can I teach you?",
+                "isSticky": true
+            }
+        ]
+}
+```
+
+We suggest using a lowercase `name` and using title case for the `fullName` to align with existing chat participants. Get more info about the [naming conventions for chat participants](#chat-participant-naming-conventions).
+
+> [!NOTE]
+> Some participant names are reserved. If you use such a reserved name, VS Code displays the fully qualified name of your chat participant (including the extension ID).
+
+### 2. Implement a request handler
+
+Implement the chat participant by using the [Chat Participant API](/api/references/vscode-api#chat). This consists of the following steps:
+
+1. On activation of the extension, create the participant with `vscode.chat.createChatParticipant`.
+
+    Provide the ID, which you defined in `package.json`, and a reference to the request handler that you implement in the next step.
+
+    ```typescript
+    export function activate(context: vscode.ExtensionContext) {
+
+        // Register the chat participant and its request handler
+        const cat = vscode.chat.createChatParticipant('chat-sample.my-participant', handler);
+
+        // Optionally, set some properties for @cat
+        cat.iconPath = vscode.Uri.joinPath(context.extensionUri, 'cat.jpeg');
+
+        // Add the chat request handler here
+    }
+    ```
+
+1. In the `activate` function, define the `vscode.ChatRequestHandler` request handler.
+
+    The request handler is responsible for processing the user's chat requests in the VS Code Chat view. Each time a user enters a prompt in the chat input field, the chat request handler is invoked.
+
+    ```typescript
+    const handler: vscode.ChatRequestHandler = async (request: vscode.ChatRequest, context: vscode.ChatContext, stream: vscode.ChatResponseStream, token: vscode.CancellationToken): Promise<ICatChatResult> => {
+
+        // Chat request handler implementation goes here
+
+    };
+    ```
+
+1. Determine the user's intent from `vscode.ChatRequest`.
+
+    To determine the intent of the user's request, you can reference the `vscode.ChatRequest` parameter to access the user's prompt text, commands, and chat location.
+
+    Optionally, you can take advantage of the language model to determine the user's intent, rather than using traditional logic. As part of the `request` object you get a language model instance that the user picked in the chat model dropdown. Learn how you can use the [Language Model API](/api/extension-guides/ai/language-model) in your extension.
+
+    The following code snippet shows the basic structure of first using the command, and then the user prompt to determine the user intent:
+
+    ```typescript
+    const handler: vscode.ChatRequestHandler = async (request: vscode.ChatRequest, context: vscode.ChatContext, stream: vscode.ChatResponseStream, token: vscode.CancellationToken): Promise<ICatChatResult> => {
+
+        // Test for the `teach` command
+        if (request.command == 'teach') {
+
+            // Add logic here to handle the teaching scenario
+            doTeaching(request.prompt, request.variables);
+
+        } else {
+
+            // Determine the user's intent
+            const intent = determineUserIntent(request.prompt, request.variables, request.model);
+
+            // Add logic here to handle other scenarios
+        }
+    };
+    ```
+
+1. Add logic to process the user request.
+
+    Often, chat extensions use the `request.model` language model instance to process the request. In this case, you might adjust the language model prompt to match the user's intent.
+
+    Alternately, you can implement the extension logic by invoking a backend service, by using traditional programming logic, or by using a combination of all these options. For example, you could invoke a web search to gather additional information, which you then provide as context to the language model.
+
+    While processing the current request, you might want to refer to previous chat messages. For example, if a previous response returned a C# code snippet, the user's current request might be "give the code in Python". [Learn how you can use the chat message history](#use-the-chat-message-history).
+
+    If you want to process a request differently based on the location of the chat input (Chat view, Quick Chat, inline chat), you can use the `location` property of the `vscode.ChatRequest`. For example, if the user sends a request from the terminal inline chat, you might look up a shell command. Whereas, if the user uses the Chat view, you could return a more elaborate response.
+
+1. Return the chat response to the user.
+
+    Once you've processed the request, you have to return a response to the user in the Chat view. You can use streaming to respond to user queries.
+
+    Responses can contain different content types: Markdown, images, references, progress, buttons, and file trees.
+
+    ![Response from the cat extension that includes code, markdown and a button](../images/ai/chat/stream.png)
+
+    An extension can use the response stream in the following way:
+
+    ```typescript
+    stream.progress('Picking the right topic to teach...');
+    stream.markdown(`\`\`\`typescript
+    const myStack = new Stack();
+    myStack.push(1); // pushing a number on the stack (or let's say, adding a fish to the stack)
+    myStack.push(2); // adding another fish (number 2)
+    console.log(myStack.pop()); // eating the top fish, will output: 2
+    \`\`\`
+    So remember, Code Kitten, in a stack, the last fish in is the first fish out - which we tech cats call LIFO (Last In, First Out).`);
+
+    stream.button({
+        command: 'cat.meow',
+        title: vscode.l10n.t('Meow!'),
+        arguments: []
+    });
+    ```
+
+    Get more info about the [supported chat response output types](#supported-chat-response-output-types).
+
+    In practice, extensions typically send a request to the language model. Once they get a response from the language model, they might further process it, and decide if they should stream anything back to the user. The VS Code Chat API is streaming-based, and is compatible with the streaming [Language Model API](/api/extension-guides/ai/language-model). This allows extensions to report progress and results continuously with the goal of having a smooth user experience. Learn how you can use the [Language Model API](/api/extension-guides/ai/language-model).
+
+### 3. Register slash commands
+
+A chat participant can contribute slash commands, which are shortcuts to specific functionality provided by the extension. Users can reference slash commands in chat by using the `/` syntax, for example `/explain`.
+
+One of the tasks when answering questions is to determine the user intent. For example, VS Code could infer that `Create a new workspace with Node.js Express Pug TypeScript` means that you want a new project, but `@workspace /new Node.js Express Pug TypeScript` is more explicit, concise, and saves typing time. If you type `/` in the chat input field, VS Code offers a list of registered commands with their description.
+
+![List of commands in chat for @workspace](../images/ai/chat/commands.png)
+
+Chat participants can contribute slash commands with their description by adding them in `package.json`:
+
+```typescript
+"contributes": {
+    "chatParticipants": [
+        {
+            "id": "chat-sample.cat",
+            "name": "cat",
+            "fullName": "Cat",
+            "description": "Meow! What can I teach you?",
+            "isSticky": true,
+            "commands": [
+                {
+                    "name": "teach",
+                    "description": "Pick at random a computer science concept then explain it in purfect way of a cat"
+                },
+                {
+                    "name": "play",
+                    "description": "Do whatever you want, you are a cat after all"
+                }
+            ]
+        }
+    ]
+}
+```
+
+Get more info about the [naming conventions for slash commands](#slash-command-naming-conventions).
+
+### 4. Register follow-up requests
+
+After each chat request, VS Code invokes follow-up providers to get suggested follow-up questions to show to the user. The user can then select the follow-up question, and immediately send it to the chat extension. Use the [`ChatFollowupProvider`](/api/references/vscode-api#ChatFollowupProvider) API to register follow-up prompts of type [`ChatFollowup`](/api/references/vscode-api#ChatFollowup).
+
+The following code snippet shows how to register follow-up requests in a chat extension:
+
+```typescript
+cat.followupProvider = {
+    provideFollowups(result: ICatChatResult, context: vscode.ChatContext, token: vscode.CancellationToken) {
+        if (result.metadata.command === 'teach') {
+            return [{
+                prompt: 'let us play',
+                label: vscode.l10n.t('Play with the cat')
+            } satisfies vscode.ChatFollowup];
+        }
+    }
+};
+```
+
+> [!TIP]
+> Follow-ups should be written as questions or directions, not just concise commands.
+
+### 5. Implement participant detection
+
+To make it easier to use chat participants with natural language, you can implement participant detection. Participant detection is a way to automatically route the user's question to a suitable participant, without having to explicitly mention the participant in the prompt. For example, if the user asks "How do I add a login page to my project?", the question would be automatically routed to the `@workspace` participant because it can answer questions about the user's project.
+
+VS Code uses the chat participant description and examples to determine which participant to route a chat prompt to. You can specify this information in the `disambiguation` property in the extension `package.json` file. The `disambiguation` property contains a list of detection categories, each with a description and examples.
+
+| Property | Description | Examples |
+|----------|-------------|----------|
+| `category` | The detection category. If the participant serves different purposes, you can have a category for each.  | <ul><li>`cat`</li><li>`workspace_questions`</li><li>`web_questions`</li></ul> |
+| `description` | A detailed description of the kinds of questions that are suitable for this participant. | <ul><li>`The user wants to learn a specific computer science topic in an informal way.`</li><li>`The user just wants to relax and see the cat play.`</li></ul> |
+| `examples` | A list of representative example questions. | <ul><li>`Teach me C++ pointers using metaphors`</li><li>`Explain to me what is a linked list in a simple way`</li><li>`Can you show me a cat playing with a laser pointer?`</li></ul> |
+
+You can define participant detection for the overall chat participant, for specific commands, or a combination of both.
+
+The following code snippet shows how to implement participant detection at the participant level.
+
+```json
+"contributes": {
+    "chatParticipants": [
+        {
+            "id": "chat-sample.cat",
+            "fullName": "Cat",
+            "name": "cat",
+            "description": "Meow! What can I teach you?",
+
+            "disambiguation": [
+                {
+                    "category": "cat",
+                    "description": "The user wants to learn a specific computer science topic in an informal way.",
+                    "examples": [
+                        "Teach me C++ pointers using metaphors",
+                        "Explain to me what is a linked list in a simple way",
+                        "Can you explain to me what is a function in programming?"
+                    ]
+                }
+            ]
+        }
+    ]
+}
+```
+
+Similarly, you can also configure participant detection at the command level by adding a `disambiguation` property for one or more items in the `commands` property.
+
+Apply the following guidelines to improve the accuracy of participant detection for your extension:
+
+- **Be specific**: The description and examples should be as specific as possible to avoid conflicts with other participants. Avoid using generic terminology in the participant and command information.
+- **Use examples**: The examples should be representative of the kinds of questions that are suitable for the participant. Use synonyms and variations to cover a wide range of user queries.
+- **Use natural language**: The description and examples should be written in natural language, as if you were explaining the participant to a user.
+- **Test the detection**: Test the participant detection with a variation of example questions and verify there's no conflict with built-in chat participants.
+
+> [!NOTE]
+> Built-in chat participants take precedence for participant detection. For example, a chat participant that operates on workspace files might conflict with the built-in `@workspace` participant.
+
+## Use the chat message history
+
+Participants have access to the message history of the current chat session. A participant can only access messages where it was mentioned. A `history` item is either a `ChatRequestTurn` or a `ChatResponseTurn`. For example, use the following code snippet to retrieve all the previous requests that the user sent to your participant in the current chat session:
+
+```typescript
+const previousMessages = context.history.filter(h => h instanceof vscode.ChatRequestTurn);
+```
+
+History will not be automatically included in the prompt, it is up to the participant to decide if it wants to add history as additional context when passing messages to the language model.
+
+## Supported chat response output types
+
+To return a response to a chat request, you use the [`ChatResponseStream`](/api/references/vscode-api#ChatResponseStream) parameter on the [`ChatRequestHandler`](/api/references/vscode-api#ChatRequestHandler).
+
+The following list provides the output types for a chat response in the Chat view. A chat response can combine multiple different output types.
+
+- **Markdown**
+
+    Render a fragment of Markdown text simple text or images. You can use any Markdown syntax that is part of the [CommonMark](https://commonmark.org/) specification. Use the [`ChatResponseStream.markdown`](/api/references/vscode-api#ChatResponseStream.markdown) method and provide the Markdown text.
+
+    Example code snippet:
+
+    ```typescript
+    // Render Markdown text
+    stream.markdown('# This is a title \n');
+    stream.markdown('This is stylized text that uses _italics_ and **bold**. ');
+    stream.markdown('This is a [link](https://code.visualstudio.com).\n\n');
+    stream.markdown('![VS Code](https://code.visualstudio.com/assets/favicon.ico)');
+    ```
+
+- **Code block**
+
+    Render a code block that supports IntelliSense, code formatting, and interactive controls to apply the code to the active editor. To show a code block, use the [`ChatResponseStream.markdown`](/api/references/vscode-api#ChatResponseStream.markdown) method and apply the Markdown syntax for code blocks (using backticks).
+
+    Example code snippet:
+
+    ```typescript
+    // Render a code block that enables users to interact with
+    stream.markdown('```bash\n');
+    stream.markdown('```ls -l\n');
+    stream.markdown('```');
+    ```
+
+- **Command link**
+
+    Render a link inline in the chat response that users can select to invoke a VS Code command. To show a command link, use the [`ChatResponseStream.markdown`](/api/references/vscode-api#ChatResponseStream.markdown) method and use the Markdown syntax for links `[link text](command:commandId)`, where you provide the command ID in the URL. For example, the following link opens the Command Palette: `[Command Palette](command:workbench.action.showCommands)`.
+
+    To protect against command injection when you load the Markdown text from a service, you have to use a [`vscode.MarkdownString`](/api/references/vscode-api#MarkdownString) object with the `isTrusted` property set to the list of trusted VS Code command IDs. This property is required to enable the command link to work. If the `isTrusted` property is not set or a command is not listed, the command link will not work.
+
+    Example code snippet:
+
+    ```typescript
+    // Use command URIs to link to commands from Markdown
+    let markdownCommandString: vscode.MarkdownString = new vscode.MarkdownString(`[Use cat names](command:${CAT_NAMES_COMMAND_ID})`);
+    markdownCommandString.isTrusted = { enabledCommands: [ CAT_NAMES_COMMAND_ID ] };
+
+    stream.markdown(markdownCommandString);
+    ```
+
+    If the command takes arguments, you need to first JSON encode the arguments and then encode the JSON string as a URI component. You then append the encoded arguments as a query string to the command link.
+
+    ```typescript
+    // Encode the command arguments
+    const encodedArgs = encodeURIComponent(JSON.stringify(args));
+
+    // Use command URIs with arguments to link to commands from Markdown
+    let markdownCommandString: vscode.MarkdownString = new vscode.MarkdownString(`[Use cat names](command:${CAT_NAMES_COMMAND_ID}?${encodedArgs})`);
+    markdownCommandString.isTrusted = { enabledCommands: [ CAT_NAMES_COMMAND_ID ] };
+
+    stream.markdown(markdownCommandString);
+    ```
+
+- **Command button**
+
+    Render a button that invokes a VS Code command. The command can be a built-in command or one that you define in your extension. Use the [`ChatResponseStream.button`](/api/references/vscode-api#ChatResponseStream.button) method and provide the button text and command ID.
+
+    Example code snippet:
+
+    ```typescript
+    // Render a button to trigger a VS Code command
+    stream.button({
+        command: 'my.command',
+        title: vscode.l10n.t('Run my command')
+    });
+    ```
+
+- **File tree**
+
+    Render a file tree control that lets users preview individual files. For example, to show a workspace preview when proposing to create a new workspace. Use the [`ChatResponseStream.filetree`](/api/references/vscode-api#ChatResponseStream.filetree) method and provide an array of file tree elements and the base location (folder) of the files.
+
+    Example code snippet:
+
+    ```typescript
+    // Create a file tree instance
+    var tree: vscode.ChatResponseFileTree[] = [
+        { name: 'myworkspace', children: [
+            { name: 'README' },
+            { name: 'app.js' },
+            { name: 'package.json' }
+        ]}
+    ];
+
+    // Render the file tree control at a base location
+    stream.filetree(tree, baseLocation);
+    ```
+
+- **Progress message**
+
+    Render a progress message during a long-running operation to provide the user with intermediate feedback. For example, to report the completion of each step in a multi-step operation. Use the [`ChatResponseStream.progress`](/api/references/vscode-api#ChatResponseStream.progress) method and provide the message.
+
+    Example code snippet:
+
+    ```typescript
+    // Render a progress message
+    stream.progress('Connecting to the database.');
+    ```
+
+- **Reference**
+
+    Add a reference for an external URL or editor location in the list references to indicate which information you use as context. Use the [`ChatResponseStream.reference`](/api/references/vscode-api#ChatResponseStream.reference) method and provide the reference location.
+
+    Example code snippet:
+
+    ```typescript
+    const fileUri: vscode.Uri = vscode.Uri.file('/path/to/workspace/app.js');  // On Windows, the path should be in the format of 'c:\\path\\to\\workspace\\app.js'
+    const fileRange: vscode.Range = new vscode.Range(0, 0, 3, 0);
+    const externalUri: vscode.Uri = vscode.Uri.parse('https://code.visualstudio.com');
+
+    // Add a reference to an entire file
+    stream.reference(fileUri);
+
+    // Add a reference to a specific selection within a file
+    stream.reference(new vscode.Location(fileUri, fileRange));
+
+    // Add a reference to an external URL
+    stream.reference(externalUri);
+    ```
+
+- **Inline reference**
+
+    Add an inline reference to a URI or editor location. Use the [`ChatResponseStream.anchor`](/api/references/vscode-api#ChatResponseStream.anchor) method and provide the anchor location and optional title. To reference a symbol (for example, a class or variable), you would use a location in an editor.
+
+    Example code snippet:
+
+    ```typescript
+    const symbolLocation: vscode.Uri = vscode.Uri.parse('location-to-a-symbol');
+
+    // Render an inline anchor to a symbol in the workspace
+    stream.anchor(symbolLocation, 'MySymbol');
+    ```
+
+> **Important**: Images and links are only available when they originate from a domain that is in the trusted domain list. Get more info about [link protection in VS Code](/docs/editing/editingevolved#outgoing-link-protection).
+
+## Implement tool calling
+
+To respond to a user request, a chat extension can invoke language model tools. Learn more about [language model tools](/api/extension-guides/ai/tools) and the [tool-calling flow](/api/extension-guides/ai/tools#toolcalling-flow).
+
+You can implement tool calling in two ways:
+
+- By using the [`@vscode/chat-extension-utils` library](https://www.npmjs.com/package/@vscode/chat-extension-utils) to simplify the process of calling tools in a chat extension.
+- By implementing tool calling yourself, which gives you more control over the tool-calling process. For example, to perform additional validation or to handle tool responses in a specific way before sending them to the LLM.
+
+### Implement tool calling with the chat extension library
+
+You can use the [`@vscode/chat-extension-utils` library](https://www.npmjs.com/package/@vscode/chat-extension-utils) to simplify the process of calling tools in a chat extension.
+
+Implement tool calling in the `vscode.ChatRequestHandler` function of your [chat participant](/api/extension-guides/ai/chat).
+
+1. Determine the relevant tools for the current chat context. You can access all available tools by using `vscode.lm.tools`.
+
+    The following code snippet shows how to filter the tools to only those that have a specific tag.
+
+    ```ts
+    const tools = request.command === 'all' ?
+        vscode.lm.tools :
+        vscode.lm.tools.filter(tool => tool.tags.includes('chat-tools-sample'));
+    ```
+
+1. Send the request and tool definitions to the LLM by using `sendChatParticipantRequest`.
+
+    ```ts
+    const libResult = chatUtils.sendChatParticipantRequest(
+        request,
+        chatContext,
+        {
+            prompt: 'You are a cat! Answer as a cat.',
+            responseStreamOptions: {
+                stream,
+                references: true,
+                responseText: true
+            },
+            tools
+        },
+        token);
+    ```
+
+    The `ChatHandlerOptions` object has the following properties:
+
+    - `prompt`: (optional) Instructions for the chat participant prompt.
+    - `model`: (optional) The model to use for the request. If not specified, the model from the chat context is used.
+    - `tools`: (optional) The list of tools to consider for the request.
+    - `requestJustification`: (optional) A string that describes why the request is being made.
+    - `responseStreamOptions`: (optional) Enable `sendChatParticipantRequest` to stream the response back to VS Code. Optionally, you can also enable references and/or response text.
+
+1. Return the result from the LLM. This might contain error details or tool-calling metadata.
+
+    ```ts
+    return await libResult.result;
+    ```
+
+The full source code of this [tool-calling sample](https://github.com/microsoft/vscode-extension-samples/blob/main/chat-sample/src/chatUtilsSample.ts) is available in the VS Code Extension Samples repository.
+
+### Implement tool calling yourself
+
+For more advanced scenarios, you can also implement tool calling yourself. Optionally, you can use the `@vscode/prompt-tsx` library for crafting the LLM prompts. By implementing tool calling yourself, you have more control over the tool-calling process. For example, to perform additional validation or to handle tool responses in a specific way before sending them to the LLM.
+
+View the full source code for implementing [tool calling by using prompt-tsx](https://github.com/microsoft/vscode-extension-samples/blob/main/chat-sample/src/toolParticipant.ts) in the VS Code Extension Samples repository.
+
+## Measuring success
+
+We recommend that you measure the success of your participant by adding telemetry logging for `Unhelpful` user feedback events, and for the total number of requests that your participant handled. An initial participant success metric can then be defined as: `unhelpful_feedback_count / total_requests`.
+
+```typescript
+const logger = vscode.env.createTelemetryLogger({
+     // telemetry logging implementation goes here
+});
+
+cat.onDidReceiveFeedback((feedback: vscode.ChatResultFeedback) => {
+    // Log chat result feedback to be able to compute the success metric of the participant
+    logger.logUsage('chatResultFeedback', {
+        kind: feedback.kind
+    });
+});
+```
+
+Any other user interaction with your chat response should be measured as a positive metric (for example, the user selecting a button that was generated in a chat response). Measuring success with telemetry is crucial when working with AI, since it is a nondeterministic technology. Run experiments, measure and iteratively improve your participant to ensure a good user experience.
+
+## Guidelines and conventions
+
+### Guidelines
+
+Chat participants should not be purely question-answering bots. When building a chat participant, be creative and use the existing VS Code API to create rich integrations in VS Code. Users also love rich and convenient interactions, such as buttons in your responses, menu items that bring users to your participant in chat. Think about real life scenarios where AI can help your users.
+
+It doesn't make sense for every extension to contribute a chat participant. Having too many participants in chat might lead to a bad user experience. Chat participants are best when you want to control the full prompt, including instructions to the language model. You can reuse the carefully crafted Copilot system message and you can contribute context to other participants.
+
+For example, language extensions (such as the C++ extension) can contribute in various other ways:
+
+- Contribute tools that bring language service smarts to the user query. For example, the C++ extension could resolve the `#cpp` tool to the C++ state of the workspace. This gives the Copilot language model the right C++ context to improve the quality of Copilot answers for C++.
+- Contribute smart actions that use the language model, optionally in combination with traditional language service knowledge, to deliver a great user experience. For example, C++ might already offer an "extract to method" smart action that uses the language model to generate a fitting default name for the new method.
+
+Chat extensions should explicitly ask for user consent if they are about to do a costly operation or are about to edit or delete something that can't be undone. To have a great user experience, we discourage extensions from contributing multiple chat participants. Up to one chat participant per extension is a simple model that scales well in the UI.
+
+### Chat participant naming conventions
+
+| Property | Description | Naming guidelines |
+|----------|-------------|-------------------|
+| `id`  | Globally unique identifier for the chat participant | <ul><li>String value</li><li>Use the extension name as a prefix, followed by a unique ID for your extension</li><li>Example: `chat-sample.cat`, `code-visualizer.code-visualizer-participant`</li></ul>  |
+| `name`  | Name of the chat participant, referenced by users through the `@` symbol | <ul><li>String value consisting of alphanumeric characters, underscores, and hyphens</li><li>It's recommended to only use lowercase to ensure consistency with existing chat participants</li><li>Ensure the purpose of the participant is obvious from its name by referencing your company name or its functionality</li><li>Some participant names are reserved. If you use a reserved name, the fully qualified name is shown, including the extension ID</li><li>Examples: `vscode`, `terminal`, `code-visualizer`</li></ul>   |
+| `fullName` | (Optional) The full name of the participant, which is shown as the label for responses coming from the participant | <ul><li>String value</li><li>It's recommended to use [title case](https://en.wikipedia.org/wiki/Title_case)</li><li>Use your company name, brand name, or user-friendly name for your participant</li><li>Examples: `GitHub Copilot`, `VS Code`, `Math Tutor`</li></ul>   |
+| `description` | (Optional) Short description of what the chat participant does, shown as placeholder text in the chat input field or in the list of participants | <ul><li>String value</li><li>It's recommended to use sentence case, without punctuation at the end</li><li>Keep the description short to avoid horizontal scrolling</li><li>Examples: `Ask questions about VS Code`, `Generate UML diagrams for your code`</li></ul>   |
+
+When referring to your chat participant in any of the user-facing elements, such as properties, chat responses, or chat user interface, it's recommended to not use the term *participant*, as it's the name of the API. For example, the `@cat` extension could be called "Cat extension for GitHub Copilot".
+
+### Slash command naming conventions
+
+| Property | Description | Naming guidelines |
+|----------|-------------|-------------------|
+| `name`  | Name of the slash command, referenced by users through the `/` symbol | <ul><li>String value</li><li>It's recommended to use [lower camel case](https://en.wikipedia.org/wiki/Camel_case) to align with existing slash commands</li><li>Ensure the purpose of the command is obvious from its name</li><li>Examples: `fix`, `explain`, `runCommand`</li></ul>   |
+| `description` | (Optional) Short description of what the slash command does, shown as placeholder text in the chat input field or in the list of participants and commands | <ul><li>String value</li><li>It's recommended to use sentence case, without punctuation at the end</li><li>Keep the description short to avoid horizontal scrolling</li><li>Examples: `Search for and execute a command in VS Code`, `Generate unit tests for the selected code`</li></ul>   |
+
+## Publishing your extension
+
+Once you have created your AI extension, you can publish your extension to the Visual Studio Marketplace:
+
+- Before publishing to the VS Marketplace we recommend that you read the [Microsoft AI tools and practices guidelines](https://www.microsoft.com/en-us/ai/tools-practices). These guidelines provide best practices for the responsible development and use of AI technologies.
+- By publishing to the VS Marketplace, your extension is adhering to the [GitHub Copilot extensibility acceptable development and use policy](https://docs.github.com/en/early-access/copilot/github-copilot-extensibility-platform-partnership-plugin-acceptable-development-and-use-policy).
+- Upload to the Marketplace as described in [Publishing Extension](https://code.visualstudio.com/api/working-with-extensions/publishing-extension).
+- If your extension already contributes functionality other than chat, we recommend that you do not introduce an extension dependency on GitHub Copilot in the [extension manifest](/api/references/extension-manifest). This ensures that extension users that do not use GitHub Copilot can use the non-chat functionality without having to install GitHub Copilot.
+
+## Extending GitHub Copilot via GitHub Apps
+
+Alternatively, it is possible to extend GitHub Copilot by creating a GitHub App that contributes a chat participant in the Chat view. A GitHub App is backed by a service and works across all GitHub Copilot surfaces, such as github.com, Visual Studio, or VS Code. On the other hand, GitHub Apps do not have full access to the VS Code API. To learn more about extending GitHub Copilot through a GitHub App see the [GitHub documentation](https://docs.github.com/en/copilot/building-copilot-extensions/about-building-copilot-extensions).
+
+## Using the language model
+
+Chat participants can use the language model in a wide range of ways. Some participants only make use of the language model to get answers to custom prompts, for example the [sample chat participant](https://github.com/microsoft/vscode-extension-samples/tree/main/chat-sample). Other participants are more advanced and act like autonomous agents that invoke multiple tools with the help of the language model. An example of such an advanced participant is the built-in `@workspace` that knows about your workspace and can answer questions about it. Internally, `@workspace` is powered by multiple tools: GitHub's knowledge graph, combined with semantic search, local code indexes, and VS Code's language services.
+
+## Related content
+
+- [Chat Participant API Reference](/api/references/vscode-api#chat)
+- [Use the Language Model API in your extension](/api/extension-guides/ai/language-model)
+- [Contribute a language model tool](/api/extension-guides/ai/tools)
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/language-model-chat-provider.md
+- **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/language-model-chat-provider
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/language-model-chat-provider.md
+- **SHA256_FINGERPRINT**: `0120c7dfbff5195e1c32b815b82fb6488d0db125b8b3cd4aab39e52cb77bb2b2`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.661286+00:00
+---
+
+**MetaDescription**: Learn how to implement a LanguageModelChatProvider to contribute custom language models to VS Code's chat experience for extensions.
+
+# Language Model Chat Provider API
+
+The Language Model Chat Provider API enables you to contribute your own language models to chat in Visual Studio Code.
+
+> [!NOTE]
+> If you are a Copilot Business or Enterprise user, your administrator can disable the **Bring Your Own Language Model Key** policy in the [Copilot policy settings](https://github.com/settings/copilot/features) on GitHub.com for models provided through this API.
+
+## Overview
+
+The `LanguageModelChatProvider` interface follows a one-provider-to-many-models relationship, enabling providers to offer multiple models. Each provider is responsible for:
+
+- Discovering and preparing available language models
+- Handling chat requests for its models
+- Providing token counting functionality
+
+## Language model information
+
+Each language model must provide metadata through the `LanguageModelChatInformation` interface. The `provideLanguageModelChatInformation` method returns an array of these objects to inform VS Code about the available models.
+
+```typescript
+interface LanguageModelChatInformation {
+    readonly id: string;                    // Unique identifier for the model - unique within the provider
+    readonly name: string;                  // Human-readable name of the language model - shown in the model picker
+    readonly family: string;                // Model family name
+    readonly version: string;               // Version string
+    readonly maxInputTokens: number;        // Maximum number of tokens the model can accept as input
+    readonly maxOutputTokens: number;       // Maximum number of tokens the model is capable of producing
+    readonly tooltip?: string;              // Optional tooltip text when hovering the model in the UI
+    readonly detail?: string;               // Human-readable text that is rendered alongside the model
+    readonly capabilities: {
+        readonly imageInput?: boolean;      // Supports image inputs
+        readonly toolCalling?: boolean | number; // Supports tool calling
+    };
+}
+```
+
+## Register the provider
+
+1. The first step is to register the provider in your `package.json`, in the `contributes.languageModelChatProviders` section. Provide a unique `vendor` ID and a `displayName`.
+
+    ```json
+    {
+        "contributes": {
+            "languageModelChatProviders": [
+                {
+                    "vendor": "my-provider",
+                    "displayName": "My Provider"
+                }
+            ]
+        }
+    }
+    ```
+
+1. Next, in your extension activation function, register your language model provider using the `lm.registerLanguageModelChatProvider` method.
+
+    Provide the provider ID that you used in the `package.json` and an instance of your provider class:
+
+    ```typescript
+    import * as vscode from 'vscode';
+    import { SampleChatModelProvider } from './provider';
+
+    export function activate(_: vscode.ExtensionContext) {
+        vscode.lm.registerLanguageModelChatProvider('my-provider', new SampleChatModelProvider());
+    }
+    ```
+
+1. Optionally, provide a `contributes.languageModelChatProviders.managementCommand` in your `package.json` to allow users to manage the language model provider.
+
+    The value of the `managementCommand` property must be a command defined in the `contributes.commands` section of your `package.json`. In your extension, register the command (`vscode.commands.registerCommand`) and implement the logic for managing the provider such as configuring API keys or other settings.
+
+    ```json
+    {
+        "contributes": {
+            "languageModelChatProviders": [
+                {
+                    "vendor": "my-provider",
+                    "displayName": "My Provider",
+                    "managementCommand": "my-provider.manage"
+                }
+            ],
+            "commands": [
+                {
+                    "command": "my-provider.manage",
+                    "title": "Manage My Provider"
+                }
+            ]
+        }
+    }
+    ```
+
+## Implement the provider
+
+A language provider must implement the `LanguageModelChatProvider` interface, which has three main methods:
+
+- `provideLanguageModelChatInformation`: returns the list of available models
+- `provideLanguageModelChatResponse`: handles chat requests and streams responses
+- `provideTokenCount`: implements token counting functionality
+
+### Prepare language model information
+
+The `provideLanguageModelChatInformation` method is called by VS Code to discover the available models and returns a list of `LanguageModelChatInformation` objects.
+
+Use the `options.silent` parameter to control whether to prompt the user for credentials or extra configuration:
+
+```typescript
+async provideLanguageModelChatInformation(
+    options: { silent: boolean },
+    token: CancellationToken
+): Promise<LanguageModelChatInformation[]> {
+    if (options.silent) {
+        return []; // Don't prompt user in silent mode
+    } else {
+        await this.promptForApiKey(); // Prompt user for credentials
+    }
+
+    // Fetch available models from your service
+    const models = await this.fetchAvailableModels();
+
+    // Map your models to LanguageModelChatInformation format
+    return models.map(model => ({
+        id: model.id,
+        name: model.displayName,
+        family: model.family,
+        version: '1.0.0',
+        maxInputTokens: model.contextWindow - model.maxOutput,
+        maxOutputTokens: model.maxOutput,
+        capabilities: {
+            imageInput: model.supportsImages,
+            toolCalling: model.supportsTools
+        }
+    }));
+}
+```
+
+### Handle chat requests
+
+The `provideLanguageModelChatResponse` method handles actual chat requests. The provider receives an array of messages in the `LanguageModelChatRequestMessage` format and you can optionally convert them to the format required by your language model API (see [Message format and conversion](#message-format-and-conversion)).
+
+Use the `progress` parameter to stream response chunks. The response can include text parts, tool calls, and tool results (see [Response parts](#response-parts)).
+
+```typescript
+async provideLanguageModelChatResponse(
+    model: LanguageModelChatInformation,
+    messages: readonly LanguageModelChatRequestMessage[],
+    options: ProvideLanguageModelChatResponseOptions,
+    progress: Progress<LanguageModelResponsePart>,
+    token: CancellationToken
+): Promise<void> {
+
+    // TODO: Implement message conversion, processing, and response streaming
+
+    // Optionally, differentiate behavior based on model ID
+    if (model.id === "my-model-a") {
+        progress.report(new LanguageModelTextPart("This is my A response."));
+    } else {
+        progress.report(new LanguageModelTextPart("Unknown model."));
+    }
+}
+```
+
+### Provide token count
+
+The `provideTokenCount` method is responsible for estimating the number of tokens in a given text input:
+
+```typescript
+async provideTokenCount(
+    model: LanguageModelChatInformation,
+    text: string | LanguageModelChatRequestMessage,
+    token: CancellationToken
+): Promise<number> {
+    // TODO: Implement token counting for your models
+
+    // Example estimation for strings
+    return Math.ceil(text.toString().length / 4);
+}
+```
+
+## Message format and conversion
+
+Your provider receives messages in the `LanguageModelChatRequestMessage` format, which you'll typically need to convert to your service's API format. The message content can be a mix of text parts, tool calls, and tool results.
+
+```typescript
+interface LanguageModelChatRequestMessage {
+    readonly role: LanguageModelChatMessageRole;
+    readonly content: ReadonlyArray<LanguageModelInputPart | unknown>;
+    readonly name: string | undefined;
+}
+```
+
+Optionally, convert these messages appropriately for your language model API:
+
+```typescript
+private convertMessages(messages: readonly LanguageModelChatRequestMessage[]) {
+    return messages.map(msg => ({
+        role: msg.role === vscode.LanguageModelChatMessageRole.User ? 'user' : 'assistant',
+        content: msg.content
+            .filter(part => part instanceof vscode.LanguageModelTextPart)
+            .map(part => (part as vscode.LanguageModelTextPart).value)
+            .join('')
+    }));
+}
+```
+
+## Response parts
+
+Your provider can report different types of response parts through the progress callback via the `LanguageModelResponsePart` type, which can be one of:
+
+- `LanguageModelTextPart` - Text content
+- `LanguageModelToolCallPart` - Tool/function calls
+- `LanguageModelToolResultPart` - Tool result content
+
+## Getting started
+
+You can get started with a [basic example project](https://github.com/microsoft/vscode-extension-samples/blob/main/chat-model-provider-sample).
+
+## Related content
+
+- [VS Code API Reference](/api/references/vscode-api)
+- [Language Model API Guide](/api/extension-guides/ai/language-model)
+- [Chat API Extension](/api/extension-guides/ai/chat)
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/language-model-tutorial.md
+- **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/language-model-tutorial
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/language-model-tutorial.md
+- **SHA256_FINGERPRINT**: `369166e8fa7a2f0e808e1deae69c2ab3ba1d96a1a55183139610cc43e6726384`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.679723+00:00
+---
+
+**MetaDescription**: Tutorial that walks you through creating a VS Code extension that uses the Language Model API to generate AI-powered code annotations.
+
+# Tutorial: Generate AI-powered code annotations by using the Language Model API
+
+In this tutorial, You'll learn how to create a VS Code extension to build an AI-powered Code Tutor. You use the Language Model (LM) API to generate suggestions to improve your code and take advantage of the VS Code extension APIs to integrate it seamlessly in the editor as inline annotations that the user can hover over for more information. After you complete this tutorial, you will know how to implement custom AI features in VS Code.
+
+![VS Code displaying custom annotations from GitHub Copilot as annotations](../images/ai/lm-api/code-tutor-annotations-gif.gif)
+
+## Prerequisites
+
+You'll need the following tools and accounts to complete this tutorial:
+
+- [Visual Studio Code](https://code.visualstudio.com/download)
+- [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat)
+- [Node.js](https://nodejs.org/en/download/)
+
+## Scaffold out the extension
+
+First, use Yeoman and VS Code Extension Generator to scaffold a TypeScript or JavaScript project ready for development.
+
+```bash
+npx --package yo --package generator-code -- yo code
+```
+
+Select the following options to complete the new extension wizard...
+
+```bash
+# ? What type of extension do you want to create? New Extension (TypeScript)
+# ? What's the name of your extension? Code Tutor
+
+### Press <Enter> to choose default for all options below ###
+
+# ? What's the identifier of your extension? code-tutor
+# ? What's the description of your extension? LEAVE BLANK
+# ? Initialize a git repository? Yes
+# ? Bundle the source code with webpack? No
+# ? Which package manager to use? npm
+
+# ? Do you want to open the new folder with Visual Studio Code? Open with `code`
+```
+
+## Modify the package.json file to include the correct commands
+
+The scaffolded project includes a single "helloWorld" command in the `package.json` file. This command is what shows up in the Command Palette when your extension is installed.
+
+```json
+"contributes": {
+  "commands": [
+      {
+      "command": "code-tutor.helloWorld",
+      "title": "Hello World"
+      }
+  ]
+}
+```
+
+Since we're building a Code Tutor extension that will be adding annotations to lines, we'll need a command to allow the user to toggle these annotations on and off. Update the `command` and `title` properties:
+
+```json
+"contributes": {
+  "commands": [
+      {
+      "command": "code-tutor.annotate",
+      "title": "Toggle Tutor Annotations"
+      }
+  ]
+}
+```
+
+While the `package.json` defines the commands and UI elements for an extension, the `src/extension.ts` file is where you put the code that should be executed for those commands.
+
+Open the `src/extension.ts` file and change the `registerCommand` method so that it matches the `command` property in the `package.json` file.
+
+```ts
+const disposable = vscode.commands.registerCommand('code-tutor.annotate', () => {
+```
+
+Run the extension by pressing ``F5``. This will open a new VS Code instance with the extension installed. Open the Command Palette by pressing ``Shortcut: workbench.action.showCommands``, and search for "tutor". You should see the "Tutor Annotations" command.
+
+![The "Toggle Tutor Annotations" command in the VS Code Command Palette](../images/ai/lm-api/tutor-command-command-palette.png)
+
+If you select the "Tutor Annotations" command, you'll see a "Hello World" notification message.
+
+![The message 'Hello World from Code Tutor' displayed in a notification](../images/ai/lm-api/code-tutor-hello-world.png)
+
+## Implement the "annotate" command
+
+To get our Code Tutor annotations working, we need to send it some code and ask it to provide annotations. We'll do this in three steps:
+
+1. Get the code with line numbers from the current tab the user has open.
+2. Send that code to the Language Model API along with a custom prompt that instructs the model on how to provide annotations.
+3. Parse the annotations and display them in the editor.
+
+### Step 1: Get the code with line numbers
+
+To get the code from the current tab, we need a reference to the tab that the user has open. We can get that by modifying the `registerCommand` method to be a `registerTextEditorCommand`. The difference between these two commands is that the latter gives us a reference to the tab that the user has open, called the `TextEditor`.
+
+```ts
+const disposable = vscode.commands.registerTextEditorCommand('code-tutor.annotate', async (textEditor: vscode.TextEditor) => {
+```
+
+Now we can use the `textEditor` reference to get all of the code in the "viewable editor space". This is the code that can be seen on the screen - it does not include code that is either above or below what is in the viewable editor space.
+
+Add the following method directly above the `export function deactivate() { }` line at the bottom of the `extension.ts` file.
+
+```ts
+function getVisibleCodeWithLineNumbers(textEditor: vscode.TextEditor) {
+  // get the position of the first and last visible lines
+  let currentLine = textEditor.visibleRanges[0].start.line;
+  const endLine = textEditor.visibleRanges[0].end.line;
+
+  let code = '';
+
+  // get the text from the line at the current position.
+  // The line number is 0-based, so we add 1 to it to make it 1-based.
+  while (currentLine < endLine) {
+    code += `${currentLine + 1}: ${textEditor.document.lineAt(currentLine).text} \n`;
+    // move to the next line position
+    currentLine++;
+  }
+  return code;
+}
+```
+
+This code uses the `visibleRanges` property of the TextEditor to get the position of the lines that are currently visible in the editor. It then starts with the first line position and moves to the last line position, adding each line of code to a string along with the line number. Finally, it returns the string that contains all the viewable code with line numbers.
+
+Now we can call this method from the `code-tutor.annotate` command. Modify the implementation of the command so that it looks like this:
+
+```ts
+const disposable = vscode.commands.registerTextEditorCommand('code-tutor.annotate', async (textEditor: vscode.TextEditor) => {
+
+  // Get the code with line numbers from the current editor
+  const codeWithLineNumbers = getVisibleCodeWithLineNumbers(textEditor);
+
+});
+```
+
+### Step 2: Send code and prompt to language model API
+
+The next step is to call the GitHub Copilot language model and send it the user's code along with instructions to create the annotations.
+
+To do this, we first need to specify which chat model we want to use. We select 4o here because it is a fast and capable model for the kind of interaction we are building.
+
+```ts
+const disposable = vscode.commands.registerTextEditorCommand('code-tutor.annotate', async (textEditor: vscode.TextEditor) => {
+
+  // Get the code with line numbers from the current editor
+  const codeWithLineNumbers = getVisibleCodeWithLineNumbers(textEditor);
+
+  // select the 4o chat model
+  let [model] = await vscode.lm.selectChatModels({
+    vendor: 'copilot',
+    family: 'gpt-4o',
+  });
+});
+```
+
+We need instructions - or a "prompt" - that will tell the model to create the annotations and what format we want the response to be. Add the following code to the top of the file directly under the imports.
+
+```ts
+const ANNOTATION_PROMPT = `You are a code tutor who helps students learn how to write better code. Your job is to evaluate a block of code that the user gives you and then annotate any lines that could be improved with a brief suggestion and the reason why you are making that suggestion. Only make suggestions when you feel the severity is enough that it will impact the readability and maintainability of the code. Be friendly with your suggestions and remember that these are students so they need gentle guidance. Format each suggestion as a single JSON object. It is not necessary to wrap your response in triple backticks. Here is an example of what your response should look like:
+
+{ "line": 1, "suggestion": "I think you should use a for loop instead of a while loop. A for loop is more concise and easier to read." }{ "line": 12, "suggestion": "I think you should use a for loop instead of a while loop. A for loop is more concise and easier to read." }
+`;
+```
+
+This is a special prompt that instructs the language model on how to generate annotations. It also includes examples for how the model should format its response. These examples (also called, "multi-shot") are what enable us to define what the format the response will be so that we can parse it and display it as annotations.
+
+We pass messages to the model in an array. This array can contain as many messages as you like. In our case, it contains the prompt followed by the users code with line numbers.
+
+```ts
+const disposable = vscode.commands.registerTextEditorCommand('code-tutor.annotate', async (textEditor: vscode.TextEditor) => {
+
+  // Get the code with line numbers from the current editor
+  const codeWithLineNumbers = getVisibleCodeWithLineNumbers(textEditor);
+
+  // select the 4o chat model
+  let [model] = await vscode.lm.selectChatModels({
+    vendor: 'copilot',
+    family: 'gpt-4o',
+  });
+
+  // init the chat message
+  const messages = [
+    vscode.LanguageModelChatMessage.User(ANNOTATION_PROMPT),
+    vscode.LanguageModelChatMessage.User(codeWithLineNumbers),
+  ];
+});
+```
+
+To send the messages to the model, we need to first make sure the selected model is available. This handles cases where the extension is not ready or the user is not signed in to GitHub Copilot. Then we send the messages to the model.
+
+```ts
+const disposable = vscode.commands.registerTextEditorCommand('code-tutor.annotate', async (textEditor: vscode.TextEditor) => {
+
+  // Get the code with line numbers from the current editor
+  const codeWithLineNumbers = getVisibleCodeWithLineNumbers(textEditor);
+
+  // select the 4o chat model
+  let [model] = await vscode.lm.selectChatModels({
+    vendor: 'copilot',
+    family: 'gpt-4o',
+  });
+
+  // init the chat message
+  const messages = [
+    vscode.LanguageModelChatMessage.User(ANNOTATION_PROMPT),
+    vscode.LanguageModelChatMessage.User(codeWithLineNumbers),
+  ];
+
+  // make sure the model is available
+  if (model) {
+
+    // send the messages array to the model and get the response
+    let chatResponse = await model.sendRequest(messages, {}, new vscode.CancellationTokenSource().token);
+
+    // handle chat response
+    await parseChatResponse(chatResponse, textEditor);
+  }
+});
+```
+
+Chat responses come in as fragments. These fragments usually contain single words, but sometimes they contain just punctuation. In order to display annotations as the response streams in, we want to wait until we have a complete annotation before we display it. Because of the way we have instructed our model to return its response, we know that when we see a closing `}` we have a complete annotation. We can then parse the annotation and display it in the editor.
+
+Add the missing `parseChatResponse` function above the `getVisibleCodeWithLineNumbers` method in the `extension.ts` file.
+
+```ts
+async function parseChatResponse(chatResponse: vscode.LanguageModelChatResponse, textEditor: vscode.TextEditor) {
+ let accumulatedResponse = "";
+
+ for await (const fragment of chatResponse.text) {
+  accumulatedResponse += fragment;
+
+  // if the fragment is a }, we can try to parse the whole line
+  if (fragment.includes("}")) {
+   try {
+    const annotation = JSON.parse(accumulatedResponse);
+    applyDecoration(textEditor, annotation.line, annotation.suggestion);
+    // reset the accumulator for the next line
+    accumulatedResponse = "";
+   }
+   catch (e) {
+    // do nothing
+   }
+  }
+ }
+}
+```
+
+We need one last method to actually display the annotations. VS Code calls these "decorations". Add the following method above the `parseChatResponse` method in the `extension.ts` file.
+
+```ts
+function applyDecoration(editor: vscode.TextEditor, line: number, suggestion: string) {
+
+ const decorationType = vscode.window.createTextEditorDecorationType({
+  after: {
+   contentText: ` ${suggestion.substring(0, 25) + "..."}`,
+   color: "grey",
+  },
+ });
+
+ // get the end of the line with the specified line number
+ const lineLength = editor.document.lineAt(line - 1).text.length;
+ const range = new vscode.Range(
+  new vscode.Position(line - 1, lineLength),
+  new vscode.Position(line - 1, lineLength),
+ );
+
+ const decoration = { range: range, hoverMessage: suggestion };
+
+ vscode.window.activeTextEditor?.setDecorations(decorationType, [
+  decoration,
+ ]);
+}
+```
+
+This method takes in our parsed annotation from the model and uses it to create a decoration. This is done by first creating a `TextEditorDecorationType` that specifies the appearance of the decoration. In this case, we are just adding a grey annotation and truncating it to 25 characters. We'll show the full message when the user hovers over the message.
+
+We are then setting where the decoration should appear. We need it to be on the line number that was specified in the annotation, and at the end of the line.
+
+Finally, we set the decoration on the active text editor which is what causes the annotation to appear in the editor.
+
+If your extension is still running, restart it by selecting the green arrow from the debug bar. If you closed the debug session, press ``F5`` to run the extension. Open a code file in the new VS Code window instance that opens. When you select "Toggle Tutor Annotations" from the Command Palette, you should see the code annotations appear in the editor.
+
+![A code file with annotations from GitHub Copilot](../images/ai/lm-api/code-with-annotations.png)
+
+## Add a button to the editor title bar
+
+You can enable your command to be invoked from places other than the Command Palette. In our case, we can add a button to the top of the current tab that allows the user to easily toggle the annotations.
+
+To do this, modify the "contributes" portion of the `package.json` as follows:
+
+```json
+"contributes": {
+  "commands": [
+    {
+      "command": "code-tutor.annotate",
+      "title": "Toggle Tutor Annotations",
+      "icon": "$(comment)"
+    }
+  ],
+  "menus": {
+    "editor/title": [
+      {
+        "command": "code-tutor.annotate",
+        "group": "navigation"
+      }
+    ]
+  }
+}
+```
+
+This causes a button to appear in the navigation area (right-side) of the editor title bar. The "icon" comes from the [Product Icon Reference](https://code.visualstudio.com/api/references/icons-in-labels).
+
+Restart your extension with the green arrow or press ``F5`` if the extension is not already running. You should now see a comment icon that will trigger the "Toggle Tutor Annotations" command.
+
+![A comment icon appears in the title bar of the active tab in VS Code](../images/ai/lm-api/code-tutor-annotations-gif.gif)
+
+## Next Steps
+
+In this tutorial, you learned how to create a VS Code extension that integrates AI into the editor with the language model API. You used the VS Code extension API to get the code from the current tab, sent it to the model with a custom prompt, and then parsed and displayed the model result right in the editor using decorators.
+
+Next, you can extend your Code Tutor extension to [include a chat participant](/api/extension-guides/ai/chat-tutorial) as well which will allow users to interact directly with your extension via the GitHub Copilot chat interface. You can also [explore the full range of API's in VS Code](/api/references/vscode-api) to explore new ways of building custom AI experiences your editor.
+
+You can find the complete source code for this tutorial in the [vscode-extensions-sample repository](https://github.com/microsoft/vscode-extension-samples/tree/main/lm-api-tutorial).
+
+## Related content
+
+- [Language Model API extension guide](/api/extension-guides/ai/language-model)
+- [Tutorial: Create a code tutor chat participant with the Chat API](/api/extension-guides/ai/chat-tutorial)
+- [VS Code Chat API reference](/api/extension-guides/ai/chat)
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/language-model.md
+- **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/language-model
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/language-model.md
+- **SHA256_FINGERPRINT**: `791521f193149917d77e6b5da6343d221ed5e23efa0e6ee372afd416b16ece75`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.666900+00:00
+---
+
+**MetaDescription**: A guide to adding AI-powered features to a VS Code extension by using language models and natural language understanding.
+
+# Language Model API
+
+The Language Model API enables you to [use the Language Model](/api/references/vscode-api#lm) and integrate AI-powered features and natural language processing in your Visual Studio Code extension.
+
+You can use the Language Model API in different types of extensions. A typical use for this API is in [chat extensions](/api/extension-guides/ai/chat), where you use a language model to interpret the user's request and help provide an answer. However, the use of the Language Model API is not limited to this scenario. You might use a language model in a [language](/api/language-extensions/overview) or [debugger](/api/extension-guides/debugger-extension) extension, or as part of a [command](/api/extension-guides/command) or [task](/api/extension-guides/task-provider) in a custom extension. For example, the Rust extension might use the Language Model to offer default names to improve its rename experience.
+
+The process for using the Language Model API consists of the following steps:
+
+1. Build the language model prompt
+1. Send the language model request
+1. Interpret the response
+
+The following sections provide more details on how to implement these steps in your extension.
+
+To get started, you can explore the [chat extension sample](https://github.com/microsoft/vscode-extension-samples/tree/main/chat-sample).
+
+## Build the language model prompt
+
+To interact with a language model, extensions should first craft their prompt, and then send a request to the language model. You can use prompts to provide instructions to the language model on the broad task that you're using the model for. Prompts can also define the context in which user messages are interpreted.
+
+The Language Model API supports two types of messages when building the language model prompt:
+
+- **User** - used for providing instructions and the user's request
+- **Assistant** - used for adding the history of previous language model responses as context to the prompt
+
+> **Note**: Currently, the Language Model API doesn't support the use of system messages.
+
+You can use two approaches for building the language model prompt:
+
+- `LanguageModelChatMessage` - create the prompt by providing one or more messages as strings. You might use this approach if you're just getting started with the Language Model API.
+- [`@vscode/prompt-tsx`](https://www.npmjs.com/package/@vscode/prompt-tsx) - declare the prompt by using the TSX syntax.
+
+You can use the `prompt-tsx` library if you want more control over how the language model prompt is composed. For example, the library can help with dynamically adapting the length of the prompt to each language model's context window size. Learn more about [`@vscode/prompt-tsx`](https://www.npmjs.com/package/@vscode/prompt-tsx) or explore the [chat extension sample](https://github.com/microsoft/vscode-extension-samples/tree/main/chat-sample) to get started.
+
+To learn more about the concepts of prompt engineering, we suggest reading OpenAI's excellent [Prompt engineering guidelines](https://platform.openai.com/docs/guides/prompt-engineering).
+
+>**Tip:** take advantage of the rich VS Code extension API to get the most relevant context and include it in your prompt. For example, to include the contents of the active file in the editor.
+
+### Use the `LanguageModelChatMessage` class
+
+The Language Model API provides the `LanguageModelChatMessage` class to represent and create chat messages. You can use the `LanguageModelChatMessage.User` or `LanguageModelChatMessage.Assistant` methods to create user or assistant messages respectively.
+
+In the following example, the first message provides context for the prompt:
+
+- The persona used by the model in its replies (in this case, a cat)
+- The rules the model should follow when generating responses (in this case, explaining computer science concepts in a funny manner by using cat metaphors)
+
+The second message then provides the specific request or instruction coming from the user. It determines the specific task to be accomplished, given the context provided by the first message.
+
+```typescript
+const craftedPrompt = [
+    vscode.LanguageModelChatMessage.User('You are a cat! Think carefully and step by step like a cat would. Your job is to explain computer science concepts in the funny manner of a cat, using cat metaphors. Always start your response by stating what concept you are explaining. Always include code samples.'),
+    vscode.LanguageModelChatMessage.User('I want to understand recursion')
+];
+```
+
+## Send the language model request
+
+Once you've built the prompt for the language model, you first select the language model you want to use with the [`selectChatModels`](/api/references/vscode-api#lm.selectChatModels) method. This method returns an array of language models that match the specified criteria. If you are implementing a chat participant, we recommend that you instead use the model that is passed as part of the `request` object in your chat request handler. This ensures that your extension respects the model that the user chose in the chat model dropdown. Then, you send the request to the language model by using the [`sendRequest`](/api/references/vscode-api#LanguageModelChat) method.
+
+To select the language model, you can specify the following properties: `vendor`, `id`, `family`, or `version`. Use these properties to either broadly match all models of a given vendor or family, or select one specific model by its ID. Learn more about these properties in the [API reference](/api/references/vscode-api#LanguageModelChat).
+
+> **Note**: Currently, `gpt-4o`, `gpt-4o-mini`, `o1`, `o1-mini`, `claude-3.5-sonnet` are supported for the language model family. If you are unsure what model to use, we recommend `gpt-4o` for it's performance and quality. For interactions directly in the editor, we recommend `gpt-4o-mini` for it's performance.
+
+If there are no models that match the specified criteria, the `selectChatModels` method returns an empty array. Your extension must appropriately handle this case.
+
+The following example shows how to select all `Copilot` models, regardless of the family or version:
+
+```typescript
+const models = await vscode.lm.selectChatModels({
+  vendor: 'copilot'
+});
+
+// No models available
+if (models.length === 0) {
+  // TODO: handle the case when no models are available
+}
+```
+
+> **Important**: Copilot's language models require consent from the user before an extension can use them. Consent is implemented as an authentication dialog. Because of that, `selectChatModels` should be called as part of a user-initiated action, such as a command.
+
+After you select a model, you can send a request to the language model by invoking the [`sendRequest`](/api/references/vscode-api#LanguageModelChat) method on the model instance. You pass the [prompt](#build-the-language-model-prompt) you crafted earlier, along with any additional options, and a cancellation token.
+
+When you make a request to the Language Model API, the request might fail. For example, because the model doesn't exist, or the user didn't give consent to use the Language Model API, or because quota limits are exceeded. Use `LanguageModelError` to distinguish between different types of errors.
+
+The following code snippet shows how to make a language model request:
+
+```typescript
+try {
+    const [model] = await vscode.lm.selectChatModels({ vendor: 'copilot', family: 'gpt-4o' });
+    const request = model.sendRequest(craftedPrompt, {}, token);
+} catch (err) {
+    // Making the chat request might fail because
+    // - model does not exist
+    // - user consent not given
+    // - quota limits were exceeded
+    if (err instanceof vscode.LanguageModelError) {
+        console.log(err.message, err.code, err.cause);
+        if (err.cause instanceof Error && err.cause.message.includes('off_topic')) {
+            stream.markdown(vscode.l10n.t('I\'m sorry, I can only explain computer science concepts.'));
+        }
+    } else {
+        // add other error handling logic
+        throw err;
+    }
+}
+```
+
+## Interpret the response
+
+After you've sent the request, you have to process the response from the language model API. Depending on your usage scenario, you can pass the response directly on to the user, or you can interpret the response and perform extra logic.
+
+The response ([`LanguageModelChatResponse`](/api/references/vscode-api#LanguageModelChatResponse)) from the Language Model API is streaming-based, which enables you to provide a smooth user experience. For example, by reporting results and progress continuously when you use the API in combination with the [Chat API](/api/extension-guides/ai/chat).
+
+Errors might occur while processing the streaming response, such as network connection issues. Make sure to add appropriate error handling in your code to handle these errors.
+
+The following code snippet shows how an extension can register a command, which uses the language model to change all variable names in the active editor with funny cat names. Notice that the extension streams the code back to the editor for a smooth user experience.
+
+```typescript
+ vscode.commands.registerTextEditorCommand('cat.namesInEditor', async (textEditor: vscode.TextEditor) => {
+    // Replace all variables in active editor with cat names and words
+
+    const [model] = await vscode.lm.selectChatModels({ vendor: 'copilot', family: 'gpt-4o' });
+    let chatResponse: vscode.LanguageModelChatResponse | undefined;
+
+    const text = textEditor.document.getText();
+
+    const messages = [
+        vscode.LanguageModelChatMessage.User(`You are a cat! Think carefully and step by step like a cat would.
+        Your job is to replace all variable names in the following code with funny cat variable names. Be creative. IMPORTANT respond just with code. Do not use markdown!`),
+        vscode.LanguageModelChatMessage.User(text)
+    ];
+
+    try {
+        chatResponse = await model.sendRequest(messages, {}, new vscode.CancellationTokenSource().token);
+    } catch (err) {
+        if (err instanceof vscode.LanguageModelError) {
+            console.log(err.message, err.code, err.cause)
+        } else {
+            throw err;
+        }
+        return;
+    }
+
+    // Clear the editor content before inserting new content
+    await textEditor.edit(edit => {
+        const start = new vscode.Position(0, 0);
+        const end = new vscode.Position(textEditor.document.lineCount - 1, textEditor.document.lineAt(textEditor.document.lineCount - 1).text.length);
+        edit.delete(new vscode.Range(start, end));
+    });
+
+    try {
+        // Stream the code into the editor as it is coming in from the Language Model
+        for await (const fragment of chatResponse.text) {
+            await textEditor.edit(edit => {
+                const lastLine = textEditor.document.lineAt(textEditor.document.lineCount - 1);
+                const position = new vscode.Position(lastLine.lineNumber, lastLine.text.length);
+                edit.insert(position, fragment);
+            });
+        }
+    } catch (err) {
+        // async response stream may fail, e.g network interruption or server side error
+        await textEditor.edit(edit => {
+            const lastLine = textEditor.document.lineAt(textEditor.document.lineCount - 1);
+            const position = new vscode.Position(lastLine.lineNumber, lastLine.text.length);
+            edit.insert(position, (<Error>err).message);
+        });
+    }
+});
+```
+
+## Considerations
+
+### Model availability
+
+We don't expect specific models to stay supported forever. When you reference a language model in your extension, make sure to take a "defensive" approach when sending requests to that language model. This means that you should gracefully handle cases where you don't have access to a particular model.
+
+### Choosing the appropriate model
+
+Extension authors can choose which model is the most appropriate for their extension. We recommend using `gpt-4o` for its performance and quality. To get a full list of available models, you can use this code snippet:
+
+```typescript
+const allModels = await vscode.lm.selectChatModels(MODEL_SELECTOR);
+```
+
+> [!NOTE]
+> The recommended GPT-4o model has a limit of `64K` tokens. The returned model object from the `selectChatModels` call has a `maxInputTokens` attribute that shows the token limit. These limits will be expanded as we learn more about how extensions are using the language models.
+
+### Rate limiting
+
+Extensions should responsibly use the language model and be aware of rate limiting. VS Code is transparent to the user regarding how extensions are using language models and how many requests each extension is sending and how that influences their respective quotas.
+
+Extensions should not use the Language Model API for integration tests due to rate-limitations. Internally, VS Code uses a dedicated non-production language model for simulation testing, and we are currently thinking how to provide a scalable language model testing solution for extensions.
+
+## Testing your extension
+
+The responses that the Language Model API provides are nondeterministic, which means that you might get a different response for an identical request. This behavior can be challenging for testing your extension.
+
+The part of the extension for building prompts and interpreting language model responses is deterministic, and can thus be unit tested without using an actual language model. However, interacting and getting responses from the language model itself, is nondeterministic and can’t be easily tested. Consider designing your extension code in a modular way to enable you to unit test the specific parts that can be tested.
+
+## Publishing your extension
+
+Once you have created your AI extension, you can publish your extension to the Visual Studio Marketplace:
+
+- Before publishing to the VS Marketplace we recommend that you read the [Microsoft AI tools and practices guidelines](https://www.microsoft.com/en-us/ai/tools-practices). These guidelines provide best practices for the responsible development and use of AI technologies.
+- By publishing to the VS Marketplace, your extension is adhering to the [GitHub Copilot extensibility acceptable development and use policy](https://docs.github.com/en/early-access/copilot/github-copilot-extensibility-platform-partnership-plugin-acceptable-development-and-use-policy).
+- If your extension already contributes functionality other than using the Language Model API, we recommend that you do not introduce an extension dependency on GitHub Copilot in the [extension manifest](/api/references/extension-manifest). This ensures that extension users that do not use GitHub Copilot can use the non language model functionality without having to install GitHub Copilot. Make sure to have appropriate error handling when accessing language models for this case.
+- Upload to the Marketplace as described in [Publishing Extension](https://code.visualstudio.com/api/working-with-extensions/publishing-extension).
+
+## Related content
+
+- [Language Models API Reference](/api/references/vscode-api#lm)
+- [Learn more about @vscode/prompt-tsx](https://www.npmjs.com/package/@vscode/prompt-tsx)
+- [Build a VS Code chat extension](/api/extension-guides/ai/chat)
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/mcp.md
+- **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/mcp
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/mcp.md
+- **SHA256_FINGERPRINT**: `14cc8be484ead8ee0f9258ab6392d2e34f6392f1cc3f6d5fca537b59639ba96f`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.675436+00:00
+---
+
+**MetaDescription**: A comprehensive guide for developers building MCP servers that work with Visual Studio Code.
+
+# MCP developer guide
+
+Model Context Protocol (MCP) is an open standard that enables AI models to interact with external tools and services through a unified interface. Visual Studio Code implements the full MCP specification, enabling you to create MCP servers that provide tools, prompts, and resources for extending the capabilities of AI agents in VS Code.
+
+MCP servers provide one of three types of tools available in VS Code, alongside built-in tools and extension-contributed tools. Learn more about [tool types](/docs/agents/concepts/tools.md#types-of-tools).
+
+This guide covers everything you need to know to build MCP servers that work seamlessly with VS Code and other MCP clients.
+
+> [!TIP]
+> For information about using MCP servers as an end user, see [Use MCP servers in VS Code](/docs/agent-customization/mcp-servers.md).
+
+## Why use MCP servers?
+
+Implementing an MCP server to extend chat in VS Code with language model tools has the following benefits:
+
+- **Extend agent mode** with specialized, domain-specific, tools that are automatically invoked as part of responding to a user prompt. For example, enable database scaffolding and querying to dynamically provide the LLM with relevant context.
+- **Flexible deployment options** for local and remote scenarios.
+- **Reuse** your MCP server across different tools and platforms.
+
+You might consider implementing a language model tool with the [Language Model API](/api/extension-guides/ai/tools) in the following scenarios:
+
+- You want to deeply integrate with VS Code by using extension APIs.
+- You want to distribute your tool and updates by using the Visual Studio Marketplace.
+
+## MCP features supported by VS Code
+
+VS Code supports the following MCP capabilities:
+
+* [Transports](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports):
+    * Local standard input/output (`stdio`)
+    * Streamable HTTP (`http`)
+    * Server-sent events (`sse`) - legacy support.
+
+* [Features](https://modelcontextprotocol.io/specification/2025-06-18#features):
+    * Tools: extend [agent mode](/docs/chat/chat-overview) with extra tools
+    * Prompts: add reusable prompts as slash commands in chat
+    * Resources: provide data and content that users can add as chat context or interact with directly in VS Code
+    * Elicitation: request input from the user
+    * Sampling: make language model requests using the user's configured models and subscription
+    * Authentication: authorize access to an MCP server using OAuth
+    * Server instructions
+    * Roots: provide information about the user's workspace root folder(s)
+    * [MCP Apps](https://modelcontextprotocol.github.io/ext-apps/api/): return interactive UI components from tools
+
+### Tools
+
+#### Tool definition
+
+VS Code supports MCP tools in agent mode, where they are invoked as needed based on the task. Users can enable and configure them with the tools picker. The tool description is shown in the tools picker, alongside the tool name, and in the dialog when asking for confirmation before running a tool.
+
+![Screenshot that shows the tools picker in agent mode, highlighting tools from an MCP server.](../images/ai/mcp/mcp-tools-picker.png)
+
+Users can edit model-generated input parameters in the tool confirmation dialog. The confirmation dialog will be shown for all tools that are not marked with the `readOnlyHint` annotation.
+
+![Screenshot that shows the tool confirmation dialog with input parameters for an MCP tool.](../images/ai/mcp/mcp-tool-input-parameters.png)
+
+#### Dynamic tool discovery
+
+VS Code also supports [dynamic tool discovery](https://modelcontextprotocol.io/docs/concepts/tools#tool-discovery-and-updates), allowing servers to register tools at runtime. For example, a server can provide different tools based on the framework or language detected in the workspace, or in response to the user's chat prompt.
+
+#### Tool annotations
+
+To provide extra metadata about a tool's behavior, you can use [tool annotations](https://modelcontextprotocol.io/docs/concepts/tools#tool-annotations):
+
+- `title`: Human-readable title for the tool, shown in the Chat view when a tool is invoked
+- `readOnlyHint`: Optional hint to indicate that the tool is read-only. VS Code doesn't ask for confirmation to run read-only tools.
+
+### Resources
+
+Resources enable you to provide data and content to users in a structured way. Users can directly access resources in VS Code, or use them as context in chat prompts. For example, an MCP server could generate screenshots and make them available as resources, or provide access to log files, which are then updated in real-time.
+
+When you define an MCP resource, the resource name is shown in the MCP Resources Quick Picks. Resources can be opened via the **MCP: Browse Resources** command or attached to a chat request with **Add Context** and then selecting **MCP Resource**. Resources can contain text or binary content.
+
+![Screenshot that shows the MCP Resources Quick Pick.](../images/ai/mcp/mcp-resources-picker.png)
+
+VS Code supports resource updates, enabling users to see changes to the contents of a resource in real-time in the editor.
+
+#### Resource templates
+
+VS Code also supports [resource templates](https://modelcontextprotocol.io/docs/concepts/resources#resource-templates), enabling users to provide input parameters when referencing a resource. For example, a database query tool could ask for the database table name.
+
+When accessing a resource with a template, users are prompted for the required parameters in a Quick Pick. You can provide completions to suggest values for the parameter.
+
+### Prompts
+
+Prompts are reusable chat prompt templates that users can invoke in chat by using a slash command (`mcp.servername.promptname`). Prompts can be useful for onboarding users to your servers by highlighting various tools or providing built-in complex workflows that adapt to the user's local context and service.
+
+If you define [completions](https://modelcontextprotocol.io/specification/2025-06-18/server/utilities/completion) to suggest values for prompt input arguments, then VS Code shows a dialog to collect input from the user.
+
+```typescript
+server.prompt(
+    "teamGreeting", "Generate a greeting for team members",
+    {
+        name: completable(z.string(), (value) => {
+            return ["Alice", "Bob", "Charlie"].filter(n => n.startsWith(value));
+        })
+    },
+    async ({ name }) => ({
+        messages: [{
+            role: "assistant",
+            content: { type: "text", text: `Hello ${name}, welcome to the team!` }
+        }]
+    })
+);
+```
+
+![Screenshot that shows the prompt dialog for an MCP prompt with input parameters.](../images/ai/mcp/mcp-prompt-argument.png)
+
+> [!NOTE]
+> Users can enter a terminal command in the prompt dialog and use the command output as input for the prompt.
+
+When you include a resource type in the prompt response, VS Code attaches that resource as context to the chat prompt.
+
+### Authorization
+
+VS Code supports MCP servers that require authentication, allowing users to interact with an MCP server that operates on behalf of their user account for that service.
+
+The [authorization specification](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization) cleanly separates MCP servers as Resource Servers from Authorization Servers, allowing developers to delegate authentication to existing identity providers (IdPs) rather than building their own OAuth implementations from scratch.
+
+VS Code has built-in authentication support for GitHub and Microsoft Entra. If your MCP server implements the latest specification and uses GitHub or Microsoft Entra as the authorization server, users can manage which MCP servers have access to their account through the **Accounts menu** > **Manage Trusted MCP Servers** action for that account.
+
+![Screenshot that shows the Accounts menu with the Manage Trusted MCP Servers action.](../images/ai/mcp/manage-trusted-mcp.png)
+
+VS Code supports authorization using OAuth 2.1 standards and 2.0 standards to other IdPs than GitHub and Microsoft Entra. VS Code first starts with a [Dynamic Client Registration (DCR)](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization#dynamic-client-registration) handshake and then falls back to a client-credentials workflow if the IdP does not support DCR. This gives more flexibility to the various IdPs to create static client IDs or specific client ID-secret pairs for each MCP server accordingly.
+
+Users can then view their authentication status also through the **Accounts menu**. To remove dynamic client registrations, users can use the **Authentication: Remove Dynamic Authentication Providers** command in the Command Palette.
+
+Below is a checklist to ensure your MCP server and VS Code's OAuth workflows will work:
+
+1. The MCP server defines the [MCP authorization specification](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization).
+2. The IdP must support either DCR or client credentials
+3. The redirect URL list must include these URLs: `http://127.0.0.1:33418` and `https://vscode.dev/redirect`
+
+When DCR is not supported by the MCP server, users will go through the fallback client-credential flow:
+
+![Screenshot that shows the authorization when DCR is not supported for a MCP server.](../images/ai/mcp/mcp-auth-dynamic-client-required.png)
+
+![Screenshot that shows the authorization when Client ID for a MCP server is requested.](../images/ai/mcp/mcp-auth-client-id.png)
+
+![Screenshot that shows the authorization when Client Secret for a MCP server is requested.](../images/ai/mcp/mcp-auth-client-secret.png)
+
+> [!NOTE]
+> VS Code still supports MCP servers that behave as an authorization server, but it is recommended to use the latest specification for new servers.
+
+### Sampling
+
+VS Code provides access to [sampling](https://modelcontextprotocol.io/docs/concepts/sampling) for MCP servers. This allows your MCP server to make language model requests using the user's configured models and subscriptions. For example, use sampling to summarize large data sets, to extract information before sending it to the client, or to implement agentic decision logic in a tool.
+
+The first time an MCP server performs a sampling request, the user is prompted to authorize the server to access their models.
+
+![Screenshot that shows the authorization prompt for an MCP server to access models.](../images/ai/mcp/mcp-allow-sampling.png)
+
+When making sampling requests with specific models, consider that users can restrict which models an MCP server can use with the **MCP: List Servers** > **Configure Model Access** command in the Command Palette. When you specify `modelPreferences` in your MCP server to provide hints about which models to use for sampling, VS Code will pick from the allowed models.
+
+![Screenshot that shows the Configure Model Access dialog for an MCP server.](../images/ai/mcp/mcp-configure-model-access.png)
+
+Users can view the sampling requests made by an MCP server with the **MCP: List Servers** > **Show Sampling Requests** command in the Command Palette.
+
+### Workspace roots
+
+VS Code provides the MCP server with the user's workspace root folder information.
+
+### MCP Apps
+
+MCP Apps enable tools to return interactive UI components that render inline in chat instead of text-only output. This is useful for scenarios like drag-and-drop list reordering, visualizations, forms, and multi-step workflows.
+
+#### Architecture
+
+MCP Apps use a Tool + UI Resource pattern:
+
+1. Define a tool that returns a `_meta.ui.resourceUri` pointing to a UI resource
+1. Create a UI resource with the `ui://` URI scheme and MIME type `text/html;profile=mcp-app`
+1. The HTML resource runs in a sandboxed iframe and uses the MCP Apps SDK to communicate with VS Code
+
+#### SDK
+
+Use the [`@modelcontextprotocol/ext-apps`](https://github.com/modelcontextprotocol/ext-apps) package to build MCP Apps. The SDK provides:
+
+- **`App` class**: Main interface for communicating with the host
+    - `connect()`: Establish connection with VS Code
+    - `callServerTool(name, args)`: Call tools on the originating MCP server
+    - `sendMessage(content)`: Send a message to the chat input
+    - `updateModelContext(context)`: Provide context for future conversation turns
+    - `openLink(url)`: Request to open a URL in the browser
+    - `sendLog(level, message)`: Send debug logs (not added to conversation)
+
+- **Notification handlers**: Set these to receive events from VS Code
+    - `ontoolinput`: Receive complete tool arguments
+    - `ontoolinputpartial`: Receive streaming partial arguments
+    - `ontoolresult`: Receive tool execution results
+    - `ontoolcancelled`: Handle tool cancellation
+    - `onhostcontextchanged`: Respond to theme or locale changes
+    - `onteardown`: Clean up before unmounting
+
+#### VS Code behavior and limitations
+
+| Feature | VS Code Support |
+| ------- | --------------- |
+| Display modes | `inline` only (not `fullscreen` or `pip`) |
+| Send message | Fills chat input box; does not auto-send |
+| Context updates | Appear as attachments |
+| Clipboard write | Supported |
+| Camera, microphone, geolocation | Not supported |
+
+#### Security
+
+MCP Apps run in sandboxed iframes with Content Security Policy (CSP) enforcement. When defining a UI resource, declare the domains your app needs to access:
+
+- `connectDomains`: Domains for fetch/XHR requests
+- `resourceDomains`: Domains for images, fonts, and other resources
+- `frameDomains`: Domains that can be embedded in iframes
+
+#### Learn more
+
+- [MCP Apps specification](https://modelcontextprotocol.github.io/ext-apps/api/)
+- [MCP Apps SDK and examples](https://github.com/modelcontextprotocol/ext-apps)
+- [MCP Apps announcement blog post](https://code.visualstudio.com/blogs/2026/01/26/mcp-apps-support)
+
+### Icons
+
+VS Code supports `icons` provided on MCP servers, resources, and tools. MCP Icons have a `src` property which is a URI to the image:
+
+- MCP servers using the HTTP or SSE transports may serve images from the same authority the MCP server is hosted on. For example, a server configured at `https://example.com/mcp` can serve images from `example.com`.
+- MCP servers using the stdio transport may serve images from the file system using `file:///` URIs.
+- Any MCP server can embed images as data URIs beginning with `data:`.
+
+## Add MCP servers to VS Code
+
+Users can add MCP servers within VS Code in several ways:
+
+- Install directly from the web: use a special MCP installation URL (`vscode:mcp/install`) on your website.
+- Workspace configuration: Specify the server configuration in a `.vscode/mcp.json` file in the workspace.
+- Global configuration: Define servers globally in the user [profile](/docs/configure/profiles).
+- Autodiscovery: VS Code can discover servers from other tools like Claude Desktop.
+- Extension: VS Code extensions can register MCP servers programmatically.
+- Command line: Install MCP servers from the command line with the `--add-mcp` VS Code command-line option.
+
+Learn more about the different ways to [add MCP servers to VS Code](/docs/agent-customization/mcp-servers#add-an-mcp-server).
+
+## Manage MCP servers
+
+You can manage the list of installed MCP servers from the Extension view (``Shortcut: workbench.view.extensions``) in VS Code.
+
+![Screenshot showing the MCP servers in the Extensions view.](../images/ai/mcp/extensions-view-mcp-servers.png)
+
+Right-click on an MCP server or select the gear icon to perform different management actions on the server. Alternatively, run the **MCP: List Servers** command from the Command Palette to view the list of configured MCP servers. You can then select a server and perform actions on it.
+
+> [!TIP]
+> When you open the `.vscode/mcp.json` file, VS Code shows commands in the editor to start, stop, or restart a server directly from the editor.
+>
+> ![MCP server configuration with lenses to manage server.](../images/ai/mcp/mcp-server-config-lenses.png)
+
+## Create an MCP installation URL
+
+VS Code provides a URL handler for installing an MCP server from a link: `vscode:mcp/install?{json-configuration}` (Insiders: `vscode-insiders:mcp/install?{json-configuration}`).
+
+Provide the JSON server configuration in the form `{\"name\":\"server-name\",\"command\":...}` and then perform a JSON-stringify and URL encode on it. For example, use the following logic to create the installation URL:
+
+```typescript
+// For Insiders, use `vscode-insiders` instead of `code`
+const link = `vscode:mcp/install?${encodeURIComponent(JSON.stringify(obj))}`;
+```
+
+This link can be used in a browser, or opened on the command line, for example via `xdg-open $LINK` on Linux.
+
+## Register an MCP server in your extension
+
+To register an MCP server in your extension, you need to perform the following steps:
+
+1. Define the MCP server definition provider in the `package.json` file of your extension.
+1. Implement the MCP server definition provider in your extension code by using the [`vscode.lm.registerMcpServerDefinitionProvider`](/api/references/vscode-api#lm.registerMcpServerDefinitionProvider) API.
+
+You can get started with a basic [example of how to register an MCP server in a VS Code extension](https://github.com/microsoft/vscode-extension-samples/blob/main/mcp-extension-sample).
+
+### 1. Static configuration in `package.json`
+
+Extensions that want to register MCP servers must contribute the `contributes.mcpServerDefinitionProviders` extension point in the `package.json` with the `id` of the provider. This `id` should match the one used in the implementation.
+
+```json
+{
+    ...
+    "contributes": {
+        "mcpServerDefinitionProviders": [
+            {
+                "id": "exampleProvider",
+                "label": "Example MCP Server Provider"
+            }
+        ]
+    }
+    ...
+}
+```
+
+### 2. Implement the provider
+
+To register an MCP server in your extension, use the [`vscode.lm.registerMcpServerDefinitionProvider`](/api/references/vscode-api#lm.registerMcpServerDefinitionProvider) API to provide the [MCP configuration](/docs/agents/reference/mcp-configuration.md) for the server. The API takes a `providerId` string and a `McpServerDefinitionProvider` object.
+
+The `McpServerDefinitionProvider` object has three properties:
+
+- `onDidChangeMcpServerDefinitions`: event that is triggered when the MCP server configurations change.
+- `provideMcpServerDefinitions`: function that returns an array of MCP server configurations (`vscode.McpServerDefinition[]`).
+- `resolveMcpServerDefinition`: function that the editor calls when the MCP server needs to be started. Use this function to perform additional actions that may require user interaction, such as authentication.
+
+An `McpServerDefinition` object can be one of the following types:
+
+- `vscode.McpStdioServerDefinition`: represents an MCP server available by running a local process and operating on its stdin and stdout streams.
+- `vscode.McpHttpServerDefinition`: represents an MCP server available using the Streamable HTTP transport.
+
+<details>
+<summary>Example MCP server definition provider</summary>
+
+The following example demonstrates how to register MCP servers in an extension and prompt the user for an API key when starting the server.
+
+```ts
+import * as vscode from 'vscode';
+
+export function activate(context: vscode.ExtensionContext) {
+    const didChangeEmitter = new vscode.EventEmitter<void>();
+
+    context.subscriptions.push(vscode.lm.registerMcpServerDefinitionProvider('exampleProvider', {
+        onDidChangeMcpServerDefinitions: didChangeEmitter.event,
+        provideMcpServerDefinitions: async () => {
+            let servers: vscode.McpServerDefinition[] = [];
+
+            // Example of a simple stdio server definition
+            servers.push(new vscode.McpStdioServerDefinition(
+            {
+                label: 'myServer',
+                command: 'node',
+                args: ['server.js'],
+                cwd: vscode.Uri.file('/path/to/server'),
+                env: {
+                    API_KEY: ''
+                },
+                version: '1.0.0'
+            });
+
+            // Example of an HTTP server definition
+            servers.push(new vscode.McpHttpServerDefinition(
+            {
+                label: 'myRemoteServer',
+                uri: 'http://localhost:3000',
+                headers: {
+                    'API_VERSION': '1.0.0'
+                },
+                version: '1.0.0'
+            }));
+
+            return servers;
+        },
+        resolveMcpServerDefinition: async (server: vscode.McpServerDefinition) => {
+
+            if (server.label === 'myServer') {
+                // Get the API key from the user, e.g. using vscode.window.showInputBox
+                // Update the server definition with the API key
+            }
+
+            // Return undefined to indicate that the server should not be started or throw an error
+            // If there is a pending tool call, the editor will cancel it and return an error message
+            // to the language model.
+            return server;
+        }
+    }));
+}
+```
+
+</details>
+
+## Troubleshoot and debug MCP servers
+
+### MCP development mode in VS Code
+
+When developing MCP servers, you can enable _development mode_ for MCP servers by adding a `dev` key to the MCP server configuration. This is an object with two properties:
+
+* `watch`: A glob pattern, or an array of glob patterns, to watch for file changes that restart the MCP server.
+* `debug`: Enables you to set up a debugger with the MCP server. Currently, VS Code supports debugging Node.js and Python MCP servers.
+
+    <details>
+    <summary>Node.js MCP server</summary>
+
+    To debug a Node.js MCP server, set the `debug.type` property to `node`.
+
+    ```json
+    {
+        "servers": {
+            "my-mcp-server": {
+                "type": "stdio",
+                "command": "node",
+                "cwd": "${workspaceFolder}",
+                "args": [ "./build/index.js" ],
+                "dev": {
+                    "watch": "src/**/*.ts",
+                    "debug": { "type": "node" }
+                }
+            }
+        }
+    }
+    ```
+
+    </details>
+
+    <details>
+    <summary>Python MCP server</summary>
+
+    To debug a Python MCP server, set the `debug.type` property to `debugpy`, and optionally set the `debug.debugpyPath` property to the path of the `debugpy` module if it is not installed in the default Python environment.
+
+    ```json
+    {
+        "servers": {
+            "my-python-mcp-server": {
+                "type": "stdio",
+                "command": "python",
+                "cwd": "${workspaceFolder}",
+                "args": [ "./server.py" ],
+                "dev": {
+                    "watch": "**/*.py",
+                    "debug": {
+                        "type": "debugpy",
+                        "debugpyPath": "/path/to/debugpy"
+                    }
+                }
+            }
+        }
+    }
+    ```
+
+    </details>
+
+### MCP output log
+
+When VS Code encounters an issue with an MCP server, it shows an error indicator in the Chat view.
+
+![MCP Server Error](../images/ai/mcp/mcp-error-loading-tool.png)
+
+Select the error notification in the Chat view, and then select the **Show Output** option to view the server logs. Alternatively, run **MCP: List Servers** from the Command Palette, select the server, and then choose **Show Output**.
+
+![MCP Server Error Output](../images/ai/mcp/mcp-server-error-output.png)
+
+## Best practices
+
+- **Naming conventions** to ensure unique and descriptive names
+- **Implement proper error handling and validation** with descriptive error messages
+- **Use progress reporting** to inform users about long-running operations
+- **Keep tool operations focused and atomic** to avoid complex interactions
+- **Document your tools clearly** with descriptions that help users understand when to use them
+- **Handle missing input parameters gracefully** by providing default values or clear error messages
+- **Set MIME types for resources** to ensure proper handling of different content types in VS Code
+- **Use resource templates** to allow users to provide input parameters when accessing resources
+- **Cache resource content** to improve performance and reduce unnecessary network requests
+- **Set reasonable token limits** for sampling requests to avoid excessive resource usage
+- **Validate sampling responses** before using them
+
+### Naming conventions
+
+The following naming conventions are recommended for MCP servers and their components:
+
+| Component | Naming Convention Guidelines |
+|-----------|----------------------------|
+| Tool name | <ul><li>Unique within the MCP server</li><li>Describes the action and the target of the action</li><li>Use snake case, structured as `{verb}_{noun}`</li><li>Examples: `generate_report`, `fetch_data`, `analyze_code`</li></ul> |
+| Tool input parameter | <ul><li>Describes the purpose of the parameter</li><li>Use camelCase for multi-word parameters</li><li>Examples: `path`, `queryString`, `userId`</li></ul> |
+| Resource name | <ul><li>Unique within the MCP server</li><li>Describes the content of the resource</li><li>Use title case</li><li>Examples: `Application Logs`, `Database Table`, `GitHub Repository`</li></ul> |
+| Resource template parameter | <ul><li>Describes the purpose of the parameter</li><li>Use camelCase for multi-word parameters</li><li>Examples: `name`, `repo`, `fileType`</li></ul> |
+| Prompt name | <ul><li>Unique within the MCP server</li><li>Describes the intended use of the prompt</li><li>Use camelCase for multi-word parameters</li><li>Examples: `generateApiRoute`, `performSecurityReview`, `analyzeCodeQuality`</li></ul> |
+| Prompt input parameter | <ul><li>Describes the purpose of the parameter</li><li>Use camelCase for multi-word parameters</li><li>Examples: `filePath`, `queryString`, `userId`</li></ul> |
+
+## Get started to create an MCP server
+
+VS Code has all the tools you need to develop your own MCP server. While MCP servers can be written in any language that can handle `stdout`, the MCP's official SDKs are a good place to start:
+
+- [TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk)
+- [Python SDK](https://github.com/modelcontextprotocol/python-sdk)
+- [Java SDK](https://github.com/modelcontextprotocol/java-sdk)
+- [Kotlin SDK](https://github.com/modelcontextprotocol/kotlin-sdk)
+- [C# SDK](https://github.com/modelcontextprotocol/csharp-sdk)
+
+You might also find the [MCP for Beginners curriculum](https://github.com/microsoft/mcp-for-beginners) helpful to get started with building your first MCP server.
+
+## Related content
+
+- [Contribute a language model tool](/api/extension-guides/ai/tools)
+- [Use MCP tools in agent mode](/docs/agent-customization/mcp-servers.md)
+- [VS Code curated list of MCP servers](https://code.visualstudio.com/mcp)
+- [Model Context Protocol Documentation](https://modelcontextprotocol.io/)
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/prompt-tsx.md
+- **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/prompt-tsx
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/prompt-tsx.md
+- **SHA256_FINGERPRINT**: `273e745810afe1a2d0b72e710e593fb105563127afb4b58eaf111282341bbcb1`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.544753+00:00
+---
+
+**MetaDescription**: A guide for how to build language model prompts using the prompt-tsx library
+
+# Craft language model prompts
+
+You can build language model prompts by using string concatenation, but it's hard to compose features and make sure your prompts stay within the context window of language models. To overcome these limitations, you can use the [`@vscode/prompt-tsx`](https://github.com/microsoft/vscode-prompt-tsx) library.
+
+The `@vscode/prompt-tsx` library provides the following features:
+
+- **TSX-based prompt rendering**: Compose prompts using TSX components, making them more readable and maintainable
+- **Priority-based pruning**: Automatically prune less important parts of prompts to fit within the model's context window
+- **Flexible token management**: Use properties like `flexGrow`, `flexReserve`, and `flexBasis` to cooperatively use token budgets
+- **Tool integration**: Integrate with VS Code's language model tools API
+
+For a complete overview of all features and detailed usage instructions, refer to the [full README](https://github.com/microsoft/vscode-prompt-tsx/blob/main/README.md).
+
+This article describes practical examples of prompt design with the library. The complete code for these examples can be found in the [prompt-tsx repository](https://github.com/microsoft/vscode-prompt-tsx/tree/main/examples).
+
+## Manage priorities in the conversation history
+
+Including conversation history in your prompt is important as it enables the user to ask follow-up questions to previous messages. However, you want to make sure its priority is treated appropriately because history can grow large over time. We've found that the pattern which makes the most sense is usually to prioritize, in order:
+
+1. The base prompt instructions
+2. The current user query
+3. The last couple of turns of chat history
+4. Any supporting data
+5. As much of the remaining history as you can fit
+
+For this reason, split the history into two parts in the prompt, where recent prompt turns are prioritized over general contextual information.
+
+In this library, each TSX node in the tree has a priority that is conceptually similar to a zIndex where a higher number means a higher priority.
+
+### Step 1: Define the HistoryMessages component
+
+To list history messages, define a `HistoryMessages` component. This example provides a good starting point, but you might have to expand it if you deal with more complex data types.
+
+This example uses the `PrioritizedList` helper component, which automatically assigns ascending or descending priorities to each of its children.
+
+```tsx
+import {
+	UserMessage,
+	AssistantMessage,
+	PromptElement,
+	BasePromptElementProps,
+	PrioritizedList,
+} from '@vscode/prompt-tsx';
+import { ChatContext, ChatRequestTurn, ChatResponseTurn, ChatResponseMarkdownPart } from 'vscode';
+
+interface IHistoryMessagesProps extends BasePromptElementProps {
+	history: ChatContext['history'];
+}
+
+export class HistoryMessages extends PromptElement<IHistoryMessagesProps> {
+	render(): PromptPiece {
+		const history: (UserMessage | AssistantMessage)[] = [];
+		for (const turn of this.props.history) {
+			if (turn instanceof ChatRequestTurn) {
+				history.push(<UserMessage>{turn.prompt}</UserMessage>);
+			} else if (turn instanceof ChatResponseTurn) {
+				history.push(
+					<AssistantMessage name={turn.participant}>
+						{chatResponseToMarkdown(turn)}
+					</AssistantMessage>
+				);
+			}
+		}
+		return (
+			<PrioritizedList priority={0} descending={false}>
+				{history}
+			</PrioritizedList>
+		);
+	}
+}
+```
+
+### Step 2: Define the Prompt component
+
+Next, define a `MyPrompt` component that includes the base instructions, user query, and history messages with their appropriate priorities. Priority values are local among siblings. Remember that you might want to trim older messages in the history before touching anything else in the prompt, so you need to split up two `<HistoryMessages>` elements:
+
+```tsx
+import {
+	UserMessage,
+	PromptElement,
+	BasePromptElementProps,
+} from '@vscode/prompt-tsx';
+
+interface IMyPromptProps extends BasePromptElementProps {
+	history: ChatContext['history'];
+	userQuery: string;
+}
+
+export class MyPrompt extends PromptElement<IMyPromptProps> {
+	render() {
+		return (
+			<>
+				<UserMessage priority={100}>
+					Here are your base instructions. They have the highest priority because you want to make
+					sure they're always included!
+				</UserMessage>
+				{/* Older messages in the history have the lowest priority since they're less relevant */}
+				<HistoryMessages history={this.props.history.slice(0, -2)} priority={0} />
+				{/* The last 2 history messages are preferred over any workspace context you have below */}
+				<HistoryMessages history={this.props.history.slice(-2)} priority={80} />
+				{/* The user query is right behind the based instructions in priority */}
+				<UserMessage priority={90}>{this.props.userQuery}</UserMessage>
+				<UserMessage priority={70}>
+					With a slightly lower priority, you can include some contextual data about the workspace
+					or files here...
+				</UserMessage>
+			</>
+		);
+	}
+}
+```
+
+Now, all older history messages are pruned before the library tries to prune other elements of the prompt.
+
+### Step 3: Define the History component
+
+To make consumption a little easier, define a `History` component that wraps the history messages and uses the `passPriority` attribute to act as a pass-through container. With `passPriority`, its children are treated as if they are direct children of the containing element for prioritization purposes.
+
+```tsx
+import { PromptElement, BasePromptElementProps } from '@vscode/prompt-tsx';
+
+interface IHistoryProps extends BasePromptElementProps {
+	history: ChatContext['history'];
+	newer: number; // last 2 message priority values
+	older: number; // previous message priority values
+	passPriority: true; // require this prop be set!
+}
+
+export class History extends PromptElement<IHistoryProps> {
+	render(): PromptPiece {
+		return (
+			<>
+				<HistoryMessages history={this.props.history.slice(0, -2)} priority={this.props.older} />
+				<HistoryMessages history={this.props.history.slice(-2)} priority={this.props.newer} />
+			</>
+		);
+	}
+}
+```
+
+Now, you can use and reuse this single element to include chat history:
+
+```tsx
+<History history={this.props.history} passPriority older={0} newer={80}/>
+```
+
+## Grow file contents to fit
+
+In this example, you want to include the contents of all files the user is currently looking at in their prompt. These files could be large, to the point where including all of them would lead to their text being pruned! This example shows how to use the `flexGrow` property to cooperatively size the file contents to fit within the token budget.
+
+### Step 1: Define base instructions and user query
+
+First, you define a `UserMessage` component that includes the base instructions.
+
+```tsx
+<UserMessage priority={100}>Here are your base instructions.</UserMessage>
+```
+
+You then include the user query by using the `UserMessage` component. This component has a high priority to ensure it is included right after the base instructions.
+
+```tsx
+<UserMessage priority={90}>{this.props.userQuery}</UserMessage>
+```
+
+### Step 2: Include the File Contents
+
+You can now include the file contents by using the `FileContext` component. You assign it a [`flexGrow`](https://github.com/microsoft/vscode-prompt-tsx?tab=readme-ov-file#flex-behavior) value of `1` to ensure it is rendered after the base instructions, user query, and history.
+
+```tsx
+<FileContext priority={70} flexGrow={1} files={this.props.files} />
+```
+
+With a `flexGrow` value, the element gets any _unused_ token budget in its `PromptSizing` object that's passed into its `render()` and `prepare()` calls. You can read more about the behavior of flex elements in the [prompt-tsx documentation](https://github.com/microsoft/vscode-prompt-tsx?tab=readme-ov-file#flex-behavior).
+
+### Step 3: Include the history
+
+Next, include the history messages using the `History` component that you created previously. This is a little trickier, since you do want some history to be shown, but also want the file contents to take up most the prompt.
+
+Therefore, assign the `History` component a `flexGrow` value of `2` to ensure it is rendered after all other elements, including `<FileContext />`. But, also set a `flexReserve` value of `"/5"` to reserve 1/5th of the total budget for history.
+
+```tsx
+<History
+	history={this.props.history}
+	passPriority
+	older={0}
+	newer={80}
+	flexGrow={2}
+	flexReserve="/5"
+/>
+```
+
+### Step 3: Combine all elements of the prompt
+
+Now, combine all the elements into the `MyPrompt` component.
+
+```tsx
+import {
+	UserMessage,
+	PromptElement,
+	BasePromptElementProps,
+} from '@vscode/prompt-tsx';
+import { History } from './history';
+
+interface IFilesToInclude {
+	document: TextDocument;
+	line: number;
+}
+
+interface IMyPromptProps extends BasePromptElementProps {
+	history: ChatContext['history'];
+	userQuery: string;
+	files: IFilesToInclude[];
+}
+
+export class MyPrompt extends PromptElement<IMyPromptProps> {
+	render() {
+		return (
+			<>
+				<UserMessage priority={100}>Here are your base instructions.</UserMessage>
+				<History
+					history={this.props.history}
+					passPriority
+					older={0}
+					newer={80}
+					flexGrow={2}
+					flexReserve="/5"
+				/>
+				<UserMessage priority={90}>{this.props.userQuery}</UserMessage>
+				<FileContext priority={70} flexGrow={1} files={this.props.files} />
+			</>
+		);
+	}
+}
+```
+
+### Step 4: Define the FileContext component
+
+Finally, define a `FileContext` component that includes the contents of the files the user is currently looking at. Because you used `flexGrow`, you can implement logic that gets as many of the lines around the 'interesting' line for each file by using the information in `PromptSizing`.
+
+For brevity, the implementation logic for `getExpandedFiles` is omitted. You can check it out in the [prompt-tsx repo](https://github.com/microsoft/vscode-prompt-tsx/blob/5501d54a5b9a7608582e8419cd968a82ca317cc9/examples/file-contents.tsx#L103).
+
+```tsx
+import { PromptElement, BasePromptElementProps, PromptSizing, PromptPiece } from '@vscode/prompt-tsx';
+
+class FileContext extends PromptElement<{ files: IFilesToInclude[] } & BasePromptElementProps> {
+	async render(_state: void, sizing: PromptSizing): Promise<PromptPiece> {
+		const files = await this.getExpandedFiles(sizing);
+		return <>{files.map(f => f.toString())}</>;
+	}
+
+	private async getExpandedFiles(sizing: PromptSizing) {
+		// Implementation details are summarized here.
+		// Refer to the repo for the complete implementation.
+	}
+}
+```
+
+## Summary
+
+In these examples, you created a `MyPrompt` component that includes base instructions, user query, history messages, and file contents with different priorities. You used `flexGrow` to cooperatively size the file contents to fit within the token budget.
+
+By following this pattern, you can ensure that the most important parts of your prompt are always included, while less important parts are pruned as needed to fit within the model's context window. For the complete implementation details of the `getExpandedFiles` method and the `FileContextTracker` class, refer to the [prompt-tsx repo](https://github.com/microsoft/vscode-prompt-tsx/tree/main/examples).
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/tools.md
+- **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/tools
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/tools.md
+- **SHA256_FINGERPRINT**: `191acf59d36b293b3bd52bdba0816c832562d070221cb86edd49036fcca683e9`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.671306+00:00
+---
+
+**MetaDescription**: A guide to creating a language model tool and how to implement tool calling in a chat extension
+
+# Language Model Tool API
+
+Language model tools enable you to extend the functionality of a large language model (LLM) in chat with domain-specific capabilities. To process a user's chat prompt, [agents](/docs/chat/chat-overview.md) in VS Code can automatically invoke these tools to perform specialized tasks as part of the conversation.
+
+By contributing a language model tool in your VS Code extension, you can extend the agentic coding workflow while also providing deep integration with the editor. Extension tools are one of three types of tools available in VS Code, alongside [built-in tools and MCP tools](/docs/agents/concepts/tools.md#types-of-tools).
+
+In this extension guide, you learn how to create a language model tool by using the Language Model Tools API and how to implement tool calling in a chat extension.
+
+You can also extend the chat experience with specialized tools by contributing an [MCP server](/api/extension-guides/ai/mcp). See the [AI Extensibility Overview](/api/extension-guides/ai/ai-extensibility-overview) for details on the different options and how to decide which approach to use.
+
+> [!TIP]
+> For information about using tools as an end user, see [Use tools with agents](/docs/agents/run/tools.md).
+
+## What is tool calling in an LLM?
+
+A language model tool is a function that can be invoked as part of a language model request. For example, you might have a function that retrieves information from a database, performs some calculation, or calls an online API. When you contribute a tool in a VS Code extension, agent mode can then invoke the tool based on the context of the conversation.
+
+The LLM never actually executes the tool itself, instead the LLM generates the parameters that are used to call your tool. It's important to clearly describe the tool's purpose, functionality, and input parameters so that the tool can be invoked in the right context.
+
+The following diagram shows the tool-calling flow in agent mode in VS Code. See [Tool-calling flow](#tool-calling-flow) for details about the specific steps involved.
+
+![Diagram that shows the Copilot tool-calling flow](../images/ai/tools/copilot-tool-calling-flow.png)
+
+Read more about [function calling](https://platform.openai.com/docs/guides/function-calling) in the OpenAI documentation.
+
+## Why implement a language model tool in your extension?
+
+Implementing a language model tool in your extension has several benefits:
+
+- **Extend agent mode** with specialized, domain-specific tools that are automatically invoked as part of responding to a user prompt. For example, enable database scaffolding and querying to dynamically provide the LLM with relevant context.
+- **Deeply integrate with VS Code** by using the broad set of extension APIs. For example, use the [debug APIs](/api/extension-guides/debugger-extension) to get the current debugging context and use it as part of the tool's functionality.
+- **Distribute and deploy** tools via the Visual Studio Marketplace, providing a reliable and seamless experience for users. Users don't need a separate installation and update process for your tool.
+
+You might consider implementing a language model tool with an [MCP server](/api/extension-guides/ai/mcp) in the following scenarios:
+
+- You already have an MCP server implementation and also want to use it in VS Code.
+- You want to reuse the same tool across different development environments and platforms.
+- Your tool is hosted remotely as a service.
+- You don't need access to VS Code APIs.
+
+Learn more about the [differences between tool types](/docs/agents/concepts/tools.md#types-of-tools).
+
+## Create a language model tool
+
+Implementing a language model tool consists of two main parts:
+
+1. Define the tool's configuration in the `package.json` file of your extension.
+1. Implement the tool in your extension code by using the [Language Model API reference](/api/references/vscode-api#lm)
+
+You can get started with a [basic example project](https://github.com/microsoft/vscode-extension-samples/tree/main/chat-sample).
+
+### 1. Static configuration in `package.json`
+
+The first step to define a language model tool in your extension is to define it in the `package.json` file of your extension. This configuration includes the tool name, description, input schema, and other metadata:
+
+1. Add an entry for your tool in the `contributes.languageModelTools` section of your extension's `package.json` file.
+
+1. Give the tool a unique name:
+
+    | Property | Description |
+    | -------- | ----------- |
+    | `name` | The unique name of the tool, used to reference the tool in the extension implementation code. Format the name in the format `{verb}_{noun}`. See [naming guidelines](#guidelines-and-conventions). |
+    | `displayName` | The user-friendly name of the tool, used for displaying in the UI. |
+
+1. If the tool can be used with [agents](/docs/agents/overview.md#built-in-agents) or referenced in a chat prompt with `#`, add the following properties:
+
+    Users can enable or disable the tool in the Chat view, similar to how this is done for [Model Context Protocol (MCP) tools](/docs/agent-customization/mcp-servers.md).
+
+    | Property | Description |
+    | -------- | ----------- |
+    | `canBeReferencedInPrompt` | Set to `true` if the tool can be used with [agents](/docs/agents/overview.md#built-in-agents) or referenced in chat. |
+    | `toolReferenceName` | The name for users to reference the tool in a chat prompt via `#`. |
+    | `icon` | The icon to display for the tool in the UI. |
+    | `userDescription` | User-friendly description of the tool, used for displaying in the UI. |
+
+1. Add a detailed description in `modelDescription`. This information is used by the LLM to determine in which context your tool should be used.
+
+    - What exactly does the tool do?
+    - What kind of information does it return?
+    - When should and shouldn't it be used?
+    - Describe important limitations or constraints of the tool.
+
+1. If the tool takes input parameters, add an `inputSchema` property that describes the tool's input parameters.
+
+    This JSON schema describes an object with the properties that the tool takes as input, and whether they are required. File paths should be absolute paths.
+
+    Describe what each parameter does and how it relates to the tool's functionality.
+
+1. Add a `when` clause to control when the tool is available.
+
+    The `languageModelTools` contribution point lets you restrict when a tool is available for agent mode or can be referenced in a prompt by using a [when clause](/api/references/when-clause-contexts). For example, a tool that gets the debug call stack information, should only be available when the user is debugging.
+
+    ```json
+    "contributes": {
+        "languageModelTools": [
+            {
+                "name": "chat-tools-sample_tabCount",
+                ...
+                "when": "debugState == 'running'"
+            }
+        ]
+    }
+    ```
+
+<details>
+<summary>Example tool definition</summary>
+
+The following example shows how to define a tool that counts the number of active tabs in a tab group.
+
+```json
+"contributes": {
+    "languageModelTools": [
+        {
+            "name": "chat-tools-sample_tabCount",
+            "tags": [
+                "editors",
+                "chat-tools-sample"
+            ],
+            "toolReferenceName": "tabCount",
+            "displayName": "Tab Count",
+            "modelDescription": "The number of active tabs in a tab group in VS Code.",
+            "userDescription": "Count the number of active tabs in a tab group.",
+            "canBeReferencedInPrompt": true,
+            "icon": "$(files)",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "tabGroup": {
+                        "type": "number",
+                        "description": "The index of the tab group to check. This is optional- if not specified, the active tab group will be checked.",
+                        "default": 0
+                    }
+                }
+            }
+        }
+    ]
+}
+```
+
+</details>
+
+### 2. Tool implementation
+
+Implement the language model tool by using the [Language Model API](/api/references/vscode-api#lm). This consists of the following steps:
+
+1. On activation of the extension, register the tool with [`vscode.lm.registerTool`](/api/references/vscode-api#lm.registerTool).
+
+    Provide the name of the tool as you specified it in the `name` property in `package.json`.
+
+    If you want the tool to be private to your extension, skip the tool registration step.
+
+    ```ts
+    export function registerChatTools(context: vscode.ExtensionContext) {
+        context.subscriptions.push(vscode.lm.registerTool('chat-tools-sample_tabCount', new TabCountTool()));
+    }
+    ```
+
+1. Create a class that implements the [`vscode.LanguageModelTool<>`](/api/references/vscode-api#LanguageModelTool&lt;T&gt;) interface.
+
+1. Add tool confirmation messages in the `prepareInvocation` method.
+
+    A generic confirmation dialog will always be shown for tools from extensions, but the tool can customize the confirmation message. Give enough context to the user to understand what the tool is doing. The message can be a `MarkdownString` containing a code block.
+
+    The following example shows how to provide a confirmation message for the tab count tool.
+
+    ```ts
+    async prepareInvocation(
+        options: vscode.LanguageModelToolInvocationPrepareOptions<ITabCountParameters>,
+        _token: vscode.CancellationToken
+    ) {
+        const confirmationMessages = {
+            title: 'Count the number of open tabs',
+            message: new vscode.MarkdownString(
+                `Count the number of open tabs?` +
+                (options.input.tabGroup !== undefined
+                    ? ` in tab group ${options.input.tabGroup}`
+                    : '')
+            ),
+        };
+
+        return {
+            invocationMessage: 'Counting the number of tabs',
+            confirmationMessages,
+        };
+    }
+    ```
+
+    If `prepareInvocation` returned `undefined`, the generic confirmation message will be shown. Note that the user can also select to "Always Allow" a certain tool.
+
+1. Define an interface that describes the tool input parameters.
+
+    The interface is used in the `invoke` method of the `vscode.LanguageModelTool` class. The input parameters are validated against the JSON schema you defined in the `inputSchema` in `package.json`.
+
+    The following example shows the interface for the tab count tool.
+
+    ```ts
+    export interface ITabCountParameters {
+        tabGroup?: number;
+    }
+    ```
+
+1. Implement the `invoke` method. This method is called when the language model tool is invoked while processing a chat prompt.
+
+    The `invoke` method receives the tool input parameters in the `options` parameter. The parameters are validated against the JSON schema defined in `inputSchema` in `package.json`.
+
+    When an error occurs, throw an error with a message that makes sense to the LLM. Optionally, provide instructions on what the LLM should do next, such as retrying with different parameters, or performing a different action.
+
+    The following example shows the implementation of the tab count tool. The result of the tool is an instance of type `vscode.LanguageModelToolResult`.
+
+    ```ts
+    async invoke(
+        options: vscode.LanguageModelToolInvocationOptions<ITabCountParameters>,
+        _token: vscode.CancellationToken
+    ) {
+        const params = options.input;
+        if (typeof params.tabGroup === 'number') {
+            const group = vscode.window.tabGroups.all[Math.max(params.tabGroup - 1, 0)];
+            const nth =
+                params.tabGroup === 1
+                    ? '1st'
+                    : params.tabGroup === 2
+                        ? '2nd'
+                        : params.tabGroup === 3
+                            ? '3rd'
+                            : `${params.tabGroup}th`;
+            return new vscode.LanguageModelToolResult([new vscode.LanguageModelTextPart(`There are ${group.tabs.length} tabs open in the ${nth} tab group.`)]);
+        } else {
+            const group = vscode.window.tabGroups.activeTabGroup;
+            return new vscode.LanguageModelToolResult([new vscode.LanguageModelTextPart(`There are ${group.tabs.length} tabs open.`)]);
+        }
+    }
+    ```
+
+View the full source code for implementing a [language model tool](https://github.com/microsoft/vscode-extension-samples/blob/main/chat-sample/src/tools.ts) in the VS Code Extension Samples repository.
+
+## Tool-calling flow
+
+When a user sends a chat prompt, the following steps occur:
+
+1. Copilot determines the list of available tools based on the user's configuration.
+
+    The list of tools consists of built-in tools, tools registered by extensions, and tools from [MCP servers](/docs/agent-customization/mcp-servers.md). You can contribute to agent mode via extensions or MCP servers (shown in green in the diagram).
+
+1. Copilot sends the request to the LLM and provides it with the prompt, chat context, and the list of tool definitions to consider.
+
+    The LLM generates a response, which might include one or more requests to invoke a tool.
+
+1. If needed, Copilot invokes the suggested tool(s) with the parameter values provided by the LLM.
+
+    A tool response might result in more requests for tool invocations.
+
+1. If there are errors or follow-up tool requests, Copilot iterates over the tool-calling flow until all tool requests are resolved.
+
+1. Copilot returns the final response to the user, which might include responses from multiple tools.
+
+## Guidelines and conventions
+
+- **Naming**: write clear and descriptive names for tools and parameters.
+
+    - **Tool name**: should be unique, and clearly describe their intent. Structure the tool name in the format `{verb}_{noun}`. For example, `get_weather`, `get_azure_deployment`, or `get_terminal_output`.
+
+    - **Parameter name**: should describe the parameter's purpose. Structure the parameter name in the format `{noun}`. For example, `destination_location`, `ticker`, or `file_name`.
+
+- **Descriptions**: write detailed descriptions for tools and parameters.
+
+    - Describe what the tool does and when it should and shouldn't be used. For example, "This tool retrieves the weather for a given location."
+    - Describe what each parameter does and how it relates to the tool's functionality. For example, "The `destination_location` parameter specifies the location for which to retrieve the weather. It should be a valid location name or coordinates."
+    - Describe important limitations or constraints of the tool. For example, "This tool only retrieves weather data for locations in the United States. It might not work for other regions."
+
+- **User confirmation**: provide a confirmation message for the tool invocation. A generic confirmation dialog will always be shown for tools from extensions, but the tool can customize the confirmation message. Give enough context to the user to understand what the tool is doing.
+
+- **Error handling**: when an error occurs, throw an error with a message that makes sense to the LLM. Optionally, provide instructions on what the LLM should do next, such as retrying with different parameters, or performing a different action.
+
+Get more best practices for creating tools in the [OpenAI documentation](https://platform.openai.com/docs/guides/function-calling?api-mode=chat#best-practices-for-defining-functions) and [Anthropic documentation](https://docs.anthropic.com/en/docs/build-with-claude/tool-use/overview).
+
+## Related content
+
+- [Language Model API reference](/api/references/vscode-api#lm)
+- [Register an MCP server in a VS Code extension](/api/extension-guides/ai/mcp)
+- [Use MCP tools in agent mode](/docs/agent-customization/mcp-servers.md)
+
+
+---
+# DOCUMENT_SOURCE: web::vscode_api_contribution_points
+- **CANONICAL_URL**: https://code.visualstudio.com/api/references/contribution-points
+- **RAW_SOURCE_URL**: https://code.visualstudio.com/api/references/contribution-points
+- **SHA256_FINGERPRINT**: `e5a2d69ed864dafeff4f2262e1104a307c122c56d364207fe2658c7f3bb8f9b2`
+- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:35.559779+00:00
+---
+
+# Contribution Points
+
+- View as Markdown
+Contribution Points are a set of JSON declarations that you make in the contributes field of the package.json Extension Manifest . Your extension registers Contribution Points to extend various functionalities within Visual Studio Code. Here is a list of all available Contribution Points :
+contributes
+package.json
+- authentication
+authentication
+- breakpoints
+breakpoints
+- chatAgents
+chatAgents
+- chatInstructions
+chatInstructions
+- chatPromptFiles
+chatPromptFiles
+- chatSkills
+chatSkills
+- colors
+colors
+- commands
+commands
+- configuration
+configuration
+- configurationDefaults
+configurationDefaults
+- customEditors
+customEditors
+- debuggers
+debuggers
+- grammars
+grammars
+- icons
+icons
+- iconThemes
+iconThemes
+- jsonValidation
+jsonValidation
+- keybindings
+keybindings
+- languages
+languages
+- languageModelChatProviders
+languageModelChatProviders
+- languageModelTools
+languageModelTools
+- menus
+menus
+- problemMatchers
+problemMatchers
+- problemPatterns
+problemPatterns
+- productIconThemes
+productIconThemes
+- resourceLabelFormatters
+resourceLabelFormatters
+- semanticTokenModifiers
+semanticTokenModifiers
+- semanticTokenScopes
+semanticTokenScopes
+- semanticTokenTypes
+semanticTokenTypes
+- snippets
+snippets
+- submenus
+submenus
+- taskDefinitions
+taskDefinitions
+- terminal
+terminal
+- themes
+themes
+- typescriptServerPlugins
+typescriptServerPlugins
+- views
+views
+- viewsContainers
+viewsContainers
+- viewsWelcome
+viewsWelcome
+- walkthroughs
+walkthroughs
+
+## contributes.authentication
+
+Contributes an authentication provider. This will set up an activation event for your provider and display it in your extension's features.
+
+```
+{
+"contributes"
+: {
+"authentication"
+: [
+{
+"label"
+:
+"Azure DevOps"
+,
+"id"
+:
+"azuredevops"
+}
+]
+}
+}
+```
+
+## contributes.breakpoints
+
+Usually a debugger extension will also have a contributes.breakpoints entry where the extension lists the language file types for which setting breakpoints will be enabled.
+contributes.breakpoints
+
+```
+{
+"contributes"
+: {
+"breakpoints"
+: [
+{
+"language"
+:
+"javascript"
+},
+{
+"language"
+:
+"javascriptreact"
+}
+]
+}
+}
+```
+
+## contributes.chatAgents
+
+Contributes custom agents for Copilot Chat. Custom agents are pre-configured AI personas with specific instructions and tool restrictions. Use this contribution point to bundle reusable custom agents with your extension so they appear alongside user-defined agents in the agents dropdown.
+Each entry requires a path to a .agent.md file relative to the extension root. You can optionally specify a when clause to conditionally enable the agent. Specify the agent's name , description , and other metadata inside the .agent.md frontmatter rather than in the contribution point.
+path
+.agent.md
+when
+name
+description
+.agent.md
+
+```
+{
+"contributes"
+: {
+"chatAgents"
+: [
+{
+"path"
+:
+"./agents/planner.agent.md"
+}
+]
+}
+}
+```
+
+### chatAgents properties
+
+| Property | Type | Required | Description |
+| path | string | Yes | Path to the .agent.md file relative to the extension root. The path must resolve to a location inside the extension. |
+| when | string | No | A when clause condition that must be true for this entry to be enabled. |
+| sessionTypes | string[] | No | The chat session types where this agent should be offered. |
+
+See Custom agents in VS Code for the required .agent.md file format, including the name , description , tools , and model frontmatter fields.
+.agent.md
+name
+description
+tools
+model
+
+## contributes.chatInstructions
+
+Contributes instructions files for Copilot Chat. Instructions files provide custom guidelines that are automatically included in chat requests to steer the behavior of Copilot. Use this contribution point to bundle reusable instructions with your extension, such as coding conventions, framework-specific guidelines, or domain-specific rules.
+Copilot automatically applies contributed instructions when the user's chat request is relevant to the instructions' use case. You do not need to manually attach them.
+Each entry requires a path to a Markdown file relative to the extension root. You can optionally specify a when clause to control when the instructions are enabled. Specify the name and description metadata inside the Markdown file itself rather than in the contribution point.
+path
+when
+name
+description
+
+```
+{
+"contributes"
+: {
+"chatInstructions"
+: [
+{
+"path"
+:
+"./prompts/textMateGuidelines.instructions.md"
+}
+]
+}
+}
+```
+
+You can use an optional when clause to conditionally enable the instructions based on context:
+when
+
+```
+{
+"contributes"
+: {
+"chatInstructions"
+: [
+{
+"path"
+:
+"./prompts/textMateGuidelines.instructions.md"
+,
+"when"
+:
+"resourceExtname == .tmLanguage"
+}
+]
+}
+}
+```
+
+### chatInstructions properties
+
+| Property | Type | Required | Description |
+| path | string | Yes | Path to the Markdown file relative to the extension root. The path must resolve to a location inside the extension. |
+| when | string | No | A when clause condition that must be true for this entry to be enabled. |
+
+See the chatPromptFiles contribution point for contributing reusable prompt files.
+chatPromptFiles
+
+## contributes.chatPromptFiles
+
+Contributes prompt files for Copilot Chat. Prompt files are reusable chat prompts that users can invoke as slash commands in chat. Use this contribution point to bundle ready-made prompts with your extension.
+Each entry requires a path to a Markdown file relative to the extension root. You can optionally specify a when clause to conditionally enable the prompt. Specify the name and description metadata inside the Markdown file itself rather than in the contribution point.
+path
+when
+name
+description
+
+```
+{
+"contributes"
+: {
+"chatPromptFiles"
+: [
+{
+"path"
+:
+"./prompts/reviewAndCreateIssue.prompt.md"
+}
+]
+}
+}
+```
+
+### chatPromptFiles properties
+
+| Property | Type | Required | Description |
+| path | string | Yes | Path to the Markdown file relative to the extension root. The path must resolve to a location inside the extension. |
+| when | string | No | A when clause condition that must be true for this entry to be enabled. |
+
+See the chatInstructions contribution point for contributing reusable instructions files.
+chatInstructions
+
+## contributes.chatSkills
+
+Contributes Agent Skills for Copilot Chat. Agent Skills are folders of instructions, scripts, and resources that Copilot can load when relevant to perform specialized tasks. Use this contribution point to bundle reusable skills with your extension.
+Each entry requires a path to a SKILL.md file relative to the extension root. The SKILL.md file must follow the Agent Skills specification , and its name field must match the parent directory name. You can optionally specify a when clause to conditionally enable the skill.
+path
+SKILL.md
+SKILL.md
+name
+when
+
+```
+{
+"contributes"
+: {
+"chatSkills"
+: [
+{
+"path"
+:
+"./skills/my-skill/SKILL.md"
+}
+]
+}
+}
+```
+
+### chatSkills properties
+
+| Property | Type | Required | Description |
+| path | string | Yes | Path to the SKILL.md file relative to the extension root. The path must resolve to a location inside the extension, and the parent directory name must match the name field in SKILL.md . |
+| when | string | No | A when clause condition that must be true for this entry to be enabled. |
+
+See Contribute skills from extensions for the required skill structure and SKILL.md format.
+SKILL.md
+
+## contributes.colors
+
+Contributes new themable colors. These colors can be used by the extension in editor decorators and in the status bar. Once defined, users can customize the color in the workspace.colorCustomization setting and user themes can set the color value.
+workspace.colorCustomization
+
+```
+{
+"contributes"
+: {
+"colors"
+: [
+{
+"id"
+:
+"superstatus.error"
+,
+"description"
+:
+"Color for error message in the status bar."
+,
+"defaults"
+: {
+"dark"
+:
+"errorForeground"
+,
+"light"
+:
+"errorForeground"
+,
+"highContrast"
+:
+"#010203"
+,
+"highContrastLight"
+:
+"#feedc3"
+}
+}
+]
+}
+}
+```
+
+Color default values can be defined for light, dark and high contrast theme and can either be a reference to an existing color or a Color Hex Value .
+Extensions can consume new and existing theme colors with the ThemeColor API:
+ThemeColor
+
+```
+const
+errorColor
+=
+new
+vscode
+.
+ThemeColor
+(
+'superstatus.error'
+);
+```
+
+## contributes.commands
+
+Contribute the UI for a command consisting of a title and (optionally) an icon, category, and enabled state. Enablement is expressed with when clauses . By default, commands show in the Command Palette ( ⇧⌘P (Windows, Linux Ctrl+Shift+P ) ) but they can also show in other menus .
+Presentation of contributed commands depends on the containing menu. The Command Palette , for
+instance, prefixes commands with their category , allowing for easy grouping. However, the Command Palette doesn't show icons nor disabled commands. The editor context menu, on the other
+hand, shows disabled items but doesn't show the category label.
+category
+Note: When a command is invoked (from a key binding, from the Command Palette , any other menu, or programmatically), VS Code will emit an activationEvent onCommand:${command} .
+onCommand:${command}
+Note: When using icons from product icons , setting light and dark will disable the icon.
+The correct syntax is "icon": "$(book)"
+light
+dark
+"icon": "$(book)"
+
+### command example
+
+```
+{
+"contributes"
+: {
+"commands"
+: [
+{
+"command"
+:
+"extension.sayHello"
+,
+"title"
+:
+"Hello World"
+,
+"category"
+:
+"Hello"
+,
+"icon"
+: {
+"light"
+:
+"path/to/light/icon.svg"
+,
+"dark"
+:
+"path/to/dark/icon.svg"
+}
+}
+]
+}
+}
+```
+
+See the Commands Extension Guide to learn more about using commands in VS Code extensions.
+
+### Command icon specifications
+
+- Size: Icons should be 16x16 with a 1 pixel padding (image is 14x14) and centered.
+Size:
+- Color: Icons should use a single color.
+Color:
+- Format: It is recommended that icons be in SVG, though any image file type is accepted.
+Format:
+
+## contributes.configuration
+
+Contribute settings that will be exposed to the user. The user will be able to set these configuration options in the Settings editor or by editing a settings.json file directly.
+This section can either be a single object, representing a single category of settings, or an array of objects, representing multiple categories of settings. If there are multiple categories of settings, the Settings editor will show a submenu in the table of contents for that extension, and the title keys will be used for the submenu entry names.
+
+### Configuration example
+
+```
+{
+"contributes"
+: {
+"configuration"
+: {
+"title"
+:
+"Settings Editor Test Extension"
+,
+"type"
+:
+"object"
+,
+"properties"
+: {
+"settingsEditorTestExtension.booleanExample"
+: {
+"type"
+:
+"boolean"
+,
+"default"
+:
+true
+,
+"description"
+:
+"Boolean Example"
+},
+"settingsEditorTestExtension.stringExample"
+: {
+"type"
+:
+"string"
+,
+"default"
+:
+"Hello World"
+,
+"description"
+:
+"String Example"
+}
+}
+}
+}
+}
+```
+
+You can read these values from your extension using vscode.workspace.getConfiguration('myExtension') .
+vscode.workspace.getConfiguration('myExtension')
+
+### Configuration schema
+
+Your configuration entry is used both to provide intellisense when editing your settings in the JSON editor, and to define the way they appear in the settings UI.
+
+#### title
+
+The title 1️⃣️ of a category is the heading used for that category.
+title
+
+```
+{
+"configuration"
+: {
+"title"
+:
+"GitMagic"
+}
+}
+```
+
+For an extension with multiple categories of settings, if the title of one of the categories is the same as the extension's display name, then the settings UI will treat that category as a "default category", ignoring the order field for that category and placing its settings below the main extension heading.
+order
+For both the title and displayName fields, words like "Extension", "Configuration", and "Settings" are redundant.
+title
+displayName
+- ✔ "title": "GitMagic"
+"title": "GitMagic"
+- ❌ "title": "GitMagic Extension"
+"title": "GitMagic Extension"
+- ❌ "title": "GitMagic Configuration"
+"title": "GitMagic Configuration"
+- ❌ "title": "GitMagic Extension Configuration Settings"
+"title": "GitMagic Extension Configuration Settings"
+
+#### properties
+
+The properties 2️⃣ in your configuration object will form a dictionary where the keys are setting IDs and the values give more information on the setting. Though an extension can contain multiple categories of settings, each setting of the extension must still have its own unique ID. A setting ID cannot be a complete prefix of another setting ID.
+properties
+configuration
+Properties without an explicit order field will appear in lexicographical order in the settings UI ( not the order in which they're listed in the manifest).
+order
+
+### Setting titles
+
+In the settings UI, multiple fields will be used to construct a display title for each setting. Capital letters in your key are used to indicate word breaks.
+
+#### Display titles for single-category and default category configurations
+
+If the configuration has a single category of settings, or if the category has the same title as the extension's display name, then for settings within that category, the settings UI will use the settings ID and the extension name field to determine the display title.
+name
+As an example, for settings ID gitMagic.blame.dateFormat and extension name authorName.gitMagic , because the prefix of the settings ID matches with the suffix of the extension name, the gitMagic part of the settings ID will be removed in the display title: "Blame: Date Format ".
+gitMagic.blame.dateFormat
+authorName.gitMagic
+gitMagic
+
+#### Display titles for multi-category configurations
+
+If the configuration has multiple categories of settings, and the category does not have the same title as the extension's display name, then for settings within that category, the settings UI will use the settings ID and the category id field to determine the display title.
+id
+As an example, for settings ID css.completion.completePropertyWithSemicolon and category ID css , because the prefix of the settings ID matches with the suffix of the category ID, the css part of the settings ID will be removed in the settings UI, and the generated title for the setting will be "Completion: Complete Property With Semicolon ".
+css.completion.completePropertyWithSemicolon
+css
+css
+
+### Configuration property schema
+
+Configuration keys are defined using a superset of JSON
+Schema .
+
+#### description / markdownDescription
+
+Your description 3️⃣ appears after the title and before the input field, except for booleans, where the description is used as the label for the checkbox. 6️⃣
+description
+
+```
+{
+"gitMagic.blame.heatMap.enabled"
+: {
+"description"
+:
+"Specifies whether to provide a heatmap indicator in the gutter blame annotations"
+}
+}
+```
+
+If you use markdownDescription instead of description , your setting description will be parsed as Markdown in the settings UI.
+markdownDescription
+description
+
+```
+{
+"gitMagic.blame.dateFormat"
+: {
+"markdownDescription"
+:
+"Specifies how to format absolute dates (e.g. using the `${date}` token) in gutter blame annotations. See the [Moment.js docs](https://momentjs.com/docs/#/displaying/format/) for valid formats"
+}
+}
+```
+
+For markdownDescription , in order to add newlines or multiple paragraphs, use the string \n\n to separate the paragraphs instead of just \n .
+markdownDescription
+\n\n
+\n
+
+#### type
+
+Entries of type number 4️⃣ , string 5️⃣ , boolean 6️⃣ can be edited directly in the settings UI.
+number
+string
+boolean
+
+```
+{
+"gitMagic.views.pageItemLimit"
+: {
+"type"
+:
+"number"
+,
+"default"
+:
+20
+,
+"markdownDescription"
+:
+"Specifies the number of items to show in each page when paginating a view list. Use 0 to specify no limit"
+}
+}
+```
+
+A string setting can be rendered with a multiline text input if it sets "editPresentation": "multilineText" on the configuration entry.
+"editPresentation": "multilineText"
+For boolean entries, the markdownDescription (or description if markdownDescription is not specified) will be used as the label next to the checkbox.
+boolean
+markdownDescription
+description
+markdownDescription
+
+```
+{
+"gitMagic.blame.compact"
+: {
+"type"
+:
+"boolean"
+,
+"description"
+:
+"Specifies whether to compact (deduplicate) matching adjacent gutter blame annotations"
+}
+}
+```
+
+Some object and array type settings will be rendered in the settings UI. Simple arrays of number , string , or boolean will be rendered as editable lists. Objects that have properties of type string , number , integer , and/or boolean will be rendered as editable grids of keys and values. Object settings should also have additionalProperties set to either false , or an object with an appropriate type property, to render in the UI.
+object
+array
+number
+string
+boolean
+string
+number
+integer
+boolean
+additionalProperties
+false
+type
+If an object or array type setting can also contain other types like nested objects, arrays, or null, then the value won't be rendered in the settings UI and can only be modified by editing the JSON directly. Users will see a link to Edit in settings.json as shown in the screenshot above. 8️⃣
+object
+array
+
+#### order
+
+Both categories and the settings within those categories can take an integer order type property, which gives a reference to how they should be sorted relative to other categories and/or settings.
+order
+If two categories have order properties, the category with the lower order number comes first. If a category is not given an order property, it appears after categories that were given that property.
+order
+order
+If two settings within the same category have order properties, the setting with the lower order number comes first. If another setting within that same category is not given an order property, it will appear after settings in that category that were given that property.
+order
+order
+If two categories have the same order property value, or if two settings within the same category have the same order property value, then they will be sorted in increasing lexicographical order within the settings UI.
+order
+order
+
+#### enum / enumDescriptions / markdownEnumDescriptions / enumItemLabels
+
+If you provide an array of items under the enum 7️⃣ property, the settings UI will render a dropdown menu of those items.
+enum
+You can also provide an enumDescriptions property, an array of strings of the same length as the enum property. The enumDescriptions property provides a description in the settings UI at the bottom of the dropdown menu corresponding to each enum item. You can also use markdownEnumDescriptions instead of enumDescriptions , and your descriptions will be parsed as Markdown. markdownEnumDescriptions takes precedence over enumDescriptions . To customize the dropdown option names in the settings UI, you can use enumItemLabels .
+enumDescriptions
+enum
+enumDescriptions
+enum
+markdownEnumDescriptions
+enumDescriptions
+markdownEnumDescriptions
+enumDescriptions
+enumItemLabels
+Example:
+
+```
+{
+"settingsEditorTestExtension.enumSetting"
+: {
+"type"
+:
+"string"
+,
+"enum"
+: [
+"first"
+,
+"second"
+,
+"third"
+],
+"markdownEnumDescriptions"
+: [
+"The *first* enum"
+,
+"The *second* enum"
+,
+"The *third* enum"
+],
+"enumItemLabels"
+: [
+"1st"
+,
+"2nd"
+,
+"3rd"
+],
+"default"
+:
+"first"
+,
+"description"
+:
+"Example setting with an enum"
+}
+}
+```
+
+#### deprecationMessage / markdownDeprecationMessage
+
+If you set deprecationMessage , or markdownDeprecationMessage , the setting will get a warning underline with your specified message. Also, the setting will be hidden from the settings UI unless it is configured by the user. If you set markdownDeprecationMessage , the markdown will not be rendered in the setting hover or the problems view. If you set both properties, deprecationMessage will be shown in the hover and the problems view, and markdownDeprecationMessage will be rendered as Markdown in the settings UI.
+deprecationMessage
+markdownDeprecationMessage
+markdownDeprecationMessage
+deprecationMessage
+markdownDeprecationMessage
+Example:
+
+```
+{
+"json.colorDecorators.enable"
+: {
+"type"
+:
+"boolean"
+,
+"description"
+:
+"Enables or disables color decorators"
+,
+"markdownDeprecationMessage"
+:
+"**Deprecated**: Please use `#editor.colorDecorators#` instead."
+,
+"deprecationMessage"
+:
+"Deprecated: Please use editor.colorDecorators instead."
+}
+}
+```
+
+#### Other JSON Schema properties
+
+You can use any of the validation JSON Schema properties to describe other constraints on configuration values:
+- default for defining the default value of a property
+default
+- minimum and maximum for restricting numeric values
+minimum
+maximum
+- maxLength , minLength for restricting string length
+maxLength
+minLength
+- pattern for restricting strings to a given regular expression
+pattern
+- patternErrorMessage for giving a tailored error message when a pattern does not match.
+patternErrorMessage
+- format for restricting strings to well-known formats, such as date , time , ipv4 , email ,
+and uri
+format
+date
+time
+ipv4
+email
+uri
+- maxItems , minItems for restricting array length
+maxItems
+minItems
+- editPresentation for controlling whether a single-line inputbox or multi-line textarea is rendered for the string setting in the Settings editor
+editPresentation
+
+#### Unsupported JSON Schema properties
+
+Not supported in the configuration section are:
+- $ref and definition : The configuration schemas needs to be self-contained and cannot make assumptions how the aggregated settings JSON schema document looks like.
+$ref
+definition
+For more details on these and other features, see the JSON Schema Reference .
+
+#### scope
+
+A configuration setting can have one of the following possible scopes:
+- application - Settings that apply to all instances of VS Code and can only be configured in user settings.
+application
+- machine - Machine specific settings that can be set only in user settings or only in remote settings. For example, an installation path which shouldn't be shared across machines. The value of these settings will not be synchronized.
+machine
+- machine-overridable - Machine specific settings that can be overridden by workspace or folder settings. The value of these settings will not be synchronized.
+machine-overridable
+- window - Windows (instance) specific settings which can be configured in user, workspace, or remote settings.
+window
+- resource - Resource settings, which apply to files and folders, and can be configured in all settings levels, even folder settings.
+resource
+- language-overridable - Resource settings that can be overridable at a language level.
+language-overridable
+Configuration scopes determine when a setting is available to the user through the Settings editor and whether the setting is applicable. If no scope is declared, the default is window .
+scope
+window
+Below are example configuration scopes from the built-in Git extension:
+
+```
+{
+"contributes"
+: {
+"configuration"
+: {
+"title"
+:
+"Git"
+,
+"properties"
+: {
+"git.alwaysSignOff"
+: {
+"type"
+:
+"boolean"
+,
+"scope"
+:
+"resource"
+,
+"default"
+:
+false
+,
+"description"
+:
+"%config.alwaysSignOff%"
+},
+"git.ignoredRepositories"
+: {
+"type"
+:
+"array"
+,
+"default"
+: [],
+"scope"
+:
+"window"
+,
+"description"
+:
+"%config.ignoredRepositories%"
+},
+"git.autofetch"
+: {
+"type"
+: [
+"boolean"
+,
+"string"
+],
+"enum"
+: [
+true
+,
+false
+,
+"all"
+],
+"scope"
+:
+"resource"
+,
+"markdownDescription"
+:
+"%config.autofetch%"
+,
+"default"
+:
+false
+,
+"tags"
+: [
+"usesOnlineServices"
+]
+}
+}
+}
+}
+}
+```
+
+You can see that git.alwaysSignOff has resource scope and can be set per user, workspace, or folder, while the ignored repositories list with window scope applies more globally for the VS Code window or workspace (which might be multi-root).
+git.alwaysSignOff
+resource
+window
+
+#### ignoreSync
+
+You can set ignoreSync to true to prevent the setting from being synchronized with the user's settings. This is useful for settings that are not user-specific. For example, the remoteTunnelAccess.machineName setting is not user-specific and should not be synchronized. Please note that if you have set the scope to machine or machine-overridable , the setting will not be synchronized regardless of the value of ignoreSync .
+ignoreSync
+true
+remoteTunnelAccess.machineName
+scope
+machine
+machine-overridable
+ignoreSync
+
+```
+{
+"contributes"
+: {
+"configuration"
+: {
+"properties"
+: {
+"remoteTunnelAccess.machineName"
+: {
+"type"
+:
+"string"
+,
+"default"
+:
+""
+,
+"ignoreSync"
+:
+true
+}
+}
+}
+}
+}
+```
+
+#### Linking to settings
+
+You can insert a link to another setting, which will be rendered as a clickable link in the settings UI, by using this special syntax in the markdown-type properties: `#target.setting.id#` . This will work in markdownDescription , markdownEnumDescriptions , and markdownDeprecationMessage . Example:
+`#target.setting.id#`
+markdownDescription
+markdownEnumDescriptions
+markdownDeprecationMessage
+
+```
+"files.autoSaveDelay"
+: {
+"markdownDescription"
+:
+"Controls the delay in ms after which a dirty editor is saved automatically. Only applies when `#files.autoSave#` is set to `afterDelay`."
+,
+// ...
+}
+```
+
+In the settings UI, this is rendered as:
+
+## contributes.configurationDefaults
+
+Contribute default values for other registered configurations and override their defaults.
+The following example overrides the default behavior of files.autoSave setting to AutoSave files on focus change.
+files.autoSave
+
+```
+"configurationDefaults"
+: {
+"files.autoSave"
+:
+"onFocusChange"
+}
+```
+
+You can also contribute default editor configurations for the provided language. For example, the following snippet contributes default editor configurations for the markdown language:
+markdown
+
+```
+{
+"contributes"
+: {
+"configurationDefaults"
+: {
+"[markdown]"
+: {
+"editor.wordWrap"
+:
+"on"
+,
+"editor.quickSuggestions"
+: {
+"comments"
+:
+"off"
+,
+"strings"
+:
+"off"
+,
+"other"
+:
+"off"
+}
+}
+}
+}
+}
+```
+
+## contributes.customEditors
+
+The customEditors contribution point is how your extension tells VS Code about the custom editors that it provides. For example, VS Code needs to know what types of files your custom editor works with as well as how to identify your custom editor in any UI.
+customEditors
+Here's a basic customEditor contribution for the custom editor extension sample :
+customEditor
+
+```
+"contributes"
+: {
+"customEditors"
+: [
+{
+"viewType"
+:
+"catEdit.catScratch"
+,
+"displayName"
+:
+"Cat Scratch"
+,
+"selector"
+: [
+{
+"filenamePattern"
+:
+"*.cscratch"
+}
+],
+"priority"
+:
+"default"
+}
+]
+}
+```
+
+customEditors is an array, so your extension can contribute multiple custom editors.
+customEditors
+- viewType - Unique identifier for your custom editor. This is how VS Code ties a custom editor contribution in the package.json to your custom editor implementation in code. This must be unique across all extensions, so instead of a generic viewType such as "preview" make sure to use one that is unique to your extension, for example "viewType": "myAmazingExtension.svgPreview" .
+viewType - Unique identifier for your custom editor.
+viewType
+This is how VS Code ties a custom editor contribution in the package.json to your custom editor implementation in code. This must be unique across all extensions, so instead of a generic viewType such as "preview" make sure to use one that is unique to your extension, for example "viewType": "myAmazingExtension.svgPreview" .
+package.json
+viewType
+"preview"
+"viewType": "myAmazingExtension.svgPreview"
+- displayName - Name that identifies the custom editor in VS Code's UI. The display name is shown to the user in VS Code UI such as the View: Reopen with dropdown.
+displayName - Name that identifies the custom editor in VS Code's UI.
+displayName
+The display name is shown to the user in VS Code UI such as the View: Reopen with dropdown.
+- selector - Specifies which files a custom editor is active for. The selector is an array of one or more glob patterns . These glob patterns are matched against file names to determine if the custom editor can be used for them. A filenamePattern such as *.png will enable the custom editor for all PNG files. You can also create more specific patterns that match on file or directory names, for example **/translations/*.json .
+selector - Specifies which files a custom editor is active for.
+selector
+The selector is an array of one or more glob patterns . These glob patterns are matched against file names to determine if the custom editor can be used for them. A filenamePattern such as *.png will enable the custom editor for all PNG files.
+selector
+filenamePattern
+*.png
+You can also create more specific patterns that match on file or directory names, for example **/translations/*.json .
+**/translations/*.json
+- priority - (optional) Specifies when the custom editor is used. priority controls when a custom editor is used when a resource is open. Possible values are: "default" - Try to use the custom editor for every file that matches the custom editor's selector . If there are multiple custom editors for a given file, the user will have to select which custom editor they want to use. "option" - Do not use the custom editor by default but allow users to switch to it or configure it as their default.
+priority - (optional) Specifies when the custom editor is used.
+priority
+priority controls when a custom editor is used when a resource is open. Possible values are:
+priority
+- "default" - Try to use the custom editor for every file that matches the custom editor's selector . If there are multiple custom editors for a given file, the user will have to select which custom editor they want to use.
+"default"
+selector
+- "option" - Do not use the custom editor by default but allow users to switch to it or configure it as their default.
+"option"
+You can learn more in the Custom Editors extension guide.
+
+## contributes.debuggers
+
+Contribute a debugger to VS Code. A debugger contribution has the following properties:
+- type is a unique ID that is used to identify this debugger in a launch configuration.
+type
+- label is the user visible name of this debugger in the UI.
+label
+- program the path to the debug adapter that implements the VS Code debug protocol against the real debugger or runtime.
+program
+- runtime if the path to the debug adapter is not an executable but needs a runtime.
+runtime
+- configurationAttributes is the schema for launch configuration arguments specific to this debugger. Please note that the JSON schema constructs $ref and definition are not supported.
+configurationAttributes
+$ref
+definition
+- initialConfigurations lists launch configurations that are used to populate an initial launch.json.
+initialConfigurations
+- configurationSnippets lists launch configurations that are available through IntelliSense when editing a launch.json.
+configurationSnippets
+- variables introduces substitution variables and binds them to commands implemented by the debugger extension.
+variables
+- languages those languages for which the debug extension could be considered the "default debugger".
+languages
+
+### debugger example
+
+```
+{
+"contributes"
+: {
+"debuggers"
+: [
+{
+"type"
+:
+"node"
+,
+"label"
+:
+"Node Debug"
+,
+"program"
+:
+"./out/node/nodeDebug.js"
+,
+"runtime"
+:
+"node"
+,
+"languages"
+: [
+"javascript"
+,
+"typescript"
+,
+"javascriptreact"
+,
+"typescriptreact"
+],
+"configurationAttributes"
+: {
+"launch"
+: {
+"required"
+: [
+"program"
+],
+"properties"
+: {
+"program"
+: {
+"type"
+:
+"string"
+,
+"description"
+:
+"The program to debug."
+}
+}
+}
+},
+"initialConfigurations"
+: [
+{
+"type"
+:
+"node"
+,
+"request"
+:
+"launch"
+,
+"name"
+:
+"Launch Program"
+,
+"program"
+:
+"${workspaceFolder}/app.js"
+}
+],
+"configurationSnippets"
+: [
+{
+"label"
+:
+"Node.js: Attach Configuration"
+,
+"description"
+:
+"A new configuration for attaching to a running node program."
+,
+"body"
+: {
+"type"
+:
+"node"
+,
+"request"
+:
+"attach"
+,
+"name"
+:
+"${2:Attach to Port}"
+,
+"port"
+:
+9229
+}
+}
+],
+"variables"
+: {
+"PickProcess"
+:
+"extension.node-debug.pickNodeProcess"
+}
+}
+]
+}
+}
+```
+
+For a full walkthrough on how to integrate a debugger , go to Debugger Extension .
+debugger
+
+## contributes.grammars
+
+Contribute a TextMate grammar to a language. You must provide the language this grammar applies to, the TextMate scopeName for the grammar and the file path.
+language
+scopeName
+Note: The file containing the grammar can be in JSON (filenames ending in .json) or in XML plist format (all other files).
+
+### grammar example
+
+```
+{
+"contributes"
+: {
+"grammars"
+: [
+{
+"language"
+:
+"markdown"
+,
+"scopeName"
+:
+"text.html.markdown"
+,
+"path"
+:
+"./syntaxes/markdown.tmLanguage.json"
+,
+"embeddedLanguages"
+: {
+"meta.embedded.block.frontmatter"
+:
+"yaml"
+}
+}
+]
+}
+}
+```
+
+See the Syntax Highlight Guide to learn more about how to register TextMate grammars associated with a language to receive syntax highlighting.
+
+## contributes.icons
+
+Contribute a new icon by ID, along with a default icon. The icon ID can then be used by the extension (or any other extensions that depend on the extension) anywhere a ThemeIcon can be used new ThemeIcon("iconId") , in Markdown strings ( $(iconId) ), and as icons in certain contribution points.
+ThemeIcon
+new ThemeIcon("iconId")
+$(iconId)
+
+```
+{
+"contributes"
+: {
+"icons"
+: {
+"distro-ubuntu"
+: {
+"description"
+:
+"Ubuntu icon"
+,
+"default"
+: {
+"fontPath"
+:
+"./distroicons.woff"
+,
+"fontCharacter"
+:
+"
+\\
+E001"
+}
+},
+"distro-fedora"
+: {
+"description"
+:
+"Ubuntu icon"
+,
+"default"
+: {
+"fontPath"
+:
+"./distroicons.woff"
+,
+"fontCharacter"
+:
+"
+\\
+E002"
+}
+}
+}
+}
+}
+```
+
+## contributes.iconThemes
+
+Contribute a file icon theme to VS Code. File icons are shown next to file names, indicating the file type.
+You must specify an id (used in the settings), a label and the path to the file icon definition file.
+
+### file icon theme example
+
+```
+{
+"contributes"
+: {
+"iconThemes"
+: [
+{
+"id"
+:
+"my-cool-file-icons"
+,
+"label"
+:
+"Cool File Icons"
+,
+"path"
+:
+"./fileicons/cool-file-icon-theme.json"
+}
+]
+}
+}
+```
+
+See the File Icon Theme Guide on how to create a File Icon Theme.
+
+## contributes.jsonValidation
+
+Contribute a validation schema for a specific type of json file. The url value can be either a local path to a schema file included in the extension or a remote server URL such as a json schema store .
+json
+url
+
+```
+{
+"contributes"
+: {
+"jsonValidation"
+: [
+{
+"fileMatch"
+:
+".jshintrc"
+,
+"url"
+:
+"https://json.schemastore.org/jshintrc"
+}
+]
+}
+}
+```
+
+## contributes.keybindings
+
+Contribute a key binding rule defining what command should be invoked when the user presses a key combination. See the Key Bindings topic where key bindings are explained in detail.
+Contributing a key binding will cause the Default Keyboard Shortcuts to display your rule, and every UI representation of the command will now show the key binding you have added. And, of course, when the user presses the key combination the command will be invoked.
+Note: Because VS Code runs on Windows, macOS and Linux, where modifiers differ, you can use "key" to set the default key combination and overwrite it with a specific platform.
+Note: When a command is invoked (from a key binding or from the Command Palette), VS Code will emit an activationEvent onCommand:${command} .
+onCommand:${command}
+
+### keybinding example
+
+Defining that Ctrl+F1 under Windows and Linux and Cmd+F1 under macOS trigger the "extension.sayHello" command:
+"extension.sayHello"
+
+```
+{
+"contributes"
+: {
+"keybindings"
+: [
+{
+"command"
+:
+"extension.sayHello"
+,
+"key"
+:
+"ctrl+f1"
+,
+"mac"
+:
+"cmd+f1"
+,
+"when"
+:
+"editorTextFocus"
+}
+]
+}
+}
+```
+
+## contributes.languages
+
+Contribute definition of a programming language. This will introduce a new language or enrich the knowledge VS Code has about a language.
+The main effects of contributes.languages are:
+contributes.languages
+- Define a languageId that can be reused in other parts of VS Code API, such as vscode.TextDocument.languageId and the onLanguage Activation Events. You can contribute a human-readable using the aliases field. The first item in the list will be used as the human-readable label.
+languageId
+vscode.TextDocument.languageId
+onLanguage
+- You can contribute a human-readable using the aliases field. The first item in the list will be used as the human-readable label.
+aliases
+- Associate file name extensions ( extensions ), file names ( filenames ), file name glob patterns ( filenamePatterns ), files that begin with a specific line (such as hashbang) ( firstLine ), and mimetypes to that languageId .
+extensions
+filenames
+filenamePatterns
+firstLine
+mimetypes
+languageId
+- Contribute a set of Declarative Language Features for the contributed language. Learn more about the configurable editing features in the Language Configuration Guide .
+- Contribute an icon which can be used as in file icon themes if theme does not contain an icon for the language
+
+### language example
+
+```
+{
+"contributes"
+: {
+"languages"
+: [
+{
+"id"
+:
+"python"
+,
+"extensions"
+: [
+".py"
+],
+"aliases"
+: [
+"Python"
+,
+"py"
+],
+"filenames"
+: [],
+"firstLine"
+:
+"^#!/.*
+\\
+bpython[0-9.-]*
+\\
+b"
+,
+"configuration"
+:
+"./language-configuration.json"
+,
+"icon"
+: {
+"light"
+:
+"./icons/python-light.png"
+,
+"dark"
+:
+"./icons/python-dark.png"
+}
+}
+]
+}
+}
+```
+
+## contributes.languageModelChatProviders
+
+Contributes a language model chat provider to VS Code, enabling extensions to supply custom language models that users can select in the model picker. Each provider manages its own set of models and handles chat requests on their behalf.
+Register one entry per provider, giving it a unique vendor ID. Then use vscode.lm.registerLanguageModelChatProvider in your extension activation to wire up the implementation.
+vendor
+vscode.lm.registerLanguageModelChatProvider
+
+```
+{
+"contributes"
+: {
+"languageModelChatProviders"
+: [
+{
+"vendor"
+:
+"my-provider"
+,
+"displayName"
+:
+"My Provider"
+}
+]
+}
+}
+```
+
+To let users configure the provider (for example, to enter API keys), add a configuration schema. Mark sensitive fields with "secret": true so they are stored securely:
+configuration
+"secret": true
+
+### languageModelChatProviders properties
+
+| Property | Type | Required | Description |
+| vendor | string | Yes | Unique identifier for the provider, used as the first argument to vscode.lm.registerLanguageModelChatProvider . |
+| displayName | string | Yes | Human-readable name shown in the model picker UI. |
+| configuration | object | No | A JSON schema describing configuration options for the provider (for example, API keys). Properties can be marked "secret": true to store them securely. This is the recommended way to let users configure a provider. |
+| managementCommand | string | No | Deprecated. Use configuration instead. Command ID that opens a UI for managing this provider. Must be declared in contributes.commands . |
+| when | string | No | A when clause that controls whether this provider appears in the Manage Models list. |
+
+See the Language Model Chat Provider API guide for full implementation details.
+
+## contributes.languageModelTools
+
+Contributes language model tools that the language model can invoke automatically as part of an agentic coding workflow. Tools extend agent mode with domain-specific capabilities such as querying databases, calling external APIs, or interacting with the editor.
+Define each tool in the contributes.languageModelTools section, then register the implementation with vscode.lm.registerTool in your extension activation.
+contributes.languageModelTools
+vscode.lm.registerTool
+
+```
+{
+"contributes"
+: {
+"languageModelTools"
+: [
+{
+"name"
+:
+"my-extension_queryDatabase"
+,
+"displayName"
+:
+"Query Database"
+,
+"modelDescription"
+:
+"Executes a read-only SQL query against the project database and returns the results as JSON. Use this tool when the user asks about data stored in the database."
+,
+"canBeReferencedInPrompt"
+:
+true
+,
+"toolReferenceName"
+:
+"queryDatabase"
+,
+"icon"
+:
+"$(database)"
+,
+"inputSchema"
+: {
+"type"
+:
+"object"
+,
+"properties"
+: {
+"query"
+: {
+"type"
+:
+"string"
+,
+"description"
+:
+"The SQL SELECT statement to execute."
+}
+},
+"required"
+: [
+"query"
+]
+}
+}
+]
+}
+}
+```
+
+### languageModelTools properties
+
+| Property | Type | Required | Description |
+| name | string | Yes | Unique name of the tool used in the extension implementation. Use the {verb}_{noun} format and prefix with your extension name to avoid collisions. |
+| displayName | string | Yes | User-friendly name displayed in the UI. |
+| modelDescription | string | Yes | Description used by the language model to decide when and how to invoke the tool. Be precise: explain what the tool does, what it returns, and when it should or should not be used. |
+| userDescription | string | No | User-facing description displayed in the UI alongside the tool name. |
+| canBeReferencedInPrompt | boolean | No | Set to true to allow the tool to be used by agents or referenced via # in a chat prompt. When true , users can enable or disable the tool in the Chat view. |
+| toolReferenceName | string | No | The name users type after # to reference this tool in a chat prompt (for example, #queryDatabase ). Required when canBeReferencedInPrompt is true . |
+| icon | string | No | Icon shown in the UI, using the icon ID format (for example, $(database) ). |
+| inputSchema | object | No | JSON Schema that describes the tool's input parameters. The schema must describe an object with typed properties. |
+| when | string | No | A when clause that controls when the tool is available. For example, restrict a debugging tool with "debugState == 'running'" . |
+| tags | string[] | No | Tags used to categorize or group the tool. |
+
+See the Language Model Tool API guide for implementation details, including how to handle confirmations, stream results, and define typed input parameters.
+
+## contributes.menus
+
+Contribute a menu item for a command to the editor or Explorer. The menu item definition contains the command that should be invoked when selected and the condition under which the item should show. The latter is defined with the when clause, which uses the key bindings when clause contexts .
+when
+A command property indicates which command to run when selecting a menu item. A submenu property indicates which submenu to render in this location.
+command
+submenu
+When declaring a command menu item, an alternative command can also be defined using the alt -property. It will be shown and invoked when pressing Alt while opening a menu. On Windows and Linux Shift also does this, which is useful in situations where Alt would trigger the window menu bar.
+command
+alt
+Last, a group property defines sorting and grouping of menu items. The navigation group is special as it will always be sorted to the top/beginning of a menu.
+group
+navigation
+Note that when clauses apply to menus and enablement clauses to commands. The enablement applies to all menus and even keybindings while the when only applies to a single menu.
+when
+enablement
+enablement
+when
+Currently extension writers can contribute to:
+- commandPalette - global Command Palette
+commandPalette
+- comments/comment/title - Comments title menu bar
+comments/comment/title
+- comments/comment/context - Comments context menu
+comments/comment/context
+- comments/commentThread/title - Comments thread title menu bar
+comments/commentThread/title
+- comments/commentThread/context - Comments thread context menu
+comments/commentThread/context
+- debug/callstack/context - Debug Call Stack view context menu
+debug/callstack/context
+- debug/callstack/context group inline - Debug Call Stack view inline actions
+debug/callstack/context
+inline
+- debug/toolBar - Debug view toolbar
+debug/toolBar
+- debug/variables/context - Debug Variables view context menu
+debug/variables/context
+- editor/context - editor context menu
+editor/context
+- editor/context/copy - Copy as submenu in the editor context menu
+editor/context/copy
+- editor/lineNumber/context - editor line number context menu
+editor/lineNumber/context
+- editor/title - editor title menu bar
+editor/title
+- editor/title/context - editor title context menu
+editor/title/context
+- editor/title/run - Run submenu on the editor title menu bar
+editor/title/run
+- explorer/context - Explorer view context menu
+explorer/context
+- extension/context - Extensions view context menu
+extension/context
+- file/newFile - New File item in the File menu and Welcome page
+file/newFile
+- interactive/toolbar - Interactive Window toolbar
+interactive/toolbar
+- interactive/cell/title - Interactive Window cell title menu bar
+interactive/cell/title
+- notebook/toolbar - notebook toolbar
+notebook/toolbar
+- notebook/cell/title - notebook cell title menu bar
+notebook/cell/title
+- notebook/cell/execute - notebook cell execution menu
+notebook/cell/execute
+- scm/title - SCM title menu
+scm/title
+- scm/resourceGroup/context - SCM resource groups menus
+scm/resourceGroup/context
+- scm/resourceFolder/context - SCM resource folders menus
+scm/resourceFolder/context
+- scm/resourceState/context - SCM resources menus
+scm/resourceState/context
+- scm/change/title - SCM change title menus
+scm/change/title
+- scm/repository - SCM repository menu
+scm/repository
+- scm/sourceControl - SCM source control menu
+scm/sourceControl
+- terminal/context - terminal context menu
+terminal/context
+- terminal/title/context - terminal title context menu
+terminal/title/context
+- testing/item/context - Test Explorer item context menu
+testing/item/context
+- testing/item/gutter - menu for a gutter decoration for a test item
+testing/item/gutter
+- timeline/title - Timeline view title menu bar
+timeline/title
+- timeline/item/context - Timeline view item context menu
+timeline/item/context
+- touchBar - macOS Touch Bar
+touchBar
+- view/title - View title menu
+view/title
+- view/item/context - View item context menu
+view/item/context
+- webview/context - any webview context menu
+webview/context
+- Any contributed submenu
+In addition to a title, a contributed command can specify the icon which VS Code will show when the invoking menu item is represented as a button, for example on a title menu bar.
+
+### Menu command arguments
+
+When you invoke an extension command from a menu, VS Code passes context from that menu to the handler registered with vscode.commands.registerCommand . The arguments depend on the menu location:
+vscode.commands.registerCommand
+| Menu location | Arguments passed to the handler, in order |
+| editor/context | The Uri of the document in which you opened the context menu. |
+| editor/context/copy | The Uri of the document in which you opened the context menu. |
+| explorer/context | The Uri of the file or folder on which you opened the context menu, followed by an array of selected resource URIs. If the target is part of a multiple selection, the array contains that selection. Otherwise, it contains only the target resource. |
+| editor/title | The editor's resource Uri , followed by an editor context object containing groupId . |
+| editor/title/context | The target editor's resource Uri , followed by an editor context object containing groupId and editorIndex . |
+
+The editor context identifies an editor group and, for a tab context menu, the editor's index in that group. A groupId is an internal group identifier, not a ViewColumn . Prefer the resource URI when your command operates on a document. For editors without a resource URI, the context object is the first argument.
+groupId
+ViewColumn
+If you open the Explorer context menu on empty space, the first argument is the workspace folder URI when there is only one workspace folder, or an empty object otherwise. The selected resources array is empty. Check that the argument is a URI before using it as a resource.
+Commands contributed to editor/lineNumber/context receive an object with uri and lineNumber properties. The uri is the document URI and lineNumber is the one-based line number. These menu items can also reference the editorLineNumber context key in their when clauses, for example by using the in or not in operators with an array-valued context key managed by the extension.
+editor/lineNumber/context
+uri
+lineNumber
+uri
+lineNumber
+editorLineNumber
+when
+in
+not in
+Other menus supply context specific to their feature. For example, view/item/context in an extension's Tree View passes the tree element supplied by its TreeDataProvider . If the target belongs to a multiple selection, a second argument contains the selected elements. Otherwise, the second argument is undefined . For Source Control menu arguments, see Source Control menus .
+view/item/context
+TreeDataProvider
+undefined
+These menu arguments are not automatically supplied when you invoke the same command from the Command Palette or a keyboard shortcut. See Command handler arguments for the other invocation methods and an example that handles a missing resource.
+
+### menu example
+
+Here's a command menu item:
+
+```
+{
+"contributes"
+: {
+"menus"
+: {
+"editor/title"
+: [
+{
+"when"
+:
+"resourceLangId == markdown"
+,
+"command"
+:
+"markdown.showPreview"
+,
+"alt"
+:
+"markdown.showPreviewToSide"
+,
+"group"
+:
+"navigation"
+}
+]
+}
+}
+}
+```
+
+Similarly, here's a command menu item added to a particular view. The example below contributes to an arbitrary view like the terminal:
+
+```
+{
+"contributes"
+: {
+"menus"
+: {
+"view/title"
+: [
+{
+"command"
+:
+"terminalApi.sendText"
+,
+"when"
+:
+"view == terminal"
+,
+"group"
+:
+"navigation"
+}
+]
+}
+}
+}
+```
+
+Here's a submenu menu item:
+
+```
+{
+"contributes"
+: {
+"menus"
+: {
+"scm/title"
+: [
+{
+"submenu"
+:
+"git.commit"
+,
+"group"
+:
+"2_main@1"
+,
+"when"
+:
+"scmProvider == git"
+}
+]
+}
+}
+}
+```
+
+### Context specific visibility of Command Palette menu items
+
+When registering commands in package.json , they will automatically be shown in the Command Palette ( ⇧⌘P (Windows, Linux Ctrl+Shift+P ) ). To allow more control over command visibility, there is the commandPalette menu item. It allows you to define a when condition to control if a command should be visible in the Command Palette or not.
+package.json
+commandPalette
+when
+The snippet below makes the 'Hello World' command only visible in the Command Palette when something is selected in the editor:
+
+```
+{
+"commands"
+: [
+{
+"command"
+:
+"extension.sayHello"
+,
+"title"
+:
+"Hello World"
+}
+],
+"menus"
+: {
+"commandPalette"
+: [
+{
+"command"
+:
+"extension.sayHello"
+,
+"when"
+:
+"editorHasSelection"
+}
+]
+}
+}
+```
+
+### Sorting of groups
+
+Menu items can be sorted into groups. They are sorted in lexicographical order with the following defaults/rules.
+You can add menu items to these groups or add new groups of menu items in between, below, or above.
+The editor context menu has these default groups:
+- navigation - The navigation group comes first in all cases.
+navigation
+navigation
+- 1_modification - This group comes next and contains commands that modify your code.
+1_modification
+- 9_cutcopypaste - The second last default group with the basic editing commands.
+9_cutcopypaste
+- z_commands - The last default group with an entry to open the Command Palette.
+z_commands
+The explorer context menu has these default groups:
+- navigation - Commands related to navigation across VS Code. This group comes first in all cases.
+navigation
+- 2_workspace - Commands related to workspace manipulation.
+2_workspace
+- 3_compare - Commands related to comparing files in the diff editor.
+3_compare
+- 4_search - Commands related to searching in the search view.
+4_search
+- 5_cutcopypaste - Commands related to cutting, copying, and pasting of files.
+5_cutcopypaste
+- 6_copypath - Commands related to copying file paths.
+6_copypath
+- 7_modification - Commands related to the modification of file.
+7_modification
+The editor tab context menu has these default groups:
+- 1_close - Commands related to closing editors.
+1_close
+- 3_preview - Commands related to pinning editors.
+3_preview
+The editor title menu has these default groups:
+- navigation - Commands related to navigating.
+navigation
+- 1_run - Commands related to running and debugging the editor.
+1_run
+- 1_diff - Commands related to working with diff editors.
+1_diff
+- 3_open - Commands related to opening editors.
+3_open
+- 5_close - Commands related to closing editors.
+5_close
+navigation and 1_run are shown in the primary editor title area. The other groups are shown in the secondary area - under the ... menu.
+navigation
+1_run
+...
+The terminal tab context menu has these default groups:
+- 1_create - Commands related to creating terminals.
+1_create
+- 3_run - Commands related to running/executing something in the terminal.
+3_run
+- 5_manage - Commands related to managing a terminal.
+5_manage
+- 7_configure - Commands related to terminal configuration.
+7_configure
+The terminal context menu has these default groups:
+- 1_create - Commands related to creating terminals.
+1_create
+- 3_edit - Commands related to manipulating text, the selection or the clipboard.
+3_edit
+- 5_clear - Commands related to clearing the terminal.
+5_clear
+- 7_kill - Commands related to closing/killing the terminal.
+7_kill
+- 9_config - Commands related to terminal configuration.
+9_config
+The Timeline view item context menu has these default groups:
+- inline - Important or frequently used timeline item commands. Rendered as a toolbar.
+inline
+- 1_actions - Commands related to working with timeline items.
+1_actions
+- 5_copy - Commands related to copying timeline item information.
+5_copy
+The Extensions view context menu has these default groups:
+- 1_copy - Commands related to copying extension information.
+1_copy
+- 2_configure - Commands related to configuring an extension.
+2_configure
+
+### Sorting inside groups
+
+The order inside a group depends on the title or an order-attribute. The group-local order of a menu item is specified by appending @<number> to the group identifier as shown below:
+@<number>
+
+```
+{
+"editor/title"
+: [
+{
+"when"
+:
+"editorHasSelection"
+,
+"command"
+:
+"extension.Command"
+,
+"group"
+:
+"myGroup@1"
+}
+]
+}
+```
+
+## contributes.problemMatchers
+
+Contribute problem matcher patterns. These contributions work in both the output panel runner and in the terminal runner. Below is an example to contribute a problem matcher for the gcc compiler in an extension:
+
+```
+{
+"contributes"
+: {
+"problemMatchers"
+: [
+{
+"name"
+:
+"gcc"
+,
+"owner"
+:
+"cpp"
+,
+"fileLocation"
+: [
+"relative"
+,
+"${workspaceFolder}"
+],
+"pattern"
+: {
+"regexp"
+:
+"^(.*):(
+\\
+d+):(
+\\
+d+):
+\\
+s+(warning|error):
+\\
+s+(.*)$"
+,
+"file"
+:
+1
+,
+"line"
+:
+2
+,
+"column"
+:
+3
+,
+"severity"
+:
+4
+,
+"message"
+:
+5
+}
+}
+]
+}
+}
+```
+
+This problem matcher can now be used in a tasks.json file via a name reference $gcc . An example looks like this:
+tasks.json
+$gcc
+
+```
+{
+"version"
+:
+"2.0.0"
+,
+"tasks"
+: [
+{
+"label"
+:
+"build"
+,
+"command"
+:
+"gcc"
+,
+"args"
+: [
+"-Wall"
+,
+"helloWorld.c"
+,
+"-o"
+,
+"helloWorld"
+],
+"problemMatcher"
+:
+"$gcc"
+}
+]
+}
+```
+
+Also see: Defining a Problem Matcher
+
+## contributes.problemPatterns
+
+Contributes named problem patterns that can be used in problem matchers (see above).
+
+## contributes.productIconThemes
+
+Contribute a product icon theme to VS Code. Product icons are all icons used in VS Code except file icons and icons contributed from extensions.
+You must specify an id (used in the settings), a label and the path to the icon definition file.
+
+### product icon theme example
+
+```
+{
+"contributes"
+: {
+"productIconThemes"
+: [
+{
+"id"
+:
+"elegant"
+,
+"label"
+:
+"Elegant Icon Theme"
+,
+"path"
+:
+"./producticons/elegant-product-icon-theme.json"
+}
+]
+}
+}
+```
+
+See the Product Icon Theme Guide on how to create a Product Icon Theme.
+
+## contributes.resourceLabelFormatters
+
+Contributes resource label formatters that specify how to display URIs everywhere in the workbench. For example here's how an extension could contribute a formatter for URIs with scheme remotehub :
+remotehub
+
+```
+{
+"contributes"
+: {
+"resourceLabelFormatters"
+: [
+{
+"scheme"
+:
+"remotehub"
+,
+"formatting"
+: {
+"label"
+:
+"${path}"
+,
+"separator"
+:
+"/"
+,
+"workspaceSuffix"
+:
+"GitHub"
+}
+}
+]
+}
+}
+```
+
+This means that all URIs that have a scheme remotehub will get rendered by showing only the path segment of the URI and the separator will be / . Workspaces which have the remotehub URI will have the GitHub suffix in their label.
+remotehub
+path
+/
+remotehub
+
+## contributes.semanticTokenModifiers
+
+Contributes new semantic token modifiers that can be highlighted via theme rules.
+
+```
+{
+"contributes"
+: {
+"semanticTokenModifiers"
+: [
+{
+"id"
+:
+"native"
+,
+"description"
+:
+"Annotates a symbol that is implemented natively"
+}
+]
+}
+}
+```
+
+See the Semantic Highlighting Guide to read more about semantic highlighting.
+
+## contributes.semanticTokenScopes
+
+Contributes mapping between semantic token types & modifiers and scopes either as a fallback or to support language-specific themes.
+
+```
+{
+"contributes"
+: {
+"semanticTokenScopes"
+: [
+{
+"language"
+:
+"typescript"
+,
+"scopes"
+: {
+"property.readonly"
+: [
+"variable.other.constant.property.ts"
+]
+}
+}
+]
+}
+}
+```
+
+See the Semantic Highlighting Guide to read more about semantic highlighting.
+
+## contributes.semanticTokenTypes
+
+Contributes new semantic token types that can be highlighted via theme rules.
+
+```
+{
+"contributes"
+: {
+"semanticTokenTypes"
+: [
+{
+"id"
+:
+"templateType"
+,
+"superType"
+:
+"type"
+,
+"description"
+:
+"A template type."
+}
+]
+}
+}
+```
+
+See the Semantic Highlighting Guide to read more about semantic highlighting.
+
+## contributes.snippets
+
+Contribute snippets for a specific language. The language attribute is the language identifier and the path is the relative path to the snippet file, which defines snippets in the VS Code snippet format .
+language
+path
+The example below shows adding snippets for the Go language.
+
+```
+{
+"contributes"
+: {
+"snippets"
+: [
+{
+"language"
+:
+"go"
+,
+"path"
+:
+"./snippets/go.json"
+}
+]
+}
+}
+```
+
+## contributes.submenus
+
+Contribute a submenu as a placeholder onto which menu items can be contributed. A submenu requires a label to be shown in the parent menu.
+label
+In addition to a title, commands can also define icons that VS Code will show in the editor title menu bar.
+
+### submenu example
+
+```
+{
+"contributes"
+: {
+"submenus"
+: [
+{
+"id"
+:
+"git.commit"
+,
+"label"
+:
+"Commit"
+}
+]
+}
+}
+```
+
+## contributes.taskDefinitions
+
+Contributes and defines an object literal structure for uniquely identifying a contributed task in the system. A task definition has at minimum a type property but it usually defines additional properties. For example a task definition for a task representing a script in a package.json file looks like this:
+type
+
+```
+{
+"taskDefinitions"
+: [
+{
+"type"
+:
+"npm"
+,
+"required"
+: [
+"script"
+],
+"properties"
+: {
+"script"
+: {
+"type"
+:
+"string"
+,
+"description"
+:
+"The script to execute"
+},
+"path"
+: {
+"type"
+:
+"string"
+,
+"description"
+:
+"The path to the package.json file. If omitted the package.json in the root of the workspace folder is used."
+}
+}
+}
+]
+}
+```
+
+The task definition is defined using JSON schema syntax for the required and properties property. The type property defines the task type. If the above example:
+required
+properties
+type
+- "type": "npm" associates the task definition with the npm tasks
+"type": "npm"
+- "required": [ "script" ] defines that script attributes as mandatory. The path property is optional.
+"required": [ "script" ]
+script
+path
+- "properties" : { ... } defines the additional properties and their types.
+"properties" : { ... }
+When the extension actually creates a Task, it needs to pass a TaskDefinition that conforms to the task definition contributed in the package.json file. For the npm example a task creation for the test script inside a package.json file looks like this:
+TaskDefinition
+npm
+
+```
+let
+task
+=
+new
+vscode
+.
+Task
+({
+type:
+'npm'
+,
+script:
+'test'
+}, ....);
+```
+
+## contributes.terminal
+
+Contribute a terminal profile to VS Code, allowing extensions to handle the creation of the profiles. When defined, the profile should appear when creating the terminal profile
+
+```
+{
+"activationEvents"
+: [
+"onTerminalProfile:my-ext.terminal-profile"
+],
+"contributes"
+: {
+"terminal"
+: {
+"profiles"
+: [
+{
+"title"
+:
+"Profile from extension"
+,
+"id"
+:
+"my-ext.terminal-profile"
+}
+]
+}
+}
+}
+```
+
+When defined, the profile will show up in the terminal profile selector. When activated, handle the creation of the profile by returning terminal options:
+
+```
+vscode
+.
+window
+.
+registerTerminalProfileProvider
+(
+'my-ext.terminal-profile'
+, {
+provideTerminalProfile
+(
+token
+:
+vscode
+.
+CancellationToken
+):
+vscode
+.
+ProviderResult
+<
+vscode
+.
+TerminalOptions
+|
+vscode
+.
+ExtensionTerminalOptions
+> {
+return
+{
+name:
+'Profile from extension'
+,
+shellPath:
+'bash'
+};
+}
+});
+```
+
+## contributes.themes
+
+Contribute a color theme to VS Code, defining workbench colors and styles for syntax tokens in the editor.
+You must specify a label, whether the theme is a dark theme or a light theme (such that the rest of VS Code changes to match your theme) and the path to the file (JSON format).
+
+### theme example
+
+```
+{
+"contributes"
+: {
+"themes"
+: [
+{
+"label"
+:
+"Monokai"
+,
+"uiTheme"
+:
+"vs-dark"
+,
+"path"
+:
+"./themes/monokai-color-theme.json"
+}
+]
+}
+}
+```
+
+See the Color Theme Guide on how to create a Color Theme.
+
+## contributes.typescriptServerPlugins
+
+Contributes TypeScript server plugins that augment VS Code's JavaScript and TypeScript support:
+
+```
+{
+"contributes"
+: {
+"typescriptServerPlugins"
+: [
+{
+"name"
+:
+"typescript-styled-plugin"
+}
+]
+}
+}
+```
+
+The above example extension contributes the typescript-styled-plugin which adds styled-component IntelliSense for JavaScript and TypeScript. This plugin will be loaded from the extension and must be installed as a normal NPM dependency in the extension:
+typescript-styled-plugin
+dependency
+
+```
+{
+"dependencies"
+: {
+"typescript-styled-plugin"
+:
+"*"
+}
+}
+```
+
+TypeScript server plugins are loaded for all JavaScript and TypeScript files when the user is using VS Code's version of TypeScript. They are not activated if the user is using a workspace version of TypeScript, unless the plugin explicitly sets "enableForWorkspaceTypeScriptVersions": true .
+"enableForWorkspaceTypeScriptVersions": true
+
+```
+{
+"contributes"
+: {
+"typescriptServerPlugins"
+: [
+{
+"name"
+:
+"typescript-styled-plugin"
+,
+"enableForWorkspaceTypeScriptVersions"
+:
+true
+}
+]
+}
+}
+```
+
+### Plugin configuration
+
+Extensions can send configuration data to contributed TypeScript plugins through an API provided by VS Code's built-in TypeScript extension:
+
+```
+// In your VS Code extension
+export
+async
+function
+activate
+(
+context
+:
+vscode
+.
+ExtensionContext
+) {
+// Get the TS extension
+const
+tsExtension
+=
+vscode
+.
+extensions
+.
+getExtension
+(
+'vscode.typescript-language-features'
+);
+if
+(!
+tsExtension
+) {
+return
+;
+}
+await
+tsExtension
+.
+activate
+();
+// Get the API from the TS extension
+if
+(!
+tsExtension
+.
+exports
+|| !
+tsExtension
+.
+exports
+.
+getAPI
+) {
+return
+;
+}
+const
+api
+=
+tsExtension
+.
+exports
+.
+getAPI
+(
+0
+);
+if
+(!
+api
+) {
+return
+;
+}
+// Configure the 'my-typescript-plugin-id' plugin
+api
+.
+configurePlugin
+(
+'my-typescript-plugin-id'
+, {
+someValue:
+process
+.
+env
+[
+'SOME_VALUE'
+]
+});
+}
+```
+
+The TypeScript server plugin receives the configuration data through an onConfigurationChanged method:
+onConfigurationChanged
+
+```
+// In your TypeScript plugin
+import
+*
+as
+ts_module
+from
+'typescript/lib/tsserverlibrary'
+;
+export
+=
+function
+init
+({
+typescript
+}: {
+typescript
+:
+typeof
+ts_module
+}) {
+return
+{
+create
+(
+info
+:
+ts
+.
+server
+.
+PluginCreateInfo
+) {
+// Create new language service
+},
+onConfigurationChanged
+(
+config
+:
+any
+) {
+// Receive configuration changes sent from VS Code
+}
+};
+};
+```
+
+This API allows VS Code extensions to synchronize VS Code settings with a TypeScript server plugin, or dynamically change the behavior of a plugin. Take a look at the TypeScript TSLint plugin and lit-html extensions to see how this API is used in practice.
+
+## contributes.views
+
+Contribute a view to VS Code. You must specify an identifier and name for the view. You can contribute to following view containers:
+- explorer : Explorer view container in the Activity Bar
+explorer
+- scm : Source Control Management (SCM) view container in the Activity Bar
+scm
+- debug : Run and Debug view container in the Activity Bar
+debug
+- test : Test view container in the Activity Bar
+test
+- Custom view containers contributed by Extensions.
+When the user opens the view, VS Code will then emit an activationEvent onView:${viewId} ( onView:nodeDependencies for the example below). You can also control the visibility of the view by providing the when context value. The icon specified will be used when the title cannot be shown (e.g. when the view is dragged to the Activity Bar). The contextualTitle is used when the view is moved out of its default view container and needs additional context.
+onView:${viewId}
+onView:nodeDependencies
+when
+icon
+contextualTitle
+
+```
+{
+"contributes"
+: {
+"views"
+: {
+"explorer"
+: [
+{
+"id"
+:
+"nodeDependencies"
+,
+"name"
+:
+"Node Dependencies"
+,
+"when"
+:
+"workspaceHasPackageJSON"
+,
+"icon"
+:
+"media/dep.svg"
+,
+"contextualTitle"
+:
+"Package Explorer"
+}
+]
+}
+}
+}
+```
+
+The content of a view can be populated in two ways:
+- With a TreeView by providing a data provider through createTreeView API or register the data provider directly through registerTreeDataProvider API to populate data. TreeViews are ideal for showing hierarchical data and lists. Refer to the tree-view-sample .
+createTreeView
+registerTreeDataProvider
+- With a WebviewView by registering a provider with registerWebviewViewProvider . Webview views allow rendering arbitrary HTML in the view. See the webview view sample extension for more details.
+registerWebviewViewProvider
+
+## contributes.viewsContainers
+
+Contribute a view container into which Custom views can be contributed. You must specify an identifier, title, and an icon for the view container. At present, you can contribute them to the Activity Bar ( activitybar ) and Panel ( panel ). Below example shows how the Package Explorer view container is contributed to the Activity Bar and how views are contributed to it.
+activitybar
+panel
+Package Explorer
+
+```
+{
+"contributes"
+: {
+"viewsContainers"
+: {
+"activitybar"
+: [
+{
+"id"
+:
+"package-explorer"
+,
+"title"
+:
+"Package Explorer"
+,
+"icon"
+:
+"resources/package-explorer.svg"
+}
+]
+},
+"views"
+: {
+"package-explorer"
+: [
+{
+"id"
+:
+"package-dependencies"
+,
+"name"
+:
+"Dependencies"
+},
+{
+"id"
+:
+"package-outline"
+,
+"name"
+:
+"Outline"
+}
+]
+}
+}
+}
+```
+
+### Icon specifications
+
+- Size: Icons should be 24x24 and centered.
+Size: Icons should be 24x24 and centered.
+Size:
+- Color: Icons should use a single color.
+Color: Icons should use a single color.
+Color:
+- Format: It is recommended that icons be in SVG, though any image file type is accepted.
+Format: It is recommended that icons be in SVG, though any image file type is accepted.
+Format:
+- States: All icons inherit the following state styles: State Opacity Default 60% Hover 100% Active 100%
+States: All icons inherit the following state styles:
+States:
+| State | Opacity |
+| Default | 60% |
+| Hover | 100% |
+| Active | 100% |
+
+## contributes.viewsWelcome
+
+Contribute welcome content to Custom views . Welcome content only applies to empty tree views. A view is considered empty if the tree has no children and no TreeView.message . By convention, any command links that are on a line by themselves are displayed as a button. You can specify the view that the welcome content should apply to with the view property. Visibility of the welcome content can be controlled with the when context value. The text to be displayed as the welcome content is set with the contents property.
+TreeView.message
+view
+when
+contents
+
+```
+{
+"contributes"
+: {
+"viewsWelcome"
+: [
+{
+"view"
+:
+"scm"
+,
+"contents"
+:
+"In order to use git features, you can open a folder containing a git repository or clone from a URL.
+\n
+[Open Folder](command:vscode.openFolder)
+\n
+[Clone Repository](command:git.clone)
+\n
+To learn more about how to use git and source control in VS Code [read our docs](https://aka.ms/vscode-scm)."
+,
+"when"
+:
+"config.git.enabled && git.state == initialized && workbenchState == empty"
+}
+]
+}
+}
+```
+
+Multiple welcome content items can be contributed to one view. When this happens, the content that come from VS Code core comes first, followed by content from built-in extensions, followed by content from all other extensions.
+
+## contributes.walkthroughs
+
+Sample extension
+Contribute walkthroughs to appear on the Getting Started page. Walkthroughs are automatically opened on install of your extension and provide a convenient way to introduce users to features of your extension.
+Walkthroughs consist of a title, description, id, and a series of steps. Additionally, a when condition can be set to hide or show the walkthrough based on context keys. For example, a walkthrough to explain setup on a Linux platform could be given when: "isLinux" to only appear on Linux machines.
+when
+when: "isLinux"
+Each step in a walkthrough has a title, description, id, and media element (either an image or Markdown content), along with an optional set of events that will cause the step to be checked (shown in the example below). Step descriptions are Markdown content, and support **bold** , __underlined__ , and ``code`` rendering, as well as links. Similar to walkthroughs, steps can be given when conditions to hide or show them based on context keys.
+**bold**
+__underlined__
+``code``
+SVGs are recommended for images given their ability to scale and their support for VS Code's theme colors. Use the Visual Studio Code Color Mapper Figma plugin to easily reference theme colors in the SVGs.
+
+```
+{
+"contributes"
+: {
+"walkthroughs"
+: [
+{
+"id"
+:
+"sample"
+,
+"title"
+:
+"Sample"
+,
+"description"
+:
+"A sample walkthrough"
+,
+"steps"
+: [
+{
+"id"
+:
+"runcommand"
+,
+"title"
+:
+"Run Command"
+,
+"description"
+:
+"This step will run a command and check off once it has been run.
+\n
+[Run Command](command:getting-started-sample.runCommand)"
+,
+"media"
+: {
+"image"
+:
+"media/image.png"
+,
+"altText"
+:
+"Empty image"
+},
+"completionEvents"
+: [
+"onCommand:getting-started-sample.runCommand"
+]
+},
+{
+"id"
+:
+"changesetting"
+,
+"title"
+:
+"Change Setting"
+,
+"description"
+:
+"This step will change a setting and check off when the setting has changed
+\n
+[Change Setting](command:getting-started-sample.changeSetting)"
+,
+"media"
+: {
+"markdown"
+:
+"media/markdown.md"
+},
+"completionEvents"
+: [
+"onSettingChanged:getting-started-sample.sampleSetting"
+]
+}
+]
+}
+]
+}
+}
+```
+
+### Completion events
+
+By default, if no completionEvents events are provided, the step will be checked off when any of it's buttons are clicked, or if the step has no buttons, when it is opened. If finer control is required, a list of completionEvents can be provided.
+completionEvents
+completionEvents
+Available completion events include:
+- onCommand:myCommand.id : Check off step when a command has been run.
+onCommand:myCommand.id
+- onSettingChanged:mySetting.id : Check off step once the given setting has been modified.
+onSettingChanged:mySetting.id
+- onContext:contextKeyExpression : Check off step when a context key expression evaluates true.
+onContext:contextKeyExpression
+- extensionInstalled:myExt.id : Check off step if the given extension is installed.
+extensionInstalled:myExt.id
+- onView:myView.id : Check off step once a given view becomes visible.
+onView:myView.id
+- onLink:https://... : Check off step once a given link has been opened via a Walkthrough.
+onLink:https://...
+Once a step has been checked off, it will remain checked off until the user explicitly unchecks the step or resets their progress (via the Getting Started: Reset Progress command).

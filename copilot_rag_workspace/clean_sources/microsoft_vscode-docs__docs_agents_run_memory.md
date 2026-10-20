@@ -1,0 +1,106 @@
+**MetaDescription**: Use agent memory in VS Code to retain preferences, repository knowledge, and task context across conversations.
+
+# Use memory with agents in VS Code
+
+Agents in Visual Studio Code use memory to retain context across conversations. Rather than starting from scratch each session, agents recall your preferences, apply lessons from previous tasks, and build up knowledge about your codebase over time.
+
+For background on how memory fits into the agent architecture, see [Agents concepts](/docs/agents/concepts/agents.md#memory).
+
+This article explains how to use the memory tool in VS Code and manage memory files.
+
+<div class="docs-action" data-show-in-doc="false" data-show-in-sidebar="true" title="Try memory in action">
+Launch a chat prompt that asks the agent to remember a coding preference.
+
+* [Open in VS Code](vscode://GitHub.Copilot-Chat/chat?agent=agent%26prompt=Remember%20that%20I%20prefer%20arrow%20functions%20over%20function%20declarations%20in%20JavaScript.)
+
+</div>
+
+## Memory tool
+
+The memory tool is a built-in agent tool that allows agents to save and recall notes as they work. You can also explicitly ask the agent to remember something. User, repository, and session memory are stored locally on your machine.
+
+### Memory scopes
+
+Each scope serves a different purpose, depending on how long the information should persist and where it applies.
+
+| Scope | Path | Persists across sessions | Persists across workspaces | Use for |
+|---|---|---|---|---|
+| **User** | `/memories/` | Yes | Yes | Preferences, patterns, frequently used commands |
+| **Repository** | `/memories/repo/` | Yes | No (workspace-scoped) | Codebase conventions, project structure, build commands |
+| **Session** | `/memories/session/` | No (current conversation only) | No | Task-specific context, in-progress plans |
+
+#### Memory or shared project guidance
+
+All memory scopes on this page are stored locally. Use memory for personal preferences, temporary task context, or emerging project knowledge that your team hasn't reviewed. Repository memory is associated with the current workspace, but it isn't a shared project file.
+
+Put reviewed architecture decisions, commands, conventions, and workflows that contributors depend on in source-controlled project documentation or [custom instructions](/docs/agent-customization/custom-instructions.md). This makes the guidance available for your team's normal review and maintenance process.
+
+When repository memory becomes stable and useful to the team:
+
+1. Verify the information against the repository's code and configuration.
+1. Move it to the appropriate project document or instructions file.
+1. Review the change through your repository's normal process.
+1. Update or remove the local memory to avoid stale or conflicting copies.
+
+For a workflow that creates, verifies, and shares project instructions, see [Configure AI for your codebase](/docs/agents/guides/customize-copilot-guide.md).
+
+#### User memory
+
+User memory persists across all workspaces and conversations. The first 200 lines are automatically loaded into the agent's context at the start of every session. Use user memory for general preferences and insights that apply regardless of which project you're working in.
+
+For example, ask the agent to remember a coding preference:
+
+```prompt
+Remember that I prefer a short summary before detailed code examples
+```
+
+In a later conversation, even in a different workspace, the agent recalls this preference and applies it to the response.
+
+#### Repository memory
+
+Repository memory is scoped to the current workspace and persists across conversations in that workspace. Use repository memory for facts about a specific codebase, such as architecture decisions, naming conventions, or build commands.
+
+For example:
+
+```prompt
+Remember that the legacy API routes in this workspace use the repository pattern for data access
+```
+
+Repository memory is stored locally on your machine.
+
+#### Session memory
+
+Session memory is available only in the current conversation. Use session memory for temporary working notes or task-specific context that the agent tracks while working through a multi-step task.
+
+The Plan agent uses session memory to persist its implementation plans in a `plan.md` file. This plan is available in the current conversation and can be viewed with the **Chat: Show Memory Files** command. Learn more about [planning with agents](/docs/agents/run/planning.md).
+
+### Store and retrieve memories
+
+To store a memory, ask the agent to remember something in natural language. The agent determines the appropriate scope and creates or updates the corresponding memory file.
+
+```prompt
+Remember that I prefer concise commit message subjects
+```
+
+To retrieve a memory, ask about it in a new conversation. The agent checks its memory files and recalls the relevant information.
+
+```prompt
+What are our commit message conventions?
+```
+
+Memory file references in the agent's chat responses are clickable, so you can view the contents of the memory file directly.
+
+### Manage memory files
+
+VS Code provides commands to view and manage your memory files:
+
+* **Chat: Show Memory Files**: opens a list of all memory files across scopes. Select a file to view its contents.
+* **Chat: Clear All Memory Files**: removes all memory files across all scopes.
+
+> [!NOTE]
+> To update or delete an individual memory file, ask the agent. Use **Chat: Clear All Memory Files** to remove all memory files.
+
+## Related resources
+
+* [Planning with agents](/docs/agents/run/planning.md)
+* [Agent tools](/docs/agents/run/tools.md)

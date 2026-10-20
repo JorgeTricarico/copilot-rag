@@ -1,0 +1,130 @@
+**MetaDescription**: Diagnose GitHub Copilot and agent issues in Visual Studio Code with targeted checks, logs, and network diagnostics.
+
+# Troubleshoot AI in Visual Studio Code
+
+When chat, agents, or inline suggestions do not behave as expected, start with the symptom you see. This article helps you choose the right diagnostic tool, interpret the result, and collect useful evidence if you need to report the issue.
+
+## Choose a troubleshooting path
+
+| Symptom | Start here | Next step |
+|---------|------------|-----------|
+| Chat or agents are unavailable | Check [chat and agent requirements](/docs/agents/agent-troubleshooting/faq.md#chat-features-arent-working-for-me). | Confirm your account, plan, settings, and organization policies. |
+| Inline suggestions do not appear | Check the [inline suggestion requirements](/docs/agents/agent-troubleshooting/faq.md#inline-suggestions-are-not-working-in-the-editor). | Inspect the Copilot logs if the requirements are met. |
+| Copilot cannot connect or sign in | [Collect network diagnostics](#collect-network-diagnostics). | Check your firewall, proxy, or VPN configuration. |
+| Instructions are ignored | [Check customization diagnostics](#check-customization-diagnostics). | Inspect the session to verify which instructions reached the model. |
+| A file, tool, or expected step is missing from a response | [Inspect chat interactions](#inspect-chat-interactions). | Compare the session events with the request sent to the model. |
+| A response is slow or uses more tokens than expected | Open the Agent Debug Logs Summary view. | Use the Cache Explorer only if the session reports low cache reuse. |
+| An MCP server or tool is unavailable | [Troubleshoot MCP servers](#troubleshoot-mcp-servers). | Inspect the server output and the tools available to the request. |
+
+## Start with basic checks
+
+Before you collect detailed logs:
+
+1. Run **Code: Check for Updates** from the Command Palette to update VS Code.
+1. Confirm your access method. Sign in with the GitHub account that has your Copilot plan, or select a configured bring-your-own-key model for supported chat features. Some features require the GitHub Copilot service. For details, see [GitHub Copilot subscription questions](/docs/agents/agent-troubleshooting/faq.md#github-copilot-subscription).
+1. Open the Copilot status dashboard in the Status Bar and check whether you have reached an allowance. A temporary rate limit is separate from your monthly allowance.
+1. Check whether a workspace setting or organization policy turns off the affected feature. For agent availability, see [Agents are not available in chat](/docs/agents/agent-troubleshooting/faq.md#agents-are-not-available-in-chat).
+1. Reproduce the issue in a new chat session. When you compare two runs, keep the prompt, model, and available tools consistent.
+
+## Check customization diagnostics
+
+Use the chat customization diagnostics view when an instructions file does not appear to apply.
+
+1. Open the Chat view.
+1. In the Chat view, open the context menu and select **Diagnostics**.
+1. Review the discovered instruction files and any reported errors.
+
+Use the result to choose the next action:
+
+* **The file is missing**: Verify its file name, location, and the settings that control instruction discovery.
+* **The file has an error**: Fix the reported frontmatter or content error, and then reopen the diagnostics view.
+* **The file is loaded but not applied**: For a `*.instructions.md` file, verify that its `applyTo` pattern matches the file you are working on. Also check the **References** section of the chat response to see which instructions were used.
+* **A prompt file is missing from the request**: Prompt files are supported only in Local harness sessions. Invoke the prompt file manually in chat because prompt files do not use `applyTo`. For a reusable workflow with a skills-compatible agent, create an [agent skill](/docs/agent-customization/agent-skills.md).
+
+For file locations, applicability rules, and settings, see [Use custom instructions](/docs/agent-customization/custom-instructions.md). To verify the exact instructions sent to the model, use the [Chat Debug view](/docs/agents/agent-troubleshooting/chat-debug-view.md#chat-debug-view).
+
+## Inspect chat interactions
+
+Use the following tools when the basic checks pass but an agent behaves unexpectedly:
+
+| Tool | Use it to |
+|------|-----------|
+| `/troubleshoot` | Ask the AI to analyze captured session events and answer a specific question. |
+| **Agent Debug Logs** panel (Preview) | Follow the sequence of model requests, tool calls, customization discovery, errors, and agent activity. |
+| **Chat Debug view** | Inspect the exact system prompt, user prompt, context, tool definitions, and tool payloads for a request. |
+| **Cache Explorer** | Compare consecutive model requests after session metrics indicate low cache reuse. |
+
+Prepare the session before you reproduce the issue:
+
+* Enable the experimental ``chat.agentHost.agentDebugLog.enabled`` setting before the activity that you want to inspect. It captures events for sessions managed by the [Agent Host](/docs/agents/concepts/agent-host.md), whether you use the Chat view or Agents window. Capture is not retroactive.
+* Reproduce the issue, and then select that session when you open the logs or use `/troubleshoot`.
+
+> [!NOTE]
+> **For Local harness sessions:** Enable the experimental ``github.copilot.chat.agentDebugLog.fileLogging.enabled`` setting instead. Reload the editor window before you use `/troubleshoot`.
+
+To analyze a session with chat:
+
+1. Open the Agents window.
+1. Enter `/troubleshoot #session` in the chat input.
+1. Select the session that contains the issue.
+1. Add a focused question, such as `which tool failed and what error did it return?`, and send the request.
+
+For detailed procedures and scenario-based guidance, see [Debug chat interactions](/docs/agents/agent-troubleshooting/chat-debug-view.md).
+
+## View logs for GitHub Copilot
+
+The GitHub Copilot output channels record connection failures, extension errors, and other runtime information. Increase the log level only while you reproduce an issue because trace logging produces detailed output.
+
+1. Open the Command Palette (``Shortcut: workbench.action.showCommands``).
+1. Run **Developer: Set Log Level** and set the GitHub Copilot and GitHub Copilot Chat extensions to **Trace**.
+1. Reproduce the issue.
+1. Run **Output: Show Output Channels** and select **GitHub Copilot** or **GitHub Copilot Chat**.
+1. Review errors and warnings around the time of the failed action.
+1. Run **Developer: Set Log Level** again and restore the previous log levels.
+
+To switch output channels, use the dropdown on the right side of the Output panel.
+
+## Collect network diagnostics
+
+If Copilot cannot connect, collect diagnostics to identify failed connectivity checks and relevant proxy or network configuration.
+
+1. Open the Command Palette (``Shortcut: workbench.action.showCommands``).
+1. Run **GitHub Copilot: Chat Diagnostics**.
+1. Review the diagnostic report that opens in an editor.
+
+If a check fails, compare the result with your firewall, proxy, and VPN configuration. A report without failed checks rules out only the connections covered by the report, so continue with the Copilot output channels if the problem persists.
+
+For required domains and network-specific guidance, see [Network and firewall configuration for Copilot](/docs/agents/agent-troubleshooting/faq.md#network-and-firewall-configuration-for-copilot).
+
+## Troubleshoot MCP servers
+
+If an MCP server or one of its tools is unavailable:
+
+1. Open the Command Palette and run **MCP: List Servers**.
+1. Select the server and review its status.
+1. Select **Show Output** and inspect errors from the failed request.
+1. Correct the reported configuration or connection problem.
+1. Select **Restart Server**, and then retry the request.
+
+If the server is running but the model does not invoke its tool, follow [An MCP tool is not being invoked](/docs/agents/agent-troubleshooting/chat-debug-view.md#an-mcp-tool-is-not-being-invoked).
+
+For server-specific checks, see [Manage and troubleshoot MCP servers](/docs/agents/run/manage-mcp-servers.md#troubleshoot-mcp-servers).
+
+## Report an unresolved issue
+
+If the issue persists, include enough evidence to reproduce and diagnose it:
+
+> [!CAUTION]
+> Agent Debug Log exports, Chat Debug output, and Copilot logs can contain prompts, source code, file paths, tool inputs and outputs, and other sensitive data. Review and remove sensitive content before sharing a report. Never include credentials or secrets.
+
+* **Ghost text suggestions**: Hover over a suggestion and select **Send Copilot Completion Feedback**.
+* **[copilot.next_edit_suggestions_caps]**: Select **Feedback** from the  menu in the editor gutter.
+* **Chat and agent issues**: Open **Help** > **Report Issue**, select **VS Code Extension**, and then select **GitHub Copilot Chat**.
+
+Include the VS Code version, clear reproduction steps, the expected and actual result, and the relevant diagnostic output.
+
+## Related resources
+
+* [Debug chat interactions](/docs/agents/agent-troubleshooting/chat-debug-view.md)
+* [GitHub Copilot frequently asked questions](/docs/agents/agent-troubleshooting/faq.md)
+* [Troubleshooting GitHub Copilot](https://docs.github.com/en/copilot/troubleshooting-github-copilot)

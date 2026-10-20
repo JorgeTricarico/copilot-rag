@@ -12,6 +12,7 @@ def test_markdown_frontmatter_extraction():
     raw_md = """---
 title: "Custom Agents in VS Code"
 shortTitle: Agents
+description: "A description of custom agents."
 MetaDescription: "Learn how to build custom agents for Visual Studio Code."
 internal_audit_score: 95
 last_reviewed: 2026-05-12
@@ -24,6 +25,7 @@ This is the main body.
     clean = ContentCanonicalizer.normalize_markdown(raw_md)
     assert "**title**: Custom Agents in VS Code" in clean
     assert "**shortTitle**: Agents" in clean
+    assert "**description**: A description of custom agents." in clean
     assert "**MetaDescription**: Learn how to build custom agents for Visual Studio Code." in clean
     assert "internal_audit_score" not in clean
     assert "last_reviewed" not in clean
@@ -55,6 +57,27 @@ Also unknown: {% data variables.custom.unknown_var %}.
     assert "Also unknown: [custom.unknown_var]." in clean
 
 
+def test_liquid_codetab_replacement():
+    raw_md = """{% codetabs %}
+{% codetab python %}
+```python
+import copilot
+```
+{% endcodetab %}
+{% codetab typescript %}
+```typescript
+import { CopilotClient } from "@github/copilot-sdk";
+```
+{% endcodetab %}
+{% endcodetabs %}
+"""
+    clean = ContentCanonicalizer.normalize_markdown(raw_md)
+    assert "**Language (python):**" in clean
+    assert "**Language (typescript):**" in clean
+    assert "import copilot" in clean
+    assert "import { CopilotClient }" in clean
+
+
 def test_vscode_macros_replacement():
     raw_md = """Press kb(workbench.action.chat.open) or kbstyle(Ctrl+Alt+I) to open chat.
 Configure via setting(chat.mcp.autostart).
@@ -66,11 +89,10 @@ Configure via setting(chat.mcp.autostart).
 
 
 def test_unicode_nfkc_and_whitespace_cleanup():
-    # Combining characters or special whitespace
     raw_md = "Heading   \n\n\n\n\nParagraph with trailing spaces   \t \n"
     clean = ContentCanonicalizer.normalize_markdown(raw_md)
     assert "\n\n\n" not in clean
-    assert "trailing spaces\n" in clean or "trailing spaces" in clean
+    assert "trailing spaces" in clean
 
 
 def test_html_to_text_stripping_and_noise_removal():

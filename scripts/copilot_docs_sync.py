@@ -2,12 +2,14 @@
 """
 Sistema Determinista de Monitoreo Documental y Empaquetado RAG para VS Code Copilot.
 Extrae, normaliza, calcula hashes SHA-256 sobre contenido semántico limpio, detecta
-modificaciones reales sin falsos positivos y construye compendios para Google NotebookLM.
+modificaciones reales sin falsos positivos, gestiona eliminaciones y construye
+compendios optimizados para Google NotebookLM.
 """
 
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
 import difflib
 import hashlib
 import json
@@ -20,19 +22,34 @@ import xml.etree.ElementTree as ET
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup, Comment
 
-# Configuración de logging estructurado
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)-8s | %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
+# Configurar encoding UTF-8 en consola de Windows si es necesario
+if sys.platform == "win32":
+    try:
+        if sys.stdout and hasattr(sys.stdout, "reconfigure"):
+            sys.stdout.reconfigure(encoding="utf-8")
+        if sys.stderr and hasattr(sys.stderr, "reconfigure"):
+            sys.stderr.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
+# Configuración de logging estructurado con soporte UTF-8
 logger = logging.getLogger("CopilotDocsSync")
+logger.setLevel(logging.INFO)
+if not logger.handlers:
+    _handler = logging.StreamHandler(sys.stdout)
+    _handler.setFormatter(
+        logging.Formatter(
+            "%(asctime)s | %(levelname)-8s | %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+    )
+    logger.addHandler(_handler)
 
 
 # =====================================================================
@@ -55,6 +72,7 @@ LIQUID_VARIABLES_MAP: Dict[str, str] = {
     "copilot.copilot_cli": "GitHub Copilot CLI",
     "copilot.copilot_cli_short": "Copilot CLI",
     "copilot.copilot_cloud_agent": "Copilot cloud agent",
+    "copilot.copilot_cloud_agent_short": "Copilot cloud agent",
     "copilot.copilot_chat": "GitHub Copilot Chat",
     "copilot.copilot_chat_short": "Copilot Chat",
     "copilot.copilot_free_short": "Copilot Free",
@@ -168,6 +186,7 @@ class ContentCanonicalizer:
     RE_LIQUID_DATA = re.compile(
         r"\{%\s*data\s+variables\.([a-zA-Z0-9_.-]+)\s*%\}"
     )
+    RE_CODETAB = re.compile(r"\{%\s*codetab\s+([a-zA-Z0-9_.-]+)\s*%\}")
     RE_LIQUID_GENERIC = re.compile(r"\{%.*?%\}")
     RE_VSCODE_KB = re.compile(r"kb\(([a-zA-Z0-9_.-]+)\)")
     RE_VSCODE_KBSTYLE = re.compile(r"kbstyle\(([^)]+)\)")
@@ -182,13 +201,13 @@ class ContentCanonicalizer:
         """Limpia un archivo Markdown crudo de GitHub resolviendo variables y macros."""
         text = raw_md.replace("\r\n", "\n").replace("\r", "\n")
 
-        # 1. Extraer metadatos relevantes del frontmatter YAML (title, description)
-        # ignorando campos volátiles de auditoría interna.
+        # 1. Extraer metadatos relevantes del frontmatter YAML (title, description, intro)
+        # ignorando campos volátiles de auditoría interna (DateApproved, ContentId, etc.).
         frontmatter_summary = []
         fm_match = cls.RE_FRONTMATTER.search(text)
         if fm_match:
             fm_content = fm_match.group(1)
-            for key in ("title", "shortTitle", "intro", "MetaDescription"):
+            for key in ("title", "shortTitle", "intro", "description", "MetaDescription"):
                 m = re.search(rf"^{key}:\s*(.+)$", fm_content, re.MULTILINE)
                 if m:
                     val = m.group(1).strip().strip("'\"")
@@ -207,14 +226,19 @@ class ContentCanonicalizer:
             return LIQUID_VARIABLES_MAP.get(var_key, f"[{var_key}]")
 
         text = cls.RE_LIQUID_DATA.sub(_replace_liquid_var, text)
+
+        # 4. Preservar pestañas de lenguaje codetab como encabezados Markdown
+        text = cls.RE_CODETAB.sub(r"\n**Language (\1):**\n", text)
+
+        # 5. Eliminar el resto de etiquetas Liquid de control (codetabs, raw, etc.)
         text = cls.RE_LIQUID_GENERIC.sub("", text)
 
-        # 4. Normalizar macros propios de microsoft/vscode-docs
+        # 6. Normalizar macros propios de microsoft/vscode-docs
         text = cls.RE_VSCODE_KB.sub(r"`Shortcut: \1`", text)
         text = cls.RE_VSCODE_KBSTYLE.sub(r"`\1`", text)
         text = cls.RE_VSCODE_SETTING.sub(r"`\1`", text)
 
-        # 5. Normalización Unicode NFKC y limpieza de espacios en blanco
+        # 7. Normalización Unicode NFKC y limpieza de espacios en blanco
         text = unicodedata.normalize("NFKC", text)
         text = cls.RE_TRAILING_SPACES.sub("", text)
         text = cls.RE_MULTI_BLANK_LINES.sub("\n\n", text)
@@ -347,7 +371,7 @@ class ContentCanonicalizer:
 class DocumentRecord:
     doc_id: str
     source_url: str
-    Canonical_web_url: str
+    canonical_web_url: str
     bundle_name: str
     git_blob_sha: Optional[str]
     content_sha256: str
@@ -355,21 +379,32 @@ class DocumentRecord:
     last_updated_utc: str
     local_clean_path: str
 
+    @property
+    def Canonical_web_url(self) -> str:
+        """Propiedad de compatibilidad con versiones previas."""
+        return self.canonical_web_url
+
 
 class CopilotDocumentationSynchronizer:
-    def __init__(self, base_dir: Path, github_token: Optional[str] = None):
-        self.base_dir = base_dir
-        self.clean_cache_dir = base_dir / "clean_sources"
-        self.bundles_dir = base_dir / "notebooklm_bundles"
-        self.diffs_dir = base_dir / "changelog_diffs"
-        self.manifest_path = base_dir / "state_manifest.json"
+    def __init__(
+        self,
+        base_dir: Path,
+        github_token: Optional[str] = None,
+        max_workers: int = 8,
+    ):
+        self.base_dir = Path(base_dir)
+        self.clean_cache_dir = self.base_dir / "clean_sources"
+        self.bundles_dir = self.base_dir / "notebooklm_bundles"
+        self.diffs_dir = self.base_dir / "changelog_diffs"
+        self.manifest_path = self.base_dir / "state_manifest.json"
+        self.max_workers = max(1, max_workers)
 
         for d in (self.clean_cache_dir, self.bundles_dir, self.diffs_dir):
             d.mkdir(parents=True, exist_ok=True)
 
         self.session = requests.Session()
         headers = {
-            "User-Agent": "VSCode-Copilot-Deterministic-RAG-Sync/2.0",
+            "User-Agent": "VSCode-Copilot-Deterministic-RAG-Sync/2.1",
             "Accept": "application/vnd.github+json",
         }
         if github_token:
@@ -377,7 +412,7 @@ class CopilotDocumentationSynchronizer:
         self.session.headers.update(headers)
 
         self.manifest: Dict[str, DocumentRecord] = self._load_manifest()
-        self.dirty_bundles: set[str] = set()
+        self.dirty_bundles: Set[str] = set()
         self.change_reports: List[str] = []
 
     def _load_manifest(self) -> Dict[str, DocumentRecord]:
@@ -385,19 +420,40 @@ class CopilotDocumentationSynchronizer:
             return {}
         try:
             raw = json.loads(self.manifest_path.read_text(encoding="utf-8"))
-            return {
-                k: DocumentRecord(**v) for k, v in raw.get("documents", {}).items()
-            }
+            records = {}
+            for k, v in raw.get("documents", {}).items():
+                # Compatibilidad: mapear 'Canonical_web_url' (mayúscula) a 'canonical_web_url'
+                if "Canonical_web_url" in v and "canonical_web_url" not in v:
+                    v["canonical_web_url"] = v.pop("Canonical_web_url")
+
+                # Migración de ruta: corregir posibles nombres previos terminados en .md.md
+                local_path_str = v.get("local_clean_path", "")
+                if local_path_str.endswith(".md.md"):
+                    old_path = self.base_dir / local_path_str
+                    new_path_str = local_path_str[:-3]  # quitar el último .md
+                    new_path = self.base_dir / new_path_str
+                    if old_path.exists() and not new_path.exists():
+                        try:
+                            old_path.rename(new_path)
+                            logger.info("Ruta migrada: %s -> %s", old_path.name, new_path.name)
+                        except Exception as e:
+                            logger.debug("No se pudo renombrar archivo previo: %s", e)
+                    v["local_clean_path"] = new_path_str
+
+                records[k] = DocumentRecord(**v)
+            return records
         except Exception as exc:
             logger.warning("Manifiesto previo inválido, iniciando limpio: %s", exc)
             return {}
 
     def _save_manifest(self) -> None:
         payload = {
-            "schema_version": "2.0",
+            "schema_version": "2.1",
             "last_sync_utc": datetime.now(timezone.utc).isoformat(),
             "total_documents": len(self.manifest),
-            "documents": {k: asdict(v) for k, v in sorted(self.manifest.items())},
+            "documents": {
+                k: asdict(v) for k, v in sorted(self.manifest.items())
+            },
         }
         self.manifest_path.write_text(
             json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8"
@@ -420,19 +476,65 @@ class CopilotDocumentationSynchronizer:
             clean_path = clean_path[: -len("/index")]
         return urljoin(rule.web_base_url, clean_path)
 
-    def sync_github_repositories(self, force_recheck: bool = False) -> Tuple[int, int, int]:
+    def _get_safe_clean_filename(self, doc_id: str) -> str:
+        """
+        Genera un nombre de archivo seguro y único evitando la duplicación de extensiones (.md.md).
+        """
+        clean_id = re.sub(r"\.md$", "", doc_id)
+        return f"{re.sub(r'[^a-zA-Z0-9_.-]', '_', clean_id)}.md"
+
+    def _delete_document(self, doc_id: str, record: DocumentRecord) -> None:
+        """Elimina un documento obsoleto que ya no existe en el repositorio upstream."""
+        abs_clean_path = self.base_dir / record.local_clean_path
+        if abs_clean_path.exists():
+            try:
+                abs_clean_path.unlink()
+            except Exception as e:
+                logger.warning("No se pudo eliminar archivo local %s: %s", abs_clean_path, e)
+
+        self.dirty_bundles.add(record.bundle_name)
+        self.change_reports.append(
+            f"### [DOCUMENTO ELIMINADO UPSTREAM] `{doc_id}`\n"
+            f"- **URL Canónica previa**: {record.canonical_web_url}\n"
+            f"- **Último Hash**: `{record.content_sha256}`\n"
+        )
+        del self.manifest[doc_id]
+
+    def sync_github_repositories(
+        self, force_recheck: bool = False
+    ) -> Tuple[int, int, int, int]:
         """
         Consulta los árboles Git de microsoft/vscode-docs y github/docs,
-        incluyendo las últimas notas de lanzamiento (release-notes/v1_*.md).
+        descarga cambios de forma concurrente, elimina documentos obsoletos y
+        detecta notas de lanzamiento (release-notes/v1_*.md).
+        Retorna (agregados, actualizados, omitidos_sin_cambios, eliminados).
         """
-        added, updated, skipped = 0, 0, 0
+        added, updated, skipped, deleted = 0, 0, 0, 0
 
         for rule in REPO_RULES:
             tree_url = f"https://api.github.com/repos/{rule.owner}/{rule.repo}/git/trees/{rule.branch}?recursive=1"
             logger.info("Consultando árbol Git de %s/%s...", rule.owner, rule.repo)
-            resp = self.session.get(tree_url, timeout=30)
-            resp.raise_for_status()
-            tree_data = resp.json().get("tree", [])
+            try:
+                resp = self.session.get(tree_url, timeout=30)
+                if resp.status_code in (403, 429):
+                    remaining = resp.headers.get("X-RateLimit-Remaining")
+                    reset_ts = resp.headers.get("X-RateLimit-Reset")
+                    reset_str = (
+                        datetime.fromtimestamp(int(reset_ts), timezone.utc).isoformat()
+                        if reset_ts
+                        else "desconocido"
+                    )
+                    logger.error(
+                        "Límite de tasa de la API de GitHub alcanzado (Remaining: %s). Se reinicia en: %s. "
+                        "Recomendación: Configura la variable de entorno GITHUB_TOKEN para 5,000 req/hora.",
+                        remaining,
+                        reset_str,
+                    )
+                resp.raise_for_status()
+                tree_data = resp.json().get("tree", [])
+            except Exception as exc:
+                logger.error("Error al obtener árbol Git de %s/%s: %s", rule.owner, rule.repo, exc)
+                continue
 
             # Seleccionar archivos relevantes según prefijos
             matched_nodes = []
@@ -447,7 +549,9 @@ class CopilotDocumentationSynchronizer:
 
                 if any(path.startswith(p) for p in rule.path_prefixes):
                     matched_nodes.append(node)
-                elif rule.repo == "vscode-docs" and re.match(r"^release-notes/v1_\d+\.md$", path):
+                elif rule.repo == "vscode-docs" and re.match(
+                    r"^release-notes/v1_\d+\.md$", path
+                ):
                     release_note_nodes.append(node)
 
             # Tomar las 3 versiones más recientes de release-notes de VS Code
@@ -458,10 +562,15 @@ class CopilotDocumentationSynchronizer:
                 )
                 matched_nodes.extend(release_note_nodes[:3])
 
+            current_rule_doc_ids: Set[str] = set()
+            nodes_to_fetch = []
+
             for node in matched_nodes:
                 path = node["path"]
                 git_sha = node["sha"]
                 doc_id = f"{rule.owner}_{rule.repo}::{path}"
+                current_rule_doc_ids.add(doc_id)
+
                 bundle = (
                     "07_Release_Notes_And_Changelog_Radar"
                     if path.startswith("release-notes/")
@@ -470,8 +579,7 @@ class CopilotDocumentationSynchronizer:
 
                 existing = self.manifest.get(doc_id)
 
-                # Optimización O(1): Si el Git Blob SHA es idéntico, el archivo en
-                # el repositorio no ha sufrido ni un solo byte de cambio.
+                # Optimización O(1): Si el Git Blob SHA es idéntico, omitir sin descargar
                 if (
                     existing
                     and not force_recheck
@@ -481,45 +589,79 @@ class CopilotDocumentationSynchronizer:
                     skipped += 1
                     continue
 
-                raw_url = f"https://raw.githubusercontent.com/{rule.owner}/{rule.repo}/{rule.branch}/{path}"
-                raw_resp = self.session.get(raw_url, timeout=30)
-                raw_resp.raise_for_status()
+                nodes_to_fetch.append((node, doc_id, bundle, existing))
 
-                clean_text = ContentCanonicalizer.normalize_markdown(raw_resp.text)
-                new_sha256 = ContentCanonicalizer.compute_sha256(clean_text)
-
-                if (
-                    existing
-                    and not force_recheck
-                    and existing.content_sha256 == new_sha256
-                    and (self.base_dir / existing.local_clean_path).exists()
-                ):
-                    # El blob de Git cambió por un cambio cosmético/espaciado ignorado,
-                    # pero el contenido canónico limpio tiene exactamente el mismo SHA-256.
-                    existing.git_blob_sha = git_sha
-                    skipped += 1
-                    continue
-
-                web_url = self._build_canonical_web_url(rule, path)
-                was_added = existing is None
-                self._persist_document_change(
-                    doc_id=doc_id,
-                    source_url=raw_url,
-                    web_url=web_url,
-                    bundle_name=bundle,
-                    git_blob_sha=git_sha,
-                    new_sha256=new_sha256,
-                    clean_text=clean_text,
-                    existing=existing,
+            # Descarga y procesamiento concurrente para los nodos modificados o nuevos
+            if nodes_to_fetch:
+                logger.info(
+                    "Descargando %d archivos de %s/%s con %d hilos...",
+                    len(nodes_to_fetch),
+                    rule.owner,
+                    rule.repo,
+                    self.max_workers,
                 )
-                if was_added:
-                    added += 1
-                else:
-                    updated += 1
 
-        return added, updated, skipped
+                def _fetch_node(item):
+                    node_item, doc_id_item, bundle_item, existing_item = item
+                    path_item = node_item["path"]
+                    raw_url = f"https://raw.githubusercontent.com/{rule.owner}/{rule.repo}/{rule.branch}/{path_item}"
+                    raw_resp = self.session.get(raw_url, timeout=30)
+                    raw_resp.raise_for_status()
+                    clean_text = ContentCanonicalizer.normalize_markdown(raw_resp.text)
+                    new_sha = ContentCanonicalizer.compute_sha256(clean_text)
+                    return item, raw_url, clean_text, new_sha
 
-    def sync_direct_web_sources(self, force_recheck: bool = False) -> Tuple[int, int, int]:
+                with concurrent.futures.ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+                    futures = [executor.submit(_fetch_node, item) for item in nodes_to_fetch]
+                    for fut in concurrent.futures.as_completed(futures):
+                        try:
+                            item, raw_url, clean_text, new_sha256 = fut.result()
+                            node_item, doc_id_item, bundle_item, existing_item = item
+                            git_sha_item = node_item["sha"]
+                            path_item = node_item["path"]
+
+                            if (
+                                existing_item
+                                and not force_recheck
+                                and existing_item.content_sha256 == new_sha256
+                                and (self.base_dir / existing_item.local_clean_path).exists()
+                            ):
+                                existing_item.git_blob_sha = git_sha_item
+                                skipped += 1
+                                continue
+
+                            web_url = self._build_canonical_web_url(rule, path_item)
+                            was_added = existing_item is None
+                            self._persist_document_change(
+                                doc_id=doc_id_item,
+                                source_url=raw_url,
+                                web_url=web_url,
+                                bundle_name=bundle_item,
+                                git_blob_sha=git_sha_item,
+                                new_sha256=new_sha256,
+                                clean_text=clean_text,
+                                existing=existing_item,
+                            )
+                            if was_added:
+                                added += 1
+                            else:
+                                updated += 1
+                        except Exception as exc:
+                            logger.error("Error al procesar nodo: %s", exc)
+
+            # Detección de documentos eliminados en upstream
+            rule_prefix = f"{rule.owner}_{rule.repo}::"
+            for doc_id, record in list(self.manifest.items()):
+                if doc_id.startswith(rule_prefix) and doc_id not in current_rule_doc_ids:
+                    logger.info("ELIMINADO UPSTREAM: %s", doc_id)
+                    self._delete_document(doc_id, record)
+                    deleted += 1
+
+        return added, updated, skipped, deleted
+
+    def sync_direct_web_sources(
+        self, force_recheck: bool = False
+    ) -> Tuple[int, int, int]:
         """Sincroniza páginas HTML directas y feeds RSS aplicando limpieza DOM/XML."""
         added, updated, skipped = 0, 0, 0
 
@@ -530,41 +672,44 @@ class CopilotDocumentationSynchronizer:
             src_type = src["type"]
 
             logger.info("Verificando fuente web directa: %s", url)
-            resp = self.session.get(url, timeout=30)
-            resp.raise_for_status()
+            try:
+                resp = self.session.get(url, timeout=30)
+                resp.raise_for_status()
 
-            if src_type == "rss":
-                clean_text = ContentCanonicalizer.normalize_rss_feed(resp.text)
-            else:
-                clean_text = ContentCanonicalizer.normalize_html_to_text(resp.text)
+                if src_type == "rss":
+                    clean_text = ContentCanonicalizer.normalize_rss_feed(resp.text)
+                else:
+                    clean_text = ContentCanonicalizer.normalize_html_to_text(resp.text)
 
-            new_sha256 = ContentCanonicalizer.compute_sha256(clean_text)
-            existing = self.manifest.get(doc_id)
+                new_sha256 = ContentCanonicalizer.compute_sha256(clean_text)
+                existing = self.manifest.get(doc_id)
 
-            if (
-                existing
-                and not force_recheck
-                and existing.content_sha256 == new_sha256
-                and (self.base_dir / existing.local_clean_path).exists()
-            ):
-                skipped += 1
-                continue
+                if (
+                    existing
+                    and not force_recheck
+                    and existing.content_sha256 == new_sha256
+                    and (self.base_dir / existing.local_clean_path).exists()
+                ):
+                    skipped += 1
+                    continue
 
-            was_added = existing is None
-            self._persist_document_change(
-                doc_id=doc_id,
-                source_url=url,
-                web_url=url,
-                bundle_name=bundle,
-                git_blob_sha=None,
-                new_sha256=new_sha256,
-                clean_text=clean_text,
-                existing=existing,
-            )
-            if was_added:
-                added += 1
-            else:
-                updated += 1
+                was_added = existing is None
+                self._persist_document_change(
+                    doc_id=doc_id,
+                    source_url=url,
+                    web_url=url,
+                    bundle_name=bundle,
+                    git_blob_sha=None,
+                    new_sha256=new_sha256,
+                    clean_text=clean_text,
+                    existing=existing,
+                )
+                if was_added:
+                    added += 1
+                else:
+                    updated += 1
+            except Exception as exc:
+                logger.error("Error al sincronizar fuente web %s: %s", url, exc)
 
         return added, updated, skipped
 
@@ -579,7 +724,7 @@ class CopilotDocumentationSynchronizer:
         clean_text: str,
         existing: Optional[DocumentRecord],
     ) -> None:
-        safe_filename = re.sub(r"[^a-zA-Z0-9_.-]", "_", doc_id) + ".md"
+        safe_filename = self._get_safe_clean_filename(doc_id)
         rel_clean_path = Path("clean_sources") / safe_filename
         abs_clean_path = self.base_dir / rel_clean_path
 
@@ -619,13 +764,13 @@ class CopilotDocumentationSynchronizer:
         self.manifest[doc_id] = DocumentRecord(
             doc_id=doc_id,
             source_url=source_url,
-            Canonical_web_url=web_url,
+            canonical_web_url=web_url,
             bundle_name=bundle_name,
             git_blob_sha=git_blob_sha,
             content_sha256=new_sha256,
             word_count=word_count,
             last_updated_utc=datetime.now(timezone.utc).isoformat(),
-            local_clean_path=str(rel_clean_path),
+            local_clean_path=str(rel_clean_path).replace("\\", "/"),
         )
         self.dirty_bundles.add(bundle_name)
 
@@ -634,7 +779,7 @@ class CopilotDocumentationSynchronizer:
         Empaqueta los documentos limpios en Compendios Maestros (.md) optimizados
         para Google NotebookLM, verificando el límite de 500,000 palabras por archivo.
         """
-        MAX_WORDS_PER_BUNDLE = 450_000  # Margen seguro bajo el tope de 500,000 de NotebookLM
+        MAX_WORDS_PER_BUNDLE = 450_000  # Margen de seguridad bajo el tope de 500,000
         bundles_map: Dict[str, List[DocumentRecord]] = {}
 
         for record in self.manifest.values():
@@ -665,7 +810,7 @@ class CopilotDocumentationSynchronizer:
                 doc_header = (
                     f"\n\n---\n"
                     f"# DOCUMENT_SOURCE: {rec.doc_id}\n"
-                    f"- **CANONICAL_URL**: {rec.Canonical_web_url}\n"
+                    f"- **CANONICAL_URL**: {rec.canonical_web_url}\n"
                     f"- **RAW_SOURCE_URL**: {rec.source_url}\n"
                     f"- **SHA256_FINGERPRINT**: `{rec.content_sha256}`\n"
                     f"- **LAST_VERIFIED_UTC**: {rec.last_updated_utc}\n"
@@ -713,7 +858,9 @@ class CopilotDocumentationSynchronizer:
         )
         return out_path
 
-    def write_audit_report(self, added: int, updated: int, skipped: int) -> Optional[Path]:
+    def write_audit_report(
+        self, added: int, updated: int, skipped: int, deleted: int = 0
+    ) -> Optional[Path]:
         if not self.change_reports:
             logger.info("Sin cambios semánticos detectados. Todos los hashes coinciden.")
             return None
@@ -725,6 +872,7 @@ class CopilotDocumentationSynchronizer:
             f"- **Nuevos Documentos**: {added}\n"
             f"- **Documentos Actualizados**: {updated}\n"
             f"- **Documentos Sin Cambios (Omitidos por Hash)**: {skipped}\n"
+            f"- **Documentos Eliminados**: {deleted}\n"
             f"- **Compendios de NotebookLM Recompilados**: {', '.join(sorted(self.dirty_bundles))}\n\n"
         )
         report_path.write_text(
@@ -732,6 +880,35 @@ class CopilotDocumentationSynchronizer:
         )
         logger.info("Reporte de diferencias guardado en: %s", report_path)
         return report_path
+
+    def verify_integrity(self) -> bool:
+        """Verifica la integridad de los hashes almacenados contra los archivos locales."""
+        logger.info("Verificando integridad local de %d registros...", len(self.manifest))
+        mismatches = 0
+        missing = 0
+        for doc_id, rec in self.manifest.items():
+            abs_path = self.base_dir / rec.local_clean_path
+            if not abs_path.exists():
+                logger.error("Archivo faltante para %s: %s", doc_id, abs_path)
+                missing += 1
+                continue
+            content = abs_path.read_text(encoding="utf-8")
+            current_hash = ContentCanonicalizer.compute_sha256(content)
+            if current_hash != rec.content_sha256:
+                logger.error(
+                    "Discrepancia de hash en %s: manifiesto=%s, disco=%s",
+                    doc_id,
+                    rec.content_sha256[:10],
+                    current_hash[:10],
+                )
+                mismatches += 1
+
+        if missing == 0 and mismatches == 0:
+            logger.info("Integridad 100% verificada. Todos los hashes y archivos coinciden.")
+            return True
+        else:
+            logger.error("Verificación fallida: %d faltantes, %d discrepancias.", missing, mismatches)
+            return False
 
 
 def main() -> int:
@@ -754,14 +931,40 @@ def main() -> int:
         action="store_true",
         help="Regenerar todos los compendios de NotebookLM aunque no haya cambios.",
     )
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=8,
+        help="Número de hilos concurrentes para descarga de documentos.",
+    )
+    parser.add_argument(
+        "--verify",
+        action="store_true",
+        help="Verificar integridad de hashes y archivos locales sin hacer llamadas remotas.",
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Activar registro detallado (DEBUG).",
+    )
     args = parser.parse_args()
+
+    if args.verbose:
+        logger.setLevel(logging.DEBUG)
 
     github_token = os.environ.get("GITHUB_TOKEN")
     syncer = CopilotDocumentationSynchronizer(
-        base_dir=args.output_dir, github_token=github_token
+        base_dir=args.output_dir,
+        github_token=github_token,
+        max_workers=args.workers,
     )
 
-    g_add, g_upd, g_skip = syncer.sync_github_repositories(
+    if args.verify:
+        success = syncer.verify_integrity()
+        return 0 if success else 1
+
+    g_add, g_upd, g_skip, g_del = syncer.sync_github_repositories(
         force_recheck=args.force_recheck
     )
     w_add, w_upd, w_skip = syncer.sync_direct_web_sources(
@@ -771,16 +974,18 @@ def main() -> int:
     total_add = g_add + w_add
     total_upd = g_upd + w_upd
     total_skip = g_skip + w_skip
+    total_del = g_del
 
     syncer.build_notebooklm_bundles(rebuild_all=args.rebuild_all_bundles)
     syncer._save_manifest()
-    syncer.write_audit_report(total_add, total_upd, total_skip)
+    syncer.write_audit_report(total_add, total_upd, total_skip, total_del)
 
     logger.info(
-        "Resumen Final -> Nuevos: %d | Actualizados: %d | Sin Cambios (Hash Match): %d",
+        "Resumen Final -> Nuevos: %d | Actualizados: %d | Sin Cambios (Hash Match): %d | Eliminados: %d",
         total_add,
         total_upd,
         total_skip,
+        total_del,
     )
     return 0
 

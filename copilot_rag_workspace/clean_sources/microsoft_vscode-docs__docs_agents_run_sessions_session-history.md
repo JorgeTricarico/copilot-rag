@@ -1,0 +1,152 @@
+**MetaDescription**: Manage local and synced session history in Visual Studio Code, including privacy controls and Chronicle searches.
+
+# Sync and query session history
+
+VS Code maintains a searchable history of your Copilot harness sessions. Session sync (Experimental) can upload local session history to your GitHub account for cross-device access and sharing. With sync enabled, you can query work from VS Code, Copilot CLI, Copilot cloud agent, code review, and the GitHub Copilot app.
+
+Synced sessions are private unless you explicitly share them.
+
+<div class="docs-action" data-show-in-doc="false" data-show-in-sidebar="true" title="Try it">
+Launch a chat prompt that summarizes your recent coding sessions into a standup report.
+
+* [Open in VS Code](vscode://GitHub.Copilot-Chat/chat?agent=agent%26prompt=%2Fchronicle%3Astandup)
+
+</div>
+
+## Enable or disable session sync (Experimental)
+
+Check the [session sync status](#session-sync-status) to see whether sync is enabled. Use ``chat.sessionSync.enabled`` to set your preference:
+
+* To sync session history, set ``chat.sessionSync.enabled`` to `true`. Local session tracking must also be enabled with ``github.copilot.chat.localIndex.enabled``.
+* To turn off session-history sync, set ``chat.sessionSync.enabled`` to `false`. You can keep local session tracking enabled. Turning off sync does not delete data already synced to GitHub.com; see [Delete synced sessions](#delete-synced-sessions).
+
+Review [what gets tracked](#what-gets-tracked) and the [privacy controls](#privacy-and-data-control) before turning on sync. If your organization disables sync by policy, you cannot override that restriction.
+
+> [!NOTE]
+> Session-history sync is separate from the prompts and context sent to a model during an agent session. Turning off sync does not stop those model requests.
+
+## Exclude repositories from sync
+
+Use ``chat.sessionSync.excludeRepositories`` to prevent sessions in specific repositories from syncing to the cloud. The setting accepts exact `owner/repo` names or glob patterns:
+
+```json
+"chat.sessionSync.excludeRepositories": [
+    "my-org/private-repo",
+    "my-org/secret-*"
+]
+```
+
+Sessions from matching repositories are not uploaded by session sync.
+
+## Enterprise policy
+
+For Copilot Business and Copilot Enterprise users, two policies control session sync:
+
+* **GitHub.com enterprise policy** ("Store local sessions in the Cloud"): enterprise and organization owners configure this on GitHub.com to enable or disable cloud sync for their users.
+* **VS Code group policy** (`CopilotSessionSync`): when disabled, the ``chat.sessionSync.enabled`` setting is forced to `false` and sessions stay local only.
+
+> [!IMPORTANT]
+> Enabling the policy does not give administrators access to your session data. Synced sessions are tied to your personal account and are accessible only to you by default.
+
+When disabled by policy, the session sync status shows **Disabled by policy** and users cannot override the setting.
+
+## Share a session
+
+Sessions are not shared by default. On GitHub.com, you can share a synced session for view-only access to anyone who has access to the repository:
+
+1. Open the **Agents** tab on GitHub.com.
+1. Select a session and open **Sharing settings** from the `...` menu.
+1. Enable sharing to give repository collaborators view-only access.
+
+Recipients can view the session's prompts, responses, and file changes, but cannot steer or modify the session. Shared sessions are not indexed for other users' session queries.
+
+## Session sync status
+
+The session sync status appears in the Copilot status bar in the Chat view. It shows the current state of cloud sync:
+
+| State | Description |
+|-------|-------------|
+| **Not enabled** | Session-history sync is off. This does not delete previously synced data. |
+| **Enabled** | Sessions are syncing to your GitHub account. |
+| **N sessions synced** | Shows how many sessions have been uploaded. Select to view sessions on GitHub.com. |
+| **Syncing N sessions** | Upload is in progress. |
+| **Disabled by policy** | Your organization's policy prevents session sync. |
+| **Sync error** | Something went wrong during the last sync. Try again later. |
+
+## Privacy and data control
+
+* Sessions are private to you by default. Synced sessions are tied to your personal GitHub account and are accessible only to you unless you explicitly share them.
+* Before syncing, VS Code filters detected secrets by matching known patterns and secret values. This can redact tokens, API keys, and credentials, but it might not detect every secret.
+* You can turn off sync at any time by setting ``chat.sessionSync.enabled`` to `false`. Existing synced sessions remain on GitHub.com until you delete them.
+
+> [!IMPORTANT]
+> Avoid including secrets in prompts and tool output, and review session contents before sharing. Do not rely on secret filtering to remove every sensitive value.
+
+## Delete synced sessions
+
+To delete synced session data, run the **Delete Session Sync Data** command (`github.copilot.sessionSync.deleteSessions`) from the Command Palette. The command shows a picker where you select which sessions to remove. After selecting sessions, you choose the deletion scope:
+
+* **Delete from local and cloud**: removes session data from your machine and from GitHub.com. This action cannot be undone.
+* **Delete from cloud only**: removes session data from GitHub.com but keeps local data intact.
+
+You can also hide or delete individual synced sessions from the **Agents** tab on GitHub.com. Hiding a session removes it from your session index so it no longer appears in query results.
+
+> [!NOTE]
+> The **Delete Session Sync Data** command requires session sync to be enabled. If sync is off or disabled by policy, manage previously synced sessions from the **Agents** tab on GitHub.com instead.
+
+## Query session history with Chronicle
+
+Use Chronicle commands or natural-language questions to search past sessions, generate standup reports, and get personalized usage tips.
+
+### Chronicle commands
+
+Enter these commands in the chat input:
+
+| Command | Description |
+|---------|-------------|
+| `/chronicle:standup` | Summarize recent coding sessions into a standup report, grouped by branch and repository. Covers the last 24 hours by default. |
+| `/chronicle:tips` | Analyze recent session history and suggest ways to use Copilot more effectively. |
+| `/chronicle:cost-tips` | Identify opportunities to reduce token usage and Copilot cost. |
+| `/chronicle:search <query>` | Search sessions by keyword, file path, or pull request or issue reference. |
+| `/chronicle:reindex` | Rebuild the local session index and sync session data when session sync is enabled. |
+
+### Ask questions about session history
+
+Ask free-form questions such as "What files did I edit yesterday?" or "Have I worked on anything related to the payments API?" Copilot uses semantic understanding to find relevant sessions. Use `/chronicle:search` when you want a direct content search.
+
+### What gets tracked
+
+The local session store records:
+
+* **Session metadata**: repository, branch, working directory, timestamps, and the agent or participant.
+* **Conversation turns**: user messages and assistant responses.
+* **Files touched**: file paths from tool calls.
+* **External references**: pull request numbers, issue numbers, and commit SHAs.
+
+Data is stored in a local SQLite database. Before syncing, VS Code filters detected secrets as described in [Privacy and data control](#privacy-and-data-control).
+
+### Reindex the session store
+
+If sessions are missing or the database becomes corrupted, rebuild the index:
+
+```prompt
+/chronicle:reindex
+```
+
+You can also run **Reindex Sessions** (`github.copilot.chronicle.reindex`) from the Command Palette.
+
+Reindex after restoring session files from a backup, an unexpected crash, manually deleting session directories, or turning session sync back on.
+
+## Settings reference
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| ``github.copilot.chat.localIndex.enabled`` | `true` | Enable local session tracking (prerequisite for sync) |
+| ``chat.sessionSync.enabled`` | `false` | Sync sessions to your GitHub account (Experimental) |
+| ``chat.sessionSync.excludeRepositories`` | `[]` | Repository patterns to exclude from sync (Experimental) |
+
+## Related content
+
+* [Manage agent sessions](/docs/agents/run/sessions/manage-sessions.md) - Create and organize agent sessions
+* [Security](/docs/agents/run/security.md) - Copilot security and privacy
+* [Diagnose prompt caching with the Cache Explorer](/docs/agents/agent-troubleshooting/cache-explorer.md) - Find where sessions waste tokens
