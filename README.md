@@ -171,8 +171,23 @@ Para sincronizar directamente con tu carpeta de **Google Drive** montada en Wind
 # Opción 2: Con la bandera --drive
 python scripts/copilot_docs_sync.py --drive
 
-# Opción 3: En Windows haciendo doble clic en sync_to_drive.bat
-```
+### Sincronización Automática en Segundo Plano (Sin intervención)
+
+La sincronización ya ha sido programada como una **Tarea de Windows** en segundo plano (`VSCodeCopilotDocsSync`):
+
+- **Frecuencia**: Se ejecuta automáticamente **cada 6 horas** sin abrir ventanas de terminal (`pythonw.exe`).
+- **Verificación silenciosa**: En ausencia de cambios, la comprobación finaliza en solo 3-4 segundos con consumo mínimo de recursos.
+- **Para cambiar el intervalo o verificarla:**
+  ```powershell
+  # Cambiar intervalo a cada 12 horas
+  .\setup_autostart.ps1 -IntervalHours 12
+
+  # Ver estado de la tarea en Windows
+  Get-ScheduledTaskInfo -TaskName "VSCodeCopilotDocsSync"
+
+  # Desinstalar la tarea automática si ya no la deseas
+  .\uninstall_autostart.ps1
+  ```
 
 ### Opciones de Línea de Comandos
 
