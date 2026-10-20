@@ -154,10 +154,24 @@ pip install -r requirements.txt
 
 ### Ejecución Local
 
-Ejecutar la sincronización completa:
+Ejecutar la sincronización completa en el espacio de trabajo local:
 
 ```bash
 python scripts/copilot_docs_sync.py --output-dir ./copilot_rag_workspace
+```
+
+### Sincronización Directa con Google Drive (NotebookLM)
+
+Para sincronizar directamente con tu carpeta de **Google Drive** montada en Windows:
+
+```powershell
+# Opción 1: Mediante el script de PowerShell
+.\sync_to_drive.ps1
+
+# Opción 2: Con la bandera --drive
+python scripts/copilot_docs_sync.py --drive
+
+# Opción 3: En Windows haciendo doble clic en sync_to_drive.bat
 ```
 
 ### Opciones de Línea de Comandos

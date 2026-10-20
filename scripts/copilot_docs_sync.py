@@ -922,6 +922,11 @@ def main() -> int:
         help="Directorio raíz para manifiesto, caché limpio y compendios.",
     )
     parser.add_argument(
+        "--drive",
+        action="store_true",
+        help="Sincronizar directamente con Google Drive (G:\\My Drive\\NotebookLM_Copilot_Docs).",
+    )
+    parser.add_argument(
         "--force-recheck",
         action="store_true",
         help="Ignorar caché de hashes y recalcular todas las fuentes.",
@@ -953,9 +958,13 @@ def main() -> int:
     if args.verbose:
         logger.setLevel(logging.DEBUG)
 
+    output_dir = (
+        Path(r"G:\My Drive\NotebookLM_Copilot_Docs") if args.drive else args.output_dir
+    )
+
     github_token = os.environ.get("GITHUB_TOKEN")
     syncer = CopilotDocumentationSynchronizer(
-        base_dir=args.output_dir,
+        base_dir=output_dir,
         github_token=github_token,
         max_workers=args.workers,
     )
