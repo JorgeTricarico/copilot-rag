@@ -247,6 +247,29 @@ python scripts/copilot_scaffold.py --type agent --name "architecture-guardian"
 python scripts/copilot_scaffold.py --type all --name "fullstack-agent"
 ```
 
+### 3. Agent Skill Instalable: `copilot-architect`
+El repositorio incluye una Agent Skill completa y modularizada ([`skills/copilot-architect/`](skills/copilot-architect/)) diseñada para que asistentes de IA (VS Code Copilot, Claude, Cursor, Antigravity) puedan **auditar, corregir y optimizar proyectos** utilizando todo el corpus técnico indexado como conocimiento experto sin saturar el contexto.
+
+**Instalación Rápida:**
+```bash
+# Opción A: Instalar en el proyecto actual (.github/skills/copilot-architect)
+python scripts/install_skill.py
+
+# Opción B: Instalar en un proyecto externo específico
+python scripts/install_skill.py --target-dir /ruta/a/mi-proyecto
+
+# Opción C: Instalar globalmente en tu máquina (~/.agents/skills/)
+python scripts/install_skill.py --global
+
+# Opción D: Vía PowerShell en Windows
+.\install_skill.ps1 -TargetDir "C:\Proyectos\MiApp"
+```
+
+**Capacidades de la Skill:**
+- **Auditoría de Proyectos**: Ejecuta `python .github/skills/copilot-architect/scripts/audit_project.py` para obtener un *Readiness Score* (0-100%) con checklist y recomendaciones concretas.
+- **Buscador Documental de Alta Velocidad**: Ejecuta `python .github/skills/copilot-architect/scripts/query_docs.py --query "preToolUse sandboxing"` para recuperar fragmentos exactos sin saturar la ventana de tokens.
+- **Módulos de Referencia Rápida en `references/`**: Arneses y roles, configuración dual MCP con sandboxing, Agent Skills (`SKILL.md`), Custom Agents (`*.agent.md`), Hooks (`hooks.json`), memoria y Copilot SDK.
+
 ---
 
 ## ⚙️ Automatización en CI/CD (GitHub Actions)

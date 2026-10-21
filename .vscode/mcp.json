@@ -3,7 +3,20 @@
     "copilot-rag": {
       "type": "stdio",
       "command": "python",
-      "args": ["${workspaceFolder}/scripts/copilot_mcp_server.py"]
+      "args": ["${workspaceFolder}/scripts/copilot_mcp_server.py"],
+      "sandboxEnabled": true,
+      "sandbox": {
+        "filesystem": {
+          "allowWrite": [
+            "${workspaceFolder}/copilot_rag_workspace",
+            "${workspaceFolder}/output"
+          ],
+          "denyRead": [
+            "~/.ssh",
+            "~/.aws"
+          ]
+        }
+      }
     }
   }
 }

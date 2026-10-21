@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "preToolUse": [
+      {
+        "matcher": "terminal|bash|pwsh",
+        "command": "echo '[Hook preToolUse] Auditing terminal command execution...'"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "editFiles|write",
+        "command": "echo '[Hook postToolUse] File mutation completed. Ready for linter/test check.'"
+      }
+    ],
+    "subagentStart": [
+      {
+        "command": "echo '[Hook subagentStart] Initializing isolated subagent context...'"
+      }
+    ],
+    "subagentStop": [
+      {
+        "command": "echo '[Hook subagentStop] Subagent finished and returned synthesized result.'"
+      }
+    ]
+  }
+}
