@@ -15,7 +15,7 @@ Sistema automatizado de monitoreo determinista, canonicalización de contenido, 
 2. [Evolución del Ecosistema de Agentes](#-evolución-del-ecosistema-de-agentes)
 3. [Arquitectura del Sistema](#-arquitectura-del-sistema)
    - [Normalización Determinista y Hashing SHA-256](#normalización-determinista-y-hashing-sha-256)
-   - [Los 7 Compendios Maestros para NotebookLM](#los-7-compendios-maestros-para-notebooklm)
+   - [Los 8 Compendios Maestros para NotebookLM](#los-8-compendios-maestros-para-notebooklm)
 4. [Estructura del Proyecto](#-estructura-del-proyecto)
 5. [Instalación y Requisitos](#-instalación-y-requisitos)
 6. [Guía de Uso](#-guía-de-uso)
@@ -34,7 +34,7 @@ El ecosistema de inteligencia artificial en Visual Studio Code ha migrado de una
 Este proyecto resuelve el problema crítico de la **no-determinicidad** y los **falsos positivos** al sincronizar documentación técnica:
 - **Scraping tradicional ruidoso**: Cambios en timestamps, banners publicitarios, cookies o espaciados generan alertas y reentrenamientos innecesarios.
 - **Solución determinista**: Doble vía de canonicalización semántica (AST/Texto + variables Liquid + macros VS Code + normalización Unicode NFKC) y hashing SHA-256 sobre contenido canónico limpio.
-- **Empaquetado RAG de alta fidelidad**: Distribuye más de 100 documentos oficiales en **7 Compendios Maestros**, respetando el límite estricto de 500,000 palabras de Google NotebookLM con metadatos de citación canónica inyectados.
+- **Empaquetado RAG de alta fidelidad**: Distribuye los documentos técnicos en **8 Compendios Maestros**, respetando el límite estricto de 500,000 palabras de Google NotebookLM con metadatos de citación canónica inyectados.
 
 ---
 
@@ -85,9 +85,9 @@ El sistema rastrea las 4 dimensiones arquitectónicas desacopladas de VS Code Co
                              5. Actualizar state_manifest.json
 ```
 
-### Los 7 Compendios Maestros para NotebookLM
+### Los 8 Compendios Maestros para NotebookLM
 
-Los documentos limpios se consolidan y enrutan en 7 compendios modulares bajo `./copilot_rag_workspace/notebooklm_bundles/`:
+Los documentos limpios se consolidan y enrutan en 8 compendios modulares bajo `./copilot_rag_workspace/notebooklm_bundles/`:
 
 1. **`01_Architecture_And_Agent_Harnesses.md`**: Conceptos de agente, arneses (Local, Copilot, Cloud), ciclo de vida, agentes personalizados y alineación de producto.
 2. **`02_Context_Memory_And_Compaction.md`**: Gestión de ventana de contexto, subagentes aislados, `/compact`, puntos de control, Cache Explorer y arquitectura de memoria tripartita (`/memories/`, `/memories/repo/`, `/memories/session/`).
@@ -96,6 +96,7 @@ Los documentos limpios se consolidan y enrutan en 7 compendios modulares bajo `.
 5. **`05_Workflows_Planning_And_Remote_AHP.md`**: Modos Plan y Autopilot, sesiones asíncronas en la nube, protocolo Agent Host Protocol (AHP) sobre túneles y distribución remota.
 6. **`06_Extension_AI_APIs_And_Copilot_SDK.md`**: Puntos de contribución del Language Model API en VS Code (`vscode.lm`), Language Model Tools (`vscode.lm.tools`) y el Copilot SDK.
 7. **`07_Release_Notes_And_Changelog_Radar.md`**: Feed RSS del Changelog oficial de Copilot y las últimas 3 versiones de notas de lanzamiento de VS Code (`release-notes/v1_*.md`).
+8. **`08_Agent_Workflows_LangGraph_And_Ecosystem.md`**: Documentación oficial completa de LangGraph (Python): StateGraph, memoria, checkpointers, branching condicional, subgraphs, streaming y time-travel.
 
 ---
 

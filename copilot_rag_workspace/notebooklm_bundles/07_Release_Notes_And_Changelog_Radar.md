@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-10-21T03:47:16.551644+00:00
-- **Total Palabras**: 8,497 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-21T13:24:28.485103+00:00
+- **Total Palabras**: 8,495 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -346,8 +346,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_143.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_143
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_143.md
-- **SHA256_FINGERPRINT**: `f2011c32f61a5652440b7ab548c8c5e6d783cf80a66cf4b856c1ab8b4f29ee61`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:56.281656+00:00
+- **SHA256_FINGERPRINT**: `7ea28c0361adddd1bce0ef97308ba1f8dab08aba52fe39961bfb6a7fa43e4faa`
+- **LAST_VERIFIED_UTC**: 2026-10-21T13:24:20.837332+00:00
 ---
 
 **MetaDescription**: Learn what's new in Visual Studio Code 1.143
@@ -366,7 +366,7 @@ Welcome to the 1.143  release of Visual Studio Code.
 
 This release makes the Copilot harness the default for new sessions and adds tools to compare models, reclaim storage, run models locally, and navigate file changes.
 
-* [Copilot harness by default](#copilot-harness-as-the-default): The default for new sessions, lets you switch between editor and Agents window, and keeps sessions running in the background.
+* [Copilot harness by default](#copilot-harness-as-the-default): The default for new sessions, built on the Copilot SDK, lets you switch between editor and Agents window.
 
 * [Compare models (Preview)](#compare-model-results-preview): Run the same task with multiple models in the Agents window, then compare and combine their solutions.
 

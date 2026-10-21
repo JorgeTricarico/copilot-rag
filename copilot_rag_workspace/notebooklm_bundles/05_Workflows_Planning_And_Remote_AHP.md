@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-10-21T03:47:14.683892+00:00
-- **Total Palabras**: 136,617 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-21T13:24:28.451679+00:00
+- **Total Palabras**: 136,711 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -12987,8 +12987,8 @@ The following example configuration automatically allows edits to all files exce
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/security.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/security
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/security.md
-- **SHA256_FINGERPRINT**: `87016237c2d89f882927fffa41a38084cc0da1a639448d8e3d069b000f6995c9`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.916085+00:00
+- **SHA256_FINGERPRINT**: `06d84ac16e756a328007c1dea9fdee3ab748096541f7de0a19c7875ccbac74fd`
+- **LAST_VERIFIED_UTC**: 2026-10-21T13:24:20.806902+00:00
 ---
 
 **MetaDescription**: Protect development environments when using AI agents and MCP servers in VS Code with approvals and sandboxing.
@@ -13182,12 +13182,21 @@ When switching from Local, [migrate and test the hook scripts](/docs/agent-custo
 
 Organizations can implement [centralized security controls](/docs/enterprise/manage-ai-settings.md) to manage AI-assisted development capabilities across their development teams. Key AI-specific policies include:
 
-* **Disable agents**: Prevent the use of agent mode entirely with the `ChatAgentMode` policy.
+* **Disable agents**: Turn off agent mode and the Agents window with the `ChatAgentMode` policy.
 * **Restrict extension tools**: Block extension-contributed tools while keeping built-in and MCP tools with the `ChatAgentExtensionTools` policy.
-* **Control MCP server sources**: Restrict MCP servers to a curated registry (`registryOnly`) or disable MCP support completely (`off`) with the `ChatMCP` policy. Organizations can also host a private MCP registry with the `McpGalleryServiceUrl` policy.
+* **Control MCP server sources**: Restrict MCP servers to a curated registry (`registryOnly`) or turn off MCP support (`off`) with the `ChatMCP` policy. Organizations can also host a private MCP registry with the `McpGalleryServiceUrl` policy.
 * **Disable global auto-approval**: Prevent developers from enabling global auto-approval and hide the **Assisted permissions** and **Allow all** [permission levels](/docs/agents/run/approvals.md#permission-levels), and the **Autopilot** agent mode, with the `ChatToolsAutoApprove` policy.
-* **Require manual approval for specific tools**: Force manual approval for individual tools (for example, `execute/runInTerminal` or `web/fetch`) with the `ChatToolsEligibleForAutoApproval` policy.
+* **Require manual approval for specific tools**: Require manual approval for individual tools (for example, `execute/runInTerminal` or `web/fetch`) with the `ChatToolsEligibleForAutoApproval` policy.
 * **Disable terminal auto-approval**: Turn off the rule-based terminal auto-approval system with the `ChatToolsTerminalEnableAutoApprove` policy.
+
+> [!IMPORTANT]
+> Copilot harness sessions don't fully enforce some of these policies:
+>
+> * `ChatAgentMode` doesn't remove Agent Host session targets, such as **Copilot**, from the **Session Target** UI control in the editor.
+> * `ChatMCP` doesn't apply to MCP servers that the Copilot runtime discovers on its own.
+> * `ChatToolsEligibleForAutoApproval` removes **Allow all**, but **Assisted permissions** and saved session approvals can still approve a listed tool.
+>
+> Review the harness notes in [Manage AI settings in enterprise environments](/docs/enterprise/manage-ai-settings.md#use-vs-code-device-policies) before you rely on a policy for Copilot harness sessions.
 
 Learn more about [managing AI settings in enterprise environments](/docs/enterprise/manage-ai-settings.md) and [deploying enterprise policies](/docs/enterprise/policies.md).
 

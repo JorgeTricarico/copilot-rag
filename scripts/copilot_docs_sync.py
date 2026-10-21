@@ -226,6 +226,9 @@ DIRECT_WEB_SOURCES: List[Dict[str, str]] = [
     },
 ]
 
+# Índice oficial de documentación de LangGraph para LLMs / RAG
+LANGGRAPH_INDEX_URL = "https://raw.githubusercontent.com/langchain-ai/langgraph/main/docs/llms.txt"
+
 
 # =====================================================================
 # 3. MOTOR DE NORMALIZACIÓN DETERMINISTA Y HASHING SHA-256
@@ -866,6 +869,102 @@ class CopilotDocumentationSynchronizer:
 
         return added, updated, skipped
 
+    def sync_langgraph_documentation(
+        self, force_recheck: bool = False
+    ) -> Tuple[int, int, int, int]:
+        """
+        Sincroniza la documentación oficial de LangGraph desde su índice llms.txt en Markdown directo,
+        agrupándola de forma aislada en el compendio 08_Agent_Workflows_LangGraph_And_Ecosystem.
+        Retorna (agregados, actualizados, omitidos_sin_cambios, eliminados).
+        """
+        added, updated, skipped, deleted = 0, 0, 0, 0
+        logger.info("Consultando índice oficial de documentación de LangGraph (%s)...", LANGGRAPH_INDEX_URL)
+
+        try:
+            resp = self.session.get(LANGGRAPH_INDEX_URL, timeout=20)
+            resp.raise_for_status()
+            raw_index = resp.text
+        except Exception as exc:
+            logger.error("Error al obtener índice de LangGraph: %s", exc)
+            return added, updated, skipped, deleted
+
+        doc_links: List[Tuple[str, str, str]] = []
+        pattern = re.compile(r"-\s*\[(.*?)\]\((https?://docs\.langchain\.com/oss/python/langgraph/(.*?\.md))\)")
+        for line in raw_index.splitlines():
+            m = pattern.search(line)
+            if m:
+                title, url, rel_slug = m.group(1).strip(), m.group(2).strip(), m.group(3).strip()
+                doc_links.append((title, url, rel_slug))
+
+        if not doc_links:
+            logger.warning("No se encontraron enlaces de documentación válidos en llms.txt de LangGraph.")
+            return added, updated, skipped, deleted
+
+        logger.info("Detectados %d documentos oficiales de LangGraph para sincronización.", len(doc_links))
+
+        current_langgraph_ids: Set[str] = set()
+        items_to_process = []
+
+        for title, url, rel_slug in doc_links:
+            clean_slug = rel_slug.replace("/", "_").replace(".md", "")
+            doc_id = f"langgraph::{clean_slug}"
+            current_langgraph_ids.add(doc_id)
+            bundle = "08_Agent_Workflows_LangGraph_And_Ecosystem"
+            existing = self.manifest.get(doc_id)
+            items_to_process.append((doc_id, title, url, bundle, existing))
+
+        def _fetch_lg_doc(item):
+            d_id, t_title, d_url, b_name, exist_rec = item
+            raw_resp = self.session.get(d_url, timeout=25)
+            raw_resp.raise_for_status()
+            clean_text = ContentCanonicalizer.normalize_markdown(raw_resp.text)
+            new_sha = ContentCanonicalizer.compute_sha256(clean_text)
+            return item, clean_text, new_sha
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+            futures = [executor.submit(_fetch_lg_doc, it) for it in items_to_process]
+            for fut in concurrent.futures.as_completed(futures):
+                try:
+                    item, clean_text, new_sha256 = fut.result()
+                    d_id, t_title, d_url, b_name, exist_rec = item
+
+                    if (
+                        exist_rec
+                        and not force_recheck
+                        and exist_rec.content_sha256 == new_sha256
+                        and (self.base_dir / exist_rec.local_clean_path).exists()
+                    ):
+                        skipped += 1
+                        continue
+
+                    was_added = exist_rec is None
+                    self._persist_document_change(
+                        doc_id=d_id,
+                        source_url=d_url,
+                        web_url=d_url.replace(".md", ""),
+                        bundle_name=b_name,
+                        git_blob_sha=None,
+                        new_sha256=new_sha256,
+                        clean_text=clean_text,
+                        existing=exist_rec,
+                    )
+                    if was_added:
+                        added += 1
+                    else:
+                        updated += 1
+                except Exception as exc:
+                    logger.error("Error al procesar documento de LangGraph: %s", exc)
+
+        # Detección de documentos eliminados de LangGraph
+        lg_prefix = "langgraph::"
+        for doc_id, record in list(self.manifest.items()):
+            if doc_id.startswith(lg_prefix) and doc_id not in current_langgraph_ids:
+                logger.info("ELIMINADO UPSTREAM LANGGRAPH: %s", doc_id)
+                self._delete_document(doc_id, record)
+                deleted += 1
+
+        return added, updated, skipped, deleted
+
     def _persist_document_change(
         self,
         doc_id: str,
@@ -1164,11 +1263,14 @@ def main() -> int:
     w_add, w_upd, w_skip = syncer.sync_direct_web_sources(
         force_recheck=args.force_recheck
     )
+    l_add, l_upd, l_skip, l_del = syncer.sync_langgraph_documentation(
+        force_recheck=args.force_recheck
+    )
 
-    total_add = g_add + w_add
-    total_upd = g_upd + w_upd
-    total_skip = g_skip + w_skip
-    total_del = g_del
+    total_add = g_add + w_add + l_add
+    total_upd = g_upd + w_upd + l_upd
+    total_skip = g_skip + w_skip + l_skip
+    total_del = g_del + l_del
 
     generated_bundles: List[Path] = []
     # Guardar manifiesto ÚNICAMENTE si hubo modificaciones de contenido o de hashes git

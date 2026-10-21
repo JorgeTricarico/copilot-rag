@@ -1077,10 +1077,10 @@ La arquitectura de Google NotebookLM opera como un entorno RAG estrictamente anc
 Adicionalmente, las fuentes importadas en NotebookLM —incluyendo los documentos vinculados desde Google Drive o las URLs web— constituyen instantáneas estáticas tomadas en el momento de la carga; las modificaciones posteriores en los archivos originales no se sincronizan de forma automática y exigen reemplazar manualmente la fuente afectada en el cuaderno. Aunque NotebookLM admite formatos diversos como PDF, .docx, hojas de cálculo y archivos de audio, el procesamiento de documentación de ingeniería de software y código alcanza su máxima fidelidad al utilizar scripts de empaquetado que concatenan los archivos relacionados en compendios estructurados en formato Markdown (.md) o texto plano (.txt), eliminando el bagaje binario y preservando una jerarquía clara de encabezados (#, ##, ###) que optimiza el particionamiento semántico (chunking) del motor RAG.
 
 
-### Estructura de los 7 Compendios Maestros y Protocolo de Actualización
+### Estructura de los 8 Compendios Maestros y Protocolo de Actualización
 
 
-El script copilot_docs_sync.py resuelve simultáneamente el límite de 50 fuentes y el problema de la resincronización manual mediante la consolidación de más de 80 documentos técnicos en exactamente 7 Compendios Maestros (.md) alojados en el directorio notebooklm_bundles/.
+El script copilot_docs_sync.py resuelve simultáneamente el límite de 50 fuentes y el problema de la resincronización manual mediante la consolidación de documentos técnicos en exactamente 8 Compendios Maestros (.md) alojados en el directorio notebooklm_bundles/.
 
 
 | Compendio Maestro Generado | Dominios Documentales Consolidados | Uso Estratégico con Casillas de Selección en NotebookLM |
@@ -1092,6 +1092,7 @@ El script copilot_docs_sync.py resuelve simultáneamente el límite de 50 fuente
 | 05_Workflows_Planning_And_Remote_AHP.md | Flujo /plan, Autopilot, ventana dedicada code --agents, sesiones remotas por Agent Host Protocol (AHP), túneles, Cloud Agent (59 min timeout) y guías de TDD. | Activar para estructurar flujos de trabajo multi-repositorio, automatizaciones asíncronas y delegación hacia máquinas remotas. |
 | 06_Extension_AI_APIs_And_Copilot_SDK.md | Guías de API para extensiones (registerTool, createChatParticipant, registerMcpServerDefinitionProvider, MCP Apps con @modelcontextprotocol/ext-apps) y características del Copilot SDK (Fleet Mode). | Activar exclusivamente cuando se desarrollen extensiones nativas en TypeScript o integraciones sobre el Copilot SDK. |
 | 07_Release_Notes_And_Changelog_Radar.md | Últimas 3 notas de lanzamiento de VS Code (release-notes/v1_*.md) y los últimos 25 anuncios oficiales del feed RSS de GitHub Copilot Changelog. | Activar junto con cualquiera de los compendios anteriores para detectar configuraciones experimentales recién lanzadas o modelos próximos a retiro. |
+| 08_Agent_Workflows_LangGraph_And_Ecosystem.md | Documentación oficial completa de LangGraph (Python): StateGraph, memoria, checkpointers, branching condicional, subgraphs, streaming y time-travel. | Activar al diseñar o auditar arquitecturas complejas de grafos de estados y orquestación multi-agente integrada con el Copilot SDK. |
 
 
 

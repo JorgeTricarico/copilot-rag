@@ -225,3 +225,40 @@ def test_repo_rules_subpath_configuration():
     gh_rule = next(r for r in REPO_RULES if r.repo == "docs")
     assert gh_rule.tree_subpath == "content/copilot"
 
+
+def test_langgraph_documentation_sync_mocked(tmp_path, monkeypatch):
+    syncer = CopilotDocumentationSynchronizer(base_dir=tmp_path)
+
+    sample_llms_txt = (
+        "# Docs by LangChain: LangGraph (Python)\n\n"
+        "- [Quickstart](https://docs.langchain.com/oss/python/langgraph/quickstart.md)\n"
+        "- [Checkpointers](https://docs.langchain.com/oss/python/langgraph/checkpointers.md)\n"
+    )
+
+    class MockResponse:
+        def __init__(self, text, status_code=200):
+            self.text = text
+            self.status_code = status_code
+
+        def raise_for_status(self):
+            pass
+
+    def mock_get(url, *args, **kwargs):
+        if "llms.txt" in url:
+            return MockResponse(sample_llms_txt)
+        return MockResponse("# Title\n\nThis is technical documentation content with sufficient words for verification.")
+
+    monkeypatch.setattr(syncer.session, "get", mock_get)
+
+    added, updated, skipped, deleted = syncer.sync_langgraph_documentation()
+    assert added == 2
+    assert skipped == 0
+    assert "langgraph::quickstart" in syncer.manifest
+    assert "langgraph::checkpointers" in syncer.manifest
+    assert syncer.manifest["langgraph::quickstart"].bundle_name == "08_Agent_Workflows_LangGraph_And_Ecosystem"
+
+    # Segunda corrida sin cambios debe dar skipped = 2, added = 0
+    a2, u2, s2, d2 = syncer.sync_langgraph_documentation()
+    assert a2 == 0
+    assert s2 == 2
+
