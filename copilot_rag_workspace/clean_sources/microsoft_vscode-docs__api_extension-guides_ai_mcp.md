@@ -308,8 +308,7 @@ An `McpServerDefinition` object can be one of the following types:
 - `vscode.McpStdioServerDefinition`: represents an MCP server available by running a local process and operating on its stdin and stdout streams.
 - `vscode.McpHttpServerDefinition`: represents an MCP server available using the Streamable HTTP transport.
 
-<details>
-<summary>Example MCP server definition provider</summary>
+**Example MCP server definition provider**
 
 The following example demonstrates how to register MCP servers in an extension and prompt the user for an API key when starting the server.
 
@@ -366,8 +365,6 @@ export function activate(context: vscode.ExtensionContext) {
 }
 ```
 
-</details>
-
 ## Troubleshoot and debug MCP servers
 
 ### MCP development mode in VS Code
@@ -377,8 +374,7 @@ When developing MCP servers, you can enable _development mode_ for MCP servers b
 * `watch`: A glob pattern, or an array of glob patterns, to watch for file changes that restart the MCP server.
 * `debug`: Enables you to set up a debugger with the MCP server. Currently, VS Code supports debugging Node.js and Python MCP servers.
 
-    <details>
-    <summary>Node.js MCP server</summary>
+**Node.js MCP server**
 
     To debug a Node.js MCP server, set the `debug.type` property to `node`.
 
@@ -399,10 +395,7 @@ When developing MCP servers, you can enable _development mode_ for MCP servers b
     }
     ```
 
-    </details>
-
-    <details>
-    <summary>Python MCP server</summary>
+**Python MCP server**
 
     To debug a Python MCP server, set the `debug.type` property to `debugpy`, and optionally set the `debug.debugpyPath` property to the path of the `debugpy` module if it is not installed in the default Python environment.
 
@@ -425,8 +418,6 @@ When developing MCP servers, you can enable _development mode_ for MCP servers b
         }
     }
     ```
-
-    </details>
 
 ### MCP output log
 

@@ -62,6 +62,8 @@ Skills are stored in directories with a `SKILL.md` file that defines the skill's
 > To reuse repository skills with [product.prodname_openai_codex], [configure the experimental Codex integration](/docs/agents/run/agent-harnesses.md#codex). This integration discovers workspace skills in `.github/skills/` before your first prompt, without additional skill-location configuration. Codex also discovers `.agents/skills/` natively.
 >
 > If skills in `.github/skills/` have duplicate names across workspace roots, the primary root takes precedence. Discovery makes skills available to the model but does not guarantee that it invokes a skill for every relevant prompt.
+>
+> The Codex harness is disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
 
 > [!NOTE]
 > **For Local harness sessions:** The ``chat.agentSkillsLocations`` setting adds other skill locations. This setting is deprecated and isn't read by Copilot harness sessions. To reuse those skills with the Copilot harness, [move them to supported locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations).
@@ -196,8 +198,7 @@ Use `context: fork` for skills that:
 
 The following examples demonstrate different types of skills you can create.
 
-<details>
-<summary>Example: Web application testing skill</summary>
+**Example: Web application testing skill**
 
 ````markdown
 ---
@@ -244,10 +245,7 @@ npx playwright test --debug
 - Take screenshots on failure
 ````
 
-</details>
-
-<details>
-<summary>Example: GitHub Actions debugging skill</summary>
+**Example: GitHub Actions debugging skill**
 
 ````markdown
 ---
@@ -274,8 +272,6 @@ This skill helps you debug failing GitHub Actions workflows in pull requests.
 - **Permission issues**: Ensure the workflow has the necessary permissions
 - **Timeout issues**: Consider splitting long-running jobs or increasing timeout values
 ````
-
-</details>
 
 ## Use skills as slash commands
 

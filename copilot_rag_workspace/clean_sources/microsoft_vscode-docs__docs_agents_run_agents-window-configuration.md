@@ -17,6 +17,9 @@ The Agents window uses the accounts and model credentials available in VS Code:
 
 For account requirements, billing options, and integration setup, see [Agent harness requirements and setup](/docs/agents/run/agent-harnesses.md#requirements-and-setup).
 
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), even with separate provider credentials. Contact the IT team that deployed the settings to discuss access.
+
 Claude, ChatGPT-backed Codex, and BYOK models can run in the desktop Agents window without GitHub sign-in when you enable ``chat.agentHost.allowSignedOutWhenUsable``. This option is experimental. Features that require GitHub authentication prompt you to sign in when needed. The browser-based Agents window always requires GitHub sign-in.
 
 ## Configure settings for the Agents window

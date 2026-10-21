@@ -37,16 +37,13 @@ To complete a request with tools:
 
 To control which calls require approval and how much autonomy the agent has, see [Manage approvals and permissions](/docs/agents/run/approvals.md).
 
-<details>
-<summary>Change how tool calls are grouped in chat</summary>
+**Change how tool calls are grouped in chat**
 
 By default, tool call details are collapsed in the chat conversation. Use ``chat.agent.thinking.collapsedTools`` (experimental) to change the grouping behavior. Use `off` to keep tool calls separate, `withThinking` to group tools with thinking when available, or `always` to always group tools. When ``chat.agent.thinkingStyle`` is set to `collapsed`, reasoning and grouped tool calls can appear in separate collapsible sections.
 
-</details>
-
 ## Reference a tool explicitly
 
-Type `#` in the chat input to reference a specific tool or tool set. Use an explicit reference when you want to direct the agent to a particular capability instead of letting it choose.
+Type `#` in the chat input to reference an available tool. Use an explicit reference when you want to direct the agent to a particular capability instead of letting it choose. Tool names depend on the harness.
 
 For example, use the `#web/fetch` tool to retrieve a specific web page:
 
@@ -54,18 +51,10 @@ For example, use the `#web/fetch` tool to retrieve a specific web page:
 Summarize the latest release notes at code.visualstudio.com/updates with #web/fetch.
 ```
 
-Use a tool set, such as `#web`, to make a group of related tools available:
-
-```prompt
-Research how Next.js handles routing. Use #web tools and summarize the relevant guidance.
-```
-
 The `#` menu also contains context items, such as files, folders, and editor selections. Context items provide information for the request, while tools give the agent capabilities to gather information or take actions. Learn more about [adding context to chat prompts](/docs/chat/chat-overview.md#add-context-to-your-prompts).
 
 > [!NOTE]
-> **For Local harness sessions:** To group related tools and reuse them across prompts, prompt files, and custom agents, [create a tool set](/docs/agent-customization/tool-sets.md).
-
-<a name="select-tools-for-a-request"></a>
+> User-defined tool sets are deprecated and are not supported in the Copilot harness. For a reusable tool selection, configure a custom agent. See [Replace tool sets](/docs/agent-customization/migrate-customizations.md#replace-tool-sets).
 
 ## Manage available tools
 
@@ -86,8 +75,6 @@ Limit the selection to tools that are relevant to your request. Add capabilities
 
 To define a reusable tool selection for a workflow, specify tools in a [custom agent](/docs/agent-customization/custom-agents.md). For other harnesses, check their [setup requirements and configuration options](/docs/agents/run/agent-harnesses.md#requirements-and-setup).
 
-<a name="manage-tool-availability-for-copilot"></a>
-
 ### Manage tool availability for the Copilot harness
 
 All client-side tools are available to the Copilot harness by default. In the **Tools** tab, tools are organized into collapsible groups. You can:
@@ -102,8 +89,6 @@ The count beside **Tools** in the customization navigation includes enabled clie
 The **Copilot** group lists the harness's built-in tools. These tools run in the Copilot runtime and are read-only in the **Tools** tab. Other tools run in the VS Code client and are available to the agent only while the client is connected.
 
 Tool availability is separate from tool approval. Enabling a tool makes it available to the agent, but doesn't bypass the configured [approval and permission controls](/docs/agents/run/approvals.md).
-
-<a name="add-extension-tools-for-copilot"></a>
 
 ### Add extension tools for the Copilot harness
 
@@ -122,8 +107,7 @@ To remove an extension from the tool list, right-click its tool group and select
 > [!CAUTION]
 > Uninstalling a tool extension removes the entire extension, including contributions that aren't tools.
 
-<details>
-<summary>Select tools for a Local harness request</summary>
+**Select tools for a Local harness request**
 
 For Local harness sessions, select tools for an individual request from the Chat view:
 
@@ -137,14 +121,11 @@ For Local harness sessions, select tools for an individual request from the Chat
 
 You can also specify tools in a [prompt file](/docs/agent-customization/prompt-files.md) or [custom agent](/docs/agent-customization/custom-agents.md). Learn more about the [tool list priority order](/docs/agents/reference/custom-agent-file-reference.md#tool-list-priority).
 
-</details>
-
 ## Edit tool parameters
 
 For a tool call that requires approval, expand the confirmation dialog to review its input parameters. Generic and terminal tool confirmations are read-only. If a call needs different parameters, reject it and tell the agent what to change.
 
-<details>
-<summary>Edit parameters in Local harness and extension tool confirmations</summary>
+**Edit parameters in Local harness and extension tool confirmations**
 
 Confirmations from the Local harness and extension-contributed tools can support parameter editing. When the confirmation provides editable fields:
 
@@ -153,8 +134,6 @@ Confirmations from the Local harness and extension-contributed tools can support
 1. Edit any tool input parameters as needed.
 
 1. Select **Allow** to run the tool with the modified parameters.
-
-</details>
 
 ## Common built-in tool workflows
 
@@ -177,8 +156,7 @@ Of all the built-in tools, the terminal tool is one of the most frequently used.
 
 Copilot harness sessions use the built-in shell tool by default. Workspace commands run in the session's environment, and you review the results in chat. To load your shell profile before each command, see [Configure shell initialization](#configure-shell-initialization). The integrated-terminal controls below apply to Local harness sessions and configurations that use the integrated terminal tool.
 
-<details>
-<summary>Integrated-terminal controls</summary>
+**Integrated-terminal controls**
 
 When the agent decides to run a command, it uses the built-in terminal tool to execute it in an integrated terminal within VS Code.
 
@@ -186,12 +164,9 @@ In the chat conversation, the agent displays the commands it ran. You can view t
 
 ![Screenshot showing terminal command output in chat.](../images/chat-tools/terminal-command-output.png)
 
-<details>
-<summary>Change where terminal output appears</summary>
+**Change where terminal output appears**
 
 Use ``chat.tools.terminal.outputLocation`` (experimental) to show terminal command output inline in chat or directly in the integrated terminal.
-
-</details>
 
 Terminal output previews reflow to fit the available chat width by default. Turn off ``chat.tools.terminal.outputReflow`` to preserve the terminal's column width and use horizontal scrolling for long lines. This setting changes only the preview in chat, not the terminal that runs the command.
 
@@ -204,8 +179,6 @@ While a command is running, a **Continue in Background** button appears next to 
 The agent can also specify a timeout when running terminal commands. When the timeout is reached, the agent stops waiting for the command and returns the output collected so far. Use the ``chat.tools.terminal.enforceTimeoutFromModel`` setting to control whether to enforce the timeout value that the agent specifies.
 
 The agent can also choose to run commands directly in the background, without user interaction. Background terminals that you have not revealed are automatically cleaned up when their command finishes, which prevents stale terminals from accumulating over a long session. To reveal a background terminal and keep it open after the command completes, select the **Show** link in the chat tool invocation header. The terminal output remains visible in the chat conversation even after a terminal is cleaned up.
-
-</details>
 
 > [!TIP]
 > To automatically approve terminal commands or restrict file system and network access for agent commands, see [Manage approvals and permissions](/docs/agents/run/approvals.md).
@@ -226,15 +199,11 @@ For individual names, descriptions, and availability, see the [Tools and context
 
 ## Frequently asked questions
 
-<details>
-<summary>How do I know which tools are available?</summary>
+**How do I know which tools are available?**
 
-Type `#` in the chat input field to browse available tools, tool sets, and context items. For Copilot harness sessions, open the Agent Customizations editor and select the **Tools** tab to view and manage enabled tools. For Local harness sessions, use **Configure Tools** in the chat input.
+Type `#` in the chat input field to browse available tools and context items. For Copilot harness sessions, open the Agent Customizations editor and select the **Tools** tab to view and manage enabled tools. For Local harness sessions, use **Configure Tools** in the chat input.
 
-</details>
-
-<details>
-<summary>I'm getting an error that says "Cannot have more than 128 tools per request."</summary>
+**I'm getting an error that says "Cannot have more than 128 tools per request."**
 
 A chat request can have a maximum of 128 tools enabled at a time. If you see an error about exceeding 128 tools per request:
 
@@ -242,10 +211,7 @@ A chat request can have a maximum of 128 tools enabled at a time. If you see an 
 
 * Alternatively, enable virtual tools with the ``github.copilot.chat.virtualTools.threshold`` setting to automatically manage large tool sets.
 
-</details>
-
-<details>
-<summary>Why isn't the agent using my configured terminal shell?</summary>
+**Why isn't the agent using my configured terminal shell?**
 
 The agent uses the shell you have configured as the default for the terminal, except for `cmd` (Command Prompt) on Windows and `sh` on macOS/Linux. This is because [shell integration](/docs/terminal/shell-integration.md) is not supported with these shells, which means the agent has very limited visibility into what's going on inside the terminal. Instead of getting direct signals for when commands are being run or have finished running, the agent needs to rely on timeouts and watching for the terminal to idle to continue. This leads to a slow and flaky experience.
 
@@ -255,20 +221,15 @@ You can still configure the agent to use these shells with the terminal profile 
 * ``chat.tools.terminal.terminalProfile.osx`` - Override the shell on macOS
 * ``chat.tools.terminal.terminalProfile.linux`` - Override the shell on Linux
 
-</details>
-
-<details>
-<summary>Can I create my own tools?</summary>
+**Can I create my own tools?**
 
 Yes. You can create tools in two ways:
 
 * **Develop a VS Code extension** that contributes tools using the [Language Model Tools API](/api/extension-guides/ai/tools.md)
 * **Create an MCP server** that provides tools. See the [MCP tool extensibility overview](/api/extension-guides/ai/ai-extensibility-overview.md#mcp-tool).
 
-</details>
-
 ## Related resources
 
 * [AI features cheat sheet](/docs/agents/reference/ai-features-cheat-sheet.md)
-* [Create and use tool sets](/docs/agent-customization/tool-sets.md)
+* [Migrate existing customizations](/docs/agent-customization/migrate-customizations.md)
 * [Security considerations for using AI in VS Code](/docs/agents/run/security.md)

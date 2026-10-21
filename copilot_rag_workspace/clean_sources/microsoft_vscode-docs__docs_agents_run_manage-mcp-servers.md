@@ -34,8 +34,6 @@ Enter arguments as a space-separated string or a JSON array of strings. With foc
 
 Portable configurations support form editing. VS Code formats appear as read-only JSON, so edit their source file instead. Check the [configuration file comparison](/docs/agents/reference/mcp-configuration.md#configuration-file) for supported fields and forwarding restrictions. Legacy destinations can still be necessary for VS Code-specific capabilities.
 
-<a name="start-stop-or-restart-a-server"></a>
-
 ## Control or remove a server
 
 In **MCP Servers** in the [Agent Customizations editor](#open-the-server-controls), open the server's ellipsis (**...**) menu and choose an available action. Alternatively, run **MCP: List Servers** from the Command Palette, select the server, and choose an available action.
@@ -50,11 +48,7 @@ In **MCP Servers** in the [Agent Customizations editor](#open-the-server-control
 
 Starting can require trust or authentication. If the server fails to start, [view its output](#view-server-output) before retrying.
 
-<a name="enable-or-disable-mcp-servers"></a>
-
 **Disabling is different from stopping.** A disabled server doesn't start, and its tools, resources, prompts, and MCP apps are unavailable. Use the toggle beside the server, or select an enablement action from its menu to choose a scope. Depending on the server and harness, global, workspace, or session scope is available. The enabled state is separate from shared configuration, so disabling a server doesn't change your teammates' configuration.
-
-<a name="remove-an-mcp-server"></a>
 
 **Removal depends on the configuration source.** If **Uninstall** isn't available for a manually configured server, remove only its entry from the source configuration, not the whole file. If automatic discovery restores it, review its [discovery source](/docs/agents/reference/mcp-configuration.md#automatic-mcp-server-discovery). You can also uninstall an installed server from the **MCP SERVERS - INSTALLED** section of the Extensions view.
 

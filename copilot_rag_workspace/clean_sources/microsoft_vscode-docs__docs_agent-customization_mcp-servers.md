@@ -31,9 +31,6 @@ The walkthrough uses Playwright to demonstrate connecting an external tool provi
 
 To try a remote documentation server instead, follow the [Context7 setup requirements](https://context7.com/docs/resources/all-clients) for its current authentication requirements and service limits. Use the HTTP endpoint `https://mcp.context7.com/mcp` in the connection steps below. A remote server doesn't require a local Node.js installation.
 
-<a name="add-an-mcp-server"></a>
-<a name="add-a-server-from-the-agent-customizations-editor"></a>
-
 ## Connect a server
 
 Use the publisher's URL or launch command. For the Playwright example, use the command in step two.
@@ -109,8 +106,7 @@ If the gallery isn't available, use a publisher-provided URL or command with [MC
 
 You can also open the gallery with **MCP: Add Server** > **Browse MCP Servers...**. Choose **Add from another application...** in the same picker to [discover existing server configurations](/docs/agents/reference/mcp-configuration.md#automatic-mcp-server-discovery).
 
-<details>
-<summary>Add from a package or Docker image (model-assisted)</summary>
+**Add from a package or Docker image (model-assisted)**
 
 If you have a package or image name instead of a launch command, use model assistance to generate the server configuration:
 
@@ -122,16 +118,11 @@ If you have a package or image name instead of a launch command, use model assis
 
 These options appear only when model-assisted setup is supported in your current configuration. If they aren't available, use the publisher's launch command with **Command (stdio)**. Runtime prerequisites still apply: generating a configuration doesn't replace installing the required runtime.
 
-</details>
-
-<details>
-<summary>Discover servers in the Customization Marketplace (Experimental)</summary>
+**Discover servers in the Customization Marketplace (Experimental)**
 
 For a Copilot session, turn on ``chat.customizations.marketplace.enabled``, open **Chat: Open Customizations**, and select **Discover**. Select **GitHub Feed** from the source menu and search by name or with `@type:mcp`. Review the server and select **Install**.
 
 Availability depends on the harness and your organization's marketplace policies. If automatic installation isn't supported, follow the publisher's instructions. Learn about [marketplace discovery](/docs/agent-customization/overview.md#discover-marketplace-customizations-experimental).
-
-</details>
 
 ## Choose a configuration destination
 

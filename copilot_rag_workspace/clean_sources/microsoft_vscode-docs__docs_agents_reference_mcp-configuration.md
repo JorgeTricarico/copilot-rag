@@ -96,8 +96,7 @@ Use this configuration for servers that communicate through standard input and o
 > [!NOTE]
 > When using Docker with stdio servers, don't use the detach option (`-d`). The server must run in the foreground to communicate with VS Code.
 
-<details>
-<summary>Example local server configuration</summary>
+**Example local server configuration**
 
 This example configures the same Playwright server in the VS Code format:
 
@@ -112,8 +111,6 @@ This example configures the same Playwright server in the VS Code format:
     }
 }
 ```
-
-</details>
 
 ### Sandbox configuration
 
@@ -138,8 +135,7 @@ The server-level and top-level `sandbox` objects support the following propertie
 
 You can use [predefined variables](/docs/reference/variables-reference.md), such as `${workspaceFolder}`, in file system path values.
 
-<details>
-<summary>Example sandbox configuration</summary>
+**Example sandbox configuration**
 
 This example grants one server write access to the workspace and network access to specific domains. The top-level rule denies all sandboxed servers in the file access to the `.ssh` directory:
 
@@ -169,8 +165,6 @@ This example grants one server write access to the workspace and network access 
 }
 ```
 
-</details>
-
 ### HTTP and Server-Sent Events (SSE) servers
 
 Use this configuration for servers that communicate over HTTP. VS Code first tries the HTTP Stream transport and falls back to SSE if HTTP is not supported.
@@ -193,8 +187,7 @@ The `oauth` object supports the following properties:
 > [!NOTE]
 > When `oauth` is configured, VS Code handles the OAuth flow automatically. A browser window opens for authorization on the first connection to the server.
 
-<details>
-<summary>Example remote server configuration</summary>
+**Example remote server configuration**
 
 This example specifies a remote MCP endpoint. Follow the publisher's authentication instructions before using it:
 
@@ -209,10 +202,7 @@ This example specifies a remote MCP endpoint. Follow the publisher's authenticat
 }
 ```
 
-</details>
-
-<details>
-<summary>Example HTTP server with OAuth</summary>
+**Example HTTP server with OAuth**
 
 This example shows the configuration for an MCP server that uses OAuth for authentication. On first use, VS Code opens a browser window to complete the OAuth flow.
 
@@ -229,8 +219,6 @@ This example shows the configuration for an MCP server that uses OAuth for authe
     }
 }
 ```
-
-</details>
 
 ### Authentication and secrets
 
@@ -289,8 +277,7 @@ Each input variable has a `type` that determines how VS Code prompts for the val
 | `command` | Yes | Command ID to run to obtain the input value | `"myExtension.getApiKey"` |
 | `args` | No | Arguments passed to the command. Can be a string, array, or object. | `{ "scope": "global" }` |
 
-<details>
-<summary>Example server configuration with input variables</summary>
+**Example server configuration with input variables**
 
 This example configures a local server that requires an API key:
 
@@ -319,8 +306,6 @@ This example configures a local server that requires an API key:
     }
 }
 ```
-
-</details>
 
 ### Development mode
 

@@ -6,8 +6,6 @@ The Agent Host is a dedicated process that runs agent harnesses and manages thei
 
 This article explains the process boundaries, execution environments, session lifetime, and client dependencies for integrations that use the Agent Host. You don't need this architecture background to use agents. To identify the harness a session uses or compare Local and Copilot, see [Choose an agent harness](/docs/agents/run/agent-harnesses.md). For session-management tasks, see [Manage sessions](/docs/agents/run/sessions/manage-sessions.md).
 
-<a name="why-a-dedicated-agent-host"></a>
-
 ## What this architecture enables
 
 Separating the agent from the window that displays it provides these capabilities:
@@ -17,6 +15,9 @@ Separating the agent from the window that displays it provides these capabilitie
 * **Independent execution**: an agent session can continue without a connected editor while the host and its execution environment remain running. Tools provided by a client still require that client.
 * **Multiple agent implementations**: different agent runtimes plug into one host-facing interface and present common session concepts to clients.
 * **Dedicated process**: agents run in their own process, where they won't be blocked by busy extensions.
+
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
 
 ## Process architecture
 
@@ -33,8 +34,6 @@ The extension host remains responsible for extensions. Extensions can contribute
 The Agent Host can run as a local utility process or as a standalone server on a remote machine. VS Code uses a message port for local IPC and AHP JSON-RPC over WebSocket for remote connections.
 
 Agent adapters run inside the Agent Host process. An adapter translates between its agent runtime and the common [Agent Host Protocol (AHP)](#agent-host-protocol) session model.
-
-<a name="local-and-remote-hosts"></a>
 
 ## Where sessions run
 
@@ -55,8 +54,6 @@ Dev Container execution is an environment choice, not a different harness. See t
 Like [VS Code Remote Development](/docs/remote/remote-overview.md), the user interface stays on the client while workspace operations run close to the source code and development tools.
 
 The **Cloud** target is a separate choice that uses provider-managed infrastructure. Connecting to an Agent Host on another machine does not turn the session into a cloud-agent session.
-
-<a name="self-contained-with-optional-client-tools"></a>
 
 ## Session lifetime and client dependencies
 
@@ -79,8 +76,6 @@ For protocol definitions and implementation details, see the [Agent Host Protoco
 ## Run a standalone host
 
 To run your own standalone Agent Host, use `code agent host`. By default, the command starts a server on localhost and protects it with a connection token. Use the `--tunnel` option to expose it through a dev tunnel.
-
-<a name="behavior-on-the-extension-host"></a>
 
 ## Local and existing extension-host sessions
 

@@ -123,8 +123,6 @@ For model-selection guidance, see [Optimize AI credit usage](/docs/agents/guides
 
 For a repeatable planning workflow, define a [custom agent](/docs/agent-customization/custom-agents.md) with instructions such as architectural guidelines or required planning deliverables.
 
-<a name="plan-in-a-local-session"></a>
-
 ## Plan in a Local harness session
 
 The Local harness provides a built-in Plan agent with different controls from Copilot Plan mode. Select **Local** from the **Session Target** UI control, then select **Plan** from the agents dropdown or enter `/plan` followed by your task.

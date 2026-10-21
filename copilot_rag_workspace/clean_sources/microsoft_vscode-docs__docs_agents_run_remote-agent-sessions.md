@@ -61,8 +61,6 @@ To start a session on a remote machine via dev tunnel:
 > [!IMPORTANT]
 > Ensure your dev tunnel requires authentication (GitHub or Microsoft account). If the tunnel allows anonymous access, anyone who discovers the URL can reach your machine and start agent sessions. This is especially dangerous when auto-approval modes are active, because unauthorized users can trigger AI-assisted command execution with your credentials. For more information, see [Security](/docs/agents/run/security.md).
 
-<a name="delegate-work-to-remote-agent-hosts-experimental"></a>
-
 ## Delegate tasks to remote machines (Experimental)
 
 In the Agents window, ask the agent to delegate a task to a connected remote machine. Enable both ``chat.remoteAgentHostsEnabled`` and ``chat.remoteSessions.tools.enabled``, and connect the machines that the agent can use. You don't need to select the target machine in the workspace picker.
@@ -138,8 +136,6 @@ The hosts bar in the browser-based Agents window shows machines with configured 
 * **Offline**: the tunnel on the host is not running. Start the tunnel on the host to bring it back online.
 
 You can connect and disconnect from machines directly through the hosts bar. If a machine goes offline while you have an active session, the session shows a disconnected state. When the machine comes back online, the session reconnects automatically.
-
-<a name="remote-control-copilot-sessions"></a>
 
 ## Remote control Copilot harness sessions
 

@@ -48,6 +48,12 @@ def test_canonical_web_url_building():
     )
     assert url_vscode == "https://code.visualstudio.com/docs/agents/overview"
 
+    # BUG-05: Release notes should map to /updates/
+    url_rn = syncer._build_canonical_web_url(
+        vscode_rule, "release-notes/v1_98.md"
+    )
+    assert url_rn == "https://code.visualstudio.com/updates/v1_98"
+
     url_skill = syncer._build_canonical_web_url(
         vscode_rule, ".github/skills/docs-product-alignment/SKILL.md"
     )
@@ -156,3 +162,66 @@ def test_verify_integrity(tmp_path):
     # Tamper with file
     clean_file.write_text("Tampered content", encoding="utf-8")
     assert syncer.verify_integrity() is False
+
+
+def test_manifest_not_saved_if_no_changes(tmp_path):
+    syncer = CopilotDocumentationSynchronizer(base_dir=tmp_path)
+    assert syncer.manifest_dirty is False
+
+    # Mark dirty and save
+    syncer.manifest_dirty = True
+    saved = syncer._save_manifest()
+    assert saved is True
+    assert syncer.manifest_path.exists()
+    assert syncer.manifest_dirty is False
+
+
+def test_notebooklm_bundle_excludes_low_density_stubs(tmp_path):
+    syncer = CopilotDocumentationSynchronizer(base_dir=tmp_path)
+
+    # Document A: Stub (< 25 words)
+    stub_file = tmp_path / "clean_sources" / "stub_doc.md"
+    stub_file.parent.mkdir(parents=True, exist_ok=True)
+    stub_file.write_text("# Overview\nShort stub index.", encoding="utf-8")
+    syncer.manifest["doc_stub"] = DocumentRecord(
+        doc_id="doc_stub",
+        source_url="https://example.com/stub",
+        canonical_web_url="https://example.com/stub",
+        bundle_name="01_Architecture_And_Agent_Harnesses",
+        git_blob_sha="111",
+        content_sha256="abc",
+        word_count=5,
+        last_updated_utc="2026-10-20T12:00:00Z",
+        local_clean_path="clean_sources/stub_doc.md",
+    )
+
+    # Document B: Rich technical document (>= 25 words)
+    rich_file = tmp_path / "clean_sources" / "rich_doc.md"
+    rich_text = "This is a comprehensive technical document explaining the internal architecture, memory context compaction, and tool calling mechanics of Copilot Agents in Visual Studio Code with clear explanations and comprehensive details."
+    rich_file.write_text(rich_text, encoding="utf-8")
+    syncer.manifest["doc_rich"] = DocumentRecord(
+        doc_id="doc_rich",
+        source_url="https://example.com/rich",
+        canonical_web_url="https://example.com/rich",
+        bundle_name="01_Architecture_And_Agent_Harnesses",
+        git_blob_sha="222",
+        content_sha256="def",
+        word_count=len(rich_text.split()),
+        last_updated_utc="2026-10-20T12:00:00Z",
+        local_clean_path="clean_sources/rich_doc.md",
+    )
+
+    bundles = syncer.build_notebooklm_bundles(rebuild_all=True)
+    assert len(bundles) == 1
+    bundle_content = bundles[0].read_text(encoding="utf-8")
+
+    # Rich doc must be present
+    assert "doc_rich" in bundle_content
+    # Stub (< 25 words) must be excluded (OPT-01)
+    assert "doc_stub" not in bundle_content
+
+
+def test_repo_rules_subpath_configuration():
+    gh_rule = next(r for r in REPO_RULES if r.repo == "docs")
+    assert gh_rule.tree_subpath == "content/copilot"
+

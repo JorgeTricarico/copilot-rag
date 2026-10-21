@@ -10,6 +10,9 @@ To understand how the customization types differ and work together, see [Agent c
 
 ## Prerequisites
 
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
+
 * [Download and install Visual Studio Code](/download).
 * Complete the [setup and authentication for your harness](/docs/agents/run/agent-harnesses.md#requirements-and-setup).
 * Open the repository root that you want to configure.
@@ -99,8 +102,6 @@ For example, project-specific instructions might include:
 
 Learn more about writing effective [custom instructions](/docs/agent-customization/custom-instructions.md).
 
-<a name="step-3-verify-the-improvement"></a>
-
 ## Step 3: Verify the improvement
 
 Confirm that the instructions apply, and then repeat the representative task from your baseline. Keep the harness, model, tools, task, and relevant context the same where practical so that the customization is the main change.
@@ -126,8 +127,6 @@ Review the instructions like other development configuration. Use your existing 
 If your team uses multiple harnesses, keep shared guidance consistent and avoid contradictory copies. A file supported by one harness isn't automatically supported by every other harness.
 
 If the representative task now meets the success criterion, stop. Your repository has a useful baseline customization. The remaining steps are optional. Add them when different parts of the codebase need distinct guidance or when your team repeatedly performs the same workflow.
-
-<a name="step-5-add-targeted-instructions"></a>
 
 ## Step 5: Add targeted instructions (optional)
 
@@ -170,8 +169,6 @@ Review and save the generated file, then test it in a new chat with the same har
 
 If you changed the session's working folder to test nested instructions, return to the repository root before continuing.
 
-<a name="step-6-package-a-recurring-workflow"></a>
-
 ## Step 6: Package a recurring workflow (optional)
 
 Create an agent skill when your team repeatedly explains the same multi-step process. A skill can include instructions, scripts, templates, examples, and other resources that the agent loads when relevant.
@@ -200,8 +197,6 @@ After generating the skill:
 You can also test automatic selection in a separate chat by asking the agent to validate a change without naming the skill. If it doesn't select the skill, review the description and invocation settings. Explicit invocation and model-selected use are separate checks.
 
 Learn more about [agent skills](/docs/agent-customization/agent-skills.md).
-
-<a name="step-7-add-a-specialized-agent"></a>
 
 ## Step 7: Add a specialized agent (optional)
 

@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-10-20T22:05:37.936766+00:00
-- **Total Palabras**: 132,580 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-21T03:47:14.683892+00:00
+- **Total Palabras**: 136,617 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -3632,19 +3632,6 @@ copilot -p "Review the latest commit" \
 
 
 ---
-# DOCUMENT_SOURCE: github_docs::content/copilot/reference/copilot-cli-reference/index.md
-- **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/copilot-cli-reference
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/index.md
-- **SHA256_FINGERPRINT**: `f69c7bc9ebee8984ad10db5d40650fabffaafcf0254553c6fea4bbc7afba2a50`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.955955+00:00
----
-
-**title**: Copilot CLI reference
-**shortTitle**: Copilot CLI reference
-**intro**: Find information on options and settings for Copilot CLI.
-
-
----
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/agent-troubleshooting/cache-explorer.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/agent-troubleshooting/cache-explorer
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/agent-troubleshooting/cache-explorer.md
@@ -4178,8 +4165,8 @@ See [Report an unresolved issue](/docs/agents/agent-troubleshooting/troubleshoot
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/agent-troubleshooting/troubleshooting.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/agent-troubleshooting/troubleshooting
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/agent-troubleshooting/troubleshooting.md
-- **SHA256_FINGERPRINT**: `248ba748e898899c3dbc2603cc697a034fee16f5e83acba84b4bf9c7df3e4076`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.235324+00:00
+- **SHA256_FINGERPRINT**: `139bada0322538c442d0aceff7befb5f7eedc1893e9a53519be1d48a744c81a6`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.993294+00:00
 ---
 
 **MetaDescription**: Diagnose GitHub Copilot and agent issues in Visual Studio Code with targeted checks, logs, and network diagnostics.
@@ -4199,6 +4186,7 @@ When chat, agents, or inline suggestions do not behave as expected, start with t
 | A file, tool, or expected step is missing from a response | [Inspect chat interactions](#inspect-chat-interactions). | Compare the session events with the request sent to the model. |
 | A response is slow or uses more tokens than expected | Open the Agent Debug Logs Summary view. | Use the Cache Explorer only if the session reports low cache reuse. |
 | An MCP server or tool is unavailable | [Troubleshoot MCP servers](#troubleshoot-mcp-servers). | Inspect the server output and the tools available to the request. |
+| Sandboxing reports missing dependencies, or sandboxed tools fail with certificate errors | [Troubleshoot agent sandboxing](/docs/agents/run/agent-sandboxing.md#troubleshoot-agent-sandboxing). | Check dependencies, proxy access, and certificate trust on the agent host. |
 
 ## Start with basic checks
 
@@ -5169,8 +5157,8 @@ Learn more about customizing AI in VS Code:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/customize-copilot-guide.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/customize-copilot-guide
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/customize-copilot-guide.md
-- **SHA256_FINGERPRINT**: `9b8f6f08a8625fda6e2638e5470bca65b2e904832f89198ba3a22e4f0eafd9cf`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.612716+00:00
+- **SHA256_FINGERPRINT**: `229d45226267c87d552c21fcf709a1ddcd3ba7b51cf9756e3a7372d2f971877d`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:54.456681+00:00
 ---
 
 **MetaDescription**: Configure project instructions, skills, and custom agents for multiple harnesses in VS Code.
@@ -5184,6 +5172,9 @@ This guide helps you configure the GitHub Copilot, [product.prodname_anthropic_c
 To understand how the customization types differ and work together, see [Agent customization](/docs/agents/concepts/customization.md).
 
 ## Prerequisites
+
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
 
 * [Download and install Visual Studio Code](/download).
 * Complete the [setup and authentication for your harness](/docs/agents/run/agent-harnesses.md#requirements-and-setup).
@@ -5274,8 +5265,6 @@ For example, project-specific instructions might include:
 
 Learn more about writing effective [custom instructions](/docs/agent-customization/custom-instructions.md).
 
-<a name="step-3-verify-the-improvement"></a>
-
 ## Step 3: Verify the improvement
 
 Confirm that the instructions apply, and then repeat the representative task from your baseline. Keep the harness, model, tools, task, and relevant context the same where practical so that the customization is the main change.
@@ -5301,8 +5290,6 @@ Review the instructions like other development configuration. Use your existing 
 If your team uses multiple harnesses, keep shared guidance consistent and avoid contradictory copies. A file supported by one harness isn't automatically supported by every other harness.
 
 If the representative task now meets the success criterion, stop. Your repository has a useful baseline customization. The remaining steps are optional. Add them when different parts of the codebase need distinct guidance or when your team repeatedly performs the same workflow.
-
-<a name="step-5-add-targeted-instructions"></a>
 
 ## Step 5: Add targeted instructions (optional)
 
@@ -5345,8 +5332,6 @@ Review and save the generated file, then test it in a new chat with the same har
 
 If you changed the session's working folder to test nested instructions, return to the repository root before continuing.
 
-<a name="step-6-package-a-recurring-workflow"></a>
-
 ## Step 6: Package a recurring workflow (optional)
 
 Create an agent skill when your team repeatedly explains the same multi-step process. A skill can include instructions, scripts, templates, examples, and other resources that the agent loads when relevant.
@@ -5375,8 +5360,6 @@ After generating the skill:
 You can also test automatic selection in a separate chat by asking the agent to validate a change without naming the skill. If it doesn't select the skill, review the description and invocation settings. Explicit invocation and model-selected use are separate checks.
 
 Learn more about [agent skills](/docs/agent-customization/agent-skills.md).
-
-<a name="step-7-add-a-specialized-agent"></a>
 
 ## Step 7: Add a specialized agent (optional)
 
@@ -6318,8 +6301,8 @@ Reduce the need for recovery by making the intended outcome observable:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/monitoring-agents.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/monitoring-agents
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/monitoring-agents.md
-- **SHA256_FINGERPRINT**: `526486ed0aaebda95003656c16183a00eac6ebc13678afb813f6cfb3a5d0b50e`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.636782+00:00
+- **SHA256_FINGERPRINT**: `c1f9f6c1baeac16a9a02fa1145a734ddc122e58797a422bc070af5c93def8fbe`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:54.815505+00:00
 ---
 
 **MetaDescription**: Monitor GitHub Copilot agents in VS Code with OpenTelemetry traces, metrics, events, and identity controls.
@@ -6592,7 +6575,7 @@ Environment variables always take precedence over VS Code settings. When your or
 | `COPILOT_OTEL_LOG_LEVEL` | `info` | Minimum log level: `trace`, `debug`, `info`, `warn`, or `error`. |
 | `COPILOT_OTEL_FILE_EXPORTER_PATH` | | Write all signals to this file as JSON lines. |
 | `COPILOT_OTEL_HTTP_INSTRUMENTATION` | `false` | Enable HTTP-level OTel instrumentation. |
-| `OTEL_EXPORTER_OTLP_HEADERS` | | Auth headers (for example, `Authorization=Bearer token`) |
+| `OTEL_EXPORTER_OTLP_HEADERS` | | Static HTTP headers for the collector. For managed Agent Host sessions, see [dynamic headers](#configure-dynamic-headers). |
 
 ### Commands
 
@@ -6604,7 +6587,7 @@ When ``github.copilot.chat.otel.dbSpanExporter.enabled`` is `true`, Copilot Chat
 
 ## Manage OTel configuration for your organization
 
-Enterprises can mandate OTel export configuration centrally through Copilot enterprise-managed settings, so that telemetry flows to an approved collector without each developer setting `OTEL_*` environment variables. Managed telemetry configuration applies to both the Copilot Chat extension and the Agent Host process.
+Enterprises can mandate OTel export configuration centrally through Copilot enterprise-managed settings, without each developer setting `OTEL_*` environment variables. Managed telemetry configuration applies to both the Copilot Chat extension and the Agent Host process. In addition to collector export, Copilot Agent Host sessions support a managed file destination.
 
 For delivery methods, configuration fields, client support, and precedence, see [`telemetry` in the enterprise-managed settings reference](https://docs.github.com/en/copilot/reference/enterprise-administrators/enterprise-managed-settings#telemetry). For the behavior specific to VS Code, see [Apply managed telemetry in VS Code](/docs/enterprise/manage-ai-settings.md#apply-managed-telemetry-in-vs-code).
 
@@ -6613,13 +6596,95 @@ For Local harness sessions, VS Code automatically tries once per editor session 
 > [!NOTE]
 > When a managed telemetry value is configured, it overrides user settings. Managed identity capture also overrides `COPILOT_OTEL_CAPTURE_IDENTITY`, and managed resource attributes override `OTEL_RESOURCE_ATTRIBUTES`. Remove other conflicting OTel environment variables from managed devices to ensure that the enterprise configuration takes effect in the Copilot Chat extension.
 
-<a name="trace-structure-for-background-and-claude-agents"></a>
+### Export managed telemetry to a file
+
+Starting with VS Code 1.143, administrators can set `telemetry.filePath` to save Copilot Agent Host telemetry as JSON Lines (JSONL), without running an OTLP collector or requiring developers to opt in through personal OTel settings. This managed destination is separate from the Copilot Chat extension's [file exporter](#other-exporter-examples).
+
+For a local Agent Host, add the following telemetry block to the device-wide `managed-settings.json` file, not your editor settings JSON:
+
+| Platform | Managed settings file |
+|---|---|
+| macOS | `/Library/Application Support/GitHubCopilot/managed-settings.json` |
+| Linux | `/etc/github-copilot/managed-settings.json` |
+| Windows | `%ProgramFiles%\GitHubCopilot\managed-settings.json` |
+
+```json
+{
+    "telemetry": {
+        "filePath": "~/copilot-telemetry/copilot-otel.jsonl",
+        "captureContent": false,
+        "capture": {
+            "identity": false
+        }
+    }
+}
+```
+
+Choose an absolute or home-relative output path that the Agent Host can write to. Paths refer to the machine that exports the telemetry. The `~/` prefix expands to that machine's user home directory. Environment-variable references such as `$HOME` or `%USERPROFILE%` in `filePath` are not expanded and are rejected.
+
+Setting `filePath` enables Agent Host OTel export without `enabled: true`. An explicit managed `telemetry.enabled: false` takes precedence and turns off export.
+
+After VS Code resolves a managed telemetry change, it restarts the local Agent Host automatically. Start a new Copilot Agent Host session and send a prompt, then check the destination file for spans such as `invoke_agent` and `vscode.agent_host.session`.
+
+The exporter creates missing parent directories and appends one span per line. If it cannot resolve the path or write to the file, the Agent Host logs an error without blocking chat. It does not fall back to a collector. Apply your organization's access and retention controls to the exported files.
+
+> [!IMPORTANT]
+> A managed `filePath` takes precedence over collector configuration. While it is configured, Agent Host telemetry goes to the file instead of the collector, and [dynamic headers](#configure-dynamic-headers) do not apply. Include the file configuration in the [highest-precedence managed telemetry block](/docs/enterprise/manage-ai-settings.md#apply-managed-telemetry-in-vs-code).
+
+To remove the managed file destination, remove `telemetry.filePath` from the effective managed configuration. After the change is applied, another configured collector or personal Agent Host exporter can become effective again. Removing `filePath` stops all export only when no other exporter is configured. To turn off Agent Host OTel export through managed settings, set `telemetry.enabled` to `false`.
+
+### Configure dynamic headers
+
+Starting with VS Code 1.143, administrators can configure `telemetry.headersProvider` for Copilot Agent Host sessions to generate and refresh HTTP headers for OTLP export. The Agent Host runs a helper executable to obtain header values, so developers don't need to update them manually. Use these headers to supply collector-specific metadata, route telemetry, or authenticate with the collector.
+
+Configure the provider through Copilot enterprise-managed settings, not your editor settings JSON. For example, deploy the following telemetry block in `managed-settings.json`:
+
+```json
+{
+    "telemetry": {
+        "enabled": true,
+        "endpoint": "https://<collector-host>:4318",
+        "protocol": "http/protobuf",
+        "captureContent": false,
+        "capture": {
+            "identity": false
+        },
+        "headers": {
+            "x-organization": "<organization-id>"
+        },
+        "headersProvider": {
+            "path": "<absolute-path-to-header-helper>",
+            "args": [],
+            "refreshIntervalMs": 1740000
+        }
+    }
+}
+```
+
+Replace the endpoint, organization ID, and helper path with your deployment values. Install the helper and its dependencies on the machine where the Agent Host runs. For remote sessions, the executable and paths must exist on the remote host.
+
+The helper runs from the execution host's home directory, with the arguments in `args` passed without shell evaluation. It must finish within 30 seconds and write a JSON object with string values to standard output:
+
+```json
+{
+    "x-team": "platform",
+    "x-environment": "production"
+}
+```
+
+The helper can also return an `Authorization` header when the collector requires authentication.
+
+The provider refreshes headers every 29 minutes by default. Set `refreshIntervalMs` to match how often your header values need to be refreshed. Returning `{}` clears dynamic headers. If a refresh fails, exports that require dynamic headers are blocked until the provider refreshes successfully.
+
+Headers returned by the provider take precedence over managed static `telemetry.headers` values with the same name. Nonconflicting static headers remain in the request. Managed headers also take precedence over user-provided headers.
+
+The provider requires an `endpoint` in the same telemetry block and supports HTTP OTLP export with `http/protobuf` or `http/json`, not gRPC. Managed export does not require developers to opt in through personal OTel settings.
+
+Higher-precedence managed sources replace the entire `telemetry` block. Include all required fields in the winning source rather than splitting the endpoint and provider across delivery methods. See [managed-settings delivery precedence](/docs/enterprise/manage-ai-settings.md#across-managed-settings-delivery-methods) and the [header provider reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#dynamic-authentication-headers) for more information.
 
 ## Trace structure by harness
 
 When OTel is enabled, the Copilot and Claude integrations described in this section are automatically instrumented. The same settings used for Local harness session traces also enable traces for these integrations.
-
-<a name="copilot"></a>
 
 ### Copilot harness
 
@@ -6636,6 +6701,9 @@ When you run a Copilot CLI session in the terminal (**New Copilot CLI Session**)
 The CLI runtime only supports `otlp-http`. When `otlp-grpc` is configured, the terminal CLI still uses HTTP. Backends that serve both protocols on the same port (such as the Aspire Dashboard) work transparently.
 
 ### Claude agent
+
+> [!NOTE]
+> The Claude harness is disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), including managed telemetry settings. Contact the IT team that deployed the settings to discuss access.
 
 When OTel is enabled, Claude agent sessions produce extension-level spans under service `copilot-chat` that follow the GenAI semantic conventions. The extension creates spans by intercepting Claude SDK messages and proxying LLM calls through a local HTTP server.
 
@@ -6761,7 +6829,7 @@ Console output (quick debugging):
 }
 ```
 
-File-based output (offline or CI):
+File-based output from the Copilot Chat extension (offline or CI):
 
 ```json
 {
@@ -6771,18 +6839,20 @@ File-based output (offline or CI):
 }
 ```
 
-Authentication headers for remote collectors are only configurable through the `OTEL_EXPORTER_OTLP_HEADERS` environment variable (for example, `Authorization=Bearer your-token`).
+For organization-managed output from Copilot Agent Host sessions, see [Export managed telemetry to a file](#export-managed-telemetry-to-a-file).
+
+For static HTTP headers, set `OTEL_EXPORTER_OTLP_HEADERS`. Administrators can also configure managed static headers and, for Copilot Agent Host sessions, [dynamic headers](#configure-dynamic-headers).
 
 ## Security and privacy
 
-OTel monitoring is off by default and emits no data until you explicitly enable it. You control what is collected and where it goes.
+OTel monitoring is off by default. You or your organization must configure monitoring before data is exported. For managed deployments, your organization controls what is collected and where it goes.
 
 | Aspect | Detail |
 |---|---|
-| **Off by default** | No OTel data is emitted unless you explicitly enable it. The OTel SDK is not loaded when disabled, resulting in zero runtime overhead. |
+| **Off by default** | No OTel data is exported unless you or your organization enables monitoring. |
 | **No content by default** | Prompts, responses, and tool arguments require opt-in with `captureContent`. |
 | **No PII in default attributes** | Session IDs, model names, and token counts are not personally identifiable. |
-| **User-configured endpoints** | Data goes only where you point it. There is no phone-home behavior. |
+| **Configured destinations** | Data goes to the collector endpoint or file configured by you or your organization. |
 
 ## Related content
 
@@ -7668,8 +7738,8 @@ Custom instructions guide the agent but don't enforce these safeguards. Review t
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/test-driven-development-guide.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/test-driven-development-guide
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/test-driven-development-guide.md
-- **SHA256_FINGERPRINT**: `cbe60d6b84603d1f7ce02d47377ae3319930f847881f24f5cbd63278e069ee3a`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.838082+00:00
+- **SHA256_FINGERPRINT**: `5a5b02622b829d26290559a5333a3f4c719444e0c3a818e56ea0e2ea3d46e48b`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.061040+00:00
 ---
 
 **MetaDescription**: Build a Local TDD workflow in VS Code with custom agents, handoffs, and instructions.
@@ -7680,8 +7750,7 @@ Test-driven development (TDD) is a software development approach where you write
 
 This guide shows you how to set up an AI-assisted test-driven development workflow in VS Code by using custom agents, handoffs, and custom instructions. The TDD roles and instructions apply to both the Local and Copilot agent harnesses. The runnable workflow in this guide uses the Local harness in the Chat view because it relies on handoff actions between the TDD agents.
 
-<details>
-<summary>TDD overview</summary>
+**TDD overview**
 
 The core tenet of test-driven development is to write tests before implementation. The tests define the desired outcomes for the functionality you want to build. By writing tests first, you clarify requirements and identify edge cases to ensure that your code behaves as expected.
 
@@ -7694,8 +7763,6 @@ The three phases are:
 * **Green phase**: Write the minimal application code needed to make the test pass. Focus on making it work, not making it perfect.
 
 * **Refactor phase**: Improve the code quality while keeping all tests passing. Clean up duplication, improve naming, and enhance structure.
-
-</details>
 
 ## Prerequisites
 
@@ -7944,8 +8011,8 @@ Learn more about testing and AI customization in VS Code:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/quickstart.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/quickstart
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/quickstart.md
-- **SHA256_FINGERPRINT**: `8d8020e8be111d72b1724ce8a59a785744aa472aa11e97a0b3c0f4aaa3eb102d`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.910759+00:00
+- **SHA256_FINGERPRINT**: `df00b931910fc17fea4c6b3d6a01c410fa273e18cac344137425e08b5b9bb730`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.019912+00:00
 ---
 
 **MetaDescription**: Build and validate a web app with an AI agent in VS Code, then review and recover changes.
@@ -8144,8 +8211,6 @@ If a follow-up doesn't resolve the problem, use [Get an agent back on track](/do
 
 * If you reach an AI credits limit, review [what remains available and when allowances reset](/docs/agents/agent-troubleshooting/faq.md#i-reached-my-inline-suggestions-or-ai-credits-limit).
 
-<a name="optional-continue-in-the-other-surface"></a>
-
 ## Continue in another interface or application
 
 The Agents window and Chat view share your Copilot session, so you can switch between them without losing the conversation.
@@ -8175,8 +8240,8 @@ When you no longer need the app, run these steps to clean up your local resource
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/agent-plugin-reference.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/agent-plugin-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/agent-plugin-reference.md
-- **SHA256_FINGERPRINT**: `519ede2ceda8a734b0982c063ab5fbaa72ae44b86270abecae6bfc920953d0ec`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.921864+00:00
+- **SHA256_FINGERPRINT**: `ff91916da728a7023757bed6ef4297b4f1cb4d54c5de8045b46b02dc8c6082cf`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.033605+00:00
 ---
 
 **MetaDescription**: Package skills, agents, MCP servers, hooks, and automation templates with agent plugins in VS Code.
@@ -8467,7 +8532,9 @@ Plugins can include [hooks](/docs/agent-customization/hooks.md) that run shell c
 
 Organizations can distribute approved hooks through plugins. When managed settings specify `allowManagedHooksOnly: true`, plugin hooks run only when the plugin is force-enabled by a managed `enabledPlugins["plugin@marketplace"]: true` entry. User enablement alone is not sufficient, and `allowManagedHooksOnly` does not itself enable the plugin. See [Deploy hooks through managed plugins](/docs/enterprise/manage-ai-settings.md#deploy-hooks-through-managed-plugins).
 
-Hook configuration and payloads depend on the session's harness. Start with [choosing a hook implementation](/docs/agent-customization/hooks.md#choose-the-hook-implementation-for-your-session) to find its supported events and configuration. For Local harness sessions, expand **Configure plugin hooks for Local harness sessions** below.
+For Copilot sessions, use the [Copilot hooks reference](https://docs.github.com/en/copilot/reference/hooks-reference) for configuration, event payloads, and output decisions. A plugin packages hooks; it does not translate Local scripts into the shared harness's contract.
+
+When adopting or updating a plugin, follow [Migrate hooks](/docs/agent-customization/migrate-customizations.md#migrate-hooks). Update the source package, not its installation cache. Check bundled scripts, path references, agent-scoped hooks, and any duplicate commands in user settings or repository hook files.
 
 ### Hook file location
 
@@ -8488,111 +8555,57 @@ my-plugin/
     hooks/
       hooks.json         # Hook configuration (Agent Plugins format)
   scripts/
-    format.sh            # Hook script referenced by hooks.json
+    review-tool-copilot.cjs
 ```
-
-<details>
-<summary>Configure plugin hooks for Local harness sessions</summary>
-
-The following configuration, event, and matcher behavior applies to the Local harness.
 
 ### Hook configuration format
 
-For the Local harness, plugin hooks use the same base format as [workspace hooks](/docs/agent-customization/hooks.md#local-hook-configuration-formats). The Local parser accepts Claude hook configuration, including matcher syntax, but ignores matcher values. As a result, all nested commands for the event run in Local harness sessions.
-
-**Flat format** (same as workspace hooks):
-
-```json
-{
-  "hooks": {
-    "PostToolUse": [
-      {
-        "type": "command",
-        "command": "${CLAUDE_PLUGIN_ROOT}/scripts/format.sh"
-      }
-    ]
-  }
-}
-```
-
-**Matcher format** (Claude compatibility syntax):
-
-```json
-{
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/format.sh"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-The Local harness parses the `matcher` field for compatibility with Claude Code, but ignores matcher values. To filter Local hook behavior, check the event input inside the hook script.
+Use the hook schema supported by the plugin's target runtime. For Copilot, review the [command-hook format](https://docs.github.com/en/copilot/reference/hooks-reference#command-hooks) and [matcher semantics](https://docs.github.com/en/copilot/reference/hooks-reference#matcher-filtering). Event aliases can affect payload and tool names, so test scripts and matchers together.
 
 ### Reference plugin paths in hook commands
 
-Use a plugin-root token in Local hook commands to reference bundled scripts and files without hardcoding the plugin's installation path.
+Use a plugin-root reference rather than hardcoding its installation directory. These references identify the package root, not the current repository or the folder containing the hook configuration:
 
 | Plugin format | Token | Environment variable |
 |---------------|-------|----------------------|
+| Agent Plugins 1.0 | `${PLUGIN_ROOT}` | `PLUGIN_ROOT` |
+| Copilot | `${PLUGIN_ROOT}` | `PLUGIN_ROOT` |
 | Claude | `${CLAUDE_PLUGIN_ROOT}` | `CLAUDE_PLUGIN_ROOT` |
 | Legacy OpenPlugin | `${PLUGIN_ROOT}` | `PLUGIN_ROOT` |
 
-VS Code expands the token to the plugin's absolute path in hook commands and `env` values. This includes the `command`, `bash`, `powershell`, and platform-specific command fields. Expanded command paths are shell-quoted, so plugin paths can contain spaces.
-
-The hook process also receives the matching root environment variable. For example, a Node.js script can read `process.env.CLAUDE_PLUGIN_ROOT`. These references resolve to the new root when the plugin is discovered at a different location.
+For example, include the [converted review script](/docs/agent-customization/migrate-customizations.md#example-conversion) as `scripts/review-tool-copilot.cjs` in the package structure above. In an Agent Plugins 1.0 package, put this configuration in `com.github.copilot/hooks/hooks.json`:
 
 ```json
 {
+  "version": 1,
   "hooks": {
-    "PreToolUse": [
+    "preToolUse": [
       {
         "type": "command",
-        "command": "${CLAUDE_PLUGIN_ROOT}/scripts/validate-tool.sh"
+        "command": "node \"${PLUGIN_ROOT}/scripts/review-tool-copilot.cjs\"",
+        "env": { "REVIEW_TOOL_NAME": "<copilot-tool-name>" },
+        "timeoutSec": 10
       }
     ]
   }
 }
 ```
 
-The same expansion applies to hooks in the frontmatter of plugin-provided custom agents. For example, a Claude-format plugin can contribute `agents/reviewer.md` that invokes its bundled `scripts/validate-tool.js` script:
+Replace `<copilot-tool-name>` with the tool to review. The quoted script path keeps installations containing spaces as one command argument. This example requires Node.js on the execution host and does not write into the installed package.
 
-```markdown
----
-name: Code reviewer
-description: Review code with plugin-provided validation.
-hooks:
-  PreToolUse:
-    - type: command
-      command: "node ${CLAUDE_PLUGIN_ROOT}/scripts/validate-tool.js"
----
-
-Review code for correctness and maintainability.
-```
-
-For legacy OpenPlugin plugins, use `${PLUGIN_ROOT}` in place of `${CLAUDE_PLUGIN_ROOT}`.
-
-These [agent-scoped hooks](/docs/agent-customization/hooks.md#agent-scoped-hooks-for-the-local-harness) are in Preview and require the Local harness, ``chat.useHooks``, and a trusted workspace. They run only while the contributing custom agent is active, including when it runs as a subagent.
+The [plugin parser](https://github.com/microsoft/vscode/blob/1.142.0/src/vs/platform/agentPlugins/common/pluginParsers.ts) defines the format-specific hook-root references and their command-path expansion. Use the token and hook-file location for your package format; do not copy an installed cache path. Before testing the package in a disposable Copilot session, deactivate any standalone copy of the same hook.
 
 ### Supported hook events
 
-In the Local harness, plugin hooks support the same events as workspace hooks: `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `PreCompact`, `SubagentStart`, `SubagentStop`, and `Stop`. See the [Local hooks reference](/docs/agents/reference/hooks-reference.md) for event schemas.
+Use the shared harness's [event reference](https://docs.github.com/en/copilot/reference/hooks-reference#hook-event-input-payloads) for plugin-wide hooks.
+
+Hooks in a plugin-provided custom agent's frontmatter have a separate [conversion limitation](/docs/agent-customization/hooks.md#agent-scoped-hooks): VS Code currently omits the agent's `hooks` field when passing that agent to the Copilot harness. The agent appearing in the picker does not prove its hooks run. Retain the scoped definition and leave its migration incomplete until this conversion is supported and verified. A plugin-wide hook is not an equivalent workaround.
 
 ### How plugin hooks interact with other hooks
 
-Plugin-wide hooks run alongside workspace-level and user-level hooks. When multiple hooks target the same event, all of them execute. For `PreToolUse` hooks, the most restrictive permission decision across all hooks wins: `deny` overrides `ask`, which overrides `allow`.
+Plugin-wide hooks run alongside other applicable hook sources. For Copilot `preToolUse`, a denial blocks the tool call. Return no decision when the hook should leave the normal permission flow unchanged. Review the runtime's timeout and failure rules before relying on a hook for validation.
 
 Disabling a plugin also disables its hooks. Unless enterprise policy controls the plugin's enablement, you can enable or disable plugins globally or for a specific workspace from the Extensions view.
-
-</details>
 
 ## Cross-tool compatibility
 
@@ -8638,8 +8651,8 @@ For marketplace schemas and distribution details, see the [Agent Plugins specifi
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/ai-features-cheat-sheet.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/ai-features-cheat-sheet
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/ai-features-cheat-sheet.md
-- **SHA256_FINGERPRINT**: `e7041d13186ce81a8c9b8093f3f056a9bd219f3207434afe6a447eebb546d382`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.089097+00:00
+- **SHA256_FINGERPRINT**: `382a255673fa93eb438e1d0e198d45942051301ce79faedf1b1ce38e4516c0c8`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.196281+00:00
 ---
 
 **MetaDescription**: Choose AI features in VS Code for coding, planning, testing, and reviewing changes.
@@ -8649,13 +8662,6 @@ For marketplace schemas and distribution details, see the [Agent Plugins specifi
 Find the AI feature in Visual Studio Code that fits your task, from a focused edit to work you delegate to an agent. Use this reference for common tasks, useful controls, and shortcuts.
 
 New to agents? [Complete your first task with an agent](/docs/agents/quickstart.md). Available features depend on your [agent harness](/docs/agents/run/agent-harnesses.md), model, account, and organization policies.
-
-<a name="access-ai-in-vs-code"></a>
-<a name="editor-ai-features"></a>
-<a name="scaffold-a-new-project"></a>
-<a name="source-control-and-issues"></a>
-<a name="python-and-notebook-support"></a>
-<a name="search-and-settings"></a>
 
 ## Choose a feature
 
@@ -8673,9 +8679,6 @@ New to agents? [Complete your first task with an agent](/docs/agents/quickstart.
 | Generate commit messages or rename symbols | [Smart actions](/docs/editing/copilot-smart-actions.md) | Use the sparkle action or editor context menu without writing a prompt. |
 | Explore data or edit a notebook | [AI for notebooks](/docs/agents/guides/notebooks-with-ai.md) | In a **Local** agent session, ask the agent to create, edit, and run notebook cells. |
 | Find code or settings without exact keywords | [Semantic search](/docs/editing/copilot-smart-actions.md#semantic-search-results-preview) (Preview) and [AI settings search](/docs/editing/copilot-smart-actions.md#search-settings-with-ai) | Search by meaning in the Search view, or describe a setting in the Settings editor. |
-
-<a name="chat-experience-in-vs-code"></a>
-<a name="planning"></a>
 
 ## Use agents
 
@@ -8702,8 +8705,6 @@ To organize larger tasks:
 * Use [subagents](/docs/agents/run/subagents.md) to delegate a focused part of a task in a separate context.
 * [Hand off a session](/docs/agents/run/agent-harnesses.md#continue-with-a-different-harness) when you want to continue work with another supported harness or the Cloud target.
 
-<a name="add-context-to-your-prompt"></a>
-
 ## Get better results
 
 | Need | What to use |
@@ -8715,8 +8716,6 @@ To organize larger tasks:
 | Use your own model provider or a local model | Configure [bring your own key (BYOK)](/docs/agent-customization/language-models.md#bring-your-own-language-model-key). Inline suggestions and semantic search still require the GitHub Copilot service. |
 | Retain useful knowledge across conversations | Ask the agent to remember it with [memory](/docs/agents/run/memory.md). Use **Chat: Show Memory Files** to inspect stored notes. |
 | Manage a long conversation or its cost | Check [context usage](/docs/agents/run/sessions/manage-sessions.md#manage-session-context), compact the conversation, or start a new chat for an unrelated task. See [usage guidance](/docs/agents/guides/optimize-usage.md). |
-
-<a name="review-code-experimental"></a>
 
 ## Stay in control
 
@@ -8731,8 +8730,6 @@ To organize larger tasks:
 > [!IMPORTANT]
 > Agents can save edits directly to the session's folder or worktree. **Manual permissions** does not ask for confirmation for every file edit. Review the [security baseline](/docs/agents/run/security.md#recommended-security-baseline) before working on an existing project.
 
-<a name="customize-your-chat-experience"></a>
-
 ## Customize your workflow
 
 | I want to... | Use |
@@ -8746,8 +8743,6 @@ To organize larger tasks:
 | Install a packaged set of customizations | [Agent plugins](/docs/agent-customization/agent-plugins.md). |
 
 Use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) to create and manage these options for your selected harness.
-
-<a name="generate-tests"></a>
 
 ## Debug and fix problems
 
@@ -8767,8 +8762,6 @@ Run the relevant tests and summarize the change and results.
 ```
 
 See [smart actions for tests and errors](/docs/editing/copilot-smart-actions.md#fix-testing-errors) and [debugging](/docs/debugtest/debugging.md).
-
-<a name="terminal"></a>
 
 ## Essential keyboard shortcuts
 
@@ -8801,7 +8794,9 @@ Type `/` to see commands available in the current session. Availability depends 
 | `/doc` | Generate documentation comments from editor inline chat. |
 | `/setupTests` (Experimental) | Get help choosing and setting up a test framework. |
 | `/new`, `/newNotebook` | Scaffold a workspace, file, or notebook. |
-| `/compact`, `/fork` | Compact context, or branch the conversation with its history. |
+| `/compact` | Compact conversation context. |
+| `/fork` | [Fork the conversation](/docs/agents/run/sessions/manage-sessions.md#fork-a-chat-session) with its history. |
+| `/fork <title>`, `/fork prompt <prompt>` | Name a fork, or fork and immediately send a prompt with attached context. Requires a supported Agent Host session. See [named and prompted forks](/docs/agents/run/sessions/manage-sessions.md#name-a-fork-or-send-a-prompt). |
 | `/clear` | Start a new chat and archive or mark the current chat as done. |
 | `/rename <name>`, `/help` | Rename a local chat, or list commands and agents in a local Ask chat. |
 | `/models`, `/tools` | Open the model picker, or configure tools for a local chat. |
@@ -8815,9 +8810,9 @@ Type `/` to see commands available in the current session. Availability depends 
 
 For example, a skill in `.github/skills/webapp-testing/SKILL.md` can be invoked with `/webapp-testing`. For permission and Autopilot commands, see [approvals and permissions](/docs/agents/run/approvals.md).
 
-### Chat participants
+### Chat participants (deprecated)
 
-In chat surfaces that support participants, type `@` to choose a specialist. Use `@github` for repositories, issues, and pull requests, `@terminal` for shell questions, or `@vscode` for editor features and settings. For example, `@vscode /search` generates a Search view query.
+Chat participants are not supported in the Copilot harness. Ask the agent directly and attach relevant context, or use a plugin with skills and MCP tools for a domain-specific workflow. See [Replace chat participants](/docs/agent-customization/migrate-customizations.md#replace-chat-participants).
 
 ## Next steps
 
@@ -8829,8 +8824,8 @@ In chat surfaces that support participants, type `@` to choose a specialist. Use
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/ai-settings.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/ai-settings
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/ai-settings.md
-- **SHA256_FINGERPRINT**: `47adb0344bff9a460bc2944671ae4fb97b0d9e9005de0024dbf52907e04fb057`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.050654+00:00
+- **SHA256_FINGERPRINT**: `8185fb90dd48ff0343abd1a3e486345c882e5cace9bec998aad255ac5091e983`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.141352+00:00
 ---
 
 **MetaDescription**: Configure AI features and agents in Visual Studio Code, including chat, agent sessions, dictation, and accessibility settings.
@@ -8843,6 +8838,9 @@ The team is continuously working on improving the AI features in VS Code and add
 
 > [!TIP]
 > If you don't yet have a Copilot subscription, you can use Copilot for free by signing up for the [Copilot Free plan](https://github.com/github-copilot/signup) and get a monthly allowance of inline suggestions and AI credits.
+
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), including managed permission or sandbox settings. Enabling their user settings does not override that restriction. Contact the IT team that deployed the settings to discuss access. If you don't know the owner, ask your IT help desk to find the responsible administrator.
 
 Use the following links to jump to the settings for a specific area:
 
@@ -8886,7 +8884,7 @@ Use the following links to jump to the settings for a specific area:
 | ``github.copilot.chat.localeOverride``<br/>Specify a locale for chat responses, such as `en` or `fr`. | `"auto"` |
 | ``github.copilot.chat.useProjectTemplates``<br/>Use relevant GitHub projects as starter projects when using `/new`. | `true` |
 | ``github.copilot.chat.terminalChatLocation``<br/>Controls where chat queries from the terminal should be opened. | `"chatView"` |
-| ``chat.detectParticipant.enabled``<br/>Enable chat participant detection in the Chat view. | `true` |
+| ``chat.detectParticipant.enabled``<br/>Control detection of [deprecated chat participants](/docs/agent-customization/migrate-customizations.md#replace-chat-participants) in Local harness chat. Does not apply to the Copilot harness. | `true` |
 | ``chat.stickyScroll.enabled``<br/>Controls whether the current prompt is pinned to the top of the chat transcript while scrolling. | `true` |
 | ``chat.editor.fontFamily``<br/>Font family in chat codeblocks. | `"default"` |
 | ``chat.editor.fontSize``<br/>Font size in pixels in chat codeblocks. | `14` |
@@ -8935,7 +8933,7 @@ Use the following links to jump to the settings for a specific area:
 | ``chat.sendElementsToChat.attachImages``<br/>Include images when adding elements from the integrated browser to chat context. | `true` |
 | ``workbench.browser.enableChatTools``<br/>Enable [browser tools](/docs/debugtest/integrated-browser.md#browser-tools-for-agents) that let agents interact with pages in the integrated browser. | `true` |
 | ``chat.useClaudeMdFile``<br/>Enable or disable using `CLAUDE.md` files as always-on custom instructions. | `true` |
-| ``chat.useNestedAgentsMdFiles`` `feature(nested-agents-md-files)`<br/>Enable or disable using `AGENTS.md` files in subfolders of your workspace as context for chat requests. | `false` |
+| ``chat.useNestedAgentsMdFiles`` `feature(nested-agents-md-files)`<br/>List `AGENTS.md` files in workspace subfolders for on-demand loading in Local harness sessions. Requires ``chat.useAgentsMdFile`` to be enabled. Does not affect other harnesses. | `false` |
 | ``github.copilot.chat.customOAIModels`` _(Deprecated)_<br/>Configure custom OpenAI-compatible models for chat. Deprecated in favor of the [Custom Endpoint](/docs/agent-customization/language-models.md#add-a-custom-endpoint-model) provider, which supports Chat Completions, Responses, and Messages APIs. | `[]` |
 | ``chat.utilityModel``<br/>Override the language model used for built-in [utility flows](/docs/agent-customization/language-models.md#change-the-model-for-utility-tasks), such as generating titles, summaries, and fallback responses. | `"Default"` |
 | ``chat.utilitySmallModel``<br/>Override the language model used for fast, lightweight [utility flows](/docs/agent-customization/language-models.md#change-the-model-for-utility-tasks), such as commit messages, pull request titles and descriptions, rename suggestions, and intent detection. A fast, inexpensive model is recommended. | `"Default"` |
@@ -9025,10 +9023,6 @@ The sandbox settings below apply to Copilot harness sessions that use the defaul
 | ``chat.agent.allowedNetworkDomains``<br/>Configure allowed domains for the fetch tool and integrated browser when ``chat.agent.networkFilter`` is enabled, and for compatible terminal sandbox implementations. Terminal filtering capabilities vary by implementation and platform. An empty list blocks all domains for tools that use the filter. Supports wildcards like `*.example.com`. Restart VS Code after changing this setting so new integrated browser sessions use the updated policy. | `[]` |
 | ``chat.agent.deniedNetworkDomains``<br/>Configure denied domains for the fetch tool and integrated browser when ``chat.agent.networkFilter`` is enabled, and for compatible terminal sandbox implementations. Terminal filtering capabilities vary by implementation and platform. Denied domains take precedence over allowed domains. Supports wildcards like `*.example.com`. Restart VS Code after changing this setting so new integrated browser sessions use the updated policy. | `[]` |
 
-<a name="legacy-local-and-custom-terminal-sandbox-settings"></a>
-
-<a name="local-and-custom-terminal-sandbox-settings"></a>
-
 #### Local harness and custom terminal sandbox settings
 
 The following settings configure the Local harness sandbox or custom terminal behavior. They do not configure sandboxing for the Copilot harness's default tools.
@@ -9049,7 +9043,7 @@ The following settings configure the Local harness sandbox or custom terminal be
 | ``chat.planAgent.defaultModel`` <br/>Select a default language model for the plan agent. | `"Auto (Vendor Default)"`|
 | ``github.copilot.chat.implementAgent.model`` _(Experimental)_<br/>Select the language model used for the implementation step after planning. | `` |
 | ``github.copilot.chat.planAgent.additionalTools`` _(Experimental)_<br/>Give the plan agent access to additional tools during research and planning phases. | `[]` |
-| ``github.copilot.chat.claudeAgent.enabled`` <br/>Enable or disable support for Claude agent sessions powered by Anthropic's Claude Agent SDK. | `true` |
+| ``github.copilot.chat.claudeAgent.enabled`` <br/>Enable or disable support for Claude agent sessions powered by Anthropic's Claude Agent SDK, subject to [enterprise-managed restrictions](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). | `true` |
 | `setting(github.copilot.chat.agent.thinkingTool:true)` _(Experimental)_<br/>Enable the thinking tool when using agents. | `false` |
 | ``github.copilot.chat.summarizeAgentConversationHistory.enabled`` _(Experimental)_<br/>Automatically summarize the agent conversation history when the context window is full. | `true` |
 | ``github.copilot.chat.virtualTools.threshold`` _(Experimental)_<br/>Tool count over which virtual tools should be used. Virtual tools group similar sets of tools together and enable the model to activate them on-demand. Enables you to go beyond the limit of 128 tools for a chat request. | `128` |
@@ -9070,6 +9064,7 @@ Use the [session lists](/docs/agents/run/sessions/manage-sessions.md#sessions-li
 | ``chat.agentSessions.autoMarkAsDoneMergedSessionsAfterDays`` `feature(automatic-session-cleanup)`<br/>Control the number of inactive days before an eligible session with a merged pull request is [automatically marked as done](/docs/agents/run/sessions/manage-sessions.md#automatically-clean-up-merged-sessions). Set to `0` to disable automatic cleanup. The recommended value is `15`. | `0` |
 | ``chat.agentSessions.autoDeleteMarkedAsDoneMergedSessionsAfterDays`` `feature(automatic-session-cleanup)`<br/>Control the number of days after an eligible session is automatically marked as done before it is permanently deleted. Sessions that you mark as done manually aren't deleted automatically. Set to `0` to disable permanent deletion. The recommended value is `15`. | `0` |
 | ``sessions.showChatTabs`` _(Preview)_<br/>Show each chat as a tab with `multiple`, or show only the active chat as the session view with `single`. | `"multiple"` |
+| ``sessions.chat.compareAgents.enabled`` _(Preview)_<br/>Enable [model comparison](/docs/agents/run/compare-models.md) for eligible new sessions in the Agents window. Run the same prompt with multiple models in isolated worktrees. | `false` |
 | ``sessions.chat.unifiedWorkspacePicker.enabled`` _(Experimental)_<br/>Use the unified workspace picker in the Agents window to search local, GitHub, and remote workspaces and, when supported, start a session without a workspace. | `true` (Insiders)<br/>`false` (Stable) |
 | ``sessions.chat.experimental.newSessionComposerLayout`` _(Experimental)_<br/>Group workspace, repository, worktree, and harness controls above the new-session input. Requires the unified workspace picker. | `false` |
 | ``sessions.chat.experimental.welcomePhrases`` _(Experimental)_<br/>Show rotating welcome phrases above the new-session composer in the Agents window. | `false` |
@@ -9100,8 +9095,11 @@ Use the [session lists](/docs/agents/run/sessions/manage-sessions.md#sessions-li
 |------------------------|---------------|
 | ``chat.agentHost.allowSignedOutWhenUsable`` _(Experimental)_<br/>Open the Agents window without GitHub authentication when at least one registered session type can run with its own provider credentials. Providers, models, and operations that require GitHub authentication prompt you to sign in when needed. | `false` |
 | ``chat.agentHost.byokModels.enabled`` `feature(agent-host-byok-models)`<br/>Make extension-provided [BYOK](/docs/agent-customization/language-models.md#bring-your-own-language-model-key) models available to the Agent Host. Changes are synchronized to the running process. | `false` |
-| ``chat.agentHost.claudeAgent.enabled`` _(Experimental)_<br/>Make the Claude provider available to the [Agent Host](/docs/agents/concepts/agent-host.md). Restart the Agent Host process for the change to take effect. | `true` |
-| ``chat.agentHost.codexAgent.enabled`` _(Experimental)_<br/>Make the Codex provider available to the [Agent Host](/docs/agents/concepts/agent-host.md). Enabling takes effect without a restart. Disabling takes effect after the next Agent Host restart. | `false` |
+| ``chat.agentHost.claudeAgent.enabled`` _(Experimental)_<br/>Make the Claude provider available to the [Agent Host](/docs/agents/concepts/agent-host.md), unless [enterprise-managed settings disable it](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Restart the Agent Host process for the change to take effect. | `true` |
+| ``chat.agentHost.codexAgent.enabled`` _(Experimental)_<br/>Make the Codex provider available to the [Agent Host](/docs/agents/concepts/agent-host.md), unless [enterprise-managed settings disable it](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Enabling takes effect without a restart. Disabling takes effect after the next Agent Host restart. | `false` |
+| ``chat.copilot.localModel.enabled`` `feature(on-device-models)`<br/>Offer [on-device models](/docs/agent-customization/language-models.md#use-on-device-models-experimental) to download and run on this device with llama.cpp. Changes restart the local Copilot runtime after active turns finish. | `false` |
+| ``chat.copilot.localModel.useInAuto`` `feature(on-device-models)`<br/>Enable Auto to route turns to the active on-device model, with cloud fallback. Changes take effect immediately. | `false` |
+| ``chat.copilot.localModel.llamaServerPath`` `feature(on-device-models)`<br/>Specify the absolute path to a user-installed `llama-server` executable. VS Code doesn't install llama.cpp. | `""` |
 | ``chat.agentHost.devContainer.enabled``<br/>Show **Use Dev Container** for eligible local folders and folders on SSH, Tunnel, or WSL hosts, and [run sessions in the project's Dev Container](/docs/agents/run/agents-window.md#run-a-session-in-a-dev-container). | `false` |
 | ``chat.agentHost.agentOrchestrationLimits`` _(Experimental)_<br/>Control process-wide limits within an Agent Host on sessions and chats created, messages sent, and recursive session creation by session coordination tools. Set to `off` to remove the limits without changing confirmation or validation requirements. | `"on"` |
 | ``chat.remoteAgentHostsEnabled`` _(Experimental)_<br/>Allow connections to [remote machines for agent sessions](/docs/agents/run/remote-agent-sessions.md). | `true` |
@@ -9171,11 +9169,11 @@ Learn how to [migrate agent customizations](/docs/agent-customization/migrate-cu
 | ``github.copilot.chat.organizationInstructions.enabled``<br/>Enable discovery of custom instructions defined at the GitHub organization level. | `true` |
 | ``chat.useCustomizationsInParentRepositories``<br/>Enable discovery of agent customizations (instructions, prompts, agents, skills, hooks) in [parent repository folders](/docs/agent-customization/overview.md#use-customizations-in-a-monorepo). Useful for monorepo setups where you open a subfolder rather than the repository root. | `false` |
 | ``chat.useHooks`` _(Preview)_ <br/>Enable [hooks for the Local harness](/docs/agent-customization/hooks.md#configure-hooks-for-the-local-harness). This setting does not configure Copilot, Claude, or Codex hook execution. | `true` |
-| ``chat.hookFilesLocations`` _(Preview)_ <br/>Configure additional [Local hook file locations](/docs/agent-customization/hooks.md#local-hook-file-locations). Specify paths to folders, which load all `*.json` files, or direct paths to `.json` files. Only relative paths and tilde paths are supported. | `{}` |
+| ``chat.hookFilesLocations`` _(Preview)_ <br/>Configure additional Local hook file locations. Specify folders containing `*.json` files or individual `.json` files, using relative or tilde paths. For Copilot, [migrate to a supported hook source](/docs/agent-customization/migrate-customizations.md#find-every-hook-source) instead. | `{}` |
 | ``chat.useClaudeHooks`` _(Preview)_ <br/>Enable the Local harness to parse hooks from Claude configuration files. The Local harness ignores Claude matcher values. | `false` |
-| ``chat.useAgentsMdFile`` <br/>Enable or disable using `AGENTS.md` files as context for chat requests. | `true` |
+| ``chat.useAgentsMdFile`` <br/>Automatically attach instructions from workspace-root `AGENTS.md` files to chat requests in Local harness sessions only. Does not control [Copilot instruction discovery](/docs/agent-customization/custom-instructions.md#use-an-agentsmd-file) or discovery in other harnesses. | `true` |
 | ``chat.useClaudeMdFile``<br/>Enable or disable using `CLAUDE.md` files as always-on custom instructions. | `true` |
-| ``chat.useNestedAgentsMdFiles`` `feature(nested-agents-md-files)`<br/>Enable or disable using `AGENTS.md` files in subfolders of your workspace as context for chat requests. | `false` |
+| ``chat.useNestedAgentsMdFiles`` `feature(nested-agents-md-files)`<br/>List `AGENTS.md` files in workspace subfolders for on-demand loading in Local harness sessions. Requires ``chat.useAgentsMdFile`` to be enabled. Does not affect other harnesses. | `false` |
 
 ## Reusable prompt files settings
 
@@ -9251,6 +9249,7 @@ Learn how to [use Voice Mode and built-in dictation](/docs/configure/accessibili
 | Setting and Description | Default |
 |------------------------|---------------|
 | ``agents.voice.enabled`` `feature(voice-mode)`<br/>Controls whether Voice Mode is available for spoken conversations with an agent. | `false` |
+| ``agents.voice.useBYOKVoiceModel`` `feature(voice-mode)`<br/>Selects an OpenAI Live model for [Voice Mode with your own API key](/docs/configure/accessibility/voice.md#use-your-own-openai-key). Leave empty to use hosted Voice Mode. | `""` |
 | ``agents.voice.showButton`` `feature(voice-mode)`<br/>Controls whether the **Voice Mode** button appears in the chat input. The keyboard shortcut remains available when the button is hidden. | `true` |
 | ``agents.voice.speakResponses`` `feature(voice-mode)`<br/>Controls whether the agent reads responses aloud. Enable ``agents.voice.showTranscript`` to read responses as text when spoken responses are off. | `true` |
 | ``agents.voice.agentProgress`` `feature(voice-mode)`<br/>Controls whether the agent speaks brief progress updates while it works. | `true` |
@@ -9371,8 +9370,8 @@ Open the pet's context menu to access these actions:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/custom-agent-file-reference.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/custom-agent-file-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/custom-agent-file-reference.md
-- **SHA256_FINGERPRINT**: `92877ad8abdbb083b7fcceb75f68886b79a122f0af5a1e771d0c07fc3fbab1d4`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.199831+00:00
+- **SHA256_FINGERPRINT**: `4d515f9a9913da1b397531361d456ca4e56789e4b6637778b711fd5f5112e24f`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.263894+00:00
 ---
 
 **MetaDescription**: Look up custom agent file syntax, frontmatter fields, defaults, and harness-specific configuration in VS Code.
@@ -9402,7 +9401,7 @@ The fields below describe the VS Code format. Files in `.claude/agents` use the 
 The selected [agent harness](/docs/agents/run/agent-harnesses.md) determines which fields and tool names take effect. A shared file location does not imply identical behavior across harnesses.
 
 * **Local** supports the VS Code tool names, subagent configuration, handoffs, and agent-scoped hooks described below.
-* **Copilot** supports custom agent configuration through its runtime. Use the field-specific guidance below and the [Copilot custom agent documentation](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-custom-agents). Local handoffs and agent-scoped hooks do not apply.
+* **Copilot** supports custom agent configuration through its runtime. Use the field-specific guidance below and the [Copilot custom agent documentation](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-custom-agents). Local handoffs do not apply. Agent-scoped hooks have a current [plugin-agent conversion limitation](/docs/agent-customization/hooks.md#agent-scoped-hooks).
 * **Claude** uses its own [agent format](#claude-agent-format) and runtime behavior.
 * **Copilot cloud agent** has a separate [configuration reference](https://docs.github.com/en/copilot/reference/custom-agents-configuration). The `target: github-copilot` value refers to that target, not the **Copilot** harness selected in VS Code.
 
@@ -9415,7 +9414,7 @@ All fields in this table are optional. Defaults and harness-specific behavior ar
 | `name` | String | The agent's name in the UI. Defaults to the file name. |
 | `description` | String | What the agent does and when to use it. |
 | `argument-hint` | String | Hint text that describes the input the agent expects. Shown in the Local chat input. |
-| `tools` | String or array of strings | Tools or tool sets available to the agent. Tool names depend on the harness. See [Tools](#tools). |
+| `tools` | String or array of strings | Tools available to the agent. Tool names and supported aliases depend on the harness. User-defined tool sets are deprecated and are not supported in the Copilot harness. See [Tools](#tools). |
 | `agents` | Array of strings | Custom agents available as subagents. In Local, use `['*']` or omit the field to allow all available agents, or use `[]` to prevent subagent use. Include the `agent` tool set in `tools`. See [Subagent configuration](#subagent-configuration). |
 | `model` | String or array of strings | The model to use in the Copilot harness. An array specifies models in preference order, using the first available model. If omitted, the currently selected model is used. Local subagents also use this field as part of their [model selection order](/docs/agents/run/subagents.md#select-the-model-for-a-subagent). |
 | `reasoning-effort` | String | Reasoning effort for the agent in the Copilot harness: `low`, `medium`, `high`, `xhigh`, or `max`. Availability depends on the selected model. See [Thinking effort](/docs/agent-customization/language-models.md#configure-thinking-effort). |
@@ -9425,11 +9424,11 @@ All fields in this table are optional. Defaults and harness-specific behavior ar
 | `target` | String | The target environment for the file: `vscode` or `github-copilot`. This is not the harness selector. |
 | `mcp-servers` | Object | MCP server configurations for [custom agents in Copilot cloud agent](https://docs.github.com/en/copilot/reference/custom-agents-configuration). Not used by custom agents in VS Code. |
 | `handoffs` | Array of objects | Suggested transitions to another agent after a response in Local. See [Handoff fields](#handoff-fields). |
-| `hooks` (Preview) | Object | Hook commands scoped to this agent in Local. Requires ``chat.useHooks`` and a trusted workspace. See [Agent-scoped hooks](/docs/agent-customization/hooks.md#agent-scoped-hooks-for-the-local-harness) for a complete example. |
+| `hooks` | Object | Hook event map scoped to this agent. The Copilot harness supports agent-scoped hooks, but VS Code currently omits this field when converting plugin-provided agents. Retain the definition and leave the affected migration incomplete. See the [conversion limitation](/docs/agent-customization/hooks.md#agent-scoped-hooks). Local execution requires ``chat.useHooks`` and a trusted workspace. |
 
 ### Tools
 
-In Local, `tools` can include built-in tools, [tool sets](/docs/agent-customization/tool-sets.md), MCP tools, and tools contributed by extensions. To include all tools from an MCP server, use `<server name>/*`.
+In Local, `tools` can include built-in tools, MCP tools, and tools contributed by extensions. Existing user-defined tool-set references are deprecated and are not supported in the Copilot harness. See [Replace tool sets](/docs/agent-customization/migrate-customizations.md#replace-tool-sets). Built-in aliases such as `read` and `search` are separate from user-defined tool-set files. To include all tools from an MCP server, use `<server name>/*`.
 
 ```yaml
 tools: ['read', 'search', '<server name>/*']
@@ -9544,21 +9543,24 @@ The Claude harness implements these fields according to its provider documentati
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/hooks-reference.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/hooks-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/hooks-reference.md
-- **SHA256_FINGERPRINT**: `4a11a343f93108c5523cef4b268573c43c7fd759e73c780250904dfe665c8048`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.216516+00:00
+- **SHA256_FINGERPRINT**: `f654152eea3e6ba2f57140d34a7908cfb750083ad5fe2797119fff88c624bfbe`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.205730+00:00
 ---
 
-**MetaDescription**: Look up Local harness hook configuration and event schemas in Visual Studio Code.
+**MetaDescription**: Review legacy Local hook schemas when migrating to Copilot in VS Code.
 
-# Local hooks reference
+# Legacy Local hooks reference
 
-This article is the configuration and event-schema reference for hooks in the **Local** harness in VS Code. The Local harness runs in the extension host and uses the PascalCase event names and payloads documented here.
+Use this reference to interpret an existing **Local** hook while [migrating to the Copilot harness](/docs/agent-customization/migrate-customizations.md#migrate-hooks). For new hooks, start with [Configure agent hooks](/docs/agent-customization/hooks.md), which uses the shared Copilot runtime. The Local harness runs in the extension host and sends the payloads documented here even when it accepts a compatible configuration format.
 
 For hooks executed by a provider harness, use the corresponding provider documentation:
 
 * For **Copilot** sessions, use the [GitHub Copilot hooks reference](https://docs.github.com/en/copilot/reference/hooks-reference).
 * For **Claude** sessions, use the [Claude hooks reference](https://code.claude.com/docs/en/hooks).
 * For **Codex** sessions, use the [Codex hooks documentation](https://developers.openai.com/codex/hooks/).
+
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
 
 If you select **Local** from the **Session Target** UI control, use this reference even when the hook file uses a Copilot or Claude-compatible format. The Local harness maps the configuration and then sends the payloads documented here.
 
@@ -9585,7 +9587,7 @@ A hook file contains a `hooks` object. Each property is a supported event name a
 
 ### Command properties
 
-In this format, each command entry must have `type: "command"` and at least one command property:
+Use an explicit `type: "command"` and at least one command property in this format. The Local parser also accepts entries without `type` as command hooks:
 
 | Property | Type | Description |
 |----------|------|-------------|
@@ -9594,11 +9596,13 @@ In this format, each command entry must have `type: "command"` and at least one 
 | `windows` | string | Windows-specific command override. |
 | `linux` | string | Linux-specific command override. |
 | `osx` | string | macOS-specific command override. |
-| `cwd` | string | Working directory, relative to the repository root. |
+| `cwd` | string | Working directory, relative to the workspace root or absolute. Local expands `~` to the user home directory. |
 | `env` | object | Additional environment variables. |
 | `timeout` | number | Timeout in seconds. The default is 30 seconds. |
 
-The harness selects an operating system override from the extension host platform. If an override is not defined for that platform, it uses `command`. Copilot and Claude source formats use different property names and defaults before the Local parser maps them to this format.
+The harness selects an operating system override from the extension host platform. If an override is not defined for that platform, it uses `command`. Local accepts `bash` as a fallback for `linux` and `osx`, and `powershell` as a fallback for `windows`. It accepts `timeoutSec` when `timeout` is absent. Do not specify both timeout aliases when migrating; the Copilot runtime gives them the opposite precedence.
+
+Local accepts PascalCase and Copilot event aliases in hook files; a numeric `version` does not select a different Local payload schema. It also accepts nested Claude command groups but ignores matcher values. See the [migration compatibility matrix](/docs/agent-customization/migrate-customizations.md#compare-configuration-and-script-contracts) before reusing a file.
 
 ## Common input
 
@@ -9963,11 +9967,11 @@ The hook supports the [common output](#common-output).
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/tools-reference.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/tools-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/tools-reference.md
-- **SHA256_FINGERPRINT**: `cd39d00d46af0e3e17c5556e4dc562d07ec8fdf04169357c02a069871d82aae9`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.135301+00:00
+- **SHA256_FINGERPRINT**: `2ed308a5b7052570ca60c325fe6bac0bd3a9dac75e6db10243489a3fb963c049`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.257243+00:00
 ---
 
-**MetaDescription**: Look up tools, tool sets, and context references for AI chat in VS Code.
+**MetaDescription**: Look up tools and context references for AI chat in VS Code.
 
 # Tools and context reference
 
@@ -9978,23 +9982,24 @@ Look up common tool names and context references for chat prompts in Visual Stud
 The `#` picker includes references that serve different purposes:
 
 * **Tools** perform actions, such as reading a file or running a command. For example, `#search/textSearch` searches file contents.
-* **Tool sets** group related tools. For example, `#search` groups workspace search tools.
 * **Context items** supply information to a prompt without asking the agent to perform an action. For example, `#selection` adds the selected editor text.
 
 Available references depend on your harness, enabled extensions, and session capabilities. Type `#` in the chat input to see the current list. Extensions and MCP servers can provide additional tools beyond those listed here.
 
+User-defined tool sets are deprecated and are not supported in the Copilot harness. To replace an existing tool-set file, follow [Replace tool sets](/docs/agent-customization/migrate-customizations.md#replace-tool-sets). This does not remove tool groups in the **Tools** tab or supported built-in aliases.
+
 Referencing a tool does not bypass its [approval and permission controls](/docs/agents/run/approvals.md).
 
-## Tools and tool sets
+## Tools
+
+The following tables use Local harness tool reference names. Do not assume that these identifiers map directly to Copilot harness tools. In a Copilot session, use the **Tools** tab to [review the available tools](/docs/agents/run/tools.md#manage-available-tools).
 
 ### Read and search workspace files
 
 | Reference | Purpose |
 |---|---|
-| `#read` (tool set) | Read workspace files and execution output. |
 | `#read/readFile` | Read a file. |
 | `#read/problems` | Get diagnostics from the **Problems** panel. |
-| `#search` (tool set) | Search the workspace. |
 | `#search/changes` | List source control changes. |
 | `#search/codebase` | Find relevant code with workspace code search. |
 | `#search/fileSearch` | Find files by a glob pattern. |
@@ -10006,7 +10011,6 @@ Referencing a tool does not bypass its [approval and permission controls](/docs/
 
 | Reference | Purpose |
 |---|---|
-| `#edit` (tool set) | Modify workspace files and notebooks. |
 | `#edit/createDirectory` | Create a directory. |
 | `#edit/createFile` | Create a file. |
 | `#edit/editFiles` | Apply edits to files. |
@@ -10019,7 +10023,6 @@ Referencing a tool does not bypass its [approval and permission controls](/docs/
 
 | Reference | Purpose |
 |---|---|
-| `#execute` (tool set) | Run commands, tasks, and notebook cells. |
 | `#execute/createAndRunTask` | Create and run a [workspace task](/docs/debugtest/tasks.md). |
 | `#execute/getTerminalOutput` | Get output from a running terminal command. |
 | `#execute/runInTerminal` | Run a shell command in the integrated terminal. |
@@ -10031,8 +10034,6 @@ Referencing a tool does not bypass its [approval and permission controls](/docs/
 
 | Reference | Purpose |
 |---|---|
-| `#browser` (tool set) | Navigate, inspect, and interact with pages using [browser tools](/docs/agents/run/browser-tools.md). |
-| `#web` (tool set) | Access web content. |
 | `#web/fetch` | Fetch a web page. |
 | `#githubRepo` | Search a GitHub repository semantically. Specify the repository as `owner/repo`. |
 | `#githubTextSearch` | Search a GitHub repository or organization for text or code patterns. |
@@ -10041,7 +10042,6 @@ Referencing a tool does not bypass its [approval and permission controls](/docs/
 
 | Reference | Purpose |
 |---|---|
-| `#agent` (tool set) | Delegate tasks to [subagents](/docs/agents/run/subagents.md). |
 | `#agent/runSubagent` | Run a task in an isolated subagent context. |
 | `#todos` | Track task progress with a todo list. |
 | `#vscode/askQuestions` | Ask clarifying questions with interactive controls. |
@@ -10075,24 +10075,24 @@ Use **Add Context** or drag items into chat to attach other context, such as ima
 ## Related resources
 
 * [Understand tools in the agent loop](/docs/agents/concepts/tools.md).
-* [Create and use tool sets](/docs/agent-customization/tool-sets.md).
+* [Migrate existing customizations](/docs/agent-customization/migrate-customizations.md).
 
 
 ---
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/agent-sandboxing.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/agent-sandboxing
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/agent-sandboxing.md
-- **SHA256_FINGERPRINT**: `112bf254a2d680d538259c6f636b3880e8f8033adb55c9663788d42dca77d344`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.144188+00:00
+- **SHA256_FINGERPRINT**: `0625f99302a2f3f92d9c35cb75fd5c06068c20ff3ad371549a677a9d4f4c8597`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.495597+00:00
 ---
 
-**MetaDescription**: Restrict file system and network access for Copilot agent commands and verify each session's sandbox policy.
+**MetaDescription**: Configure file system and network isolation for Copilot agents and troubleshoot sandbox failures.
 
 # Sandbox Copilot agent sessions
 
 Copilot sessions can run terminal commands and start language or tool servers on your machine or a connected remote machine. Agent sandboxing confines these processes to the file system and network access that you configure on the machine where they run.
 
-Use this article to understand the security boundary, turn on sandboxing, grant the minimum required access, and inspect the effective policy for a session.
+Use this article to understand the security boundary, turn on sandboxing, grant the minimum required access, manage certificate trust, inspect the effective policy for a session, and troubleshoot sandbox failures.
 
 The settings and behavior below apply to Copilot harness sessions that use the default tools in the shared runtime.
 
@@ -10125,33 +10125,20 @@ Check the operating system where commands run against the following prerequisite
 
 | Platform | Prerequisite |
 |---|---|
-| macOS | None. |
-| Linux and WSL2 | Install `bubblewrap` and `socat`. |
-| Windows | Install the applicable September 8, 2026 Windows security update. |
-
-On Debian and Ubuntu, install the Linux dependencies:
-
-```bash
-sudo apt-get install bubblewrap socat
-```
-
-On Fedora, install the Linux dependencies:
-
-```bash
-sudo dnf install bubblewrap socat
-```
+| macOS | macOS 15 or later with the built-in Seatbelt facility. No additional sandbox packages. |
+| glibc-based Linux and WSL2 | `bubblewrap` 0.5.0 or later, `slirp4netns`, util-linux 2.35 or later, and compatible `iptables` tools. See [install missing sandbox dependencies](#install-missing-sandbox-dependencies). |
+| Windows | Windows 11 with BaseContainer and the required OS capabilities. See the update baselines below. |
+| Alpine Linux and other musl-based distributions | Sandboxed shell execution is not supported by this runtime. Use a supported glibc-based Linux environment. |
 
 WSL version 1 is not supported because it does not provide the Linux kernel features that `bubblewrap` requires.
 
-On Windows, install the update that applies to your Windows version:
+On Windows, the documented update baselines are:
 
-* Windows 11 24H2 or 25H2: [KB5124008](https://support.microsoft.com/en-us/servicing/os/windows-11/2026/09/kb5124008-windows-11-24h2-25h2-security-update).
-* Windows 11 26H1: [KB5124012](https://support.microsoft.com/en-us/servicing/os/windows-11/2026/09/kb5124012-windows-11-26h1-security-update).
+* Windows 11 25H2: [KB5124010](https://support.microsoft.com/en-us/servicing/os/windows-11/2026/09/kb5124010-windows-11-24h2-25h2-update), build 26200.9550 or later.
+* Windows 11 26H1: [KB5124006](https://support.microsoft.com/en-us/servicing/os/windows-11/2026/09/kb5124006-windows-11-26h1-update), build 28000.3086 or later.
 
 > [!NOTE]
 > Windows support is Experimental. The separate [per-server MCP sandboxing feature](/docs/agents/run/manage-mcp-servers.md#sandbox-mcp-servers) is not available on Windows.
-
-<a name="turn-on-sandboxing-on-the-execution-host"></a>
 
 ## Turn on sandboxing where commands run
 
@@ -10177,25 +10164,21 @@ To enable sandboxing in your settings JSON:
 
 If an operating system dependency is unavailable, the command does not silently run without the sandbox. Follow the notification to install the missing dependency.
 
-<a name="control-sandboxing-for-an-agent-host-session"></a>
-
 ### Control sandboxing for the current session
 
 Open **Permissions** and select **Sandboxing for terminal** to change sandboxing for the current session. This control does not update User or Workspace settings, change other sessions, or set the default for new sessions.
 
 A new session inherits the effective configuration of its execution host. An explicit session selection persists when you restore the session unless an organization-managed restriction overrides it.
 
-Sandboxing is independent of the selected [permission level](/docs/agents/run/approvals.md#permission-levels). For example, the sandbox continues to restrict processes when you select **Allow all**.
+When an organization-managed policy enables sandboxing, `sandbox.allowBypass` controls this choice. If it is `true`, you can turn sandboxing off for the current session. If it is `false` or omitted, sandboxing stays on and the control is locked. Changing the session toggle does not change the managed policy or affect other sessions.
 
-<a name="configure-sandboxing-for-an-agent-host-session"></a>
+Sandboxing is independent of the selected [permission level](/docs/agents/run/approvals.md#permission-levels). For example, the sandbox continues to restrict processes when you select **Allow all**.
 
 ### Use sandboxing across windows and machines
 
 Copilot sessions are available in both the [Agents window](/docs/agents/run/agents-window.md) and an editor window. They use the built-in shell from the shared runtime by default. You do not need to change terminal implementations to use sandboxing.
 
 For a remote session, use the [session toggle](#control-sandboxing-for-the-current-session) to change the current session's sandbox state. Defaults for new sessions come from the remote machine's sandbox configuration, not from the machine where you connect to the session.
-
-<a name="agent-host-sandbox-settings"></a>
 
 ## Sandbox settings
 
@@ -10319,9 +10302,134 @@ The agent requests approval when a sandboxed command fails or sandbox restrictio
 > [!CAUTION]
 > Approval to run outside the sandbox removes file system and network restrictions for that operation. If you approve a session-wide bypass, subsequent terminal commands in that session also run without those restrictions until you turn sandboxing back on.
 
-<a name="legacy-local-and-custom-terminal-behavior"></a>
+## Troubleshoot agent sandboxing
 
-<a name="local-sessions-and-custom-terminal-tools"></a>
+If chat reports **Sandboxing might not work as expected**, or sandboxed tools fail to start or connect, check dependencies and operating system requirements in the environment where the session runs commands. Certificate errors can require a separate check even when all dependencies are installed.
+
+### Install missing sandbox dependencies
+
+Install dependencies and operating system updates in the environment where the agent runs. VS Code can connect to that environment remotely, so it might run on a different machine than the agent.
+
+Follow the installation steps for the agent's operating system. A remote workspace does not always mean the agent runs remotely. If the agent runs locally, install locally.
+
+Install packages and operating system updates where the agent runs:
+
+* **Local agent host**: Install on the same machine as VS Code.
+* **WSL**: Install inside the Linux distribution running the agent, not on Windows.
+* **Remote host, Dev Container, or Codespace**: Install on that host or inside that environment.
+
+On Debian and Ubuntu, update the package index:
+
+```bash
+sudo apt-get update
+```
+
+After the update succeeds, install the required packages:
+
+```bash
+sudo apt-get install bubblewrap slirp4netns util-linux iptables
+```
+
+On Fedora:
+
+```bash
+sudo dnf install bubblewrap slirp4netns util-linux iptables-nft
+```
+
+On Arch Linux, the following command also performs a system upgrade. Review the changes before approving:
+
+```bash
+sudo pacman -Syu bubblewrap slirp4netns util-linux iptables
+```
+
+On other glibc-based distributions, use the distribution's package manager or ask your administrator to install packages that provide:
+
+* `bwrap` 0.5.0 or later and `slirp4netns`.
+* `unshare` and `nsenter` from util-linux 2.35 or later.
+* All four firewall commands: `iptables`, `ip6tables`, `iptables-restore`, and `ip6tables-restore`, with a compatible firewall backend.
+
+Linux also requires unprivileged user and network namespaces and read/write access to `/dev/net/tun`. The `unshare` command must support `--map-current-user` and `--keep-caps`. If the packages are installed but these facilities are blocked or unavailable, ask your administrator or container owner to fix the environment. Installing packages alone does not add support for Alpine Linux or other musl-based distributions.
+
+On macOS, there are no additional sandbox packages to install. Open **System Settings > General > Software Update** and install applicable updates.
+
+On Windows, there is no standalone sandbox package. Open **Settings > Windows Update > Check for updates**, install applicable updates, and restart Windows when prompted. Check the [platform prerequisites](#check-platform-availability) for supported baselines.
+
+### Check Windows sandbox proxy access
+
+On Windows, a sandbox proxy requires ``chat.agent.sandbox.network.allowLocalNetwork`` to be `true` so sandboxed tools can reach the proxy's local listener. If local-network access is blocked, commands that require the proxy cannot launch.
+
+Open Settings, search for `@id:chat.agent.sandbox.network.allowLocalNetwork`, and turn on the setting only if you accept the additional access to the local network. If your organization manages this setting, contact your administrator. See [configure network access](#configure-network-access) for the security implications.
+
+### Trust the sandbox CA certificate on Windows and macOS
+
+If chat reports **Sandbox trusted CA is not installed**, tools that rely on the operating system's certificate store might fail with certificate, HTTPS, or authentication errors.
+
+Copilot's sandbox credential proxy lets tools authenticate to approved services without exposing real authentication tokens to sandboxed processes. Some tools need the proxy's **certificate authority (CA) certificate** installed in the operating system's trust store to connect successfully.
+
+**Installation is optional and improves tool compatibility.** It is not a general requirement for using VS Code or running sandboxed commands.
+
+#### Why certificate trust is needed
+
+When credential masking is enabled, Copilot supplies sandboxed tools with placeholder credentials instead of real tokens. For approved credential destinations, the local proxy replaces these placeholders with real credentials.
+
+Because HTTPS encrypts request headers, credential substitution requires the proxy to establish separate encrypted connections with the tool and the destination. The proxy presents its own TLS certificate to the tool and independently verifies the destination's certificate before forwarding credentials.
+
+The tool must trust the certificate presented by the proxy. Copilot supplies a **per-process certificate bundle** for tools that support it. Installing the CA into the operating system's trust store improves compatibility with tools that rely exclusively on OS trust.
+
+Domain filtering alone does not require CA installation. The built-in local proxy can check destinations and tunnel HTTPS traffic without decrypting it.
+
+#### What gets installed
+
+Copilot generates a local, self-signed CA. It is not issued by a public certificate authority.
+
+Installation adds only the **public CA certificate** to OS trust. It does not install an authentication token. The private key remains in Copilot's local storage and is not passed to sandboxed tools.
+
+Installing the certificate does not, by itself, redirect or intercept other applications' traffic.
+
+#### Manage certificate trust in VS Code
+
+Sandbox certificate trust management is available for agent hosts running Windows or macOS.
+
+VS Code shows a dismissible **Sandbox trusted CA is not installed** notice with an **Install** option when trust is missing and installation is supported.
+
+You can also run **Sandbox: Manage Trusted CA** from the Command Palette to install, rotate, or remove trust for the last-focused chat's agent host. Each operation asks for confirmation and identifies the target host.
+
+* **Install:** Adds the public CA certificate to OS trust. Installation can require operating system authorization.
+  * **Windows:** Installation uses the machine's trusted root certificate store and requires administrator approval. Trust applies to all users on that machine. Installing only in the current user's store is not sufficient for sandboxed tools.
+  * **macOS:** Installation uses your login Keychain. macOS might ask for your login password to authorize the trust change.
+* **Rotate:** Replaces the CA, which can be necessary when configured credential destinations change. Replacing a trusted CA also updates OS trust and can require operating system authorization.
+* **Remove:** Removes OS trust but retains the locally stored certificate and private key. Tools that use Copilot's certificate bundle can continue to work.
+
+Running sandboxed tools might need to restart after a certificate change.
+
+If **Install** is unavailable, installation fails, or your organization manages certificate trust, contact your administrator or support. Removing the CA from OS trust can cause tools that depend on it to stop working.
+
+> [!NOTE]
+> On Linux, the runtime supplies a per-process CA bundle and does not install a system trust root.
+
+#### Continuing without installation
+
+Missing trust does not block chat startup or sending messages, and opening a chat never changes certificate trust.
+
+Tools that support Copilot's certificate bundle can continue to work without OS installation. Tools that rely only on OS trust might report certificate-verification or authentication errors when using credential masking. These errors do not necessarily indicate an invalid account or token.
+
+> [!WARNING]
+> Do not disable TLS certificate verification to work around these errors.
+
+#### Security considerations
+
+> [!CAUTION]
+> Only approve installation for an agent host you trust. Installing a root CA changes which certificates applications trust, including applications outside the sandbox that use that store. On Windows, that trust applies to all users on the device. On macOS, it applies to the current user.
+
+The Copilot CA is constrained to configured credential destinations and their DNS subdomains, and limited to TLS server authentication rather than code signing or client authentication.
+
+The private key is stored unencrypted and protected by filesystem permissions. Other programs running as the same user can access it. Protect Copilot's local storage and follow your organization's certificate-management policies. Do not manually copy the agent's certificate files or private keys.
+
+#### Remote environments
+
+Certificate operations affect the machine running the agent host, which might differ from the machine displaying VS Code. Installing the CA locally does not automatically establish trust in a remote host, container, or WSL environment.
+
+Before confirming an operation, check the target host shown by VS Code.
 
 ## Local harness sessions and custom terminal tools
 
@@ -10337,7 +10445,7 @@ Domain allow and deny controls are available for compatible terminal tools. Thei
 
 ## When your organization manages sandboxing
 
-Managed sandbox enforcement is in Preview. Your organization can require sandboxing, prevent bypass, or restrict network access. Enforced controls are locked, but you can select a more restrictive value where a control remains editable.
+Managed sandbox enforcement is in Preview. When a policy sets `sandbox.enabled` to `true`, `sandbox.allowBypass` determines whether the session toggle is editable: `true` lets you turn sandboxing off for the current session, while `false` or an omitted value keeps sandboxing on and locks the toggle. A session choice does not change the managed policy or other sessions. Your organization can also restrict network access.
 
 If a setting is locked or you need access that policy denies, contact your administrator. For policy details, see [enterprise agent sandboxing](/docs/enterprise/manage-ai-settings.md#configure-agent-sandboxing).
 
@@ -10352,8 +10460,8 @@ If a setting is locked or you need access that policy denies, contact your admin
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/agents-window-configuration.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/agents-window-configuration
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/agents-window-configuration.md
-- **SHA256_FINGERPRINT**: `d1e2135396df53f087407218445b18ed4f3c2d47602a2a27280a37167e1dff8e`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.258958+00:00
+- **SHA256_FINGERPRINT**: `3556ff07820630d91216e7bba6188b737607dd7dc5c2ab1656122e9d57e6f1ce`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.539692+00:00
 ---
 
 **MetaDescription**: Configure accounts, models, layout, settings, extensions, and editors in the Agents window.
@@ -10374,6 +10482,9 @@ The Agents window uses the accounts and model credentials available in VS Code:
 * **Bring your own key (BYOK)**: add a model in the Language Models editor and enable ``chat.agentHost.byokModels.enabled`` to make it available in the desktop Agents window. Learn how to [configure BYOK models](/docs/agent-customization/language-models.md#bring-your-own-language-model-key).
 
 For account requirements, billing options, and integration setup, see [Agent harness requirements and setup](/docs/agents/run/agent-harnesses.md#requirements-and-setup).
+
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), even with separate provider credentials. Contact the IT team that deployed the settings to discuss access.
 
 Claude, ChatGPT-backed Codex, and BYOK models can run in the desktop Agents window without GitHub sign-in when you enable ``chat.agentHost.allowSignedOutWhenUsable``. This option is experimental. Features that require GitHub authentication prompt you to sign in when needed. The browser-based Agents window always requires GitHub sign-in.
 
@@ -10487,8 +10598,8 @@ Add a decorative chat background, use the interactive VS Code pet, or adjust how
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/agents-window.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/agents-window
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/agents-window.md
-- **SHA256_FINGERPRINT**: `c1a5a78774c8aff557dd25e4c07aa8ecec1d93e3e1d7ab6cd57319397f966fa0`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.394839+00:00
+- **SHA256_FINGERPRINT**: `a4f071e742e02ebfd1371d291a4a62107291cbad780189f6a3e47a727fed22ae`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.546268+00:00
 ---
 
 **MetaDescription**: Start and manage parallel agent sessions, review changes, and finish pull requests in the Agents window.
@@ -10514,6 +10625,9 @@ Follow a hands-on tutorial to build an app with AI agents in VS Code.
   * A [Claude API key or another supported bring-your-own-key (BYOK) configuration](/docs/agents/run/agent-harnesses.md#claude) to use Claude without GitHub sign-in (Experimental).
   * An [existing ChatGPT sign-in for Codex](/docs/agents/run/agent-harnesses.md#codex) to use Codex without GitHub sign-in (Experimental).
   * A [BYOK model](/docs/agent-customization/language-models.md#bring-your-own-language-model-key) configured for use in the Agents window.
+
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), even with separate provider credentials. Existing sessions are not deleted by this restriction. Contact the IT team that deployed the settings to discuss access.
 
 ## Open the Agents window
 
@@ -10871,6 +10985,10 @@ Press ``Shortcut: sessions.closeAllSessions`` while a session has focus to close
 
 The Agents window restores conversations, drafts, pane geometry, the active session, and the maximized state after a reload. At narrow or phone width, only the active session is shown. The grid returns when you widen the window.
 
+### Compare model results (Preview)
+
+Run the same prompt with multiple models or harnesses in isolated worktrees, then compare their approaches and results. You can optionally use a Judge to evaluate the attempts and request a synthesized solution. See [Compare model results](/docs/agents/run/compare-models.md) for prerequisites and the full workflow.
+
 ### Work with multiple chats in a session
 
 With a harness that supports multiple chats, such as Copilot or Claude, use chat tabs and split groups to keep several conversations visible. Arrange interactive peer chats, [side chats](/docs/agents/run/sessions/manage-sessions.md#ask-side-questions), and [read-only subagent chats](/docs/agents/run/subagents.md#agents-window) horizontally or vertically.
@@ -10916,8 +11034,8 @@ You can personalize chat, adjust the window layout, configure settings and exten
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/approvals.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/approvals
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/approvals.md
-- **SHA256_FINGERPRINT**: `8da159e78c77fc88c2651a1391271655b79f60d31746918a2063ad809c32e54a`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.305793+00:00
+- **SHA256_FINGERPRINT**: `4de64f5b97cc0ba802fc67cc8c668af52cef9e29d9e3931bb6599da0dd5681dd`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.589356+00:00
 ---
 
 **MetaDescription**: Manage agent permission levels, tool approvals, terminal auto-approval, and sandboxing in VS Code.
@@ -10995,6 +11113,9 @@ Advanced Autopilot delegates the completion decision to a separate model. After 
 > Autopilot consumes AI credits like interactive chat. Learn more about [usage-based billing](https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals).
 
 ### Claude permission modes
+
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), including managed permission or sandbox settings. Their permission modes do not override that restriction. Contact the IT team that deployed the settings to discuss access.
 
 [Claude harness sessions](/docs/agents/run/agent-harnesses.md#claude) support these permission modes:
 
@@ -11117,7 +11238,7 @@ For example:
 }
 ```
 
-A `false` rule requires approval. It does not block the command. To block a terminal tool call in the Local harness, use a [Preview `PreToolUse` hook](/docs/agents/reference/hooks-reference.md#pretooluse) that returns `permissionDecision: "deny"`.
+A `false` rule requires approval. It does not block the command. When moving this workflow to Copilot, review the shared runtime's [hook decision and failure behavior](/docs/agent-customization/hooks.md#decisions-and-failures). A `preToolUse` denial can block a tool call, but copying a Local hook does not preserve its tool names, arguments, or output contract.
 
 By default, rules match each subcommand. A compound command is auto-approved only when all its subcommands match a `true` rule and none match a `false` rule. A `false` rule always takes precedence.
 
@@ -11444,8 +11565,8 @@ Cloud automation support in VS Code currently has these limitations:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/browser-tools.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/browser-tools
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/browser-tools.md
-- **SHA256_FINGERPRINT**: `785e222c4c55c520a15e03d6345a0ba198aa2624f1b4c8eb9cdfadde296a4226`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.351018+00:00
+- **SHA256_FINGERPRINT**: `5caef7e67bc3fd866da612c81744d1d83137153d2fe592f64ed5a4ac14d712cc`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.584995+00:00
 ---
 
 **MetaDescription**: Use browser tools with agents in VS Code to inspect web apps, test user flows, and fix issues.
@@ -11600,41 +11721,29 @@ Describe an observable outcome so the agent knows what to exercise and how to de
 
 The following patterns cover common browser workflows.
 
-<details>
-<summary>Build and verify a feature</summary>
+**Build and verify a feature**
 
 ```prompt
 Implement the profile form from the requirements. Start the app and use the browser to verify that valid changes save, invalid input shows an error, and cancel restores the original values. Fix any issues and verify the complete flow again.
 ```
 
-</details>
-
-<details>
-<summary>Reproduce and fix a bug</summary>
+**Reproduce and fix a bug**
 
 ```prompt
 Open http://localhost:3000 and reproduce this issue: submitting the checkout form twice creates duplicate orders. Find the cause, fix it, and repeat the same browser steps to verify that only one order is created.
 ```
 
-</details>
-
-<details>
-<summary>Review responsive behavior</summary>
+**Review responsive behavior**
 
 ```prompt
 Open the dashboard and inspect it at desktop and mobile viewport sizes. Verify that the navigation remains usable and no content overflows. Fix layout issues and capture screenshots of the final result.
 ```
 
-</details>
-
-<details>
-<summary>Check accessibility</summary>
+**Check accessibility**
 
 ```prompt
 Review the sign-in page for accessible names, heading structure, and keyboard operation. Exercise the form without a mouse, fix issues you find, and verify the flow again.
 ```
-
-</details>
 
 Browser tools provide interactive validation during an agent session. Keep repeatable Playwright or other automated tests in your repository when the checks need to run consistently in continuous integration or guard against regressions.
 
@@ -11652,33 +11761,21 @@ Learn more about [approvals and permissions](/docs/agents/run/approvals.md), [br
 
 ## Troubleshoot browser tools
 
-<details>
-<summary>Why are browser tools missing?</summary>
+**Why are browser tools missing?**
 
 Verify that ``workbench.browser.enableChatTools`` is turned on. Then open **Configure Tools** in the chat input and select the tools under **Built-in** > **Browser**. An organization policy can also turn off these tools.
 
-</details>
-
-<details>
-<summary>Why can't the agent access my signed-in page?</summary>
+**Why can't the agent access my signed-in page?**
 
 Pages opened by an agent use an isolated session and don't inherit your sign-in state. Open the page in the integrated browser and use **Share with Agent** to grant access to that authenticated tab.
 
-</details>
-
-<details>
-<summary>Why did the agent open a separate browser tab?</summary>
+**Why did the agent open a separate browser tab?**
 
 An agent opens its own isolated tab unless you share an existing tab. When an open tab matches the requested domain and port, VS Code can prompt you to share it instead.
 
-</details>
-
-<details>
-<summary>Why can't the agent reach a domain?</summary>
+**Why can't the agent reach a domain?**
 
 Agent network filtering or an organization policy might block the domain. Check the error in the tool call and contact your administrator if the setting is managed by your organization.
-
-</details>
 
 ## Next steps
 
@@ -11692,8 +11789,8 @@ Agent network filtering or an organization policy might block the domain. Check 
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/chat-view.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/chat-view
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/chat-view.md
-- **SHA256_FINGERPRINT**: `fe56d181122ca9366d84b44235526c802343f348b565cfb3e7536b97edcecd6c`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.439142+00:00
+- **SHA256_FINGERPRINT**: `20f0b881edd6cafa18868f63b2fdb7aba1a27524191b743bdd15e81871c8e4ae`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.696199+00:00
 ---
 
 **MetaDescription**: Use AI beside your code in the Chat view, ask questions, run agents, and choose a layout.
@@ -11763,6 +11860,9 @@ You can continue peer chats created in the Agents window without starting a new 
 
 ## Start a session
 
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
+
 To start a workspace-scoped session, select **New Chat** (`+`) or press ``Shortcut: workbench.action.chat.newChat``. Before you send the first prompt, use the chat input controls to choose a **Session Target**, **Agent**, **Language model**, and **Permissions**. For a first coding task, use **Copilot**, **Agent**, **Auto**, and **Manual permissions**, as shown in the [agents quickstart](/docs/agents/quickstart.md). Available choices depend on your account, installed providers, and organization policies. Learn how to [identify your current harness](/docs/agents/run/agent-harnesses.md#identify-your-current-harness) or [compare agent harnesses](/docs/agents/run/agent-harnesses.md#compare-agent-harnesses).
 
 Type a prompt and press ``Shortcut: workbench.action.chat.submit``. For shared request, context, and conversation controls, see [Use chat in VS Code](/docs/chat/chat-overview.md). For session context, history, and organization, see [Manage agent sessions](/docs/agents/run/sessions/manage-sessions.md).
@@ -11781,11 +11881,123 @@ The Copilot harness applies and saves edits directly to the selected folder or w
 
 
 ---
+# DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/compare-models.md
+- **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/compare-models
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/compare-models.md
+- **SHA256_FINGERPRINT**: `4cb63a05639a4f3096b143ba724187500b7fee34b2c71e8932c44e70c50cf319`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.843481+00:00
+---
+
+**MetaDescription**: Run one coding task across models, compare evaluated results, and continue with the strongest implementation in the Agents window.
+
+# Compare model results (Preview)
+
+Run the same coding task with multiple models or agent harnesses in the Agents window, then compare their implementations side by side. You can choose the strongest attempt or synthesize a new implementation from the best parts of several attempts.
+
+Model comparison is available in Preview and only in the Agents window. It isn't available in the editor Chat view.
+
+## Prerequisites
+
+Before you start, make sure you have:
+
+* Met the [Agents window prerequisites](/docs/agents/run/agents-window.md#prerequisites).
+* Selected a Git repository that has a branch, at least one commit, and a configured remote.
+* Access to an eligible Agent Host harness that supports worktree isolation for the selected repository.
+
+The models and harnesses available for comparison depend on your setup, credentials, and enterprise policies. Learn how to [configure and choose an agent harness](/docs/agents/run/agent-harnesses.md).
+
+## Configure a comparison
+
+1. In the Agents window, open **Settings** and enable ``sessions.chat.compareAgents.enabled``.
+
+    This setting is off by default. An active experiment might enable the feature automatically.
+
+1. Select **New**, and then select the Git repository for the task.
+
+1. Open the model picker and select **Compare Models**.
+
+1. Add between two and 10 attempts.
+
+    Choose from the models available to your agent harnesses. When available, you can mix Copilot, [product.prodname_anthropic_claude], and [product.prodname_openai_codex] attempts. **Auto** and other routing choices aren't available for comparisons.
+
+    For models that support thinking effort, add the same model more than once and select a different effort for each attempt.
+
+1. To evaluate the attempts automatically, select **Judge**, and then choose a judge model.
+
+1. To create a combined implementation later, also select **Synthesizer** and choose a synthesizer model.
+
+    Configure the judge and synthesizer before you run the comparison. Without a judge, compare the attempts manually. Synthesis requires both a judge and a synthesizer.
+
+1. Select **Done**.
+
+![Screenshot showing the model picker with four models selected for a comparison.](../images/compare-models/bake-off-picker.webp)
+
+## Run the same task across attempts
+
+Enter one bounded prompt that gives every attempt the same goal and success criteria. For example:
+
+```prompt
+Add validation to the profile form so the display name is required and no longer
+than 50 characters. Show an inline error, preserve the existing form styles, and
+add focused tests for valid, empty, and overlong names. Don't change other forms.
+```
+
+![Screenshot showing a comparison prompt and the Run 4 Attempts button.](../images/compare-models/bake-off-multiple-attempts.webp)
+
+Select **Run N Attempts**, where `N` is the number of attempts you configured. All attempts start concurrently as independent sessions. The results appear in a tiled grid by default, where you can monitor each attempt and open its session.
+
+![Screenshot showing four model comparison attempts running side by side in a grid.](../images/compare-models/bake-off-grid.webp)
+
+Each attempt works in its own Git worktree based on the repository's committed state. It doesn't include changes that are uncommitted in your original working tree. Git-ignored files and dependencies might also be absent. For worktree requirements, ignored files, and **Allow all** permission behavior, see [Choose where an agent makes changes](/docs/agents/run/agents-window.md#choose-where-an-agent-makes-changes).
+
+> [!CAUTION]
+> Worktree sessions use **Allow all**, which skips tool approval prompts. Worktrees separate edits, not the agent's access to your machine or network. Review [approvals and permissions](/docs/agents/run/approvals.md) and [agent sandboxing](/docs/agents/run/agent-sandboxing.md) before you run a comparison.
+
+## Compare the results
+
+After the attempts finish, compare them manually or use the judge scorecard:
+
+* Review the changed files and agent responses for each attempt.
+* Check whether each implementation meets the prompt's constraints and follows the repository's conventions.
+* Run the relevant tests and checks in promising attempts.
+
+If you configured a judge, evaluation starts automatically after the attempts finish. The scorecard includes a recommendation, time and token usage for each attempt, and expandable rationale with validation evidence. Select **Open Attempt N** to inspect an attempt's full session and changes.
+
+Token values can be lower bounds rather than complete totals. The scorecard doesn't measure credit or currency costs.
+
+![Screenshot showing the judge scorecard with the recommended attempt, time and token usage, validation evidence, and Synthesize action.](../images/compare-models/bake-off-results.webp)
+
+> [!IMPORTANT]
+> A judge's assessment isn't proof that an implementation is correct. Review the code, verify the evidence, and run the project's tests before you integrate a result.
+
+## Synthesize a new implementation
+
+If you configured both a judge and a synthesizer, select **Synthesize** after reviewing the verdict. Add optional instructions to focus the synthesis on specific strengths, constraints, or corrections.
+
+The synthesizer creates a new grouped session in another isolated worktree. It uses the judge verdict and strengths from the attempts as context for a new implementation. It doesn't modify the recommended attempt or your original working tree.
+
+Synthesis doesn't automatically merge changes from the attempts or the synthesized result. Review and validate the new implementation as a separate result.
+
+## Continue with a result
+
+Open the attempt or synthesized session that you want to continue. Review all changed and untracked files, run the relevant tests, and make any needed revisions.
+
+When the result is ready, follow the [agent change review and worktree integration workflow](/docs/agents/run/review-code-edits.md). Comparison doesn't automatically merge, push, or create a pull request for the selected result.
+
+Each attempt, judge evaluation, and synthesis is separate model work. Consider the additional model usage when you choose the number of attempts and whether to enable evaluation or synthesis.
+
+## Related resources
+
+* [Manage agent sessions](/docs/agents/run/sessions/manage-sessions.md)
+* [Use Git branches and worktrees](/docs/sourcecontrol/branches-worktrees.md)
+
+
+---
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/manage-mcp-servers.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/manage-mcp-servers
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/manage-mcp-servers.md
-- **SHA256_FINGERPRINT**: `ead4f7af825b9665284c15852a827498574c4af88b00ef512ac2cfc0a1fca938`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.563026+00:00
+- **SHA256_FINGERPRINT**: `086ee74b1a463c5224322c5a448a194f5f8eed29ed058b44ca6b2ce74f397d9e`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.828618+00:00
 ---
 
 **MetaDescription**: Edit, share, stop, and troubleshoot MCP servers in Visual Studio Code, with guidance on trust and remote environments.
@@ -11824,8 +12036,6 @@ Enter arguments as a space-separated string or a JSON array of strings. With foc
 
 Portable configurations support form editing. VS Code formats appear as read-only JSON, so edit their source file instead. Check the [configuration file comparison](/docs/agents/reference/mcp-configuration.md#configuration-file) for supported fields and forwarding restrictions. Legacy destinations can still be necessary for VS Code-specific capabilities.
 
-<a name="start-stop-or-restart-a-server"></a>
-
 ## Control or remove a server
 
 In **MCP Servers** in the [Agent Customizations editor](#open-the-server-controls), open the server's ellipsis (**...**) menu and choose an available action. Alternatively, run **MCP: List Servers** from the Command Palette, select the server, and choose an available action.
@@ -11840,11 +12050,7 @@ In **MCP Servers** in the [Agent Customizations editor](#open-the-server-control
 
 Starting can require trust or authentication. If the server fails to start, [view its output](#view-server-output) before retrying.
 
-<a name="enable-or-disable-mcp-servers"></a>
-
 **Disabling is different from stopping.** A disabled server doesn't start, and its tools, resources, prompts, and MCP apps are unavailable. Use the toggle beside the server, or select an enablement action from its menu to choose a scope. Depending on the server and harness, global, workspace, or session scope is available. The enabled state is separate from shared configuration, so disabling a server doesn't change your teammates' configuration.
-
-<a name="remove-an-mcp-server"></a>
 
 **Removal depends on the configuration source.** If **Uninstall** isn't available for a manually configured server, remove only its entry from the source configuration, not the whole file. If automatic discovery restores it, review its [discovery source](/docs/agents/reference/mcp-configuration.md#automatic-mcp-server-discovery). You can also uninstall an installed server from the **MCP SERVERS - INSTALLED** section of the Extensions view.
 
@@ -12147,8 +12353,8 @@ Change one dimension at a time so you can tell why the workflow behaves differen
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/planning.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/planning
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/planning.md
-- **SHA256_FINGERPRINT**: `c142210b1ca2e005a0554452afa57ee1bce73e1566ba5542867546cf5732f590`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.496537+00:00
+- **SHA256_FINGERPRINT**: `3f256bc84422e52b0bfabfc0d687e6af9456c87dac6986d4bb233b381425522c`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.940619+00:00
 ---
 
 **MetaDescription**: Create and review implementation plans with GitHub Copilot in VS Code.
@@ -12276,8 +12482,6 @@ For model-selection guidance, see [Optimize AI credit usage](/docs/agents/guides
 
 For a repeatable planning workflow, define a [custom agent](/docs/agent-customization/custom-agents.md) with instructions such as architectural guidelines or required planning deliverables.
 
-<a name="plan-in-a-local-session"></a>
-
 ## Plan in a Local harness session
 
 The Local harness provides a built-in Plan agent with different controls from Copilot Plan mode. Select **Local** from the **Session Target** UI control, then select **Plan** from the agents dropdown or enter `/plan` followed by your task.
@@ -12314,8 +12518,8 @@ These options apply to the built-in Plan agent in Local harness sessions, not to
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/remote-agent-sessions.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/remote-agent-sessions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/remote-agent-sessions.md
-- **SHA256_FINGERPRINT**: `6754ccdf971990cd52625250e62cb903b3fca3067ecc4a58ff563876b8849bb6`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.641747+00:00
+- **SHA256_FINGERPRINT**: `a95535647179dfb0116f31f1aa7b522d45f7d632d5125923cb1c3365bc4c5bf3`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.926213+00:00
 ---
 
 **MetaDescription**: Run agent sessions on remote machines and in Dev Containers, and manage them in the browser-based Agents window.
@@ -12380,8 +12584,6 @@ To start a session on a remote machine via dev tunnel:
 
 > [!IMPORTANT]
 > Ensure your dev tunnel requires authentication (GitHub or Microsoft account). If the tunnel allows anonymous access, anyone who discovers the URL can reach your machine and start agent sessions. This is especially dangerous when auto-approval modes are active, because unauthorized users can trigger AI-assisted command execution with your credentials. For more information, see [Security](/docs/agents/run/security.md).
-
-<a name="delegate-work-to-remote-agent-hosts-experimental"></a>
 
 ## Delegate tasks to remote machines (Experimental)
 
@@ -12459,8 +12661,6 @@ The hosts bar in the browser-based Agents window shows machines with configured 
 
 You can connect and disconnect from machines directly through the hosts bar. If a machine goes offline while you have an active session, the session shows a disconnected state. When the machine comes back online, the session reconnects automatically.
 
-<a name="remote-control-copilot-sessions"></a>
-
 ## Remote control Copilot harness sessions
 
 To monitor and steer an existing [Copilot harness session](/docs/agents/run/agent-harnesses.md#copilot) from GitHub.com or the GitHub Mobile app, enter `/remote on` in the session. This provides another way to access a running session without selecting the Cloud target or starting a new session on a remote host.
@@ -12480,8 +12680,8 @@ Enter `/remote off` to stop sharing the session. Keep the session's host running
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/review-code-edits.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/review-code-edits
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/review-code-edits.md
-- **SHA256_FINGERPRINT**: `2f8eec562beac0ccd97dbcecfeb5b8aa22f4fb04f57affb85e70ac591be67a53`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.691643+00:00
+- **SHA256_FINGERPRINT**: `c075092fac3c95324d39e6bd36d6ba80684f4284a5614772829c9f3c443280d8`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.894205+00:00
 ---
 
 **MetaDescription**: Review, revise, and revert AI changes in Visual Studio Code with diffs, checkpoints, and Source Control.
@@ -12500,6 +12700,9 @@ The available review controls depend primarily on the agent harness:
 
 > [!NOTE]
 > The change-review experience for Copilot harness sessions is [under active development](https://github.com/microsoft/vscode/issues/339363#issuecomment-6134276862). The user interface and available controls might change in upcoming releases.
+
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
 
 <div class="docs-action" data-show-in-doc="false" data-show-in-sidebar="true" title="Get started with agents">
 Follow a hands-on tutorial to build an app with AI agents in VS Code.
@@ -12595,8 +12798,6 @@ Use **Expand All Diffs** or **Collapse All Diffs** to control all files at once.
 
 The Changes editor restores each file's expanded or collapsed state when you switch sessions or reload the window. The editor tab title shows the next integration action, such as **Create Pull Request**, and switches to an icon when space is limited.
 
-<a name="review-local-session-changes"></a>
-
 ## Review Local harness session changes
 
 The following controls apply when you select **Local** from the **Session Target** UI control or continue an existing extension-host session in the Chat view. These sessions track supported file edits as pending changes that you can keep or undo individually.
@@ -12669,8 +12870,6 @@ You can also enter `/rubber-duck <question>` in the chat input. For example, ent
 > Rubber Duck is available only when the main session uses a Claude or GPT model and a suitable complementary model is available. The additional model pass adds latency and model usage.
 
 Learn more about the [Rubber Duck agent](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/rubber-duck) in the GitHub documentation.
-
-<a name="edit-requests-and-restore-checkpoints"></a>
 
 ## Undo changes at the right scope
 
@@ -12761,8 +12960,6 @@ The available actions and labels depend on the selected harness and whether you 
 
 For a walkthrough of reviewing two results separately, integrating them one at a time, and testing the combined change, follow [Delegate two tasks without mixing their changes](/docs/agents/guides/delegate-two-tasks.md).
 
-<a name="edit-sensitive-files"></a>
-
 ## Require approval before sensitive edits
 
 Sensitive-file approval is separate from reviewing changes after the agent saves them. To prevent inadvertent edits to files such as workspace configuration or environment settings, VS Code can show a diff and ask you to approve or reject the edit before it is applied.
@@ -12790,8 +12987,8 @@ The following example configuration automatically allows edits to all files exce
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/security.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/security
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/security.md
-- **SHA256_FINGERPRINT**: `47dee876b8a5194cdc0b6285dafd829bd21da91517cc11d8a59b311dbc5a5b80`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.613035+00:00
+- **SHA256_FINGERPRINT**: `87016237c2d89f882927fffa41a38084cc0da1a639448d8e3d069b000f6995c9`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.916085+00:00
 ---
 
 **MetaDescription**: Protect development environments when using AI agents and MCP servers in VS Code with approvals and sandboxing.
@@ -12854,6 +13051,9 @@ VS Code limits the potential impact of agent actions by controlling their scope 
 
 ### Approvals and review
 
+> [!NOTE]
+> Claude and Codex harnesses cannot enforce Copilot enterprise-managed settings. They are disabled when [enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), including managed permission or sandbox settings. Contact the IT team that deployed the settings to discuss approved harnesses.
+
 VS Code uses a permission-based security model where you maintain control over potentially risky operations.
 
 * **Permission levels**: In a Copilot harness session, use the [permissions picker](/docs/agents/run/approvals.md#permission-levels) to choose how tool calls are approved. **Manual permissions** uses your configured approval settings. **Assisted permissions** `feature(assisted-permissions)` uses an LLM judge to evaluate each tool call and asks for your approval when the judge does not approve it. **Allow all** auto-approves all tool calls. **Autopilot** is an agent mode that auto-approves all tools and drives the agent to continue working until the task is complete. Available controls depend on the harness and code isolation. For Local harness sessions, Autopilot is a permission level instead.
@@ -12893,8 +13093,7 @@ Learn more about [configuring MCP server sandboxing](/docs/agents/run/manage-mcp
 
 AI-powered development introduces specific security risks. The sections below describe each risk category and how VS Code addresses it. Expand a section for details.
 
-<details>
-<summary>Execution and access</summary>
+**Execution and access**
 
 All development tasks operate with the same permissions as the user.
 
@@ -12908,10 +13107,7 @@ All development tasks operate with the same permissions as the user.
 
 VS Code addresses these risks through [workspace-limited file access](#scope-and-isolation), [agent sandboxing](#agent-sandboxing), and [trust boundaries](#trust-boundaries) for extensions and MCP servers.
 
-</details>
-
-<details>
-<summary>Supply chain and dependencies</summary>
+**Supply chain and dependencies**
 
 Agentic coding flows rely on various external components that introduce trust and security dependencies beyond your direct control.
 
@@ -12923,10 +13119,7 @@ Agentic coding flows rely on various external components that introduce trust an
 
 VS Code addresses these risks through [MCP Server Trust](#trust-boundaries), [enterprise MCP registry controls](#enterprise-policies), and [Extension Publisher Trust](#trust-boundaries).
 
-</details>
-
-<details>
-<summary>Automated approval tradeoffs</summary>
+**Automated approval tradeoffs**
 
 Auto-approval features reduce friction but come with security tradeoffs.
 
@@ -12946,10 +13139,7 @@ VS Code addresses these risks through [configurable approval scopes](#approvals-
 
 Learn more about [managing auto approvals](/docs/agents/run/approvals.md#tool-approval).
 
-</details>
-
-<details>
-<summary>Information exposure</summary>
+**Information exposure**
 
 Your workspace data and development environment information can be exposed through various channels.
 
@@ -12963,10 +13153,7 @@ Your workspace data and development environment information can be exposed throu
 
 VS Code addresses these risks through [workspace-limited file access](#scope-and-isolation), [the tools picker](#scope-and-isolation), [the secure secrets store](#scope-and-isolation), and [sensitive file protection](/docs/agents/run/review-code-edits.md#edit-sensitive-files).
 
-</details>
-
-<details>
-<summary>Prompt injection</summary>
+**Prompt injection**
 
 AI systems are vulnerable to prompt injection attacks where malicious content in tool outputs influences the AI's behavior and decision-making. This content might be visible to the user, or hidden in comments or obscured through formatting.
 
@@ -12979,15 +13166,17 @@ For example, an MCP tool or the fetch tool might unsuspectingly retrieve data fr
 
 VS Code addresses these risks through [URL two-step approval](#approvals-and-review), [edit review flow](#approvals-and-review), [agent sandboxing](#agent-sandboxing), and [Workspace Trust](#trust-boundaries) (opening untrusted projects in restricted mode disables agents).
 
-</details>
-
 ## Hooks
 
-[Agent hooks](/docs/agent-customization/hooks.md) enable you to execute custom shell commands at key lifecycle points during agent sessions. Unlike instructions or prompts that guide agent behavior, hooks run deterministically with guaranteed outcomes, making them suitable for enforcing security policies.
+[Agent hooks](/docs/agent-customization/hooks.md) run commands at runtime lifecycle points rather than relying on the model to request them. For Copilot sessions, use the shared runtime's event and output contract.
 
-* **Block dangerous operations**: Use `PreToolUse` hooks to intercept tool invocations and block dangerous commands (for example, `rm -rf` or `DROP TABLE`) before they execute, regardless of how the agent was prompted.
-* **Control approvals**: Hooks can return `allow`, `deny`, or `ask` decisions to automatically approve safe operations or require confirmation for sensitive ones.
-* **Create audit trails**: Log every tool invocation, command execution, or file change for compliance and debugging purposes.
+* **Validate tool calls**: A `preToolUse` hook can inspect a supported tool's arguments and return a denial. A filter that misses a tool or argument shape does not validate that operation.
+* **Control approvals**: Hooks can return `allow`, `deny`, or `ask`. Approval prompts depend on the session mode; do not assume `ask` pauses an unattended session.
+* **Record events**: Log selected, non-sensitive event data. Verify event coverage and failure behavior before treating the log as a complete audit trail.
+
+Hooks are not a substitute for enforced permissions, sandboxing, or enterprise controls. GitHub documents command `preToolUse` failures as denying the tool call, but timeouts as continuing through normal permissions, including for policy hooks. See [hook exit codes](https://docs.github.com/en/copilot/reference/hooks-reference#exit-codes-for-command-hooks). Instructions guide the model and are not an enforcement boundary.
+
+When switching from Local, [migrate and test the hook scripts](/docs/agent-customization/migrate-customizations.md#migrate-hooks), not only their configuration files.
 
 ## Enterprise policies
 
@@ -13012,8 +13201,8 @@ Learn more about [managing AI settings in enterprise environments](/docs/enterpr
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/sessions/manage-sessions.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/sessions/manage-sessions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/sessions/manage-sessions.md
-- **SHA256_FINGERPRINT**: `544b77902a9c9abd90582ea48338e7a9890199eb96458965207709676d88b7a7`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.659463+00:00
+- **SHA256_FINGERPRINT**: `f7dde80be26f83d24a8e68e328039bb8364091bc5edae849a14f7cb342fda574`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:56.017466+00:00
 ---
 
 **MetaDescription**: Start, coordinate, and manage agent sessions across workspaces in Visual Studio Code.
@@ -13030,6 +13219,9 @@ Follow a hands-on tutorial to build an app with AI agents in VS Code.
 </div>
 
 ## Start an agent session
+
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Existing sessions are not deleted by this restriction. Contact the IT team that deployed the settings to discuss access.
 
 Start a new session when you begin an independent task or need a different workspace or configuration. For a fresh conversation that shares an existing session's workspace and code changes, [start another chat in that session](#run-multiple-chats-in-a-session), where supported.
 
@@ -13253,6 +13445,8 @@ To start a GitHub Copilot CLI session from VS Code, use one of these options:
 * Run **Chat: New Copilot CLI Session** from the Command Palette (``Shortcut: workbench.action.showCommands``).
 * Enter `copilot` in an integrated terminal.
 
+If Copilot CLI isn't installed, the `copilot` command offers to install it. On macOS, you can also [install it when you add code to PATH](/docs/setup/mac.md#configure-path-with-vs-code). On Windows, setup can also [add the copilot command to PATH](/docs/setup/windows.md#set-up-the-copilot-command), so it works in any terminal.
+
 VS Code adds the session to the sessions list. To continue an existing [Copilot harness session](/docs/agents/run/agent-harnesses.md#copilot) from the terminal, right-click it in the sessions list and select **Resume in Terminal**.
 
 ## Archive sessions
@@ -13301,17 +13495,26 @@ For a [Dev Container session](/docs/agents/run/agents-window.md#run-a-session-in
 
 Worktree-isolated agent sessions can accumulate and use significant disk space. Run **Chat: Open Worktree Cleanup** to review inactive session worktrees and remove the ones you no longer need.
 
+![Screenshot showing the worktree cleanup editor with cleanup settings, an inactivity filter, and selected session worktrees with their storage sizes.](../../images/chat-sessions/worktree-cleanup-editor.png)
+
 In the cleanup editor:
 
 1. Choose how long sessions must be inactive. You can filter for sessions that have been inactive for 7, 15, 30, 60, or 90 days.
 
 1. Review the estimated size of each worktree. Eligible worktrees are selected by default. Clear any worktrees that you want to keep.
 
+1. Save any open file edits in the selected worktrees before you continue.
+
 1. Confirm the cleanup for the selected worktrees.
 
 Cleanup marks each selected session as done and schedules its worktree for removal. Before removing a worktree, VS Code commits uncommitted changes to the session branch. If the changes can't be preserved or the worktree can't be removed, the worktree remains. The session and its branch history are preserved, so restoring the session re-creates the worktree.
 
 The cleanup editor excludes sessions that are active, running, waiting for input, pinned, done, archived, untitled, in an error state, or more recent than the selected inactivity period. It also excludes worktrees whose size can't be measured.
+
+Use **Cleanup Settings** in the editor to configure:
+
+* **Mark merged sessions as done after** and **Permanently delete automatically completed sessions after**: set the inactivity period before automatic completion and a separate retention period before permanent deletion. See [automatically clean up merged sessions (Preview)](#automatically-clean-up-merged-sessions).
+* **Suggest cleaning up session storage when it grows large**: turn [storage cleanup suggestions (Experimental)](#get-storage-cleanup-suggestions-experimental) on or off.
 
 ### Get storage cleanup suggestions (Experimental)
 
@@ -13340,9 +13543,9 @@ When a merged pull request makes a session eligible, select **Configure Automati
 
 ## Fork a chat session
 
-Forking a chat session branches off the conversation and inherits the conversation history from the original session. In single-chat sessions and sessions whose harness doesn't support multiple chats, the fork opens as a new independent session. The conversation is separate, but its code changes are isolated only if the fork uses a different folder or worktree. The new session title is prefixed with "Forked:" to help you identify it.
+Forking a chat session branches off the conversation and inherits the conversation history from the original session. In single-chat sessions and sessions whose harness doesn't support multiple chats, the fork opens as a new independent session. The conversation is separate, but its code changes are isolated only if the fork uses a different folder or worktree.
 
-For multi-chat [Copilot](/docs/agents/run/agent-harnesses.md#copilot) sessions in the Agents window, the fork opens as a peer chat in the same session. The peer chat gets an automatically generated title and runs independently from sibling chats.
+For multi-chat [Copilot](/docs/agents/run/agent-harnesses.md#copilot) sessions in the Agents window, the fork opens as a peer chat in the same session and runs independently from sibling chats.
 
 For Copilot harness sessions that use worktree isolation, the fork continues to use the same worktree as the original session.
 
@@ -13359,7 +13562,25 @@ There are two ways to fork a chat session:
 > [!TIP]
 > A forked session inherits the conversation history of the original, which preserves the prompt cache and reduces cost on the next request. Use the [Cache Explorer](/docs/agents/agent-troubleshooting/cache-explorer.md) to compare cache hit rates across sessions.
 
-<a name="orchestrate-sessions-from-agent-host-sessions"></a>
+### Name a fork or send a prompt
+
+Use named and prompted forks to label an alternative approach or start exploring it immediately. These forms are available in supported [Agent Host](/docs/agents/concepts/agent-host.md) sessions, such as Copilot, in both the editor window's Chat view and the Agents window.
+
+| Command | Result |
+|---|---|
+| `/fork` | Fork the current conversation without sending a new prompt. |
+| `/fork <title>` | Fork the conversation with the title you provide, without sending a new prompt. |
+| `/fork prompt <prompt>` | Fork the conversation and immediately send the prompt and any attached context to the fork. |
+
+For example, explore an alternative design while retaining the discussion so far:
+
+```prompt
+/fork prompt Compare this design with an event-driven approach. Do not change any files.
+```
+
+The prompted fork uses the source conversation's agent and model, not a new selection you make in the input pickers before forking.
+
+A named fork retains the title you provide. Without an explicit title, the fork starts with a default title and can receive an automatically generated title. For prompted forks, title generation can use the original title and the new prompt.
 
 ## Coordinate work across sessions
 
@@ -13646,8 +13867,8 @@ Reindex after restoring session files from a backup, an unexpected crash, manual
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/subagents.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/subagents
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/subagents.md
-- **SHA256_FINGERPRINT**: `9398c8cbc7363d8a934c96c070846f17da8224f1769660dcdc419ac87983f17f`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.811137+00:00
+- **SHA256_FINGERPRINT**: `babca1fb85ba42de54770361e486b3794d8b74cf21ae7a61fd29a9273f5987ed`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:56.201955+00:00
 ---
 
 **MetaDescription**: Delegate focused tasks to context-isolated subagents in VS Code and review results in the main chat.
@@ -13680,24 +13901,17 @@ For a quick lookup or a small edit, a direct request is usually enough. Delegati
 Your [agent harness](/docs/agents/run/agent-harnesses.md#compare-agent-harnesses) determines how subagents run and which configuration options they support. [Select a harness](/docs/agents/run/agent-harnesses.md#select-a-harness) before you submit the first prompt.
 
 > [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
+>
 > Provider documentation also covers CLI workflows. Commands and configuration options can differ in VS Code. Use the [harness guide](/docs/agents/run/agent-harnesses.md) for integration-specific setup and limitations.
-
-<a id="copilot"></a>
 
 The **Copilot** harness manages delegation to built-in or custom subagents. Request a subagent in your prompt, or let the main agent decide when to delegate. For native agent behavior and configuration, see [built-in and custom agents in Copilot](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-custom-agents).
 
-<a id="claude"></a>
-
 The **Claude** harness manages its own subagents, with separate context and configurable instructions and tools. Request delegation in your prompt, or let the agent choose an appropriate subagent. See [Claude subagents](https://code.claude.com/docs/en/sub-agents) for native configuration and behavior.
-
-<a id="codex"></a>
 
 The **Codex** harness uses provider-native subagents to run independent tasks and collect their results. Ask Codex to delegate in your prompt, and see [Codex subagents](https://developers.openai.com/codex/multi-agent) for native configuration and behavior. For availability and integration-specific setup, see [Use the Codex harness](/docs/agents/run/agent-harnesses.md#codex).
 
-<a id="local"></a>
-
-<details>
-<summary>Subagents in Local harness sessions</summary>
+**Subagents in Local harness sessions**
 
 The **Local** harness uses the VS Code `runSubagent` tool. The following instructions cover tool selection, custom-agent configuration, model selection, and nested subagents for this harness.
 
@@ -13936,8 +14150,6 @@ For Local harness sessions, check these common causes:
 | A custom agent isn't available. | Check its exact, case-sensitive name, `disable-model-invocation`, and the coordinator's `agents` list. `user-invocable: false` only hides it from the picker. |
 | A requested model doesn't run. | Use one of the models listed in the error, or remove the explicit preference. See [model selection](#select-the-model-for-a-subagent). |
 | A subagent can't delegate further. | Check the [nested subagent setting](#nested-subagents), the depth limit, and whether its tools include `agent`. |
-
-</details>
 
 ## What you see in chat
 

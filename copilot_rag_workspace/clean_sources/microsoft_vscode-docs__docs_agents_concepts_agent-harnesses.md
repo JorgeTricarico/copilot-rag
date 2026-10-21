@@ -61,8 +61,6 @@ The selected harness defines the agent implementation. Depending on the harness 
 
 The harness choice does not by itself determine where the language model runs or whether code changes go into a folder or worktree. Those choices depend on the models, execution environments, and isolation options that the harness supports.
 
-<a name="map-session-targets-to-harnesses"></a>
-
 ## Map Session Target choices to harnesses
 
 VS Code provides common chat and session-management surfaces across harnesses. Available controls and workflows depend on the selected harness. The **Session Target** UI control includes both harnesses and the Cloud execution target:
@@ -75,6 +73,9 @@ VS Code provides common chat and session-management surfaces across harnesses. A
 
 > [!NOTE]
 > **For Local harness sessions:** The Local harness works in the current workspace through the editor's extension host. **Local** is a session-target name, not the only way to run agents on your machine. See [Local setup and capabilities](/docs/agents/run/agent-harnesses.md#local).
+
+> [!NOTE]
+> Claude and Codex harness integrations are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access. Selecting a Claude or OpenAI model in the Copilot harness is a separate choice and does not switch harnesses.
 
 Cloud is an execution target that groups available cloud agents, not a single provider harness. After you select Cloud, you choose an available cloud agent.
 

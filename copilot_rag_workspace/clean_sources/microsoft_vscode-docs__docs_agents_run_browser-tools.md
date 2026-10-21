@@ -150,41 +150,29 @@ Describe an observable outcome so the agent knows what to exercise and how to de
 
 The following patterns cover common browser workflows.
 
-<details>
-<summary>Build and verify a feature</summary>
+**Build and verify a feature**
 
 ```prompt
 Implement the profile form from the requirements. Start the app and use the browser to verify that valid changes save, invalid input shows an error, and cancel restores the original values. Fix any issues and verify the complete flow again.
 ```
 
-</details>
-
-<details>
-<summary>Reproduce and fix a bug</summary>
+**Reproduce and fix a bug**
 
 ```prompt
 Open http://localhost:3000 and reproduce this issue: submitting the checkout form twice creates duplicate orders. Find the cause, fix it, and repeat the same browser steps to verify that only one order is created.
 ```
 
-</details>
-
-<details>
-<summary>Review responsive behavior</summary>
+**Review responsive behavior**
 
 ```prompt
 Open the dashboard and inspect it at desktop and mobile viewport sizes. Verify that the navigation remains usable and no content overflows. Fix layout issues and capture screenshots of the final result.
 ```
 
-</details>
-
-<details>
-<summary>Check accessibility</summary>
+**Check accessibility**
 
 ```prompt
 Review the sign-in page for accessible names, heading structure, and keyboard operation. Exercise the form without a mouse, fix issues you find, and verify the flow again.
 ```
-
-</details>
 
 Browser tools provide interactive validation during an agent session. Keep repeatable Playwright or other automated tests in your repository when the checks need to run consistently in continuous integration or guard against regressions.
 
@@ -202,33 +190,21 @@ Learn more about [approvals and permissions](/docs/agents/run/approvals.md), [br
 
 ## Troubleshoot browser tools
 
-<details>
-<summary>Why are browser tools missing?</summary>
+**Why are browser tools missing?**
 
 Verify that ``workbench.browser.enableChatTools`` is turned on. Then open **Configure Tools** in the chat input and select the tools under **Built-in** > **Browser**. An organization policy can also turn off these tools.
 
-</details>
-
-<details>
-<summary>Why can't the agent access my signed-in page?</summary>
+**Why can't the agent access my signed-in page?**
 
 Pages opened by an agent use an isolated session and don't inherit your sign-in state. Open the page in the integrated browser and use **Share with Agent** to grant access to that authenticated tab.
 
-</details>
-
-<details>
-<summary>Why did the agent open a separate browser tab?</summary>
+**Why did the agent open a separate browser tab?**
 
 An agent opens its own isolated tab unless you share an existing tab. When an open tab matches the requested domain and port, VS Code can prompt you to share it instead.
 
-</details>
-
-<details>
-<summary>Why can't the agent reach a domain?</summary>
+**Why can't the agent reach a domain?**
 
 Agent network filtering or an organization policy might block the domain. Check the error in the tool call and contact your administrator if the setting is managed by your organization.
-
-</details>
 
 ## Next steps
 

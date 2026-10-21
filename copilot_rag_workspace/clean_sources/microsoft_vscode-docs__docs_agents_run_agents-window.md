@@ -22,6 +22,9 @@ Follow a hands-on tutorial to build an app with AI agents in VS Code.
   * An [existing ChatGPT sign-in for Codex](/docs/agents/run/agent-harnesses.md#codex) to use Codex without GitHub sign-in (Experimental).
   * A [BYOK model](/docs/agent-customization/language-models.md#bring-your-own-language-model-key) configured for use in the Agents window.
 
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), even with separate provider credentials. Existing sessions are not deleted by this restriction. Contact the IT team that deployed the settings to discuss access.
+
 ## Open the Agents window
 
 The Agents window opens as a dedicated VS Code window alongside your main editor window. To open the Agents window, use one of the following methods:
@@ -377,6 +380,10 @@ Use **Maximize** in the session header to expand the active session, and use **R
 Press ``Shortcut: sessions.closeAllSessions`` while a session has focus to close all visible panes and return to the new-session view. This action does not delete or archive the sessions.
 
 The Agents window restores conversations, drafts, pane geometry, the active session, and the maximized state after a reload. At narrow or phone width, only the active session is shown. The grid returns when you widen the window.
+
+### Compare model results (Preview)
+
+Run the same prompt with multiple models or harnesses in isolated worktrees, then compare their approaches and results. You can optionally use a Judge to evaluate the attempts and request a synthesized solution. See [Compare model results](/docs/agents/run/compare-models.md) for prerequisites and the full workflow.
 
 ### Work with multiple chats in a session
 

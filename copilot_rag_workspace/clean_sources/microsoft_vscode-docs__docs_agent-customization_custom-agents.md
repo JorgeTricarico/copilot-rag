@@ -114,8 +114,6 @@ You can define custom agents for a specific workspace or at the user level, wher
 
 To create a user-level custom agent, use the Agent Customizations editor or the **Chat: New Custom Agent** command. Store the file in a supported folder on the machine where the selected harness runs.
 
-<a id="claude-agent-format"></a>
-
 For Claude-specific fields and compatibility with Local, see the [Claude agent format reference](/docs/agents/reference/custom-agent-file-reference.md#claude-agent-format).
 
 > [!TIP]
@@ -126,6 +124,8 @@ For Claude-specific fields and compatibility with Local, see the [Claude agent f
 The **Local** harness stores user-level custom agents in VS Code profile storage, separate from harness user folders such as `~/.copilot/agents` and `~/.claude/agents`. To reuse profile-based agents with another harness, [move them to that harness's user folder](/docs/agent-customization/migrate-customizations.md#move-user-agents-and-instructions).
 
 The deprecated ``chat.agentFilesLocations`` and ``chat.modeFilesLocations`` settings add other locations for the Local harness only. To reuse agents from these locations with the Copilot harness, [move them to supported locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations).
+
+If an agent has `hooks` in its frontmatter, review the [agent-scoped hook conversion limitation](/docs/agent-customization/hooks.md#agent-scoped-hooks). Plugin-provided agents can appear and run without their scoped hooks because conversion currently omits the `hooks` field. Retain the scoped definition and leave the affected hook migration incomplete; do not broaden it to repository-wide or plugin-wide execution as a workaround.
 
 ## Handoffs
 

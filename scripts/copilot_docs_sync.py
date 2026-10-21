@@ -95,6 +95,13 @@ class RepoTreeRule:
     path_prefixes: List[str]
     web_base_url: str
     bundle_router: Dict[str, str]
+    root_subpath: str = ""
+    allowed_extensions: Tuple[str, ...] = (".md",)
+    file_regex_filter: Optional[str] = None
+
+    @property
+    def tree_subpath(self) -> str:
+        return self.root_subpath
 
 
 REPO_RULES: List[RepoTreeRule] = [
@@ -130,6 +137,8 @@ REPO_RULES: List[RepoTreeRule] = [
             "docs/agents/": "05_Workflows_Planning_And_Remote_AHP",
             "api/extension-guides/ai/": "06_Extension_AI_APIs_And_Copilot_SDK",
         },
+        root_subpath="",
+        allowed_extensions=(".md",),
     ),
     RepoTreeRule(
         owner="github",
@@ -153,6 +162,45 @@ REPO_RULES: List[RepoTreeRule] = [
             "content/copilot/how-tos/copilot-sdk/": "06_Extension_AI_APIs_And_Copilot_SDK",
             "content/copilot/": "05_Workflows_Planning_And_Remote_AHP",
         },
+        root_subpath="content/copilot",
+        allowed_extensions=(".md",),
+    ),
+    RepoTreeRule(
+        owner="microsoft",
+        repo="vscode",
+        branch="main",
+        path_prefixes=["src/vscode-dts/"],
+        web_base_url="https://github.com/microsoft/vscode/blob/main/",
+        bundle_router={
+            "src/vscode-dts/": "06_Extension_AI_APIs_And_Copilot_SDK",
+        },
+        root_subpath="src/vscode-dts",
+        allowed_extensions=(".d.ts",),
+        file_regex_filter=r"^src/vscode-dts/vscode\.proposed\.(chat|languageModel|mcp|agent).*\.d\.ts$",
+    ),
+    RepoTreeRule(
+        owner="github",
+        repo="awesome-copilot",
+        branch="main",
+        path_prefixes=["skills/", "agents/", "instructions/", "README.md"],
+        web_base_url="https://github.com/github/awesome-copilot/blob/main/",
+        bundle_router={
+            "": "04_Customization_Skills_Hooks_And_Plugins",
+        },
+        root_subpath="",
+        allowed_extensions=(".md",),
+    ),
+    RepoTreeRule(
+        owner="anthropics",
+        repo="skills",
+        branch="main",
+        path_prefixes=["skills/", "spec/", "README.md"],
+        web_base_url="https://github.com/anthropics/skills/blob/main/",
+        bundle_router={
+            "": "04_Customization_Skills_Hooks_And_Plugins",
+        },
+        root_subpath="",
+        allowed_extensions=(".md",),
     ),
 ]
 
@@ -170,6 +218,12 @@ DIRECT_WEB_SOURCES: List[Dict[str, str]] = [
         "bundle": "07_Release_Notes_And_Changelog_Radar",
         "type": "rss",
     },
+    {
+        "id": "agent_plugins_1_0_schema",
+        "url": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+        "bundle": "04_Customization_Skills_Hooks_And_Plugins",
+        "type": "json",
+    },
 ]
 
 
@@ -182,7 +236,20 @@ class ContentCanonicalizer:
     representación textual estrictamente canónica e invariante a estilos.
     """
 
-    # Expresiones regulares precompiladas para máxima velocidad y determinismo
+    # Expresión regular robusta para metadatos frontmatter (monolínea o multilínea indentada)
+    RE_YAML_FIELD = re.compile(
+        r"^(?P<key>title|shortTitle|intro|MetaDescription|description):\s*"
+        r"(?:(?P<block>[>|][-+]?)\s*\n(?P<multiline>(?:[ \t]+.+\n?)+)|(?P<inline>.+))$",
+        re.MULTILINE,
+    )
+    RE_AUTOTITLE_LINK = re.compile(r"\[AUTOTITLE\]\((?:https://docs\.github\.com/en)?(/[^)#\s]+)(#[^)\s]+)?\)")
+    RE_HTML_ANCHOR = re.compile(r"<a\s+(?:name|id)=[\"'][^\"']*[\"']\s*>\s*</a>", re.IGNORECASE)
+    RE_DETAILS_TAG = re.compile(r"</?details[^>]*>", re.IGNORECASE)
+    RE_SUMMARY_TAG = re.compile(
+        r"<summary>\s*(?:<strong>)?(.*?)(?:</strong>)?\s*</summary>",
+        re.IGNORECASE | re.DOTALL,
+    )
+
     RE_LIQUID_DATA = re.compile(
         r"\{%\s*data\s+variables\.([a-zA-Z0-9_.-]+)\s*%\}"
     )
@@ -197,48 +264,71 @@ class ContentCanonicalizer:
     RE_MULTI_BLANK_LINES = re.compile(r"\n{3,}")
 
     @classmethod
+    def _extract_frontmatter_metadata(cls, fm_content: str) -> List[str]:
+        summary: List[str] = []
+        for match in cls.RE_YAML_FIELD.finditer(fm_content):
+            key = match.group("key")
+            if match.group("multiline"):
+                raw_lines = [
+                    line.strip()
+                    for line in match.group("multiline").splitlines()
+                    if line.strip()
+                ]
+                val = " ".join(raw_lines)
+            else:
+                val = (match.group("inline") or "").strip().strip("'\"")
+            if val and val not in (">-", "|", ">", "|-", ">+", "|+"):
+                summary.append(f"**{key}**: {val}")
+        return summary
+
+    @staticmethod
+    def _resolve_autotitle(match: re.Match) -> str:
+        rel_path = match.group(1)
+        anchor = match.group(2) or ""
+        slug_part = rel_path.rstrip("/").split("/")[-1]
+        readable_title = slug_part.replace("-", " ").title()
+        full_url = f"https://docs.github.com/en{rel_path}{anchor}"
+        return f"[{readable_title}]({full_url})"
+
+    @classmethod
     def normalize_markdown(cls, raw_md: str) -> str:
         """Limpia un archivo Markdown crudo de GitHub resolviendo variables y macros."""
         text = raw_md.replace("\r\n", "\n").replace("\r", "\n")
 
-        # 1. Extraer metadatos relevantes del frontmatter YAML (title, description, intro)
-        # ignorando campos volátiles de auditoría interna (DateApproved, ContentId, etc.).
+        # 1. Extracción de Frontmatter
         frontmatter_summary = []
         fm_match = cls.RE_FRONTMATTER.search(text)
         if fm_match:
             fm_content = fm_match.group(1)
-            for key in ("title", "shortTitle", "intro", "description", "MetaDescription"):
-                m = re.search(rf"^{key}:\s*(.+)$", fm_content, re.MULTILINE)
-                if m:
-                    val = m.group(1).strip().strip("'\"")
-                    frontmatter_summary.append(f"**{key}**: {val}")
+            frontmatter_summary = cls._extract_frontmatter_metadata(fm_content)
             text = text[fm_match.end():]
-
         if frontmatter_summary:
             text = "\n".join(frontmatter_summary) + "\n\n" + text
 
-        # 2. Eliminar comentarios HTML
+        # 2. Eliminación de comentarios HTML
         text = cls.RE_HTML_COMMENTS.sub("", text)
 
-        # 3. Resolver variables Liquid conocidas de manera determinista
+        # 3. Resolución de variables Liquid conocidas
         def _replace_liquid_var(match: re.Match) -> str:
             var_key = match.group(1).strip()
             return LIQUID_VARIABLES_MAP.get(var_key, f"[{var_key}]")
 
         text = cls.RE_LIQUID_DATA.sub(_replace_liquid_var, text)
-
-        # 4. Preservar pestañas de lenguaje codetab como encabezados Markdown
         text = cls.RE_CODETAB.sub(r"\n**Language (\1):**\n", text)
-
-        # 5. Eliminar el resto de etiquetas Liquid de control (codetabs, raw, etc.)
         text = cls.RE_LIQUID_GENERIC.sub("", text)
 
-        # 6. Normalizar macros propios de microsoft/vscode-docs
+        # 4. Normalización de macros VS Code
         text = cls.RE_VSCODE_KB.sub(r"`Shortcut: \1`", text)
         text = cls.RE_VSCODE_KBSTYLE.sub(r"`\1`", text)
         text = cls.RE_VSCODE_SETTING.sub(r"`\1`", text)
 
-        # 7. Normalización Unicode NFKC y limpieza de espacios en blanco
+        # 5. Resolución de enlaces AUTOTITLE y etiquetas HTML específicas
+        text = cls.RE_AUTOTITLE_LINK.sub(cls._resolve_autotitle, text)
+        text = cls.RE_HTML_ANCHOR.sub("", text)
+        text = cls.RE_DETAILS_TAG.sub("", text)
+        text = cls.RE_SUMMARY_TAG.sub(r"\n**\1**\n", text)
+
+        # 6. Normalización Unicode NFKC y espacios
         text = unicodedata.normalize("NFKC", text)
         text = cls.RE_TRAILING_SPACES.sub("", text)
         text = cls.RE_MULTI_BLANK_LINES.sub("\n\n", text)
@@ -358,6 +448,26 @@ class ContentCanonicalizer:
         joined = unicodedata.normalize("NFKC", joined)
         return cls.RE_MULTI_BLANK_LINES.sub("\n\n", joined).strip() + "\n"
 
+    @classmethod
+    def normalize_dts(cls, raw_dts: str, file_path: str) -> str:
+        """Normaliza archivos de definición TypeScript (.d.ts) de APIs propuestas de VS Code."""
+        text = raw_dts.replace("\r\n", "\n").replace("\r", "\n")
+        text = unicodedata.normalize("NFKC", text)
+        text = cls.RE_TRAILING_SPACES.sub("", text)
+        text = cls.RE_MULTI_BLANK_LINES.sub("\n\n", text).strip()
+        header = f"# VS Code Proposed AI API Definition: `{file_path}`\n\n"
+        return f"{header}```typescript\n{text}\n```\n"
+
+    @classmethod
+    def normalize_json_schema(cls, raw_json: str, title: str) -> str:
+        """Normaliza esquemas JSON de forma determinista ordenando claves."""
+        try:
+            parsed = json.loads(raw_json)
+            formatted = json.dumps(parsed, indent=2, sort_keys=True, ensure_ascii=False)
+        except Exception:
+            formatted = raw_json.strip()
+        return f"# Official JSON Schema: {title}\n\n```json\n{formatted}\n```\n"
+
     @staticmethod
     def compute_sha256(clean_text: str) -> str:
         """Calcula el hash criptográfico SHA-256 sobre el texto canónico en UTF-8."""
@@ -414,6 +524,8 @@ class CopilotDocumentationSynchronizer:
         self.manifest: Dict[str, DocumentRecord] = self._load_manifest()
         self.dirty_bundles: Set[str] = set()
         self.change_reports: List[str] = []
+        self.modified_records: List[Dict[str, str]] = []
+        self.manifest_dirty: bool = False
 
     def _load_manifest(self) -> Dict[str, DocumentRecord]:
         if not self.manifest_path.exists():
@@ -446,7 +558,7 @@ class CopilotDocumentationSynchronizer:
             logger.warning("Manifiesto previo inválido, iniciando limpio: %s", exc)
             return {}
 
-    def _save_manifest(self) -> None:
+    def _save_manifest(self) -> bool:
         payload = {
             "schema_version": "2.1",
             "last_sync_utc": datetime.now(timezone.utc).isoformat(),
@@ -458,6 +570,8 @@ class CopilotDocumentationSynchronizer:
         self.manifest_path.write_text(
             json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8"
         )
+        self.manifest_dirty = False
+        return True
 
     def _resolve_bundle(self, path: str, router: Dict[str, str]) -> str:
         # Ordenar prefijos de mayor a menor especificidad
@@ -467,13 +581,20 @@ class CopilotDocumentationSynchronizer:
         return "05_Workflows_Planning_And_Remote_AHP"
 
     def _build_canonical_web_url(self, rule: RepoTreeRule, file_path: str) -> str:
-        if file_path.startswith(".github/"):
+        if (
+            file_path.startswith(".github/")
+            or file_path.endswith(".d.ts")
+            or file_path.endswith(".json")
+            or rule.web_base_url.startswith("https://github.com/")
+        ):
             return f"https://github.com/{rule.owner}/{rule.repo}/blob/{rule.branch}/{file_path}"
         clean_path = re.sub(r"\.md$", "", file_path)
         if rule.owner == "github" and clean_path.startswith("content/"):
             clean_path = clean_path[len("content/"):]
         if clean_path.endswith("/index"):
             clean_path = clean_path[: -len("/index")]
+        if rule.repo == "vscode-docs" and clean_path.startswith("release-notes/"):
+            clean_path = "updates/" + clean_path[len("release-notes/"):]
         return urljoin(rule.web_base_url, clean_path)
 
     def _get_safe_clean_filename(self, doc_id: str) -> str:
@@ -493,11 +614,18 @@ class CopilotDocumentationSynchronizer:
                 logger.warning("No se pudo eliminar archivo local %s: %s", abs_clean_path, e)
 
         self.dirty_bundles.add(record.bundle_name)
+        self.manifest_dirty = True
         self.change_reports.append(
             f"### [DOCUMENTO ELIMINADO UPSTREAM] `{doc_id}`\n"
             f"- **URL Canónica previa**: {record.canonical_web_url}\n"
             f"- **Último Hash**: `{record.content_sha256}`\n"
         )
+        self.modified_records.append({
+            "action": "DELETED",
+            "doc_id": doc_id,
+            "web_url": record.canonical_web_url,
+            "diff_preview": "Documento eliminado en upstream.",
+        })
         del self.manifest[doc_id]
 
     def sync_github_repositories(
@@ -512,8 +640,14 @@ class CopilotDocumentationSynchronizer:
         added, updated, skipped, deleted = 0, 0, 0, 0
 
         for rule in REPO_RULES:
-            tree_url = f"https://api.github.com/repos/{rule.owner}/{rule.repo}/git/trees/{rule.branch}?recursive=1"
-            logger.info("Consultando árbol Git de %s/%s...", rule.owner, rule.repo)
+            if rule.tree_subpath:
+                subpath = rule.tree_subpath.strip("/")
+                tree_url = f"https://api.github.com/repos/{rule.owner}/{rule.repo}/git/trees/{rule.branch}:{subpath}?recursive=1"
+                logger.info("Consultando subárbol Git de %s/%s (%s)...", rule.owner, rule.repo, subpath)
+            else:
+                subpath = ""
+                tree_url = f"https://api.github.com/repos/{rule.owner}/{rule.repo}/git/trees/{rule.branch}?recursive=1"
+                logger.info("Consultando árbol Git de %s/%s...", rule.owner, rule.repo)
             try:
                 resp = self.session.get(tree_url, timeout=30)
                 if resp.status_code in (403, 429):
@@ -531,10 +665,17 @@ class CopilotDocumentationSynchronizer:
                         reset_str,
                     )
                 resp.raise_for_status()
-                tree_data = resp.json().get("tree", [])
+                tree_resp_json = resp.json()
+                if tree_resp_json.get("truncated"):
+                    logger.warning("El árbol Git devuelto para %s/%s está truncado por superar el límite de GitHub.", rule.owner, rule.repo)
+                tree_data = tree_resp_json.get("tree", [])
             except Exception as exc:
                 logger.error("Error al obtener árbol Git de %s/%s: %s", rule.owner, rule.repo, exc)
                 continue
+
+            if subpath:
+                for node in tree_data:
+                    node["path"] = f"{subpath}/{node['path']}"
 
             # Seleccionar archivos relevantes según prefijos
             matched_nodes = []
@@ -544,8 +685,13 @@ class CopilotDocumentationSynchronizer:
                 if node.get("type") != "blob":
                     continue
                 path: str = node.get("path", "")
-                if not path.endswith(".md"):
+                ext_match = any(path.endswith(ext) for ext in rule.allowed_extensions)
+                if not ext_match:
                     continue
+
+                if rule.file_regex_filter:
+                    if not re.search(rule.file_regex_filter, path):
+                        continue
 
                 if any(path.startswith(p) for p in rule.path_prefixes):
                     matched_nodes.append(node)
@@ -607,7 +753,12 @@ class CopilotDocumentationSynchronizer:
                     raw_url = f"https://raw.githubusercontent.com/{rule.owner}/{rule.repo}/{rule.branch}/{path_item}"
                     raw_resp = self.session.get(raw_url, timeout=30)
                     raw_resp.raise_for_status()
-                    clean_text = ContentCanonicalizer.normalize_markdown(raw_resp.text)
+                    if path_item.endswith(".d.ts"):
+                        clean_text = ContentCanonicalizer.normalize_dts(raw_resp.text, path_item)
+                    elif path_item.endswith(".json"):
+                        clean_text = ContentCanonicalizer.normalize_json_schema(raw_resp.text, path_item)
+                    else:
+                        clean_text = ContentCanonicalizer.normalize_markdown(raw_resp.text)
                     new_sha = ContentCanonicalizer.compute_sha256(clean_text)
                     return item, raw_url, clean_text, new_sha
 
@@ -622,11 +773,12 @@ class CopilotDocumentationSynchronizer:
 
                             if (
                                 existing_item
-                                and not force_recheck
                                 and existing_item.content_sha256 == new_sha256
                                 and (self.base_dir / existing_item.local_clean_path).exists()
                             ):
-                                existing_item.git_blob_sha = git_sha_item
+                                if existing_item.git_blob_sha != git_sha_item:
+                                    existing_item.git_blob_sha = git_sha_item
+                                    self.manifest_dirty = True
                                 skipped += 1
                                 continue
 
@@ -678,6 +830,8 @@ class CopilotDocumentationSynchronizer:
 
                 if src_type == "rss":
                     clean_text = ContentCanonicalizer.normalize_rss_feed(resp.text)
+                elif src_type == "json":
+                    clean_text = ContentCanonicalizer.normalize_json_schema(resp.text, src["id"])
                 else:
                     clean_text = ContentCanonicalizer.normalize_html_to_text(resp.text)
 
@@ -686,7 +840,6 @@ class CopilotDocumentationSynchronizer:
 
                 if (
                     existing
-                    and not force_recheck
                     and existing.content_sha256 == new_sha256
                     and (self.base_dir / existing.local_clean_path).exists()
                 ):
@@ -740,8 +893,8 @@ class CopilotDocumentationSynchronizer:
                     lineterm="",
                 )
             )
+            diff_snippet = "\n".join(diff_lines[:120]) if diff_lines else ""
             if diff_lines:
-                diff_snippet = "\n".join(diff_lines[:120])
                 self.change_reports.append(
                     f"### [MODIFICADO] `{doc_id}`\n"
                     f"- **URL Canónica**: {web_url}\n"
@@ -749,6 +902,12 @@ class CopilotDocumentationSynchronizer:
                     f"- **Hash Nuevo**: `{new_sha256}`\n\n"
                     f"```diff\n{diff_snippet}\n```\n"
                 )
+            self.modified_records.append({
+                "action": "MODIFIED",
+                "doc_id": doc_id,
+                "web_url": web_url,
+                "diff_preview": diff_snippet if diff_lines else "Sin preview de diff.",
+            })
             logger.info("ACTUALIZADO: %s (Hash: %s)", doc_id, new_sha256[:10])
         else:
             self.change_reports.append(
@@ -756,6 +915,12 @@ class CopilotDocumentationSynchronizer:
                 f"- **URL Canónica**: {web_url}\n"
                 f"- **Hash Inicial**: `{new_sha256}`\n"
             )
+            self.modified_records.append({
+                "action": "ADDED",
+                "doc_id": doc_id,
+                "web_url": web_url,
+                "diff_preview": f"Nuevo recurso detectado con {len(clean_text.split())} palabras.",
+            })
             logger.info("NUEVO: %s (Hash: %s)", doc_id, new_sha256[:10])
 
         abs_clean_path.write_text(clean_text, encoding="utf-8")
@@ -773,16 +938,20 @@ class CopilotDocumentationSynchronizer:
             local_clean_path=str(rel_clean_path).replace("\\", "/"),
         )
         self.dirty_bundles.add(bundle_name)
+        self.manifest_dirty = True
 
     def build_notebooklm_bundles(self, rebuild_all: bool = False) -> List[Path]:
         """
         Empaqueta los documentos limpios en Compendios Maestros (.md) optimizados
         para Google NotebookLM, verificando el límite de 500,000 palabras por archivo.
         """
-        MAX_WORDS_PER_BUNDLE = 450_000  # Margen de seguridad bajo el tope de 500,000
+        MAX_WORDS_PER_BUNDLE = 450_000
         bundles_map: Dict[str, List[DocumentRecord]] = {}
 
         for record in self.manifest.values():
+            # Filtro de documentos stub o sin sustancia técnica (< 25 palabras)
+            if record.word_count < 25:
+                continue
             bundles_map.setdefault(record.bundle_name, []).append(record)
 
         generated_files: List[Path] = []
@@ -880,6 +1049,22 @@ class CopilotDocumentationSynchronizer:
         )
         logger.info("Reporte de diferencias guardado en: %s", report_path)
         return report_path
+
+    def export_dirty_bundles_metadata(self, generated_files: List[Path]) -> Path:
+        """Exporta metadatos JSON de los compendios modificados para automatizaciones externas como NotebookLM."""
+        metadata_path = self.base_dir / "dirty_bundles.json"
+        payload = {
+            "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+            "has_changes": len(generated_files) > 0,
+            "dirty_bundles_count": len(generated_files),
+            "dirty_bundles": [str(p.resolve()).replace("\\", "/") for p in generated_files],
+            "modified_records_count": len(self.modified_records),
+        }
+        metadata_path.write_text(
+            json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
+        logger.info("Metadatos de compendios modificados exportados en: %s", metadata_path)
+        return metadata_path
 
     def verify_integrity(self) -> bool:
         """Verifica la integridad de los hashes almacenados contra los archivos locales."""
@@ -985,9 +1170,39 @@ def main() -> int:
     total_skip = g_skip + w_skip
     total_del = g_del
 
-    syncer.build_notebooklm_bundles(rebuild_all=args.rebuild_all_bundles)
-    syncer._save_manifest()
-    syncer.write_audit_report(total_add, total_upd, total_skip, total_del)
+    generated_bundles: List[Path] = []
+    # Guardar manifiesto ÚNICAMENTE si hubo modificaciones de contenido o de hashes git
+    if total_add > 0 or total_upd > 0 or total_del > 0 or syncer.manifest_dirty or args.rebuild_all_bundles:
+        generated_bundles = syncer.build_notebooklm_bundles(rebuild_all=args.rebuild_all_bundles)
+        syncer._save_manifest()
+        syncer.write_audit_report(total_add, total_upd, total_skip, total_del)
+    else:
+        logger.info("Sin cambios detectados. No se modifica state_manifest.json ni se recompilan bundles.")
+
+    syncer.export_dirty_bundles_metadata(generated_bundles)
+
+    if syncer.modified_records:
+        try:
+            from scripts.webhook_notifier import WebhookNotifier
+        except ImportError:
+            try:
+                from webhook_notifier import WebhookNotifier
+            except ImportError:
+                WebhookNotifier = None
+
+        if WebhookNotifier:
+            try:
+                notifier = WebhookNotifier()
+                notifier.notify_changes(
+                    added=total_add,
+                    updated=total_upd,
+                    removed=total_del,
+                    skipped=total_skip,
+                    dirty_bundles=list(syncer.dirty_bundles),
+                    modified_records=syncer.modified_records,
+                )
+            except Exception as ex:
+                logger.warning("No se pudo enviar notificación de webhook: %s", ex)
 
     logger.info(
         "Resumen Final -> Nuevos: %d | Actualizados: %d | Sin Cambios (Hash Match): %d | Eliminados: %d",

@@ -209,6 +209,46 @@ La sincronización ya ha sido programada como una **Tarea de Windows** en segund
 
 ---
 
+## 🔌 Servidor MCP y CLI Scaffolder de Agentes
+
+### 1. Servidor Model Context Protocol (MCP)
+El proyecto incluye un servidor MCP nativo sobre stdio ([`scripts/copilot_mcp_server.py`](scripts/copilot_mcp_server.py)) compatible con VS Code Copilot, Claude Desktop, Cursor y cualquier cliente MCP.
+
+**Herramientas expuestas:**
+- `search_copilot_docs(query, bundle, limit)`: Búsqueda semántica instantánea en las más de 1.800 fuentes oficiales indexadas.
+- `get_copilot_document(doc_id)`: Recuperación del documento canónico limpio con URL y SHA-256.
+- `list_copilot_bundles()`: Listado de compendios NotebookLM y estado de volumen de palabras.
+- `scaffold_agent_asset(asset_type, name)`: Generación en vivo de plantillas arquitectónicas para agentes.
+
+**Configuración en `.mcp.json` / `.vscode/mcp.json`:**
+```json
+{
+  "mcpServers": {
+    "copilot-rag": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["scripts/copilot_mcp_server.py"]
+    }
+  }
+}
+```
+
+### 2. Scaffolder CLI de Arquitectura de Agentes
+Genera instantáneamente boilerplates verificados y conformes con las especificaciones oficiales:
+
+```bash
+# Generar una habilidad de agente
+python scripts/copilot_scaffold.py --type skill --name "performance-auditor"
+
+# Generar un custom agent completo
+python scripts/copilot_scaffold.py --type agent --name "architecture-guardian"
+
+# Generar la suite completa (skill + agent + hooks + mcp + plugin)
+python scripts/copilot_scaffold.py --type all --name "fullstack-agent"
+```
+
+---
+
 ## ⚙️ Automatización en CI/CD (GitHub Actions)
 
 El archivo [`.github/workflows/sync-copilot-rag.yml`](.github/workflows/sync-copilot-rag.yml) automatiza el proceso:

@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "copilot-rag": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["scripts/copilot_mcp_server.py"]
+    }
+  }
+}

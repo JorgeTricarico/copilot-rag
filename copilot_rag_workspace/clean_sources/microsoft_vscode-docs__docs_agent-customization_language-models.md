@@ -1,4 +1,4 @@
-**MetaDescription**: Configure chat and inline models in VS Code, adjust thinking effort, and use your own API key.
+**MetaDescription**: Configure chat, inline, and voice models in VS Code. Use your own API key or run models on your device.
 
 # AI language models in VS Code
 
@@ -8,24 +8,20 @@ For background on how language models work, their characteristics, and how to ch
 
 ## Change the model for chat
 
+Different models have different strengths. Use a fast model for quick edits and simple questions, and a reasoning model for complex refactoring, architectural decisions, or multi-step tasks. Depending on the [harness](/docs/agents/concepts/agent-harnesses.md) you are using, the list of available models might differ.
+
 Use the language model picker in the chat input field to change the model for chat conversations and code editing.
 
 ![Screenshot that shows the model picker in the Chat view.](images/language-models/model-dropdown-change-model-v2.png)
 
-Different models have different strengths. Use a fast model for quick edits and simple questions, and a reasoning model for complex refactoring, architectural decisions, or multi-step tasks. Depending on the [harness](/docs/agents/concepts/agent-harnesses.md) you are using, the list of available models might differ.
+If the language model picker only shows **Auto**, verify that the workspace is trusted. Learn more about [workspace trust and restricted mode](/docs/editing/workspaces/workspace-trust.md#restricted-mode).
 
 You can further extend the list of available models by [using your own language model API key](#bring-your-own-language-model-key).
 
 > [!NOTE]
-> In an untrusted workspace in [Restricted Mode](/docs/editing/workspaces/workspace-trust.md#restricted-mode), the chat model picker only shows **Auto**. Trust the workspace to restore the full model list.
+> If you are a Copilot Business or Copilot Enterprise user, your administrator needs to enable certain models for your organization by opting in to `Editor Preview Features` in the [Copilot policy settings](https://docs.github.com/en/enterprise-cloud@latest/copilot/managing-copilot/managing-github-copilot-in-your-organization/managing-policies-for-copilot-in-your-organization#enabling-copilot-features-in-your-organization) on GitHub.com.
 
-> [!TIP]
-> Install the AI Toolkit extension to add more language models to enhance GitHub Copilot capabilities.
->
-> For more information, see [Change the chat model](https://docs.github.com/en/copilot/how-tos/use-ai-models/change-the-chat-model#adding-more-models).
-
-> [!NOTE]
-> If you are a Copilot Business or Enterprise user, your administrator needs to enable certain models for your organization by opting in to `Editor Preview Features` in the [Copilot policy settings](https://docs.github.com/en/enterprise-cloud@latest/copilot/managing-copilot/managing-github-copilot-in-your-organization/managing-policies-for-copilot-in-your-organization#enabling-copilot-features-in-your-organization) on GitHub.com.
+To compare solutions to the same coding task, use [model comparison (Preview)](/docs/agents/run/compare-models.md) in the Agents window. Run one prompt with multiple models or harnesses, then review the results side by side.
 
 ## Configure thinking effort
 
@@ -69,6 +65,113 @@ Your organization can set a starting tier for new chats. The managed tier appear
 You can see which model is used for generating a response by hovering over the chat response.
 
 ![Screenshot of a chat response, showing the selected model on hover.](images/language-models/chat-response-selected-model.png)
+
+## Use on-device models
+
+`feature(on-device-models)`
+
+On-device models let you run a coding model provided by Copilot, currently MAI Code 1.1 Flash, directly on your device in Copilot harness sessions. VS Code uses [llama.cpp](https://github.com/ggml-org/llama.cpp) to serve the model on your device. On-device models bring that capability to Copilot in VS Code, without you having to find, download, and serve a model yourself.
+
+You can use the local model alongside cloud models. [Auto-model selection](#use-auto-model-selection) can route suitable requests to the local model, with fallback to a cloud model.
+
+On-device models differ from [BYOK local models](#bring-your-own-language-model-key). Copilot provides and manages on-device models, and they require GitHub sign-in. BYOK local models, such as Ollama, work without sign-in through a provider that you configure.
+
+<video src="images/language-models/on-device-model.mp4" title="Video showing MAI Code 1.1 Flash downloaded from the On This Device tab in the model picker, loaded, and answering a chat prompt on the device." autoplay loop controls muted></video>
+
+### On-device model requirements
+
+* Sign in to GitHub with Copilot access. If you use Copilot Business or Enterprise, your administrator must enable `Editor Preview Features` in the [Copilot policy settings](https://docs.github.com/en/enterprise-cloud@latest/copilot/managing-copilot/managing-github-copilot-in-your-organization/managing-policies-for-copilot-in-your-organization#enabling-copilot-features-in-your-organization).
+
+* Use a [Copilot harness session](/docs/agents/run/agent-harnesses.md) that runs on your local machine in the Chat view or [Agents window](/docs/agents/run/agents-window.md).
+
+* Use an NVIDIA GPU with 96 GB or more of GPU memory (VRAM). Devices with unified memory, memory that the GPU shares with the system, count toward this requirement.
+
+* Have about 55 GB of free disk space for MAI Code 1.1 Flash. The download is 52.8 GB, and setup requires 54.8 GB of free space. The details page in the model picker shows the exact size for your device.
+
+* Install a llama.cpp build that supports the model. VS Code does not install llama.cpp. Get a build from the [llama.cpp releases page](https://github.com/ggml-org/llama.cpp/releases). MAI Code 1.1 Flash requires llama.cpp b11658 or later. If the build is too old, the model picker shows notification that a newer version is needed.
+
+### Set up an on-device model
+
+1. Install a llama.cpp build for your platform and GPU.
+
+1. Set ``chat.copilot.localModel.llamaServerPath`` to the absolute path of the `llama-server` executable. This setting is machine-scoped. VS Code only runs the `llama-server` executable at this path.
+
+1. Enable ``chat.copilot.localModel.enabled`` `feature(on-device-models)`. When you change this setting, the local Copilot runtime restarts after active responses finish.
+
+1. In a Copilot harness session, open the model picker and select the **On This Device** tab. Models that are not downloaded appear dimmed with a **Download** action.
+
+    ![Screenshot showing the On This Device tab in the model picker with MAI Code 1.1 Flash and a Download action.](images/language-models/on-device-model-picker.png)
+
+1. Select the model name to open its details, review the download size, source (Azure ML registry), and license, and then select **Download**.
+
+    ![Screenshot showing the details page for MAI Code 1.1 Flash with the download size, source, license, and a Download button.](images/language-models/on-device-model-download-details.png)
+
+1. Track progress in the notice above the chat input. You can keep using Copilot while the model downloads, and select **Pause** to pause the download.
+
+    ![Screenshot showing a download progress notice for MAI Code 1.1 Flash above the chat input with a Pause button.](images/language-models/on-device-model-download-progress.png)
+
+VS Code stores models in `~/.copilot/azureml-models` and shares them with other Copilot apps, such as Copilot CLI.
+
+### Use an on-device model in chat
+
+After the download finishes, VS Code verifies the files and loads the model. Loading can take a few minutes, and the notice above the chat input shows the progress, with a **Cancel** action. When the model is ready, select **Switch to MAI Code 1.1 Flash** in the notice, or select the model from the **On This Device** tab.
+
+![Screenshot showing a notice above the chat input that says MAI Code 1.1 Flash is ready on this device, with Not Now and Switch to MAI Code 1.1 Flash buttons.](images/language-models/on-device-model-ready.png)
+
+When you select an on-device model, the model picker and the footer of each response show the model name followed by **On-device**. On-device responses don't use AI credits, and the response footer shows **0 credits**.
+
+![Screenshot showing a chat response labeled MAI Code 1.1 Flash On-device with 0 credits, and the model picker showing the on-device model.](images/language-models/on-device-model-response.png)
+
+To change how the model runs, hover over the model in the **On This Device** tab and select **Details**. On the details page, you can:
+
+* Choose the **Effort Level**: **Low**, **Medium**, or **High**.
+* Choose the **Context** size. The available sizes depend on the GPU memory of your device, and the page shows the estimated memory for the selected size. Changing the context size reloads the model after running responses finish.
+* Stop or remove the model by using the icons at the top of the page.
+
+![Screenshot showing the details page of an installed on-device model with Effort Level, Context, and Use in Auto options.](images/language-models/on-device-model-details.png)
+
+### Use an on-device model with auto-model selection
+
+[Auto-model selection](#use-auto-model-selection) can route requests to the active on-device model, with cloud fallback. If the on-device model can't respond, model selection falls back to a cloud model before the first output. The change takes effect immediately.
+
+To enable the local model for auto-model selection, enable **Use in Auto** on the model's details page, or enable ``chat.copilot.localModel.useInAuto``.
+
+Auto-model selection chooses the appropriate model for each request, so many requests continue to use cloud models. Responses that use the local model are labeled **On-device**. If a model is too slow for auto-model selection on your device, it shows **Too slow for Auto**. You can still select the model directly.
+
+> [!CAUTION]
+> Local models might not use the same safety filters as GitHub Copilot-provided cloud models and might be more susceptible to malicious instructions, especially when [actions are automatically approved](/docs/agents/run/approvals.md).
+
+### Manage on-device models
+
+Use these commands from the Command Palette:
+
+* **Chat: Set Up On-Device Model...**
+* **Chat: Make On-Device Model Active...**
+* **Chat: Start On-Device Model**
+* **Chat: Stop On-Device Model**
+* **Chat: Update On-Device Model**
+* **Chat: Resume On-Device Model Download**
+* **Chat: Cancel On-Device Model Download**
+* **Chat: Retry On-Device Model Setup**
+* **Chat: Remove On-Device Model...**
+
+Only one on-device model is loaded at a time. Loading another model unloads the active model. Removing a model asks for confirmation.
+
+### Troubleshoot on-device models
+
+If a model can't be set up or loaded, the **On This Device** tab shows a status, and the notice above the chat input offers actions such as **Get llama.cpp**, **Open Settings**, and **Retry**.
+
+| Status | What to do |
+|--------|------------|
+| **Needs llama.cpp** | Install llama.cpp and set ``chat.copilot.localModel.llamaServerPath`` to its `llama-server` executable. |
+| **llama.cpp is too old** or **Needs a newer llama.cpp** | Install a newer llama.cpp release, update the setting, and select **Retry**. |
+| **GPU driver needed** | Install or update the NVIDIA GPU driver. |
+| **Not enough GPU memory** | Choose a smaller context size, or use a device with more GPU memory. |
+| **GPU memory busy** | Close other apps that use the GPU, and then select **Retry**. |
+| **Running in another window** | The model is already running in another VS Code window. Use it there or stop it first. |
+| **Not enough disk space** | Free up disk space, and then resume the download. |
+| **Download interrupted** | Check your network connection, and then resume the download. |
+| **Blocked by policy** | Your organization's policy blocks the llama.cpp executable. Contact your administrator. |
 
 ## Manage language models
 
@@ -352,7 +455,7 @@ To update the details of a model provider you configured previously:
 
 ## Configure models for other features
 
-In addition to the main chat model, you can configure which model is used for inline chat, inline suggestions, and background utility tasks.
+In addition to the main chat model, you can configure which model is used for inline chat, inline suggestions, Voice Mode, and background utility tasks.
 
 ### Change the model for inline chat
 
@@ -374,6 +477,10 @@ To change the language model that is used for generating inline suggestions in t
 > The list of available models might vary and change over time. When no alternative models are available, the option to change the model is not available.
 >
 > If you are a Copilot Business or Enterprise user, your Administrator needs to enable certain models for your organization by opting in to `Editor Preview Features` in the [Copilot policy settings](https://docs.github.com/en/enterprise-cloud@latest/copilot/managing-copilot/managing-github-copilot-in-your-organization/managing-policies-for-copilot-in-your-organization#enabling-copilot-features-in-your-organization) on GitHub.com.
+
+### Change the model for Voice Mode
+
+To use an OpenAI Live model for spoken agent conversations, [configure Voice Mode with your own OpenAI key](/docs/configure/accessibility/voice.md#use-your-own-openai-key). `feature(voice-mode)` The voice model handles the spoken conversation separately from the model selected for coding tasks in chat.
 
 ### Change the model for utility tasks
 
@@ -446,12 +553,13 @@ If you are a Copilot Business or Enterprise user, your organization administrato
 
 ### Can I use locally hosted models with Copilot in VS Code?
 
-You can use locally hosted models in chat by using [bring your own model key](#bring-your-own-language-model-key) (BYOK) and using a model provider that supports connecting to a local model. You have different options to connect to a local model:
+You have two options to use locally hosted models in chat:
 
-* Use a built-in model provider that supports local models
-* Install an extension from the [[product.prodname_vs_marketplace]](https://marketplace.visualstudio.com/search?term=tag%3Alanguage-models&target=VSCode&category=All%20categories&sortBy=Relevance), for example, [AI Toolkit for VS Code with Foundry Local](https://aka.ms/AIToolkit)
+* **BYOK local models**: Use [bring your own model key](#bring-your-own-language-model-key) (BYOK) with a model provider that supports connecting to a local model. You can use a built-in model provider that supports local models or install an extension from the [[product.prodname_vs_marketplace]](https://marketplace.visualstudio.com/search?term=tag%3Alanguage-models&target=VSCode&category=All%20categories&sortBy=Relevance), such as [AI Toolkit for VS Code with Foundry Local](https://aka.ms/AIToolkit). BYOK local models work without a GitHub account, a Copilot plan, or an internet connection.
 
-Locally hosted models work without a GitHub account, without a Copilot plan, and without an internet connection. To get the full set of utility features (title generation, commit messages, and others), configure ``chat.utilityModel`` and ``chat.utilitySmallModel`` to point to a local model.
+* **On-device models (Experimental)**: Use a [Copilot-managed model](#use-on-device-models-experimental) that runs on supported NVIDIA hardware. On-device models require GitHub sign-in.
+
+To get the full set of utility features with a BYOK local model, such as title generation and commit messages, configure ``chat.utilityModel`` and ``chat.utilitySmallModel`` to point to the local model.
 
 Currently, you cannot connect to a local model for inline suggestions. VS Code provides an extension API [`InlineCompletionItemProvider`](/api/references/vscode-api.md#InlineCompletionItemProvider) that enables extensions to contribute a custom completion provider. You can get started with our [Inline Completions sample](https://github.com/microsoft/vscode-extension-samples/blob/main/inline-completions).
 
@@ -460,7 +568,7 @@ Currently, you cannot connect to a local model for inline suggestions. VS Code p
 
 ### Can I use a local model without an internet connection?
 
-Yes, you can use a local model completely offline. Add a local model provider such as Ollama by using the **Chat: Manage Language Models** command, select the model in chat, and start using it. To also enable utility features like title generation and commit messages, set ``chat.utilityModel`` and ``chat.utilitySmallModel`` to a local model. Features that depend on the GitHub Copilot service, such as semantic search, inline suggestions, and embeddings, are not available offline.
+Yes, you can use a BYOK local model completely offline. Add a local model provider such as Ollama by using the **Chat: Manage Language Models** command, select the model in chat, and start using it. To also enable utility features like title generation and commit messages, set ``chat.utilityModel`` and ``chat.utilitySmallModel`` to a local model. Features that depend on the GitHub Copilot service, such as semantic search, inline suggestions, and embeddings, are not available offline.
 
 ### Can I use a local model without a Copilot plan?
 

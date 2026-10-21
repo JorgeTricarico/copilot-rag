@@ -58,6 +58,9 @@ VS Code limits the potential impact of agent actions by controlling their scope 
 
 ### Approvals and review
 
+> [!NOTE]
+> Claude and Codex harnesses cannot enforce Copilot enterprise-managed settings. They are disabled when [enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), including managed permission or sandbox settings. Contact the IT team that deployed the settings to discuss approved harnesses.
+
 VS Code uses a permission-based security model where you maintain control over potentially risky operations.
 
 * **Permission levels**: In a Copilot harness session, use the [permissions picker](/docs/agents/run/approvals.md#permission-levels) to choose how tool calls are approved. **Manual permissions** uses your configured approval settings. **Assisted permissions** `feature(assisted-permissions)` uses an LLM judge to evaluate each tool call and asks for your approval when the judge does not approve it. **Allow all** auto-approves all tool calls. **Autopilot** is an agent mode that auto-approves all tools and drives the agent to continue working until the task is complete. Available controls depend on the harness and code isolation. For Local harness sessions, Autopilot is a permission level instead.
@@ -97,8 +100,7 @@ Learn more about [configuring MCP server sandboxing](/docs/agents/run/manage-mcp
 
 AI-powered development introduces specific security risks. The sections below describe each risk category and how VS Code addresses it. Expand a section for details.
 
-<details>
-<summary>Execution and access</summary>
+**Execution and access**
 
 All development tasks operate with the same permissions as the user.
 
@@ -112,10 +114,7 @@ All development tasks operate with the same permissions as the user.
 
 VS Code addresses these risks through [workspace-limited file access](#scope-and-isolation), [agent sandboxing](#agent-sandboxing), and [trust boundaries](#trust-boundaries) for extensions and MCP servers.
 
-</details>
-
-<details>
-<summary>Supply chain and dependencies</summary>
+**Supply chain and dependencies**
 
 Agentic coding flows rely on various external components that introduce trust and security dependencies beyond your direct control.
 
@@ -127,10 +126,7 @@ Agentic coding flows rely on various external components that introduce trust an
 
 VS Code addresses these risks through [MCP Server Trust](#trust-boundaries), [enterprise MCP registry controls](#enterprise-policies), and [Extension Publisher Trust](#trust-boundaries).
 
-</details>
-
-<details>
-<summary>Automated approval tradeoffs</summary>
+**Automated approval tradeoffs**
 
 Auto-approval features reduce friction but come with security tradeoffs.
 
@@ -150,10 +146,7 @@ VS Code addresses these risks through [configurable approval scopes](#approvals-
 
 Learn more about [managing auto approvals](/docs/agents/run/approvals.md#tool-approval).
 
-</details>
-
-<details>
-<summary>Information exposure</summary>
+**Information exposure**
 
 Your workspace data and development environment information can be exposed through various channels.
 
@@ -167,10 +160,7 @@ Your workspace data and development environment information can be exposed throu
 
 VS Code addresses these risks through [workspace-limited file access](#scope-and-isolation), [the tools picker](#scope-and-isolation), [the secure secrets store](#scope-and-isolation), and [sensitive file protection](/docs/agents/run/review-code-edits.md#edit-sensitive-files).
 
-</details>
-
-<details>
-<summary>Prompt injection</summary>
+**Prompt injection**
 
 AI systems are vulnerable to prompt injection attacks where malicious content in tool outputs influences the AI's behavior and decision-making. This content might be visible to the user, or hidden in comments or obscured through formatting.
 
@@ -183,15 +173,17 @@ For example, an MCP tool or the fetch tool might unsuspectingly retrieve data fr
 
 VS Code addresses these risks through [URL two-step approval](#approvals-and-review), [edit review flow](#approvals-and-review), [agent sandboxing](#agent-sandboxing), and [Workspace Trust](#trust-boundaries) (opening untrusted projects in restricted mode disables agents).
 
-</details>
-
 ## Hooks
 
-[Agent hooks](/docs/agent-customization/hooks.md) enable you to execute custom shell commands at key lifecycle points during agent sessions. Unlike instructions or prompts that guide agent behavior, hooks run deterministically with guaranteed outcomes, making them suitable for enforcing security policies.
+[Agent hooks](/docs/agent-customization/hooks.md) run commands at runtime lifecycle points rather than relying on the model to request them. For Copilot sessions, use the shared runtime's event and output contract.
 
-* **Block dangerous operations**: Use `PreToolUse` hooks to intercept tool invocations and block dangerous commands (for example, `rm -rf` or `DROP TABLE`) before they execute, regardless of how the agent was prompted.
-* **Control approvals**: Hooks can return `allow`, `deny`, or `ask` decisions to automatically approve safe operations or require confirmation for sensitive ones.
-* **Create audit trails**: Log every tool invocation, command execution, or file change for compliance and debugging purposes.
+* **Validate tool calls**: A `preToolUse` hook can inspect a supported tool's arguments and return a denial. A filter that misses a tool or argument shape does not validate that operation.
+* **Control approvals**: Hooks can return `allow`, `deny`, or `ask`. Approval prompts depend on the session mode; do not assume `ask` pauses an unattended session.
+* **Record events**: Log selected, non-sensitive event data. Verify event coverage and failure behavior before treating the log as a complete audit trail.
+
+Hooks are not a substitute for enforced permissions, sandboxing, or enterprise controls. GitHub documents command `preToolUse` failures as denying the tool call, but timeouts as continuing through normal permissions, including for policy hooks. See [hook exit codes](https://docs.github.com/en/copilot/reference/hooks-reference#exit-codes-for-command-hooks). Instructions guide the model and are not an enforcement boundary.
+
+When switching from Local, [migrate and test the hook scripts](/docs/agent-customization/migrate-customizations.md#migrate-hooks), not only their configuration files.
 
 ## Enterprise policies
 

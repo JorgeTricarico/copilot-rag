@@ -194,8 +194,6 @@ If a follow-up doesn't resolve the problem, use [Get an agent back on track](/do
 
 * If you reach an AI credits limit, review [what remains available and when allowances reset](/docs/agents/agent-troubleshooting/faq.md#i-reached-my-inline-suggestions-or-ai-credits-limit).
 
-<a name="optional-continue-in-the-other-surface"></a>
-
 ## Continue in another interface or application
 
 The Agents window and Chat view share your Copilot session, so you can switch between them without losing the conversation.

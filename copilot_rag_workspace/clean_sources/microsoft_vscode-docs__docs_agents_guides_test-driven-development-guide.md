@@ -6,8 +6,7 @@ Test-driven development (TDD) is a software development approach where you write
 
 This guide shows you how to set up an AI-assisted test-driven development workflow in VS Code by using custom agents, handoffs, and custom instructions. The TDD roles and instructions apply to both the Local and Copilot agent harnesses. The runnable workflow in this guide uses the Local harness in the Chat view because it relies on handoff actions between the TDD agents.
 
-<details>
-<summary>TDD overview</summary>
+**TDD overview**
 
 The core tenet of test-driven development is to write tests before implementation. The tests define the desired outcomes for the functionality you want to build. By writing tests first, you clarify requirements and identify edge cases to ensure that your code behaves as expected.
 
@@ -20,8 +19,6 @@ The three phases are:
 * **Green phase**: Write the minimal application code needed to make the test pass. Focus on making it work, not making it perfect.
 
 * **Refactor phase**: Improve the code quality while keeping all tests passing. Clean up duplication, improve naming, and enhance structure.
-
-</details>
 
 ## Prerequisites
 

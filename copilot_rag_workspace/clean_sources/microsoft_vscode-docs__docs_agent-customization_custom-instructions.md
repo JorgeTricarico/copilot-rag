@@ -81,8 +81,7 @@ Follow these steps to create a `.github/copilot-instructions.md` file in your wo
 
 1. Add concise, project-specific instructions in Markdown.
 
-<details>
-<summary>Example: General coding guidelines</summary>
+**Example: General coding guidelines**
 
 ```markdown
 # Project instructions
@@ -97,8 +96,6 @@ Follow these steps to create a `.github/copilot-instructions.md` file in your wo
 * Run `npm test -- <changed-package>` after changing application code.
 * Add or update tests for every behavior change.
 ```
-
-</details>
 
 ## Use `.instructions.md` files
 
@@ -212,16 +209,17 @@ Use `AGENTS.md` when:
 * You work with multiple compatible AI coding agents and want to share one set of instructions.
 * You want subfolder-level instructions that apply to specific parts of a monorepo.
 
-For the Local harness, configure the ``chat.useAgentsMdFile`` setting to enable or disable support for `AGENTS.md` files.
+For Copilot sessions, instructions are discovered at the repository root, the session's working directory, and intermediate directories between them. Copilot combines applicable instructions from `AGENTS.md` and other supported instruction files. Avoid conflicting guidance because there is no general precedence order between these files. For more information, see [Copilot instruction discovery](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-custom-instructions).
+
+> [!NOTE]
+> **For Local harness sessions:** The ``chat.useAgentsMdFile`` setting controls whether instructions from workspace-root `AGENTS.md` files are automatically attached to chat requests and is enabled by default. This setting does not control instruction discovery in other harnesses.
 
 ### Use multiple `AGENTS.md` files
 
-`feature(nested-agents-md-files)`
-
-Use nested `AGENTS.md` files when different folders need different guidance. Follow the selected harness's working-folder and nested-instruction rules for discovery and activation.
+Use nested `AGENTS.md` files when different folders need different guidance. As Copilot works with files in subfolders, it discovers `AGENTS.md` files along their directory paths. Other harnesses use their own discovery and activation rules.
 
 > [!NOTE]
-> **For Local harness sessions:** The ``chat.useNestedAgentsMdFiles`` setting controls support for nested `AGENTS.md` files and is disabled by default. When enabled, VS Code lists these files with their folder locations so the agent can load relevant instructions for the task.
+> **For Local harness sessions:** `feature(nested-agents-md-files)` Set both ``chat.useAgentsMdFile`` and ``chat.useNestedAgentsMdFiles`` to `true` to discover nested `AGENTS.md` files. The nested-file setting is disabled by default. When both settings are enabled, VS Code lists these files with their folder locations so the agent can load relevant instructions for the task. Neither setting controls Copilot instruction discovery.
 
 > [!TIP]
 > For folder-specific instructions, you can also use multiple [`.instructions.md`](#use-instructionsmd-files) files with different `applyTo` patterns that match the folder structure.
@@ -273,8 +271,6 @@ Supported Copilot sessions automatically include organization instructions that 
 To enable discovery of organization-level custom instructions, set ``github.copilot.chat.organizationInstructions.enabled`` to `true`.
 
 Learn how you can [add custom instructions for your organization](https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-organization-instructions) in the GitHub documentation.
-
-<a name="sync-local-agent-instructions-across-devices"></a>
 
 ### Sync Local harness instructions across devices
 

@@ -41,7 +41,7 @@ Prompt files are Markdown files with the `.prompt.md` extension. The optional YA
 | `argument-hint` | No | Hint text shown in the chat input field to guide users on how to interact with the prompt. |
 | `agent` | No | The agent used for running the prompt: `ask`, `agent`, `plan`, or the name of a [custom agent](/docs/agent-customization/custom-agents.md). By default, the current agent is used. If tools are specified, the default agent is `agent`. |
 | `model` | No | The language model used when running the prompt. If not specified, the currently selected model in model picker is used. |
-| `tools` | No | A list of tool or [tool set](/docs/agent-customization/tool-sets.md) names that are available for this prompt. Can include built-in tools, tool sets, MCP tools, or tools contributed by extensions. To include all tools of an MCP server, use the `<server name>/*` format.<br/>Learn more about [tools with agents](/docs/agents/run/tools.md). |
+| `tools` | No | A list of tool names that are available for this Local harness prompt. Can include built-in tools, MCP tools, or tools contributed by extensions. To include all tools of an MCP server, use the `<server name>/*` format. Existing tool-set references are deprecated; see [Replace tool sets](/docs/agent-customization/migrate-customizations.md#replace-tool-sets).<br/>Learn more about [tools with agents](/docs/agents/run/tools.md). |
 
 > [!NOTE]
 > If a given tool is not available when running the prompt, it is ignored.
@@ -71,8 +71,7 @@ To reference agent tools in the body text, use the `#tool:<tool-name>` syntax. F
 
 The following examples demonstrate how to use prompt files. For more community-contributed examples, see the [Awesome Copilot repository](https://github.com/github/awesome-copilot/tree/main).
 
-<details>
-<summary>Example: generate a React form component</summary>
+**Example: generate a React form component**
 
 ```markdown
 ---
@@ -97,10 +96,7 @@ Requirements for the form:
 * Customize UX-friendly validation rules
 ```
 
-</details>
-
-<details>
-<summary>Example: perform a security review of a REST API</summary>
+**Example: perform a security review of a REST API**
 
 ```markdown
 ---
@@ -117,8 +113,6 @@ Perform a REST API security review and provide a TODO list of security issues to
 
 Return the TODO list in a Markdown format, grouped by priority and issue type.
 ```
-
-</details>
 
 ## Create a prompt file
 

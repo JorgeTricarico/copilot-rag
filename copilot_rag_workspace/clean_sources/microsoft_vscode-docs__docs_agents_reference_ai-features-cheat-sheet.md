@@ -6,13 +6,6 @@ Find the AI feature in Visual Studio Code that fits your task, from a focused ed
 
 New to agents? [Complete your first task with an agent](/docs/agents/quickstart.md). Available features depend on your [agent harness](/docs/agents/run/agent-harnesses.md), model, account, and organization policies.
 
-<a name="access-ai-in-vs-code"></a>
-<a name="editor-ai-features"></a>
-<a name="scaffold-a-new-project"></a>
-<a name="source-control-and-issues"></a>
-<a name="python-and-notebook-support"></a>
-<a name="search-and-settings"></a>
-
 ## Choose a feature
 
 | I want to... | Use | Start with... |
@@ -29,9 +22,6 @@ New to agents? [Complete your first task with an agent](/docs/agents/quickstart.
 | Generate commit messages or rename symbols | [Smart actions](/docs/editing/copilot-smart-actions.md) | Use the sparkle action or editor context menu without writing a prompt. |
 | Explore data or edit a notebook | [AI for notebooks](/docs/agents/guides/notebooks-with-ai.md) | In a **Local** agent session, ask the agent to create, edit, and run notebook cells. |
 | Find code or settings without exact keywords | [Semantic search](/docs/editing/copilot-smart-actions.md#semantic-search-results-preview) (Preview) and [AI settings search](/docs/editing/copilot-smart-actions.md#search-settings-with-ai) | Search by meaning in the Search view, or describe a setting in the Settings editor. |
-
-<a name="chat-experience-in-vs-code"></a>
-<a name="planning"></a>
 
 ## Use agents
 
@@ -58,8 +48,6 @@ To organize larger tasks:
 * Use [subagents](/docs/agents/run/subagents.md) to delegate a focused part of a task in a separate context.
 * [Hand off a session](/docs/agents/run/agent-harnesses.md#continue-with-a-different-harness) when you want to continue work with another supported harness or the Cloud target.
 
-<a name="add-context-to-your-prompt"></a>
-
 ## Get better results
 
 | Need | What to use |
@@ -71,8 +59,6 @@ To organize larger tasks:
 | Use your own model provider or a local model | Configure [bring your own key (BYOK)](/docs/agent-customization/language-models.md#bring-your-own-language-model-key). Inline suggestions and semantic search still require the GitHub Copilot service. |
 | Retain useful knowledge across conversations | Ask the agent to remember it with [memory](/docs/agents/run/memory.md). Use **Chat: Show Memory Files** to inspect stored notes. |
 | Manage a long conversation or its cost | Check [context usage](/docs/agents/run/sessions/manage-sessions.md#manage-session-context), compact the conversation, or start a new chat for an unrelated task. See [usage guidance](/docs/agents/guides/optimize-usage.md). |
-
-<a name="review-code-experimental"></a>
 
 ## Stay in control
 
@@ -87,8 +73,6 @@ To organize larger tasks:
 > [!IMPORTANT]
 > Agents can save edits directly to the session's folder or worktree. **Manual permissions** does not ask for confirmation for every file edit. Review the [security baseline](/docs/agents/run/security.md#recommended-security-baseline) before working on an existing project.
 
-<a name="customize-your-chat-experience"></a>
-
 ## Customize your workflow
 
 | I want to... | Use |
@@ -102,8 +86,6 @@ To organize larger tasks:
 | Install a packaged set of customizations | [Agent plugins](/docs/agent-customization/agent-plugins.md). |
 
 Use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) to create and manage these options for your selected harness.
-
-<a name="generate-tests"></a>
 
 ## Debug and fix problems
 
@@ -123,8 +105,6 @@ Run the relevant tests and summarize the change and results.
 ```
 
 See [smart actions for tests and errors](/docs/editing/copilot-smart-actions.md#fix-testing-errors) and [debugging](/docs/debugtest/debugging.md).
-
-<a name="terminal"></a>
 
 ## Essential keyboard shortcuts
 
@@ -157,7 +137,9 @@ Type `/` to see commands available in the current session. Availability depends 
 | `/doc` | Generate documentation comments from editor inline chat. |
 | `/setupTests` (Experimental) | Get help choosing and setting up a test framework. |
 | `/new`, `/newNotebook` | Scaffold a workspace, file, or notebook. |
-| `/compact`, `/fork` | Compact context, or branch the conversation with its history. |
+| `/compact` | Compact conversation context. |
+| `/fork` | [Fork the conversation](/docs/agents/run/sessions/manage-sessions.md#fork-a-chat-session) with its history. |
+| `/fork <title>`, `/fork prompt <prompt>` | Name a fork, or fork and immediately send a prompt with attached context. Requires a supported Agent Host session. See [named and prompted forks](/docs/agents/run/sessions/manage-sessions.md#name-a-fork-or-send-a-prompt). |
 | `/clear` | Start a new chat and archive or mark the current chat as done. |
 | `/rename <name>`, `/help` | Rename a local chat, or list commands and agents in a local Ask chat. |
 | `/models`, `/tools` | Open the model picker, or configure tools for a local chat. |
@@ -171,9 +153,9 @@ Type `/` to see commands available in the current session. Availability depends 
 
 For example, a skill in `.github/skills/webapp-testing/SKILL.md` can be invoked with `/webapp-testing`. For permission and Autopilot commands, see [approvals and permissions](/docs/agents/run/approvals.md).
 
-### Chat participants
+### Chat participants (deprecated)
 
-In chat surfaces that support participants, type `@` to choose a specialist. Use `@github` for repositories, issues, and pull requests, `@terminal` for shell questions, or `@vscode` for editor features and settings. For example, `@vscode /search` generates a Search view query.
+Chat participants are not supported in the Copilot harness. Ask the agent directly and attach relevant context, or use a plugin with skills and MCP tools for a domain-specific workflow. See [Replace chat participants](/docs/agent-customization/migrate-customizations.md#replace-chat-participants).
 
 ## Next steps
 

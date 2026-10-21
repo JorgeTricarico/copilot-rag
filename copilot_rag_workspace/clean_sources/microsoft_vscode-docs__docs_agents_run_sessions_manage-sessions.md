@@ -13,6 +13,9 @@ Follow a hands-on tutorial to build an app with AI agents in VS Code.
 
 ## Start an agent session
 
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Existing sessions are not deleted by this restriction. Contact the IT team that deployed the settings to discuss access.
+
 Start a new session when you begin an independent task or need a different workspace or configuration. For a fresh conversation that shares an existing session's workspace and code changes, [start another chat in that session](#run-multiple-chats-in-a-session), where supported.
 
 Choose the surface that matches your workflow:
@@ -235,6 +238,8 @@ To start a GitHub Copilot CLI session from VS Code, use one of these options:
 * Run **Chat: New Copilot CLI Session** from the Command Palette (``Shortcut: workbench.action.showCommands``).
 * Enter `copilot` in an integrated terminal.
 
+If Copilot CLI isn't installed, the `copilot` command offers to install it. On macOS, you can also [install it when you add code to PATH](/docs/setup/mac.md#configure-path-with-vs-code). On Windows, setup can also [add the copilot command to PATH](/docs/setup/windows.md#set-up-the-copilot-command), so it works in any terminal.
+
 VS Code adds the session to the sessions list. To continue an existing [Copilot harness session](/docs/agents/run/agent-harnesses.md#copilot) from the terminal, right-click it in the sessions list and select **Resume in Terminal**.
 
 ## Archive sessions
@@ -283,17 +288,26 @@ For a [Dev Container session](/docs/agents/run/agents-window.md#run-a-session-in
 
 Worktree-isolated agent sessions can accumulate and use significant disk space. Run **Chat: Open Worktree Cleanup** to review inactive session worktrees and remove the ones you no longer need.
 
+![Screenshot showing the worktree cleanup editor with cleanup settings, an inactivity filter, and selected session worktrees with their storage sizes.](../../images/chat-sessions/worktree-cleanup-editor.png)
+
 In the cleanup editor:
 
 1. Choose how long sessions must be inactive. You can filter for sessions that have been inactive for 7, 15, 30, 60, or 90 days.
 
 1. Review the estimated size of each worktree. Eligible worktrees are selected by default. Clear any worktrees that you want to keep.
 
+1. Save any open file edits in the selected worktrees before you continue.
+
 1. Confirm the cleanup for the selected worktrees.
 
 Cleanup marks each selected session as done and schedules its worktree for removal. Before removing a worktree, VS Code commits uncommitted changes to the session branch. If the changes can't be preserved or the worktree can't be removed, the worktree remains. The session and its branch history are preserved, so restoring the session re-creates the worktree.
 
 The cleanup editor excludes sessions that are active, running, waiting for input, pinned, done, archived, untitled, in an error state, or more recent than the selected inactivity period. It also excludes worktrees whose size can't be measured.
+
+Use **Cleanup Settings** in the editor to configure:
+
+* **Mark merged sessions as done after** and **Permanently delete automatically completed sessions after**: set the inactivity period before automatic completion and a separate retention period before permanent deletion. See [automatically clean up merged sessions (Preview)](#automatically-clean-up-merged-sessions).
+* **Suggest cleaning up session storage when it grows large**: turn [storage cleanup suggestions (Experimental)](#get-storage-cleanup-suggestions-experimental) on or off.
 
 ### Get storage cleanup suggestions (Experimental)
 
@@ -322,9 +336,9 @@ When a merged pull request makes a session eligible, select **Configure Automati
 
 ## Fork a chat session
 
-Forking a chat session branches off the conversation and inherits the conversation history from the original session. In single-chat sessions and sessions whose harness doesn't support multiple chats, the fork opens as a new independent session. The conversation is separate, but its code changes are isolated only if the fork uses a different folder or worktree. The new session title is prefixed with "Forked:" to help you identify it.
+Forking a chat session branches off the conversation and inherits the conversation history from the original session. In single-chat sessions and sessions whose harness doesn't support multiple chats, the fork opens as a new independent session. The conversation is separate, but its code changes are isolated only if the fork uses a different folder or worktree.
 
-For multi-chat [Copilot](/docs/agents/run/agent-harnesses.md#copilot) sessions in the Agents window, the fork opens as a peer chat in the same session. The peer chat gets an automatically generated title and runs independently from sibling chats.
+For multi-chat [Copilot](/docs/agents/run/agent-harnesses.md#copilot) sessions in the Agents window, the fork opens as a peer chat in the same session and runs independently from sibling chats.
 
 For Copilot harness sessions that use worktree isolation, the fork continues to use the same worktree as the original session.
 
@@ -341,7 +355,25 @@ There are two ways to fork a chat session:
 > [!TIP]
 > A forked session inherits the conversation history of the original, which preserves the prompt cache and reduces cost on the next request. Use the [Cache Explorer](/docs/agents/agent-troubleshooting/cache-explorer.md) to compare cache hit rates across sessions.
 
-<a name="orchestrate-sessions-from-agent-host-sessions"></a>
+### Name a fork or send a prompt
+
+Use named and prompted forks to label an alternative approach or start exploring it immediately. These forms are available in supported [Agent Host](/docs/agents/concepts/agent-host.md) sessions, such as Copilot, in both the editor window's Chat view and the Agents window.
+
+| Command | Result |
+|---|---|
+| `/fork` | Fork the current conversation without sending a new prompt. |
+| `/fork <title>` | Fork the conversation with the title you provide, without sending a new prompt. |
+| `/fork prompt <prompt>` | Fork the conversation and immediately send the prompt and any attached context to the fork. |
+
+For example, explore an alternative design while retaining the discussion so far:
+
+```prompt
+/fork prompt Compare this design with an event-driven approach. Do not change any files.
+```
+
+The prompted fork uses the source conversation's agent and model, not a new selection you make in the input pickers before forking.
+
+A named fork retains the title you provide. Without an explicit title, the fork starts with a default title and can receive an automatically generated title. For prompted forks, title generation can use the original title and the new prompt.
 
 ## Coordinate work across sessions
 

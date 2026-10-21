@@ -25,7 +25,7 @@ The fields below describe the VS Code format. Files in `.claude/agents` use the 
 The selected [agent harness](/docs/agents/run/agent-harnesses.md) determines which fields and tool names take effect. A shared file location does not imply identical behavior across harnesses.
 
 * **Local** supports the VS Code tool names, subagent configuration, handoffs, and agent-scoped hooks described below.
-* **Copilot** supports custom agent configuration through its runtime. Use the field-specific guidance below and the [Copilot custom agent documentation](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-custom-agents). Local handoffs and agent-scoped hooks do not apply.
+* **Copilot** supports custom agent configuration through its runtime. Use the field-specific guidance below and the [Copilot custom agent documentation](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-custom-agents). Local handoffs do not apply. Agent-scoped hooks have a current [plugin-agent conversion limitation](/docs/agent-customization/hooks.md#agent-scoped-hooks).
 * **Claude** uses its own [agent format](#claude-agent-format) and runtime behavior.
 * **Copilot cloud agent** has a separate [configuration reference](https://docs.github.com/en/copilot/reference/custom-agents-configuration). The `target: github-copilot` value refers to that target, not the **Copilot** harness selected in VS Code.
 
@@ -38,7 +38,7 @@ All fields in this table are optional. Defaults and harness-specific behavior ar
 | `name` | String | The agent's name in the UI. Defaults to the file name. |
 | `description` | String | What the agent does and when to use it. |
 | `argument-hint` | String | Hint text that describes the input the agent expects. Shown in the Local chat input. |
-| `tools` | String or array of strings | Tools or tool sets available to the agent. Tool names depend on the harness. See [Tools](#tools). |
+| `tools` | String or array of strings | Tools available to the agent. Tool names and supported aliases depend on the harness. User-defined tool sets are deprecated and are not supported in the Copilot harness. See [Tools](#tools). |
 | `agents` | Array of strings | Custom agents available as subagents. In Local, use `['*']` or omit the field to allow all available agents, or use `[]` to prevent subagent use. Include the `agent` tool set in `tools`. See [Subagent configuration](#subagent-configuration). |
 | `model` | String or array of strings | The model to use in the Copilot harness. An array specifies models in preference order, using the first available model. If omitted, the currently selected model is used. Local subagents also use this field as part of their [model selection order](/docs/agents/run/subagents.md#select-the-model-for-a-subagent). |
 | `reasoning-effort` | String | Reasoning effort for the agent in the Copilot harness: `low`, `medium`, `high`, `xhigh`, or `max`. Availability depends on the selected model. See [Thinking effort](/docs/agent-customization/language-models.md#configure-thinking-effort). |
@@ -48,11 +48,11 @@ All fields in this table are optional. Defaults and harness-specific behavior ar
 | `target` | String | The target environment for the file: `vscode` or `github-copilot`. This is not the harness selector. |
 | `mcp-servers` | Object | MCP server configurations for [custom agents in Copilot cloud agent](https://docs.github.com/en/copilot/reference/custom-agents-configuration). Not used by custom agents in VS Code. |
 | `handoffs` | Array of objects | Suggested transitions to another agent after a response in Local. See [Handoff fields](#handoff-fields). |
-| `hooks` (Preview) | Object | Hook commands scoped to this agent in Local. Requires ``chat.useHooks`` and a trusted workspace. See [Agent-scoped hooks](/docs/agent-customization/hooks.md#agent-scoped-hooks-for-the-local-harness) for a complete example. |
+| `hooks` | Object | Hook event map scoped to this agent. The Copilot harness supports agent-scoped hooks, but VS Code currently omits this field when converting plugin-provided agents. Retain the definition and leave the affected migration incomplete. See the [conversion limitation](/docs/agent-customization/hooks.md#agent-scoped-hooks). Local execution requires ``chat.useHooks`` and a trusted workspace. |
 
 ### Tools
 
-In Local, `tools` can include built-in tools, [tool sets](/docs/agent-customization/tool-sets.md), MCP tools, and tools contributed by extensions. To include all tools from an MCP server, use `<server name>/*`.
+In Local, `tools` can include built-in tools, MCP tools, and tools contributed by extensions. Existing user-defined tool-set references are deprecated and are not supported in the Copilot harness. See [Replace tool sets](/docs/agent-customization/migrate-customizations.md#replace-tool-sets). Built-in aliases such as `read` and `search` are separate from user-defined tool-set files. To include all tools from an MCP server, use `<server name>/*`.
 
 ```yaml
 tools: ['read', 'search', '<server name>/*']

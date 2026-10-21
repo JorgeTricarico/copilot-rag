@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
-- **Generado (UTC)**: 2026-10-20T22:05:39.877281+00:00
-- **Total Palabras**: 103,853 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-21T03:47:16.423397+00:00
+- **Total Palabras**: 121,762 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1048,18 +1048,6 @@ foundry model run phi-4-mini
 
 * [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth) - Learn about all authentication methods
 * [AUTOTITLE](/copilot/get-started/sdk-quickstart) - Build your first Copilot-powered app
-
-
----
-# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/auth/index.md
-- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/auth/index.md
-- **SHA256_FINGERPRINT**: `1dacf48dba0b7c5b04b25616c210d9a2d9abd5491f53b1f22cd094487087724f`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.519301+00:00
----
-
-**title**: Authentication
-**intro**: >-
 
 
 ---
@@ -4912,18 +4900,6 @@ These image blocks appear in `tool.execution_complete` event results. See the [A
 
 * [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/streaming-events): event lifecycle including tool result content blocks
 * [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/steering-and-queueing): sending follow-up messages with attachments
-
-
----
-# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/index.md
-- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/index.md
-- **SHA256_FINGERPRINT**: `b8cff66f1e7464183149df3ae8cbc0e178db95d840a55a7e1234e5145dc8751d`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.815335+00:00
----
-
-**title**: Features
-**intro**: >-
 
 
 ---
@@ -10548,18 +10524,6 @@ const session = await client.createSession({
 
 
 ---
-# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/hooks/index.md
-- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/hooks
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/hooks/index.md
-- **SHA256_FINGERPRINT**: `08b87ed090abba06db89108895cf02bb179466639e9adb28b80ca69e7f192ea1`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.150868+00:00
----
-
-**title**: Use hooks
-**intro**: Detailed API reference for each session hook in the GitHub Copilot SDK.
-
-
----
 # DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/hooks/post-tool-use.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/hooks/post-tool-use
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/hooks/post-tool-use.md
@@ -12238,30 +12202,6 @@ The replacement is persisted as the user message content, so resumed sessions re
 
 
 ---
-# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/index.md
-- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/index.md
-- **SHA256_FINGERPRINT**: `5fdeefa70ec57a33308ff76fea7628f9d1ef68ffd9853a1756c737a46e40739f`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.341197+00:00
----
-
-**title**: Copilot SDK
-**intro**: >-
-
-
----
-# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/integrations/index.md
-- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/integrations
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/integrations/index.md
-- **SHA256_FINGERPRINT**: `ec41399174a0ddf2ea6a31469f8efaaab6882ba9b42effe917b31ea452640cad`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.373980+00:00
----
-
-**title**: Integrations
-**intro**: Guides for using the GitHub Copilot SDK with other platforms and frameworks.
-
-
----
 # DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/integrations/microsoft-agent-framework.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/integrations/microsoft-agent-framework
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/integrations/microsoft-agent-framework.md
@@ -12852,18 +12792,6 @@ catch (AgentException ex)
 * [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/skills): reusable prompt modules
 * [Microsoft Agent Framework documentation](https://learn.microsoft.com/en-us/agent-framework/agents/providers/github-copilot): official MAF docs for the Copilot provider
 * [Blog: Build AI Agents with GitHub Copilot SDK and Microsoft Agent Framework](https://devblogs.microsoft.com/semantic-kernel/build-ai-agents-with-github-copilot-sdk-and-microsoft-agent-framework/)
-
-
----
-# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/observability/index.md
-- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/observability
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/observability/index.md
-- **SHA256_FINGERPRINT**: `50a08c26bba6336628328086713562e68c75fb265ba658ad55d1880b02e53478`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.451051+00:00
----
-
-**title**: Observability
-**intro**: Monitor and debug your GitHub Copilot SDK applications.
 
 
 ---
@@ -14768,18 +14696,6 @@ In-process hosting has these current constraints:
 
 
 ---
-# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/setup/index.md
-- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/setup/index.md
-- **SHA256_FINGERPRINT**: `1d958137b95c8265a3f41d5b5319bd73e78916a810134b0c8b37217d0574d691`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.579926+00:00
----
-
-**title**: Set up Copilot SDK
-**intro**: Configure and deploy the GitHub Copilot SDK for your use case.
-
-
----
 # DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/setup/local-cli.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/local-cli
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/setup/local-cli.md
@@ -16582,18 +16498,6 @@ If you're still stuck:
 
 
 ---
-# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/troubleshooting/index.md
-- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/troubleshooting
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/troubleshooting/index.md
-- **SHA256_FINGERPRINT**: `0509cb6f76d02576c7ad88fa59171620206b05874799c3e2c03efab456a1e3ba`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.892337+00:00
----
-
-**title**: Troubleshooting
-**intro**: Diagnose and resolve issues with the GitHub Copilot SDK.
-
-
----
 # DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging.md
@@ -17013,11 +16917,11 @@ When opening an issue or asking for help, collect:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/ai-extensibility-overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/ai-extensibility-overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/ai-extensibility-overview.md
-- **SHA256_FINGERPRINT**: `1201c2236af60ea2660035133479fa32c33e1a7086055832394f8e14769719a9`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.493840+00:00
+- **SHA256_FINGERPRINT**: `b9941913791199fd38ecbbbc468cd2d7899b993d5c4cd9e78762258bb361285a`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.363950+00:00
 ---
 
-**MetaDescription**: Overview of how to extend the AI features in your Visual Studio Code extension by using the Language Model, Tools, and Chat APIs.
+**MetaDescription**: Extend AI workflows with plugins, MCP Apps, and tools, or integrate models into VS Code extensions.
 
 # AI extensibility in VS Code
 
@@ -17043,6 +16947,14 @@ Adding AI capabilities to your extension brings several benefits to your users:
 - **Improved developer productivity**: Enhance common developer tasks, like debugging, code reviewing or testing, with AI capabilities
 
 ## Extend the chat experience
+
+### Agent plugin
+
+Start with an [agent plugin](/docs/agent-customization/agent-plugins.md) to distribute a domain-specific chat workflow. Package skills for expertise and reusable tasks with an MCP server for data access and actions. Add a custom agent when users need an ongoing specialist role.
+
+For interactive workflows, [MCP Apps](/api/extension-guides/ai/mcp.md#mcp-apps) can provide buttons, forms, and other controls in chat. Provide useful tool results for clients that do not render the app.
+
+Plugins are the recommended replacement for [deprecated chat participants](/docs/agent-customization/migrate-customizations.md#replace-chat-participants). They do not require a participant request handler. Use extension tools instead when a capability depends on editor APIs or live editor state.
 
 ### Language model tool
 
@@ -17080,22 +16992,9 @@ As MCP tools run outside of VS Code, they do not have access to the VS Code exte
 - No access to VS Code extension APIs
 - Distribution and deployment require users to set up the MCP server
 
-### Chat participant
+### Chat participant (deprecated)
 
-Chat participants are specialized assistants that enable users to extend ask mode with domain-specific experts. In chat, users can invoke a chat participant by @-mentioning it and passing in a natural language prompt about a particular topic or domain. The chat participant is responsible for handling the entire chat interaction.
-
-To implement a chat participant, use the [Chat API](/api/extension-guides/ai/chat) within your VS Code extension. A chat participant can access all VS Code extension APIs and provide deep integration with the editor.
-
-**Key benefits**:
-
-- Control the end-to-end interaction flow
-- Running in the extension host process allows access to VS Code extension APIs
-- Easy distribution and deployment via the Visual Studio Marketplace
-
-**Key considerations**:
-
-- Remote deployment requires the extension to implement the client-server communication
-- Reuse across different tools requires modular design and implementation
+Chat participants are not supported in the Copilot harness. The API remains available for Local harness compatibility, but new integrations should use plugins or tools. See [Replace chat participants](/docs/agent-customization/migrate-customizations.md#replace-chat-participants), including options for interactive UI and custom orchestration.
 
 ## Build your own AI-powered features
 
@@ -17117,6 +17016,11 @@ To use language models directly, use the [Language Model API](/api/extension-gui
 
 When choosing the right approach for extending AI in your VS Code extension, consider the following guidelines:
 
+1. **Choose an agent plugin when**:
+    * You want to distribute domain expertise and workflows with their MCP integrations
+    * You are replacing a chat participant with skills, tools, and optional MCP Apps
+    * Your integration should work across clients rather than depend on editor APIs
+
 1. **Choose Language Model Tool when**:
     - You want to extend chat in VS Code with specialized capabilities
     - You want automatic invocation based on user intent in agent mode
@@ -17130,12 +17034,6 @@ When choosing the right approach for extending AI in your VS Code extension, con
     - Your tool needs to work across different environments (not just VS Code)
     - Your tool should run remotely or locally
 
-1. **Choose Chat Participant when**:
-    - You want to extend ask mode with a specialized assistant with domain expertise
-    - You need to customize the entire interaction flow and response behavior
-    - You want access to VS Code APIs for deep integration in VS Code
-    - You want to distribute your tool through the VS Code Marketplace
-
 1. **Choose Language Model API when**:
     - You want to integrate AI capabilities into existing extension features
     - You're building UI experiences outside the chat interface
@@ -17145,16 +17043,15 @@ When choosing the right approach for extending AI in your VS Code extension, con
 
 Choose the approach that best fits your extension's goals:
 
+* [Package an agent plugin](/docs/agent-customization/agent-plugins.md)
 - [Implement a language model tool](/api/extension-guides/ai/tools)
 - [Register MCP tools in your VS Code extension](/api/extension-guides/ai/mcp)
 - [Integrate AI in your extension with the Language Model API](/api/extension-guides/ai/language-model)
-- [Implement a chat participant](/api/extension-guides/ai/chat)
 - [Extend code completions with the Inline Completions API](/api/references/vscode-api#InlineCompletionItemProvider)
 
 ### Sample projects
 
-- [Chat sample](https://github.com/microsoft/vscode-extension-samples/tree/main/chat-sample): Extension with agent mode tool and chat participant
-- [Code tutor chat participant tutorial](/api/extension-guides/ai/chat-tutorial): Building a specialized chat assistant
+* [Code-tutor migration example](/docs/agent-customization/migrate-customizations.md#example-migrate-a-code-tutor-to-a-plugin): Replace a participant with a plugin, skills, and MCP Apps
 - [AI-powered code annotations tutorial](/api/extension-guides/ai/language-model-tutorial): Step-by-step guide for using the Language Model API
 - [MCP extension sample](https://github.com/microsoft/vscode-extension-samples/blob/main/mcp-extension-sample): Extension that registers an MCP tool
 
@@ -17163,960 +17060,68 @@ Choose the approach that best fits your extension's goals:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/chat-tutorial.md
 - **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/chat-tutorial
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/chat-tutorial.md
-- **SHA256_FINGERPRINT**: `5cc0c15157e286279d300f1deced997783623695d3f541d85e64b943bc78d719`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.533926+00:00
+- **SHA256_FINGERPRINT**: `00ed6f4b4ac28ca7f9147ba12226dd73b503884a9c5006ba4ba9665139ac6113`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.399174+00:00
 ---
 
-**MetaDescription**: Tutorial that walks you through creating a GitHub Copilot chat participant in VS Code by using the Chat API.
+**MetaDescription**: Migrate a code-tutor chat participant to an agent plugin with skills, MCP tools, and interactive exercises.
 
-# Tutorial: Build a code tutorial chat participant with the Chat API
+# Code-tutor chat participant tutorial (deprecated)
 
-In this tutorial, you'll learn how to create a Visual Studio Code extension that integrates with the GitHub Copilot Chat experience. You'll use the Chat extension API to contribute a chat participant. Your participant will be a code tutor that can provide explanations and sample exercises for programming concepts.
+Chat participants are deprecated and are not supported in the Copilot harness. This tutorial has been retired. The Chat Participant API remains available for Local harness compatibility.
 
-## Prerequisites
+For the supported approach, follow [Migrate a code tutor to a plugin](/docs/agent-customization/migrate-customizations.md#example-migrate-a-code-tutor-to-a-plugin). Package teaching workflows as skills and exercise operations as MCP tools. Use MCP Apps for interactive exercises, and extension tools when you need live editor context.
 
-You'll need the following tools and accounts to complete this tutorial:
+The migration guide explains which participant responsibilities have replacements and which require redesign. Renaming a participant or copying its request handler into a custom-agent file does not migrate the integration.
 
-- [Visual Studio Code](https://code.visualstudio.com/download)
-- [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat)
-- [Node.js](https://nodejs.org/en/download/)
+## Related resources
 
-## Step 1: Set up your project
-
-First, generate the extension project by using Yeoman and the VS Code Extension Generator.
-
-```bash
-npx --package yo --package generator-code -- yo code
-```
-
-Select the following options to complete the setup:
-
-```bash
-# ? What type of extension do you want to create? New Extension (TypeScript)
-# ? What's the name of your extension? Code Tutor
-
-### Press <Enter> to choose default for all options below ###
-
-# ? What's the identifier of your extension? code-tutor
-# ? What's the description of your extension? LEAVE BLANK
-# ? Initialize a git repository? Yes
-# ? Bundle the source code with webpack? No
-# ? Which package manager to use? npm
-
-# ? Do you want to open the new folder with Visual Studio Code? Open with `code`
-```
-
-Once your extension project is generated, there are two files you will be working in: `extension.ts` and `package.json`, which you can learn more about in the [Extension Anatomy docs](/api/get-started/extension-anatomy#extension-file-structure). As a quick overview:
-
-- `extension.ts` is the main entry point for your extension and contains the logic for your chat participant.
-- `package.json` contains the metadata for your extension, such as the name and description of your participant.
-
-Delete the auto-generated code in the `extension.ts` `activate()` method. This is where you will place our logic for our chat participant.
-
-## Step 2: Register a Chat participant
-
-In the `package.json` file, replace the auto-generated `contributes` section with the following:
-
-```json
-"contributes":{
-    "chatParticipants": [
-    {
-        "id": "chat-tutorial.code-tutor",
-        "fullName": "Code Tutor",
-        "name": "tutor",
-        "description": "What can I teach you?",
-        "isSticky": true
-    }
-    ]
-}
-```
-
-This code registers a chat participant with the following attributes:
-
-- Unique ID `chat-tutorial.code-tutor`, which will be referenced in the code
-- Full name `Code Tutor`, which will be shown in the title area of a response from your participant
-- Name `tutor`, which will be used to reference the chat participant as `@tutor` in the Chat view
-- Description "What can I teach you?", which will be shown in the chat input field as a placeholder text
-
-Finally, setting `isSticky: true` will automatically prepend the participant name in the chat input field after the user has started interacting with the participant.
-
-## Step 3: Craft the prompt
-
-Now that the participant is registered, you can start implementing the logic for the code tutor. In the `extension.ts` file, you will define a prompt for the requests.
-
-Crafting a good prompt is the key to getting the best response from your participant. Check out [this article](https://platform.openai.com/docs/guides/prompt-engineering) for tips on prompt engineering.
-
-Your code tutor should emulate a real-world tutor by guiding the student to understand the concept instead of providing direct answers. Additionally, the tutor should remain focused on the topic and refrain from answering non-programming questions.
-
-Consider the following two prompts. Which is more likely to give the specified behavior?
-
-1. > You are a helpful code tutor. Your job is to teach the user with simple descriptions and sample code of the concept.
-2. > You are a helpful code tutor. Your job is to teach the user with simple descriptions and sample code of the concept. Respond with a guided overview of the concept in a series of messages. Do not give the user the answer directly, but guide them to find the answer themselves. If the user asks a non-programming question, politely decline to respond.
-
-The second prompt is more specific and gives the participant a clear direction on how to respond. Add this prompt in the `extension.ts` file.
-
-```ts
-const BASE_PROMPT = 'You are a helpful code tutor. Your job is to teach the user with simple descriptions and sample code of the concept. Respond with a guided overview of the concept in a series of messages. Do not give the user the answer directly, but guide them to find the answer themselves. If the user asks a non-programming question, politely decline to respond.';
-```
-
-## Step 4: Implement the request handler
-
-Now that the prompt is selected, you need to implement the request handler. This is what will process the user's chat request. You will define the request handler, perform logic for processing the request, and return a response to the user.
-
-First, define the handler:
-
-```ts
-// define a chat handler
-const handler: vscode.ChatRequestHandler = async (request: vscode.ChatRequest, context: vscode.ChatContext, stream: vscode.ChatResponseStream, token: vscode.CancellationToken) => {
-
-    return;
-}
-```
-
-Within the body of this handler, initialize the prompt and a `messages` array with the prompt. Then, send in what the user typed in the chat box. You can access this through `request.prompt`.
-
-Send the request using `request.model.sendRequest`, which will send the request using the currently selected model. Finally, stream the response to the user.
-
-```ts
-// define a chat handler
-const handler: vscode.ChatRequestHandler = async (request: vscode.ChatRequest, context: vscode.ChatContext, stream: vscode.ChatResponseStream, token: vscode.CancellationToken) => {
-
-    // initialize the prompt
-    let prompt = BASE_PROMPT;
-
-    // initialize the messages array with the prompt
-    const messages = [
-        vscode.LanguageModelChatMessage.User(prompt),
-    ];
-
-    // add in the user's message
-    messages.push(vscode.LanguageModelChatMessage.User(request.prompt));
-
-    // send the request
-    const chatResponse = await request.model.sendRequest(messages, {}, token);
-
-    // stream the response
-    for await (const fragment of chatResponse.text) {
-        stream.markdown(fragment);
-    }
-
-    return;
-};
-```
-
-## Step 5: Create the chat participant
-
-Once the handler is implemented, the last step is to create the chat participant by using the `createChatParticipant` method in the Chat extension API. Make sure to use the same ID that you used in the `package.json`.
-
-You should further customize your participant by adding an icon for it. This will show in the Chat view when interacting with the participant.
-
-```ts
-// define a chat handler
-const handler: vscode.ChatRequestHandler = async (request: vscode.ChatRequest, context: vscode.ChatContext, stream: vscode.ChatResponseStream, token: vscode.CancellationToken) => {
-
-    // initialize the prompt
-    let prompt = BASE_PROMPT;
-
-    // initialize the messages array with the prompt
-    const messages = [
-        vscode.LanguageModelChatMessage.User(prompt),
-    ];
-
-    // add in the user's message
-    messages.push(vscode.LanguageModelChatMessage.User(request.prompt));
-
-    // send the request
-    const chatResponse = await request.model.sendRequest(messages, {}, token);
-
-    // stream the response
-    for await (const fragment of chatResponse.text) {
-        stream.markdown(fragment);
-    }
-
-    return;
-};
-
-// create participant
-const tutor = vscode.chat.createChatParticipant("chat-tutorial.code-tutor", handler);
-
-// add icon to participant
-tutor.iconPath = vscode.Uri.joinPath(context.extensionUri, 'tutor.jpeg');
-```
-
-## Step 6: Run the code
-
-You are now ready to try out your chat participant!
-Press ``F5`` to run the code. A new window of VS Code will open with your chat participant.
-
-In the Copilot Chat pane, you can now invoke your participant by typing `@tutor`!
-
-![Participant in Chat pane](../images/ai/chat-tutorial/participant.png)
-
-Test it out by typing what you want to learn about. You should see a response giving you an overview of the concept!
-
-If you type a related message to continue the conversation, you'll notice that the participant doesn't give a follow-up response based on your conversation. That's because our current participant is only sending in the user's current message, and not the participant message history.
-
-In the screenshot below, the tutor correctly responds with a starting explanation of stacks. However, in the follow-up, it does not understand that the user is continuing the conversation to see an implementation of stacks in Python, so it instead gives a generic response about Python.
-
-![Participant with no message history](../images/ai/chat-tutorial/participant-no-message-history.png)
-
-## Step 7: Add message history for more context
-
-One of the biggest values of Copilot Chat is the ability to iterate over several messages to get the best response. To do this, you want to send in the participant's message history to the chat request. You can access this through `context.history`.
-
-You'll need to retrieve that history and add it to the `messages` array. You will need to do this before the `request.prompt` is added.
-
-```ts
-// define a chat handler
-const handler: vscode.ChatRequestHandler = async (request: vscode.ChatRequest, context: vscode.ChatContext, stream: vscode.ChatResponseStream, token: vscode.CancellationToken) => {
-
-    // initialize the prompt
-    let prompt = BASE_PROMPT;
-
-    // initialize the messages array with the prompt
-    const messages = [
-        vscode.LanguageModelChatMessage.User(prompt),
-    ];
-
-    // get all the previous participant messages
-    const previousMessages = context.history.filter(
-        (h) => h instanceof vscode.ChatResponseTurn
-    );
-
-    // add the previous messages to the messages array
-    previousMessages.forEach((m) => {
-        let fullMessage = '';
-        m.response.forEach((r) => {
-            const mdPart = r as vscode.ChatResponseMarkdownPart;
-            fullMessage += mdPart.value.value;
-        });
-        messages.push(vscode.LanguageModelChatMessage.Assistant(fullMessage));
-    });
-
-    // add in the user's message
-    messages.push(vscode.LanguageModelChatMessage.User(request.prompt));
-
-    // send the request
-    const chatResponse = await request.model.sendRequest(messages, {}, token);
-
-    // stream the response
-    for await (const fragment of chatResponse.text) {
-        stream.markdown(fragment);
-    }
-
-    return;
-};
-```
-
-Now when you run the code, you can have a conversation with your participant with all the context of the previous messages! In the screenshot below, the participant correctly understands that the user is requesting to see an implementation of stacks in Python.
-
-![Participant with message history](../images/ai/chat-tutorial/participant-message-history.png)
-
-## Step 8: Add a command
-
-Now that the basic participant is implemented, you can extend it by adding a command. Commands are a shorthand notation for common user intents, and are indicated by the `/` symbol. The extension can then use the command to prompt the language model accordingly.
-
-It would be great to add a command to prompt your tutor to give a practice exercise for a concept. You'll need to register the command in the `package.json` file and implement the logic in `extension.ts`. You can name the command `exercise` so that it can be invoked by typing `/exercise`.
-
-In `package.json` add the `commands` property to the `chatParticipants` property. Here, you'll specify the name of the command and a quick description:
-
-```json
-"contributes": {
-    "chatParticipants": [
-      {
-        "id": "chat-tutorial.code-tutor",
-        "fullName": "Code Tutor",
-        "name": "tutor",
-        "description": "What can I teach you?",
-        "isSticky": true,
-        "commands": [
-          {
-            "name": "exercise",
-            "description": "Provide exercises to practice a concept."
-          }
-        ]
-      }
-    ]
-  },
-```
-
-To implement the logic for getting sample exercises from the tutor, the simplest way is to change the prompt that you send in to the request. Create a new prompt, `EXERCISES_PROMPT`, that asks the participant to return sample exercises. Here's an example of what that could look like:
-
-```ts
-const EXERCISES_PROMPT = 'You are a helpful tutor. Your job is to teach the user with fun, simple exercises that they can complete in the editor. Your exercises should start simple and get more complex as the user progresses. Move one concept at a time, and do not move on to the next concept until the user provides the correct answer. Give hints in your exercises to help the user learn. If the user is stuck, you can provide the answer and explain why it is the answer. If the user asks a non-programming question, politely decline to respond.';
-```
-
-In the request handler, you then need to add logic to detect that the user referenced the command. You can do this through the `request.command` property.
-
-If the command is referenced, update the prompt to the newly created `EXERCISES_PROMPT`
-
-```ts
-// define a chat handler
-const handler: vscode.ChatRequestHandler = async (request: vscode.ChatRequest, context: vscode.ChatContext, stream: vscode.ChatResponseStream, token: vscode.CancellationToken) => {
-
-    // initialize the prompt
-    let prompt = BASE_PROMPT;
-
-    if (request.command === 'exercise') {
-        prompt = EXERCISES_PROMPT;
-    }
-
-    // initialize the messages array with the prompt
-    const messages = [
-        vscode.LanguageModelChatMessage.User(prompt),
-    ];
-
-    // get all the previous participant messages
-    const previousMessages = context.history.filter(
-        (h) => h instanceof vscode.ChatResponseTurn
-    );
-
-    // add the previous messages to the messages array
-    previousMessages.forEach((m) => {
-        let fullMessage = '';
-        m.response.forEach((r) => {
-            const mdPart = r as vscode.ChatResponseMarkdownPart;
-            fullMessage += mdPart.value.value;
-        });
-        messages.push(vscode.LanguageModelChatMessage.Assistant(fullMessage));
-    });
-
-    // add in the user's message
-    messages.push(vscode.LanguageModelChatMessage.User(request.prompt));
-
-    // send the request
-    const chatResponse = await request.model.sendRequest(messages, {}, token);
-
-    // stream the response
-    for await (const fragment of chatResponse.text) {
-        stream.markdown(fragment);
-    }
-
-    return;
-};
-```
-
-And that's all that needs to be added! The rest of the logic to get the message history, send the request, and stream the request all stays the same.
-
-Now you can type `/exercise`, which will bring up your chat participant, and you can get interactive exercises to practice coding!
-
-![Participant with a slash command](../images/ai/chat-tutorial/exercise-command.png)
-
-## Next steps
-
-Congratulations! You have successfully created a chat participant that can provide explanations and sample exercises for programming concepts. You can further extend your participant by fine-tuning the prompts, adding more slash commands, or leveraging other APIs like the [Language Model API](/api/extension-guides/ai/language-model). Once ready, you can also publish your extension to the [Visual Studio Code Marketplace](https://marketplace.visualstudio.com/vscode).
-
-You can find the complete source code for this tutorial in the [vscode-extensions-sample repository](https://github.com/microsoft/vscode-extension-samples/tree/main/chat-tutorial).
-
-## Related content
-
-- [Chat API extension guide](/api/extension-guides/ai/chat)
-- [Tutorial: Generate AI-powered code annotations by using the Language Model API](/api/extension-guides/ai/language-model-tutorial)
-- [Language Model API extension guide](/api/extension-guides/ai/language-model)
+* [Package an agent plugin](/docs/agent-customization/agent-plugins.md)
+* [Build MCP tools and Apps](/api/extension-guides/ai/mcp.md)
+* [Build editor annotations with the Language Model API](/api/extension-guides/ai/language-model-tutorial.md)
 
 
 ---
 # DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/chat.md
 - **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/chat
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/chat.md
-- **SHA256_FINGERPRINT**: `7b986c0b841ab01614e1740b05656318cff9d58f7cb3eae3947d800b73a96818`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.541848+00:00
+- **SHA256_FINGERPRINT**: `a5fe311904b448327b470dc5a5cf45e266bf14b64d2ae876577e65fb8db18c3a`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.320059+00:00
 ---
 
-**MetaDescription**: A guide to creating an AI extension in Visual Studio Code
+**MetaDescription**: Replace deprecated chat participants with agent plugins, MCP tools and Apps, or editor-specific extension tools.
 
-# Chat Participant API
+# Chat participants (deprecated)
 
-Chat participants are specialized assistants that enable users to extend [chat in VS Code](/docs/chat/chat-overview) with domain-specific experts. Users invoke a chat participant by @-mentioning it, and the participant is then responsible for handling the user's natural language prompt.
+Chat participants are deprecated and are not supported in the Copilot harness. The Chat Participant API remains available for Local harness compatibility. Do not use it for new Copilot integrations.
 
-In this extension guide, you learn how to create a chat participant by using the Chat Participant API.
+For an existing participant, follow [Replace chat participants](/docs/agent-customization/migrate-customizations.md#replace-chat-participants). The guide covers migration for both people who use a participant and extension authors who maintain one.
 
-VS Code has several built-in chat participants like `@vscode`, `@terminal`, or `@workspace`. They are optimized to answer questions about their respective domains.
+## Choose a replacement
 
-Chat participants are different from [language model tools](/api/extension-guides/ai/tools) that are invoked as part of the LLM orchestrating the steps needed to resolve the user's chat prompt. Chat participants receive the user's prompt and orchestrate the tasks that are needed themselves.
+Start with an [agent plugin](/docs/agent-customization/agent-plugins.md) that packages skills and an MCP server:
 
-## Why implement a chat participant in your extension?
+* **Skills** provide domain knowledge and reusable workflows that users can invoke as slash commands.
+* **MCP tools** retrieve data and perform actions.
+* **MCP Apps** provide interactive controls, including buttons, forms, and multi-step workflows. See the [MCP development guide](/api/extension-guides/ai/mcp.md#mcp-apps).
+* **Custom agents** optionally provide an ongoing specialist role.
 
-Implementing a chat participant in your extension has several benefits:
+Use [extension tools](/api/extension-guides/ai/tools.md) when the integration needs live editor context or access to VS Code APIs. For information the user can supply directly, use [chat context attachments](/docs/chat/copilot-chat-context.md).
 
-- **Extend chat** with specialized, domain-specific knowledge and expertise. For example, the built-in `@vscode` participant has knowledge about VS Code and its extension APIs.
-- **Own conversation** by managing the end-to-end user chat prompt and response.
-- **Deeply integrate with VS Code** by using the broad set of extension APIs. For example, use the [debug APIs](/api/extension-guides/debugger-extension) to get the current debugging context and use it as part of the tool's functionality.
-- **Distribute and deploy** chat participants via the Visual Studio Marketplace, providing a reliable and seamless experience for users. Users don't need a separate installation and update process.
+There is no automatic conversion of a participant's request handler, history, feedback events, or response UI. Rebuild interactive UI as an MCP App where appropriate; app-level confirmation does not replace host tool approvals. Keep bespoke model orchestration or editor UI in extension commands and views when it does not fit a tool-based workflow.
 
-You might consider implementing a [language model tool](/api/extension-guides/ai/tools) or [MCP server](/api/extension-guides/ai/mcp) if you want to provide domain-specific capabilities that can be invoked automatically as part of an autonomous, agentic coding session. See the [AI Extensibility Overview](/api/extension-guides/ai/ai-extensibility-overview) for details on the different options and how to decide which approach to use.
+## Related resources
 
-## Parts of the chat user experience
-
-The following screenshot shows the different chat concepts in the Visual Studio Code chat experience for the sample extension.
-
-![Chat concepts explanation](../images/ai/chat/chat.png)
-
-1. Use the `@` syntax to invoke the `@cat` chat participant
-1. Use the `/` syntax to call the `/teach` command
-1. User-provided query, also known as the user prompt
-1. Icon and participant `fullName` that indicate that Copilot is using the `@cat` chat participant
-1. Markdown response, provided by `@cat`
-1. Code fragment included in the markdown response
-1. Button included in the `@cat` response, the button invokes a VS Code command
-1. Suggested [follow-up questions](#4-register-follow-up-requests) provided by the chat participant
-1. Chat input field with the placeholder text provided by the chat participant's `description` property
-
-## Create a chat participant
-
-Implementing a chat participant consists of the following parts:
-
-1. Define the chat participant in the `package.json` file of your extension.
-1. Implement a request handler to process the user's chat prompt and return a response.
-1. (Optional) Implement chat slash commands to provide users with a shorthand notation for common tasks.
-1. (Optional) Define suggested follow-up questions.
-1. (Optional) Implement participant detection where VS Code automatically routes a chat request to the appropriate chat participant without explicit mention from the user.
-
-You can get started with a [basic example project](https://github.com/microsoft/vscode-extension-samples/tree/main/chat-sample).
-
-![Diagram showing how extension can contribute to chat](../images/ai/chat/diagram.png)
-
-### 1. Register the chat participant
-
-The first step to create a chat extension is to register it in your `package.json`, with the following properties:
-
-- `id`: A unique identifier for the chat participant, as defined in the `package.json` file.
-- `name`: A short name for the chat participant, used for @-mentions in the chat.
-- `fullName`: The full name of the chat participant, displayed in the title area of the response.
-- `description`: A brief description of the chat participant's purpose, used as placeholder text in the chat input field.
-- `isSticky`: A boolean value indicating whether the chat participant is persistent in the chat input field after responding.
-
-```json
-"contributes": {
-        "chatParticipants": [
-            {
-                "id": "chat-sample.my-participant",
-                "name": "my-participant",
-                "fullName": "My Participant",
-                "description": "What can I teach you?",
-                "isSticky": true
-            }
-        ]
-}
-```
-
-We suggest using a lowercase `name` and using title case for the `fullName` to align with existing chat participants. Get more info about the [naming conventions for chat participants](#chat-participant-naming-conventions).
-
-> [!NOTE]
-> Some participant names are reserved. If you use such a reserved name, VS Code displays the fully qualified name of your chat participant (including the extension ID).
-
-### 2. Implement a request handler
-
-Implement the chat participant by using the [Chat Participant API](/api/references/vscode-api#chat). This consists of the following steps:
-
-1. On activation of the extension, create the participant with `vscode.chat.createChatParticipant`.
-
-    Provide the ID, which you defined in `package.json`, and a reference to the request handler that you implement in the next step.
-
-    ```typescript
-    export function activate(context: vscode.ExtensionContext) {
-
-        // Register the chat participant and its request handler
-        const cat = vscode.chat.createChatParticipant('chat-sample.my-participant', handler);
-
-        // Optionally, set some properties for @cat
-        cat.iconPath = vscode.Uri.joinPath(context.extensionUri, 'cat.jpeg');
-
-        // Add the chat request handler here
-    }
-    ```
-
-1. In the `activate` function, define the `vscode.ChatRequestHandler` request handler.
-
-    The request handler is responsible for processing the user's chat requests in the VS Code Chat view. Each time a user enters a prompt in the chat input field, the chat request handler is invoked.
-
-    ```typescript
-    const handler: vscode.ChatRequestHandler = async (request: vscode.ChatRequest, context: vscode.ChatContext, stream: vscode.ChatResponseStream, token: vscode.CancellationToken): Promise<ICatChatResult> => {
-
-        // Chat request handler implementation goes here
-
-    };
-    ```
-
-1. Determine the user's intent from `vscode.ChatRequest`.
-
-    To determine the intent of the user's request, you can reference the `vscode.ChatRequest` parameter to access the user's prompt text, commands, and chat location.
-
-    Optionally, you can take advantage of the language model to determine the user's intent, rather than using traditional logic. As part of the `request` object you get a language model instance that the user picked in the chat model dropdown. Learn how you can use the [Language Model API](/api/extension-guides/ai/language-model) in your extension.
-
-    The following code snippet shows the basic structure of first using the command, and then the user prompt to determine the user intent:
-
-    ```typescript
-    const handler: vscode.ChatRequestHandler = async (request: vscode.ChatRequest, context: vscode.ChatContext, stream: vscode.ChatResponseStream, token: vscode.CancellationToken): Promise<ICatChatResult> => {
-
-        // Test for the `teach` command
-        if (request.command == 'teach') {
-
-            // Add logic here to handle the teaching scenario
-            doTeaching(request.prompt, request.variables);
-
-        } else {
-
-            // Determine the user's intent
-            const intent = determineUserIntent(request.prompt, request.variables, request.model);
-
-            // Add logic here to handle other scenarios
-        }
-    };
-    ```
-
-1. Add logic to process the user request.
-
-    Often, chat extensions use the `request.model` language model instance to process the request. In this case, you might adjust the language model prompt to match the user's intent.
-
-    Alternately, you can implement the extension logic by invoking a backend service, by using traditional programming logic, or by using a combination of all these options. For example, you could invoke a web search to gather additional information, which you then provide as context to the language model.
-
-    While processing the current request, you might want to refer to previous chat messages. For example, if a previous response returned a C# code snippet, the user's current request might be "give the code in Python". [Learn how you can use the chat message history](#use-the-chat-message-history).
-
-    If you want to process a request differently based on the location of the chat input (Chat view, Quick Chat, inline chat), you can use the `location` property of the `vscode.ChatRequest`. For example, if the user sends a request from the terminal inline chat, you might look up a shell command. Whereas, if the user uses the Chat view, you could return a more elaborate response.
-
-1. Return the chat response to the user.
-
-    Once you've processed the request, you have to return a response to the user in the Chat view. You can use streaming to respond to user queries.
-
-    Responses can contain different content types: Markdown, images, references, progress, buttons, and file trees.
-
-    ![Response from the cat extension that includes code, markdown and a button](../images/ai/chat/stream.png)
-
-    An extension can use the response stream in the following way:
-
-    ```typescript
-    stream.progress('Picking the right topic to teach...');
-    stream.markdown(`\`\`\`typescript
-    const myStack = new Stack();
-    myStack.push(1); // pushing a number on the stack (or let's say, adding a fish to the stack)
-    myStack.push(2); // adding another fish (number 2)
-    console.log(myStack.pop()); // eating the top fish, will output: 2
-    \`\`\`
-    So remember, Code Kitten, in a stack, the last fish in is the first fish out - which we tech cats call LIFO (Last In, First Out).`);
-
-    stream.button({
-        command: 'cat.meow',
-        title: vscode.l10n.t('Meow!'),
-        arguments: []
-    });
-    ```
-
-    Get more info about the [supported chat response output types](#supported-chat-response-output-types).
-
-    In practice, extensions typically send a request to the language model. Once they get a response from the language model, they might further process it, and decide if they should stream anything back to the user. The VS Code Chat API is streaming-based, and is compatible with the streaming [Language Model API](/api/extension-guides/ai/language-model). This allows extensions to report progress and results continuously with the goal of having a smooth user experience. Learn how you can use the [Language Model API](/api/extension-guides/ai/language-model).
-
-### 3. Register slash commands
-
-A chat participant can contribute slash commands, which are shortcuts to specific functionality provided by the extension. Users can reference slash commands in chat by using the `/` syntax, for example `/explain`.
-
-One of the tasks when answering questions is to determine the user intent. For example, VS Code could infer that `Create a new workspace with Node.js Express Pug TypeScript` means that you want a new project, but `@workspace /new Node.js Express Pug TypeScript` is more explicit, concise, and saves typing time. If you type `/` in the chat input field, VS Code offers a list of registered commands with their description.
-
-![List of commands in chat for @workspace](../images/ai/chat/commands.png)
-
-Chat participants can contribute slash commands with their description by adding them in `package.json`:
-
-```typescript
-"contributes": {
-    "chatParticipants": [
-        {
-            "id": "chat-sample.cat",
-            "name": "cat",
-            "fullName": "Cat",
-            "description": "Meow! What can I teach you?",
-            "isSticky": true,
-            "commands": [
-                {
-                    "name": "teach",
-                    "description": "Pick at random a computer science concept then explain it in purfect way of a cat"
-                },
-                {
-                    "name": "play",
-                    "description": "Do whatever you want, you are a cat after all"
-                }
-            ]
-        }
-    ]
-}
-```
-
-Get more info about the [naming conventions for slash commands](#slash-command-naming-conventions).
-
-### 4. Register follow-up requests
-
-After each chat request, VS Code invokes follow-up providers to get suggested follow-up questions to show to the user. The user can then select the follow-up question, and immediately send it to the chat extension. Use the [`ChatFollowupProvider`](/api/references/vscode-api#ChatFollowupProvider) API to register follow-up prompts of type [`ChatFollowup`](/api/references/vscode-api#ChatFollowup).
-
-The following code snippet shows how to register follow-up requests in a chat extension:
-
-```typescript
-cat.followupProvider = {
-    provideFollowups(result: ICatChatResult, context: vscode.ChatContext, token: vscode.CancellationToken) {
-        if (result.metadata.command === 'teach') {
-            return [{
-                prompt: 'let us play',
-                label: vscode.l10n.t('Play with the cat')
-            } satisfies vscode.ChatFollowup];
-        }
-    }
-};
-```
-
-> [!TIP]
-> Follow-ups should be written as questions or directions, not just concise commands.
-
-### 5. Implement participant detection
-
-To make it easier to use chat participants with natural language, you can implement participant detection. Participant detection is a way to automatically route the user's question to a suitable participant, without having to explicitly mention the participant in the prompt. For example, if the user asks "How do I add a login page to my project?", the question would be automatically routed to the `@workspace` participant because it can answer questions about the user's project.
-
-VS Code uses the chat participant description and examples to determine which participant to route a chat prompt to. You can specify this information in the `disambiguation` property in the extension `package.json` file. The `disambiguation` property contains a list of detection categories, each with a description and examples.
-
-| Property | Description | Examples |
-|----------|-------------|----------|
-| `category` | The detection category. If the participant serves different purposes, you can have a category for each.  | <ul><li>`cat`</li><li>`workspace_questions`</li><li>`web_questions`</li></ul> |
-| `description` | A detailed description of the kinds of questions that are suitable for this participant. | <ul><li>`The user wants to learn a specific computer science topic in an informal way.`</li><li>`The user just wants to relax and see the cat play.`</li></ul> |
-| `examples` | A list of representative example questions. | <ul><li>`Teach me C++ pointers using metaphors`</li><li>`Explain to me what is a linked list in a simple way`</li><li>`Can you show me a cat playing with a laser pointer?`</li></ul> |
-
-You can define participant detection for the overall chat participant, for specific commands, or a combination of both.
-
-The following code snippet shows how to implement participant detection at the participant level.
-
-```json
-"contributes": {
-    "chatParticipants": [
-        {
-            "id": "chat-sample.cat",
-            "fullName": "Cat",
-            "name": "cat",
-            "description": "Meow! What can I teach you?",
-
-            "disambiguation": [
-                {
-                    "category": "cat",
-                    "description": "The user wants to learn a specific computer science topic in an informal way.",
-                    "examples": [
-                        "Teach me C++ pointers using metaphors",
-                        "Explain to me what is a linked list in a simple way",
-                        "Can you explain to me what is a function in programming?"
-                    ]
-                }
-            ]
-        }
-    ]
-}
-```
-
-Similarly, you can also configure participant detection at the command level by adding a `disambiguation` property for one or more items in the `commands` property.
-
-Apply the following guidelines to improve the accuracy of participant detection for your extension:
-
-- **Be specific**: The description and examples should be as specific as possible to avoid conflicts with other participants. Avoid using generic terminology in the participant and command information.
-- **Use examples**: The examples should be representative of the kinds of questions that are suitable for the participant. Use synonyms and variations to cover a wide range of user queries.
-- **Use natural language**: The description and examples should be written in natural language, as if you were explaining the participant to a user.
-- **Test the detection**: Test the participant detection with a variation of example questions and verify there's no conflict with built-in chat participants.
-
-> [!NOTE]
-> Built-in chat participants take precedence for participant detection. For example, a chat participant that operates on workspace files might conflict with the built-in `@workspace` participant.
-
-## Use the chat message history
-
-Participants have access to the message history of the current chat session. A participant can only access messages where it was mentioned. A `history` item is either a `ChatRequestTurn` or a `ChatResponseTurn`. For example, use the following code snippet to retrieve all the previous requests that the user sent to your participant in the current chat session:
-
-```typescript
-const previousMessages = context.history.filter(h => h instanceof vscode.ChatRequestTurn);
-```
-
-History will not be automatically included in the prompt, it is up to the participant to decide if it wants to add history as additional context when passing messages to the language model.
-
-## Supported chat response output types
-
-To return a response to a chat request, you use the [`ChatResponseStream`](/api/references/vscode-api#ChatResponseStream) parameter on the [`ChatRequestHandler`](/api/references/vscode-api#ChatRequestHandler).
-
-The following list provides the output types for a chat response in the Chat view. A chat response can combine multiple different output types.
-
-- **Markdown**
-
-    Render a fragment of Markdown text simple text or images. You can use any Markdown syntax that is part of the [CommonMark](https://commonmark.org/) specification. Use the [`ChatResponseStream.markdown`](/api/references/vscode-api#ChatResponseStream.markdown) method and provide the Markdown text.
-
-    Example code snippet:
-
-    ```typescript
-    // Render Markdown text
-    stream.markdown('# This is a title \n');
-    stream.markdown('This is stylized text that uses _italics_ and **bold**. ');
-    stream.markdown('This is a [link](https://code.visualstudio.com).\n\n');
-    stream.markdown('![VS Code](https://code.visualstudio.com/assets/favicon.ico)');
-    ```
-
-- **Code block**
-
-    Render a code block that supports IntelliSense, code formatting, and interactive controls to apply the code to the active editor. To show a code block, use the [`ChatResponseStream.markdown`](/api/references/vscode-api#ChatResponseStream.markdown) method and apply the Markdown syntax for code blocks (using backticks).
-
-    Example code snippet:
-
-    ```typescript
-    // Render a code block that enables users to interact with
-    stream.markdown('```bash\n');
-    stream.markdown('```ls -l\n');
-    stream.markdown('```');
-    ```
-
-- **Command link**
-
-    Render a link inline in the chat response that users can select to invoke a VS Code command. To show a command link, use the [`ChatResponseStream.markdown`](/api/references/vscode-api#ChatResponseStream.markdown) method and use the Markdown syntax for links `[link text](command:commandId)`, where you provide the command ID in the URL. For example, the following link opens the Command Palette: `[Command Palette](command:workbench.action.showCommands)`.
-
-    To protect against command injection when you load the Markdown text from a service, you have to use a [`vscode.MarkdownString`](/api/references/vscode-api#MarkdownString) object with the `isTrusted` property set to the list of trusted VS Code command IDs. This property is required to enable the command link to work. If the `isTrusted` property is not set or a command is not listed, the command link will not work.
-
-    Example code snippet:
-
-    ```typescript
-    // Use command URIs to link to commands from Markdown
-    let markdownCommandString: vscode.MarkdownString = new vscode.MarkdownString(`[Use cat names](command:${CAT_NAMES_COMMAND_ID})`);
-    markdownCommandString.isTrusted = { enabledCommands: [ CAT_NAMES_COMMAND_ID ] };
-
-    stream.markdown(markdownCommandString);
-    ```
-
-    If the command takes arguments, you need to first JSON encode the arguments and then encode the JSON string as a URI component. You then append the encoded arguments as a query string to the command link.
-
-    ```typescript
-    // Encode the command arguments
-    const encodedArgs = encodeURIComponent(JSON.stringify(args));
-
-    // Use command URIs with arguments to link to commands from Markdown
-    let markdownCommandString: vscode.MarkdownString = new vscode.MarkdownString(`[Use cat names](command:${CAT_NAMES_COMMAND_ID}?${encodedArgs})`);
-    markdownCommandString.isTrusted = { enabledCommands: [ CAT_NAMES_COMMAND_ID ] };
-
-    stream.markdown(markdownCommandString);
-    ```
-
-- **Command button**
-
-    Render a button that invokes a VS Code command. The command can be a built-in command or one that you define in your extension. Use the [`ChatResponseStream.button`](/api/references/vscode-api#ChatResponseStream.button) method and provide the button text and command ID.
-
-    Example code snippet:
-
-    ```typescript
-    // Render a button to trigger a VS Code command
-    stream.button({
-        command: 'my.command',
-        title: vscode.l10n.t('Run my command')
-    });
-    ```
-
-- **File tree**
-
-    Render a file tree control that lets users preview individual files. For example, to show a workspace preview when proposing to create a new workspace. Use the [`ChatResponseStream.filetree`](/api/references/vscode-api#ChatResponseStream.filetree) method and provide an array of file tree elements and the base location (folder) of the files.
-
-    Example code snippet:
-
-    ```typescript
-    // Create a file tree instance
-    var tree: vscode.ChatResponseFileTree[] = [
-        { name: 'myworkspace', children: [
-            { name: 'README' },
-            { name: 'app.js' },
-            { name: 'package.json' }
-        ]}
-    ];
-
-    // Render the file tree control at a base location
-    stream.filetree(tree, baseLocation);
-    ```
-
-- **Progress message**
-
-    Render a progress message during a long-running operation to provide the user with intermediate feedback. For example, to report the completion of each step in a multi-step operation. Use the [`ChatResponseStream.progress`](/api/references/vscode-api#ChatResponseStream.progress) method and provide the message.
-
-    Example code snippet:
-
-    ```typescript
-    // Render a progress message
-    stream.progress('Connecting to the database.');
-    ```
-
-- **Reference**
-
-    Add a reference for an external URL or editor location in the list references to indicate which information you use as context. Use the [`ChatResponseStream.reference`](/api/references/vscode-api#ChatResponseStream.reference) method and provide the reference location.
-
-    Example code snippet:
-
-    ```typescript
-    const fileUri: vscode.Uri = vscode.Uri.file('/path/to/workspace/app.js');  // On Windows, the path should be in the format of 'c:\\path\\to\\workspace\\app.js'
-    const fileRange: vscode.Range = new vscode.Range(0, 0, 3, 0);
-    const externalUri: vscode.Uri = vscode.Uri.parse('https://code.visualstudio.com');
-
-    // Add a reference to an entire file
-    stream.reference(fileUri);
-
-    // Add a reference to a specific selection within a file
-    stream.reference(new vscode.Location(fileUri, fileRange));
-
-    // Add a reference to an external URL
-    stream.reference(externalUri);
-    ```
-
-- **Inline reference**
-
-    Add an inline reference to a URI or editor location. Use the [`ChatResponseStream.anchor`](/api/references/vscode-api#ChatResponseStream.anchor) method and provide the anchor location and optional title. To reference a symbol (for example, a class or variable), you would use a location in an editor.
-
-    Example code snippet:
-
-    ```typescript
-    const symbolLocation: vscode.Uri = vscode.Uri.parse('location-to-a-symbol');
-
-    // Render an inline anchor to a symbol in the workspace
-    stream.anchor(symbolLocation, 'MySymbol');
-    ```
-
-> **Important**: Images and links are only available when they originate from a domain that is in the trusted domain list. Get more info about [link protection in VS Code](/docs/editing/editingevolved#outgoing-link-protection).
-
-## Implement tool calling
-
-To respond to a user request, a chat extension can invoke language model tools. Learn more about [language model tools](/api/extension-guides/ai/tools) and the [tool-calling flow](/api/extension-guides/ai/tools#toolcalling-flow).
-
-You can implement tool calling in two ways:
-
-- By using the [`@vscode/chat-extension-utils` library](https://www.npmjs.com/package/@vscode/chat-extension-utils) to simplify the process of calling tools in a chat extension.
-- By implementing tool calling yourself, which gives you more control over the tool-calling process. For example, to perform additional validation or to handle tool responses in a specific way before sending them to the LLM.
-
-### Implement tool calling with the chat extension library
-
-You can use the [`@vscode/chat-extension-utils` library](https://www.npmjs.com/package/@vscode/chat-extension-utils) to simplify the process of calling tools in a chat extension.
-
-Implement tool calling in the `vscode.ChatRequestHandler` function of your [chat participant](/api/extension-guides/ai/chat).
-
-1. Determine the relevant tools for the current chat context. You can access all available tools by using `vscode.lm.tools`.
-
-    The following code snippet shows how to filter the tools to only those that have a specific tag.
-
-    ```ts
-    const tools = request.command === 'all' ?
-        vscode.lm.tools :
-        vscode.lm.tools.filter(tool => tool.tags.includes('chat-tools-sample'));
-    ```
-
-1. Send the request and tool definitions to the LLM by using `sendChatParticipantRequest`.
-
-    ```ts
-    const libResult = chatUtils.sendChatParticipantRequest(
-        request,
-        chatContext,
-        {
-            prompt: 'You are a cat! Answer as a cat.',
-            responseStreamOptions: {
-                stream,
-                references: true,
-                responseText: true
-            },
-            tools
-        },
-        token);
-    ```
-
-    The `ChatHandlerOptions` object has the following properties:
-
-    - `prompt`: (optional) Instructions for the chat participant prompt.
-    - `model`: (optional) The model to use for the request. If not specified, the model from the chat context is used.
-    - `tools`: (optional) The list of tools to consider for the request.
-    - `requestJustification`: (optional) A string that describes why the request is being made.
-    - `responseStreamOptions`: (optional) Enable `sendChatParticipantRequest` to stream the response back to VS Code. Optionally, you can also enable references and/or response text.
-
-1. Return the result from the LLM. This might contain error details or tool-calling metadata.
-
-    ```ts
-    return await libResult.result;
-    ```
-
-The full source code of this [tool-calling sample](https://github.com/microsoft/vscode-extension-samples/blob/main/chat-sample/src/chatUtilsSample.ts) is available in the VS Code Extension Samples repository.
-
-### Implement tool calling yourself
-
-For more advanced scenarios, you can also implement tool calling yourself. Optionally, you can use the `@vscode/prompt-tsx` library for crafting the LLM prompts. By implementing tool calling yourself, you have more control over the tool-calling process. For example, to perform additional validation or to handle tool responses in a specific way before sending them to the LLM.
-
-View the full source code for implementing [tool calling by using prompt-tsx](https://github.com/microsoft/vscode-extension-samples/blob/main/chat-sample/src/toolParticipant.ts) in the VS Code Extension Samples repository.
-
-## Measuring success
-
-We recommend that you measure the success of your participant by adding telemetry logging for `Unhelpful` user feedback events, and for the total number of requests that your participant handled. An initial participant success metric can then be defined as: `unhelpful_feedback_count / total_requests`.
-
-```typescript
-const logger = vscode.env.createTelemetryLogger({
-     // telemetry logging implementation goes here
-});
-
-cat.onDidReceiveFeedback((feedback: vscode.ChatResultFeedback) => {
-    // Log chat result feedback to be able to compute the success metric of the participant
-    logger.logUsage('chatResultFeedback', {
-        kind: feedback.kind
-    });
-});
-```
-
-Any other user interaction with your chat response should be measured as a positive metric (for example, the user selecting a button that was generated in a chat response). Measuring success with telemetry is crucial when working with AI, since it is a nondeterministic technology. Run experiments, measure and iteratively improve your participant to ensure a good user experience.
-
-## Guidelines and conventions
-
-### Guidelines
-
-Chat participants should not be purely question-answering bots. When building a chat participant, be creative and use the existing VS Code API to create rich integrations in VS Code. Users also love rich and convenient interactions, such as buttons in your responses, menu items that bring users to your participant in chat. Think about real life scenarios where AI can help your users.
-
-It doesn't make sense for every extension to contribute a chat participant. Having too many participants in chat might lead to a bad user experience. Chat participants are best when you want to control the full prompt, including instructions to the language model. You can reuse the carefully crafted Copilot system message and you can contribute context to other participants.
-
-For example, language extensions (such as the C++ extension) can contribute in various other ways:
-
-- Contribute tools that bring language service smarts to the user query. For example, the C++ extension could resolve the `#cpp` tool to the C++ state of the workspace. This gives the Copilot language model the right C++ context to improve the quality of Copilot answers for C++.
-- Contribute smart actions that use the language model, optionally in combination with traditional language service knowledge, to deliver a great user experience. For example, C++ might already offer an "extract to method" smart action that uses the language model to generate a fitting default name for the new method.
-
-Chat extensions should explicitly ask for user consent if they are about to do a costly operation or are about to edit or delete something that can't be undone. To have a great user experience, we discourage extensions from contributing multiple chat participants. Up to one chat participant per extension is a simple model that scales well in the UI.
-
-### Chat participant naming conventions
-
-| Property | Description | Naming guidelines |
-|----------|-------------|-------------------|
-| `id`  | Globally unique identifier for the chat participant | <ul><li>String value</li><li>Use the extension name as a prefix, followed by a unique ID for your extension</li><li>Example: `chat-sample.cat`, `code-visualizer.code-visualizer-participant`</li></ul>  |
-| `name`  | Name of the chat participant, referenced by users through the `@` symbol | <ul><li>String value consisting of alphanumeric characters, underscores, and hyphens</li><li>It's recommended to only use lowercase to ensure consistency with existing chat participants</li><li>Ensure the purpose of the participant is obvious from its name by referencing your company name or its functionality</li><li>Some participant names are reserved. If you use a reserved name, the fully qualified name is shown, including the extension ID</li><li>Examples: `vscode`, `terminal`, `code-visualizer`</li></ul>   |
-| `fullName` | (Optional) The full name of the participant, which is shown as the label for responses coming from the participant | <ul><li>String value</li><li>It's recommended to use [title case](https://en.wikipedia.org/wiki/Title_case)</li><li>Use your company name, brand name, or user-friendly name for your participant</li><li>Examples: `GitHub Copilot`, `VS Code`, `Math Tutor`</li></ul>   |
-| `description` | (Optional) Short description of what the chat participant does, shown as placeholder text in the chat input field or in the list of participants | <ul><li>String value</li><li>It's recommended to use sentence case, without punctuation at the end</li><li>Keep the description short to avoid horizontal scrolling</li><li>Examples: `Ask questions about VS Code`, `Generate UML diagrams for your code`</li></ul>   |
-
-When referring to your chat participant in any of the user-facing elements, such as properties, chat responses, or chat user interface, it's recommended to not use the term *participant*, as it's the name of the API. For example, the `@cat` extension could be called "Cat extension for GitHub Copilot".
-
-### Slash command naming conventions
-
-| Property | Description | Naming guidelines |
-|----------|-------------|-------------------|
-| `name`  | Name of the slash command, referenced by users through the `/` symbol | <ul><li>String value</li><li>It's recommended to use [lower camel case](https://en.wikipedia.org/wiki/Camel_case) to align with existing slash commands</li><li>Ensure the purpose of the command is obvious from its name</li><li>Examples: `fix`, `explain`, `runCommand`</li></ul>   |
-| `description` | (Optional) Short description of what the slash command does, shown as placeholder text in the chat input field or in the list of participants and commands | <ul><li>String value</li><li>It's recommended to use sentence case, without punctuation at the end</li><li>Keep the description short to avoid horizontal scrolling</li><li>Examples: `Search for and execute a command in VS Code`, `Generate unit tests for the selected code`</li></ul>   |
-
-## Publishing your extension
-
-Once you have created your AI extension, you can publish your extension to the Visual Studio Marketplace:
-
-- Before publishing to the VS Marketplace we recommend that you read the [Microsoft AI tools and practices guidelines](https://www.microsoft.com/en-us/ai/tools-practices). These guidelines provide best practices for the responsible development and use of AI technologies.
-- By publishing to the VS Marketplace, your extension is adhering to the [GitHub Copilot extensibility acceptable development and use policy](https://docs.github.com/en/early-access/copilot/github-copilot-extensibility-platform-partnership-plugin-acceptable-development-and-use-policy).
-- Upload to the Marketplace as described in [Publishing Extension](https://code.visualstudio.com/api/working-with-extensions/publishing-extension).
-- If your extension already contributes functionality other than chat, we recommend that you do not introduce an extension dependency on GitHub Copilot in the [extension manifest](/api/references/extension-manifest). This ensures that extension users that do not use GitHub Copilot can use the non-chat functionality without having to install GitHub Copilot.
-
-## Extending GitHub Copilot via GitHub Apps
-
-Alternatively, it is possible to extend GitHub Copilot by creating a GitHub App that contributes a chat participant in the Chat view. A GitHub App is backed by a service and works across all GitHub Copilot surfaces, such as github.com, Visual Studio, or VS Code. On the other hand, GitHub Apps do not have full access to the VS Code API. To learn more about extending GitHub Copilot through a GitHub App see the [GitHub documentation](https://docs.github.com/en/copilot/building-copilot-extensions/about-building-copilot-extensions).
-
-## Using the language model
-
-Chat participants can use the language model in a wide range of ways. Some participants only make use of the language model to get answers to custom prompts, for example the [sample chat participant](https://github.com/microsoft/vscode-extension-samples/tree/main/chat-sample). Other participants are more advanced and act like autonomous agents that invoke multiple tools with the help of the language model. An example of such an advanced participant is the built-in `@workspace` that knows about your workspace and can answer questions about it. Internally, `@workspace` is powered by multiple tools: GitHub's knowledge graph, combined with semantic search, local code indexes, and VS Code's language services.
-
-## Related content
-
-- [Chat Participant API Reference](/api/references/vscode-api#chat)
-- [Use the Language Model API in your extension](/api/extension-guides/ai/language-model)
-- [Contribute a language model tool](/api/extension-guides/ai/tools)
+* [Migrate a code tutor to a plugin](/docs/agent-customization/migrate-customizations.md#example-migrate-a-code-tutor-to-a-plugin)
+* [Build editor features with the Language Model API](/api/extension-guides/ai/language-model.md)
 
 
 ---
 # DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/language-model-chat-provider.md
 - **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/language-model-chat-provider
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/language-model-chat-provider.md
-- **SHA256_FINGERPRINT**: `0120c7dfbff5195e1c32b815b82fb6488d0db125b8b3cd4aab39e52cb77bb2b2`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.661286+00:00
+- **SHA256_FINGERPRINT**: `ad61988106945a02b30b35c8695bb8f889be666ec35e4eb8dea6045e5d3e76db`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.295600+00:00
 ---
 
 **MetaDescription**: Learn how to implement a LanguageModelChatProvider to contribute custom language models to VS Code's chat experience for extensions.
@@ -18340,15 +17345,15 @@ You can get started with a [basic example project](https://github.com/microsoft/
 
 - [VS Code API Reference](/api/references/vscode-api)
 - [Language Model API Guide](/api/extension-guides/ai/language-model)
-- [Chat API Extension](/api/extension-guides/ai/chat)
+* [AI extensibility options](/api/extension-guides/ai/ai-extensibility-overview.md)
 
 
 ---
 # DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/language-model-tutorial.md
 - **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/language-model-tutorial
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/language-model-tutorial.md
-- **SHA256_FINGERPRINT**: `369166e8fa7a2f0e808e1deae69c2ab3ba1d96a1a55183139610cc43e6726384`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.679723+00:00
+- **SHA256_FINGERPRINT**: `eb627309ad2030ef650705fe2eed7a6f6f4b005f6a0d8607291a34670ff2f50b`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.404324+00:00
 ---
 
 **MetaDescription**: Tutorial that walks you through creating a VS Code extension that uses the Language Model API to generate AI-powered code annotations.
@@ -18673,23 +17678,23 @@ Restart your extension with the green arrow or press ``F5`` if the extension is 
 
 In this tutorial, you learned how to create a VS Code extension that integrates AI into the editor with the language model API. You used the VS Code extension API to get the code from the current tab, sent it to the model with a custom prompt, and then parsed and displayed the model result right in the editor using decorators.
 
-Next, you can extend your Code Tutor extension to [include a chat participant](/api/extension-guides/ai/chat-tutorial) as well which will allow users to interact directly with your extension via the GitHub Copilot chat interface. You can also [explore the full range of API's in VS Code](/api/references/vscode-api) to explore new ways of building custom AI experiences your editor.
+To add a conversational teaching workflow, [package a code-tutor plugin with skills, MCP tools, and MCP Apps](/docs/agent-customization/migrate-customizations.md#example-migrate-a-code-tutor-to-a-plugin). Keep editor-specific functionality, such as annotations and diagnostics, in the extension and expose it through [extension tools](/api/extension-guides/ai/tools.md) when the agent needs it.
 
 You can find the complete source code for this tutorial in the [vscode-extensions-sample repository](https://github.com/microsoft/vscode-extension-samples/tree/main/lm-api-tutorial).
 
 ## Related content
 
 - [Language Model API extension guide](/api/extension-guides/ai/language-model)
-- [Tutorial: Create a code tutor chat participant with the Chat API](/api/extension-guides/ai/chat-tutorial)
-- [VS Code Chat API reference](/api/extension-guides/ai/chat)
+* [Agent plugins](/docs/agent-customization/agent-plugins.md)
+* [MCP tools and Apps](/api/extension-guides/ai/mcp.md)
 
 
 ---
 # DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/language-model.md
 - **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/language-model
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/language-model.md
-- **SHA256_FINGERPRINT**: `791521f193149917d77e6b5da6343d221ed5e23efa0e6ee372afd416b16ece75`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.666900+00:00
+- **SHA256_FINGERPRINT**: `0edc0ff2be71606b6eeeb985cc21d066a326e1eda9d49b4ed1c49a121e2bed62`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.300434+00:00
 ---
 
 **MetaDescription**: A guide to adding AI-powered features to a VS Code extension by using language models and natural language understanding.
@@ -18698,7 +17703,7 @@ You can find the complete source code for this tutorial in the [vscode-extension
 
 The Language Model API enables you to [use the Language Model](/api/references/vscode-api#lm) and integrate AI-powered features and natural language processing in your Visual Studio Code extension.
 
-You can use the Language Model API in different types of extensions. A typical use for this API is in [chat extensions](/api/extension-guides/ai/chat), where you use a language model to interpret the user's request and help provide an answer. However, the use of the Language Model API is not limited to this scenario. You might use a language model in a [language](/api/language-extensions/overview) or [debugger](/api/extension-guides/debugger-extension) extension, or as part of a [command](/api/extension-guides/command) or [task](/api/extension-guides/task-provider) in a custom extension. For example, the Rust extension might use the Language Model to offer default names to improve its rename experience.
+Use the Language Model API to add model-powered behavior to a [language](/api/language-extensions/overview) or [debugger](/api/extension-guides/debugger-extension) extension, or to an extension [command](/api/extension-guides/command) or [task](/api/extension-guides/task-provider). For example, a language extension might suggest names during a rename operation. To extend Copilot chat workflows, start with [agent plugins or tools](/api/extension-guides/ai/ai-extensibility-overview.md#extend-the-chat-experience) instead of implementing a chat participant.
 
 The process for using the Language Model API consists of the following steps:
 
@@ -18708,7 +17713,7 @@ The process for using the Language Model API consists of the following steps:
 
 The following sections provide more details on how to implement these steps in your extension.
 
-To get started, you can explore the [chat extension sample](https://github.com/microsoft/vscode-extension-samples/tree/main/chat-sample).
+To get started, follow the [editor annotations tutorial](/api/extension-guides/ai/language-model-tutorial.md).
 
 ## Build the language model prompt
 
@@ -18752,7 +17757,7 @@ const craftedPrompt = [
 
 ## Send the language model request
 
-Once you've built the prompt for the language model, you first select the language model you want to use with the [`selectChatModels`](/api/references/vscode-api#lm.selectChatModels) method. This method returns an array of language models that match the specified criteria. If you are implementing a chat participant, we recommend that you instead use the model that is passed as part of the `request` object in your chat request handler. This ensures that your extension respects the model that the user chose in the chat model dropdown. Then, you send the request to the language model by using the [`sendRequest`](/api/references/vscode-api#LanguageModelChat) method.
+Once you've built the prompt, select the language model by using the [`selectChatModels`](/api/references/vscode-api#lm.selectChatModels) method. This method returns an array of language models that match the specified criteria. Then, send the request to the language model by using the [`sendRequest`](/api/references/vscode-api#LanguageModelChat) method.
 
 To select the language model, you can specify the following properties: `vendor`, `id`, `family`, or `version`. Use these properties to either broadly match all models of a given vendor or family, or select one specific model by its ID. Learn more about these properties in the [API reference](/api/references/vscode-api#LanguageModelChat).
 
@@ -18914,8 +17919,8 @@ Once you have created your AI extension, you can publish your extension to the V
 # DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/mcp.md
 - **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/mcp
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/mcp.md
-- **SHA256_FINGERPRINT**: `14cc8be484ead8ee0f9258ab6392d2e34f6392f1cc3f6d5fca537b59639ba96f`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.675436+00:00
+- **SHA256_FINGERPRINT**: `168f29d0ae5c0af6f12494d2b7ebcfbbcf50497ff6af37033a8f68cb7f38cc1e`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.372976+00:00
 ---
 
 **MetaDescription**: A comprehensive guide for developers building MCP servers that work with Visual Studio Code.
@@ -19228,8 +18233,7 @@ An `McpServerDefinition` object can be one of the following types:
 - `vscode.McpStdioServerDefinition`: represents an MCP server available by running a local process and operating on its stdin and stdout streams.
 - `vscode.McpHttpServerDefinition`: represents an MCP server available using the Streamable HTTP transport.
 
-<details>
-<summary>Example MCP server definition provider</summary>
+**Example MCP server definition provider**
 
 The following example demonstrates how to register MCP servers in an extension and prompt the user for an API key when starting the server.
 
@@ -19286,8 +18290,6 @@ export function activate(context: vscode.ExtensionContext) {
 }
 ```
 
-</details>
-
 ## Troubleshoot and debug MCP servers
 
 ### MCP development mode in VS Code
@@ -19297,8 +18299,7 @@ When developing MCP servers, you can enable _development mode_ for MCP servers b
 * `watch`: A glob pattern, or an array of glob patterns, to watch for file changes that restart the MCP server.
 * `debug`: Enables you to set up a debugger with the MCP server. Currently, VS Code supports debugging Node.js and Python MCP servers.
 
-    <details>
-    <summary>Node.js MCP server</summary>
+**Node.js MCP server**
 
     To debug a Node.js MCP server, set the `debug.type` property to `node`.
 
@@ -19319,10 +18320,7 @@ When developing MCP servers, you can enable _development mode_ for MCP servers b
     }
     ```
 
-    </details>
-
-    <details>
-    <summary>Python MCP server</summary>
+**Python MCP server**
 
     To debug a Python MCP server, set the `debug.type` property to `debugpy`, and optionally set the `debug.debugpyPath` property to the path of the `debugpy` module if it is not installed in the default Python environment.
 
@@ -19345,8 +18343,6 @@ When developing MCP servers, you can enable _development mode_ for MCP servers b
         }
     }
     ```
-
-    </details>
 
 ### MCP output log
 
@@ -19683,8 +18679,8 @@ By following this pattern, you can ensure that the most important parts of your 
 # DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/tools.md
 - **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/tools
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/tools.md
-- **SHA256_FINGERPRINT**: `191acf59d36b293b3bd52bdba0816c832562d070221cb86edd49036fcca683e9`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.671306+00:00
+- **SHA256_FINGERPRINT**: `3f4abd6a3806ffd6defab1e6c1735e6bfc916896efbc9bad204828d8f96d6e8e`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.526148+00:00
 ---
 
 **MetaDescription**: A guide to creating a language model tool and how to implement tool calling in a chat extension
@@ -19793,8 +18789,7 @@ The first step to define a language model tool in your extension is to define it
     }
     ```
 
-<details>
-<summary>Example tool definition</summary>
+**Example tool definition**
 
 The following example shows how to define a tool that counts the number of active tabs in a tab group.
 
@@ -19827,8 +18822,6 @@ The following example shows how to define a tool that counts the number of activ
     ]
 }
 ```
-
-</details>
 
 ### 2. Tool implementation
 
@@ -19969,6 +18962,6163 @@ Get more best practices for creating tools in the [OpenAI documentation](https:/
 - [Language Model API reference](/api/references/vscode-api#lm)
 - [Register an MCP server in a VS Code extension](/api/extension-guides/ai/mcp)
 - [Use MCP tools in agent mode](/docs/agent-customization/mcp-servers.md)
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.agentEditorComments.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.agentEditorComments.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.agentEditorComments.d.ts
+- **SHA256_FINGERPRINT**: `a3fb2bc6994074143cbfbe1c04e2f989f97e927236fc4d5699e45e466a2bc091`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.253074+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.agentEditorComments.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	/**
+	 * A comment anchored to a range of a resource, sourced from the workbench's
+	 * agent/session comment store (the same store the built-in code editor renders
+	 * its session comments from).
+	 */
+	export interface AgentEditorComment {
+		/** Stable identity of the comment within its provider. */
+		readonly id: string;
+		/** The range the comment is anchored to. */
+		readonly range: Range;
+		/** The comment text. */
+		readonly body: string;
+		/** Display name of the author, if any. */
+		readonly author?: string;
+	}
+
+	/**
+	 * A live, disposable view of the agent/session comments for a resource that is
+	 * not necessarily shown in a {@link TextEditor} (for example a document rendered
+	 * by a custom editor).
+	 *
+	 * The comments are backed by the same workbench store the code editor uses, so
+	 * comments added here are visible in the code editor and vice versa.
+	 */
+	export interface AgentEditorCommentsProvider extends Disposable {
+		/**
+		 * The current comments for the resource. Empty when the resource has no
+		 * comments or is not in scope for any session.
+		 */
+		readonly comments: readonly AgentEditorComment[];
+
+		/**
+		 * Whether new comments can be added for the resource. This is `false` when the
+		 * resource is not in scope for a session, in which case {@link addComment} is a
+		 * no-op. UI that lets the user author comments should be hidden while this is
+		 * `false`.
+		 *
+		 * Changes to this value are reported through {@link onDidChange}.
+		 */
+		readonly acceptsComments: boolean;
+
+		/**
+		 * An event that fires whenever {@link comments} or {@link acceptsComments}
+		 * changes.
+		 */
+		readonly onDidChange: Event<void>;
+
+		/**
+		 * An event that fires when the workbench requests that a comment be revealed.
+		 * The event value is the {@link AgentEditorComment.id id} to reveal.
+		 */
+		readonly onDidRevealComment: Event<string>;
+
+		/**
+		 * Add a comment for the resource at the given range. No-op when the resource
+		 * is not in scope for a session.
+		 *
+		 * @param range The range to anchor the comment to.
+		 * @param body The comment text.
+		 */
+		// eslint-disable-next-line local/vscode-dts-provider-naming
+		addComment(range: Range, body: string): void;
+
+		/**
+		 * Delete the comment with the given id. No-op when no comment with that id
+		 * exists or the resource is not in scope for a session.
+		 *
+		 * @param id The {@link AgentEditorComment.id id} of the comment to delete.
+		 */
+		// eslint-disable-next-line local/vscode-dts-provider-naming
+		deleteComment(id: string): void;
+	}
+
+	export namespace window {
+		/**
+		 * Observe (and contribute to) the agent/session comments for a resource.
+		 *
+		 * The resource only needs to be backed by an open {@link TextDocument}; it does
+		 * not need to be shown in a {@link TextEditor}. This is useful for custom
+		 * editors, which render their document in a webview rather than a text editor.
+		 *
+		 * The returned provider must be disposed once it is no longer needed.
+		 *
+		 * @param uri The resource to observe.
+		 * @returns A live, disposable view of the resource's comments.
+		 */
+		export function createAgentEditorComments(uri: Uri): AgentEditorCommentsProvider;
+	}
+
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.agentSessionsWorkspace.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.agentSessionsWorkspace.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.agentSessionsWorkspace.d.ts
+- **SHA256_FINGERPRINT**: `67264096ed5275c8317e8d79476f5d009628ea0ce8cd4337e6038e9f7171cadb`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.273981+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.agentSessionsWorkspace.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	export namespace workspace {
+
+		/**
+		 * Indicates whether the current workspace is an agent sessions workspace.
+		 *
+		 * Agent sessions workspace is a special workspace used for AI agent interactions
+		 * where the window is dedicated to agent session management.
+		 */
+		export const isAgentSessionsWorkspace: boolean;
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.agentsWindowConfiguration.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.agentsWindowConfiguration.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.agentsWindowConfiguration.d.ts
+- **SHA256_FINGERPRINT**: `ed7ef3627a864b8217f0b673e5d1e8d133231a0ad222aaa32db339426b080132`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.370001+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.agentsWindowConfiguration.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+// Empty module declaration — this proposed API enables the `agentsWindow`
+// property in `contributes.configuration` property schemas (package.json).
+// No TypeScript API surface is added.
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatContextProvider.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatContextProvider.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatContextProvider.d.ts
+- **SHA256_FINGERPRINT**: `b11ecb0471fb5cb41a66ee3ce8425ac8efa2ca5673f51e98228c89babaa724f7`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.277880+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatContextProvider.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	// https://github.com/microsoft/vscode/issues/271104 @alexr00
+
+	export type TabSelector = { uri: DocumentSelector } | { viewType: string };
+
+	export namespace chat {
+
+		/**
+		 * Register a chat workspace context provider. Workspace context is automatically included in all chat requests.
+		 *
+		 * To ensure your extension is activated when chat context is requested, make sure to include the following activations events:
+		 * - If your extension implements `provideWorkspaceChatContext` or `provideChatContextForResource`, find an activation event which is a good signal to activate.
+		 *   Ex: `onLanguage:<languageId>`, `onWebviewPanel:<viewType>`, etc.`
+		 * - If your extension implements `provideChatContextExplicit`, your extension will be automatically activated when the user requests explicit context.
+		 *
+		 * @param id Unique identifier for the provider.
+		* @param provider The chat workspace context provider.
+		*/
+		export function registerChatWorkspaceContextProvider(id: string, provider: ChatWorkspaceContextProvider): Disposable;
+
+		/**
+		 * Register a chat explicit context provider. Explicit context items are shown as options when the user explicitly attaches context use the "Add Context" action in the chat input box.
+		 *
+		 * Explicit context providers should also be statically contributed in package.json using the `chatContext` contribution point.
+		 *
+		 * To ensure your extension is activated when chat context is requested, make sure to include the `onChatContextProvider:<id>` activation event in your `package.json`.
+		 *
+		 * @param id Unique identifier for the provider.
+		 * @param provider The chat explicit context provider.
+		 */
+		export function registerChatAttachContextProvider(id: string, provider: ChatAttachContextProvider): Disposable;
+
+		/**
+		 * @deprecated
+		 */
+		export function registerChatExplicitContextProvider(id: string, provider: any): Disposable;
+
+		/**
+		 * Register a chat resource context provider. Resource context is provided for a specific resource.
+		 * Make sure to pass a selector that matches the resource you want to provide context for.
+		 *
+		 * To ensure your extension is activated when chat context is requested, make sure to include the `onChatContextProvider:<id>` activation event in your `package.json`.
+		 *
+		 * @param selector Document selector to filter which resources the provider is called for.
+		 * @param id Unique identifier for the provider.
+		 * @param provider The chat resource context provider.
+		 */
+		export function registerChatTabContextProvider(selector: TabSelector, id: string, provider: ChatTabContextProvider): Disposable;
+
+		/**
+		 * @deprecated
+		 */
+		export function registerChatResourceContextProvider(selector: DocumentSelector, id: string, provider: any): Disposable;
+
+	}
+
+	export interface ChatContextItem {
+		/**
+		 * Icon for the context item.
+		 * - If `iconPath` is not defined, no icon is shown.
+		 * - If `iconPath` is a file or folder {@link ThemeIcon theme icon}, the icon is derived from {@link resourceUri} if `resourceUri` is defined.
+		 * - Otherwise, `iconPath` is used.
+		 */
+		iconPath?: IconPath;
+		/**
+		 * Human readable label for the context item.
+		 * If not set, the label is derived from {@link resourceUri}.
+		 */
+		label?: string;
+		/**
+		 * A resource URI for the context item.
+		 * Used to derive the {@link label} and {@link icon} if they are not set.
+		 */
+		resourceUri?: Uri;
+		/**
+		 * An optional description of the context item, e.g. to describe the item to the language model.
+		 */
+		modelDescription?: string;
+		/**
+		 * An optional tooltip to show when hovering over the context item in the UI.
+		 */
+		tooltip?: MarkdownString;
+		/**
+		 * The value of the context item. Can be omitted when returned from one of the `provide` methods if the provider supports `resolveChatContext`.
+		 */
+		value?: string;
+		/**
+		 * An optional command that is executed when the context item is clicked.
+		 * The original context item will be passed as the first argument to the command.
+		 */
+		command?: Command;
+	}
+	//@api should we rename to ChatGlobalContextProvider?
+	export interface ChatWorkspaceContextProvider<T extends ChatContextItem = ChatContextItem> {
+
+		/**
+		 * An optional event that should be fired when the workspace chat context has changed.
+		 */
+		onDidChangeWorkspaceChatContext?: Event<void>;
+
+		/**
+		 * Provide a list of chat context items to be included as workspace context for all chat requests.
+		 * This should be used very sparingly to avoid providing useless context and to avoid using up the context window.
+		 * A good example use case is to provide information about which branch the user is working on in a source control context.
+		 *
+		 * @param token A cancellation token.
+		 */
+		provideWorkspaceChatContext(token: CancellationToken): ProviderResult<T[]>;
+	}
+
+	export interface ChatAttachContextProvider<T extends ChatContextItem = ChatContextItem> {
+
+		/**
+		 * Provide a list of chat context items that a user can choose from. These context items are shown as options when the user explicitly attaches context.
+		 * Chat context items can be provided without a `value`, as the `value` can be resolved later using `resolveChatContext`.
+		 * `resolveChatContext` is only called for items that do not have a `value`.
+		 *
+		 * @param token A cancellation token.
+		 */
+		provideAttachChatContext(token: CancellationToken): ProviderResult<T[]>;
+
+		/**
+		 * If a chat context item is provided without a `value`, this method is called to resolve the `value` for the item.
+		 *
+		 * @param context The context item to resolve.
+		 * @param token A cancellation token.
+		 */
+		resolveAttachChatContext(context: T, token: CancellationToken): ProviderResult<ChatContextItem>;
+	}
+
+	export interface ChatTabContextProvider<T extends ChatContextItem = ChatContextItem> {
+
+		/**
+		 * Given a particular resource, provide a chat context item for it. This is used for implicit context (see the settings `chat.implicitContext.enabled` and `chat.implicitContext.suggestedContext`).
+		 * Chat context items can be provided without a `value`, as the `value` can be resolved later using `resolveChatContext`.
+		 * `resolveChatContext` is only called for items that do not have a `value`.
+		 *
+		 * Called when the resource is a webview or a text editor.
+		 *
+		 * @param options Options include the resource for which to provide context.
+		 * @param token A cancellation token.
+		 */
+		// Can use active editor?\
+		// Rename ChatTab to be consistent
+		provideChatTabContext(options: { tab: Tab }, token: CancellationToken): ProviderResult<T | undefined>;
+
+		/**
+		 * If a chat context item is provided without a `value`, this method is called to resolve the `value` for the item.
+		 *
+		 * @param context The context item to resolve.
+		 * @param token A cancellation token.
+		 */
+		resolveChatTabContext(context: T, token: CancellationToken): ProviderResult<ChatContextItem>;
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatDebug.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatDebug.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatDebug.d.ts
+- **SHA256_FINGERPRINT**: `f0e450d0591d5ecd14ebbc80700b330de82c62d2fc17c1be626ca13cb9f54abb`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.397055+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatDebug.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+	/**
+	 * The severity level of a chat debug log event.
+	 */
+	export enum ChatDebugLogLevel {
+		Trace = 0,
+		Info = 1,
+		Warning = 2,
+		Error = 3
+	}
+
+	/**
+	 * The outcome of a tool call.
+	 */
+	export enum ChatDebugToolCallResult {
+		Success = 0,
+		Error = 1
+	}
+
+	/**
+	 * A tool call event in the chat debug log, representing the invocation
+	 * of a tool (e.g., file search, terminal command, code edit).
+	 */
+	export class ChatDebugToolCallEvent {
+		/**
+		 * A unique identifier for this event.
+		 */
+		id?: string;
+
+		/**
+		 * The chat session this event belongs to. When provided, the event
+		 * is attributed to this session even if it arrives through a progress
+		 * pipeline opened for a different session.
+		 */
+		sessionResource?: Uri;
+
+		/**
+		 * The timestamp when the event was created.
+		 */
+		created: Date;
+
+		/**
+		 * The id of a parent event, used to build a hierarchical tree
+		 * (e.g., tool calls nested under a model turn).
+		 */
+		parentEventId?: string;
+
+		/**
+		 * The name of the tool that was called.
+		 */
+		toolName: string;
+
+		/**
+		 * An optional identifier for the tool call, as assigned by the model.
+		 */
+		toolCallId?: string;
+
+		/**
+		 * The serialized input (arguments) passed to the tool.
+		 */
+		input?: string;
+
+		/**
+		 * The serialized output (result) returned by the tool.
+		 */
+		output?: string;
+
+		/**
+		 * The outcome of the tool call.
+		 */
+		result?: ChatDebugToolCallResult;
+
+		/**
+		 * How long the tool call took to complete, in milliseconds.
+		 */
+		durationInMillis?: number;
+
+		/**
+		 * Create a new ChatDebugToolCallEvent.
+		 * @param toolName The name of the tool that was called.
+		 * @param created The timestamp when the event was created.
+		 */
+		constructor(toolName: string, created: Date);
+	}
+
+	/**
+	 * A model turn event in the chat debug log, representing a single
+	 * request/response exchange with a language model.
+	 */
+	export class ChatDebugModelTurnEvent {
+		/**
+		 * A unique identifier for this event.
+		 */
+		id?: string;
+
+		/**
+		 * The chat session this event belongs to. When provided, the event
+		 * is attributed to this session even if it arrives through a progress
+		 * pipeline opened for a different session.
+		 */
+		sessionResource?: Uri;
+
+		/**
+		 * The timestamp when the event was created.
+		 */
+		created: Date;
+
+		/**
+		 * The id of a parent event, used to build a hierarchical tree.
+		 */
+		parentEventId?: string;
+
+		/**
+		 * The identifier of the model used (e.g., "gpt-4o").
+		 */
+		model?: string;
+
+		/**
+		 * The number of tokens in the input/prompt.
+		 */
+		inputTokens?: number;
+
+		/**
+		 * The number of tokens in the model's output/completion.
+		 */
+		outputTokens?: number;
+
+		/**
+		 * The total number of tokens consumed (input + output).
+		 */
+		totalTokens?: number;
+
+		/**
+		 * How long the model turn took to complete, in milliseconds.
+		 */
+		durationInMillis?: number;
+
+		/**
+		 * The number of cached input tokens reused from a previous request.
+		 */
+		cachedTokens?: number;
+
+		/**
+		 * The time in milliseconds from sending the request to receiving the
+		 * first response token.
+		 */
+		timeToFirstTokenInMillis?: number;
+
+		/**
+		 * The unique request id assigned by the model provider for this turn.
+		 */
+		requestId?: string;
+
+		/**
+		 * The maximum number of prompt/input tokens allowed for this request.
+		 */
+		maxInputTokens?: number;
+
+		/**
+		 * The maximum number of response/output tokens allowed for this request.
+		 */
+		maxOutputTokens?: number;
+
+		/**
+		 * The short name or label identifying this request (e.g., "panel/editAgent").
+		 */
+		requestName?: string;
+
+		/**
+		 * Cache-relevant request options as a JSON-stringified blob (e.g.
+		 * `tool_choice`, `reasoning_effort`, `thinking`, `response_format`).
+		 * When this differs between two requests, the prompt cache is
+		 * invalidated even if the message array is byte-identical.
+		 */
+		requestOptions?: string;
+
+		/**
+		 * The outcome status of the model turn (e.g., "success", "failure", "canceled").
+		 */
+		status?: string;
+
+		/**
+		 * The per-request cost from `copilot_usage.total_nano_aiu`, in nano-AIUs.
+		 */
+		copilotUsageNanoAiu?: number;
+
+		/**
+		 * Create a new ChatDebugModelTurnEvent.
+		 * @param created The timestamp when the event was created.
+		 */
+		constructor(created: Date);
+	}
+
+	/**
+	 * A generic log event in the chat debug log, for unstructured or
+	 * miscellaneous messages that don't fit a more specific event type.
+	 */
+	export class ChatDebugGenericEvent {
+		/**
+		 * A unique identifier for this event.
+		 */
+		id?: string;
+
+		/**
+		 * The chat session this event belongs to. When provided, the event
+		 * is attributed to this session even if it arrives through a progress
+		 * pipeline opened for a different session.
+		 */
+		sessionResource?: Uri;
+
+		/**
+		 * The timestamp when the event was created.
+		 */
+		created: Date;
+
+		/**
+		 * The id of a parent event, used to build a hierarchical tree.
+		 */
+		parentEventId?: string;
+
+		/**
+		 * A short name describing the event (e.g., "Resolved skills (start)").
+		 */
+		name: string;
+
+		/**
+		 * Optional details of the event.
+		 */
+		details?: string;
+
+		/**
+		 * The severity level of the event.
+		 */
+		level: ChatDebugLogLevel;
+
+		/**
+		 * The category classifying the kind of event.
+		 */
+		category?: string;
+
+		/**
+		 * Create a new ChatDebugGenericEvent.
+		 * @param name A short name describing the event.
+		 * @param level The severity level.
+		 * @param created The timestamp when the event was created.
+		 */
+		constructor(name: string, level: ChatDebugLogLevel, created: Date);
+	}
+
+	/**
+	 * The status of a sub-agent invocation.
+	 */
+	export enum ChatDebugSubagentStatus {
+		Running = 0,
+		Completed = 1,
+		Failed = 2
+	}
+
+	/**
+	 * A subagent invocation event in the chat debug log, representing
+	 * a spawned sub-agent within a chat session.
+	 */
+	export class ChatDebugSubagentInvocationEvent {
+		/**
+		 * A unique identifier for this event.
+		 */
+		id?: string;
+
+		/**
+		 * The chat session this event belongs to. When provided, the event
+		 * is attributed to this session even if it arrives through a progress
+		 * pipeline opened for a different session.
+		 */
+		sessionResource?: Uri;
+
+		/**
+		 * The timestamp when the event was created.
+		 */
+		created: Date;
+
+		/**
+		 * The id of a parent event, used to build a hierarchical tree.
+		 */
+		parentEventId?: string;
+
+		/**
+		 * The name of the sub-agent that was invoked.
+		 */
+		agentName: string;
+
+		/**
+		 * A short description of the task assigned to the sub-agent.
+		 */
+		description?: string;
+
+		/**
+		 * The current status of the sub-agent invocation.
+		 */
+		status?: ChatDebugSubagentStatus;
+
+		/**
+		 * How long the sub-agent took to complete, in milliseconds.
+		 */
+		durationInMillis?: number;
+
+		/**
+		 * The number of tool calls made by this sub-agent.
+		 */
+		toolCallCount?: number;
+
+		/**
+		 * The number of model turns within this sub-agent.
+		 */
+		modelTurnCount?: number;
+
+		/**
+		 * Create a new ChatDebugSubagentInvocationEvent.
+		 * @param agentName The name of the sub-agent.
+		 * @param created The timestamp when the event was created.
+		 */
+		constructor(agentName: string, created: Date);
+	}
+
+	/**
+	 * A user message event in the chat debug log, representing the prompt
+	 * sent by the user (including system context, instructions, etc.).
+	 */
+	export class ChatDebugUserMessageEvent {
+		/**
+		 * A unique identifier for this event.
+		 */
+		id?: string;
+
+		/**
+		 * The chat session this event belongs to. When provided, the event
+		 * is attributed to this session even if it arrives through a progress
+		 * pipeline opened for a different session.
+		 */
+		sessionResource?: Uri;
+
+		/**
+		 * The timestamp when the event was created.
+		 */
+		created: Date;
+
+		/**
+		 * The id of a parent event, used to build a hierarchical tree.
+		 */
+		parentEventId?: string;
+
+		/**
+		 * A short summary of the user's request for display in the event list.
+		 */
+		message: string;
+
+		/**
+		 * The structured sections of the full prompt (e.g., userRequest, context,
+		 * reminderInstructions). Rendered as collapsible sections in the detail view.
+		 */
+		sections: ChatDebugMessageSection[];
+
+		/**
+		 * Create a new ChatDebugUserMessageEvent.
+		 * @param message A short summary of the user's request.
+		 * @param created The timestamp when the event was created.
+		 */
+		constructor(message: string, created: Date);
+	}
+
+	/**
+	 * An agent response event in the chat debug log, representing the
+	 * response produced by the agent (including reasoning, if available).
+	 */
+	export class ChatDebugAgentResponseEvent {
+		/**
+		 * A unique identifier for this event.
+		 */
+		id?: string;
+
+		/**
+		 * The chat session this event belongs to. When provided, the event
+		 * is attributed to this session even if it arrives through a progress
+		 * pipeline opened for a different session.
+		 */
+		sessionResource?: Uri;
+
+		/**
+		 * The timestamp when the event was created.
+		 */
+		created: Date;
+
+		/**
+		 * The id of a parent event, used to build a hierarchical tree.
+		 */
+		parentEventId?: string;
+
+		/**
+		 * A short summary of the agent's response for display in the event list.
+		 */
+		message: string;
+
+		/**
+		 * The structured sections of the response (e.g., response text, reasoning).
+		 * Rendered as collapsible sections in the detail view.
+		 */
+		sections: ChatDebugMessageSection[];
+
+		/**
+		 * Create a new ChatDebugAgentResponseEvent.
+		 * @param message A short summary of the agent's response.
+		 * @param created The timestamp when the event was created.
+		 */
+		constructor(message: string, created: Date);
+	}
+
+	/**
+	 * A named section within a user message or agent response,
+	 * used to display collapsible parts of the prompt or response.
+	 */
+	export class ChatDebugMessageSection {
+		/**
+		 * The display name of the section (e.g., "User Request", "Context", "Reasoning").
+		 */
+		name: string;
+
+		/**
+		 * The text content of the section.
+		 */
+		content: string;
+
+		/**
+		 * Create a new ChatDebugMessageSection.
+		 * @param name The display name of the section.
+		 * @param content The text content.
+		 */
+		constructor(name: string, content: string);
+	}
+
+	/**
+	 * Plain text content for a resolved chat debug event.
+	 */
+	export class ChatDebugEventTextContent {
+		/**
+		 * The text value.
+		 */
+		value: string;
+
+		/**
+		 * Create a new ChatDebugEventTextContent.
+		 * @param value The text value.
+		 */
+		constructor(value: string);
+	}
+
+	/**
+	 * The type of a debug message content.
+	 */
+	export enum ChatDebugMessageContentType {
+		User = 0,
+		Agent = 1
+	}
+
+	/**
+	 * Structured message content for a resolved chat debug event,
+	 * containing collapsible sections (e.g., prompt parts or response parts).
+	 */
+	export class ChatDebugEventMessageContent {
+		/**
+		 * The type of message.
+		 */
+		type: ChatDebugMessageContentType;
+
+		/**
+		 * A short summary of the message.
+		 */
+		message: string;
+
+		/**
+		 * The structured sections of the message.
+		 */
+		sections: ChatDebugMessageSection[];
+
+		/**
+		 * Create a new ChatDebugEventMessageContent.
+		 * @param type The type of message.
+		 * @param message A short summary.
+		 * @param sections The structured sections.
+		 */
+		constructor(type: ChatDebugMessageContentType, message: string, sections: ChatDebugMessageSection[]);
+	}
+
+	/**
+	 * Structured tool call content for a resolved chat debug event,
+	 * containing the tool name, status, arguments, and output for rich rendering.
+	 */
+	export class ChatDebugEventToolCallContent {
+		/**
+		 * The name of the tool that was called.
+		 */
+		toolName: string;
+
+		/**
+		 * The outcome of the tool call (e.g., "success" or "error").
+		 */
+		result?: ChatDebugToolCallResult;
+
+		/**
+		 * How long the tool call took to complete, in milliseconds.
+		 */
+		durationInMillis?: number;
+
+		/**
+		 * The serialized input (arguments) passed to the tool.
+		 */
+		input?: string;
+
+		/**
+		 * The serialized output (result) returned by the tool.
+		 */
+		output?: string;
+
+		/**
+		 * Create a new ChatDebugEventToolCallContent.
+		 * @param toolName The name of the tool that was called.
+		 */
+		constructor(toolName: string);
+	}
+
+	/**
+	 * Structured model turn content for a resolved chat debug event,
+	 * containing request metadata, token usage, and timing for rich rendering.
+	 */
+	export class ChatDebugEventModelTurnContent {
+		/**
+		 * The short name or label identifying this request (e.g., "panel/editAgent").
+		 */
+		requestName: string;
+
+		/**
+		 * The identifier of the model used (e.g., "claude-sonnet-4.5").
+		 */
+		model?: string;
+
+		/**
+		 * The outcome status of the model turn (e.g., "success", "failure", "canceled").
+		 */
+		status?: string;
+
+		/**
+		 * How long the model turn took to complete, in milliseconds.
+		 */
+		durationInMillis?: number;
+
+		/**
+		 * The time in milliseconds from sending the request to receiving the
+		 * first response token.
+		 */
+		timeToFirstTokenInMillis?: number;
+
+		/**
+		 * The unique request id assigned by the model provider for this turn.
+		 */
+		requestId?: string;
+
+		/**
+		 * The maximum number of prompt/input tokens allowed for this request.
+		 */
+		maxInputTokens?: number;
+
+		/**
+		 * The maximum number of response/output tokens allowed for this request.
+		 */
+		maxOutputTokens?: number;
+
+		/**
+		 * The number of tokens in the input/prompt.
+		 */
+		inputTokens?: number;
+
+		/**
+		 * The number of tokens in the model's output/completion.
+		 */
+		outputTokens?: number;
+
+		/**
+		 * The number of cached input tokens reused from a previous request.
+		 */
+		cachedTokens?: number;
+
+		/**
+		 * The total number of tokens consumed (input + output).
+		 */
+		totalTokens?: number;
+
+		/**
+		 * Cache-relevant request options as a JSON-stringified blob (e.g.
+		 * `tool_choice`, `reasoning_effort`, `thinking`, `response_format`).
+		 * When this differs between two requests, the prompt cache is
+		 * invalidated even if the message array is byte-identical.
+		 */
+		requestOptions?: string;
+
+		/**
+		 * An error message, if the model turn failed.
+		 */
+		errorMessage?: string;
+
+		/**
+		 * Optional structured sections containing the full request/response details
+		 * (e.g., system prompt, user prompt, tools, response).
+		 * Rendered as collapsible sections in the detail view alongside the metadata.
+		 */
+		sections?: ChatDebugMessageSection[];
+
+		/**
+		 * Create a new ChatDebugEventModelTurnContent.
+		 * @param requestName The short name identifying this request.
+		 */
+		constructor(requestName: string);
+	}
+
+	/**
+	 * Structured hook execution content for a resolved chat debug event,
+	 * containing the hook type, command, input, output, and result for rich rendering.
+	 */
+	export class ChatDebugEventHookContent {
+		/**
+		 * The type of hook that was executed (e.g., "PreToolUse", "PostToolUse", "Stop").
+		 */
+		hookType: string;
+
+		/**
+		 * The shell command that was executed.
+		 */
+		command?: string;
+
+		/**
+		 * The outcome of the hook execution.
+		 */
+		result?: ChatDebugHookResult;
+
+		/**
+		 * How long the hook took to complete, in milliseconds.
+		 */
+		durationInMillis?: number;
+
+		/**
+		 * The serialized JSON input passed to the hook via stdin.
+		 */
+		input?: string;
+
+		/**
+		 * The serialized output (stdout/stderr) returned by the hook.
+		 */
+		output?: string;
+
+		/**
+		 * An error message, if the hook failed.
+		 */
+		errorMessage?: string;
+
+		/**
+		 * The raw exit code from the hook process, if it failed.
+		 */
+		exitCode?: number;
+
+		/**
+		 * Create a new ChatDebugEventHookContent.
+		 * @param hookType The type of hook that was executed.
+		 */
+		constructor(hookType: string);
+	}
+
+	/**
+	 * The result of a hook execution.
+	 */
+	export enum ChatDebugHookResult {
+		/** The hook executed successfully (exit code 0). */
+		Success = 0,
+		/** The hook returned a blocking error (exit code 2). */
+		Error = 1,
+		/** The hook returned a non-blocking warning (other non-zero exit codes). */
+		NonBlockingError = 2
+	}
+
+	/**
+	 * Union of all resolved event content types.
+	 * Extensions may also return {@link ChatDebugUserMessageEvent} or
+	 * {@link ChatDebugAgentResponseEvent} from resolve, which will be
+	 * automatically converted to structured message content.
+	 */
+	export type ChatDebugResolvedEventContent = ChatDebugEventTextContent | ChatDebugEventMessageContent | ChatDebugEventToolCallContent | ChatDebugEventModelTurnContent | ChatDebugEventHookContent | ChatDebugUserMessageEvent | ChatDebugAgentResponseEvent;
+
+	/**
+	 * Union of all chat debug event types. Each type is a class,
+	 * following the same pattern as {@link ChatResponsePart}.
+	 */
+	export type ChatDebugEvent = ChatDebugToolCallEvent | ChatDebugModelTurnEvent | ChatDebugGenericEvent | ChatDebugSubagentInvocationEvent | ChatDebugUserMessageEvent | ChatDebugAgentResponseEvent;
+
+	/**
+	 * A provider that supplies debug events for a chat session.
+	 */
+	export interface ChatDebugLogProvider {
+		/**
+		 * Called when the debug view is opened for a chat session.
+		 * The provider should return initial events and can use
+		 * the progress callback to stream additional events over time.
+		 *
+		 * @param sessionResource The resource URI of the chat session being debugged.
+		 * @param progress A progress callback to stream events.
+		 * @param token A cancellation token.
+		 * @returns Initial events, if any.
+		 */
+		provideChatDebugLog(
+			sessionResource: Uri,
+			progress: Progress<ChatDebugEvent>,
+			token: CancellationToken
+		): ProviderResult<ChatDebugEvent[]>;
+
+		/**
+		 * Optionally resolve the full contents of a debug event by its id.
+		 * Called when the user expands an event in the debug view, allowing
+		 * the provider to defer expensive detail loading until needed.
+		 *
+		 * @param eventId The id of the event to resolve.
+		 * @param token A cancellation token.
+		 * @returns The resolved event content to be displayed in the debug detail view.
+		 */
+		resolveChatDebugLogEvent?(
+			eventId: string,
+			token: CancellationToken
+		): ProviderResult<ChatDebugResolvedEventContent>;
+
+		/**
+		 * Export the debug log for a chat session as a serialized byte array.
+		 * The extension controls the format (e.g., OTLP JSON with Copilot extensions).
+		 * Core provides the save dialog and writes the returned bytes to disk.
+		 *
+		 * @param sessionResource The resource URI of the chat session to export.
+		 * @param options Export options including core events and session metadata.
+		 * @param token A cancellation token.
+		 * @returns The serialized debug log data, or undefined if export is not available.
+		 */
+		provideChatDebugLogExport?(
+			sessionResource: Uri,
+			options: ChatDebugLogExportOptions,
+			token: CancellationToken
+		): ProviderResult<Uint8Array>;
+
+		/**
+		 * Import a previously exported debug log from a serialized byte array.
+		 * Core provides the open dialog and reads the file bytes.
+		 * The extension deserializes the data and returns a session URI that can be
+		 * opened in the debug panel via {@link provideChatDebugLog}.
+		 *
+		 * @param data The serialized debug log data (as returned by {@link provideChatDebugLogExport}).
+		 * @param token A cancellation token.
+		 * @returns The imported session info, or undefined if import failed.
+		 */
+		resolveChatDebugLogImport?(
+			data: Uint8Array,
+			token: CancellationToken
+		): ProviderResult<ChatDebugLogImportResult>;
+
+		/**
+		 * Return session resource URIs that have debug log data available,
+		 * including historical sessions persisted on disk.
+		 *
+		 * @param token A cancellation token.
+		 * @returns Session URIs with available debug data and optional titles.
+		 */
+		provideAvailableDebugSessionResources?(
+			token: CancellationToken
+		): ProviderResult<{ uri: Uri; title?: string }[]>;
+	}
+
+	export namespace chat {
+		/**
+		 * Register a provider that supplies debug events for chat sessions.
+		 * Only one provider can be registered at a time.
+		 *
+		 * @param provider The chat debug log provider.
+		 * @returns A disposable that unregisters the provider.
+		 */
+		export function registerChatDebugLogProvider(provider: ChatDebugLogProvider): Disposable;
+
+		/**
+		 * Fired when a core-originated debug event is received (e.g., prompt discovery,
+		 * skill loading). Extensions can use this to capture events that originate
+		 * inside Core.
+		 */
+		export const onDidReceiveChatDebugEvent: Event<ChatDebugEvent>;
+	}
+
+	/**
+	 * Options passed to {@link ChatDebugLogProvider.provideChatDebugLogExport}.
+	 */
+	export interface ChatDebugLogExportOptions {
+		/**
+		 * Core-originated debug events (prompt discovery, skill loading, etc.)
+		 * for the session. The extension may include these in the export alongside its own data.
+		 */
+		readonly coreEvents: readonly ChatDebugEvent[];
+
+		/**
+		 * Session title, if available.
+		 * Used to provide a human-readable label in the exported file.
+		 */
+		readonly sessionTitle?: string;
+	}
+
+	/**
+	 * Result of importing a debug log via {@link ChatDebugLogProvider.resolveChatDebugLogImport}.
+	 */
+	export interface ChatDebugLogImportResult {
+		/**
+		 * The session resource URI for the imported session.
+		 */
+		readonly uri: Uri;
+
+		/**
+		 * The session title from the imported file, if available.
+		 */
+		readonly sessionTitle?: string;
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatHooks.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatHooks.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatHooks.d.ts
+- **SHA256_FINGERPRINT**: `d0a1df0fbeedabc2d3ea54f8b33595b595905a16080b5ed634d096ff5a901505`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.284130+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatHooks.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	/**
+	 * The type of hook to execute.
+	 */
+	export type ChatHookType = 'SessionStart' | 'SessionEnd' | 'UserPromptSubmit' | 'PreToolUse' | 'PostToolUse' | 'PreCompact' | 'SubagentStart' | 'SubagentStop' | 'Stop' | 'ErrorOccurred';
+
+	/**
+	 * A resolved hook command ready for execution.
+	 * The command has already been resolved for the current platform.
+	 */
+	export interface ChatHookCommand {
+		/**
+		 * The shell command to execute, already resolved for the current platform.
+		 */
+		readonly command: string;
+		/**
+		 * Working directory for the command.
+		 */
+		readonly cwd?: Uri;
+		/**
+		 * Additional environment variables for the command.
+		 */
+		readonly env?: Record<string, string>;
+		/**
+		 * Maximum execution time in seconds.
+		 */
+		readonly timeout?: number;
+	}
+
+	/**
+	 * Collected hooks for a chat request, organized by hook type.
+	 */
+	export interface ChatRequestHooks {
+		readonly [hookType: string]: readonly ChatHookCommand[];
+	}
+
+	/**
+	 * The kind of result from executing a hook command.
+	 * - 'success': Hook executed successfully (exit code 0)
+	 * - 'error': Blocking error shown to model (exit code 2)
+	 * - 'warning': Non-blocking warning shown to user only (other exit codes)
+	 */
+	export type ChatHookResultKind = 'success' | 'error' | 'warning';
+
+	/**
+	 * Result of executing a hook command.
+	 * Contains common flow control fields and the hook's output.
+	 */
+	export interface ChatHookResult {
+		/**
+		 * The kind of result from executing the hook.
+		 */
+		readonly resultKind: ChatHookResultKind;
+		/**
+		 * If set, the agent should stop processing entirely after this hook.
+		 * The message is shown to the user but not to the agent.
+		 */
+		readonly stopReason?: string;
+		/**
+		 * Warning message shown to the user.
+		 */
+		readonly warningMessage?: string;
+		/**
+		 * The hook's output (hook-specific fields only).
+		 * For errors, this is the error message string.
+		 */
+		readonly output: unknown;
+	}
+
+	export interface ChatRequest {
+		/**
+		 * Resolved hook commands for this request, organized by hook type.
+		 * The commands have already been resolved for the current platform.
+		 * Only present when hooks are enabled.
+		 */
+		readonly hooks?: ChatRequestHooks;
+	}
+
+	/**
+	 * A progress part representing the execution result of a hook.
+	 * Hooks are user-configured scripts that run at specific points during chat processing.
+	 * If {@link stopReason} is set, the hook blocked/denied the operation.
+	 */
+	export class ChatResponseHookPart {
+		/** The type of hook that was executed */
+		hookType: ChatHookType;
+		/** If set, the hook blocked processing. This message is shown to the user. */
+		stopReason?: string;
+		/** Warning/system message from the hook, shown to the user */
+		systemMessage?: string;
+		/** Optional metadata associated with the hook execution */
+		metadata?: { readonly [key: string]: unknown };
+
+		/**
+		 * Creates a new hook progress part.
+		 * @param hookType The type of hook that was executed
+		 * @param stopReason Message shown when processing was stopped
+		 * @param systemMessage Warning/system message from the hook
+		 * @param metadata Optional metadata
+		 */
+		constructor(hookType: ChatHookType, stopReason?: string, systemMessage?: string, metadata?: { readonly [key: string]: unknown });
+	}
+
+	export interface ExtendedChatResponseParts {
+		ChatResponseHookPart: ChatResponseHookPart;
+	}
+
+	export interface ChatResponseStream {
+
+		/**
+		 * Push a hook execution result to this stream.
+		 * @param hookType The type of hook that was executed
+		 * @param stopReason If set, the hook blocked processing. This message is shown to the user.
+		 * @param systemMessage Warning/system message from the hook
+		 */
+		hookProgress(hookType: ChatHookType, stopReason?: string, systemMessage?: string): void;
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatInputNotification.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatInputNotification.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatInputNotification.d.ts
+- **SHA256_FINGERPRINT**: `37c2e221a3446a2619d0c6a534cde8a64ca51166c86fbfcbd580457383eccc1f`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.378926+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatInputNotification.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	/**
+	 * Severity level of a chat input notification.
+	 */
+	export enum ChatInputNotificationSeverity {
+		/**
+		 * Informational notification (e.g., approaching a usage threshold).
+		 */
+		Info = 0,
+
+		/**
+		 * Warning notification (e.g., close to a usage limit).
+		 */
+		Warning = 1,
+
+		/**
+		 * Error notification (e.g., quota exhausted).
+		 */
+		Error = 2,
+	}
+
+	/**
+	 * An action button displayed in a chat input notification.
+	 */
+	export interface ChatInputNotificationAction {
+		/**
+		 * The label of the action button.
+		 */
+		label: string;
+
+		/**
+		 * The command to execute when the action is clicked.
+		 */
+		commandId: string;
+
+		/**
+		 * Optional arguments to pass to the command.
+		 */
+		commandArgs?: unknown[];
+	}
+
+	/**
+	 * A notification banner displayed above the chat input area.
+	 *
+	 * Notifications have a severity level that controls their visual styling
+	 * (info, warning, or error), a message, optional action buttons, and
+	 * configurable dismiss behavior.
+	 */
+	export interface ChatInputNotification {
+		/**
+		 * The unique identifier of this notification.
+		 */
+		readonly id: string;
+
+		/**
+		 * The severity of the notification.
+		 */
+		severity: ChatInputNotificationSeverity;
+
+		/**
+		 * The title to display. Plain text only. Rendered in bold.
+		 */
+		message: string;
+
+		/**
+		 * Optional description text displayed below the title.
+		 * Plain text only.
+		 */
+		description: string | undefined;
+
+		/**
+		 * Optional action buttons to display.
+		 */
+		actions: ChatInputNotificationAction[];
+
+		/**
+		 * Whether the notification can be dismissed by the user. Defaults to `true`.
+		 */
+		dismissible: boolean;
+
+		/**
+		 * Whether the notification should be automatically dismissed when the user
+		 * sends their next chat message. Defaults to `false`.
+		 */
+		autoDismissOnMessage: boolean;
+
+		/**
+		 * Optional chat session types in which this notification is shown.
+		 * When omitted, the notification is shown for every chat session type.
+		 */
+		sessionTypes: readonly string[] | undefined;
+
+		/**
+		 * Shows the notification in the chat input area.
+		 */
+		show(): void;
+
+		/**
+		 * Hides the notification from the chat input area.
+		 */
+		hide(): void;
+
+		/**
+		 * Dispose and free associated resources.
+		 */
+		dispose(): void;
+	}
+
+	namespace chat {
+		/**
+		 * Create a new chat input notification.
+		 *
+		 * @param id The unique identifier of the notification.
+		 * @returns A new chat input notification.
+		 */
+		export function createInputNotification(id: string): ChatInputNotification;
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatOutputRenderer.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatOutputRenderer.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatOutputRenderer.d.ts
+- **SHA256_FINGERPRINT**: `389b8143e8ef9d354db0f8b9489d18d345f827daac2597656a5d7421ad0d732d`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.281259+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatOutputRenderer.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	/**
+	 * Data returned from a tool.
+	 *
+	 * This is an opaque binary blob that can be rendered by a {@link ChatOutputRenderer}.
+	 */
+	export interface ToolResultDataOutput {
+		/**
+		 * The MIME type of the data.
+		 */
+		mime: string;
+
+		/**
+		 * The contents of the data.
+		 */
+		value: Uint8Array;
+	}
+
+	export interface ExtendedLanguageModelToolResult2 extends ExtendedLanguageModelToolResult {
+		// Temporary to allow `toolResultDetails` to return a ToolResultDataOutput
+		// TODO: Should this live here? Or should we be able to mark each `content` items as user/lm specific?
+		// TODO: Should we allow multiple per tool result?
+		toolResultDetails2?: Array<Uri | Location> | ToolResultDataOutput;
+	}
+
+	/**
+	 * The data to be rendered by a {@link ChatOutputRenderer}.
+	 */
+	export interface ChatOutputDataItem {
+		/**
+		 * The MIME type of the data.
+		 */
+		readonly mime: string;
+
+		/**
+		 * The contents of the data.
+		 */
+		readonly value: Uint8Array;
+	}
+
+	/**
+	 * A webview used to render chat output.
+	 */
+	export interface ChatOutputWebview {
+		/**
+		 * The webview to render content into.
+		 */
+		readonly webview: Webview;
+
+		/**
+		 * Fired when the webview is disposed.
+		 */
+		readonly onDidDispose: Event<void>;
+	}
+
+	/**
+	 * Additional context for rendering chat output.
+	 */
+	export interface ChatOutputRenderContext {
+		/**
+		 * Context when a code block is being rendered.
+		 *
+		 * This is set when a renderer contributed through `chatOutputRenderers` renders
+		 * a completed fenced code block whose identifier matches one of the contributed
+		 * `codeBlockLanguageIdentifiers`.
+		 */
+		readonly codeBlockContext?: {
+			/**
+			 * The language identifier of the code block being rendered.
+			 */
+			readonly languageIdentifier: string;
+		};
+	}
+
+	export interface ChatOutputRenderer {
+		/**
+		 * Given an output, render it into the provided webview.
+		 *
+		 * TODO: Figure out what to pass as context? Probably at least basic info such as chat location.
+		 *
+		 * @param data The data to render.
+		 * @param webview The webview to render the data into.
+		 * @param token A cancellation token that is cancelled if we no longer care about the rendering before this
+		 * call completes.
+		 *
+		 * @returns A promise that resolves when the webview has been initialized and is ready to be presented to the user.
+		 */
+		renderChatOutput(data: ChatOutputDataItem, webview: ChatOutputWebview, ctx: ChatOutputRenderContext, token: CancellationToken): Thenable<void>;
+	}
+
+	export namespace chat {
+		/**
+		 * Registers a new renderer for a given mime type.
+		 *
+		 * Note: To use this API, you should also add a contribution point in your extension's
+		 * package.json:
+		 *
+		 * ```json
+		 * "contributes": {
+		 *   "chatOutputRenderers": [
+		 *     {
+		 *       "viewType": "myExt.myChatOutputRenderer",
+		 *       "mimeTypes": ["application/your-mime-type"],
+		 *       "codeBlockLanguageIdentifiers": ["mermaid"]
+		 *     }
+		 *   ]
+		 * }
+		 * ```
+		 *
+		 * @param viewType Unique identifier for the renderer. This should match the `viewType` in your contribution point.
+		 * @param renderer The renderer to register.
+		 */
+		export function registerChatOutputRenderer(viewType: string, renderer: ChatOutputRenderer): Disposable;
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatParticipantAdditions.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatParticipantAdditions.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatParticipantAdditions.d.ts
+- **SHA256_FINGERPRINT**: `ecc1dbcfd3ba2e289e899b120757c8f96107e4b93fa308399d0be59d374bfe8f`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.510602+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatParticipantAdditions.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	export interface ChatParticipant {
+		readonly onDidPerformAction: Event<ChatUserActionEvent>;
+	}
+
+	/**
+	 * Now only used for the "intent detection" API below
+	 */
+	export interface ChatCommand {
+		readonly name: string;
+		readonly description: string;
+	}
+
+	export interface ChatVulnerability {
+		title: string;
+		description: string;
+		// id: string; // Later we will need to be able to link these across multiple content chunks.
+	}
+
+	export class ChatResponseMarkdownWithVulnerabilitiesPart {
+		value: MarkdownString;
+		vulnerabilities: ChatVulnerability[];
+		constructor(value: string | MarkdownString, vulnerabilities: ChatVulnerability[]);
+	}
+
+	export class ChatResponseCodeblockUriPart {
+		isEdit?: boolean;
+		value: Uri;
+		undoStopId?: string;
+		constructor(value: Uri, isEdit?: boolean, undoStopId?: string);
+	}
+
+	/**
+	 * Displays a {@link Command command} as a button in the chat response.
+	 */
+	export interface ChatCommandButton {
+		command: Command;
+	}
+
+	export interface ChatDocumentContext {
+		uri: Uri;
+		version: number;
+		ranges: Range[];
+	}
+
+	/** The Auto routing tier a request was resolved with. */
+	export type ChatAutoModeTier = 'efficiency' | 'balance' | 'intelligence' | 'fast';
+
+	export class ChatResponseTextEditPart {
+		uri: Uri;
+		edits: TextEdit[];
+		isDone?: boolean;
+		/** The Auto routing tier that produced these edits, for edit attribution. */
+		autoTier?: ChatAutoModeTier;
+		constructor(uri: Uri, done: true);
+		constructor(uri: Uri, edits: TextEdit | TextEdit[]);
+	}
+
+	export class ChatResponseNotebookEditPart {
+		uri: Uri;
+		edits: NotebookEdit[];
+		isDone?: boolean;
+		/** The Auto routing tier that produced these edits, for edit attribution. */
+		autoTier?: ChatAutoModeTier;
+		constructor(uri: Uri, done: true);
+		constructor(uri: Uri, edits: NotebookEdit | NotebookEdit[]);
+	}
+
+	/**
+	 * Represents a file-level edit (creation, deletion, or rename).
+	 */
+	export interface ChatWorkspaceFileEdit {
+		/**
+		 * The original file URI (undefined for new files).
+		 */
+		oldResource?: Uri;
+
+		/**
+		 * The new file URI (undefined for deleted files).
+		 */
+		newResource?: Uri;
+	}
+
+	/**
+	 * Represents a workspace edit containing file-level operations.
+	 */
+	export class ChatResponseWorkspaceEditPart {
+		edits: ChatWorkspaceFileEdit[];
+		constructor(edits: ChatWorkspaceFileEdit[]);
+	}
+
+	export class ChatResponseConfirmationPart {
+		title: string;
+		message: string | MarkdownString;
+		data: any;
+		buttons?: string[];
+		constructor(title: string, message: string | MarkdownString, data: any, buttons?: string[]);
+	}
+
+	/**
+	 * An option for a question in a carousel.
+	 */
+	export interface ChatQuestionOption {
+		/**
+		 * Unique identifier for the option.
+		 */
+		id: string;
+		/**
+		 * The display label for the option.
+		 */
+		label: string;
+		/**
+		 * The value returned when this option is selected.
+		 */
+		value: unknown;
+	}
+
+	/**
+	 * The type of question for a chat question carousel.
+	 */
+	export enum ChatQuestionType {
+		/**
+		 * A free-form text input question.
+		 */
+		Text = 1,
+		/**
+		 * A single-select question with radio buttons.
+		 */
+		SingleSelect = 2,
+		/**
+		 * A multi-select question with checkboxes.
+		 */
+		MultiSelect = 3
+	}
+
+	/**
+	 * A question to be displayed in a question carousel.
+	 */
+	export class ChatQuestion {
+		/**
+		 * Unique identifier for the question.
+		 */
+		id: string;
+		/**
+		 * The type of question: Text for free-form input, SingleSelect for radio buttons, MultiSelect for checkboxes.
+		 */
+		type: ChatQuestionType;
+		/**
+		 * The title/header of the question.
+		 */
+		title: string;
+		/**
+		 * Optional detailed message or description for the question.
+		 */
+		message?: string | MarkdownString;
+		/**
+		 * Options for singleSelect or multiSelect questions.
+		 */
+		options?: ChatQuestionOption[];
+		/**
+		 * The id(s) of the default selected option(s).
+		 * For SingleSelect, this should be a single option id.
+		 * For MultiSelect, this can be an array of option ids.
+		 */
+		defaultValue?: string | string[];
+		/**
+		 * Whether to allow free-form text input in addition to predefined options.
+		 * When true, users can provide their own text answer even for SingleSelect or MultiSelect questions.
+		 */
+		allowFreeformInput?: boolean;
+
+		constructor(
+			id: string,
+			type: ChatQuestionType,
+			title: string,
+			options?: {
+				message?: string | MarkdownString;
+				options?: ChatQuestionOption[];
+				defaultValue?: string | string[];
+				allowFreeformInput?: boolean;
+			}
+		);
+	}
+
+	/**
+	 * A carousel view for presenting multiple questions inline in the chat.
+	 * The UI is displayed but does not block the chat input.
+	 */
+	export class ChatResponseQuestionCarouselPart {
+		/**
+		 * The questions to display in the carousel.
+		 */
+		questions: ChatQuestion[];
+		/**
+		 * Whether users can skip answering the questions.
+		 */
+		allowSkip: boolean;
+
+		constructor(questions: ChatQuestion[], allowSkip?: boolean);
+	}
+
+	export class ChatResponseCodeCitationPart {
+		value: Uri;
+		license: string;
+		snippet: string;
+		constructor(value: Uri, license: string, snippet: string);
+	}
+
+	export interface ChatToolInvocationStreamData {
+		/**
+		 * Partial or not-yet-validated arguments that have streamed from the language model.
+		 * Tools may use this to render interim UI while the full invocation input is collected.
+		 */
+		readonly partialInput?: unknown;
+	}
+
+	export interface ChatTerminalToolInvocationData {
+		commandLine: {
+			original: string;
+			userEdited?: string;
+			toolEdited?: string;
+		};
+		language: string;
+
+		/**
+		 * Overrides for how the command is presented in the UI.
+		 * For example, when a `cd <dir> && <command>` prefix is detected,
+		 * the presentation can show only the actual command.
+		 */
+		presentationOverrides?: {
+			commandLine: string;
+			language?: string;
+		};
+
+		/**
+		 * Terminal command output. Displayed when the terminal is no longer available.
+		 */
+		output?: {
+			/** The raw output text, may include ANSI escape codes. */
+			text: string;
+		};
+
+		/**
+		 * Command execution state.
+		 */
+		state?: {
+			/** Exit code of the command. */
+			exitCode?: number;
+			/** Duration of execution in milliseconds. */
+			duration?: number;
+		};
+	}
+
+	export class McpToolInvocationContentData {
+		/**
+		 * The mime type which determines how the data property is interpreted.
+		 */
+		mimeType: string;
+
+		/**
+		 * The byte data for this part.
+		 */
+		data: Uint8Array;
+
+		/**
+		 * Construct a generic data part with the given content.
+		 * @param data The byte data for this part.
+		 * @param mimeType The mime type of the data.
+		 */
+		constructor(data: Uint8Array, mimeType: string);
+	}
+
+	export interface ChatMcpToolInvocationData {
+		input: string;
+		output: McpToolInvocationContentData[];
+	}
+
+	export enum ChatTodoStatus {
+		NotStarted = 1,
+		InProgress = 2,
+		Completed = 3
+	}
+
+	export interface ChatTodoToolInvocationData {
+		todoList: Array<{
+			id: number;
+			title: string;
+			status: ChatTodoStatus;
+		}>;
+	}
+
+	/**
+	 * Generic tool result data that displays input and output in collapsible sections.
+	 */
+	export interface ChatSimpleToolResultData {
+		/**
+		 * The input to display.
+		 */
+		input: string;
+		/**
+		 * The output to display.
+		 */
+		output: string;
+	}
+
+	export interface ChatToolResourcesInvocationData {
+		/**
+		 * Array of file URIs or locations to display as a collapsible list
+		 */
+		values: Array<Uri | Location>;
+	}
+
+	export class ChatSubagentToolInvocationData {
+		/**
+		 * A description of the subagent's purpose or task.
+		 */
+		description?: string;
+
+		/**
+		 * The name of the subagent being invoked.
+		 */
+		agentName?: string;
+
+		/**
+		 * The prompt given to the subagent.
+		 */
+		prompt?: string;
+
+		/**
+		 * The result text from the subagent after completion.
+		 */
+		result?: string;
+
+		/**
+		 * The display name of the model used by the subagent.
+		 */
+		modelName?: string;
+
+		constructor(description?: string, agentName?: string, prompt?: string, result?: string);
+	}
+
+	export class ChatToolInvocationPart {
+		toolName: string;
+		toolCallId: string;
+		isError?: boolean;
+		invocationMessage?: string | MarkdownString;
+		originMessage?: string | MarkdownString;
+		pastTenseMessage?: string | MarkdownString;
+		isConfirmed?: boolean;
+		isComplete?: boolean;
+		toolSpecificData?: ChatTerminalToolInvocationData | ChatMcpToolInvocationData | ChatTodoToolInvocationData | ChatSimpleToolResultData | ChatToolResourcesInvocationData | ChatSubagentToolInvocationData;
+		subAgentInvocationId?: string;
+		presentation?: 'hidden' | 'hiddenAfterComplete' | undefined;
+
+		/**
+		 * If this flag is set, this will be treated as an update to any previous tool call with the same id.
+		 */
+		enablePartialUpdate?: boolean;
+
+		constructor(toolName: string, toolCallId: string, errorMessage?: string);
+	}
+
+	/**
+	 * Represents a single file diff entry in a multi diff view.
+	 */
+	export interface ChatResponseDiffEntry {
+		/**
+		 * The original file URI (undefined for new files).
+		 */
+		originalUri?: Uri;
+
+		/**
+		 * The modified file URI (undefined for deleted files).
+		 */
+		modifiedUri?: Uri;
+
+		/**
+		 * Optional URI to navigate to when clicking on the file.
+		 */
+		goToFileUri?: Uri;
+
+		/**
+		 * Added data (e.g. line numbers) to show in the UI
+		 */
+		added?: number;
+
+		/**
+		 * Removed data (e.g. line numbers) to show in the UI
+		 */
+		removed?: number;
+	}
+
+	/**
+	 * Represents a part of a chat response that shows multiple file diffs.
+	 */
+	export class ChatResponseMultiDiffPart {
+		/**
+		 * Array of file diff entries to display.
+		 */
+		value: ChatResponseDiffEntry[];
+
+		/**
+		 * The title for the multi diff editor.
+		 */
+		title: string;
+
+		/**
+		 * Whether the multi diff editor should be read-only.
+		 * When true, users cannot open individual files or interact with file navigation.
+		 */
+		readOnly?: boolean;
+
+		/**
+		 * Create a new ChatResponseMultiDiffPart.
+		 * @param value Array of file diff entries.
+		 * @param title The title for the multi diff editor.
+		 * @param readOnly Optional flag to make the multi diff editor read-only.
+		 */
+		constructor(value: ChatResponseDiffEntry[], title: string, readOnly?: boolean);
+	}
+
+	export class ChatResponseExternalEditPart {
+		uris: Uri[];
+		callback: () => Thenable<unknown>;
+		applied: Thenable<string>;
+		constructor(uris: Uri[], callback: () => Thenable<unknown>);
+	}
+
+	/**
+	 * Internal type that lists all the proposed chat response parts. This is used to generate `ExtendedChatResponsePart`
+	 * which is the actual type used in this API. This is done so that other proposals can easily add their own response parts
+	 * without having to modify this file.
+	 */
+	export interface ExtendedChatResponseParts {
+		ChatResponsePart: ChatResponsePart;
+		ChatResponseTextEditPart: ChatResponseTextEditPart;
+		ChatResponseNotebookEditPart: ChatResponseNotebookEditPart;
+		ChatResponseWorkspaceEditPart: ChatResponseWorkspaceEditPart;
+		ChatResponseConfirmationPart: ChatResponseConfirmationPart;
+		ChatResponseCodeCitationPart: ChatResponseCodeCitationPart;
+		ChatResponseReferencePart2: ChatResponseReferencePart2;
+		ChatResponseMovePart: ChatResponseMovePart;
+		ChatResponseExtensionsPart: ChatResponseExtensionsPart;
+		ChatResponsePullRequestPart: ChatResponsePullRequestPart;
+		ChatToolInvocationPart: ChatToolInvocationPart;
+		ChatResponseMultiDiffPart: ChatResponseMultiDiffPart;
+		ChatResponseThinkingProgressPart: ChatResponseThinkingProgressPart;
+		ChatResponseExternalEditPart: ChatResponseExternalEditPart;
+		ChatResponseQuestionCarouselPart: ChatResponseQuestionCarouselPart;
+		ChatResponseAutoModeResolutionPart: ChatResponseAutoModeResolutionPart;
+	}
+
+	export type ExtendedChatResponsePart = ExtendedChatResponseParts[keyof ExtendedChatResponseParts];
+
+	export class ChatResponseWarningPart {
+		value: MarkdownString;
+		constructor(value: string | MarkdownString);
+	}
+
+	export class ChatResponseInfoPart {
+		value: MarkdownString;
+		constructor(value: string | MarkdownString);
+	}
+
+	export class ChatResponseProgressPart2 extends ChatResponseProgressPart {
+		value: string;
+		task?: (progress: Progress<ChatResponseWarningPart | ChatResponseReferencePart>) => Thenable<string | void>;
+		constructor(value: string, task?: (progress: Progress<ChatResponseWarningPart | ChatResponseReferencePart>) => Thenable<string | void>);
+	}
+
+	/**
+	 * A specialized progress part for displaying thinking/reasoning steps.
+	 */
+	export class ChatResponseThinkingProgressPart {
+		value: string | string[];
+		id?: string;
+		metadata?: { readonly [key: string]: any };
+		task?: (progress: Progress<LanguageModelThinkingPart>) => Thenable<string | void>;
+
+		/**
+		 * Creates a new thinking progress part.
+		 * @param value An initial progress message
+		 * @param task A task that will emit thinking parts during its execution
+		 */
+		constructor(value: string | string[], id?: string, metadata?: { readonly [key: string]: any }, task?: (progress: Progress<LanguageModelThinkingPart>) => Thenable<string | void>);
+	}
+
+	export class ChatResponseReferencePart2 {
+		/**
+		 * The reference target.
+		 */
+		value: Uri | Location | { variableName: string; value?: Uri | Location } | string;
+
+		/**
+		 * The icon for the reference.
+		 */
+		iconPath?: Uri | ThemeIcon | {
+			/**
+			 * The icon path for the light theme.
+			 */
+			light: Uri;
+			/**
+			 * The icon path for the dark theme.
+			 */
+			dark: Uri;
+		};
+		options?: { status?: { description: string; kind: ChatResponseReferencePartStatusKind } };
+
+		/**
+		 * Create a new ChatResponseReferencePart.
+		 * @param value A uri or location
+		 * @param iconPath Icon for the reference shown in UI
+		 */
+		constructor(value: Uri | Location | { variableName: string; value?: Uri | Location } | string, iconPath?: Uri | ThemeIcon | {
+			/**
+			 * The icon path for the light theme.
+			 */
+			light: Uri;
+			/**
+			 * The icon path for the dark theme.
+			 */
+			dark: Uri;
+		}, options?: { status?: { description: string; kind: ChatResponseReferencePartStatusKind } });
+	}
+
+	export class ChatResponseMovePart {
+
+		readonly uri: Uri;
+		readonly range: Range;
+
+		constructor(uri: Uri, range: Range);
+	}
+
+	export interface ChatResponseAnchorPart {
+		/**
+		 * The target of this anchor.
+		 *
+		 * If this is a {@linkcode Uri} or {@linkcode Location}, this is rendered as a normal link.
+		 *
+		 * If this is a {@linkcode SymbolInformation}, this is rendered as a symbol link.
+		 *
+		 * TODO mjbvz: Should this be a full `SymbolInformation`? Or just the parts we need?
+		 * TODO mjbvz: Should we allow a `SymbolInformation` without a location? For example, until `resolve` completes?
+		 */
+		value2: Uri | Location | SymbolInformation;
+
+		/**
+		 * Optional method which fills in the details of the anchor.
+		 *
+		 * THis is currently only implemented for symbol links.
+		 */
+		resolve?(token: CancellationToken): Thenable<void>;
+	}
+
+	export class ChatResponseExtensionsPart {
+
+		readonly extensions: string[];
+
+		constructor(extensions: string[]);
+	}
+
+	export class ChatResponsePullRequestPart {
+		/**
+		 * @deprecated use `command` instead
+		 */
+		readonly uri?: Uri;
+		readonly command: Command;
+		readonly linkTag: string;
+		readonly title: string;
+		readonly description: string;
+		readonly author: string;
+		constructor(uriOrCommand: Uri | Command, title: string, description: string, author: string, linkTag: string);
+	}
+
+	/**
+	 * Explains what the "Auto" model routed a turn to, as a single status line.
+	 * Push a part without a model for the in-flight state, then a resolved one.
+	 * Auto may route several times in a turn; each route gets its own row.
+	 */
+	export class ChatResponseAutoModeResolutionPart {
+		/** The model the router picked, or `undefined` while routing is in flight. */
+		resolvedModel: { id: string; name: string } | undefined;
+		constructor(resolvedModel?: { id: string; name: string });
+	}
+
+	export interface ChatResponseStream {
+
+		/**
+		 * Push a progress part to this stream. Short-hand for
+		 * `push(new ChatResponseProgressPart(value))`.
+		*
+		* @param value A progress message
+		* @param task If provided, a task to run while the progress is displayed. When the Thenable resolves, the progress will be marked complete in the UI, and the progress message will be updated to the resolved string if one is specified.
+		* @returns This stream.
+		*/
+		progress(value: string, task?: (progress: Progress<ChatResponseWarningPart | ChatResponseReferencePart>) => Thenable<string | void>): void;
+
+		thinkingProgress(thinkingDelta: ThinkingDelta): void;
+
+		textEdit(target: Uri, edits: TextEdit | TextEdit[]): void;
+
+		textEdit(target: Uri, isDone: true): void;
+
+		notebookEdit(target: Uri, edits: NotebookEdit | NotebookEdit[]): void;
+
+		notebookEdit(target: Uri, isDone: true): void;
+
+		/**
+		 * Push a workspace edit containing file-level operations (create, delete, rename).
+		 * @param edits Array of file-level edits to apply
+		 */
+		workspaceEdit(edits: ChatWorkspaceFileEdit[]): void;
+
+		/**
+		 * Makes an external edit to one or more resources. Changes to the
+		 * resources made within the `callback` and before it resolves will be
+		 * tracked as agent edits. This can be used to track edits made from
+		 * external tools that don't generate simple {@link textEdit textEdits}.
+		 */
+		externalEdit(target: Uri | Uri[], callback: () => Thenable<unknown>): Thenable<string>;
+
+		markdownWithVulnerabilities(value: string | MarkdownString, vulnerabilities: ChatVulnerability[]): void;
+		codeblockUri(uri: Uri, isEdit?: boolean): void;
+		push(part: ChatResponsePart | ChatResponseTextEditPart | ChatResponseWarningPart | ChatResponseProgressPart2): void;
+
+		/**
+		 * Show an inline message in the chat view asking the user to confirm an action.
+		 * Multiple confirmations may be shown per response. The UI might show "Accept All" / "Reject All" actions.
+		 * @param title The title of the confirmation entry
+		 * @param message An extra message to display to the user
+		 * @param data An arbitrary JSON-stringifiable object that will be included in the ChatRequest when
+		 * the confirmation is accepted or rejected
+		 * TODO@API should this be MarkdownString?
+		 * TODO@API should actually be a more generic function that takes an array of buttons
+		 */
+		confirmation(title: string, message: string | MarkdownString, data: any, buttons?: string[]): void;
+
+		/**
+		 * Show an inline carousel of questions to gather information from the user.
+		 * This is a blocking call that waits for the user to submit or skip the questions.
+		 * @param questions Array of questions to display to the user
+		 * @param allowSkip Whether the user can skip questions without answering
+		 * @returns A promise that resolves with the user's answers, or undefined if skipped
+		 */
+		questionCarousel(questions: ChatQuestion[], allowSkip?: boolean): Thenable<Record<string, unknown> | undefined>;
+
+		/**
+		 * Push a warning to this stream. Short-hand for
+		 * `push(new ChatResponseWarningPart(message))`.
+		 *
+		 * @param message A warning message
+		 * @returns This stream.
+		 */
+		warning(message: string | MarkdownString): void;
+
+		/**
+		 * Push an info banner to this stream. Short-hand for
+		 * `push(new ChatResponseInfoPart(message))`.
+		 *
+		 * @param message An informational message
+		 * @returns This stream.
+		 */
+		info(message: string | MarkdownString): void;
+
+		reference(value: Uri | Location | { variableName: string; value?: Uri | Location }, iconPath?: Uri | ThemeIcon | { light: Uri; dark: Uri }): void;
+
+		reference2(value: Uri | Location | string | { variableName: string; value?: Uri | Location }, iconPath?: Uri | ThemeIcon | { light: Uri; dark: Uri }, options?: { status?: { description: string; kind: ChatResponseReferencePartStatusKind } }): void;
+
+		codeCitation(value: Uri, license: string, snippet: string): void;
+
+		/**
+		 * Begin a tool invocation in streaming mode. This creates a tool invocation that will
+		 * display streaming progress UI until the tool is actually invoked.
+		 * @param toolCallId Unique identifier for this tool call, used to correlate streaming updates and final invocation.
+		 * @param toolName The name of the tool being invoked.
+		 * @param streamData Optional initial streaming data with partial arguments.
+		 */
+		beginToolInvocation(toolCallId: string, toolName: string, streamData?: ChatToolInvocationStreamData & { subagentInvocationId?: string }): void;
+
+		/**
+		 * Update the streaming data for a tool invocation that was started with `beginToolInvocation`.
+		 * @param toolCallId The tool call ID that was passed to `beginToolInvocation`.
+		 * @param streamData New streaming data with updated partial arguments.
+		 */
+		updateToolInvocation(toolCallId: string, streamData: ChatToolInvocationStreamData): void;
+
+		push(part: ExtendedChatResponsePart): void;
+
+		clearToPreviousToolInvocation(reason: ChatResponseClearToPreviousToolInvocationReason): void;
+
+		/**
+		 * Report token usage information for this request.
+		 * This is typically called when the underlying language model provides usage statistics.
+		 * @param usage Token usage information including prompt and completion tokens
+		 */
+		usage(usage: ChatResultUsage): void;
+	}
+
+	export enum ChatResponseReferencePartStatusKind {
+		Complete = 1,
+		Partial = 2,
+		Omitted = 3
+	}
+
+	export type ThinkingDelta = {
+		text?: string | string[];
+		id: string;
+		metadata?: { readonly [key: string]: any };
+	} | {
+		text?: string | string[];
+		id?: string;
+		metadata: { readonly [key: string]: any };
+	} |
+	{
+		text: string | string[];
+		id?: string;
+		metadata?: { readonly [key: string]: any };
+	};
+
+	export enum ChatResponseClearToPreviousToolInvocationReason {
+		NoReason = 0,
+		FilteredContentRetry = 1,
+		CopyrightContentRetry = 2,
+	}
+
+	/**
+	 * Does this piggy-back on the existing ChatRequest, or is it a different type of request entirely?
+	 * Does it show up in history?
+	 */
+	export interface ChatRequest {
+		/**
+		 * The `data` for any confirmations that were accepted
+		 */
+		acceptedConfirmationData?: any[];
+
+		/**
+		 * The `data` for any confirmations that were rejected
+		 */
+		rejectedConfirmationData?: any[];
+	}
+
+	export interface ChatRequest {
+
+		/**
+		 * A map of all tools that should (`true`) and should not (`false`) be used in this request.
+		 */
+		readonly tools: Map<LanguageModelToolInformation, boolean>;
+	}
+
+	export namespace lm {
+		/**
+		 * Fired when the set of tools on a chat request changes.
+		 */
+		export const onDidChangeChatRequestTools: Event<ChatRequest>;
+	}
+
+	export class LanguageModelToolExtensionSource {
+		/**
+		 * ID of the extension that published the tool.
+		 */
+		readonly id: string;
+
+		/**
+		 * Label of the extension that published the tool.
+		 */
+		readonly label: string;
+
+		private constructor(id: string, label: string);
+	}
+
+	export class LanguageModelToolMCPSource {
+		/**
+		 * Editor-configured label of the MCP server that published the tool.
+		 */
+		readonly label: string;
+
+		/**
+		 * Server-defined name of the MCP server.
+		 */
+		readonly name: string;
+
+		/**
+		 * Server-defined instructions for MCP tool use.
+		 */
+		readonly instructions?: string;
+
+		private constructor(label: string, name: string, instructions?: string);
+	}
+
+	export interface LanguageModelToolInformation {
+		source: LanguageModelToolExtensionSource | LanguageModelToolMCPSource | undefined;
+	}
+
+	// TODO@API fit this into the stream
+	export interface ChatUsedContext {
+		documents: ChatDocumentContext[];
+	}
+
+	export interface ChatParticipant {
+		/**
+		 * Provide a set of variables that can only be used with this participant.
+		 */
+		participantVariableProvider?: { provider: ChatParticipantCompletionItemProvider; triggerCharacters: string[] };
+
+		/**
+		 * Event that fires when a request is paused or unpaused.
+		 * Chat requests are initially unpaused in the {@link requestHandler}.
+		 */
+		readonly onDidChangePauseState: Event<ChatParticipantPauseStateEvent>;
+	}
+
+	export interface ChatParticipantPauseStateEvent {
+		request: ChatRequest;
+		isPaused: boolean;
+	}
+
+	export interface ChatParticipantCompletionItemProvider {
+		provideCompletionItems(query: string, token: CancellationToken): ProviderResult<ChatCompletionItem[]>;
+	}
+
+	export class ChatCompletionItem {
+		id: string;
+		label: string | CompletionItemLabel;
+		values: ChatVariableValue[];
+		fullName?: string;
+		icon?: ThemeIcon;
+		insertText?: string;
+		detail?: string;
+		documentation?: string | MarkdownString;
+		command?: Command;
+
+		constructor(id: string, label: string | CompletionItemLabel, values: ChatVariableValue[]);
+	}
+
+	export type ChatExtendedRequestHandler = (request: ChatRequest, context: ChatContext, response: ChatResponseStream, token: CancellationToken) => ProviderResult<ChatResult | void>;
+
+	/**
+	 * Details about the prompt token usage by category and label.
+	 */
+	export interface ChatResultPromptTokenDetail {
+		/**
+		 * The category this token usage belongs to (e.g., "System", "Context", "Conversation").
+		 */
+		readonly category: string;
+
+		/**
+		 * The label for this specific token usage (e.g., "System prompt", "Attached files").
+		 */
+		readonly label: string;
+
+		/**
+		 * The percentage of the total prompt tokens this represents (0-100).
+		 */
+		readonly percentageOfPrompt: number;
+	}
+
+	/**
+	 * Token usage information for a chat request.
+	 */
+	export interface ChatResultUsage {
+		/**
+		 * The number of prompt tokens used in this request.
+		 */
+		readonly promptTokens: number;
+
+		/**
+		 * The number of completion tokens generated in this response.
+		 */
+		readonly completionTokens: number;
+
+		/**
+		 * The number of tokens reserved for the response.
+		 * This is rendered specially in the UI to indicate that these tokens aren't used but are reserved.
+		 */
+		readonly outputBuffer?: number;
+
+		/**
+		 * The number of copilot credits consumed by this request.
+		 */
+		readonly copilotCredits?: number;
+
+		/**
+		 * Optional breakdown of prompt token usage by category and label.
+		 * If the percentages do not sum to 100%, the remaining will be shown as "Uncategorized".
+		 */
+		readonly promptTokenDetails?: readonly ChatResultPromptTokenDetail[];
+	}
+
+	export interface ChatResult {
+		nextQuestion?: {
+			prompt: string;
+			participant?: string;
+			command?: string;
+		};
+		/**
+		 * An optional detail string that will be rendered at the end of the response in certain UI contexts.
+		 */
+		details?: string;
+	}
+
+	export namespace chat {
+		/**
+		 * Create a chat participant with the extended progress type
+		 */
+		export function createChatParticipant(id: string, handler: ChatExtendedRequestHandler): ChatParticipant;
+	}
+
+	/*
+	 * User action events
+	 */
+
+	export enum ChatCopyKind {
+		// Keyboard shortcut or context menu
+		Action = 1,
+		Toolbar = 2
+	}
+
+	export interface ChatCopyAction {
+		// eslint-disable-next-line local/vscode-dts-string-type-literals
+		kind: 'copy';
+		codeBlockIndex: number;
+		copyKind: ChatCopyKind;
+		copiedCharacters: number;
+		totalCharacters: number;
+		copiedText: string;
+		totalLines: number;
+		copiedLines: number;
+		modelId: string;
+		languageId?: string;
+	}
+
+	export interface ChatInsertAction {
+		// eslint-disable-next-line local/vscode-dts-string-type-literals
+		kind: 'insert';
+		codeBlockIndex: number;
+		totalCharacters: number;
+		totalLines: number;
+		languageId?: string;
+		modelId: string;
+		newFile?: boolean;
+	}
+
+	export interface ChatApplyAction {
+		// eslint-disable-next-line local/vscode-dts-string-type-literals
+		kind: 'apply';
+		codeBlockIndex: number;
+		totalCharacters: number;
+		totalLines: number;
+		languageId?: string;
+		modelId: string;
+		newFile?: boolean;
+		codeMapper?: string;
+	}
+
+	export interface ChatTerminalAction {
+		// eslint-disable-next-line local/vscode-dts-string-type-literals
+		kind: 'runInTerminal';
+		codeBlockIndex: number;
+		languageId?: string;
+	}
+
+	export interface ChatCommandAction {
+		// eslint-disable-next-line local/vscode-dts-string-type-literals
+		kind: 'command';
+		commandButton: ChatCommandButton;
+	}
+
+	export interface ChatFollowupAction {
+		// eslint-disable-next-line local/vscode-dts-string-type-literals
+		kind: 'followUp';
+		followup: ChatFollowup;
+	}
+
+	export interface ChatBugReportAction {
+		// eslint-disable-next-line local/vscode-dts-string-type-literals
+		kind: 'bug';
+	}
+
+	export interface ChatEditorAction {
+		// eslint-disable-next-line local/vscode-dts-string-type-literals
+		kind: 'editor';
+		accepted: boolean;
+	}
+
+	export interface ChatEditingSessionAction {
+		// eslint-disable-next-line local/vscode-dts-string-type-literals
+		kind: 'chatEditingSessionAction';
+		uri: Uri;
+		hasRemainingEdits: boolean;
+		outcome: ChatEditingSessionActionOutcome;
+	}
+
+	export interface ChatEditingHunkAction {
+		// eslint-disable-next-line local/vscode-dts-string-type-literals
+		kind: 'chatEditingHunkAction';
+		uri: Uri;
+		lineCount: number;
+		linesAdded: number;
+		linesRemoved: number;
+		outcome: ChatEditingSessionActionOutcome;
+		hasRemainingEdits: boolean;
+	}
+
+	export enum ChatEditingSessionActionOutcome {
+		Accepted = 1,
+		Rejected = 2,
+		Saved = 3
+	}
+
+	export interface ChatUserActionEvent {
+		readonly result: ChatResult;
+		readonly action: ChatCopyAction | ChatInsertAction | ChatApplyAction | ChatTerminalAction | ChatCommandAction | ChatFollowupAction | ChatBugReportAction | ChatEditorAction | ChatEditingSessionAction | ChatEditingHunkAction;
+	}
+
+	export interface ChatPromptReference {
+		/**
+		 * TODO Needed for now to drive the variableName-type reference, but probably both of these should go away in the future.
+		 */
+		readonly name: string;
+
+		/**
+		 * The list of tools were referenced in the value of the reference
+		 */
+		readonly toolReferences?: readonly ChatLanguageModelToolReference[];
+	}
+
+	export namespace lm {
+		export function fileIsIgnored(uri: Uri, token?: CancellationToken): Thenable<boolean>;
+	}
+
+	export interface ChatVariableValue {
+		/**
+		 * The detail level of this chat variable value. If possible, variable resolvers should try to offer shorter values that will consume fewer tokens in an LLM prompt.
+		 */
+		level: ChatVariableLevel;
+
+		/**
+		 * The variable's value, which can be included in an LLM prompt as-is, or the chat participant may decide to read the value and do something else with it.
+		 */
+		value: string | Uri;
+
+		/**
+		 * A description of this value, which could be provided to the LLM as a hint.
+		 */
+		description?: string;
+	}
+
+	/**
+	 * The detail level of this chat variable value.
+	 */
+	export enum ChatVariableLevel {
+		Short = 1,
+		Medium = 2,
+		Full = 3
+	}
+
+	export interface LanguageModelToolInvocationOptions<T> {
+		/**
+		 * The selected model. Access throws if an explicit selection cannot be resolved through the language model API.
+		 * Tools that do not use a model can run without accessing this property.
+		 */
+		model?: LanguageModelChat;
+		chatStreamToolCallId?: string;
+	}
+
+	export interface LanguageModelToolInvocationStreamOptions<T> {
+		/**
+		 * Raw argument payload, such as the streamed JSON fragment from the language model.
+		 */
+		readonly rawInput?: unknown;
+
+		readonly chatRequestId?: string;
+		readonly chatSessionResource?: Uri;
+		readonly chatInteractionId?: string;
+	}
+
+	export interface LanguageModelToolStreamResult {
+		/**
+		 * A customized progress message to show while the tool runs.
+		 */
+		invocationMessage?: string | MarkdownString;
+	}
+
+	export interface LanguageModelTool<T> {
+		/**
+		 * Called zero or more times before {@link LanguageModelTool.prepareInvocation} while the
+		 * language model streams argument data for the invocation. Use this to update progress
+		 * or UI with the partial arguments that have been generated so far.
+		 *
+		 * Implementations must be free of side-effects and should be resilient to receiving
+		 * malformed or incomplete input.
+		 */
+		handleToolStream?(options: LanguageModelToolInvocationStreamOptions<T>, token: CancellationToken): ProviderResult<LanguageModelToolStreamResult>;
+	}
+
+	export interface ChatRequest {
+		readonly modeInstructions?: string;
+		readonly modeInstructions2?: ChatRequestModeInstructions;
+	}
+
+	export interface ChatRequestModeInstructions {
+		/** set when the mode a custom agent (not built-in), to be used as identifier */
+		readonly uri?: Uri;
+		readonly name: string;
+		readonly content: string;
+		readonly toolReferences?: readonly ChatLanguageModelToolReference[];
+		readonly allowedSubagents?: readonly string[];
+		readonly metadata?: Record<string, boolean | string | number>;
+		/**
+		 * Whether the mode is a builtin mode (e.g. Ask, Edit, Agent) rather than a user or extension-defined custom mode.
+		 */
+		readonly isBuiltin?: boolean;
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatParticipantPrivate.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatParticipantPrivate.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatParticipantPrivate.d.ts
+- **SHA256_FINGERPRINT**: `19b98903eb32923c599b68d404261077bdc7d0b159020b85e4ffb25fc4f94047`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.633251+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatParticipantPrivate.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	/**
+	 * The location at which the chat is happening.
+	 */
+	export enum ChatLocation {
+		/**
+		 * The chat panel
+		 */
+		Panel = 1,
+		/**
+		 * Terminal inline chat
+		 */
+		Terminal = 2,
+		/**
+		 * Notebook inline chat
+		 */
+		Notebook = 3,
+		/**
+		 * Code editor inline chat
+		 */
+		Editor = 4,
+	}
+
+	export class ChatRequestEditorData {
+
+		readonly editor: TextEditor;
+
+		//TODO@API should be the editor
+		document: TextDocument;
+		selection: Selection;
+
+		/** @deprecated */
+		wholeRange: Range;
+
+		constructor(editor: TextEditor, document: TextDocument, selection: Selection, wholeRange: Range);
+	}
+
+	export class ChatRequestNotebookData {
+		//TODO@API should be the editor
+		readonly cell: TextDocument;
+
+		constructor(cell: TextDocument);
+	}
+
+	export interface ChatRequest {
+		/**
+		 * The id of the chat request. Used to identity an interaction with any of the chat surfaces.
+		 */
+		readonly id: string;
+		/**
+		 * The attempt number of the request. The first request has attempt number 0.
+		 */
+		readonly attempt: number;
+
+		/**
+		 * The session identifier for this chat request.
+		 *
+		 * @deprecated Use {@link chatSessionResource} instead.
+		 */
+		readonly sessionId: string;
+
+		/**
+		 * The resource URI for the chat session this request belongs to.
+		 */
+		readonly sessionResource: Uri;
+
+		/**
+		 * If automatic command detection is enabled.
+		 */
+		readonly enableCommandDetection: boolean;
+
+		/**
+		 * If the chat participant or command was automatically assigned.
+		 */
+		readonly isParticipantDetected: boolean;
+
+		/**
+		 * The location at which the chat is happening. This will always be one of the supported values
+		 *
+		 * @deprecated
+		 */
+		readonly location: ChatLocation;
+
+		/**
+		 * Information that is specific to the location at which chat is happening, e.g within a document, notebook,
+		 * or terminal. Will be `undefined` for the chat panel.
+		 */
+		readonly location2: ChatRequestEditorData | ChatRequestNotebookData | undefined;
+
+		/**
+		 * Events for edited files in this session collected since the last request.
+		 */
+		readonly editedFileEvents?: ChatRequestEditedFileEvent[];
+
+		/**
+		 * Unique ID for the subagent invocation, used to group tool calls from the same subagent run together.
+		 * Pass this to tool invocations when calling tools from within a subagent context.
+		 */
+		readonly subAgentInvocationId?: string;
+
+		/**
+		 * Display name of the subagent that is invoking this request.
+		 */
+		readonly subAgentName?: string;
+
+		/**
+		 * The request ID of the parent request that invoked this subagent.
+		 */
+		readonly parentRequestId?: string;
+
+		/**
+		 * The permission level for tool auto-approval in this request.
+		 * - `'autoApprove'`: Auto-approve all tool calls and retry on errors.
+		 * - `'autopilot'`: Everything autoApprove does plus continues until the task is done.
+		 */
+		readonly permissionLevel?: string;
+
+		/**
+		 * Whether any hooks are enabled for this request.
+		 */
+		readonly hasHooksEnabled: boolean;
+
+		/**
+		 * Whether this request was submitted through Agents Voice Mode.
+		 */
+		readonly isVoiceModeInput?: boolean;
+
+		/**
+		 * When true, this request was initiated by the system (e.g. a terminal
+		 * command completion notification) rather than by the user typing a
+		 * message. Extensions can use this to render the prompt differently
+		 * and skip billing.
+		 */
+		readonly isSystemInitiated?: boolean;
+	}
+
+	/**
+	 * A transient progress update intended for Voice Mode narration.
+	 */
+	export type ChatResponseVoiceProgressStage = 'investigating' | 'planning' | 'editing' | 'validating' | 'recovering';
+
+	export class ChatResponseVoiceProgressPart {
+		/**
+		 * A stable identifier used to de-duplicate the progress update.
+		 */
+		readonly id: ChatResponseVoiceProgressStage;
+		/**
+		 * The concise text to narrate.
+		 */
+		readonly value: string;
+		/**
+		 * Creates a Voice Mode progress update.
+		 * @param id A stable identifier used to de-duplicate the update.
+		 * @param value The concise text to narrate.
+		 */
+		constructor(id: ChatResponseVoiceProgressStage, value: string);
+	}
+
+	export interface ExtendedChatResponseParts {
+		ChatResponseVoiceProgressPart: ChatResponseVoiceProgressPart;
+	}
+
+	export interface ChatResponseStream {
+		/**
+		 * Reports transient progress for Voice Mode narration.
+		 * @param id A stable identifier used to de-duplicate the update.
+		 * @param value The concise text to narrate.
+		 */
+		voiceProgress(id: ChatResponseVoiceProgressStage, value: string): void;
+	}
+
+	export enum ChatRequestEditedFileEventKind {
+		Keep = 1,
+		Undo = 2,
+		UserModification = 3,
+	}
+
+	export interface ChatRequestEditedFileEvent {
+		readonly uri: Uri;
+		readonly eventKind: ChatRequestEditedFileEventKind;
+	}
+
+	/**
+	 * ChatRequestTurn + private additions. Note- at runtime this is the SAME as ChatRequestTurn and instanceof is safe.
+	 */
+	export class ChatRequestTurn2 {
+		/**
+		 * The id of the chat request. Used to identity an interaction with any of the chat surfaces.
+		 */
+		readonly id?: string;
+		/**
+		 * The prompt as entered by the user.
+		 *
+		 * Information about references used in this request is stored in {@link ChatRequestTurn.references}.
+		 *
+		 * *Note* that the {@link ChatParticipant.name name} of the participant and the {@link ChatCommand.name command}
+		 * are not part of the prompt.
+		 */
+		readonly prompt: string;
+
+		/**
+		 * The id of the chat participant to which this request was directed.
+		 */
+		readonly participant: string;
+
+		/**
+		 * The name of the {@link ChatCommand command} that was selected for this request.
+		 */
+		readonly command?: string;
+
+		/**
+		 * The references that were used in this message.
+		 */
+		readonly references: ChatPromptReference[];
+
+		/**
+		 * The list of tools were attached to this request.
+		 */
+		readonly toolReferences: readonly ChatLanguageModelToolReference[];
+
+		/**
+		 * Events for edited files in this session collected between the previous request and this one.
+		 */
+		readonly editedFileEvents?: ChatRequestEditedFileEvent[];
+
+		/**
+		 * The identifier of the language model that was used for this request, if known.
+		 */
+		readonly modelId?: string;
+
+		/**
+		 * The mode instructions that were active for this request, if any.
+		 */
+		readonly modeInstructions2?: ChatRequestModeInstructions;
+
+		/** Whether this request was initiated by the system rather than the user. */
+		readonly isSystemInitiated?: boolean;
+
+		/**
+		 * @hidden
+		 */
+		constructor(prompt: string, command: string | undefined, references: ChatPromptReference[], participant: string, toolReferences: ChatLanguageModelToolReference[], editedFileEvents: ChatRequestEditedFileEvent[] | undefined, id: string | undefined, modelId: string | undefined, modeInstructions2: ChatRequestModeInstructions | undefined, isSystemInitiated?: boolean);
+	}
+
+	export class ChatResponseTurn2 {
+		/**
+		 * The id of the chat response. Used to identity an interaction with any of the chat surfaces.
+		 */
+		readonly id?: string;
+
+		/**
+		 * The content that was received from the chat participant. Only the stream parts that represent actual content (not metadata) are represented.
+		 */
+		readonly response: ReadonlyArray<ChatResponseMarkdownPart | ChatResponseFileTreePart | ChatResponseAnchorPart | ChatResponseCommandButtonPart | ExtendedChatResponsePart | ChatToolInvocationPart>;
+
+		/**
+		 * The result that was received from the chat participant.
+		 */
+		readonly result: ChatResult;
+
+		/**
+		 * The id of the chat participant that this response came from.
+		 */
+		readonly participant: string;
+
+		/**
+		 * The name of the command that this response came from.
+		 */
+		readonly command?: string;
+
+		constructor(response: ReadonlyArray<ChatResponseMarkdownPart | ChatResponseFileTreePart | ChatResponseAnchorPart | ChatResponseCommandButtonPart | ExtendedChatResponsePart>, result: ChatResult, participant: string);
+	}
+
+	export interface ChatParticipant {
+		supportIssueReporting?: boolean;
+	}
+
+	export enum ChatErrorLevel {
+		Info = 0,
+		Warning = 1,
+		Error = 2,
+	}
+
+	export interface ChatErrorDetails {
+		/**
+		 * If set to true, the message content is completely hidden. Only ChatErrorDetails#message will be shown.
+		 */
+		responseIsRedacted?: boolean;
+
+		isQuotaExceeded?: boolean;
+
+		isRateLimited?: boolean;
+
+		/**
+		 * If true, the error is an expected operational condition (e.g. user-actionable
+		 * configuration, network connectivity, missing dependency) and should not be
+		 * logged as a `chatAgentError` telemetry event. The error is still surfaced to
+		 * the user. Throwing an `Error` whose `name` is `'ChatExpectedError'` from a
+		 * chat participant handler will set this flag automatically.
+		 */
+		isExpectedError?: boolean;
+
+		level?: ChatErrorLevel;
+
+		code?: string;
+	}
+
+	export namespace chat {
+		export function createDynamicChatParticipant(id: string, dynamicProps: DynamicChatParticipantProps, handler: ChatExtendedRequestHandler): ChatParticipant;
+	}
+
+	/**
+	 * These don't get set on the ChatParticipant after creation, like other props, because they are typically defined in package.json and we want them at the time of creation.
+	 */
+	export interface DynamicChatParticipantProps {
+		name: string;
+		publisherName: string;
+		description?: string;
+		fullName?: string;
+	}
+
+	export namespace lm {
+		export function registerIgnoredFileProvider(provider: LanguageModelIgnoredFileProvider): Disposable;
+	}
+
+	export interface LanguageModelIgnoredFileProvider {
+		provideFileIgnored(uri: Uri, token: CancellationToken): ProviderResult<boolean>;
+	}
+
+	export type PreToolUsePermissionDecision = 'allow' | 'deny' | 'ask';
+
+	export interface LanguageModelToolInvocationOptions<T> {
+		chatRequestId?: string;
+		chatSessionResource?: Uri;
+		chatInteractionId?: string;
+		terminalCommand?: string;
+		/**
+		 * The working directory URI for the session, if set.
+		 * In the agents window, each session can have its own working directory
+		 * that differs from the current workspace folders.
+		 */
+		workingDirectory?: Uri;
+		/**
+		 * Unique ID for the subagent invocation, used to group tool calls from the same subagent run together.
+		 */
+		subAgentInvocationId?: string;
+		/**
+		 * W3C trace context `traceparent` header value identifying the active distributed
+		 * tracing span. When provided to a tool implementation backed by an MCP server, this
+		 * value is forwarded as `_meta.traceparent` on the JSON-RPC `tools/call` request so
+		 * downstream servers can correlate their spans (MCP SEP-414).
+		 */
+		traceparent?: string;
+		/**
+		 * Optional W3C trace context `tracestate` header value paired with `traceparent`.
+		 */
+		tracestate?: string;
+		/**
+		 * Pre-tool-use hook result, if the hook was already executed by the caller.
+		 * When provided, the tools service will skip executing its own preToolUse hook
+		 * and use this result for permission decisions and input modifications instead.
+		 */
+		preToolUseResult?: {
+			permissionDecision?: PreToolUsePermissionDecision;
+			permissionDecisionReason?: string;
+			updatedInput?: object;
+		};
+	}
+
+	export interface LanguageModelToolInvocationPrepareOptions<T> {
+		/**
+		 * The input that the tool is being invoked with.
+		 */
+		input: T;
+		chatRequestId?: string;
+		chatSessionResource?: Uri;
+		chatInteractionId?: string;
+		/**
+		 * The working directory URI for the session, if set.
+		 * In the agents window, each session can have its own working directory
+		 * that differs from the current workspace folders.
+		 */
+		workingDirectory?: Uri;
+		/**
+		 * If set, tells the tool that it should include confirmation messages.
+		 */
+		forceConfirmationReason?: string;
+	}
+
+	export interface PreparedToolInvocation {
+		pastTenseMessage?: string | MarkdownString;
+		presentation?: 'hidden' | 'hiddenAfterComplete' | undefined;
+	}
+
+	export class ExtendedLanguageModelToolResult extends LanguageModelToolResult {
+		toolResultMessage?: string | MarkdownString;
+		toolResultDetails?: Array<Uri | Location>;
+		toolMetadata?: unknown;
+		/** Whether there was an error calling the tool. The tool may still have partially succeeded. */
+		hasError?: boolean;
+	}
+
+	// #region Chat participant detection
+
+	export interface ChatParticipantMetadata {
+		participant: string;
+		command?: string;
+		disambiguation: { category: string; description: string; examples: string[] }[];
+	}
+
+	export interface ChatParticipantDetectionResult {
+		participant: string;
+		command?: string;
+	}
+
+	export interface ChatParticipantDetectionProvider {
+		provideParticipantDetection(chatRequest: ChatRequest, context: ChatContext, options: { participants?: ChatParticipantMetadata[]; location: ChatLocation }, token: CancellationToken): ProviderResult<ChatParticipantDetectionResult>;
+	}
+
+	export namespace chat {
+		export function registerChatParticipantDetectionProvider(participantDetectionProvider: ChatParticipantDetectionProvider): Disposable;
+
+		export const onDidDisposeChatSession: Event<string>;
+	}
+
+	export namespace window {
+		/**
+		 * The resource URI of the currently active chat panel session,
+		 * or `undefined` if there is no active chat panel session.
+		 */
+		export const activeChatPanelSessionResource: Uri | undefined;
+
+		/**
+		 * An event that fires when the active chat panel session resource changes.
+		 */
+		export const onDidChangeActiveChatPanelSessionResource: Event<Uri | undefined>;
+	}
+
+	// #endregion
+
+	// #region ChatErrorDetailsWithConfirmation
+
+	export interface ChatErrorDetails {
+		confirmationButtons?: ChatErrorDetailsConfirmationButton[];
+	}
+
+	export interface ChatErrorDetailsConfirmationButton {
+		data: any;
+		label: string;
+	}
+
+	// #endregion
+
+	// #region LanguageModelProxyProvider
+
+	/**
+	 * Duplicated so that this proposal and languageModelProxy can be independent.
+	 */
+	export interface LanguageModelProxy extends Disposable {
+		readonly uri: Uri;
+		readonly key: string;
+	}
+
+	export interface LanguageModelProxyProvider {
+		provideModelProxy(forExtensionId: string, token: CancellationToken): ProviderResult<LanguageModelProxy>;
+	}
+
+	export namespace lm {
+		export function registerLanguageModelProxyProvider(provider: LanguageModelProxyProvider): Disposable;
+	}
+
+	// #endregion
+
+	// #region Steering
+
+	export interface ChatContext {
+		/**
+		 * Set to `true` by the editor to request the language model gracefully
+		 * stop after its next opportunity. When set, it's likely that the editor
+		 * will immediately follow up with a new request in the same conversation.
+		 */
+		readonly yieldRequested: boolean;
+
+		/**
+		 * The resource URI identifying the chat session this context belongs to.
+		 * Available when the context is provided for title generation, summarization,
+		 * or other session-scoped operations. Extracted from the session's history entries.
+		 */
+		readonly sessionResource?: Uri;
+	}
+
+	// #endregion
+
+	export interface LanguageModelToolInformation {
+		/**
+		 * The full reference name of this tool as used in agent definition files.
+		 */
+		readonly fullReferenceName?: string;
+	}
+
+	// #region Quota Sync
+
+	/**
+	 * A snapshot of quota usage for a single category (chat, completions, premium chat).
+	 */
+	export interface ChatQuotaSnapshot {
+		readonly percentRemaining: number;
+		readonly unlimited: boolean;
+		readonly hasQuota?: boolean;
+		readonly resetAt?: number;
+		readonly usageBasedBilling?: boolean;
+		readonly entitlement?: number;
+		readonly quotaRemaining?: number;
+	}
+
+	/**
+	 * A snapshot of rate limit usage for a category (session or weekly).
+	 */
+	export interface ChatRateLimitSnapshot {
+		readonly percentRemaining: number;
+		readonly unlimited: boolean;
+		readonly resetDate?: string;
+	}
+
+	/**
+	 * Quota snapshot data covering all categories.
+	 * Accepted by {@link chat.updateQuotas} for extension-to-core sync.
+	 */
+	export interface ChatQuotaSnapshots {
+		readonly resetDate?: string;
+		readonly resetDateHasTime?: boolean;
+		readonly usageBasedBilling?: boolean;
+		readonly canUpgradePlan?: boolean;
+		readonly chat?: ChatQuotaSnapshot;
+		readonly completions?: ChatQuotaSnapshot;
+		readonly premiumChat?: ChatQuotaSnapshot;
+		readonly additionalUsageEnabled?: boolean;
+		readonly additionalUsageCount?: number;
+		readonly sessionRateLimit?: ChatRateLimitSnapshot;
+		readonly weeklyRateLimit?: ChatRateLimitSnapshot;
+	}
+
+	export namespace chat {
+		/**
+		 * Push quota snapshot data from the extension to the core workbench.
+		 */
+		export function updateQuotas(quotas: ChatQuotaSnapshots): void;
+	}
+
+	// #endregion
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatPromptFiles.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatPromptFiles.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatPromptFiles.d.ts
+- **SHA256_FINGERPRINT**: `ccb79fc6dd55cf514e8a330b1a00fc58cf37a478022b238d600dda7c3b987546`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.541296+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatPromptFiles.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+	// #region Resource Classes
+
+	/**
+	 * Indicates where a chat resource was loaded from.
+	 */
+	export type ChatResourceSource = 'local' | 'user' | 'extension' | 'plugin' | 'builtin';
+
+	/**
+	 * Represents a chat-related resource, such as a custom agent, instructions, prompt file, skill, or slash command.
+	 */
+	export interface ChatResource {
+		/**
+		 * Uri to the chat resource. This is typically a `.agent.md`, `.instructions.md`, `.prompt.md`, or `SKILL.md` file.
+		 */
+		readonly uri: Uri;
+
+		/**
+		 * Optional condition that must evaluate to true for the resource to be offered.
+		 */
+		readonly when?: string;
+
+		/**
+		 * Optional session types that describe when the resource should be offered.
+		 */
+		readonly sessionTypes?: readonly string[];
+	}
+
+	/**
+	 * Represents a custom chat agent resource.
+	 */
+	export interface ChatCustomAgent {
+		/**
+		 * Uri to the custom agent. This is typically a `.agent.md` file.
+		 */
+		readonly uri: Uri;
+
+		/**
+		 * Display name of the custom agent.
+		 */
+		readonly name: string;
+
+		/**
+		 * Optional description of the custom agent.
+		 */
+		readonly description?: string;
+
+		/**
+		 * Where the custom agent was loaded from.
+		 */
+		readonly source: ChatResourceSource;
+
+		/**
+		 * Optional session types that describe when the custom agent should be offered.
+		 */
+		readonly sessionTypes?: readonly string[];
+
+		/**
+		 * The contributing extension identifier when {@link source} is `extension`.
+		 */
+		readonly extensionId?: string;
+
+		/**
+		 * The contributing plugin URI when {@link source} is `plugin`.
+		 */
+		readonly pluginUri?: Uri;
+
+		/**
+		 * Optional hint that describes what arguments the custom agent accepts.
+		 */
+		readonly argumentHint?: string;
+
+		/**
+		 * Optional tool restrictions declared by the custom agent.
+		 */
+		readonly tools?: readonly string[];
+
+		/**
+		 * Optional model preferences declared by the custom agent.
+		 */
+		readonly model?: readonly string[];
+
+		/**
+		 * Whether this custom agent should be shown to users as invocable.
+		 */
+		readonly userInvocable: boolean;
+
+		/**
+		 * Whether this custom agent should be excluded from model invocation.
+		 */
+		readonly disableModelInvocation: boolean;
+
+		/**
+		 * Whether this custom agent is enabled. Disabled agents are included in the list
+		 * but should not be offered to users or used in automated flows.
+		 */
+		readonly enabled: boolean;
+	}
+
+	/**
+	 * Represents an instruction file resource.
+	 */
+	export interface ChatInstruction {
+		/**
+		 * Uri to the instruction.
+		 */
+		readonly uri: Uri;
+
+		/**
+		 * Display name of the instruction.
+		 */
+		readonly name: string;
+
+		/**
+		 * Optional description of the instruction.
+		 */
+		readonly description?: string;
+
+		/**
+		 * Where the instruction was loaded from.
+		 */
+		readonly source: ChatResourceSource;
+
+		/**
+		 * Optional session types that describe when the instruction should be offered.
+		 */
+		readonly sessionTypes?: readonly string[];
+
+		/**
+		 * The contributing extension identifier when {@link source} is `extension`.
+		 */
+		readonly extensionId?: string;
+
+		/**
+		 * The contributing plugin URI when {@link source} is `plugin`.
+		 */
+		readonly pluginUri?: Uri;
+
+		/**
+		 * The optional apply pattern used to scope the instruction.
+		 */
+		readonly pattern?: string;
+	}
+
+	/**
+	 * Represents a skill resource.
+	 */
+	export interface ChatSkill {
+		/**
+		 * Uri to the chat resource. This is typically a `.agent.md`, `.instructions.md`, `.prompt.md`, or `SKILL.md` file.
+		 */
+		readonly uri: Uri;
+
+		/**
+		 * Display name of the skill.
+		 */
+		readonly name: string;
+
+		/**
+		 * Optional description of the skill.
+		 */
+		readonly description?: string;
+
+		/**
+		 * Where the skill was loaded from.
+		 */
+		readonly source: ChatResourceSource;
+
+		/**
+		 * Optional session types that describe when the skill should be offered.
+		 */
+		readonly sessionTypes?: readonly string[];
+
+		/**
+		 * The contributing extension identifier when {@link source} is `extension`.
+		 */
+		readonly extensionId?: string;
+
+		/**
+		 * The contributing plugin URI when {@link source} is `plugin`.
+		 */
+		readonly pluginUri?: Uri;
+
+		/**
+		 * Whether this skill should be shown to users as invocable.
+		 */
+		readonly userInvocable?: boolean;
+
+		/**
+		 * Whether this skill should be excluded from model invocation.
+		 * When true, the skill can only be triggered manually via `/name`.
+		 */
+		readonly disableModelInvocation: boolean;
+	}
+
+	/**
+	 * Represents a slash command resource.
+	 */
+	export interface ChatSlashCommand {
+		/**
+		 * Uri to the chat resource.
+		 */
+		readonly uri: Uri;
+
+		/**
+		 * Display name of the chat resource.
+		 */
+		readonly name: string;
+
+		/**
+		 * Optional description of the chat resource.
+		 */
+		readonly description?: string;
+
+		/**
+		 * Where the chat resource was loaded from.
+		 */
+		readonly source: ChatResourceSource;
+
+		/**
+		 * Optional session types that describe when the slash command should be offered.
+		 */
+		readonly sessionTypes?: readonly string[];
+
+		/**
+		 * The contributing extension identifier when {@link source} is `extension`.
+		 */
+		readonly extensionId?: string;
+
+		/**
+		 * The contributing plugin URI when {@link source} is `plugin`.
+		 */
+		readonly pluginUri?: Uri;
+
+		/**
+		 * Optional hint that describes what arguments the slash command accepts.
+		 */
+		readonly argumentHint?: string;
+
+		/**
+		 * Whether this slash command should be shown to users as invocable.
+		 */
+		readonly userInvocable?: boolean;
+	}
+
+	export interface ChatHook {
+		readonly uri: Uri;
+		/**
+		 * Optional session types that describe when the hook should be offered.
+		 */
+		readonly sessionTypes?: readonly string[];
+
+		/**
+		 * Where the chat resource was loaded from.
+		 */
+		readonly source: ChatResourceSource;
+
+		/**
+		 * The contributing extension identifier when {@link source} is `extension`.
+		 */
+		readonly extensionId?: string;
+
+		/**
+		 * The contributing plugin URI when {@link source} is `plugin`.
+		 */
+		readonly pluginUri?: Uri;
+
+	}
+
+	export interface ChatPlugin {
+		readonly uri: Uri;
+		/**
+		 * Optional session types that describe when the plugin should be offered.
+		 */
+		readonly sessionTypes?: readonly string[];
+
+	}
+
+	// #endregion
+
+	// #region Providers
+
+	/**
+	 * A provider that supplies custom agent resources (from .agent.md files) for repositories.
+	 */
+	export interface ChatCustomAgentProvider {
+		/**
+		 * An optional event to signal that custom agents have changed.
+		 */
+		readonly onDidChangeCustomAgents?: Event<void>;
+
+		/**
+		 * Provide the list of custom agents available.
+		 * @param context Context for the provide call.
+		 * @param token A cancellation token.
+		 * @returns An array of custom agents or a promise that resolves to such.
+		 */
+		provideCustomAgents(context: unknown, token: CancellationToken): ProviderResult<ChatResource[]>;
+	}
+
+	/**
+	 * A provider that supplies instructions resources for repositories.
+	 */
+	export interface ChatInstructionsProvider {
+		/**
+		 * An optional event to signal that instructions have changed.
+		 */
+		readonly onDidChangeInstructions?: Event<void>;
+
+		/**
+		 * Provide the list of instructions available.
+		 * @param context Context for the provide call.
+		 * @param token A cancellation token.
+		 * @returns An array of instructions or a promise that resolves to such.
+		 */
+		provideInstructions(context: unknown, token: CancellationToken): ProviderResult<ChatResource[]>;
+	}
+
+	/**
+	 * A provider that supplies prompt file resources (from .prompt.md files) for repositories.
+	 */
+	export interface ChatPromptFileProvider {
+		/**
+		 * An optional event to signal that prompt files have changed.
+		 */
+		readonly onDidChangePromptFiles?: Event<void>;
+
+		/**
+		 * Provide the list of prompt files available.
+		 * @param context Context for the provide call.
+		 * @param token A cancellation token.
+		 * @returns An array of prompt files or a promise that resolves to such.
+		 */
+		providePromptFiles(context: unknown, token: CancellationToken): ProviderResult<ChatResource[]>;
+	}
+
+	// #endregion
+
+	// #region HookProvider
+
+	/**
+	 * A provider that supplies hook configuration resources (from hooks JSON files).
+	 */
+	export interface ChatHookProvider {
+		/**
+		 * An optional event to signal that hooks have changed.
+		 */
+		readonly onDidChangeHooks?: Event<void>;
+
+		/**
+		 * Provide the list of hook configuration files available.
+		 * @param context Context for the provide call.
+		 * @param token A cancellation token.
+		 * @returns An array of hook resources or a promise that resolves to such.
+		 */
+		provideHooks(context: unknown, token: CancellationToken): ProviderResult<ChatResource[]>;
+	}
+
+	// #endregion
+
+	// #region SkillProvider
+
+	/**
+	 * A provider that supplies SKILL.md resources for agents.
+	 */
+	export interface ChatSkillProvider {
+		/**
+		 * An optional event to signal that skills have changed.
+		 */
+		readonly onDidChangeSkills?: Event<void>;
+
+		/**
+		 * Provide the list of skills available.
+		 * @param context Context for the provide call.
+		 * @param token A cancellation token.
+		 * @returns An array of skill resources or a promise that resolves to such.
+		 */
+		provideSkills(context: unknown, token: CancellationToken): ProviderResult<ChatResource[]>;
+	}
+
+	// #endregion
+
+	// #region Chat Provider Registration
+
+	export namespace chat {
+		/**
+		 * An event that fires when the list of {@link customAgents custom agents} changes.
+		 */
+		export const onDidChangeCustomAgents: Event<void>;
+
+		/**
+		 * Provide the list of currently available custom agents. These are `.agent.md` files
+		 * from all sources (workspace, user, and extension-provided).
+		 * @param token A cancellation token.
+		 */
+		export function getCustomAgents(token: CancellationToken): Thenable<readonly ChatCustomAgent[]>;
+
+		/**
+		 * An event that fires when the list of {@link instructions instructions} changes.
+		 */
+		export const onDidChangeInstructions: Event<void>;
+
+		/**
+		 * Provide the list of currently available instructions. These are `.instructions.md` files
+		 * from all sources (workspace, user, and extension-provided).
+		 * @param token A cancellation token.
+		 */
+		export function getInstructions(token: CancellationToken): Thenable<readonly ChatInstruction[]>;
+
+		/**
+		 * An event that fires when the list of {@link skills skills} changes.
+		 */
+		export const onDidChangeSkills: Event<void>;
+
+		/**
+		 * Provide the list of currently available skills. These are `SKILL.md` files
+		 * from all sources (workspace, user, and extension-provided).
+		 * @param token A cancellation token.
+		 */
+		export function getSkills(token: CancellationToken): Thenable<readonly ChatSkill[]>;
+
+		/**
+		 * An event that fires when the list of {@link slashCommands slash commands} changes.
+		 */
+		export const onDidChangeSlashCommands: Event<void>;
+
+		/**
+		 * Provide the list of currently available slash commands. These are `.prompt.md` files and
+		 * user-invocable `SKILL.md` files from all sources (workspace, user, and extension-provided).
+		 * @param token A cancellation token.
+		 */
+		export function getSlashCommands(token: CancellationToken): Thenable<readonly ChatSlashCommand[]>;
+
+		/**
+		 * An event that fires when the list of {@link hooks hooks} changes.
+		 */
+		export const onDidChangeHooks: Event<void>;
+
+		/**
+		 * Provide the list of currently available hook configuration files. These are JSON files that define lifecycle hooks from all sources (workspace, user, and extension-provided).
+		 * @param token A cancellation token.
+		 */
+		export function getHooks(token: CancellationToken): Thenable<readonly ChatHook[]>;
+
+		/**
+		 * An event that fires when the list of {@link plugins plugins} changes.
+		 */
+		export const onDidChangePlugins: Event<void>;
+
+		/**
+		 * Provide the list of currently installed agent plugins.
+		 * @param token A cancellation token.
+		 */
+		export function getPlugins(token: CancellationToken): Thenable<readonly ChatPlugin[]>;
+
+		/**
+		 * Register a provider for custom agents.
+		 * @param provider The custom agent provider.
+		 * @returns A disposable that unregisters the provider when disposed.
+		 */
+		export function registerCustomAgentProvider(provider: ChatCustomAgentProvider): Disposable;
+
+		/**
+		 * Register a provider for instructions.
+		 * @param provider The instructions provider.
+		 * @returns A disposable that unregisters the provider when disposed.
+		 */
+		export function registerInstructionsProvider(provider: ChatInstructionsProvider): Disposable;
+
+		/**
+		 * Register a provider for prompt files.
+		 * @param provider The prompt file provider.
+		 * @returns A disposable that unregisters the provider when disposed.
+		 */
+		export function registerPromptFileProvider(provider: ChatPromptFileProvider): Disposable;
+
+		/**
+		 * Register a provider for skills.
+		 * @param provider The skill provider.
+		 * @returns A disposable that unregisters the provider when disposed.
+		 */
+		export function registerSkillProvider(provider: ChatSkillProvider): Disposable;
+
+		/**
+		 * Register a provider for hooks.
+		 * @param provider The hook provider.
+		 * @returns A disposable that unregisters the provider when disposed.
+		 */
+		export function registerHookProvider(provider: ChatHookProvider): Disposable;
+	}
+
+	// #endregion
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatProvider.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatProvider.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatProvider.d.ts
+- **SHA256_FINGERPRINT**: `c50809ad1883a4748d6fbcdad50137b92e66e28d4812c553c69d78d35dd70e90`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.554359+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatProvider.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	/**
+	* The provider version of {@linkcode LanguageModelChatRequestOptions}
+	*/
+	export interface ProvideLanguageModelChatResponseOptions {
+
+		/**
+		 * What extension initiated the request to the language model, or
+		 * `undefined` if the request was initiated by other functionality in the editor.
+		 */
+		readonly requestInitiator: string;
+
+		/**
+		 * Per-model configuration provided by the user. This contains values configured
+		 * in the user's language models configuration file, validated against the model's
+		 * {@linkcode LanguageModelChatInformation.configurationSchema configurationSchema}.
+		 */
+		readonly modelConfiguration?: {
+			readonly [key: string]: any;
+		};
+
+		/**
+		 * Whether encrypted thinking state should be included in the response.
+		 */
+		readonly includeEncryptedThinking?: boolean;
+	}
+
+	/**
+	 * All the information representing a single language model contributed by a {@linkcode LanguageModelChatProvider}.
+	 */
+	export interface LanguageModelChatInformation {
+
+		/**
+		 * The maximum number of tokens in the model's context window, including input and output.
+		 * This is independent of {@link maxInputTokens} and {@link maxOutputTokens}, whose maxima need not add up to the context window.
+		 */
+		readonly maxContextWindowTokens?: number;
+
+		/**
+		 * When present, this gates the use of `requestLanguageModelAccess` behind an authorization flow where
+		 * the user must approve of another extension accessing the models contributed by this extension.
+		 * Additionally, the extension can provide a label that will be shown in the UI.
+		 * A common example of a label is an account name that is signed in.
+		 *
+		 */
+		requiresAuthorization?: true | { label: string };
+
+		/**
+		 * A numeric value for comparing model cost tiers.
+		 */
+		readonly multiplierNumeric?: number;
+
+		/**
+		 * Whether this model is a "bring your own key" (BYOK) model, i.e. it is
+		 * served using credentials the user supplied rather than through the
+		 * built-in Copilot (CAPI) service. When unset, the model is treated as
+		 * a non-BYOK / CAPI-served model.
+		 */
+		readonly isBYOK?: boolean;
+
+		/**
+		 * Whether or not this will be selected by default in the model picker
+		 * NOT BEING FINALIZED
+		 */
+		readonly isDefault?: boolean | { [K in ChatLocation]?: boolean };
+
+		/**
+		 * Whether or not the model will show up in the model picker immediately upon being made known via {@linkcode LanguageModelChatProvider.provideLanguageModelChatInformation}.
+		 * NOT BEING FINALIZED
+		 */
+		readonly isUserSelectable?: boolean;
+
+		readonly statusIcon?: ThemeIcon;
+
+		/**
+		 * An optional JSON schema describing the configuration options for this model.
+		 * When set, users can specify per-model configuration in their language models
+		 * configuration file. The configured values are merged into the request options
+		 * when sending chat requests to this model.
+		 */
+		readonly configurationSchema?: LanguageModelConfigurationSchema;
+
+		/**
+		 * When set, this model is only shown in the model picker for the specified chat session type.
+		 * Models with this property are excluded from the general model picker and only appear
+		 * when the user is in a session matching this type.
+		 *
+		 * The value must match a `type` declared in a `chatSessions` extension contribution.
+		 */
+		readonly targetChatSessionType?: string;
+
+		/**
+		 * Optional warning text to display in the model picker hover as a warning banner.
+		 * The keys are warning categories (e.g. "data_retention") and the values are markdown strings.
+		 * Unlike degradation warnings, this does not produce a warning icon in the picker list.
+		 */
+		readonly warningText?: Record<string, string>;
+
+		/**
+		 * Optional informational text to display in the model picker hover as an info banner.
+		 * The keys are info categories (e.g. "model_relocated") and the values are markdown strings.
+		 * Unlike {@link warningText}, this renders with an info icon and never signals a problem with the model.
+		 */
+		readonly infoText?: Record<string, string>;
+
+		/**
+		 * Optional promotional information for this model. When present, indicates the model
+		 * is currently experiencing a promotional discount.
+		 */
+		readonly promo?: {
+			/** Unique identifier for the promotion. */
+			readonly id: string;
+			/** The discount percentage (e.g. 20 for 20% off). */
+			readonly discountPercent: number;
+			/** ISO 8601 date string indicating when the promotion ends. Omit for open-ended promotions. */
+			readonly endsAt?: string;
+			/** A human-readable message about the promotion. */
+			readonly message: string;
+			/**
+			 * Whether the promotion may also be surfaced as a banner above the chat input.
+			 * Omit to allow the banner; set to `false` to keep the promotion in the model picker only.
+			 */
+			readonly showBanner?: boolean;
+		};
+	}
+
+	export interface LanguageModelChatCapabilities {
+		/**
+		 * The tools the model prefers for making file edits. If not provided or if none of the tools,
+		 * are recognized, the editor will try multiple edit tools and pick the best one. The available
+		 * edit tools WILL change over time and this capability only serves as a hint to the editor.
+		 *
+		 * Edit tools currently recognized include:
+		 * - 'find-replace': Find and replace text in a document.
+		 * - 'multi-find-replace': Find and replace multiple text snippets across documents.
+		 * - 'apply-patch': A file-oriented diff format used by some OpenAI models
+		 * - 'code-rewrite': A general but slower editing tool that allows the model
+		 *   to rewrite and code snippet and provide only the replacement to the editor.
+		 *
+		 * The order of edit tools in this array has no significance; all of the recognized edit
+		 * tools will be made available to the model.
+		 */
+		readonly editTools?: string[];
+	}
+
+	export type LanguageModelResponsePart2 = LanguageModelResponsePart | LanguageModelDataPart | LanguageModelThinkingPart;
+
+	/**
+	 * A [JSON Schema](https://json-schema.org) describing configuration options for a language model.
+	 * Each property in `properties` defines a configurable option using standard JSON Schema fields
+	 * plus additional display hints.
+	 */
+	export type LanguageModelConfigurationSchema = {
+		readonly properties?: {
+			readonly [key: string]: Record<string, any> & {
+				/**
+				 * Human-readable labels for enum values, shown instead of the raw values.
+				 * Must have the same length and order as `enum`.
+				 */
+				readonly enumItemLabels?: string[];
+				/**
+				 * The group this property belongs to. When set to `'navigation'`, the property
+				 * is shown as a primary action in the model picker.
+				 */
+				readonly group?: string;
+			};
+		};
+	};
+
+	export interface LanguageModelChatProvider<T extends LanguageModelChatInformation = LanguageModelChatInformation> {
+		provideLanguageModelChatInformation(options: PrepareLanguageModelChatModelOptions, token: CancellationToken): ProviderResult<T[]>;
+		provideLanguageModelChatResponse(model: T, messages: readonly LanguageModelChatRequestMessage[], options: ProvideLanguageModelChatResponseOptions, progress: Progress<LanguageModelResponsePart2>, token: CancellationToken): Thenable<void>;
+	}
+
+	/**
+	 * The list of options passed into {@linkcode LanguageModelChatProvider.provideLanguageModelChatInformation}
+	 */
+	export interface PrepareLanguageModelChatModelOptions {
+		/**
+		 * Configuration for the model. This is only present if the provider has declared that it requires configuration via the `configuration` property.
+		 * The object adheres to the schema that the extension provided during declaration.
+		 */
+		readonly configuration?: {
+			readonly [key: string]: any;
+		};
+	}
+
+	export interface ChatRequest {
+		/**
+		 * Per-model configuration provided by the user. Contains resolved values based on the model's
+		 * {@linkcode LanguageModelChatInformation.configurationSchema configurationSchema},
+		 * with user overrides applied on top of schema defaults.
+		 *
+		 * This is the same data that is sent as {@linkcode ProvideLanguageModelChatResponseOptions.configuration}
+		 * when the model is invoked via the language model API.
+		 */
+		readonly modelConfiguration?: { readonly [key: string]: any };
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatReferenceBinaryData.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatReferenceBinaryData.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatReferenceBinaryData.d.ts
+- **SHA256_FINGERPRINT**: `92b6ab48350aec3d840013213fd2e53deec23555d1a7dc29b1ff5bbd10c5106b`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.551348+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatReferenceBinaryData.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	export interface ChatPromptReference {
+		/**
+		 * The value of this reference. The `string | Uri | Location` types are used today, but this could expand in the future.
+		 */
+		readonly value: string | Uri | Location | ChatReferenceBinaryData | unknown;
+	}
+
+	export class ChatReferenceBinaryData {
+		/**
+		 * The MIME type of the binary data.
+		 */
+		readonly mimeType: string;
+
+		/**
+		 * Retrieves the binary data of the reference. This is primarily used to receive image attachments from the chat.
+		 * @returns A promise that resolves to the binary data as a Uint8Array.
+		 */
+		data(): Thenable<Uint8Array>;
+
+		/**
+		 * Retrieves a URI reference to the binary data, if available.
+		 */
+		readonly reference?: Uri;
+
+		/**
+		 * Whether this image was pasted from the clipboard.
+		 */
+		readonly isPasted?: boolean;
+
+		/**
+		 * Whether this image originated from a URL. `true` when it was attached from a URL,
+		 * `false` when it came from a local file, and `undefined` when the origin is unknown.
+		 */
+		readonly isURL?: boolean;
+
+		/**
+		 * @param mimeType The MIME type of the binary data.
+		 * @param data The binary data of the reference.
+		 */
+		constructor(mimeType: string, data: () => Thenable<Uint8Array>);
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatReferenceDiagnostic.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatReferenceDiagnostic.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatReferenceDiagnostic.d.ts
+- **SHA256_FINGERPRINT**: `3316b95f50d84b071d3dd898a36dfcd50d3c6eb1ae4ff3baadc50464ad97d298`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.635585+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatReferenceDiagnostic.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	export interface ChatPromptReference {
+		/**
+		 * The value of this reference. The `string | Uri | Location` types are used today, but this could expand in the future.
+		 */
+		readonly value: string | Uri | Location | ChatReferenceDiagnostic | unknown;
+	}
+
+	export class ChatReferenceDiagnostic {
+		/**
+		 * All attached diagnostics. An array of uri-diagnostics tuples or an empty array.
+		 */
+		readonly diagnostics: [Uri, Diagnostic[]][];
+
+		constructor(diagnostics: [Uri, Diagnostic[]][]);
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatSessionCustomizationProvider.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatSessionCustomizationProvider.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatSessionCustomizationProvider.d.ts
+- **SHA256_FINGERPRINT**: `ed720f7ceb0941a582fdeee6467f94dc2d325a1449d3106987a220a3a94b2be9`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.752903+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatSessionCustomizationProvider.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	// #region Customization Provider Types
+
+	/**
+	 * Identifies the kind of customization an item represents.
+	 *
+	 * Use the built-in static instances (e.g. {@link ChatSessionCustomizationType.Agent})
+	 * for well-known customization types, or create a new instance with a custom
+	 * string id for extension-defined types.
+	 */
+	export class ChatSessionCustomizationType {
+		/** Agent customization (`.agent.md` files). */
+		static readonly Agent: ChatSessionCustomizationType;
+		/** Skill customization (`SKILL.md` files). */
+		static readonly Skill: ChatSessionCustomizationType;
+		/** Instruction customization (`.instructions.md` files). */
+		static readonly Instructions: ChatSessionCustomizationType;
+		/** Prompt customization (`.prompt.md` files). */
+		static readonly Prompt: ChatSessionCustomizationType;
+		/** Hook customization (event-driven automation). */
+		static readonly Hook: ChatSessionCustomizationType;
+		/** Plugin customization (agent runtime plugins). */
+		static readonly Plugins: ChatSessionCustomizationType;
+
+		/**
+		 * The string identifier for this customization type.
+		 */
+		readonly id: string;
+
+		/**
+		 * Create a new customization type.
+		 *
+		 * @param id A unique string identifier for this type (e.g. `'agent'`, `'skill'`).
+		 */
+		constructor(id: string);
+	}
+
+	/**
+	 * Metadata describing a customization provider and its capabilities.
+	 * This drives UI presentation (label, icon) and filtering (unsupported types,
+	 * workspace sub-paths).
+	 */
+	export interface ChatSessionCustomizationProviderMetadata {
+		/**
+		 * Display label for this provider (e.g. "Copilot CLI", "Claude Code").
+		 */
+		readonly label: string;
+
+		/**
+		 * Optional codicon ID for this provider's icon in the UI.
+		 */
+		readonly iconId?: string;
+
+		/**
+		 * Customization types that this provider supports.
+		 * Only the corresponding sections will be shown in the management UI
+		 * when this provider is active. When omitted, all sections are shown.
+		 */
+		readonly supportedTypes?: readonly ChatSessionCustomizationType[];
+	}
+
+	export type ChatSessionCustomizationSource = 'local' | 'user' | 'extension' | 'plugin' | 'builtin';
+
+	/**
+	 * Represents a single customization item reported by a provider.
+	 */
+	export interface ChatSessionCustomizationItem {
+		/**
+		 * URI to the customization file (e.g. an `.agent.md`, `SKILL.md`, or `.instructions.md` file).
+		 */
+		readonly uri: Uri;
+
+		/**
+		 * The type of customization this item represents.
+		 */
+		readonly type: ChatSessionCustomizationType;
+
+		/**
+		 * Display name for this customization.
+		 */
+		readonly name: string;
+
+		/**
+		 * Optional description of this customization.
+		 */
+		readonly description?: string;
+
+		/**
+		 * The source/origin of this customization, which drives UI grouping and filtering
+		 */
+		readonly source: ChatSessionCustomizationSource;
+
+		/**
+		 * The extension identifier that contributed this customization. Should be set if the source is 'extension'.
+		 */
+		readonly extensionId?: string;
+
+		/**
+		 * The URI of the plugin that contributed this customization, if any. Should be set if the source is 'plugin'.
+		 */
+		readonly pluginUri?: Uri;
+
+		/**
+		 * Human-readable name of the plugin that contributed this customization, if any.
+		 * Used to qualify plugin-scoped slash command names when `pluginUri` points to
+		 * an implementation-specific install directory.
+		 */
+		readonly pluginLabel?: string;
+
+		/**
+		 * Optional group key for display grouping. Items sharing the same
+		 * `groupKey` are placed under a shared collapsible header in the
+		 * management UI.
+		 *
+		 * When omitted, items are grouped automatically by their storage
+		 * source (e.g. Workspace, User) based on the item's URI.
+		 */
+		readonly groupKey?: string;
+
+		/**
+		 * Optional inline badge text shown next to the item name
+		 * (e.g. a glob pattern like `src/vs/sessions/**`).
+		 */
+		readonly badge?: string;
+
+		/**
+		 * Optional tooltip text shown when hovering over the badge.
+		 */
+		readonly badgeTooltip?: string;
+
+		/**
+		 * Whether this item should be shown to users as invocable.
+		 * Applies to agents, skills, and prompts. When `false`, the item is hidden from the UI and cannot be invoked by users,
+		 */
+		readonly userInvocable?: boolean;
+	}
+
+	/**
+	 * A provider that reports which chat customizations are available.
+	 *
+	 * Chat customizations are configuration artifacts — agents, skills,
+	 * instructions, prompts, and hooks — that augment LLM behavior during
+	 * a chat session. Extensions that manage their own customization files
+	 * (e.g. from an SDK's config directory) register a provider so the
+	 * management UI can discover and display them.
+	 *
+	 * ### Lifecycle
+	 *
+	 * 1. Register via {@link chat.registerChatSessionCustomizationProvider}.
+	 * 2. The UI calls {@link provideChatSessionCustomizations} once and caches
+	 *    the result.
+	 * 3. When the underlying files change, fire {@link onDidChange} to
+	 *    trigger a fresh call to {@link provideChatSessionCustomizations}.
+	 */
+	export interface ChatSessionCustomizationProvider {
+		/**
+		 * An optional event that fires when the provider's customizations change.
+		 * The UI caches the result of {@link provideChatSessionCustomizations} and will
+		 * only re-query the provider when this event fires.
+		 */
+		readonly onDidChange?: Event<void>;
+
+		/**
+		 * Provide the customization items this provider supports.
+		 *
+		 * The result is cached by the UI until {@link onDidChange} fires.
+		 *
+		 * @param sessionResource URI of the chat session whose customizations should be considered.
+		 * @param token A cancellation token.
+		 * @returns The list of customization items, or `undefined` if unavailable.
+		 */
+		provideChatSessionCustomizations(sessionResource: Uri, token: CancellationToken): ProviderResult<ChatSessionCustomizationItem[]>;
+
+		/**
+		 * Optionally provide the directories where new customization files
+		 * of the given {@link type} can be created for this session. The
+		 * management UI offers these locations in a picker when the user
+		 * creates a new item.
+		 *
+		 * @param sessionResource URI of the chat session whose creation
+		 *   locations should be returned.
+		 * @param type The customization type the user is creating.
+		 * @param token A cancellation token.
+		 * @returns The list of source folders, or `undefined` when no
+		 *   folders apply for this type.
+		 */
+		provideSourceFolders?(sessionResource: Uri, type: ChatSessionCustomizationType, token: CancellationToken): ProviderResult<ChatSessionCustomizationSourceFolder[]>;
+	}
+
+	/**
+	 * A directory where new customization files of a given type can be created.
+	 */
+	export interface ChatSessionCustomizationSourceFolder {
+		/** Directory where the new file should be written. */
+		readonly uri: Uri;
+		/** Display label for the picker when multiple folders are offered. */
+		readonly label: string;
+		/** Source of the customization folder. */
+		readonly source: ChatSessionCustomizationSource;
+		/**
+		 * Opaque identity shared by source folders that belong to the same
+		 * customization destination.
+		 */
+		readonly destinationGroupId?: string;
+	}
+
+	// #endregion
+
+	// #region Registration
+
+	export namespace chat {
+		/**
+		 * Register a customization provider that reports what customizations
+		 * a harness or runtime supports. The provider's metadata drives UI
+		 * presentation and filtering, while {@link ChatSessionCustomizationProvider.provideChatSessionCustomizations}
+		 * supplies the actual items.
+		 *
+		 * @param chatSessionType The session type this provider is for (e.g. `'cli'`, `'claude'`).
+		 * @param metadata Metadata describing the provider's capabilities and UI presentation.
+		 * @param provider The customization provider implementation.
+		 * @returns A disposable that unregisters the provider when disposed.
+		 */
+		export function registerChatSessionCustomizationProvider(chatSessionType: string, metadata: ChatSessionCustomizationProviderMetadata, provider: ChatSessionCustomizationProvider): Disposable;
+	}
+
+	// #endregion
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatSessionsProvider.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatSessionsProvider.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatSessionsProvider.d.ts
+- **SHA256_FINGERPRINT**: `fac1a29120423060a66271cc774e861ac5c69887140b3bfae04a53de104722c8`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.758852+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatSessionsProvider.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+	/**
+	 * Represents the status of a chat session.
+	 */
+	export enum ChatSessionStatus {
+		/**
+		 * The chat session failed to complete.
+		 */
+		Failed = 0,
+
+		/**
+		 * The chat session completed successfully.
+		 */
+		Completed = 1,
+
+		/**
+		 * The chat session is currently in progress.
+		 */
+		InProgress = 2,
+
+		/**
+		 * The chat session needs user input (e.g. an unresolved confirmation).
+		 */
+		NeedsInput = 3
+	}
+
+	export namespace chat {
+		/**
+		 * Registers a new {@link ChatSessionItemProvider chat session item provider}.
+		 *
+		 * @deprecated Use {@linkcode createChatSessionItemController} instead.
+		 *
+		 * To use this, also make sure to also add `chatSessions` contribution in the `package.json`.
+		 *
+		 * @param chatSessionType The type of chat session the provider is for.
+		 * @param provider The provider to register.
+		 *
+		 * @returns A disposable that unregisters the provider when disposed.
+		 */
+		export function registerChatSessionItemProvider(chatSessionType: string, provider: ChatSessionItemProvider): Disposable;
+
+		/**
+		 * Creates a new {@link ChatSessionItemController chat session item controller} with the given unique identifier.
+		 *
+		 * To use this, also make sure to also add `chatSessions` contribution in the `package.json`.
+		 *
+		 * @param chatSessionType The type of chat session the provider is for.
+		 * @param refreshHandler The controller's {@link ChatSessionItemController.refreshHandler refresh handler}.
+		 *
+		 * @returns A new controller instance that can be used to manage chat session items for the given chat session type.
+		 */
+		export function createChatSessionItemController(chatSessionType: string, refreshHandler: ChatSessionItemControllerRefreshHandler): ChatSessionItemController;
+	}
+
+	/**
+	 * Provides a list of information about chat sessions.
+	 *
+	 * @deprecated Use {@linkcode ChatSessionItemController} instead.
+	 */
+	export interface ChatSessionItemProvider {
+		/**
+		 * Event that the provider can fire to signal that chat sessions have changed.
+		 */
+		readonly onDidChangeChatSessionItems: Event<void>;
+
+		/**
+		 * Provides a list of chat sessions.
+		 */
+		// TODO: Do we need a flag to try auth if needed?
+		provideChatSessionItems(token: CancellationToken): ProviderResult<ChatSessionItem[]>;
+
+		/**
+		 * @deprecated Use {@linkcode ChatSessionItemController.resolveChatSessionItem} instead.
+		 *
+		 * Given a chat session item fill in more data, like {@link ChatSessionItem.timing timing},
+		 * {@link ChatSessionItem.changes changes}, or {@link ChatSessionItem.badge badge}.
+		 *
+		 * The editor will call this when a chat session item becomes visible in the UI, for example
+		 * when the user scrolls to it or when it is first rendered.
+		 *
+		 * @param item A chat session item currently visible in the UI. Treat this as read-only.
+		 * @param token A cancellation token.
+		 * @returns A new {@link ChatSessionItem} instance (or a thenable that resolves to one) with the
+		 * same `resource` as `item` and any additional properties filled in. When no result is returned,
+		 * the given `item` is left unchanged.
+		 */
+		resolveChatSessionItem?: (item: ChatSessionItem, token: CancellationToken) => ProviderResult<ChatSessionItem>;
+
+		// #region Unstable parts of API
+
+		/**
+		 * Event that the provider can fire to signal that the current (original) chat session should be replaced with a new (modified) chat session.
+		 * The UI can use this information to gracefully migrate the user to the new session.
+		 */
+		readonly onDidCommitChatSessionItem: Event<{ original: ChatSessionItem /** untitled */; modified: ChatSessionItem /** newly created */ }>;
+
+		// #endregion
+	}
+
+	/**
+	 * Extension callback invoked to refresh the collection of chat session items for a {@linkcode ChatSessionItemController}.
+	 */
+	export type ChatSessionItemControllerRefreshHandler = (token: CancellationToken) => Thenable<void>;
+
+	export interface ChatSessionItemControllerNewItemHandlerContext {
+		// TODO: Use a better type but for now decrease this down to just the prompt and command since that's all we currently need.
+		// The problem with ChatRequest is that it has a resourceUri which is not good for this code path.
+		readonly request: {
+			readonly prompt: string;
+			readonly command?: string;
+		};
+
+		readonly inputState: ChatSessionInputState;
+	}
+
+	/**
+	 * Extension callback invoked when a new chat session is started.
+	 */
+	export type ChatSessionItemControllerNewItemHandler = (context: ChatSessionItemControllerNewItemHandlerContext, token: CancellationToken) => Thenable<ChatSessionItem>;
+
+	/**
+	 * Extension callback invoked to get the input state for a chat session.
+	 *
+	 * @param sessionResource The resource of the chat session to get the input state for. `undefined` indicates this is
+	 * for a blank chat editor that is not yet associated with a session.
+	 * @param context Additional context
+	 * @param token Cancellation token.
+	 *
+	 * @return A new chat session input state. This should be created using {@link ChatSessionItemController.createChatSessionInputState}.
+	 */
+	export type ChatSessionControllerGetInputState = (sessionResource: Uri | undefined, context: {
+		/**
+		 * The previous input state for the session.
+		 */
+		readonly previousInputState: ChatSessionInputState | undefined;
+	}, token: CancellationToken) => Thenable<ChatSessionInputState> | ChatSessionInputState;
+
+	/**
+	 * Extension callback invoked to fork an existing chat session item managed by a {@linkcode ChatSessionItemController}.
+	 *
+	 * The handler should create a new session on the provider's backend and
+	 * return the new {@link ChatSessionItem} representing the forked session.
+	 *
+	 * @param sessionResource The resource of the chat session being forked.
+	 * @param request The request turn that marks the fork point. The forked session includes all turns
+	 * upto this request turn and excludes this request turn itself. If undefined, fork the full session.
+	 * @param token A cancellation token.
+	 * @returns The forked session item.
+	 */
+	export type ChatSessionItemControllerForkHandler = (sessionResource: Uri, request: ChatRequestTurn2 | undefined, token: CancellationToken) => Thenable<ChatSessionItem> | ChatSessionItem;
+
+	/**
+	 * Manages chat sessions for a specific chat session type
+	 */
+	export interface ChatSessionItemController {
+		readonly id: string;
+
+		/**
+		 * Unregisters the controller, disposing of its associated chat session items.
+		 */
+		dispose(): void;
+
+		/**
+		 * Managed collection of chat session items
+		 */
+		readonly items: ChatSessionItemCollection;
+
+		/**
+		 * Creates a new managed chat session item that can be added to the collection.
+		 */
+		createChatSessionItem(resource: Uri, label: string): ChatSessionItem;
+
+		/**
+		 * Handler called to refresh the collection of chat session items.
+		 *
+		 * This is also called on first load to get the initial set of items.
+		 */
+		readonly refreshHandler: ChatSessionItemControllerRefreshHandler;
+
+		/**
+		 * Fired when an item's archived state changes.
+		 */
+		readonly onDidChangeChatSessionItemState: Event<ChatSessionItem>;
+
+		/**
+		 * Invoked when a new chat session is started.
+		 *
+		 * This allows the controller to initialize the chat session item with information from the initial request.
+		 *
+		 * The returned chat session is added to the collection and shown in the UI.
+		 */
+		newChatSessionItemHandler?: ChatSessionItemControllerNewItemHandler;
+
+		/**
+		 * Invoked when an existing chat session is forked.
+		 *
+		 * When both this handler and {@linkcode ChatSession.forkHandler} are registered,
+		 * this handler takes precedence.
+		 */
+		forkHandler?: ChatSessionItemControllerForkHandler;
+
+		/**
+		 * Gets the input state for a chat session.
+		 */
+		getChatSessionInputState?: ChatSessionControllerGetInputState;
+
+		/**
+		 * Called to fill in more data on a chat session item, like {@link ChatSessionItem.timing timing},
+		 * {@link ChatSessionItem.changes changes}, or {@link ChatSessionItem.badge badge}.
+		 *
+		 * The editor will call this when a chat session item becomes visible in the UI, for example
+		 * when the user scrolls to it or when it is first rendered.
+		 *
+		 * The editor will only resolve a chat session item once, unless the item is updated via
+		 * {@link ChatSessionItemCollection.add add} or {@link ChatSessionItemCollection.replace replace},
+		 * which invalidates the resolve cache.
+		 *
+		 * The handler should update the item in the {@link ChatSessionItemController.items items collection} via
+		 * {@link ChatSessionItemCollection.add add}. The editor picks up the updated item from
+		 * the collection after the returned thenable resolves.
+		 *
+		 * @param item A chat session item currently visible in the UI.
+		 * @param token A cancellation token.
+		 */
+		resolveChatSessionItem?: (item: ChatSessionItem, token: CancellationToken) => Thenable<void>;
+
+		/**
+		 * Create a new managed ChatSessionInputState object.
+		 */
+		createChatSessionInputState(groups: ChatSessionProviderOptionGroup[]): ChatSessionInputState;
+	}
+
+	/**
+	 * A collection of chat session items. It provides operations for managing and iterating over the items.
+	 */
+	export interface ChatSessionItemCollection extends Iterable<readonly [id: Uri, chatSessionItem: ChatSessionItem]> {
+		/**
+		 * Gets the number of items in the collection.
+		 */
+		readonly size: number;
+
+		/**
+		 * Replaces the items stored by the collection.
+		 *
+		 * @param items Items to store. If two items have the same resource URI, the last one will be used.
+		 */
+		replace(items: readonly ChatSessionItem[]): void;
+
+		/**
+		 * Iterate over each entry in this collection.
+		 *
+		 * @param callback Function to execute for each entry.
+		 * @param thisArg The `this` context used when invoking the handler function.
+		 */
+		forEach(callback: (item: ChatSessionItem, collection: ChatSessionItemCollection) => unknown, thisArg?: any): void;
+
+		/**
+		 * Adds the chat session item to the collection. If an item with the same resource URI already
+		 * exists, it'll be replaced.
+		 *
+		 * @param item Item to add.
+		 */
+		add(item: ChatSessionItem): void;
+
+		/**
+		 * Removes a single chat session item from the collection.
+		 *
+		 * @param resource Item resource to delete.
+		 */
+		delete(resource: Uri): void;
+
+		/**
+		 * Efficiently gets a chat session item by resource, if it exists, in the collection.
+		 *
+		 * @param resource Item resource to get.
+		 *
+		 * @returns The found item or undefined if it does not exist.
+		 */
+		get(resource: Uri): ChatSessionItem | undefined;
+	}
+
+	/**
+	 * A chat session show in the UI.
+	 *
+	 * This should be created by calling a {@link ChatSessionItemController.createChatSessionItem createChatSessionItem}
+	 * method on the controller. The item can then be added to the controller's {@link ChatSessionItemController.items items collection}
+	 * to show it in the UI.
+	 */
+	export interface ChatSessionItem {
+		/**
+		 * The resource associated with the chat session.
+		 *
+		 * This is uniquely identifies the chat session and is used to open the chat session.
+		 */
+		readonly resource: Uri;
+
+		/**
+		 * Human readable name of the session shown in the UI
+		 */
+		label: string;
+
+		/**
+		 * An icon for the participant shown in UI.
+		 */
+		iconPath?: IconPath;
+
+		/**
+		 * An optional description that provides additional context about the chat session.
+		 */
+		description?: string | MarkdownString;
+
+		/**
+		 * An optional badge that provides additional context about the chat session.
+		 */
+		badge?: string | MarkdownString;
+
+		/**
+		 * An optional status indicating the current state of the session.
+		 */
+		status?: ChatSessionStatus;
+
+		/**
+		 * The tooltip text when you hover over this item.
+		 */
+		tooltip?: string | MarkdownString;
+
+		/**
+		 * Whether the chat session has been archived.
+		 */
+		archived?: boolean;
+
+		/**
+		 * Resource identifier this item was previously known by. When set, host-stored
+		 * per-resource state (archive, pin, read) recorded under that URI is treated as
+		 * also applying to this item.
+		 *
+		 * On first access of state for {@link resource}, the host adopts the entry
+		 * stored under `legacyResource` forward — copying it onto {@link resource} and
+		 * removing the legacy entry. The migration is transparent: no events fire and
+		 * the effective user-visible state is unchanged.
+		 *
+		 * Intended for providers that need to change the URI shape they emit (e.g. during
+		 * a backend or schema migration) without requiring users to re-archive or re-pin
+		 * items.
+		 *
+		 * The legacy URI's scheme must match {@link resource}'s scheme; otherwise the
+		 * field is ignored. Multi-hop migrations are not supported — providers should
+		 * collapse intermediate hops on their side and emit the original URI.
+		 */
+		readonly legacyResource?: Uri;
+
+		/**
+		 * Timing information for the chat session
+		 */
+		timing?: {
+			/**
+			 * Timestamp when the session was created in milliseconds elapsed since January 1, 1970 00:00:00 UTC.
+			 */
+			readonly created: number;
+
+			/**
+			 * Timestamp when the most recent request started in milliseconds elapsed since January 1, 1970 00:00:00 UTC.
+			 *
+			 * Should be undefined if no requests have been made yet.
+			 */
+			readonly lastRequestStarted?: number;
+
+			/**
+			 * Timestamp when the most recent request completed in milliseconds elapsed since January 1, 1970 00:00:00 UTC.
+			 *
+			 * Should be undefined if the most recent request is still in progress or if no requests have been made yet.
+			 */
+			readonly lastRequestEnded?: number;
+
+			/**
+			 * Session start timestamp in milliseconds elapsed since January 1, 1970 00:00:00 UTC.
+			 * @deprecated Use `created` and `lastRequestStarted` instead.
+			 */
+			readonly startTime?: number;
+
+			/**
+			 * Session end timestamp in milliseconds elapsed since January 1, 1970 00:00:00 UTC.
+			 * @deprecated Use `lastRequestEnded` instead.
+			 */
+			readonly endTime?: number;
+		};
+
+		/**
+		 * Statistics about the chat session.
+		 */
+		changes?: readonly ChatSessionChangedFile[];
+
+		/**
+		 * Arbitrary metadata for the chat session. Can be anything, but must be JSON-stringifyable.
+		 *
+		 * To update the metadata you must re-set this property.
+		 */
+		metadata?: { readonly [key: string]: any };
+	}
+
+	export class ChatSessionChangedFile {
+		/**
+		 * URI of the file.
+		 */
+		readonly uri: Uri;
+
+		/**
+		 * URI of the original file. Undefined if the file was created.
+		 */
+		readonly originalUri: Uri | undefined;
+
+		/**
+		 * URI of the modified file. Undefined if the file was deleted.
+		 */
+		readonly modifiedUri: Uri | undefined;
+
+		/**
+		 * Number of insertions made during the session.
+		 */
+		insertions: number;
+
+		/**
+		 * Number of deletions made during the session.
+		 */
+		deletions: number;
+
+		constructor(uri: Uri, originalUri: Uri | undefined, modifiedUri: Uri | undefined, insertions: number, deletions: number);
+	}
+
+	export interface ChatSession {
+		/**
+		 * An optional title for the chat session.
+		 *
+		 * When provided, this title is used as the display name for the session
+		 * (e.g. in the editor tab). When not provided, the title defaults to
+		 * the first user message in the session history.
+		 */
+		readonly title?: string;
+
+		/**
+		 * The full history of the session
+		 *
+		 * This should not include any currently active responses
+		 */
+		// TODO: Are these the right types to use?
+		// TODO: link request + response to encourage correct usage?
+		readonly history: ReadonlyArray<ChatRequestTurn | ChatResponseTurn2>;
+
+		/**
+		 * Options configured for this session as key-value pairs.
+		 * Keys correspond to option group IDs (e.g., 'models', 'subagents').
+		 * Values can be either:
+		 * - A string (the option item ID) for backwards compatibility
+		 * - A ChatSessionProviderOptionItem object to include metadata like locked state
+		 * TODO: Strongly type the keys
+		 */
+		readonly options?: Record<string, string | ChatSessionProviderOptionItem>;
+
+		/**
+		 * Callback invoked by the editor for a currently running response. This allows the session to push items for the
+		 * current response and stream these in as them come in. The current response will be considered complete once the
+		 * callback resolved.
+		 *
+		 * If not provided, the chat session is assumed to not currently be running.
+		 */
+		readonly activeResponseCallback?: (stream: ChatResponseStream, token: CancellationToken) => Thenable<void>;
+
+		/**
+		 * Handles new request for the session.
+		 *
+		 * If not set, then the session will be considered read-only and no requests can be made.
+		 */
+		// TODO: Should we introduce our own type for `ChatRequestHandler` since not all field apply to chat sessions?
+		// TODO: Revisit this to align with code.
+		// TODO: pass in options?
+		readonly requestHandler: ChatRequestHandler | undefined;
+
+		/**
+		 * Handles a request to fork the session.
+		 *
+		 * The handler should create a new session on the provider's backend and
+		 * return the new {@link ChatSessionItem} representing the forked session.
+		 *
+		 * @deprecated Use {@linkcode ChatSessionItemController.forkHandler} instead. This remains supported for backwards compatibility.
+		 *
+		 * @param sessionResource The resource of the chat session being forked.
+		 * @param request The request turn that marks the fork point. The forked session includes all turns
+		 * upto this request turn and excludes this request turn itself. If undefined, fork the full session.
+		 * @param token A cancellation token.
+		 * @returns The forked session item.
+		 */
+		readonly forkHandler?: ChatSessionItemControllerForkHandler;
+	}
+
+	/**
+	 * Event fired when chat session options change.
+	 */
+	export interface ChatSessionOptionChangeEvent {
+		/**
+		 * Identifier of the chat session being updated.
+		 */
+		readonly resource: Uri;
+		/**
+		 * Collection of option identifiers and their new values. Only the options that changed are included.
+		 */
+		readonly updates: ReadonlyArray<{
+			/**
+			 * Identifier of the option that changed (for example `model`).
+			 */
+			readonly optionId: string;
+
+			/**
+			 * The new value assigned to the option. When `undefined`, the option is cleared.
+			 */
+			readonly value: string | ChatSessionProviderOptionItem;
+		}>;
+	}
+
+	/**
+	 * Provides the content for a chat session rendered using the native chat UI.
+	 */
+	export interface ChatSessionContentProvider {
+		/**
+		 * @deprecated
+		 *
+		 * Event that the provider can fire to signal that the options for a chat session have changed.
+		 */
+		readonly onDidChangeChatSessionOptions?: Event<ChatSessionOptionChangeEvent>;
+
+		/**
+		 * @deprecated
+		 *
+		 * Event that the provider can fire to signal that the available provider options have changed.
+		 *
+		 * When fired, the editor will re-query {@link ChatSessionContentProvider.provideChatSessionProviderOptions}
+		 * and update the UI to reflect the new option groups.
+		 */
+		readonly onDidChangeChatSessionProviderOptions?: Event<void>;
+
+		/**
+		 * Provides the chat session content for a given uri.
+		 *
+		 * The returned {@linkcode ChatSession} is used to populate the history of the chat UI.
+		 *
+		 * @param resource The URI of the chat session to resolve.
+		 * @param token A cancellation token that can be used to cancel the operation.
+		 * @param context Additional context for the chat session.
+		 *
+		 * @return The {@link ChatSession chat session} associated with the given URI.
+		 */
+		provideChatSessionContent(resource: Uri, token: CancellationToken, context: {
+			readonly inputState: ChatSessionInputState;
+		}): Thenable<ChatSession> | ChatSession;
+
+		/**
+		 * @deprecated
+		 *
+		 * @param resource Identifier of the chat session being updated.
+		 * @param updates Collection of option identifiers and their new values. Only the options that changed are included.
+		 * @param token A cancellation token that can be used to cancel the notification if the session is disposed.
+		 */
+		provideHandleOptionsChange?(resource: Uri, updates: ReadonlyArray<ChatSessionOptionUpdate>, token: CancellationToken): void;
+
+		/**
+		 * @deprecated
+		 *
+		 * Called as soon as you register (call me once)
+		 */
+		provideChatSessionProviderOptions?(token: CancellationToken): Thenable<ChatSessionProviderOptions>;
+	}
+
+	export interface ChatSessionOptionUpdate {
+		/**
+		 * Identifier of the option that changed (for example `model`).
+		 */
+		readonly optionId: string;
+
+		/**
+		 * The new value assigned to the option. When `undefined`, the option is cleared.
+		 */
+		readonly value: string | undefined;
+	}
+
+	export namespace chat {
+		/**
+		 * Registers a new {@link ChatSessionContentProvider chat session content provider}.
+		 *
+		 * @param scheme The uri-scheme to register for. This must be unique.
+		 * @param provider The provider to register.
+		 * @param defaultChatParticipant The default {@link ChatParticipant chat participant} used in sessions provided by this provider.
+		 *
+		 * @returns A disposable that unregisters the provider when disposed.
+		 */
+		export function registerChatSessionContentProvider(scheme: string, provider: ChatSessionContentProvider, defaultChatParticipant: ChatParticipant, capabilities?: ChatSessionCapabilities): Disposable;
+	}
+
+	export interface ChatContext {
+		readonly chatSessionContext?: ChatSessionContext;
+	}
+
+	export interface ChatSessionContext {
+		readonly chatSessionItem: ChatSessionItem; // Maps to URI of chat session editor (could be 'untitled-1', etc..)
+
+		/** @deprecated This will be removed along with the concept of `untitled-` sessions.  */
+		readonly isUntitled: boolean;
+
+		/**
+		 * The initial option selections for the session, provided with the first request.
+		 * Contains the options the user selected (or defaults) before the session was created.
+		 *
+		 * @deprecated Use `inputState` instead
+		 */
+		readonly initialSessionOptions?: ReadonlyArray<{ optionId: string; value: string | ChatSessionProviderOptionItem }>;
+
+		/**
+		 * The current input state of the chat session.
+		 */
+		readonly inputState: ChatSessionInputState;
+	}
+
+	export interface ChatSessionCapabilities {
+		/**
+		 * Whether sessions can be interrupted and resumed without side-effects.
+		 */
+		supportsInterruptions?: boolean;
+	}
+
+	/**
+	 * Represents a single selectable item within a provider option group.
+	 */
+	export interface ChatSessionProviderOptionItem {
+		/**
+		 * Unique identifier for the option item.
+		 */
+		readonly id: string;
+
+		/**
+		 * Human-readable name displayed in the UI.
+		 */
+		readonly name: string;
+
+		/**
+		 * Optional description shown in tooltips.
+		 */
+		readonly description?: string;
+
+		/**
+		 * When true, this option is locked and cannot be changed by the user.
+		 * The option will still be visible in the UI but will be disabled.
+		 * Use this when an option is set but cannot be hot-swapped (e.g., model already initialized).
+		 */
+		readonly locked?: boolean;
+
+		/**
+		 * An icon for the option item shown in UI.
+		 */
+		readonly icon?: ThemeIcon;
+
+		/**
+		 * Indicates if this option should be selected by default.
+		 * Only one item per option group should be marked as default.
+		 */
+		readonly default?: boolean;
+
+		/**
+		 * Optional slash-command alias (without leading `/`) that selects this option
+		 * when the user submits `/<slashCommand>`. Does not send a chat request; only
+		 * updates the selection so the next prompt runs with this option active.
+		 *
+		 * Scoped to chat sessions owned by the contributing provider. Names must be
+		 * unique across the provider's groups; on conflict, the first declared wins.
+		 */
+		readonly slashCommand?: string;
+
+		/**
+		 * Optional tooltip content shown in a hover panel when the user focuses or
+		 * hovers over this item in the picker. Supports markdown formatting.
+		 */
+		readonly tooltip?: string;
+
+		/**
+		 * Optional model metadata for this option item. When present, the picker
+		 * renders a rich hover with model name, pricing, context size, and capabilities
+		 * instead of a plain text tooltip.
+		 */
+		readonly modelMetadata?: ChatSessionProviderOptionModelMetadata;
+	}
+
+	/**
+	 * Metadata describing a language model, used to render rich hover content
+	 * in option group pickers. Fields mirror {@link LanguageModelChatInformation}
+	 * so the core can reuse its standard model hover rendering.
+	 */
+	export interface ChatSessionProviderOptionModelMetadata {
+		readonly name: string;
+		readonly id: string;
+		readonly vendor?: string;
+		readonly version?: string;
+		readonly family?: string;
+		readonly tooltip?: string;
+		readonly pricing?: string;
+		readonly multiplierNumeric?: number;
+		readonly inputCost?: number;
+		readonly outputCost?: number;
+		readonly cacheCost?: number;
+		readonly cacheWriteCost?: number;
+		readonly longContextInputCost?: number;
+		readonly longContextOutputCost?: number;
+		readonly longContextCacheCost?: number;
+		readonly longContextCacheWriteCost?: number;
+		readonly priceCategory?: string;
+		readonly promo?: {
+			readonly id: string;
+			readonly discountPercent: number;
+			readonly endsAt?: string;
+			readonly message: string;
+		};
+		readonly maxInputTokens?: number;
+		readonly maxOutputTokens?: number;
+		/** The total context window, independent of the input and output token limits. */
+		readonly maxContextWindowTokens?: number;
+		readonly capabilities?: {
+			readonly vision?: boolean;
+			readonly toolCalling?: boolean;
+		};
+	}
+
+	/**
+	 * Represents a group of related provider options (e.g., models, sub-agents).
+	 */
+	export interface ChatSessionProviderOptionGroup {
+		/**
+		 * Unique identifier for the option group (e.g., "models", "subagents").
+		 */
+		readonly id: string;
+
+		/**
+		 * Human-readable name for the option group.
+		 */
+		readonly name: string;
+
+		/**
+		 * Optional description providing context about this option group.
+		 */
+		readonly description?: string;
+
+		/**
+		 * The currently selected option for this group. This must be one of the items provided in the `items` array.
+		 */
+		readonly selected?: ChatSessionProviderOptionItem;
+
+		/**
+		 * The selectable items within this option group.
+		 */
+		readonly items: readonly ChatSessionProviderOptionItem[];
+
+		/**
+		 * A context key expression that controls when this option group picker is visible.
+		 * When specified, the picker is only shown when the expression evaluates to true.
+		 * The expression can reference other option group values via `chatSessionOption.<groupId>`.
+		 *
+		 * Example: `"chatSessionOption.models == 'gpt-4'"` - only show this picker when
+		 * the 'models' option group has 'gpt-4' selected.
+		 */
+		readonly when?: string;
+
+		/**
+		 * An icon for the option group shown in UI.
+		 */
+		readonly icon?: ThemeIcon;
+
+		/**
+		 * Optional commands.
+		 *
+		 * These commands will be displayed at the bottom of the group.
+		 *
+		 * For extensions using the legacy `commands` API, these commands are passed the sessionResource as the first argument.
+		 *
+		 * For extensions that use the new `provideChatSessionInputState` API, these commands are passed a context object
+		 * `{ inputState: ChatSessionInputState; sessionResource: Uri | undefined }` that they can use to determine which session and options they are being invoked for.
+		 */
+		readonly commands?: Command[];
+
+		/**
+		 * Optional kind that hints how this option group should be presented in the UI.
+		 *
+		 * - `'permissions'`: The group represents tool-approval permissions for the session.
+		 *   The editor will not render this group as its own picker. Instead, its items
+		 *   replace the built-in items in the chat permission picker for the session,
+		 *   and the user's selection is reported back through the standard
+		 *   {@link ChatSessionContentProvider.handleChatSessionOptionsChange} flow.
+		 *   At most one option group per provider may use this kind; if more than one is
+		 *   declared, the first one (in declaration order) is used. The group is invisible
+		 *   if the chat permission picker itself is hidden by other `when` clauses.
+		 *
+		 * When omitted, the group is rendered as a standalone picker as usual.
+		 */
+		readonly kind?: 'permissions';
+	}
+
+	export interface ChatSessionProviderOptions {
+		/**
+		 * Provider-defined option groups (0-2 groups supported).
+		 * Examples: models picker, sub-agents picker, etc.
+		 */
+		readonly optionGroups?: readonly ChatSessionProviderOptionGroup[];
+
+		/**
+		 * The set of default options used for new chat sessions, provided as key-value pairs.
+		 *
+		 * Keys correspond to option group IDs (e.g., 'models', 'subagents').
+		 */
+		readonly newSessionOptions?: Record<string, string | ChatSessionProviderOptionItem>;
+	}
+
+	/**
+	 * Represents the current state of user inputs for a chat session.
+	 */
+	export interface ChatSessionInputState {
+		/**
+		 * Fired when the input state is disposed.
+		 */
+		readonly onDidDispose: Event<void>;
+
+		/**
+		 * Fired when the input state is changed by the user.
+		 *
+		 * Move to controller?
+		 */
+		readonly onDidChange: Event<void>;
+
+		/**
+		 * The resource associated with this chat session.
+		 *
+		 * This is `undefined` for chat sessions that have not yet started.
+		 */
+		readonly sessionResource: Uri | undefined;
+
+		/**
+		 * The groups of options to show in the UI for user input.
+		 *
+		 * To update the groups you must replace the entire `groups` array with a new array.
+		 */
+		groups: readonly ChatSessionProviderOptionGroup[];
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatStatusItem.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatStatusItem.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatStatusItem.d.ts
+- **SHA256_FINGERPRINT**: `7ad3dd20603d320390ffa6e516a58d62a6a181c1236c0f4dd93b95743f8af3b1`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.764116+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatStatusItem.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	export interface ChatStatusItem {
+		/**
+		 * The identifier of this item.
+		 */
+		readonly id: string;
+
+		/**
+		 * The main name of the entry, like 'Indexing Status'
+		 */
+		title: string | { label: string; link: string; helpText?: string };
+
+		/**
+		 * Optional additional description of the entry.
+		 *
+		 * This is rendered after the title. Supports Markdown style links (`[text](http://example.com)`) and rendering of
+		 * {@link ThemeIcon theme icons} via the `$(<name>)`-syntax.
+		 */
+		description: string;
+
+		/**
+		 * Optional additional details of the entry.
+		 *
+		 * This is rendered less prominently after the title. Supports Markdown style links (`[text](http://example.com)`) and rendering of
+		 * {@link ThemeIcon theme icons} via the `$(<name>)`-syntax.
+		 */
+		detail: string | undefined;
+
+		/**
+		 * Optional tooltip text shown when hovering over the description.
+		 */
+		tooltip: string | undefined;
+
+		/**
+		 * Shows the entry in the chat status.
+		 */
+		show(): void;
+
+		/**
+		 * Hide the entry in the chat status.
+		 */
+		hide(): void;
+
+		/**
+		 * Dispose and free associated resources
+		 */
+		dispose(): void;
+	}
+
+	namespace window {
+		/**
+		 * Create a new chat status item.
+		 *
+		 * @param id The unique identifier of the status bar item.
+		 *
+		 * @returns A new chat status item.
+		 */
+		export function createChatStatusItem(id: string): ChatStatusItem;
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatTab.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatTab.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatTab.d.ts
+- **SHA256_FINGERPRINT**: `b898f6448d83c7599b3a6d35c2a2df5cc2acec0f39d4f26be3831d1262545813`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.773820+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatTab.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+	/**
+	 * The tab represents an interactive window.
+	 */
+	export class TabInputChat {
+		constructor();
+	}
+
+	export interface Tab {
+		readonly input: TabInputText | TabInputTextDiff | TabInputCustom | TabInputWebview | TabInputNotebook | TabInputNotebookDiff | TabInputTerminal | TabInputChat | unknown;
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.languageModelCapabilities.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.languageModelCapabilities.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageModelCapabilities.d.ts
+- **SHA256_FINGERPRINT**: `07b8c582c796aa1a2e809cd3d0b44e4c0975e15309ad8f906d4c7a39a0a07b1b`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.786991+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.languageModelCapabilities.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	// TODO - @lramos15 - Issue link
+
+	export enum LanguageModelChatApiType {
+		ChatCompletions = 1,
+		Responses = 2,
+		Messages = 3
+	}
+
+	export interface LanguageModelChatCapabilities {
+		/** The provider's request protocol, used to determine which reasoning blocks can be replayed. Omit when unknown. */
+		readonly apiType?: LanguageModelChatApiType;
+		/** Whether a Messages API model accepts adaptive thinking, including thinking from earlier user turns. */
+		readonly adaptiveThinking?: boolean;
+	}
+
+	export interface LanguageModelChat {
+		/**
+		 * The capabilities of the language model.
+		 */
+		readonly capabilities: {
+			/**
+			 * Whether the language model supports tool calling.
+			 */
+			readonly supportsToolCalling: boolean;
+			/**
+			 * Whether the language model supports image to text. This means it can take an image as input and produce a text response.
+			 */
+			readonly supportsImageToText: boolean;
+
+			/**
+			 * The tools the model prefers for making file edits. See {@link LanguageModelChatCapabilities.editTools}.
+			 */
+			readonly editToolsHint?: readonly string[];
+			/** The provider's request protocol, or undefined when it has not been declared. */
+			readonly apiType?: LanguageModelChatApiType;
+			/** Whether this Messages API model supports adaptive thinking. */
+			readonly supportsAdaptiveThinking?: boolean;
+		};
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.languageModelPricing.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.languageModelPricing.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageModelPricing.d.ts
+- **SHA256_FINGERPRINT**: `cd518a57bfb86a3917c58386dc543dbef732c819f7f57f5ff1c3e817af628f9c`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.794018+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.languageModelPricing.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	// https://github.com/microsoft/vscode/issues/XXXXX
+
+	export interface LanguageModelChatInformation {
+		/**
+		 * Optional pricing label for this model, such as "Free", "$0.01/request", etc.
+		 * This value is meant for display purposes and will be shown in the model management UI.
+		 */
+		readonly pricing?: string;
+
+		/**
+		 * Optional input cost in AI credits for this model.
+		 * Displayed in the model management UI as the cost per million input tokens.
+		 */
+		readonly inputCost?: number;
+
+		/**
+		 * Optional output cost in AI credits for this model.
+		 * Displayed in the model management UI as the cost per million output tokens.
+		 */
+		readonly outputCost?: number;
+
+		/**
+		 * Optional cache cost in AI credits for this model.
+		 * Displayed in the model management UI as the cost per million cached tokens.
+		 */
+		readonly cacheCost?: number;
+
+		/**
+		 * Optional cache write cost in AI credits for this model.
+		 * Displayed in the model management UI as the cost per million cache-write tokens.
+		 */
+		readonly cacheWriteCost?: number;
+
+		/**
+		 * Optional long-context input cost in AI credits for this model.
+		 * Present only when long-context pricing differs from default pricing.
+		 * Displayed in the model picker hover as the cost per million input tokens
+		 * when the prompt exceeds the default context window.
+		 */
+		readonly longContextInputCost?: number;
+
+		/**
+		 * Optional long-context output cost in AI credits for this model.
+		 * Present only when long-context pricing differs from default pricing.
+		 */
+		readonly longContextOutputCost?: number;
+
+		/**
+		 * Optional long-context cache cost in AI credits for this model.
+		 * Present only when long-context pricing differs from default pricing.
+		 */
+		readonly longContextCacheCost?: number;
+
+		/**
+		 * Optional long-context cache write cost in AI credits for this model.
+		 * Present only when long-context pricing differs from default pricing.
+		 */
+		readonly longContextCacheWriteCost?: number;
+
+		/**
+		 * Optional relative pricing category for this model (e.g. "low", "medium", "high", "very_high").
+		 * Displayed in the model picker as a visual indicator of relative cost.
+		 */
+		readonly priceCategory?: string;
+
+		/**
+		 * Optional model category describing the model's tier (e.g. "lightweight", "versatile", "powerful").
+		 * Displayed in the model picker as a tag. Clients should be resilient to additional categories.
+		 */
+		readonly category?: string;
+	}
+
+	export interface LanguageModelChat {
+		/**
+		 * Optional pricing label for this model, such as "Free", "$0.01/request", etc.
+		 * This value is provided by the model provider and is meant for display purposes only.
+		 */
+		readonly pricing?: string;
+
+		/**
+		 * Optional input cost in AI credits for this model.
+		 */
+		readonly inputCost?: number;
+
+		/**
+		 * Optional output cost in AI credits for this model.
+		 */
+		readonly outputCost?: number;
+
+		/**
+		 * Optional cache cost in AI credits for this model.
+		 */
+		readonly cacheCost?: number;
+
+		/**
+		 * Optional cache write cost in AI credits for this model.
+		 */
+		readonly cacheWriteCost?: number;
+
+		/**
+		 * Optional long-context input cost in AI credits for this model.
+		 * Present only when long-context pricing differs from default pricing.
+		 */
+		readonly longContextInputCost?: number;
+
+		/**
+		 * Optional long-context output cost in AI credits for this model.
+		 * Present only when long-context pricing differs from default pricing.
+		 */
+		readonly longContextOutputCost?: number;
+
+		/**
+		 * Optional long-context cache cost in AI credits for this model.
+		 * Present only when long-context pricing differs from default pricing.
+		 */
+		readonly longContextCacheCost?: number;
+
+		/**
+		 * Optional long-context cache write cost in AI credits for this model.
+		 * Present only when long-context pricing differs from default pricing.
+		 */
+		readonly longContextCacheWriteCost?: number;
+
+		/**
+		 * Optional relative pricing category for this model (e.g. "low", "medium", "high", "very_high").
+		 * Displayed in the model picker as a visual indicator of relative cost.
+		 */
+		readonly priceCategory?: string;
+
+		/**
+		 * Optional model category describing the model's tier (e.g. "lightweight", "versatile", "powerful").
+		 * Displayed in the model picker as a tag. Clients should be resilient to additional categories.
+		 */
+		readonly category?: string;
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.languageModelProxy.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.languageModelProxy.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageModelProxy.d.ts
+- **SHA256_FINGERPRINT**: `1e7ea9b6741887a73345d085e2ab97022240cf749feac40fb5d9492d76a86de7`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.985144+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.languageModelProxy.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+	export interface LanguageModelProxy extends Disposable {
+		readonly uri: Uri;
+		readonly key: string;
+	}
+
+	export namespace lm {
+		/**
+		 * Returns false if
+		 * - Copilot Chat extension is not installed
+		 * - Copilot Chat has not finished activating or finished auth
+		 * - The user is not logged in, or isn't the right SKU, with expected model access
+		 */
+		export const isModelProxyAvailable: boolean;
+
+		/**
+		 * Fired when isModelProxyAvailable changes.
+		 */
+		export const onDidChangeModelProxyAvailability: Event<void>;
+
+		/**
+		 * Throws if the server fails to start for some reason, or something else goes wrong.
+		 */
+		export function getModelProxy(): Thenable<LanguageModelProxy>;
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.languageModelRateLimit.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.languageModelRateLimit.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageModelRateLimit.d.ts
+- **SHA256_FINGERPRINT**: `544f187617d70e15982d5d2c750baee725d5b3f2552bf95728ee7dd3e9d5b29f`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.986895+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.languageModelRateLimit.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	// https://github.com/microsoft/vscode/issues/340039
+
+	export namespace LanguageModelError {
+
+		/**
+		 * The provider is rate limiting requests. When set, `retryAfter` is how many
+		 * milliseconds to wait before retrying; convert HTTP `Retry-After` seconds.
+		 */
+		export function RateLimited(message?: string, retryAfter?: number): LanguageModelError;
+	}
+
+	export interface LanguageModelError {
+
+		/** Milliseconds to wait before retrying; only set on {@link LanguageModelError.RateLimited RateLimited} errors. */
+		readonly retryAfter?: number;
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.languageModelSystem.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.languageModelSystem.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageModelSystem.d.ts
+- **SHA256_FINGERPRINT**: `ebace67810617be4835522c09ebfbfd241ccdd6206fcc5692a7ab1c86272e8c1`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:58.004176+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.languageModelSystem.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	// https://github.com/microsoft/vscode/issues/206265
+
+	// TODO@API don't have this dedicated type but as property, e.g anthropic doesn't have a system-role, see
+	// https://github.com/anthropics/anthropic-sdk-typescript/blob/c2da9604646ff103fbdbca016a9a9d49b03b387b/src/resources/messages.ts#L384
+	// So, we could have `LanguageModelChatRequestOptions#system` which would be more limiting but also more natural?
+
+	export enum LanguageModelChatMessageRole {
+		System = 3
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.languageModelThinkingPart.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.languageModelThinkingPart.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageModelThinkingPart.d.ts
+- **SHA256_FINGERPRINT**: `a9b1f26e54354ab2b354ff04f4a75c15c2f9ee99c684dab2ce6c4d3bd69c1901`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:58.009334+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.languageModelThinkingPart.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	export interface LanguageModelChatRequestOptions {
+		/** Whether to include opaque reasoning state needed to replay the response in later requests. */
+		includeEncryptedThinking?: boolean;
+	}
+
+	/**
+	 * A language model response part containing thinking/reasoning content.
+	 * Thinking tokens represent the model's internal reasoning process that
+	 * typically streams before the final response.
+	 */
+	export class LanguageModelThinkingPart {
+		/**
+		 * The thinking/reasoning text content.
+		 */
+		value: string | string[];
+
+		/**
+		 * Optional unique identifier for this thinking sequence.
+		 * This ID is typically provided at the end of the thinking stream
+		 * and can be used for retrieval or reference purposes.
+		 */
+		id?: string;
+
+		/**
+		 * Optional metadata associated with this thinking sequence.
+		 */
+		metadata?: { readonly [key: string]: any };
+
+		/**
+		 * Construct a thinking part with the given content.
+		 * @param value The thinking text content.
+		 * @param id Optional unique identifier for this thinking sequence.
+		 * @param metadata Optional metadata associated with this thinking sequence.
+		 */
+		constructor(value: string | string[], id?: string, metadata?: { readonly [key: string]: any });
+	}
+
+	export interface LanguageModelChatResponse {
+		/**
+		 * An async iterable that is a stream of text, thinking, and tool-call parts forming the overall response.
+		 * This includes {@link LanguageModelThinkingPart} which represents the model's internal reasoning process.
+		 */
+		stream: AsyncIterable<LanguageModelTextPart | LanguageModelThinkingPart | LanguageModelToolCallPart | unknown>;
+	}
+
+	export interface LanguageModelChat {
+		sendRequest(messages: Array<LanguageModelChatMessage | LanguageModelChatMessage2>, options?: LanguageModelChatRequestOptions, token?: CancellationToken): Thenable<LanguageModelChatResponse>;
+		countTokens(text: string | LanguageModelChatMessage | LanguageModelChatMessage2, token?: CancellationToken): Thenable<number>;
+	}
+
+	/**
+	 * Represents a message in a chat. Can assume different roles, like user or assistant.
+	 */
+	export class LanguageModelChatMessage2 {
+
+		/**
+		 * Utility to create a new user message.
+		 *
+		 * @param content The content of the message.
+		 * @param name The optional name of a user for the message.
+		 */
+		static User(content: string | Array<LanguageModelTextPart | LanguageModelToolResultPart | LanguageModelDataPart>, name?: string): LanguageModelChatMessage2;
+
+		/**
+		 * Utility to create a new assistant message.
+		 *
+		 * @param content The content of the message.
+		 * @param name The optional name of a user for the message.
+		 */
+		static Assistant(content: string | Array<LanguageModelTextPart | LanguageModelToolCallPart | LanguageModelDataPart>, name?: string): LanguageModelChatMessage2;
+
+		/**
+		 * The role of this message.
+		 */
+		role: LanguageModelChatMessageRole;
+
+		/**
+		 * A string or heterogeneous array of things that a message can contain as content. Some parts may be message-type
+		 * specific for some models.
+		 */
+		content: Array<LanguageModelTextPart | LanguageModelToolResultPart | LanguageModelToolCallPart | LanguageModelDataPart | LanguageModelThinkingPart>;
+
+		/**
+		 * The optional name of a user for this message.
+		 */
+		name: string | undefined;
+
+		/**
+		 * Create a new user message.
+		 *
+		 * @param role The role of the message.
+		 * @param content The content of the message.
+		 * @param name The optional name of a user for the message.
+		 */
+		constructor(role: LanguageModelChatMessageRole, content: string | Array<LanguageModelTextPart | LanguageModelToolResultPart | LanguageModelToolCallPart | LanguageModelDataPart | LanguageModelThinkingPart>, name?: string);
+	}
+
+	/**
+	 * Temporary alias for LanguageModelToolResultPart to avoid breaking changes in chat.
+	 */
+	export class LanguageModelToolResultPart2 extends LanguageModelToolResultPart { }
+
+	/**
+	 * Temporary alias for LanguageModelToolResult to avoid breaking changes in chat.
+	 */
+	export class LanguageModelToolResult2 extends LanguageModelToolResult { }
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.languageModelToolResultAudience.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.languageModelToolResultAudience.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageModelToolResultAudience.d.ts
+- **SHA256_FINGERPRINT**: `1c82f77bafbd56ca883915d2e969e67e0b860a2bc13f3833e9fed2ed7758bf6e`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:58.007104+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.languageModelToolResultAudience.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	export enum LanguageModelPartAudience {
+		/**
+		 * The part should be shown to the language model.
+		 */
+		Assistant = 0,
+		/**
+		 * The part should be shown to the user.
+		 */
+		User = 1,
+		/**
+		 * The part should should be retained for internal bookkeeping within
+		 * extensions.
+		 */
+		Extension = 2,
+	}
+
+	/**
+	 * A language model response part containing a piece of text, returned from a {@link LanguageModelChatResponse}.
+	 */
+	export class LanguageModelTextPart2 extends LanguageModelTextPart {
+		audience: LanguageModelPartAudience[] | undefined;
+		constructor(value: string, audience?: LanguageModelPartAudience[]);
+	}
+
+	export class LanguageModelDataPart2 extends LanguageModelDataPart {
+		audience: LanguageModelPartAudience[] | undefined;
+		constructor(data: Uint8Array, mimeType: string, audience?: LanguageModelPartAudience[]);
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.languageModelToolSupportsModel.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.languageModelToolSupportsModel.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.languageModelToolSupportsModel.d.ts
+- **SHA256_FINGERPRINT**: `a63e31b3f54fa48a5ad6e3ad75a8922e713fcdef5c85a0d66a5f52497627a4ad`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:58.133513+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.languageModelToolSupportsModel.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	export interface LanguageModelToolDefinition extends LanguageModelToolInformation {
+		/**
+		 * Display name for the tool.
+		 */
+		displayName: string;
+		/**
+		 * Name of the tools that can users can reference in the prompt. If not
+		 * provided, the tool will not be able to be referenced. Must not contain whitespace.
+		 */
+		toolReferenceName?: string;
+		/**
+		 * Description for the tool shown to the user.
+		 */
+		userDescription?: string;
+		/**
+		 * Icon for the tool shown to the user.
+		 */
+		icon?: IconPath;
+		/**
+		 * If defined, the tool will only be available for language models that match
+		 * the selector.
+		 */
+		models?: LanguageModelChatSelector[];
+		/**
+		 * Name of the toolset the tool should be contributed to, as defined in your
+		 * extension's `package.json`.
+		 */
+		toolSet?: string;
+	}
+
+	export namespace lm {
+		/**
+		 * Registers a language model tool along with its definition. Unlike {@link lm.registerTool},
+		 * this does not require the tool to be present first in the extension's `package.json` contributions.
+		 *
+		 * Multiple tools may be registered with the same name using the API. In any given context,
+		 * the most specific tool (based on the {@link LanguageModelToolDefinition.models}) will be used.
+		 *
+		 * @param definition The definition of the tool to register.
+		 * @param tool The implementation of the tool.
+		 * @returns A disposable that unregisters the tool when disposed.
+		 */
+		export function registerToolDefinition<T>(
+			definition: LanguageModelToolDefinition,
+			tool: LanguageModelTool<T>,
+		): Disposable;
+
+		/**
+		 * Invoke a tool by its full information object rather than just name.
+		 * This allows disambiguation when multiple tools have the same name
+		 * (e.g., from different MCP servers or model-specific implementations).
+		 *
+		 * @param tool The tool information object, typically obtained from {@link lm.tools}.
+		 * @param options The options to use when invoking the tool.
+		 * @param token A cancellation token.
+		 * @returns The result of the tool invocation.
+		 */
+		export function invokeTool(tool: LanguageModelToolInformation, options: LanguageModelToolInvocationOptions<object>, token?: CancellationToken): Thenable<LanguageModelToolResult>;
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.mcpServerDefinitions.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.mcpServerDefinitions.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.mcpServerDefinitions.d.ts
+- **SHA256_FINGERPRINT**: `0baa019ee3b39a785fa07e453eda08dfa1c58b64001fb88bf36d2e9a8f72d214`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:58.049836+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.mcpServerDefinitions.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	// https://github.com/microsoft/vscode/issues/288777 @DonJayamanne
+
+	/**
+	 * Represents a single MCP server exposed by the gateway via its own HTTP endpoint.
+	 */
+	export interface McpGatewayServer {
+		/**
+		 * The human-readable label of the MCP server.
+		 */
+		readonly label: string;
+
+		/**
+		 * The address of the HTTP MCP server endpoint.
+		 * External processes can connect to this URI to interact with this MCP server.
+		 */
+		readonly address: Uri;
+	}
+
+	/**
+	 * Represents an MCP gateway that exposes MCP servers via HTTP.
+	 * Each known MCP server gets its own HTTP endpoint. The gateway
+	 * dynamically tracks server additions and removals.
+	 */
+	export interface McpGateway extends Disposable {
+		/**
+		 * The MCP servers currently exposed by the gateway.
+		 * Each server has its own HTTP endpoint address.
+		 */
+		readonly servers: readonly McpGatewayServer[];
+
+		/**
+		 * Event that fires when the set of gateway servers changes.
+		 * This can be due to MCP servers being added, removed, or restarted.
+		 */
+		readonly onDidChangeServers: Event<readonly McpGatewayServer[]>;
+	}
+
+	/**
+	 * Namespace for language model related functionality.
+	 */
+	export namespace lm {
+		/**
+		 * All MCP server definitions known to the editor. This includes
+		 * servers defined in user and workspace mcp.json files as well as those
+		 * provided by extensions.
+		 *
+		 * Consumers should listen to {@link onDidChangeMcpServerDefinitions} and
+		 * re-read this property when it fires.
+		 */
+		export const mcpServerDefinitions: readonly McpServerDefinition[];
+
+		/**
+		 * Event that fires when the set of MCP server definitions changes.
+		 * This can be due to additions, deletions, or modifications of server
+		 * definitions from any source.
+		 */
+		export const onDidChangeMcpServerDefinitions: Event<void>;
+
+		/**
+		 * Starts an MCP gateway that exposes MCP servers via HTTP endpoints.
+		 *
+		 * The gateway creates a localhost HTTP server where each MCP server known
+		 * to the editor gets its own endpoint. External processes (such as CLI-based
+		 * agent loops) can connect to these endpoints to interact with individual
+		 * MCP servers.
+		 *
+		 * The HTTP server is shared among all gateways and is automatically torn down
+		 * when the last gateway is disposed. The gateway dynamically tracks server
+		 * additions and removals via {@link McpGateway.onDidChangeServers}.
+		 *
+		 * @param chatSessionResource Optional chat session resource URI to associate with this
+		 * gateway. When provided, MCP tool calls made through this gateway will be associated
+		 * with the chat session, enabling inline elicitation UI in the chat response.
+		 * @returns A promise that resolves to an {@link McpGateway} if successful,
+		 * or `undefined` if no Node process is available (e.g., in serverless web environments).
+		 */
+		export function startMcpGateway(chatSessionResource?: Uri): Thenable<McpGateway | undefined>;
+	}
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.mcpToolDefinitions.d.ts
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.mcpToolDefinitions.d.ts
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.mcpToolDefinitions.d.ts
+- **SHA256_FINGERPRINT**: `aa8fc04020e84d1c56178c5bc982a8b00cb57add81d9ac26fba819b16068e53d`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:58.035747+00:00
+---
+
+# VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.mcpToolDefinitions.d.ts`
+
+```typescript
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+declare module 'vscode' {
+
+	// https://github.com/microsoft/vscode/issues/272000 @connor4312
+
+	/**
+	 * Defines when a {@link McpServerLanguageModelToolDefinition} is available
+	 * for calling.
+	 */
+	export enum McpToolAvailability {
+		/**
+		 * The MCP tool is available when the server starts up.
+		 */
+		Initial = 0,
+
+		/**
+		 * The MCP tool is conditionally available when certain preconditions are met.
+		 */
+		Dynamic = 1,
+	}
+
+	/**
+	 * The definition for a tool an MCP server provides. Extensions may provide
+	 * this as part of their server metadata to allow the editor to defer
+	 * starting the server until it's called by a language model.
+	 */
+	export interface McpServerLanguageModelToolDefinition {
+		/**
+		 * The definition of the tool as it appears on the MCP protocol. This should
+		 * be an object that includes the `inputSchema` and `name`,
+		 * among other optional properties.
+		 */
+		definition?: unknown;
+
+		/**
+		 * An indicator for when the tool is available for calling.
+		 */
+		availability: McpToolAvailability;
+	}
+
+	/**
+	 * Metadata which the editor can use to hydrate information about the server
+	 * prior to starting it. The extension can provide tools and basic server
+	 * instructions as they would be expected to appear on MCP itself.
+	 *
+	 * Once a server is started, the observed values will be cached and take
+	 * precedence over those statically declared here unless and until the
+	 * server's {@link McpStdioServerDefinition.version version} is updated. If
+	 * you can ensure the metadata is always accurate and do not otherwise have
+	 * a server `version` to use, it is reasonable to set the server `version`
+	 * to a hash of this object to ensure the cache tracks the {@link McpServerMetadata}.
+	 */
+	export interface McpServerMetadata {
+		/**
+		 * Tools the MCP server exposes.
+		 */
+		tools?: McpServerLanguageModelToolDefinition[];
+
+		/**
+		 * MCP server instructions as it would appear on the `initialize` result in the protocol.
+		 */
+		instructions?: string;
+
+		/**
+		 * MCP server capabilities as they would appear on the `initialize` result in the protocol.
+		 */
+		capabilities?: unknown;
+
+		/**
+		 * MCP server info as it would appear on the `initialize` result in the protocol.
+		 */
+		serverInfo?: unknown;
+	}
+
+	export class McpStdioServerDefinition2 extends McpStdioServerDefinition {
+		metadata?: McpServerMetadata;
+		constructor(label: string, command: string, args?: string[], env?: Record<string, string | number | null>, version?: string, metadata?: McpServerMetadata);
+	}
+
+	export class McpHttpServerDefinition2 extends McpHttpServerDefinition {
+		metadata?: McpServerMetadata;
+
+		/**
+		 * Authentication information to use to get a session for the initial MCP server connection.
+		 */
+		authentication?: {
+			providerId: string;
+			scopes: string[];
+		};
+
+		constructor(label: string, uri: Uri, headers?: Record<string, string>, version?: string, metadata?: McpServerMetadata, authentication?: { providerId: string; scopes: string[] });
+	}
+}
+```
 
 
 ---

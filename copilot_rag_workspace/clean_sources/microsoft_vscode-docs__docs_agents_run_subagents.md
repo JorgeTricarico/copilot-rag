@@ -28,24 +28,17 @@ For a quick lookup or a small edit, a direct request is usually enough. Delegati
 Your [agent harness](/docs/agents/run/agent-harnesses.md#compare-agent-harnesses) determines how subagents run and which configuration options they support. [Select a harness](/docs/agents/run/agent-harnesses.md#select-a-harness) before you submit the first prompt.
 
 > [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
+>
 > Provider documentation also covers CLI workflows. Commands and configuration options can differ in VS Code. Use the [harness guide](/docs/agents/run/agent-harnesses.md) for integration-specific setup and limitations.
-
-<a id="copilot"></a>
 
 The **Copilot** harness manages delegation to built-in or custom subagents. Request a subagent in your prompt, or let the main agent decide when to delegate. For native agent behavior and configuration, see [built-in and custom agents in Copilot](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-custom-agents).
 
-<a id="claude"></a>
-
 The **Claude** harness manages its own subagents, with separate context and configurable instructions and tools. Request delegation in your prompt, or let the agent choose an appropriate subagent. See [Claude subagents](https://code.claude.com/docs/en/sub-agents) for native configuration and behavior.
-
-<a id="codex"></a>
 
 The **Codex** harness uses provider-native subagents to run independent tasks and collect their results. Ask Codex to delegate in your prompt, and see [Codex subagents](https://developers.openai.com/codex/multi-agent) for native configuration and behavior. For availability and integration-specific setup, see [Use the Codex harness](/docs/agents/run/agent-harnesses.md#codex).
 
-<a id="local"></a>
-
-<details>
-<summary>Subagents in Local harness sessions</summary>
+**Subagents in Local harness sessions**
 
 The **Local** harness uses the VS Code `runSubagent` tool. The following instructions cover tool selection, custom-agent configuration, model selection, and nested subagents for this harness.
 
@@ -284,8 +277,6 @@ For Local harness sessions, check these common causes:
 | A custom agent isn't available. | Check its exact, case-sensitive name, `disable-model-invocation`, and the coordinator's `agents` list. `user-invocable: false` only hides it from the picker. |
 | A requested model doesn't run. | Use one of the models listed in the error, or remove the explicit preference. See [model selection](#select-the-model-for-a-subagent). |
 | A subagent can't delegate further. | Check the [nested subagent setting](#nested-subagents), the depth limit, and whether its tools include `agent`. |
-
-</details>
 
 ## What you see in chat
 

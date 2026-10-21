@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-10-20T22:05:36.239496+00:00
-- **Total Palabras**: 21,375 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-21T03:46:01.276389+00:00
+- **Total Palabras**: 21,793 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -71,8 +71,8 @@ When auditing, ensure docs accurately cover these areas:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/best-practices.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/best-practices
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/best-practices.md
-- **SHA256_FINGERPRINT**: `b0dc7a716118810aa2de02a5cf2d75233465c26b28459844e0c67b21d43beae4`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.256410+00:00
+- **SHA256_FINGERPRINT**: `1d8f3b0c170a6edc0161d338dccb6ef36f421c908bb3c5fcc638729d2d87c81e`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:54.005879+00:00
 ---
 
 **MetaDescription**: Use AI effectively in VS Code by choosing the right workflow, writing focused prompts, and reviewing results.
@@ -231,6 +231,9 @@ For more information, see [GitHub Copilot security](/docs/agents/run/security.md
 
 When working with agents, choose the harness that matches your task and workflow. Each harness offers different provider capabilities, tools, and execution environments.
 
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
+
 * **Use the Copilot harness for day-to-day coding.** The Copilot harness runs tools on your machine with access to your workspace and run-time context. It is a good default for most coding tasks. Tool execution location is separate from where the selected language model runs.
 
 * **Use Claude or Codex for provider-specific capabilities.** These harnesses also run tools on your machine and provide their own SDK capabilities through the same VS Code session experience.
@@ -329,8 +332,8 @@ For more information, see [workspace context](/docs/agents/reference/workspace-c
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/agent-harnesses.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/agent-harnesses
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/agent-harnesses.md
-- **SHA256_FINGERPRINT**: `1764b840535cea3d3a81edfc5527ae3d37efe7b92804c8ab26e942ecf08fb1e1`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.264258+00:00
+- **SHA256_FINGERPRINT**: `627e7df85945645d475e47f2e2a2cebafc6e60187c04ec344ee83fc4eaa5c7a9`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:54.164634+00:00
 ---
 
 **MetaDescription**: Understand agent harnesses, model access, execution environments, and code isolation in VS Code.
@@ -396,8 +399,6 @@ The selected harness defines the agent implementation. Depending on the harness 
 
 The harness choice does not by itself determine where the language model runs or whether code changes go into a folder or worktree. Those choices depend on the models, execution environments, and isolation options that the harness supports.
 
-<a name="map-session-targets-to-harnesses"></a>
-
 ## Map Session Target choices to harnesses
 
 VS Code provides common chat and session-management surfaces across harnesses. Available controls and workflows depend on the selected harness. The **Session Target** UI control includes both harnesses and the Cloud execution target:
@@ -410,6 +411,9 @@ VS Code provides common chat and session-management surfaces across harnesses. A
 
 > [!NOTE]
 > **For Local harness sessions:** The Local harness works in the current workspace through the editor's extension host. **Local** is a session-target name, not the only way to run agents on your machine. See [Local setup and capabilities](/docs/agents/run/agent-harnesses.md#local).
+
+> [!NOTE]
+> Claude and Codex harness integrations are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access. Selecting a Claude or OpenAI model in the Copilot harness is a separate choice and does not switch harnesses.
 
 Cloud is an execution target that groups available cloud agents, not a single provider harness. After you select Cloud, you choose an available cloud agent.
 
@@ -447,8 +451,8 @@ For ongoing work, the available [handoff options](/docs/agents/concepts/sessions
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/agent-host.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/agent-host
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/agent-host.md
-- **SHA256_FINGERPRINT**: `e85f19f5c2ac94dafc181de7d936040dfb4864bb6c272460d01e394d31fe48b1`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.292192+00:00
+- **SHA256_FINGERPRINT**: `34a95a9d6f379705640678ffc8209bfb5e093ca4d7f37f29edc092aed6c984bd`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:54.211965+00:00
 ---
 
 **MetaDescription**: Understand how the VS Code Agent Host manages sessions, execution environments, and connected clients.
@@ -459,8 +463,6 @@ The Agent Host is a dedicated process that runs agent harnesses and manages thei
 
 This article explains the process boundaries, execution environments, session lifetime, and client dependencies for integrations that use the Agent Host. You don't need this architecture background to use agents. To identify the harness a session uses or compare Local and Copilot, see [Choose an agent harness](/docs/agents/run/agent-harnesses.md). For session-management tasks, see [Manage sessions](/docs/agents/run/sessions/manage-sessions.md).
 
-<a name="why-a-dedicated-agent-host"></a>
-
 ## What this architecture enables
 
 Separating the agent from the window that displays it provides these capabilities:
@@ -470,6 +472,9 @@ Separating the agent from the window that displays it provides these capabilitie
 * **Independent execution**: an agent session can continue without a connected editor while the host and its execution environment remain running. Tools provided by a client still require that client.
 * **Multiple agent implementations**: different agent runtimes plug into one host-facing interface and present common session concepts to clients.
 * **Dedicated process**: agents run in their own process, where they won't be blocked by busy extensions.
+
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
 
 ## Process architecture
 
@@ -486,8 +491,6 @@ The extension host remains responsible for extensions. Extensions can contribute
 The Agent Host can run as a local utility process or as a standalone server on a remote machine. VS Code uses a message port for local IPC and AHP JSON-RPC over WebSocket for remote connections.
 
 Agent adapters run inside the Agent Host process. An adapter translates between its agent runtime and the common [Agent Host Protocol (AHP)](#agent-host-protocol) session model.
-
-<a name="local-and-remote-hosts"></a>
 
 ## Where sessions run
 
@@ -508,8 +511,6 @@ Dev Container execution is an environment choice, not a different harness. See t
 Like [VS Code Remote Development](/docs/remote/remote-overview.md), the user interface stays on the client while workspace operations run close to the source code and development tools.
 
 The **Cloud** target is a separate choice that uses provider-managed infrastructure. Connecting to an Agent Host on another machine does not turn the session into a cloud-agent session.
-
-<a name="self-contained-with-optional-client-tools"></a>
 
 ## Session lifetime and client dependencies
 
@@ -532,8 +533,6 @@ For protocol definitions and implementation details, see the [Agent Host Protoco
 ## Run a standalone host
 
 To run your own standalone Agent Host, use `code agent host`. By default, the command starts a server on localhost and protects it with a connection token. Use the `--tunnel` option to expose it through a dev tunnel.
-
-<a name="behavior-on-the-extension-host"></a>
 
 ## Local and existing extension-host sessions
 
@@ -568,8 +567,8 @@ The process boundary also affects how you review edits, configure the agent, and
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/agents.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/agents
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/agents.md
-- **SHA256_FINGERPRINT**: `ba6d95a8e9df7badbe9439697e3d47e21c3d74ccbd76897afc32f2a516dfe518`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.230360+00:00
+- **SHA256_FINGERPRINT**: `6a21dc55a3f249f6cbc568643ddbb85719898a2175111729f64bcda071b644b8`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:54.173646+00:00
 ---
 
 **MetaDescription**: Understand how agents in VS Code use models, context, and tools to complete coding tasks.
@@ -636,6 +635,9 @@ Sessions can run in parallel. Both the [Chat view](/docs/agents/run/chat-view.md
 ## Agent harnesses and execution environments
 
 An agent harness is the runtime that coordinates the agent loop. It manages the session, connects the language model to tools, and provides provider-specific capabilities. VS Code supports harnesses such as Copilot, Claude, and Codex.
+
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
 
 The execution environment is where the harness runs workspace tools and changes code. Depending on the available harness, this can be your machine, a connected host, a Dev Container on either host, or cloud infrastructure. A Dev Container provides the project's configured tools and dependencies without changing the harness. Learn more about [agent harnesses and execution environments](/docs/agents/concepts/agent-harnesses.md#relate-execution-environments-and-code-isolation).
 
@@ -820,8 +822,8 @@ The referenced file gives the agent a starting point. The agent can then search 
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/customization.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/customization
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/customization.md
-- **SHA256_FINGERPRINT**: `ce4c4067275416aaaf4dee4df032226c46eed809489df6a49ae124b50537c579`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.238629+00:00
+- **SHA256_FINGERPRINT**: `62a2280ff21f56de079df803c5ab3e8f29762dc7cdc81b0720f91f0cc6bc871c`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:54.322695+00:00
 ---
 
 **MetaDescription**: Choose instructions, skills, custom agents, and other customizations for your workflow in VS Code.
@@ -847,10 +849,10 @@ Without customization, the agent works from your prompt, the current conversatio
 * **Define repeatable work**: [agent skills](/docs/agent-customization/agent-skills.md) and [prompt files](/docs/agent-customization/prompt-files.md) package task-specific guidance so you don't have to describe the same process in every conversation.
 * **Configure a role**: [custom agents](/docs/agent-customization/custom-agents.md) combine instructions, tools, and a language model into a specialized agent persona.
 * **Add capabilities**: [MCP servers](/docs/agent-customization/mcp-servers.md) give the agent tools for interacting with external systems such as databases, browsers, and APIs.
-* **Enforce actions**: [hooks](/docs/agent-customization/hooks.md) run commands at specific points in the agent loop, independent of whether the model chooses to run them.
+* **Automate lifecycle actions**: [hooks](/docs/agent-customization/hooks.md) run commands at specific points in the agent loop, independent of whether the model chooses to run them.
 * **Adopt a ready-made setup**: [agent plugins](/docs/agent-customization/agent-plugins.md) let you install multiple related customization types as one package.
 
-These mechanisms affect different layers of the agent. Instructions guide the model's decisions, tools expand the actions it can take, and hooks run outside the model's decision-making. As a result, adding a rule to an instructions file is not equivalent to enforcing that rule with a hook.
+These mechanisms affect different layers of the agent. Instructions guide the model's decisions, tools expand the actions it can take, and hooks run outside the model's decision-making. Adding a rule to an instructions file is not equivalent to executing a validation script. Neither mechanism alone establishes a security boundary.
 
 Relevant customizations can reduce back-and-forth and rework by giving the agent project context from the start. Avoiding corrective turns and discarded implementations can help reduce [AI credit usage](/docs/agents/guides/optimize-usage.md). Keep customizations focused because their content also consumes space in the model's context window.
 
@@ -897,9 +899,11 @@ Start with instructions when your main goal is to stop repeating project context
 
 Most customizations guide the model or give it more options. The model interprets instructions, decides whether a skill is relevant, and chooses when to call an available tool. The result depends on the request, available context, and model reasoning.
 
-Hooks are deterministic. A hook runs when its configured lifecycle event occurs. Use a hook when an action must happen consistently, such as validating a command before it runs or starting a formatter after an edit. Use instructions when you want to guide how the agent reasons or writes code.
+Hooks are dispatched by the runtime when a supported, configured lifecycle event occurs. Use a hook for actions such as validating a tool call or starting a formatter after an edit. Discovery, trust, filters, timeouts, and error handling still affect execution. Use instructions when you want to guide how the agent reasons or writes code.
 
 For example, an instruction that says "run the formatter after editing a file" asks the model to remember and perform that action. A hook configured for the corresponding lifecycle event runs regardless of whether the model remembers the instruction.
+
+For new Copilot hooks, use the [shared runtime guidance](/docs/agent-customization/hooks.md). Existing hooks in personal folders, settings, repositories, agents, or plugins need a [compatibility review](/docs/agent-customization/migrate-customizations.md#migrate-hooks) when migrating from Local.
 
 ## How customizations combine
 
@@ -939,8 +943,8 @@ Not every customization type supports every scope or agent harness. See the indi
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/language-models.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/language-models
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/language-models.md
-- **SHA256_FINGERPRINT**: `5af5555305addbbdc8bc2a01b267eeb129e088610aa58f7dee94861bf956b083`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.413822+00:00
+- **SHA256_FINGERPRINT**: `cc491a46c1e51f63583c8351bac7aaed93e56aa7c63d5e307aae58eec3c332f5`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:54.336184+00:00
 ---
 
 **MetaDescription**: Understand language models in VS Code, including model access, characteristics, context windows, and selection.
@@ -952,6 +956,10 @@ Visual Studio Code uses large language models (LLMs) to power its AI features. Y
 * **Models from your GitHub Copilot plan**: choose from multiple models by different providers, such as Anthropic, Google, and OpenAI, included with your plan.
 * **Other accounts**: use an [account supported by the selected harness](/docs/agents/run/agent-harnesses.md#cloud-target), such as a ChatGPT account for Codex. Model availability, usage limits, and billing depend on that account's plan and the harness.
 * **Bring your own key (BYOK)**: add models from other providers with your own API key, or host your own models, including local models that run offline. With BYOK, you can use agents in VS Code without a GitHub Copilot plan.
+* **On-device models** `feature(on-device-models)`: download a [Copilot-provided coding model](/docs/agent-customization/language-models.md#use-on-device-models-experimental) and run it on a supported NVIDIA GPU in Copilot harness sessions.
+
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), even when you use separate provider credentials. Contact the IT team that deployed the settings to discuss access. This harness restriction does not itself disable Claude or OpenAI models in the Copilot harness.
 
 This article explains how language models work, their characteristics, and how to think about model selection.
 
@@ -1013,6 +1021,8 @@ Auto model selection in GitHub Copilot combines two systems to route each reques
 
 Auto selects from multiple models and respects your organization's [model access settings](https://docs.github.com/en/copilot/how-tos/use-ai-models/configure-access-to-ai-models). Auto won't select models excluded by administrator policies or models restricted by data-residency policies.
 
+When you turn on **Use in Auto** for an [on-device model](/docs/agent-customization/language-models.md#use-on-device-models-experimental), Auto can route some requests to that model on your device, with cloud fallback.
+
 For more details, see [About Copilot auto model selection](https://docs.github.com/en/copilot/concepts/auto-model-selection) in the GitHub documentation.
 
 ### AI credits and model costs
@@ -1055,8 +1065,8 @@ Learn how to [add your own language model key](/docs/agent-customization/languag
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/sessions.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/sessions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/sessions.md
-- **SHA256_FINGERPRINT**: `c2b30398c57905396876d6e221c14d5dbc2bfcc9f0bf945b8c09c5e74cfd64dd`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.418670+00:00
+- **SHA256_FINGERPRINT**: `9772eeb4d4e59be95a537d900ddbea80dd504666aa9d38469103b4fcbaefb54d`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:54.228509+00:00
 ---
 
 **MetaDescription**: Understand sessions and chats in VS Code, and choose when to start a chat, fork, or create a session.
@@ -1109,6 +1119,9 @@ A fork can open as another chat in the same session or as a new session, dependi
 Sessions can run in parallel and keep running when you switch between them. To return an existing conversation and affected workspace files to an earlier point instead of branching the conversation, see [Restore a checkpoint](/docs/agents/run/review-code-edits.md#restore-a-checkpoint).
 
 ## Sessions across surfaces
+
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Existing sessions are not deleted by this restriction. Contact the IT team that deployed the settings to discuss access.
 
 You can access and continue the same live **Copilot** or **Claude** session in the [Chat view](/docs/agents/run/chat-view.md) and the [Agents window](/docs/agents/run/agents-window.md). To use **Codex** in both interfaces, configure the [experimental Codex integration](/docs/agents/run/agent-harnesses.md#codex). Switching between these interfaces doesn't create a session, fork the conversation, or change its harness, workspace, or worktree.
 
@@ -1484,8 +1497,8 @@ Before using agents on an existing project, review the [recommended security bas
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/agent-harnesses.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/agent-harnesses
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/agent-harnesses.md
-- **SHA256_FINGERPRINT**: `3ae60c8786d2d208c1a0a4ebf4edceef31c69cab5cd490bd54a7e98b9b2e08a7`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.243825+00:00
+- **SHA256_FINGERPRINT**: `c78d91f27d721b2d89615c7055bc849e79b82a1c94ee98d64bb9aee90d98a4a3`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.365197+00:00
 ---
 
 **MetaDescription**: Compare agent harnesses and built-in agents in Visual Studio Code, select one for a session, and review provider requirements.
@@ -1497,8 +1510,6 @@ VS Code supports multiple agent harnesses, each with its own tools, customizatio
 Use this guide to compare the available options, identify which harness your session uses, select a harness or the Cloud execution target, and review its setup requirements.
 
 For a deeper explanation of how harnesses work and differ from models and hosts, [learn about agent harness concepts](/docs/agents/concepts/agent-harnesses.md).
-
-<a name="choose-a-session-target"></a>
 
 ## Compare agent harnesses
 
@@ -1520,7 +1531,8 @@ Changing the model or agent role does not change the harness. For example, selec
 
 Available models depend on the harness and how you [access models](/docs/agent-customization/language-models.md), such as through a GitHub Copilot subscription, another supported account, or your own API key. Harness-specific customizations, including [hooks](/docs/agent-customization/hooks.md#choose-the-hook-implementation-for-your-session), follow the selected harness.
 
-<a name="start-a-session"></a>
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), including managed permission or sandbox settings. Contact the IT team that deployed the settings to discuss access. If you don't know the owner, ask your IT help desk to find the responsible administrator.
 
 ## Select a harness
 
@@ -1549,8 +1561,6 @@ After selecting a harness, choose an available built-in agent from the agent pic
 
 Switching agents doesn't change the harness. You can also select [custom agents](/docs/agent-customization/custom-agents.md) from the same picker. In the Copilot harness, [Autopilot](/docs/agents/run/approvals.md#how-autopilot-works) is a mode with its own workflow, not an additional built-in agent.
 
-<a name="choose-code-isolation"></a>
-
 Your harness choice is separate from where the session changes code. In the Agents window, you can also [choose between a folder and a worktree](/docs/agents/run/agents-window.md#choose-where-an-agent-makes-changes) or [run a session in a Dev Container](/docs/agents/run/agents-window.md#run-a-session-in-a-dev-container).
 
 ### Identify your current harness
@@ -1575,8 +1585,6 @@ For managed user accounts on GHE.com, complete the setup in [Using GitHub Copilo
 
 Before reusing a Local harness session's configuration, check [tool availability](/docs/agents/run/tools.md#manage-tool-availability-for-the-copilot-harness) and [MCP configuration compatibility](/docs/agents/reference/mcp-configuration.md#configuration-file). Copilot harness sessions don't have access to every built-in or extension-provided tool. The shared SDK runtime also does not imply identical tools, models, permissions, or customizations across products, or that all sessions and personal settings synchronize.
 
-<a name="prefer-copilot-for-new-editor-chat-sessions"></a>
-
 For enterprise SDK Policy Hooks requirements, see [enterprise hook configuration](/docs/enterprise/manage-ai-settings.md#enable-or-disable-hooks).
 
 ### Local
@@ -1587,12 +1595,9 @@ Select **Local** in the Chat view and keep the editor window open while the agen
 
 SDK Policy Hooks are not loaded in Local harness sessions. Check [hook compatibility](/docs/agent-customization/hooks.md#migrate-hooks-between-harnesses) before reusing hooks from another harness.
 
-<a name="claude-preview"></a>
-<a name="third-party-agents"></a>
-
 ### Claude
 
-Claude support is enabled by default. Turn it on or off with ``github.copilot.chat.claudeAgent.enabled``.
+Claude support is enabled by default unless [enterprise-managed settings disable the harness](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). When organization policy permits it, turn support on or off with ``github.copilot.chat.claudeAgent.enabled``.
 
 To use Claude, configure one of these authentication and billing options:
 
@@ -1600,9 +1605,6 @@ To use Claude, configure one of these authentication and billing options:
 * **Bring your own key (BYOK)**: use a Claude API key or another supported Claude BYOK option. Usage is billed by your configured provider.
 
 When both options are available, the model picker groups models by **Anthropic** and **Copilot**. The model you select determines the provider and billing method for the next turn. You can switch between BYOK-backed and Copilot-routed models in an existing Claude harness session.
-
-<a name="use-claude-without-github-sign-in"></a>
-<a name="use-claude-without-github-sign-in-experimental"></a>
 
 To use Claude without signing in to GitHub _(Experimental)_, configure a Claude API key or another supported Claude BYOK option. For an Anthropic API key, set `ANTHROPIC_API_KEY` in your environment or in the `env` object in `~/.claude/settings.json`. Learn more about [Claude Code authentication](https://code.claude.com/docs/en/authentication).
 
@@ -1620,6 +1622,9 @@ To use Codex in the Chat view, install and enable the [OpenAI Codex extension](h
 
 #### Agent Host integration (Experimental)
 
+> [!NOTE]
+> The Codex Agent Host integration is disabled when [enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), even with a ChatGPT account or the integration's user setting set to `true`. Contact the IT team that deployed the settings to discuss access.
+
 Enable ``chat.agentHost.codexAgent.enabled`` to make Codex available in the Agents window without the [product.prodname_openai_codex] extension.
 
 To also use this integration in the Chat view, enable ``chat.editor.codex.preferAgentHost`` and restart VS Code when prompted. Only one Codex implementation appears in each window. In the **Session Target** UI control, this setting replaces the **Codex** choice contributed by the OpenAI extension.
@@ -1631,14 +1636,9 @@ Sign in with one of these accounts for the Agent Host integration:
 
 When both accounts are signed in, the model picker groups models by **Copilot** and **ChatGPT**. Your selection determines which subscription is used, and VS Code saves that provider with the session.
 
-<a name="use-codex-without-github-sign-in"></a>
-<a name="use-codex-without-github-sign-in-experimental"></a>
-
 To use Codex without signing in to GitHub _(Experimental)_, sign in to ChatGPT and enable ``chat.agentHost.allowSignedOutWhenUsable``. The desktop Agents window then shows ChatGPT-backed models while signed out. Copilot-backed models prompt you to sign in to GitHub, and the browser-based Agents window still requires GitHub sign-in.
 
 See [Codex approval presets](/docs/agents/run/approvals.md#codex-approval-presets) for approval behavior and related cautions.
-
-<a name="cloud"></a>
 
 ### Cloud target
 
@@ -1646,21 +1646,15 @@ Cloud sessions require a GitHub repository and access to an available cloud prov
 
 To use Claude or Codex in the cloud, turn on support in your Copilot account settings. See [Managing policies for third-party Copilot cloud agents](https://docs.github.com/en/copilot/how-tos/manage-your-account/manage-policies#enabling-or-disabling-third-party-coding-agents-in-your-repositories). You don't need the provider's VS Code extension for a cloud session.
 
-<a name="start-a-cloud-session"></a>
-
 Select **Cloud** from the **Session Target** UI control, then choose the cloud provider and, when available, a custom agent and model. In the Agents window, select a GitHub repository when you [start the session](/docs/agents/run/agents-window.md#start-an-agent-session).
 
 Configure tools, MCP servers, and models in the cloud service. Cloud sessions can't use VS Code built-in tools or local development context.
-
-<a name="hand-off-a-session"></a>
 
 ## Continue with a different harness
 
 A handoff continues an ongoing task with a different harness or execution environment and carries the conversation history and context with it. The tools, permissions, and models might change because the new configuration provides different capabilities.
 
 In a Copilot harness session, enter `/delegate` to continue a well-scoped task with a cloud agent.
-
-<a name="hand-off-from-a-local-session"></a>
 
 ### Hand off from a Local harness session
 
@@ -1695,9 +1689,14 @@ Before you create a new supported Copilot session, turn on ``chat.canvases.enabl
 
 * **Install a chat plugin**: In the GitHub Copilot app, install a chat plugin that includes a canvas extension. Switch to VS Code and ask the agent in chat to list the available canvases and have it open one.
 
-In the Agents window, you can also open an available canvas from **Add Tab (+)** > **Canvas** in the editor area.
+To open an available canvas without asking the agent, use one of these menus:
 
-When the agent opens a canvas, it appears in an editor tab and remains associated with its owning chat. You can interact with the canvas directly. Depending on the extension, your interactions can update the session, and the agent can invoke actions exposed by the canvas to inspect or update its state. You can close and reopen a live canvas when the canvas supports it.
+* In the editor window, select **New Chat (+)** > **Canvas** in the Chat view.
+* In the Agents window, select **Add Tab (+)** > **Canvas** in the editor area.
+
+In the editor window, the **Canvas** submenu appears after your first message in a supported Copilot harness session, when canvas support is enabled and canvas extensions are installed.
+
+Whether you or the agent opens a canvas, it appears in an editor tab and remains associated with its owning chat. You can interact with the canvas directly. Depending on the extension, your interactions can update the session, and the agent can invoke actions exposed by the canvas to inspect or update its state. You can close and reopen a live canvas when the canvas supports it.
 
 Canvas extensions are also supported in the GitHub Copilot app. Learn how to [work with canvas extensions in the GitHub Copilot app](https://docs.github.com/en/copilot/how-tos/github-copilot-app/working-with-canvas-extensions). To explore examples, browse [sample canvas extensions](https://awesome-copilot.github.com/extensions/).
 
@@ -1740,9 +1739,6 @@ Yes. In the Local session's chat input, open the **Session Target** dropdown and
 
 ## Related resources
 
-<a name="use-copilot-cli-from-the-terminal"></a>
-<a name="remote-control-copilot-sessions"></a>
-
 * [Manage agent sessions](/docs/agents/run/sessions/manage-sessions.md), including [continuing in the terminal](/docs/agents/run/sessions/manage-sessions.md#use-copilot-cli-from-the-terminal).
 * [Remote control for Copilot harness sessions](/docs/agents/run/remote-agent-sessions.md#remote-control-copilot-harness-sessions)
 * [Approvals and permissions](/docs/agents/run/approvals.md)
@@ -1752,8 +1748,8 @@ Yes. In the Local session's chat input, open the **Session Target** dropdown and
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/setup/copilot.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/setup/copilot
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/setup/copilot.md
-- **SHA256_FINGERPRINT**: `7cb8f6a5007c30b0221ea2fba99b2bab6d6c48e30ca88eb0e1d2bf9752e69ecd`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.931473+00:00
+- **SHA256_FINGERPRINT**: `6dda2b1666d2dbc20b3540065239da18b939efc7fcd39908b5b991dc3cb5f8da`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:56.276107+00:00
 ---
 
 **MetaDescription**: Set up GitHub Copilot in VS Code, understand billing and data use, and manage your account.
@@ -1770,6 +1766,9 @@ Complete your first coding task with an AI agent in VS Code.
 * [Start quickstart](/docs/agents/quickstart.md)
 
 </div>
+
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), even with separate provider credentials. Contact the IT team that deployed the settings to discuss access.
 
 ## Before you start
 

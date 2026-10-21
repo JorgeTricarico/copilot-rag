@@ -1,0 +1,25 @@
+{
+  "$schema": "https://repomix.com/schemas/config.json",
+  "output": {
+    "filePath": "repomix-vscode-copilot-rag-sync.xml",
+    "style": "xml",
+    "removeComments": false,
+    "removeEmptyLines": false,
+    "showLineNumbers": false
+  },
+  "ignore": {
+    "useGitignore": true,
+    "useDefaultPatterns": true,
+    "customPatterns": [
+      "repomix-*",
+      "repomix-*.*",
+      "copilot_rag_workspace/**",
+      "clean_sources/**",
+      "notebooklm_bundles/**",
+      "changelog_diffs/**",
+      "tmp_*/**",
+      "temp_*/**",
+      "*.log"
+    ]
+  }
+}

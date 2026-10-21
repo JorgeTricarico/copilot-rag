@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 02_Context_Memory_And_Compaction
-- **Generado (UTC)**: 2026-10-20T22:05:36.316309+00:00
-- **Total Palabras**: 5,903 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-21T03:46:01.314112+00:00
+- **Total Palabras**: 5,859 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -381,8 +381,8 @@ To learn more about Copilot's security, privacy, compliance, and transparency, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/chat/copilot-chat-context.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/chat/copilot-chat-context
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/chat/copilot-chat-context.md
-- **SHA256_FINGERPRINT**: `16907baad9491543789c818bc72825fe3db954749511122d187e20d40dd791b5`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.882299+00:00
+- **SHA256_FINGERPRINT**: `ff16b068681721ba2318ebc79665da1f540d3fad11b9db11335e513c44341209`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:56.155105+00:00
 ---
 
 **MetaDescription**: Add files, symbols, images, browser content, and other context to AI prompts in Visual Studio Code for more relevant responses.
@@ -450,16 +450,9 @@ Learn more about [using tools with agents](/docs/agents/run/tools.md).
 
 ## @-mentions
 
-Chat participants are specialized assistants that let you ask domain-specific questions in chat. You can invoke a chat participant by @-mentioning it: type `@` followed by the participant name. VS Code has built-in chat participants like `@vscode` or `@terminal`. They are optimized to answer questions about their respective domains.
+Chat participants invoked with `@name` are deprecated and are not supported in the Copilot harness. They remain available for Local harness compatibility.
 
-The following examples show how to use @-mentions in your chat prompts:
-
-* `"@vscode how to enable word wrapping"`
-* `"@terminal what are the top 5 largest files in the current directory"`
-
-Type `@` in the chat input field to see a list of available chat participants.
-
-Extensions can also contribute their own [chat participants](/api/extension-guides/ai/chat.md).
+Ask Copilot directly about your code, terminal output, or editor settings and attach the relevant context. For domain-specific integrations, use plugins with skills and MCP tools, or extension tools when editor context is required. See [Replace chat participants](/docs/agent-customization/migrate-customizations.md#replace-chat-participants).
 
 ## Vision
 

@@ -15,6 +15,9 @@ The available review controls depend primarily on the agent harness:
 > [!NOTE]
 > The change-review experience for Copilot harness sessions is [under active development](https://github.com/microsoft/vscode/issues/339363#issuecomment-6134276862). The user interface and available controls might change in upcoming releases.
 
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
+
 <div class="docs-action" data-show-in-doc="false" data-show-in-sidebar="true" title="Get started with agents">
 Follow a hands-on tutorial to build an app with AI agents in VS Code.
 
@@ -109,8 +112,6 @@ Use **Expand All Diffs** or **Collapse All Diffs** to control all files at once.
 
 The Changes editor restores each file's expanded or collapsed state when you switch sessions or reload the window. The editor tab title shows the next integration action, such as **Create Pull Request**, and switches to an icon when space is limited.
 
-<a name="review-local-session-changes"></a>
-
 ## Review Local harness session changes
 
 The following controls apply when you select **Local** from the **Session Target** UI control or continue an existing extension-host session in the Chat view. These sessions track supported file edits as pending changes that you can keep or undo individually.
@@ -183,8 +184,6 @@ You can also enter `/rubber-duck <question>` in the chat input. For example, ent
 > Rubber Duck is available only when the main session uses a Claude or GPT model and a suitable complementary model is available. The additional model pass adds latency and model usage.
 
 Learn more about the [Rubber Duck agent](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/rubber-duck) in the GitHub documentation.
-
-<a name="edit-requests-and-restore-checkpoints"></a>
 
 ## Undo changes at the right scope
 
@@ -274,8 +273,6 @@ Before you apply or merge changes:
 The available actions and labels depend on the selected harness and whether you use the Chat view or Agents window. Keep the session until you verify that the changes are present on the intended destination branch.
 
 For a walkthrough of reviewing two results separately, integrating them one at a time, and testing the combined change, follow [Delegate two tasks without mixing their changes](/docs/agents/guides/delegate-two-tasks.md).
-
-<a name="edit-sensitive-files"></a>
 
 ## Require approval before sensitive edits
 

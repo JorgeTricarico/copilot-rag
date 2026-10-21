@@ -1,0 +1,11 @@
+# Ignore Repomix outputs
+repomix-*
+
+# Ignore cached / synced RAG workspace and clean sources data
+copilot_rag_workspace/
+clean_sources/
+
+# Ignore test / temporary runs
+tmp_*
+temp_*
+*.log

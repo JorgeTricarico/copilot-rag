@@ -65,6 +65,9 @@ You can continue peer chats created in the Agents window without starting a new 
 
 ## Start a session
 
+> [!NOTE]
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
+
 To start a workspace-scoped session, select **New Chat** (`+`) or press ``Shortcut: workbench.action.chat.newChat``. Before you send the first prompt, use the chat input controls to choose a **Session Target**, **Agent**, **Language model**, and **Permissions**. For a first coding task, use **Copilot**, **Agent**, **Auto**, and **Manual permissions**, as shown in the [agents quickstart](/docs/agents/quickstart.md). Available choices depend on your account, installed providers, and organization policies. Learn how to [identify your current harness](/docs/agents/run/agent-harnesses.md#identify-your-current-harness) or [compare agent harnesses](/docs/agents/run/agent-harnesses.md#compare-agent-harnesses).
 
 Type a prompt and press ``Shortcut: workbench.action.chat.submit``. For shared request, context, and conversation controls, see [Use chat in VS Code](/docs/chat/chat-overview.md). For session context, history, and organization, see [Manage agent sessions](/docs/agents/run/sessions/manage-sessions.md).

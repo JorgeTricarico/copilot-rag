@@ -104,8 +104,7 @@ The first step to define a language model tool in your extension is to define it
     }
     ```
 
-<details>
-<summary>Example tool definition</summary>
+**Example tool definition**
 
 The following example shows how to define a tool that counts the number of active tabs in a tab group.
 
@@ -138,8 +137,6 @@ The following example shows how to define a tool that counts the number of activ
     ]
 }
 ```
-
-</details>
 
 ### 2. Tool implementation
 
