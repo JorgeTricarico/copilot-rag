@@ -1,6 +1,6 @@
 **title**: Authentication
 **shortTitle**: Authenticate
-**intro**: >-
+**intro**: The GitHub Copilot SDK supports multiple authentication methods to fit different use cases. Choose the method that best matches your deployment scenario.
 
 ## Authentication methods
 
@@ -9,8 +9,8 @@
 | [GitHub Signed-in User](#github-signed-in-user) | Interactive apps where users sign in with GitHub | Yes |
 | [GitHub OAuth App](#github-oauth-app) | Apps acting on behalf of users via OAuth | Yes |
 | [Environment Variables](#environment-variables) | CI/CD, automation, server-to-server | Yes |
-| [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/server-to-server-tokens) | Organization-attributed automation and direct organization billing | No user subscription; organization policy required |
-| [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok) | Using your own API keys (Microsoft Foundry, OpenAI, and more) | No |
+| [Server To Server Tokens](https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/server-to-server-tokens) | Organization-attributed automation and direct organization billing | No user subscription; organization policy required |
+| [Byok](https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/byok) | Using your own API keys (Microsoft Foundry, OpenAI, and more) | No |
 
 ## GitHub signed-in user
 
@@ -179,7 +179,7 @@ const client = new CopilotClient({
 * SaaS applications building on top of Copilot
 * Any multi-user application where you need to make requests on behalf of different users
 
-For more information, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/github-oauth).
+For more information, see [Github Oauth](https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/github-oauth).
 
 ## Rotating session-scoped GitHub tokens
 
@@ -290,7 +290,7 @@ After the session is established, the runtime performs async preflight before ea
 
 For automation, CI/CD pipelines, and server-to-server scenarios, you can authenticate using environment variables.
 
-For organization-attributed automation that should not use a user's personal access token, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/server-to-server-tokens).
+For organization-attributed automation that should not use a user's personal access token, see [Server To Server Tokens](https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/server-to-server-tokens).
 
 **Supported environment variables (in priority order):**
 1. `COPILOT_GITHUB_TOKEN` - Recommended for explicit Copilot usage
@@ -377,7 +377,7 @@ BYOK allows you to use your own API keys from model providers like Microsoft Fou
 * Direct billing with your model provider
 * Support for Microsoft Foundry, OpenAI, Anthropic, and OpenAI-compatible endpoints
 
-**See the [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok) for complete details**, including:
+**See the [Byok](https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/byok) for complete details**, including:
 * Microsoft Foundry setup
 * Provider configuration options
 * Limitations and considerations
@@ -393,11 +393,11 @@ When multiple authentication methods are available, the SDK uses them in this pr
 1. **Stored OAuth credentials** - From previous `copilot` CLI login
 1. **GitHub CLI** - `gh auth` credentials
 
-For multi-user server mode, pass a per-session `gitHubToken` so each session runs with the correct GitHub identity; see [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy).
+For multi-user server mode, pass a per-session `gitHubToken` so each session runs with the correct GitHub identity; see [Multi Tenancy](https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/multi-tenancy).
 
 ## Disabling auto-login
 
-To prevent the SDK from automatically using stored credentials or `gh` CLI auth, configure it to disable logged-in-user fallback:
+To prevent the SDK from automatically using stored credentials or `gh` CLI auth, configure it to disable logged-in-user fallback. This also ignores environment variable tokens such as `COPILOT_GITHUB_TOKEN`, so you must pass a token through the SDK's explicit token option. The examples below show only the fallback setting:
 
 **Language (dotnet):**
 
@@ -456,6 +456,6 @@ const client = new CopilotClient({
 
 ## Next steps
 
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok) - Learn how to use your own API keys
-* [AUTOTITLE](/copilot/get-started/sdk-quickstart) - Build your first Copilot-powered app
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/mcp) - Connect to external tools
+* [Byok](https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/byok) - Learn how to use your own API keys
+* [Sdk Quickstart](https://docs.github.com/en/copilot/get-started/sdk-quickstart) - Build your first Copilot-powered app
+* [Mcp](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/mcp) - Connect to external tools

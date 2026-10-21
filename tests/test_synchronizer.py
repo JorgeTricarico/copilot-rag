@@ -262,3 +262,47 @@ def test_langgraph_documentation_sync_mocked(tmp_path, monkeypatch):
     assert a2 == 0
     assert s2 == 2
 
+
+def test_vscode_iteration_plans_sync_mocked(tmp_path, monkeypatch):
+    syncer = CopilotDocumentationSynchronizer(base_dir=tmp_path)
+
+    sample_issues = [
+        {
+            "number": 293855,
+            "title": "Iteration Plan for February 2026",
+            "html_url": "https://github.com/microsoft/vscode/issues/293855",
+            "state": "closed",
+            "body": "## Plan Items\n### AI\n#### Chat\nImprovements to chat participants.\n#### Agents\nAgent hooks and MCP integration.",
+        }
+    ]
+
+    class MockResponse:
+        def __init__(self, data, status_code=200):
+            self._data = data
+            self.status_code = status_code
+
+        def json(self):
+            return self._data
+
+        def raise_for_status(self):
+            pass
+
+    def mock_get(url, *args, **kwargs):
+        return MockResponse(sample_issues)
+
+    monkeypatch.setattr(syncer.session, "get", mock_get)
+
+    added, updated, skipped, deleted = syncer.sync_vscode_iteration_plans()
+    assert added == 2  # 1 iteration-plan + 1 endgame-plan from mock
+    assert skipped == 0
+    assert "vscode_insiders::iteration-plan_293855" in syncer.manifest
+    rec = syncer.manifest["vscode_insiders::iteration-plan_293855"]
+    assert rec.bundle_name == "07_Release_Notes_And_Changelog_Radar"
+    assert rec.canonical_web_url == "https://github.com/microsoft/vscode/issues/293855"
+
+    # Segunda corrida sin cambios debe dar skipped = 2, added = 0
+    a2, u2, s2, d2 = syncer.sync_vscode_iteration_plans()
+    assert a2 == 0
+    assert s2 == 2
+
+

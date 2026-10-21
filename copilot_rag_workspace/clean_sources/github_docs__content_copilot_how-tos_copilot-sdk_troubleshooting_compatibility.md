@@ -1,6 +1,6 @@
 **title**: SDK and CLI compatibility
 **shortTitle**: Compatibility
-**intro**: >-
+**intro**: This document outlines which Copilot CLI features are available through the SDK and which are CLI-only.
 
 ## Overview
 
@@ -33,7 +33,7 @@ The Copilot SDK communicates with the CLI via JSON-RPC protocol. Features must b
 | Abort | `abort()` | Cancel in-flight request |
 | **Tools** | | |
 | Register custom tools | `registerTools()` | Full JSON Schema support |
-| Replace custom tools (mid-session) | `session.setTools()` | Experimental; see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/changing-tools) |
+| Replace custom tools (mid-session) | `session.setTools()` | Experimental; see [Changing Tools](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/changing-tools) |
 | Tool permission control | `onPreToolUse` hook | Allow/deny/ask |
 | Tool result modification | `onPostToolUse` hook | Transform results |
 | Available/excluded tools | `availableTools`, `excludedTools` config | Filter tools |
@@ -78,7 +78,7 @@ The Copilot SDK communicates with the CLI via JSON-RPC protocol. Features must b
 | System message | `systemMessage` config | Append or replace |
 | Custom provider | `provider` config | BYOK support |
 | Infinite sessions | `infiniteSessions` config | Auto-compaction |
-| Permission handler | `onPermissionRequest` | Approve/deny requests; optionally attach a `decisionContext` for auto-approval telemetry |
+| Permission handler | `onPermissionRequest` | Approve/deny; `decisionContext.userFeedback` collects explanations only in restricted telemetry |
 | User input handler | `onUserInputRequest` | Handle ask_user |
 | Skills | `skillDirectories` config | Custom skills |
 | Disabled skills | `disabledSkills` config | Disable specific skills |
@@ -88,7 +88,7 @@ The Copilot SDK communicates with the CLI via JSON-RPC protocol. Features must b
 | Additional directories | `additionalDirectories` config | Grant session access beyond the working directory; re-supply on resume |
 | **Experimental** | | |
 | Agent management | `session.rpc.agent.*` | List, select, deselect, get current agent |
-| Fleet mode | `session.rpc.fleet.start()` | Parallel sub-agent execution; see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/fleet-mode) |
+| Fleet mode | `session.rpc.fleet.start()` | Parallel sub-agent execution; see [Fleet Mode](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/fleet-mode) |
 | Manual compaction | `session.rpc.history.compact()` | Trigger compaction on demand |
 | Context clearing | `session.rpc.history.clearContext()` | Replace conversation context from a terminal tool |
 | History truncation | `session.rpc.history.truncate()` | Remove events from a point onward |
@@ -175,7 +175,7 @@ The Copilot SDK communicates with the CLI via JSON-RPC protocol. Features must b
 
 ### Fleet mode
 
-Fleet mode is available through `session.rpc.fleet.start()` for SDK applications that want the runtime to dispatch parallel sub-agents for a larger objective. Use it when independent subtasks can run concurrently and then be summarized by the main session. For a full guide, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/fleet-mode).
+Fleet mode is available through `session.rpc.fleet.start()` for SDK applications that want the runtime to dispatch parallel sub-agents for a larger objective. Use it when independent subtasks can run concurrently and then be summarized by the main session. For a full guide, see [Fleet Mode](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/fleet-mode).
 
 ### Session export
 
@@ -296,7 +296,7 @@ console.log("Protocol version:", status.protocolVersion);
 
 ## See also
 
-* [AUTOTITLE](/copilot/get-started/sdk-quickstart)
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/hooks-overview)
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/mcp)
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/debugging)
+* [Sdk Quickstart](https://docs.github.com/en/copilot/get-started/sdk-quickstart)
+* [Hooks Overview](https://docs.github.com/en/copilot/how-tos/copilot-sdk/hooks/hooks-overview)
+* [Mcp](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/mcp)
+* [Debugging](https://docs.github.com/en/copilot/how-tos/copilot-sdk/troubleshooting/debugging)

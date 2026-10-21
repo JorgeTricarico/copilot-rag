@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-10-21T03:46:01.276389+00:00
-- **Total Palabras**: 21,793 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-21T19:55:00.204145+00:00
+- **Total Palabras**: 25,323 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1879,3 +1879,364 @@ To disable AI features for a specific workspace, configure the ``chat.disableAIF
 ## Next steps
 
 * Continue with the [Quickstart for using AI](/docs/agents/quickstart.md) to discover the key features for AI-powered development in VS Code.
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vs/workbench/contrib/chat/chatCodeOrganization.md
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/chat/chatCodeOrganization.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/workbench/contrib/chat/chatCodeOrganization.md
+- **SHA256_FINGERPRINT**: `186cf7f9de22d11facc1a4975f2ef9fb646b4147019a84b6f275776985b337fd`
+- **LAST_VERIFIED_UTC**: 2026-10-21T19:54:43.412272+00:00
+---
+
+# workbench/contrib/chat Code Organization
+
+This contrib is, as of the end of 2025, the largest workbench contrib in VS Code by a substantial margin. Let's try to keep it organized! Here's a rough description of some of the key folders.
+
+## Agents titlebar experiments
+
+The desktop editor titlebar action reads the string treatment `chatOpenInAgentsTitleBarLabel` for users who have not created a session in the Agents Window. It replaces the expanding hover/focus label, tooltip, and accessible name; without a valid non-empty string, the existing localized copy is retained. Other commands and menus keep their existing labels.
+
+Eligibility reads `AgentsWindowUsage.createdSessionCount`. The helper wraps the existing application-scoped `AGENTS_WINDOW_TOTAL_SESSIONS_STORAGE_KEY` counter (`agentSessions.telemetry.totalSessions`), defaults missing values to zero, and provides change notifications without callers needing the storage key or scope. No additional usage state is stored. When the count becomes positive, the action restores its default copy.
+
+Onboarding tours, new-session composer tips and first-run notices, Agents Window launch handling, and lifecycle telemetry also read this count through the helper. The lifecycle tracker remains responsible for incrementing the existing counter when a new session starts.
+
+For local testing, set `"experiments.override.chatOpenInAgentsTitleBarLabel": "Try Agents"` in user settings with a fresh profile/data directory. Assignments are refreshed through the assignment service. A triggered scorecard can use `monacoworkbench/experimentTrigger` with `treatmentName == "chatOpenInAgentsTitleBarLabel"`; eligible rendered actions log the trigger in both control and treatment.
+
+The boolean treatment `chatOpenInAgentsTitleBarExpandOnHover` applies to all users, independently of the copy experiment. It defaults to `true`; `false` keeps the action icon-only on pointer hover, while keyboard focus still reveals the label. Tooltips, accessible names, and action behavior remain available. Set `"experiments.override.chatOpenInAgentsTitleBarExpandOnHover": false` to test locally. Its `experimentTrigger` fires on pointer hover in both arms after the assignment resolves.
+
+## Key Folders
+
+### `browser/`
+
+- `accessibility/` - Screen reader support and accessible views.
+- `actions/` - All chat action registrations.
+- `attachments/` - Context attachment model, pickers, context widgets.
+- `chatContentParts/` - Rendering components for different response content types (markdown, code blocks, tool output, etc.).
+- `chatEditing/` - The edit session model, edit diff UI, edit snapshots.
+- `chatSetup/` - Placeholder registrations before the chat extentension is set up. Running the chat auth/install flow.
+- `contextContrib/` - The contribution point for chat context providers - note the difference from `attachments/`.
+- `widget/` - The core files related to rendering parts of the ChatWidget, including the list, the input, the model/agent pickers, and other main UI parts. Must have direct references from ChatWidget itself.
+- `widgetHosts/` - Hosts that embed chat widgets in other places (view pane, editor, quick chat).
+
+### `common/`
+
+- `chatService/` - IChatService interface, implementation, and related code.
+- `model/` - Chat data model, view model, and session storage.
+- `participants/` - Chat participant management (sometimes called "agents" in code).
+- `tools/` - Language model tools infrastructure and services.
+	- `builtinTools/` - Implementations of some built-in tools.
+
+## Markdown file images
+
+Response Markdown targets are resolved by the owning session content provider before rendering. Agent Host paths retain their connection identity in `vscode-agent-host:` URIs; relative image paths use the session or chat's advertised working directory. Recorded cloud history preserves this identity without requiring a live connection.
+
+For Agent Host resources, chat permits parsed Markdown images only when they resolve to eligible local files on the owning connection. HTTP(S), network-file paths, and other connections remain disallowed before media sources are activated. Image eligibility is separate from byte delivery: the normal Markdown renderer uses `FileAccess` and the shared `IBrowserResourceService`, which reads through `IFileService`. Desktop and web embedders with a resource handler serve window-issued resource URLs; web hosts without a handler use render-scoped object URLs. The resource bridge does not connect to or resume a sandbox.
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vs/workbench/contrib/chat/common/chatService/telemetry.md
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/chat/common/chatService/telemetry.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/workbench/contrib/chat/common/chatService/telemetry.md
+- **SHA256_FINGERPRINT**: `a4a618ac686422056d8c1a4b98d213e804c9963c08b1ccf8d3ece84586106ead`
+- **LAST_VERIFIED_UTC**: 2026-10-21T19:54:43.411115+00:00
+---
+
+# Request outcome context
+
+`interactiveSessionProviderInvoked` reports workbench provider-invocation outcomes.
+Its existing `result`, IDs, `model`, and once-per-invocation emission are unchanged.
+It is not a model-attempt event or proof that the user saw an error.
+
+## Request-start context
+
+These additive fields describe context captured when `ChatRequestTelemetry` is
+constructed, before invoking the provider:
+
+| Field | Meaning |
+| --- | --- |
+| `requestStartCopilotSku` | The workbench's Copilot entitlement SKU, if known at request start. This does not identify the account or credential used by a remote host. |
+| `selectedModelSource` | `copilot`, `byok`, `other`, or `unknown`, based on the selected model's registered metadata at request start. |
+
+Explicit BYOK metadata, including a present Agent Host BYOK bridge identifier (even an empty string), takes
+precedence over the catalog's vendor. A resolved Copilot catalog model or model
+targeting a registered `copilotcli` host provider is `copilot`. A resolved model
+from another non-host catalog or a known non-Copilot host provider is `other`.
+Missing selection, unresolved metadata, and unresolved session providers are
+`unknown`. Neither `other` nor `unknown` proves non-BYOK credentials; use `copilot`
+to select the Copilot-classified population.
+Only the category is emitted, not custom vendor names or BYOK bridge identifiers.
+
+This is selection context, not an assertion about every model call: Auto,
+HydraFusion, fallbacks, and provider-side model overrides can route differently.
+The existing `model` field retains its completion-time lookup behavior.
+
+## Reporting examples
+
+- A request fails before producing any model-response telemetry: its terminal
+  event can still carry the known SKU and selection source without an inner join
+  that would drop the failure.
+- A BYOK model is removed from the registry while a request is running: its
+  selection source remains `byok`, even if the legacy `model` lookup is empty.
+- Entitlement changes while a request is running: the outcome retains the
+  request-start SKU. Missing initial entitlement stays missing.
+- A request fails and is retried with the same ID: both existing invocation
+  outcomes remain emitted. To count affected request identities, group by the
+  appropriate device/session/request identity and test whether any outcome is
+  `error` or `errorWithOutput`; do not overwrite an error with a later success.
+
+Use the presence of `selectedModelSource` to identify enriched rows, distinguish
+its explicit `unknown` value from absence, keep missing SKU context visible, and
+verify field ingestion before updating a dashboard. This contract does not add
+accepted-start coverage, execution IDs, retry provenance, internal-error
+observation, or a user-facing interruption classification.
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode::src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md
+- **SHA256_FINGERPRINT**: `c27bacb0598f0a52ab2fe10fe5aec2a04dc5ebeadb739a04bb9d1f5740ee42b9`
+- **LAST_VERIFIED_UTC**: 2026-10-21T19:54:43.441409+00:00
+---
+
+# Agent Plugins Architecture
+
+Agent plugins are a modular extension system that allows external packages of prompts, hooks, skills, agents, and MCP server definitions to be discovered, installed, and contributed into the chat experience. This document describes the architecture of the `src/vs/workbench/contrib/chat/common/plugins/` layer and its browser-side implementations.
+
+## Directory Structure
+
+### Common layer (`common/plugins/`)
+| File | Role |
+|------|------|
+| `agentPluginService.ts` | Core interfaces (`IAgentPlugin`, `IAgentPluginService`, `IAgentPluginDiscovery`) and the discovery registry singleton |
+| `agentPluginServiceImpl.ts` | `AgentPluginService` implementation, `AbstractAgentPluginDiscovery` base class, and workbench projections for all plugin formats |
+| `agentPluginEnablement.ts` | Plugin collision enablement, canonical plugin identity, and enterprise-policy identity helpers |
+| `agentPluginRepositoryService.ts` | `IAgentPluginRepositoryService` — abstract repository clone/pull/cache operations |
+| `pluginMarketplaceService.ts` | `IPluginMarketplaceService` — marketplace metadata, installed-plugin storage, trusted-marketplace tracking, periodic update checks |
+| `pluginInstallService.ts` | `IPluginInstallService` — install/update/uninstall orchestration interface |
+| `pluginSource.ts` | `IPluginSource` — per-source-kind strategy interface (install path, ensure, update, cleanup) |
+
+### Browser layer (`browser/`)
+| File | Role |
+|------|------|
+| `agentPluginRepositoryService.ts` | Browser implementation of `IAgentPluginRepositoryService` (git clone/pull via Git service) |
+| `pluginSources.ts` | Concrete `IPluginSource` implementations: `GitHubPluginSource`, `GitUrlPluginSource`, `NpmPluginSource`, `PipPluginSource`, `RelativePathPluginSource` |
+| `pluginInstallService.ts` | Browser implementation of `IPluginInstallService` |
+| `agentPluginsView.ts` | Installed-plugins tree view UI |
+| `agentPluginActions.ts` | Context-menu actions for plugins |
+| `agentPluginEditor/` | Rich editor for browsing a single plugin's contents |
+
+## Core Interfaces
+
+### IAgentPlugin
+
+Represents a single discovered plugin:
+
+```
+uri              – Unique filesystem URI for the plugin root
+label            – Human-readable display name
+enablement       – Observable enable/disable state (ContributionEnablementState)
+hooks            – Observable list of IAgentPluginHook
+commands         – Observable list of IAgentPluginCommand  (*.md files in commands/)
+skills           – Observable list of IAgentPluginSkill    (dirs with SKILL.md in skills/)
+agents           – Observable list of IAgentPluginAgent    (*.md files in agents/)
+mcpServerDefinitions – Observable list of IAgentPluginMcpServerDefinition
+fromMarketplace  – Set when the plugin was installed from a marketplace
+remove()         – Removes this plugin from its discovery source
+```
+
+### IAgentPluginService
+
+Main entry point consumed by the rest of the workbench:
+
+```
+plugins          – IObservable<readonly IAgentPlugin[]>  (aggregate of all ready discoveries, sorted by URI)
+enablementModel  – Shared IEnablementModel for plugin enable/disable state
+```
+
+Registered as `InstantiationType.Delayed` — only instantiated when first injected.
+
+### IAgentPluginDiscovery
+
+Strategy for finding plugins from a particular source:
+
+```
+plugins  – IObservable<readonly IAgentPlugin[] | undefined>
+start(enablementModel) – Begin watching the source
+```
+
+Discoveries are registered into the global `agentPluginDiscoveryRegistry` singleton with a priority and instantiated by `AgentPluginService` on startup. A discovery reports `undefined` until its first scan completes; the service waits until every discovery has an initial result before exposing plugins.
+
+## Discovery & Plugin Reading
+
+### AbstractAgentPluginDiscovery
+
+Shared base class that handles:
+
+1. **Format detection** — recognizes strict Agent Plugins v1 by its root schema, then falls back to the Copilot, Claude, and Open Plugin path conventions.
+2. **Content reading** — reads commands, skills, agents, hooks, and MCP server definitions from the filesystem.
+3. **File watching** — by default, watches plugin directories for changes and re-reads their contents. Sources that own atomic replacement of plugin directories can opt out and rebuild entries from discovery-level events instead.
+4. **Observable propagation** — sets the `plugins` observable on each refresh cycle.
+
+Subclasses implement `_discoverPluginSources()` to determine *which* plugin URIs exist.
+
+### Discovery Implementations
+
+**ConfiguredAgentPluginDiscovery** — resolves `chat.pluginLocations` configuration entries (absolute, tilde-expanded, or workspace-relative paths) and watches for config changes. Redundant paths into the Copilot CLI-owned cache are ignored; committed CLI installations are owned by `CopilotCliAgentPluginDiscovery`.
+
+**MarketplaceAgentPluginDiscovery** — resolves entries from `IPluginMarketplaceService.installedPlugins`, publishes only targets that still exist as directories, and delegates exact-URI removal and source cleanup to `IPluginInstallService`.
+
+**CopilotCliAgentPluginDiscovery** — reads the Copilot CLI-managed `installedPlugins` records from `~/.copilot/config.json` and resolves their committed `cache_path` values. A correlated non-recursive watcher observes only the state file (or its nearest existing ancestor before first launch), and unchanged inventories are suppressed. CLI plugin entries do not create watchers inside their cache directories, so the CLI can atomically replace them on Windows. Uninstall delegates to the Copilot SDK so the runtime's cross-process lock and state writer own the complete transaction; direct installs carry the runtime-compatible opaque source ID needed to disambiguate same-name sources, and VS Code never deletes CLI-owned cache directories directly.
+
+### Plugin Formats
+
+Four format adapters share the discovery surface:
+
+| | Agent Plugins v1 | Copilot | Claude | Open Plugin |
+|-|------------------|---------|--------|-------------|
+| Manifest | `plugin.json` with the exact Agent Plugins v1 schema | `plugin.json` | `.claude-plugin/plugin.json` | `.plugin/plugin.json` |
+| Portable components | `skills/*/SKILL.md`, `mcp.json` | Host-specific components | Host-specific components | Open Plugin components |
+| Hooks config | `com.github.copilot/hooks/hooks.json` client extension | `hooks.json` | `hooks/hooks.json` | `hooks/hooks.json` |
+| Special handling | Compatible schema recognition, portable fixed paths, Copilot client extensions, package containment, `${PLUGIN_ROOT}` in Copilot hooks, and Agent Plugin MCP path semantics | Legacy permissive behavior and `${PLUGIN_ROOT}` hook replacement | `${CLAUDE_PLUGIN_ROOT}` token replacement | `${PLUGIN_ROOT}` token replacement |
+
+Auto-detection first reads root `plugin.json`. The Agent adapter is selected when `$schema` uses the `agent-plugins.org` plugin schema namespace. Compatible schema revisions are accepted and known usable fields are read without rejecting unknown or malformed optional metadata. An Agent manifest wins over coexisting legacy metadata. Otherwise `.plugin/plugin.json` selects Open Plugin, a Claude path or manifest selects Claude, and the remaining packages use the Copilot adapter.
+
+Agent Plugins use the shared plugin discovery pipeline and permissive component readers. Portable discovery scans only immediate children of `skills/` and root `mcp.json`. Copilot-specific commands, agents, rules, and hooks use the sanctioned `com.github.copilot` client extension namespace in both the manifest and filesystem. Their defaults are `com.github.copilot/commands/`, `com.github.copilot/agents/`, `com.github.copilot/rules/`, and `com.github.copilot/hooks/hooks.json`. Component path configuration under `extensions["com.github.copilot"]` resolves relative to the matching extension directory and supports the same string, string array, and `{ paths, exclusive }` forms as legacy plugin manifests. Inline hook and MCP definitions are also accepted there. Other extension namespaces and malformed optional metadata are ignored.
+
+### Plugin Contents (Filesystem Layout)
+
+```
+<plugin-root>/
+├── plugin.json                                    # Agent Plugins v1 or Copilot manifest
+├── .claude-plugin/plugin.json                     # Claude manifest
+├── .plugin/plugin.json                            # Open Plugin manifest
+├── hooks.json   OR  hooks/hooks.json              # hook definitions
+├── mcp.json                                       # Agent Plugins v1 MCP definitions
+├── com.github.copilot/                            # Copilot Agent Plugin client extension
+│   ├── commands/
+│   │   └── do-thing.md
+│   ├── agents/
+│   │   └── helper.md
+│   ├── rules/
+│   │   └── project.instructions.md
+│   └── hooks/
+│       └── hooks.json
+├── .mcp.json                                      # Legacy MCP server definitions
+├── commands/
+│   ├── do-thing.md                                # → IAgentPluginCommand
+│   └── other.md
+├── skills/
+│   └── my-skill/
+│       └── SKILL.md                               # → IAgentPluginSkill
+└── agents/
+    └── helper.md                                  # → IAgentPluginAgent
+```
+
+## Marketplace & Installation
+
+### IPluginMarketplaceService
+
+Manages the catalog of available and installed plugins:
+
+- **Fetch** — reads `chat.plugins.marketplaces` config (GitHub shorthand, Git URLs, or file URIs), fetches `marketplace.json` from each, and returns parsed `IMarketplacePlugin` entries.
+- **Installed storage** — persists `{ pluginUri, relativePath?, enablementUri?, marketplace, name? }` entries in `agent-plugins/installed.json`. Managed plugins resolve `relativePath` against the current plugin home so moving a portable installation does not invalidate them; external plugins retain absolute URIs. Escaping relative paths fall back to `pluginUri` and are removed or replaced with a valid managed path during migration. Descendant paths preserve plugin-directory casing and use the same casing policy as containment, including on macOS. Legacy entries under the current home and relocated absolute URIs are migrated at startup and after external edits. The store serializes its own file operations and preserves pending local changes instead of publishing stale migration results. Migration uses the file service's existing modification-time and etag checks; detected conflicts are reloaded and rescheduled. This is best-effort protection, not a cross-process transaction: same-size edits, unchanged timestamps, and changes after validation can still be overwritten. A stable `enablementUri` preserves each profile's enablement decisions through `IAgentPluginEnablementService`, including in-window profile switches and after another profile rewrites the shared manifest. Updates that move an installation transfer this identity from its previous recorded URI; a stale update whose source was already removed retains the target's established identity.
+- **Trust** — marketplace canonical IDs must be explicitly trusted before install proceeds (`chat.plugins.trustedMarketplaces.v1`).
+- **Auto-update** — checks eligible installed marketplaces approximately every 24 hours and reports their canonical IDs through `marketplacesWithUpdates`. Managed `extraKnownMarketplaces.<name>.autoUpdate` values override `extensions.autoUpdate` for that marketplace; undefined entries inherit the global setting. Checks and updates are restricted to enabled marketplaces and still enforce `strictKnownMarketplaces`.
+- **GitHub caching** — caches raw GitHub API responses with an 8-hour TTL to avoid repeated fetches.
+
+### Marketplace Definition Files
+
+Checked in order per repository:
+1. `marketplace.json` → `MarketplaceType.OpenPlugin`
+2. `.plugin/marketplace.json` → `MarketplaceType.OpenPlugin`
+3. `.github/plugin/marketplace.json` → `MarketplaceType.Copilot`
+4. `.claude-plugin/marketplace.json` → `MarketplaceType.Claude`
+
+### IPluginInstallService
+
+Orchestrates install and update workflows:
+
+- `installPlugin()` — checks marketplace trust, delegates to the appropriate source strategy to ensure files are locally available, and registers the plugin in installed storage.
+- `installPluginFromSource()` — installs from a source string: GitHub shorthand (`owner/repo`), a git clone URL, or a local folder path (`file://` URI, absolute path, or `~`-prefixed path). Local folders are inspected to decide whether they are a marketplace (registered under `chat.plugins.marketplaces`) or a standalone plugin (registered under `chat.pluginLocations`).
+- `updatePlugin()` / `updateAllPlugins()` — pulls latest changes for cloned repositories and re-runs package-manager installs where applicable.
+
+### Plugin Source Strategies (IPluginSource)
+
+Each `PluginSourceKind` has a strategy that knows how to compute cache paths, provision files, update, and clean up:
+
+| Kind | Provisioning | Cache path |
+|------|-------------|------------|
+| `RelativePath` | No-op (lives inside marketplace repo) | `<marketplaceRepository>/<path>` |
+| `GitHub` | `git clone` / `git pull` | `<cacheRoot>/github.com/<owner>/<repo>[/ref_<ref>]` |
+| `GitUrl` | `git clone` / `git pull` | `<cacheRoot>/<host>/<path>[/ref_<ref>]` |
+| `Npm` | `npm install` in terminal | `<cacheRoot>/npm/<sanitized-package>/` |
+| `Pip` | `pip install` in terminal | `<cacheRoot>/pip/<package>/` |
+
+Unpinned marketplace repositories use `<cacheRoot>/<host>/<path>`. Ref-specific marketplace repositories use the isolated `<cacheRoot>/.marketplace-repositories/<host>/<path>/ref_<ref>` namespace so one cache variant cannot delete another. Storage-indexed legacy locations remain usable while valid.
+
+## Configuration & Storage Keys
+
+### Configuration
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `chat.pluginsEnabled` | boolean | `true` | Master switch for the plugin system |
+| `chat.pluginLocations` | `Record<string, boolean>` | `{}` | Local plugin directories to discover |
+| `chat.pluginMarketplaces` | `string[]` | `[]` | Marketplace references to fetch from |
+
+### Enterprise customization lockdown
+
+The managed customization controls are complementary:
+
+- `strictKnownMarketplaces` restricts which marketplace sources may provide plugins.
+- `strictPluginOnlyCustomization` blocks standalone user and workspace skills, agents, hooks, instructions, and MCP servers. Eligible plugin contributions remain available.
+- `allowManagedMcpServersOnly` makes the managed MCP allowlist authoritative; lower-layer allow entries cannot broaden it and deny entries remain restrictive.
+- `allowManagedHooksOnly` permits plugin hooks only when managed `enabledPlugins` force-enables the plugin. User/workspace hooks and hooks from otherwise user-enabled plugins do not load.
+
+`strictPluginOnlyCustomization` does not replace strict marketplace enforcement. Hardened deployments apply both controls when plugin source and standalone customization provenance must both be constrained.
+
+In Copilot Agent Host sessions, the runtime reads `strictPluginOnlyCustomization` from Copilot managed settings, including its array form, and applies it to the customizations it discovers. The user and workspace skills and agents that VS Code forwards (for example, from configured skill locations), and every MCP server it forwards (for example, from VS Code's `mcp.json` or an extension), are bundled separately from other synced content. The host passes them through the SDK's `skillDirectories`, `customAgents`, and session `mcpServers` instead of `pluginDirectories`, so the runtime treats them as standalone customizations rather than plugin content. Extension and built-in skills and agents stay in the synced plugin, matching the workbench lockdown, which blocks only standalone prompt files.
+
+### Storage (ApplicationScope, MachineTarget)
+| Key | Description |
+|-----|-------------|
+| `chat.plugins.installed.v1` | Legacy installed marketplace plugins, migrated to `agent-plugins/installed.json` |
+| `chat.plugins.trustedMarketplaces.v1` | User-trusted marketplace canonical IDs |
+| `chat.plugins.lastFetchedPlugins.v2` | Last marketplace fetch results (persisted until next fetch) |
+| `chat.plugins.marketplaces.githubCache.v1` | GitHub API response cache (8 hour TTL) |
+| `chat.plugins.lastUpdateCheck.v1` | Timestamp of last periodic update check |
+
+### Enablement Storage
+| Key | Description |
+|-----|-------------|
+| `agentPlugins.enablement` | Per-plugin enable/disable state (shared `EnablementModel`) |
+
+## Reactivity Model
+
+The entire system is built on `IObservable`:
+
+1. **Configuration observables** (`observableConfigValue`) — push changes when settings are modified.
+2. **Discovery observables** — each `IAgentPluginDiscovery` exposes an `IObservable<readonly IAgentPlugin[] | undefined>` updated on filesystem changes after the first scan completes.
+3. **Service-level derived** — `AgentPluginService.plugins` is a `derived()` that waits for all discovery observables, aggregates their plugin lists, and sorts by URI.
+4. **Per-plugin observables** — each `IAgentPlugin` has observable properties for hooks, commands, skills, agents, and MCP definitions that update independently on file changes.
+5. **UI bindings** — views and editors use `autorun()` / `derived()` to reactively render plugin state.
+
+## Integration Points
+
+- **Chat prompts** — plugin hooks are contributed to the prompt system via the hook infrastructure.
+- **MCP servers** — plugins can define stdio and remote MCP servers. Agent Plugins v1 validates Streamable HTTP and legacy SSE declarations before passing remote servers to the existing MCP transport auto-detection.
+- **AI Customization UI** — the AI customization views aggregate plugin stats alongside MCP servers, prompts, and other customization surfaces.
+- **Extension API** — the plugin system is internal; there is no public `vscode` API surface for third-party access.
+
+## Key Design Patterns
+
+- **Strategy pattern** — the separate strict Agent Plugin and permissive legacy adapters, plus source strategies (`IPluginSource`), keep portable validation isolated from backward-compatible host behavior.
+- **Discovery registry** — `agentPluginDiscoveryRegistry` decouples discovery implementations from the core service via priority-ordered `SyncDescriptor0<IAgentPluginDiscovery>` registration.
+- **Disposable management** — plugin entries are tracked in a `Map` keyed by URI string, each with its own `DisposableStore` for file watchers. Removal or format changes dispose the store.
+- **Debounced refresh** — filesystem changes trigger a 200 ms `RunOnceScheduler` to batch rapid edits into a single re-read.
+- **Collision enablement** — multiple discoveries may produce equivalent plugins from different install roots; the service groups them by canonical identity so only the highest-priority copy is enabled by default, while enabling any copy disables the other copies in the same group.
+- **Lazy instantiation** — the service is registered as `InstantiationType.Delayed` and only created on first injection.
+
+Synthetic `.plugin/plugin.json` plus `.mcp.json` bundles created by customization synchronization remain legacy Open Plugin packages. Root Agent Plugin recognition is also used for direct standalone installs, but `MarketplaceType.OpenPlugin` and the existing marketplace protocol remain unchanged because Agent Plugins v1 defines no marketplace format.
+
+Provider adapters do not delegate strict packages to legacy SDK plugin discovery. Copilot explicitly receives skills and MCP, Codex explicitly receives skills and MCP, and Claude explicitly receives remote MCP. Remote MCP transport selection remains the responsibility of each provider's existing auto-detection. The Claude SDK currently has no external skill-directory API or per-server stdio working-directory option, so strict Claude skills and stdio MCP are skipped rather than reinterpreted.

@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
-- **Generado (UTC)**: 2026-10-21T03:47:16.423397+00:00
-- **Total Palabras**: 121,762 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-21T19:55:01.219790+00:00
+- **Total Palabras**: 122,298 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -8,13 +8,13 @@
 # DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/auth/authenticate.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/authenticate
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/auth/authenticate.md
-- **SHA256_FINGERPRINT**: `5b7f9f4502d3640fa597c191a28092f46e90fa58545deb7cd1f40286d7ebca5c`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.482209+00:00
+- **SHA256_FINGERPRINT**: `dd0be879522e87772ec2dc21f2dc0ed3a266e8d54a0e6e6b7a45781645d1adf8`
+- **LAST_VERIFIED_UTC**: 2026-10-21T19:54:39.127648+00:00
 ---
 
 **title**: Authentication
 **shortTitle**: Authenticate
-**intro**: >-
+**intro**: The GitHub Copilot SDK supports multiple authentication methods to fit different use cases. Choose the method that best matches your deployment scenario.
 
 ## Authentication methods
 
@@ -23,8 +23,8 @@
 | [GitHub Signed-in User](#github-signed-in-user) | Interactive apps where users sign in with GitHub | Yes |
 | [GitHub OAuth App](#github-oauth-app) | Apps acting on behalf of users via OAuth | Yes |
 | [Environment Variables](#environment-variables) | CI/CD, automation, server-to-server | Yes |
-| [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/server-to-server-tokens) | Organization-attributed automation and direct organization billing | No user subscription; organization policy required |
-| [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok) | Using your own API keys (Microsoft Foundry, OpenAI, and more) | No |
+| [Server To Server Tokens](https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/server-to-server-tokens) | Organization-attributed automation and direct organization billing | No user subscription; organization policy required |
+| [Byok](https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/byok) | Using your own API keys (Microsoft Foundry, OpenAI, and more) | No |
 
 ## GitHub signed-in user
 
@@ -193,7 +193,7 @@ const client = new CopilotClient({
 * SaaS applications building on top of Copilot
 * Any multi-user application where you need to make requests on behalf of different users
 
-For more information, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/github-oauth).
+For more information, see [Github Oauth](https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/github-oauth).
 
 ## Rotating session-scoped GitHub tokens
 
@@ -304,7 +304,7 @@ After the session is established, the runtime performs async preflight before ea
 
 For automation, CI/CD pipelines, and server-to-server scenarios, you can authenticate using environment variables.
 
-For organization-attributed automation that should not use a user's personal access token, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/server-to-server-tokens).
+For organization-attributed automation that should not use a user's personal access token, see [Server To Server Tokens](https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/server-to-server-tokens).
 
 **Supported environment variables (in priority order):**
 1. `COPILOT_GITHUB_TOKEN` - Recommended for explicit Copilot usage
@@ -391,7 +391,7 @@ BYOK allows you to use your own API keys from model providers like Microsoft Fou
 * Direct billing with your model provider
 * Support for Microsoft Foundry, OpenAI, Anthropic, and OpenAI-compatible endpoints
 
-**See the [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok) for complete details**, including:
+**See the [Byok](https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/byok) for complete details**, including:
 * Microsoft Foundry setup
 * Provider configuration options
 * Limitations and considerations
@@ -407,11 +407,11 @@ When multiple authentication methods are available, the SDK uses them in this pr
 1. **Stored OAuth credentials** - From previous `copilot` CLI login
 1. **GitHub CLI** - `gh auth` credentials
 
-For multi-user server mode, pass a per-session `gitHubToken` so each session runs with the correct GitHub identity; see [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy).
+For multi-user server mode, pass a per-session `gitHubToken` so each session runs with the correct GitHub identity; see [Multi Tenancy](https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/multi-tenancy).
 
 ## Disabling auto-login
 
-To prevent the SDK from automatically using stored credentials or `gh` CLI auth, configure it to disable logged-in-user fallback:
+To prevent the SDK from automatically using stored credentials or `gh` CLI auth, configure it to disable logged-in-user fallback. This also ignores environment variable tokens such as `COPILOT_GITHUB_TOKEN`, so you must pass a token through the SDK's explicit token option. The examples below show only the fallback setting:
 
 **Language (dotnet):**
 
@@ -470,9 +470,9 @@ const client = new CopilotClient({
 
 ## Next steps
 
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok) - Learn how to use your own API keys
-* [AUTOTITLE](/copilot/get-started/sdk-quickstart) - Build your first Copilot-powered app
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/mcp) - Connect to external tools
+* [Byok](https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/byok) - Learn how to use your own API keys
+* [Sdk Quickstart](https://docs.github.com/en/copilot/get-started/sdk-quickstart) - Build your first Copilot-powered app
+* [Mcp](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/mcp) - Connect to external tools
 
 
 ---
@@ -1054,13 +1054,13 @@ foundry model run phi-4-mini
 # DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/auth/server-to-server-tokens.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/server-to-server-tokens
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/auth/server-to-server-tokens.md
-- **SHA256_FINGERPRINT**: `5eb8a9364b1278d41473cb1f2f3bed783bba94ec02b170b70f2ab6e4ceb94629`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.629264+00:00
+- **SHA256_FINGERPRINT**: `e8768fb575dc41882a6c2413bb2b8ae76bda3498cc7ad3f13ddf98fc93722e05`
+- **LAST_VERIFIED_UTC**: 2026-10-21T19:54:39.233662+00:00
 ---
 
 **title**: Server-to-server authentication
 **shortTitle**: Server To Server Tokens
-**intro**: >-
+**intro**: Use a short-lived installation access token when a service needs to make Copilot requests on behalf of an organization without a user's credentials. In GitHub Actions, use the built-in `GITHUB_TOKEN` instead.
 
 ## GitHub Actions
 
@@ -1081,31 +1081,30 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-The organization's **Allow use of Copilot CLI billed to the organization** policy must be enabled. This approach needs no GitHub App or stored authentication secret. For details, see [AUTOTITLE](/copilot/how-tos/copilot-cli/use-copilot-cli-in-actions).
+The organization's **Allow use of Copilot CLI billed to the organization** policy must be enabled. This approach needs no GitHub App or stored authentication secret. For details, see [Use Copilot Cli In Actions](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli-in-actions).
 
 ## Other services and CI systems
 
 For services outside GitHub Actions:
 
-1. Create a GitHub App with the **Copilot Requests** repository permission set to **Read & write**.
-1. Install it on the organization that should be billed. The current Copilot permission check requires **All repositories** access.
-1. [AUTOTITLE](/apps/creating-github-apps/authenticating-with-a-github-app/generating-an-installation-access-token-for-a-github-app) with a repository ID and the Copilot permission:
+1. Create a GitHub App with the **Copilot Requests** organization permission set to **Read-only**.
+1. Install it on the organization that usage should be attributed and billed to.
+1. [Generating An Installation Access Token For A Github App](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-an-installation-access-token-for-a-github-app) with the Copilot permission:
 
    ```json
    {
-     "repository_ids": [123456789],
      "permissions": {
-       "copilot_requests": "write"
+       "organization_copilot_requests": "read"
      }
    }
    ```
 
-1. Pass the resulting `ghs_` token to the runtime as `COPILOT_GITHUB_TOKEN`.
+1. Pass the resulting `ghs_` token to the SDK's `gitHubToken`, `github_token`, or equivalent option. For an existing runtime URI, set it as `COPILOT_GITHUB_TOKEN` on the runtime process instead.
 
 The organization must be enabled for Copilot requests from GitHub App installations. Installation tokens expire after one hour.
 
-> [!WARNING]
-> Do not pass an installation token through the SDK's `gitHubToken`, `github_token`, or equivalent option. That option is for user tokens. Installation tokens must use the runtime environment authentication path.
+> [!NOTE]
+> No signed-in user is required. `useLoggedInUser: false` turns off automatic credential discovery, including environment variable tokens such as `COPILOT_GITHUB_TOKEN`, so pass the installation token through the SDK's explicit token option.
 
 ## Configure the runtime
 
@@ -1121,10 +1120,7 @@ if (!token) throw new Error("INSTALLATION_TOKEN is required");
 
 const client = new CopilotClient({
     connection: RuntimeConnection.forStdio(),
-    env: {
-        ...process.env,
-        COPILOT_GITHUB_TOKEN: token,
-    },
+    gitHubToken: token,
     useLoggedInUser: false,
 });
 ```
@@ -1138,7 +1134,7 @@ from copilot import CopilotClient, RuntimeConnection
 
 client = CopilotClient(
     connection=RuntimeConnection.for_stdio(),
-    env={**os.environ, "COPILOT_GITHUB_TOKEN": os.environ["INSTALLATION_TOKEN"]},
+    github_token=os.environ["INSTALLATION_TOKEN"],
     use_logged_in_user=False,
 )
 ```
@@ -1162,7 +1158,7 @@ func main() {
 	}
 	client := copilot.NewClient(&copilot.ClientOptions{
 		Connection:      copilot.StdioConnection{},
-		Env:             append(os.Environ(), "COPILOT_GITHUB_TOKEN="+token),
+		GitHubToken:     token,
 		UseLoggedInUser: copilot.Bool(false),
 	})
 	_ = client
@@ -1178,7 +1174,7 @@ fn main() {
     let token = std::env::var("INSTALLATION_TOKEN").expect("INSTALLATION_TOKEN is required");
     let options = ClientOptions::new()
         .with_transport(Transport::Stdio)
-        .with_env([("COPILOT_GITHUB_TOKEN", token)])
+        .with_github_token(token)
         .with_use_logged_in_user(false);
     drop(options);
 }
@@ -1187,20 +1183,15 @@ fn main() {
 **Language (dotnet):**
 
 ```csharp
-using System.Collections;
 using GitHub.Copilot;
 
 var token = Environment.GetEnvironmentVariable("INSTALLATION_TOKEN")
     ?? throw new InvalidOperationException("INSTALLATION_TOKEN is required");
-var environment = Environment.GetEnvironmentVariables()
-    .Cast<DictionaryEntry>()
-    .ToDictionary(entry => (string)entry.Key, entry => entry.Value?.ToString() ?? "");
-environment["COPILOT_GITHUB_TOKEN"] = token;
 
 await using var client = new CopilotClient(new CopilotClientOptions
 {
     Connection = RuntimeConnection.ForStdio(),
-    Environment = environment,
+    GitHubToken = token,
     UseLoggedInUser = false,
 });
 ```
@@ -1210,46 +1201,43 @@ await using var client = new CopilotClient(new CopilotClientOptions
 ```java
 import com.github.copilot.CopilotClient;
 import com.github.copilot.rpc.CopilotClientOptions;
-import java.util.HashMap;
 import java.util.Objects;
 
-var environment = new HashMap<>(System.getenv());
 var token = Objects.requireNonNull(
     System.getenv("INSTALLATION_TOKEN"), "INSTALLATION_TOKEN is required");
-environment.put("COPILOT_GITHUB_TOKEN", token);
 
 try (var client = new CopilotClient(new CopilotClientOptions()
-        .setEnvironment(environment)
+        .setGitHubToken(token)
         .setUseLoggedInUser(false))) {
     // Use the client.
 }
 ```
 
-For in-process FFI, set `COPILOT_GITHUB_TOKEN` in the host environment before loading the runtime; per-client environment options are not supported. For an existing runtime URI, set it on that runtime process.
+For in-process FFI, use the same token option; environment variable tokens in the host process are ignored when `useLoggedInUser` is false. For an existing runtime URI, set `COPILOT_GITHUB_TOKEN` on that runtime process.
 
 ## Refresh tokens
 
-Mint a new installation token before the current token expires. For a child process, restart the SDK client with the new environment. For an in-process or existing runtime, restart the host runtime with the new token.
+Mint a new installation token before the current token expires. For a child process, restart the SDK client with the new token. For an in-process or existing runtime, restart the host runtime with the new token.
 
 ## Billing
 
-Usage is attributed and billed to the account that owns the GitHub App installation. Use an organization installation for organization billing; a user-account installation attributes usage to that user.
+Usage is attributed and billed to the organization that owns the GitHub App installation.
 
 ## Troubleshooting
 
 | Symptom | Check |
 |---|---|
-| `401 Unauthorized` | Confirm the organization supports GitHub App installation authentication for Copilot. |
-| `403 Resource not accessible by integration` or an error mentioning user information | Confirm the installation token is in `COPILOT_GITHUB_TOKEN`, not the SDK's explicit token option. |
-| `403 Forbidden` from the Copilot API | Confirm the token request contains `repository_ids` and `copilot_requests: write`. |
-| `403 Forbidden` with the required token request | Confirm the app installation has **All repositories** access, then mint a new token. |
+| `401 Unauthorized` | The token may be expired or invalid. Mint a new installation token. |
+| `403` stating that Copilot requests with GitHub App installation access tokens are not enabled | Confirm the organization supports GitHub App installation authentication for Copilot. |
+| `No GitHub OAuth token or Copilot HMAC key provided` or `Not authenticated` | Confirm the installation token is passed through the SDK's explicit token option. With `useLoggedInUser: false`, the runtime ignores `COPILOT_GITHUB_TOKEN` and other environment variable tokens. |
+| `403 Forbidden` from the Copilot API | Confirm the installation has the organization **Copilot Requests** permission, then mint a new token. |
 | Requested model is unavailable | Confirm the organization's Copilot policy allows the model and the bundled runtime supports it. |
 | Wrong account billed | Confirm the installation belongs to the intended organization. |
 
 ## Further reading
 
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/authenticate): other authentication methods and priority
-* [AUTOTITLE](/apps/creating-github-apps/authenticating-with-a-github-app/generating-an-installation-access-token-for-a-github-app): GitHub App token creation
+* [Authenticate](https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/authenticate): other authentication methods and priority
+* [Generating An Installation Access Token For A Github App](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-an-installation-access-token-for-a-github-app): GitHub App token creation
 
 
 ---
@@ -2121,13 +2109,13 @@ let client = Client::start(
 # DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/cloud-sessions.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/cloud-sessions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/cloud-sessions.md
-- **SHA256_FINGERPRINT**: `c2dbcc9af1de7e572e3c97bf58493ea01d03a9fc7253f8d8eb388250f8e38886`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.529682+00:00
+- **SHA256_FINGERPRINT**: `39c8b16b6a863fe286476cb8e1adc4798cfcdf4d88586503c034b56078654a65`
+- **LAST_VERIFIED_UTC**: 2026-10-21T19:54:39.214084+00:00
 ---
 
 **title**: Cloud sessions
 **shortTitle**: Cloud Sessions
-**intro**: >-
+**intro**: Cloud sessions run Copilot work on GitHub-hosted compute and appear in the agents panel on GitHub. Use them when your app should create a session that executes remotely instead of starting a local GitHub Copilot CLI session on the user's machine or your server.
 
 ## Prerequisites
 
@@ -2302,14 +2290,14 @@ await session.send({ prompt: "Summarize the README" });
 
 A few notes:
 
-* Set `streaming: true` on `createSession` so the runtime emits `assistant.message_delta` events. Without it, the only assistant signal you get is the final `assistant.message` — fine for batch use, but the chat will look frozen if you're rendering a live UI. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/streaming-events).
+* Set `streaming: true` on `createSession` so the runtime emits `assistant.message_delta` events. Without it, the only assistant signal you get is the final `assistant.message` — fine for batch use, but the chat will look frozen if you're rendering a live UI. See [Streaming Events](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/streaming-events).
 * Only the **first** `session.send` is sensitive to this race. Subsequent sends on the same session work normally because the runtime keeps `hasSessionStarted` set for the life of the session.
 * Apply a timeout (e.g. 60 s) around the `ready` promise so a stuck session doesn't hang your app forever.
 * The same pattern works in every SDK language — subscribe to `session.start`, check `producer === "copilot-agent"`, then call `send`.
 
 ## Accessing the agent session URL
 
-Cloud sessions are inherently remote: once the worker connects, the session is published to `https://github.com/copilot/tasks/{sessionId}` and the runtime emits a `session.info` event with the URL. You do **not** need to call `remote.enable()`— that API is only for syncing a local session to GitHub.
+Cloud sessions are inherently remote: once the worker connects, the session is published to `https://github.com/copilot/tasks/{sessionId}` and the runtime emits a `session.info` event with the URL. You do **not** need to call `remote.enable()`—that API is only for syncing a local session to GitHub.
 
 Capture the URL by subscribing to `session.info` and filtering by `infoType: "remote"`:
 
@@ -2324,7 +2312,7 @@ session.on("session.info", (event) => {
 
 The event fires shortly after `session.start`. If your renderer mounts after the event has already fired, persist the URL alongside the session record in your app's state and rehydrate on remount — the runtime does not re-emit `session.info` on its own.
 
-For the same wiring on local sessions promoted via `remote: true`, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/remote-sessions).
+For the same wiring on local sessions promoted via `remote: true`, see [Remote Sessions](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/remote-sessions).
 
 ## Repository association
 
@@ -2377,7 +2365,7 @@ In languages where SDK errors are represented differently, inspect the surfaced 
 
 Cloud sessions are stamped with a `Copilot-Integration-Id` header derived from the `GITHUB_COPILOT_INTEGRATION_ID` environment variable. This integration ID is used for routing, attribution, and integration-specific behavior.
 
-For multi-user server guidance and full integration ID details, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy).
+For multi-user server guidance and full integration ID details, see [Multi Tenancy](https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/multi-tenancy).
 
 SDK-created cloud sessions are routed to the `copilot-developer-sandbox` agent slug. The name is an internal routing slug for the cloud agent and does not mean the session uses the local Windows sandbox.
 
@@ -2417,10 +2405,10 @@ Use remote sessions when the session should execute where the SDK runtime is alr
 
 ## See also
 
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/remote-sessions): share locally hosted sessions to the agents panel on GitHub
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/streaming-events): subscribe to `assistant.*` deltas for live UI rendering
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy): integration IDs and server deployment patterns
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth): configure GitHub authentication for SDK sessions
+* [Remote Sessions](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/remote-sessions): share locally hosted sessions to the agents panel on GitHub
+* [Streaming Events](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/streaming-events): subscribe to `assistant.*` deltas for live UI rendering
+* [Multi Tenancy](https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/multi-tenancy): integration IDs and server deployment patterns
+* [Auth](https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth): configure GitHub authentication for SDK sessions
 
 
 ---
@@ -4906,13 +4894,13 @@ These image blocks appear in `tool.execution_complete` event results. See the [A
 # DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/mcp.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/mcp
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/mcp.md
-- **SHA256_FINGERPRINT**: `73ce559751004b132dd623a8d6c6c79009f7f40ed3afbe750ef84352c5833a94`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.979943+00:00
+- **SHA256_FINGERPRINT**: `3d678592cd4bef2d7c42c671d0bedc71dfe9dd8b90c9ab4db393534481c13f56`
+- **LAST_VERIFIED_UTC**: 2026-10-21T19:54:39.069576+00:00
 ---
 
 **title**: Using MCP servers with the GitHub Copilot SDK
 **shortTitle**: MCP
-**intro**: >-
+**intro**: The Copilot SDK can integrate with **MCP servers** (Model Context Protocol) to extend the assistant's capabilities with external tools. MCP servers run as separate processes and expose tools (functions) that Copilot can invoke during conversations.
 
 > [!NOTE]
 > This is an evolving feature. See [issue #36](https://github.com/github/copilot-sdk/issues/36) for ongoing discussion.
@@ -5183,6 +5171,46 @@ server unchanged. State-only continuations do not invoke either responder.
 
 After an existing `mcp.prompts.list_changed` session event, list the named
 server's prompts again to refresh your application's view.
+
+## Applying sandbox policy before MCP startup
+
+Pass `sandboxConfig` to `createSession` or `resumeSession` to apply sandbox policy
+during construction, before discovered root-config, plugin, or explicitly
+configured MCP servers start. It accepts the same configuration as
+`session.rpc.options.update({ sandboxConfig })`.
+
+```typescript
+const sandboxConfig = {
+    enabled: true,
+    sandboxMcpServers: true,
+    userPolicy: { network: { allowOutbound: false } },
+};
+const session = await client.createSession({
+    onPermissionRequest: approveAll,
+    sandboxConfig,
+});
+```
+
+Re-supply the configuration on a cold resume; omission preserves a resident
+session's current policy. A resident resume cannot undo processes that already
+started. Managed-policy validation uses the same direct-host semantics as an
+options update: a conflicting request fails create or resume instead of falling
+back to an unsandboxed session, with `data.code` set to
+`managed_sandbox_policy_conflict` in the JSON-RPC error. The runtime does not
+assign a settings-derived `sandboxConfigSource` to this explicit host configuration.
+
+A later identical `options.update({ sandboxConfig })` does not restart MCP
+servers, including when managed policy has normalized the configuration. A
+different effective MCP sandbox policy retains the usual restart behavior.
+
+Check the runtime `version` returned by `server.connect` (`ConnectResult`) against
+the minimum runtime release your application requires for this feature. The SDK
+protocol version is not a per-feature capability signal. Older runtimes ignore
+unknown create/resume fields, so an application supporting them can send
+`sandboxConfig` at open and repeat it in a follow-up options update. That update
+is harmless on supporting runtimes, but older runtimes can still start MCP before
+the update arrives; require a supporting runtime version when confinement from
+the first process is mandatory.
 
 ## Tool configuration
 
@@ -5552,19 +5580,19 @@ server-provided secrets.
 | "Timeout" errors | Increase the `timeout` value or check server performance |
 | Tools work but aren't called | Ensure your prompt clearly requires the tool's functionality |
 
-For detailed debugging guidance, see the **[AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging)**.
+For detailed debugging guidance, see the **[Mcp Debugging](https://docs.github.com/en/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging)**.
 
 ## Related resources
 
 * [Model Context Protocol Specification](https://modelcontextprotocol.io/)
 * [MCP Servers Directory](https://github.com/modelcontextprotocol/servers) - Community MCP servers
 * [GitHub MCP Server](https://github.com/github/github-mcp-server) - Official GitHub MCP server
-* [AUTOTITLE](/copilot/get-started/sdk-quickstart) - SDK basics and custom tools
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/debugging) - SDK-wide debugging
+* [Sdk Quickstart](https://docs.github.com/en/copilot/get-started/sdk-quickstart) - SDK basics and custom tools
+* [Debugging](https://docs.github.com/en/copilot/how-tos/copilot-sdk/troubleshooting/debugging) - SDK-wide debugging
 
 ## See also
 
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging) - Detailed MCP troubleshooting
+* [Mcp Debugging](https://docs.github.com/en/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging) - Detailed MCP troubleshooting
 * [Issue #9](https://github.com/github/copilot-sdk/issues/9) - Original MCP tools usage question
 * [Issue #36](https://github.com/github/copilot-sdk/issues/36) - MCP documentation tracking issue
 
@@ -5870,15 +5898,15 @@ Runtimes that do not prepare managed plugins for the session reject the call.
 # DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/remote-sessions.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/remote-sessions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/remote-sessions.md
-- **SHA256_FINGERPRINT**: `c7e21be349b96237b719766ebe89cb051764dec61f0d5111833b9f0d67964f1f`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.983811+00:00
+- **SHA256_FINGERPRINT**: `0de8ec0427f197278d8e68b78b387814b64dfe3070f598589b8b317e6251114d`
+- **LAST_VERIFIED_UTC**: 2026-10-21T19:54:39.150332+00:00
 ---
 
 **title**: Remote sessions
 **shortTitle**: Remote Sessions
-**intro**: Remote sessions sync to GitHub so users can access locally running Copilot sessions from the agents panel or on mobile. When enabled, the SDK produces a URL to the session log that can be shared as a link or QR code.
+**intro**: Remote sessions let users access their Copilot session from GitHub web and mobile via [Mission Control](https://github.com). When enabled, the SDK connects each session to Mission Control, producing a URL that can be shared as a link or QR code.
 
-For running sessions on GitHub-hosted compute, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/cloud-sessions).
+For running sessions on GitHub-hosted compute, see [Cloud Sessions](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/cloud-sessions).
 
 ## Prerequisites
 
@@ -7673,13 +7701,13 @@ If multiple skills provide conflicting instructions:
 # DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/features/steering-and-queueing.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/steering-and-queueing
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/steering-and-queueing.md
-- **SHA256_FINGERPRINT**: `275625ce8d9ff9903e58c3b73e3b3a7addedc417bb77bf9f20bf3390a4137e42`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:32.990093+00:00
+- **SHA256_FINGERPRINT**: `ab48aa0b71b6c6f80afbb6426059b4b5b71a382b2854b00ec5b7423e8bd4cbcd`
+- **LAST_VERIFIED_UTC**: 2026-10-21T19:54:39.225662+00:00
 ---
 
 **title**: Steering and queueing
 **shortTitle**: Steering And Queueing
-**intro**: >-
+**intro**: Two interaction patterns let users send messages while the agent is already working: **steering** redirects the agent mid-turn, and **queueing** buffers messages for sequential processing after the current turn completes.
 
 ## Overview
 
@@ -7712,7 +7740,7 @@ Source identifies origin. Delivery mode requests urgency. Neither requires the r
 A successful high-level `send` acknowledgement returns a message ID and confirms acceptance, not that the recipient has consumed the message. Do not automatically resend an accepted message merely because no reply appears. Send-and-wait can complete on an idle event without an assistant message.
 
 > [!WARNING]
-> Remote backends do not necessarily preserve source end to end. The agent session can include source in its local echo without carrying it in the remote HTTP request. A local source event does not prove that the remote worker received the same provenance.
+> Remote backends do not necessarily preserve source end to end. Mission Control can include source in its local echo without carrying it in the remote HTTP request. A local source event does not prove that the remote worker received the same provenance.
 
 ## Steering (immediate mode)
 
@@ -8212,10 +8240,10 @@ class InteractiveChat {
 
 ## See also
 
-* [AUTOTITLE](/copilot/get-started/sdk-quickstart): Set up a session and send messages
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/custom-agents): Define specialized agents with scoped tools
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/hooks-overview): React to session lifecycle events
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/session-persistence): Resume sessions across restarts
+* [Sdk Quickstart](https://docs.github.com/en/copilot/get-started/sdk-quickstart): Set up a session and send messages
+* [Custom Agents](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/custom-agents): Define specialized agents with scoped tools
+* [Hooks Overview](https://docs.github.com/en/copilot/how-tos/copilot-sdk/hooks/hooks-overview): React to session lifecycle events
+* [Session Persistence](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/session-persistence): Resume sessions across restarts
 
 
 ---
@@ -14869,13 +14897,13 @@ Session state is stored locally at `~/.copilot/session-state/{sessionId}/`.
 # DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/setup/multi-tenancy.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/multi-tenancy
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/setup/multi-tenancy.md
-- **SHA256_FINGERPRINT**: `d72cd60702f11d06ee44b47102f600db092634f51e466ff4fca044a69c8faef6`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.749437+00:00
+- **SHA256_FINGERPRINT**: `c459b026558da8f9ec056ffeca6d04de612625b777d0c45e1836570a9e34d4a7`
+- **LAST_VERIFIED_UTC**: 2026-10-21T19:54:39.093213+00:00
 ---
 
 **title**: Multi-tenancy and server deployments
 **shortTitle**: Multi Tenancy
-**intro**: >-
+**intro**: Multi-user server mode means running the Copilot SDK from backend code that serves more than one human, tenant, workspace, or integration account. In this setup, the application owns request routing and authorization, while the SDK and runtime provide per-session state, per-session authentication, and explicit tool registration so one user's session does not inherit another user's tools or identity.
 
 **Best for:** SaaS products, partner integrations, internal platforms, and backend services that handle concurrent users.
 
@@ -14888,7 +14916,7 @@ Use this guide when you are building:
 * Any server that handles concurrent users, workspaces, tenants, or requests
 * A shared runtime where multiple SDK clients connect to one Copilot runtime process
 
-This guide is a sister to [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling). Use that guide for topology, load-balancing, and storage patterns. Use this guide for SDK-level options and runtime isolation choices.
+This guide is a sister to [Scaling](https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/scaling). Use that guide for topology, load-balancing, and storage patterns. Use this guide for SDK-level options and runtime isolation choices.
 
 ## Key SDK options
 
@@ -14901,7 +14929,7 @@ This guide is a sister to [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling
 | `RuntimeConnection.forUri(url)` | Sharing one already-running runtime | Language names vary; see samples below. |
 | Per-session GitHub token or provider | Scoping auth to the requesting user | Prefer a rotating provider for short-lived credentials; use a static `gitHubToken` only when rotation is unnecessary. |
 
-For callback-backed credentials, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/authenticate#rotating-session-scoped-github-tokens). Each session owns its provider registration, so concurrent sessions can use different GitHub hosts and accounts without sharing callback state.
+For callback-backed credentials, see [Authenticate](https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/authenticate#rotating-session-scoped-github-tokens). Each session owns its provider registration, so concurrent sessions can use different GitHub hosts and accounts without sharing callback state.
 
 ### `mode: "empty"`
 
@@ -15086,7 +15114,7 @@ const client = new CopilotClient({
 });
 ```
 
-For languages that expose a provider callback, configure `sessionFs` at the client level and provide a per-session filesystem handler when creating or resuming a session. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/session-persistence) for persistence concepts and storage trade-offs.
+For languages that expose a provider callback, configure `sessionFs` at the client level and provide a per-session filesystem handler when creating or resuming a session. See [Session Persistence](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/session-persistence) for persistence concepts and storage trade-offs.
 
 Runtime-owned durable permission choices also use the session filesystem. Under the provider's `sessionStatePath`, `permissions.json` retains its top-level `locations` map with `tool_approvals` and `allowed_directories`; `settings.json` stores top-level `allowedUrls` and `sandbox`; and `config.json` stores top-level `trustedFolders`.
 
@@ -15150,7 +15178,7 @@ Use per-session tokens for content exclusion, model routing, quota checks, and u
 
 ## Integration ID
 
-Partners building branded agents can set an integration ID for agent session requests. The runtime reads `GITHUB_COPILOT_INTEGRATION_ID` and stamps it as the `Copilot-Integration-Id` HTTP header on every agent session request.
+Partners building branded agents can set an integration ID for Mission Control requests. The runtime reads `GITHUB_COPILOT_INTEGRATION_ID` and stamps it as the `Copilot-Integration-Id` HTTP header on every Mission Control request.
 
 ```bash
 GITHUB_COPILOT_INTEGRATION_ID=my-product-agent copilot --headless --port 4321
@@ -15183,9 +15211,9 @@ Session state is stored under `COPILOT_HOME/session-state/{sessionId}` unless yo
 
 | Pattern | Use when | Trade-offs |
 |---------|----------|------------|
-| Pattern 1: isolated CLI per user | You need the strongest isolation boundary or separate process credentials per user. | Strong isolation; higher resource cost. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling). |
+| Pattern 1: isolated CLI per user | You need the strongest isolation boundary or separate process credentials per user. | Strong isolation; higher resource cost. See [Scaling](https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/scaling). |
 | Pattern 2: shared CLI with `mode: "empty"` | You want one runtime to serve many users while your app controls tools, auth, and session IDs. | Efficient; requires careful tool registration, per-session tokens, and application-level access checks. |
-| Pattern 3: hybrid | You route compute-heavy work to cloud sessions and light work to local sessions. | Flexible; requires workload routing and policy handling. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/cloud-sessions). |
+| Pattern 3: hybrid | You route compute-heavy work to cloud sessions and light work to local sessions. | Flexible; requires workload routing and policy handling. See [Cloud Sessions](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/cloud-sessions). |
 
 ### Pattern 2: shared CLI with `mode: "empty"`
 
@@ -15213,12 +15241,12 @@ Use these rules:
 
 ## See also
 
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling): deployment topologies, storage patterns, and isolation comparisons
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/backend-services): running the runtime in headless server mode
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok): using your own model provider credentials
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/cloud-sessions): routing selected work to cloud sessions
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/session-persistence): managing resumable session state
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features): tools, events, hooks, and advanced SDK features
+* [Scaling](https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/scaling): deployment topologies, storage patterns, and isolation comparisons
+* [Backend Services](https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/backend-services): running the runtime in headless server mode
+* [Byok](https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/byok): using your own model provider credentials
+* [Cloud Sessions](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/cloud-sessions): routing selected work to cloud sessions
+* [Session Persistence](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/session-persistence): managing resumable session state
+* [Features](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features): tools, events, hooks, and advanced SDK features
 
 
 ---
@@ -15676,13 +15704,13 @@ volumes:
 # DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/troubleshooting/compatibility.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/troubleshooting/compatibility
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/troubleshooting/compatibility.md
-- **SHA256_FINGERPRINT**: `bd7c2e16170df33c19435c9930ae50c88974810ddd63d2ef48339012e764b4d5`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.760966+00:00
+- **SHA256_FINGERPRINT**: `9c5d9ac69d9ac368422395f19c406368bfb1e6f4f08c6c8470bc7cf9d1b5abcd`
+- **LAST_VERIFIED_UTC**: 2026-10-21T19:54:39.218665+00:00
 ---
 
 **title**: SDK and CLI compatibility
 **shortTitle**: Compatibility
-**intro**: >-
+**intro**: This document outlines which Copilot CLI features are available through the SDK and which are CLI-only.
 
 ## Overview
 
@@ -15715,7 +15743,7 @@ The Copilot SDK communicates with the CLI via JSON-RPC protocol. Features must b
 | Abort | `abort()` | Cancel in-flight request |
 | **Tools** | | |
 | Register custom tools | `registerTools()` | Full JSON Schema support |
-| Replace custom tools (mid-session) | `session.setTools()` | Experimental; see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/changing-tools) |
+| Replace custom tools (mid-session) | `session.setTools()` | Experimental; see [Changing Tools](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/changing-tools) |
 | Tool permission control | `onPreToolUse` hook | Allow/deny/ask |
 | Tool result modification | `onPostToolUse` hook | Transform results |
 | Available/excluded tools | `availableTools`, `excludedTools` config | Filter tools |
@@ -15760,7 +15788,7 @@ The Copilot SDK communicates with the CLI via JSON-RPC protocol. Features must b
 | System message | `systemMessage` config | Append or replace |
 | Custom provider | `provider` config | BYOK support |
 | Infinite sessions | `infiniteSessions` config | Auto-compaction |
-| Permission handler | `onPermissionRequest` | Approve/deny requests; optionally attach a `decisionContext` for auto-approval telemetry |
+| Permission handler | `onPermissionRequest` | Approve/deny; `decisionContext.userFeedback` collects explanations only in restricted telemetry |
 | User input handler | `onUserInputRequest` | Handle ask_user |
 | Skills | `skillDirectories` config | Custom skills |
 | Disabled skills | `disabledSkills` config | Disable specific skills |
@@ -15770,7 +15798,7 @@ The Copilot SDK communicates with the CLI via JSON-RPC protocol. Features must b
 | Additional directories | `additionalDirectories` config | Grant session access beyond the working directory; re-supply on resume |
 | **Experimental** | | |
 | Agent management | `session.rpc.agent.*` | List, select, deselect, get current agent |
-| Fleet mode | `session.rpc.fleet.start()` | Parallel sub-agent execution; see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/fleet-mode) |
+| Fleet mode | `session.rpc.fleet.start()` | Parallel sub-agent execution; see [Fleet Mode](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/fleet-mode) |
 | Manual compaction | `session.rpc.history.compact()` | Trigger compaction on demand |
 | Context clearing | `session.rpc.history.clearContext()` | Replace conversation context from a terminal tool |
 | History truncation | `session.rpc.history.truncate()` | Remove events from a point onward |
@@ -15857,7 +15885,7 @@ The Copilot SDK communicates with the CLI via JSON-RPC protocol. Features must b
 
 ### Fleet mode
 
-Fleet mode is available through `session.rpc.fleet.start()` for SDK applications that want the runtime to dispatch parallel sub-agents for a larger objective. Use it when independent subtasks can run concurrently and then be summarized by the main session. For a full guide, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/fleet-mode).
+Fleet mode is available through `session.rpc.fleet.start()` for SDK applications that want the runtime to dispatch parallel sub-agents for a larger objective. Use it when independent subtasks can run concurrently and then be summarized by the main session. For a full guide, see [Fleet Mode](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/fleet-mode).
 
 ### Session export
 
@@ -15978,10 +16006,10 @@ console.log("Protocol version:", status.protocolVersion);
 
 ## See also
 
-* [AUTOTITLE](/copilot/get-started/sdk-quickstart)
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/hooks-overview)
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/mcp)
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/debugging)
+* [Sdk Quickstart](https://docs.github.com/en/copilot/get-started/sdk-quickstart)
+* [Hooks Overview](https://docs.github.com/en/copilot/how-tos/copilot-sdk/hooks/hooks-overview)
+* [Mcp](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/mcp)
+* [Debugging](https://docs.github.com/en/copilot/how-tos/copilot-sdk/troubleshooting/debugging)
 
 
 ---

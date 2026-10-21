@@ -179,6 +179,31 @@ REPO_RULES: List[RepoTreeRule] = [
         file_regex_filter=r"^src/vscode-dts/vscode\.proposed\.(chat|languageModel|mcp|agent).*\.d\.ts$",
     ),
     RepoTreeRule(
+        owner="microsoft",
+        repo="vscode",
+        branch="main",
+        path_prefixes=["src/vs/workbench/contrib/chat/"],
+        web_base_url="https://github.com/microsoft/vscode/blob/main/",
+        bundle_router={
+            "src/vs/workbench/contrib/chat/common/plugins/": "01_Architecture_And_Agent_Harnesses",
+            "src/vs/workbench/contrib/chat/": "01_Architecture_And_Agent_Harnesses",
+        },
+        root_subpath="src/vs/workbench/contrib/chat",
+        allowed_extensions=(".md",),
+    ),
+    RepoTreeRule(
+        owner="microsoft",
+        repo="vscode",
+        branch="main",
+        path_prefixes=["extensions/copilot/.agents/"],
+        web_base_url="https://github.com/microsoft/vscode/blob/main/",
+        bundle_router={
+            "extensions/copilot/.agents/": "04_Customization_Skills_Hooks_And_Plugins",
+        },
+        root_subpath="extensions/copilot/.agents",
+        allowed_extensions=(".md",),
+    ),
+    RepoTreeRule(
         owner="github",
         repo="awesome-copilot",
         branch="main",
@@ -805,7 +830,10 @@ class CopilotDocumentationSynchronizer:
                             logger.error("Error al procesar nodo: %s", exc)
 
             # Detección de documentos eliminados en upstream
-            rule_prefix = f"{rule.owner}_{rule.repo}::"
+            if rule.tree_subpath:
+                rule_prefix = f"{rule.owner}_{rule.repo}::{rule.tree_subpath.strip('/')}/"
+            else:
+                rule_prefix = f"{rule.owner}_{rule.repo}::"
             for doc_id, record in list(self.manifest.items()):
                 if doc_id.startswith(rule_prefix) and doc_id not in current_rule_doc_ids:
                     logger.info("ELIMINADO UPSTREAM: %s", doc_id)
@@ -962,6 +990,107 @@ class CopilotDocumentationSynchronizer:
                 logger.info("ELIMINADO UPSTREAM LANGGRAPH: %s", doc_id)
                 self._delete_document(doc_id, record)
                 deleted += 1
+
+        return added, updated, skipped, deleted
+
+    def sync_vscode_iteration_plans(
+        self, force_recheck: bool = False
+    ) -> Tuple[int, int, int, int]:
+        """
+        Sincroniza los Iteration Plans mensuales y Endgame Plans de microsoft/vscode
+        directamente desde la API de GitHub Issues (etiquetas 'iteration-plan' y 'endgame-plan').
+        Representa la fuente bleeding-edge que define qué capacidades de Copilot y agentes
+        se están implementando antes de su documentación oficial.
+        """
+        added, updated, skipped, deleted = 0, 0, 0, 0
+        logger.info("Consultando Iteration Plans y Endgame Roadmaps de microsoft/vscode...")
+
+        headers = {
+            "Accept": "application/vnd.github.v3+json",
+        }
+
+        issue_targets = [
+            ("iteration-plan", 5),
+            ("endgame-plan", 3),
+        ]
+
+        found_issues: List[Tuple[str, Dict[str, Any]]] = []
+        for label, limit in issue_targets:
+            url = f"https://api.github.com/repos/microsoft/vscode/issues?labels={label}&state=all&per_page={limit}"
+            try:
+                resp = self.session.get(url, headers=headers, timeout=20)
+                if resp.status_code in (403, 429):
+                    logger.warning("Rate limit alcanzado al consultar issues con etiqueta '%s'", label)
+                    continue
+                resp.raise_for_status()
+                issues = resp.json()
+                for iss in issues:
+                    if isinstance(iss, dict) and "number" in iss:
+                        found_issues.append((label, iss))
+            except Exception as exc:
+                logger.error("Error al consultar issues con etiqueta '%s': %s", label, exc)
+
+        if not found_issues:
+            logger.info("No se obtuvieron issues de Iteration Plans / Roadmaps.")
+            return added, updated, skipped, deleted
+
+        logger.info("Detectados %d planes/roadmaps de VS Code Insiders.", len(found_issues))
+
+        current_insiders_ids: Set[str] = set()
+
+        for label, issue in found_issues:
+            num = issue.get("number")
+            title = issue.get("title", f"Plan #{num}")
+            html_url = issue.get("html_url", f"https://github.com/microsoft/vscode/issues/{num}")
+            body = issue.get("body") or ""
+
+            if not body.strip():
+                continue
+
+            doc_id = f"vscode_insiders::{label}_{num}"
+            current_insiders_ids.add(doc_id)
+            bundle_name = "07_Release_Notes_And_Changelog_Radar"
+            existing = self.manifest.get(doc_id)
+
+            enhanced_body = (
+                f"# VS Code Insiders Roadmap: {title}\n"
+                f"- **Issue Number**: #{num}\n"
+                f"- **Category**: `{label}`\n"
+                f"- **State**: {issue.get('state', 'unknown')}\n"
+                f"- **Source Issue**: {html_url}\n\n"
+                f"{body}"
+            )
+
+            clean_text = ContentCanonicalizer.normalize_markdown(enhanced_body)
+            new_sha256 = ContentCanonicalizer.compute_sha256(clean_text)
+
+            safe_filename = self._get_safe_clean_filename(doc_id)
+            abs_clean_path = self.clean_cache_dir / safe_filename
+
+            if (
+                existing
+                and not force_recheck
+                and existing.content_sha256 == new_sha256
+                and abs_clean_path.exists()
+            ):
+                skipped += 1
+                continue
+
+            was_added = existing is None
+            self._persist_document_change(
+                doc_id=doc_id,
+                source_url=html_url,
+                web_url=html_url,
+                bundle_name=bundle_name,
+                git_blob_sha=None,
+                new_sha256=new_sha256,
+                clean_text=clean_text,
+                existing=existing,
+            )
+            if was_added:
+                added += 1
+            else:
+                updated += 1
 
         return added, updated, skipped, deleted
 
@@ -1266,11 +1395,14 @@ def main() -> int:
     l_add, l_upd, l_skip, l_del = syncer.sync_langgraph_documentation(
         force_recheck=args.force_recheck
     )
+    i_add, i_upd, i_skip, i_del = syncer.sync_vscode_iteration_plans(
+        force_recheck=args.force_recheck
+    )
 
-    total_add = g_add + w_add + l_add
-    total_upd = g_upd + w_upd + l_upd
-    total_skip = g_skip + w_skip + l_skip
-    total_del = g_del + l_del
+    total_add = g_add + w_add + l_add + i_add
+    total_upd = g_upd + w_upd + l_upd + i_upd
+    total_skip = g_skip + w_skip + l_skip + i_skip
+    total_del = g_del + l_del + i_del
 
     generated_bundles: List[Path] = []
     # Guardar manifiesto ÚNICAMENTE si hubo modificaciones de contenido o de hashes git

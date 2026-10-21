@@ -1,6 +1,6 @@
 **title**: Using MCP servers with the GitHub Copilot SDK
 **shortTitle**: MCP
-**intro**: >-
+**intro**: The Copilot SDK can integrate with **MCP servers** (Model Context Protocol) to extend the assistant's capabilities with external tools. MCP servers run as separate processes and expose tools (functions) that Copilot can invoke during conversations.
 
 > [!NOTE]
 > This is an evolving feature. See [issue #36](https://github.com/github/copilot-sdk/issues/36) for ongoing discussion.
@@ -271,6 +271,46 @@ server unchanged. State-only continuations do not invoke either responder.
 
 After an existing `mcp.prompts.list_changed` session event, list the named
 server's prompts again to refresh your application's view.
+
+## Applying sandbox policy before MCP startup
+
+Pass `sandboxConfig` to `createSession` or `resumeSession` to apply sandbox policy
+during construction, before discovered root-config, plugin, or explicitly
+configured MCP servers start. It accepts the same configuration as
+`session.rpc.options.update({ sandboxConfig })`.
+
+```typescript
+const sandboxConfig = {
+    enabled: true,
+    sandboxMcpServers: true,
+    userPolicy: { network: { allowOutbound: false } },
+};
+const session = await client.createSession({
+    onPermissionRequest: approveAll,
+    sandboxConfig,
+});
+```
+
+Re-supply the configuration on a cold resume; omission preserves a resident
+session's current policy. A resident resume cannot undo processes that already
+started. Managed-policy validation uses the same direct-host semantics as an
+options update: a conflicting request fails create or resume instead of falling
+back to an unsandboxed session, with `data.code` set to
+`managed_sandbox_policy_conflict` in the JSON-RPC error. The runtime does not
+assign a settings-derived `sandboxConfigSource` to this explicit host configuration.
+
+A later identical `options.update({ sandboxConfig })` does not restart MCP
+servers, including when managed policy has normalized the configuration. A
+different effective MCP sandbox policy retains the usual restart behavior.
+
+Check the runtime `version` returned by `server.connect` (`ConnectResult`) against
+the minimum runtime release your application requires for this feature. The SDK
+protocol version is not a per-feature capability signal. Older runtimes ignore
+unknown create/resume fields, so an application supporting them can send
+`sandboxConfig` at open and repeat it in a follow-up options update. That update
+is harmless on supporting runtimes, but older runtimes can still start MCP before
+the update arrives; require a supporting runtime version when confinement from
+the first process is mandatory.
 
 ## Tool configuration
 
@@ -640,18 +680,18 @@ server-provided secrets.
 | "Timeout" errors | Increase the `timeout` value or check server performance |
 | Tools work but aren't called | Ensure your prompt clearly requires the tool's functionality |
 
-For detailed debugging guidance, see the **[AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging)**.
+For detailed debugging guidance, see the **[Mcp Debugging](https://docs.github.com/en/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging)**.
 
 ## Related resources
 
 * [Model Context Protocol Specification](https://modelcontextprotocol.io/)
 * [MCP Servers Directory](https://github.com/modelcontextprotocol/servers) - Community MCP servers
 * [GitHub MCP Server](https://github.com/github/github-mcp-server) - Official GitHub MCP server
-* [AUTOTITLE](/copilot/get-started/sdk-quickstart) - SDK basics and custom tools
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/debugging) - SDK-wide debugging
+* [Sdk Quickstart](https://docs.github.com/en/copilot/get-started/sdk-quickstart) - SDK basics and custom tools
+* [Debugging](https://docs.github.com/en/copilot/how-tos/copilot-sdk/troubleshooting/debugging) - SDK-wide debugging
 
 ## See also
 
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging) - Detailed MCP troubleshooting
+* [Mcp Debugging](https://docs.github.com/en/copilot/how-tos/copilot-sdk/troubleshooting/mcp-debugging) - Detailed MCP troubleshooting
 * [Issue #9](https://github.com/github/copilot-sdk/issues/9) - Original MCP tools usage question
 * [Issue #36](https://github.com/github/copilot-sdk/issues/36) - MCP documentation tracking issue

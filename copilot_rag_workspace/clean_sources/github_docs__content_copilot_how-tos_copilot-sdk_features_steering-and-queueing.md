@@ -1,6 +1,6 @@
 **title**: Steering and queueing
 **shortTitle**: Steering And Queueing
-**intro**: >-
+**intro**: Two interaction patterns let users send messages while the agent is already working: **steering** redirects the agent mid-turn, and **queueing** buffers messages for sequential processing after the current turn completes.
 
 ## Overview
 
@@ -33,7 +33,7 @@ Source identifies origin. Delivery mode requests urgency. Neither requires the r
 A successful high-level `send` acknowledgement returns a message ID and confirms acceptance, not that the recipient has consumed the message. Do not automatically resend an accepted message merely because no reply appears. Send-and-wait can complete on an idle event without an assistant message.
 
 > [!WARNING]
-> Remote backends do not necessarily preserve source end to end. The agent session can include source in its local echo without carrying it in the remote HTTP request. A local source event does not prove that the remote worker received the same provenance.
+> Remote backends do not necessarily preserve source end to end. Mission Control can include source in its local echo without carrying it in the remote HTTP request. A local source event does not prove that the remote worker received the same provenance.
 
 ## Steering (immediate mode)
 
@@ -533,7 +533,7 @@ class InteractiveChat {
 
 ## See also
 
-* [AUTOTITLE](/copilot/get-started/sdk-quickstart): Set up a session and send messages
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/custom-agents): Define specialized agents with scoped tools
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/hooks/hooks-overview): React to session lifecycle events
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/session-persistence): Resume sessions across restarts
+* [Sdk Quickstart](https://docs.github.com/en/copilot/get-started/sdk-quickstart): Set up a session and send messages
+* [Custom Agents](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/custom-agents): Define specialized agents with scoped tools
+* [Hooks Overview](https://docs.github.com/en/copilot/how-tos/copilot-sdk/hooks/hooks-overview): React to session lifecycle events
+* [Session Persistence](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/session-persistence): Resume sessions across restarts

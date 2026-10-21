@@ -1,7 +1,7 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-10-21T16:53:41.390448+00:00",
-  "total_documents": 1885,
+  "last_sync_utc": "2026-10-21T19:55:05.813249+00:00",
+  "total_documents": 1898,
   "documents": {
     "anthropics_skills::README.md": {
       "doc_id": "anthropics_skills::README.md",
@@ -18279,10 +18279,10 @@
       "source_url": "https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/auth/authenticate.md",
       "canonical_web_url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/authenticate",
       "bundle_name": "06_Extension_AI_APIs_And_Copilot_SDK",
-      "git_blob_sha": "602fabaea6b116958e6a34a9ac24829a0e95e5ab",
-      "content_sha256": "5b7f9f4502d3640fa597c191a28092f46e90fa58545deb7cd1f40286d7ebca5c",
-      "word_count": 1570,
-      "last_updated_utc": "2026-10-20T22:05:32.482209+00:00",
+      "git_blob_sha": "04214307f54a79e375d4141eab8e97f7c42e858b",
+      "content_sha256": "dd0be879522e87772ec2dc21f2dc0ed3a266e8d54a0e6e6b7a45781645d1adf8",
+      "word_count": 1629,
+      "last_updated_utc": "2026-10-21T19:54:39.127648+00:00",
       "local_clean_path": "clean_sources/github_docs__content_copilot_how-tos_copilot-sdk_auth_authenticate.md"
     },
     "github_docs::content/copilot/how-tos/copilot-sdk/auth/byok.md": {
@@ -18312,10 +18312,10 @@
       "source_url": "https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/auth/server-to-server-tokens.md",
       "canonical_web_url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/server-to-server-tokens",
       "bundle_name": "06_Extension_AI_APIs_And_Copilot_SDK",
-      "git_blob_sha": "3e62fdd458d7770e17f1a4bf65f186b937fd6999",
-      "content_sha256": "5eb8a9364b1278d41473cb1f2f3bed783bba94ec02b170b70f2ab6e4ceb94629",
-      "word_count": 700,
-      "last_updated_utc": "2026-10-20T22:05:32.629264+00:00",
+      "git_blob_sha": "6b540b9f4cf716a796dc48f67a1d15eb1b216000",
+      "content_sha256": "e8768fb575dc41882a6c2413bb2b8ae76bda3498cc7ad3f13ddf98fc93722e05",
+      "word_count": 729,
+      "last_updated_utc": "2026-10-21T19:54:39.233662+00:00",
       "local_clean_path": "clean_sources/github_docs__content_copilot_how-tos_copilot-sdk_auth_server-to-server-tokens.md"
     },
     "github_docs::content/copilot/how-tos/copilot-sdk/features/agent-loop.md": {
@@ -18367,10 +18367,10 @@
       "source_url": "https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/cloud-sessions.md",
       "canonical_web_url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/cloud-sessions",
       "bundle_name": "06_Extension_AI_APIs_And_Copilot_SDK",
-      "git_blob_sha": "b7269d907fc0060feb90270a0a6204f25e7c99fb",
-      "content_sha256": "c2dbcc9af1de7e572e3c97bf58493ea01d03a9fc7253f8d8eb388250f8e38886",
-      "word_count": 1682,
-      "last_updated_utc": "2026-10-20T22:05:32.529682+00:00",
+      "git_blob_sha": "dfe0919b2541e27e629b1c0d6842c0536b108198",
+      "content_sha256": "39c8b16b6a863fe286476cb8e1adc4798cfcdf4d88586503c034b56078654a65",
+      "word_count": 1730,
+      "last_updated_utc": "2026-10-21T19:54:39.214084+00:00",
       "local_clean_path": "clean_sources/github_docs__content_copilot_how-tos_copilot-sdk_features_cloud-sessions.md"
     },
     "github_docs::content/copilot/how-tos/copilot-sdk/features/context-management.md": {
@@ -18455,10 +18455,10 @@
       "source_url": "https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/mcp.md",
       "canonical_web_url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/mcp",
       "bundle_name": "06_Extension_AI_APIs_And_Copilot_SDK",
-      "git_blob_sha": "db216d2f0afe0a1e75ed2b0d36fc28e2f3dbb795",
-      "content_sha256": "73ce559751004b132dd623a8d6c6c79009f7f40ed3afbe750ef84352c5833a94",
-      "word_count": 3653,
-      "last_updated_utc": "2026-10-20T22:05:32.979943+00:00",
+      "git_blob_sha": "3a42c5a9bb6034f28d5d7297372203ac9b9a9d92",
+      "content_sha256": "3d678592cd4bef2d7c42c671d0bedc71dfe9dd8b90c9ab4db393534481c13f56",
+      "word_count": 3941,
+      "last_updated_utc": "2026-10-21T19:54:39.069576+00:00",
       "local_clean_path": "clean_sources/github_docs__content_copilot_how-tos_copilot-sdk_features_mcp.md"
     },
     "github_docs::content/copilot/how-tos/copilot-sdk/features/plugin-directories.md": {
@@ -18477,10 +18477,10 @@
       "source_url": "https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/remote-sessions.md",
       "canonical_web_url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/remote-sessions",
       "bundle_name": "06_Extension_AI_APIs_And_Copilot_SDK",
-      "git_blob_sha": "86d6c7ac76eb8cf05c3b4d15fef4811c97518120",
-      "content_sha256": "c7e21be349b96237b719766ebe89cb051764dec61f0d5111833b9f0d67964f1f",
-      "word_count": 572,
-      "last_updated_utc": "2026-10-20T22:05:32.983811+00:00",
+      "git_blob_sha": "e1833393c8c42faeeff5dde8404c27ee1d3bb171",
+      "content_sha256": "0de8ec0427f197278d8e68b78b387814b64dfe3070f598589b8b317e6251114d",
+      "word_count": 571,
+      "last_updated_utc": "2026-10-21T19:54:39.150332+00:00",
       "local_clean_path": "clean_sources/github_docs__content_copilot_how-tos_copilot-sdk_features_remote-sessions.md"
     },
     "github_docs::content/copilot/how-tos/copilot-sdk/features/session-limits.md": {
@@ -18521,10 +18521,10 @@
       "source_url": "https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/features/steering-and-queueing.md",
       "canonical_web_url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/steering-and-queueing",
       "bundle_name": "06_Extension_AI_APIs_And_Copilot_SDK",
-      "git_blob_sha": "7ea61b75539ee4f00d08b371806bec8ef0798493",
-      "content_sha256": "275625ce8d9ff9903e58c3b73e3b3a7addedc417bb77bf9f20bf3390a4137e42",
-      "word_count": 2222,
-      "last_updated_utc": "2026-10-20T22:05:32.990093+00:00",
+      "git_blob_sha": "73ed36405b95e4039e2225c9717faecd6430428c",
+      "content_sha256": "ab48aa0b71b6c6f80afbb6426059b4b5b71a382b2854b00ec5b7423e8bd4cbcd",
+      "word_count": 2254,
+      "last_updated_utc": "2026-10-21T19:54:39.225662+00:00",
       "local_clean_path": "clean_sources/github_docs__content_copilot_how-tos_copilot-sdk_features_steering-and-queueing.md"
     },
     "github_docs::content/copilot/how-tos/copilot-sdk/features/streaming-events.md": {
@@ -18785,10 +18785,10 @@
       "source_url": "https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/setup/multi-tenancy.md",
       "canonical_web_url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/multi-tenancy",
       "bundle_name": "06_Extension_AI_APIs_And_Copilot_SDK",
-      "git_blob_sha": "16a90567230d5c90b9a4df0d1734eb0e493055f3",
-      "content_sha256": "d72cd60702f11d06ee44b47102f600db092634f51e466ff4fca044a69c8faef6",
-      "word_count": 2346,
-      "last_updated_utc": "2026-10-20T22:05:33.749437+00:00",
+      "git_blob_sha": "446f84809f24ec9ea2d40ff3d47760b230d9efeb",
+      "content_sha256": "c459b026558da8f9ec056ffeca6d04de612625b777d0c45e1836570a9e34d4a7",
+      "word_count": 2408,
+      "last_updated_utc": "2026-10-21T19:54:39.093213+00:00",
       "local_clean_path": "clean_sources/github_docs__content_copilot_how-tos_copilot-sdk_setup_multi-tenancy.md"
     },
     "github_docs::content/copilot/how-tos/copilot-sdk/setup/scaling.md": {
@@ -18807,10 +18807,10 @@
       "source_url": "https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/troubleshooting/compatibility.md",
       "canonical_web_url": "https://docs.github.com/en/copilot/how-tos/copilot-sdk/troubleshooting/compatibility",
       "bundle_name": "06_Extension_AI_APIs_And_Copilot_SDK",
-      "git_blob_sha": "49a6dfbcb683f96d4a097a37b2bb95a6886b831f",
-      "content_sha256": "bd7c2e16170df33c19435c9930ae50c88974810ddd63d2ef48339012e764b4d5",
-      "word_count": 2104,
-      "last_updated_utc": "2026-10-20T22:05:33.760966+00:00",
+      "git_blob_sha": "5d759835f97aa9d052d4396c2c9928bdd08a3a4c",
+      "content_sha256": "9c5d9ac69d9ac368422395f19c406368bfb1e6f4f08c6c8470bc7cf9d1b5abcd",
+      "word_count": 2123,
+      "last_updated_utc": "2026-10-21T19:54:39.218665+00:00",
       "local_clean_path": "clean_sources/github_docs__content_copilot_how-tos_copilot-sdk_troubleshooting_compatibility.md"
     },
     "github_docs::content/copilot/how-tos/copilot-sdk/troubleshooting/debugging.md": {
@@ -18876,7 +18876,7 @@
       "git_blob_sha": "aff8fb5c81705947e66eaaaf1d772b9bf9ccecbb",
       "content_sha256": "078b8e0bb5b59fb6d652739855a1b84bbf16883dc2326d2d0f5695a4bb7e7610",
       "word_count": 10072,
-      "last_updated_utc": "2026-10-21T16:53:38.535983+00:00",
+      "last_updated_utc": "2026-10-21T19:54:39.321367+00:00",
       "local_clean_path": "clean_sources/github_docs__content_copilot_reference_copilot-cli-reference_cli-config-dir-reference.md"
     },
     "github_docs::content/copilot/reference/copilot-cli-reference/cli-plugin-reference.md": {
@@ -18984,9 +18984,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "1015e39fbc31a274dca940263a029e837103b5d244bc29cb0961698625831596",
-      "word_count": 28087,
-      "last_updated_utc": "2026-10-21T16:53:41.096313+00:00",
+      "content_sha256": "adc810e54592b94973004fdc8f09fbe5a81bd703194eae055bf6e7390734c5f3",
+      "word_count": 28093,
+      "last_updated_utc": "2026-10-21T19:54:57.085756+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -18995,9 +18995,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "8bd13807eb6ecb724dbe912410c0afbe667ac52c9640aeb1ce887b3983554670",
-      "word_count": 31568,
-      "last_updated_utc": "2026-10-21T16:53:41.023677+00:00",
+      "content_sha256": "ce9305a1460fca44bd51739133eda341bd4bf333be78f404d5d7ab98a419ef83",
+      "word_count": 31574,
+      "last_updated_utc": "2026-10-21T19:54:56.929017+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -20397,6 +20397,61 @@
       "last_updated_utc": "2026-10-21T03:44:56.348753+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__release-notes_v1_144.md"
     },
+    "microsoft_vscode::extensions/copilot/.agents/skills/github-copilot-upgrader/SKILL.md": {
+      "doc_id": "microsoft_vscode::extensions/copilot/.agents/skills/github-copilot-upgrader/SKILL.md",
+      "source_url": "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/copilot/.agents/skills/github-copilot-upgrader/SKILL.md",
+      "canonical_web_url": "https://github.com/microsoft/vscode/blob/main/extensions/copilot/.agents/skills/github-copilot-upgrader/SKILL.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "1e0c5e1e72a6e93a42fd607d7c9ad9f106a8e6e9",
+      "content_sha256": "07479565a5b9a92496cb7c3b6ed3e42321aab90b8606e4986efaf8e5d7aa60db",
+      "word_count": 553,
+      "last_updated_utc": "2026-10-21T19:54:44.268917+00:00",
+      "local_clean_path": "clean_sources/microsoft_vscode__extensions_copilot_.agents_skills_github-copilot-upgrader_SKILL.md"
+    },
+    "microsoft_vscode::extensions/copilot/.agents/skills/launch/SKILL.md": {
+      "doc_id": "microsoft_vscode::extensions/copilot/.agents/skills/launch/SKILL.md",
+      "source_url": "https://raw.githubusercontent.com/microsoft/vscode/main/extensions/copilot/.agents/skills/launch/SKILL.md",
+      "canonical_web_url": "https://github.com/microsoft/vscode/blob/main/extensions/copilot/.agents/skills/launch/SKILL.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "96b04523e6071c0eb576bdb63e1734124ac67417",
+      "content_sha256": "f64c0644a669af550305b8a798a65a59d62ac5f624b9498d4194afc2e073ec76",
+      "word_count": 2012,
+      "last_updated_utc": "2026-10-21T19:54:43.985787+00:00",
+      "local_clean_path": "clean_sources/microsoft_vscode__extensions_copilot_.agents_skills_launch_SKILL.md"
+    },
+    "microsoft_vscode::src/vs/workbench/contrib/chat/chatCodeOrganization.md": {
+      "doc_id": "microsoft_vscode::src/vs/workbench/contrib/chat/chatCodeOrganization.md",
+      "source_url": "https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/workbench/contrib/chat/chatCodeOrganization.md",
+      "canonical_web_url": "https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/chat/chatCodeOrganization.md",
+      "bundle_name": "01_Architecture_And_Agent_Harnesses",
+      "git_blob_sha": "2840475bcee0b9246bd302001c7b56078a458270",
+      "content_sha256": "186cf7f9de22d11facc1a4975f2ef9fb646b4147019a84b6f275776985b337fd",
+      "word_count": 606,
+      "last_updated_utc": "2026-10-21T19:54:43.412272+00:00",
+      "local_clean_path": "clean_sources/microsoft_vscode__src_vs_workbench_contrib_chat_chatCodeOrganization.md"
+    },
+    "microsoft_vscode::src/vs/workbench/contrib/chat/common/chatService/telemetry.md": {
+      "doc_id": "microsoft_vscode::src/vs/workbench/contrib/chat/common/chatService/telemetry.md",
+      "source_url": "https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/workbench/contrib/chat/common/chatService/telemetry.md",
+      "canonical_web_url": "https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/chat/common/chatService/telemetry.md",
+      "bundle_name": "01_Architecture_And_Agent_Harnesses",
+      "git_blob_sha": "c2147df0550ca0f9a398770502d5a6cabd2631e5",
+      "content_sha256": "a4a618ac686422056d8c1a4b98d213e804c9963c08b1ccf8d3ece84586106ead",
+      "word_count": 396,
+      "last_updated_utc": "2026-10-21T19:54:43.411115+00:00",
+      "local_clean_path": "clean_sources/microsoft_vscode__src_vs_workbench_contrib_chat_common_chatService_telemetry.md"
+    },
+    "microsoft_vscode::src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md": {
+      "doc_id": "microsoft_vscode::src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md",
+      "source_url": "https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md",
+      "canonical_web_url": "https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md",
+      "bundle_name": "01_Architecture_And_Agent_Harnesses",
+      "git_blob_sha": "a33588a8ef91fe507c035b58ef5f0813e5a044cb",
+      "content_sha256": "c27bacb0598f0a52ab2fe10fe5aec2a04dc5ebeadb739a04bb9d1f5740ee42b9",
+      "word_count": 2423,
+      "last_updated_utc": "2026-10-21T19:54:43.441409+00:00",
+      "local_clean_path": "clean_sources/microsoft_vscode__src_vs_workbench_contrib_chat_common_plugins_AGENTS_PLUGINS.md"
+    },
     "microsoft_vscode::src/vscode-dts/vscode.proposed.agentEditorComments.d.ts": {
       "doc_id": "microsoft_vscode::src/vscode-dts/vscode.proposed.agentEditorComments.d.ts",
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.agentEditorComments.d.ts",
@@ -20704,6 +20759,94 @@
       "word_count": 454,
       "last_updated_utc": "2026-10-21T03:44:58.035747+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode__src_vscode-dts_vscode.proposed.mcpToolDefinitions.d.ts.md"
+    },
+    "vscode_insiders::endgame-plan_340685": {
+      "doc_id": "vscode_insiders::endgame-plan_340685",
+      "source_url": "https://github.com/microsoft/vscode/issues/340685",
+      "canonical_web_url": "https://github.com/microsoft/vscode/issues/340685",
+      "bundle_name": "07_Release_Notes_And_Changelog_Radar",
+      "git_blob_sha": null,
+      "content_sha256": "438282fc27afeb01c2d44ec01629bb43339cc5959e6595f8c153584d05c387e8",
+      "word_count": 708,
+      "last_updated_utc": "2026-10-21T19:55:00.169852+00:00",
+      "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_340685.md"
+    },
+    "vscode_insiders::endgame-plan_341510": {
+      "doc_id": "vscode_insiders::endgame-plan_341510",
+      "source_url": "https://github.com/microsoft/vscode/issues/341510",
+      "canonical_web_url": "https://github.com/microsoft/vscode/issues/341510",
+      "bundle_name": "07_Release_Notes_And_Changelog_Radar",
+      "git_blob_sha": null,
+      "content_sha256": "91a5fdaa0a2097e17e5773dcfa339cef278e82b284fdbe6a8ed7d46754263b69",
+      "word_count": 374,
+      "last_updated_utc": "2026-10-21T19:55:00.168782+00:00",
+      "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_341510.md"
+    },
+    "vscode_insiders::endgame-plan_342482": {
+      "doc_id": "vscode_insiders::endgame-plan_342482",
+      "source_url": "https://github.com/microsoft/vscode/issues/342482",
+      "canonical_web_url": "https://github.com/microsoft/vscode/issues/342482",
+      "bundle_name": "07_Release_Notes_And_Changelog_Radar",
+      "git_blob_sha": null,
+      "content_sha256": "1e929922b1884e6b35b8b13be76c7c9bb6b9ae1a2aaa365436b233d26e67af9d",
+      "word_count": 727,
+      "last_updated_utc": "2026-10-21T19:55:00.167386+00:00",
+      "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_342482.md"
+    },
+    "vscode_insiders::iteration-plan_271045": {
+      "doc_id": "vscode_insiders::iteration-plan_271045",
+      "source_url": "https://github.com/microsoft/vscode/issues/271045",
+      "canonical_web_url": "https://github.com/microsoft/vscode/issues/271045",
+      "bundle_name": "07_Release_Notes_And_Changelog_Radar",
+      "git_blob_sha": null,
+      "content_sha256": "bbdddf50563f89ff6fe83c256dd8fc3fed39f9c052d47a2307e7330078484e8c",
+      "word_count": 1374,
+      "last_updated_utc": "2026-10-21T19:55:00.166362+00:00",
+      "local_clean_path": "clean_sources/vscode_insiders__iteration-plan_271045.md"
+    },
+    "vscode_insiders::iteration-plan_277757": {
+      "doc_id": "vscode_insiders::iteration-plan_277757",
+      "source_url": "https://github.com/microsoft/vscode/issues/277757",
+      "canonical_web_url": "https://github.com/microsoft/vscode/issues/277757",
+      "bundle_name": "07_Release_Notes_And_Changelog_Radar",
+      "git_blob_sha": null,
+      "content_sha256": "30a907360593dc7ddc58c4e9cdb47fe6977124644bb2cf1554c85ae860ebc2f7",
+      "word_count": 1026,
+      "last_updated_utc": "2026-10-21T19:55:00.164423+00:00",
+      "local_clean_path": "clean_sources/vscode_insiders__iteration-plan_277757.md"
+    },
+    "vscode_insiders::iteration-plan_284547": {
+      "doc_id": "vscode_insiders::iteration-plan_284547",
+      "source_url": "https://github.com/microsoft/vscode/issues/284547",
+      "canonical_web_url": "https://github.com/microsoft/vscode/issues/284547",
+      "bundle_name": "07_Release_Notes_And_Changelog_Radar",
+      "git_blob_sha": null,
+      "content_sha256": "d51977322fde3358c921842fce157c2c4c60d192a29cda289769c9afa565a792",
+      "word_count": 56,
+      "last_updated_utc": "2026-10-21T19:55:00.162395+00:00",
+      "local_clean_path": "clean_sources/vscode_insiders__iteration-plan_284547.md"
+    },
+    "vscode_insiders::iteration-plan_286040": {
+      "doc_id": "vscode_insiders::iteration-plan_286040",
+      "source_url": "https://github.com/microsoft/vscode/issues/286040",
+      "canonical_web_url": "https://github.com/microsoft/vscode/issues/286040",
+      "bundle_name": "07_Release_Notes_And_Changelog_Radar",
+      "git_blob_sha": null,
+      "content_sha256": "0a18aeb6ef4e5740b1fd3a103b9c86e50866c9aa48589dd496d35d9de56550d9",
+      "word_count": 1078,
+      "last_updated_utc": "2026-10-21T19:55:00.162395+00:00",
+      "local_clean_path": "clean_sources/vscode_insiders__iteration-plan_286040.md"
+    },
+    "vscode_insiders::iteration-plan_293855": {
+      "doc_id": "vscode_insiders::iteration-plan_293855",
+      "source_url": "https://github.com/microsoft/vscode/issues/293855",
+      "canonical_web_url": "https://github.com/microsoft/vscode/issues/293855",
+      "bundle_name": "07_Release_Notes_And_Changelog_Radar",
+      "git_blob_sha": null,
+      "content_sha256": "fb5520d1b9a0127f5c4c11d1b43d2226400a5b5618a9f23af13f7b31a0d854fc",
+      "word_count": 717,
+      "last_updated_utc": "2026-10-21T19:55:00.159456+00:00",
+      "local_clean_path": "clean_sources/vscode_insiders__iteration-plan_293855.md"
     },
     "web::agent_plugins_1_0_schema": {
       "doc_id": "web::agent_plugins_1_0_schema",

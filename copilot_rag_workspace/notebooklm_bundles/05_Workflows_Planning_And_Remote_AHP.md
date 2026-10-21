@@ -1,5 +1,5 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-10-21T16:53:41.370042+00:00
+- **Generado (UTC)**: 2026-10-21T19:55:00.951398+00:00
 - **Total Palabras**: 136,801 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
@@ -2222,7 +2222,7 @@ When content capture is enabled, the following attributes are populated.
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md
 - **SHA256_FINGERPRINT**: `078b8e0bb5b59fb6d652739855a1b84bbf16883dc2326d2d0f5695a4bb7e7610`
-- **LAST_VERIFIED_UTC**: 2026-10-21T16:53:38.535983+00:00
+- **LAST_VERIFIED_UTC**: 2026-10-21T19:54:39.321367+00:00
 ---
 
 **title**: GitHub Copilot CLI configuration directory

@@ -1,6 +1,6 @@
 **title**: Cloud sessions
 **shortTitle**: Cloud Sessions
-**intro**: >-
+**intro**: Cloud sessions run Copilot work on GitHub-hosted compute and appear in the agents panel on GitHub. Use them when your app should create a session that executes remotely instead of starting a local GitHub Copilot CLI session on the user's machine or your server.
 
 ## Prerequisites
 
@@ -175,14 +175,14 @@ await session.send({ prompt: "Summarize the README" });
 
 A few notes:
 
-* Set `streaming: true` on `createSession` so the runtime emits `assistant.message_delta` events. Without it, the only assistant signal you get is the final `assistant.message` — fine for batch use, but the chat will look frozen if you're rendering a live UI. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/streaming-events).
+* Set `streaming: true` on `createSession` so the runtime emits `assistant.message_delta` events. Without it, the only assistant signal you get is the final `assistant.message` — fine for batch use, but the chat will look frozen if you're rendering a live UI. See [Streaming Events](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/streaming-events).
 * Only the **first** `session.send` is sensitive to this race. Subsequent sends on the same session work normally because the runtime keeps `hasSessionStarted` set for the life of the session.
 * Apply a timeout (e.g. 60 s) around the `ready` promise so a stuck session doesn't hang your app forever.
 * The same pattern works in every SDK language — subscribe to `session.start`, check `producer === "copilot-agent"`, then call `send`.
 
 ## Accessing the agent session URL
 
-Cloud sessions are inherently remote: once the worker connects, the session is published to `https://github.com/copilot/tasks/{sessionId}` and the runtime emits a `session.info` event with the URL. You do **not** need to call `remote.enable()`— that API is only for syncing a local session to GitHub.
+Cloud sessions are inherently remote: once the worker connects, the session is published to `https://github.com/copilot/tasks/{sessionId}` and the runtime emits a `session.info` event with the URL. You do **not** need to call `remote.enable()`—that API is only for syncing a local session to GitHub.
 
 Capture the URL by subscribing to `session.info` and filtering by `infoType: "remote"`:
 
@@ -197,7 +197,7 @@ session.on("session.info", (event) => {
 
 The event fires shortly after `session.start`. If your renderer mounts after the event has already fired, persist the URL alongside the session record in your app's state and rehydrate on remount — the runtime does not re-emit `session.info` on its own.
 
-For the same wiring on local sessions promoted via `remote: true`, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/remote-sessions).
+For the same wiring on local sessions promoted via `remote: true`, see [Remote Sessions](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/remote-sessions).
 
 ## Repository association
 
@@ -250,7 +250,7 @@ In languages where SDK errors are represented differently, inspect the surfaced 
 
 Cloud sessions are stamped with a `Copilot-Integration-Id` header derived from the `GITHUB_COPILOT_INTEGRATION_ID` environment variable. This integration ID is used for routing, attribution, and integration-specific behavior.
 
-For multi-user server guidance and full integration ID details, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy).
+For multi-user server guidance and full integration ID details, see [Multi Tenancy](https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/multi-tenancy).
 
 SDK-created cloud sessions are routed to the `copilot-developer-sandbox` agent slug. The name is an internal routing slug for the cloud agent and does not mean the session uses the local Windows sandbox.
 
@@ -290,7 +290,7 @@ Use remote sessions when the session should execute where the SDK runtime is alr
 
 ## See also
 
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/remote-sessions): share locally hosted sessions to the agents panel on GitHub
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/streaming-events): subscribe to `assistant.*` deltas for live UI rendering
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/multi-tenancy): integration IDs and server deployment patterns
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth): configure GitHub authentication for SDK sessions
+* [Remote Sessions](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/remote-sessions): share locally hosted sessions to the agents panel on GitHub
+* [Streaming Events](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/streaming-events): subscribe to `assistant.*` deltas for live UI rendering
+* [Multi Tenancy](https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/multi-tenancy): integration IDs and server deployment patterns
+* [Auth](https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth): configure GitHub authentication for SDK sessions

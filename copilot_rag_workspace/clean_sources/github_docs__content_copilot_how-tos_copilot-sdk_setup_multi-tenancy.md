@@ -1,6 +1,6 @@
 **title**: Multi-tenancy and server deployments
 **shortTitle**: Multi Tenancy
-**intro**: >-
+**intro**: Multi-user server mode means running the Copilot SDK from backend code that serves more than one human, tenant, workspace, or integration account. In this setup, the application owns request routing and authorization, while the SDK and runtime provide per-session state, per-session authentication, and explicit tool registration so one user's session does not inherit another user's tools or identity.
 
 **Best for:** SaaS products, partner integrations, internal platforms, and backend services that handle concurrent users.
 
@@ -13,7 +13,7 @@ Use this guide when you are building:
 * Any server that handles concurrent users, workspaces, tenants, or requests
 * A shared runtime where multiple SDK clients connect to one Copilot runtime process
 
-This guide is a sister to [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling). Use that guide for topology, load-balancing, and storage patterns. Use this guide for SDK-level options and runtime isolation choices.
+This guide is a sister to [Scaling](https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/scaling). Use that guide for topology, load-balancing, and storage patterns. Use this guide for SDK-level options and runtime isolation choices.
 
 ## Key SDK options
 
@@ -26,7 +26,7 @@ This guide is a sister to [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling
 | `RuntimeConnection.forUri(url)` | Sharing one already-running runtime | Language names vary; see samples below. |
 | Per-session GitHub token or provider | Scoping auth to the requesting user | Prefer a rotating provider for short-lived credentials; use a static `gitHubToken` only when rotation is unnecessary. |
 
-For callback-backed credentials, see [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/authenticate#rotating-session-scoped-github-tokens). Each session owns its provider registration, so concurrent sessions can use different GitHub hosts and accounts without sharing callback state.
+For callback-backed credentials, see [Authenticate](https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/authenticate#rotating-session-scoped-github-tokens). Each session owns its provider registration, so concurrent sessions can use different GitHub hosts and accounts without sharing callback state.
 
 ### `mode: "empty"`
 
@@ -211,7 +211,7 @@ const client = new CopilotClient({
 });
 ```
 
-For languages that expose a provider callback, configure `sessionFs` at the client level and provide a per-session filesystem handler when creating or resuming a session. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/session-persistence) for persistence concepts and storage trade-offs.
+For languages that expose a provider callback, configure `sessionFs` at the client level and provide a per-session filesystem handler when creating or resuming a session. See [Session Persistence](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/session-persistence) for persistence concepts and storage trade-offs.
 
 Runtime-owned durable permission choices also use the session filesystem. Under the provider's `sessionStatePath`, `permissions.json` retains its top-level `locations` map with `tool_approvals` and `allowed_directories`; `settings.json` stores top-level `allowedUrls` and `sandbox`; and `config.json` stores top-level `trustedFolders`.
 
@@ -275,7 +275,7 @@ Use per-session tokens for content exclusion, model routing, quota checks, and u
 
 ## Integration ID
 
-Partners building branded agents can set an integration ID for agent session requests. The runtime reads `GITHUB_COPILOT_INTEGRATION_ID` and stamps it as the `Copilot-Integration-Id` HTTP header on every agent session request.
+Partners building branded agents can set an integration ID for Mission Control requests. The runtime reads `GITHUB_COPILOT_INTEGRATION_ID` and stamps it as the `Copilot-Integration-Id` HTTP header on every Mission Control request.
 
 ```bash
 GITHUB_COPILOT_INTEGRATION_ID=my-product-agent copilot --headless --port 4321
@@ -308,9 +308,9 @@ Session state is stored under `COPILOT_HOME/session-state/{sessionId}` unless yo
 
 | Pattern | Use when | Trade-offs |
 |---------|----------|------------|
-| Pattern 1: isolated CLI per user | You need the strongest isolation boundary or separate process credentials per user. | Strong isolation; higher resource cost. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling). |
+| Pattern 1: isolated CLI per user | You need the strongest isolation boundary or separate process credentials per user. | Strong isolation; higher resource cost. See [Scaling](https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/scaling). |
 | Pattern 2: shared CLI with `mode: "empty"` | You want one runtime to serve many users while your app controls tools, auth, and session IDs. | Efficient; requires careful tool registration, per-session tokens, and application-level access checks. |
-| Pattern 3: hybrid | You route compute-heavy work to cloud sessions and light work to local sessions. | Flexible; requires workload routing and policy handling. See [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/cloud-sessions). |
+| Pattern 3: hybrid | You route compute-heavy work to cloud sessions and light work to local sessions. | Flexible; requires workload routing and policy handling. See [Cloud Sessions](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/cloud-sessions). |
 
 ### Pattern 2: shared CLI with `mode: "empty"`
 
@@ -338,9 +338,9 @@ Use these rules:
 
 ## See also
 
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/scaling): deployment topologies, storage patterns, and isolation comparisons
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/setup/backend-services): running the runtime in headless server mode
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/auth/byok): using your own model provider credentials
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/cloud-sessions): routing selected work to cloud sessions
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features/session-persistence): managing resumable session state
-* [AUTOTITLE](/copilot/how-tos/copilot-sdk/features): tools, events, hooks, and advanced SDK features
+* [Scaling](https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/scaling): deployment topologies, storage patterns, and isolation comparisons
+* [Backend Services](https://docs.github.com/en/copilot/how-tos/copilot-sdk/setup/backend-services): running the runtime in headless server mode
+* [Byok](https://docs.github.com/en/copilot/how-tos/copilot-sdk/auth/byok): using your own model provider credentials
+* [Cloud Sessions](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/cloud-sessions): routing selected work to cloud sessions
+* [Session Persistence](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/session-persistence): managing resumable session state
+* [Features](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features): tools, events, hooks, and advanced SDK features
