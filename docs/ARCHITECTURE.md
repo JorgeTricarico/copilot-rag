@@ -1117,3 +1117,19 @@ En cuarto lugar, la delegación autónoma exige instrumentar controles determini
 
 
 Finalmente, la explotación del cuaderno en Google NotebookLM debe aprovechar el filtrado selectivo de fuentes (source checkboxes) junto con los reportes diferenciales generados por copilot_docs_sync.py. Al marcar simultáneamente en la interfaz de NotebookLM el compendio de radar de novedades (07_Release_Notes_And_Changelog_Radar.md) y el compendio técnico específico (03_MCP_Servers_And_Tools_Execution.md o 04_Customization_Skills_Hooks_And_Plugins.md), el arquitecto de software puede solicitar al sistema RAG que contraste los diffs recién detectados por el motor SHA-256 contra la configuración vigente de sus repositorios, generando parches inmediatos y verificados para sus archivos .mcp.json, plugin.json, hooks.json y SKILL.md con trazabilidad absoluta hacia la documentación oficial.
+
+
+## Documentación Complementaria y Ecosistema Avanzado
+
+Para profundizar en el diseño e implementación de sistemas multi-agente modernos y la evolución futura de este pipeline, consulte los siguientes manuales técnicos de referencia:
+
+1. **[Ecosistema de Agentes: Copilot SDK, Graph-Flows, AI Credits y Orquestación Híbrida](AGENT_ORCHESTRATION_AND_SDK.md)**:
+   - Análisis comparativo de frameworks de grafos y flujos: **LangGraph**, **Microsoft AutoGen 0.4**, **LlamaIndex Workflows** y **CrewAI Flows**.
+   - Arquitectura del **GitHub Copilot SDK** (`@github/copilot-sdk`), loops autónomos y configuración BYOK (`ProviderConfig`).
+   - Estrategia híbrida de consumo de **GitHub Models** y optimización de **AI Credits**.
+   - Patrón de ejecución encadenada con intercepción determinista vía lifecycle hooks (`onPreToolUse`, `onPostToolUse`, `onSubagentStart`, `onSubagentStop`).
+   - Implementación de referencia funcional en Python.
+
+2. **[Roadmap Técnico de Fases Futuras (Fases 4, 5 y 6)](ROADMAP_FUTURE_PHASES.md)**:
+   - Especificación detallada de la **Fase 4 (Zero-Touch Sync en NotebookLM)** mediante `notebooklm-py` y secretos de sesión.
+   - Especificación de las **Fases 5 y 6 (Expansión de Cobertura y CI/CD Avanzado)**: monitoreo de repositorios periféricos (`vscode-pull-request-github`, `vscode-dev-containers`) y empaquetado optimizado con Repomix.
