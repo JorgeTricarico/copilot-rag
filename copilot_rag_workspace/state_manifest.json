@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-10-21T13:24:34.143272+00:00",
+  "last_sync_utc": "2026-10-21T16:53:41.390448+00:00",
   "total_documents": 1885,
   "documents": {
     "anthropics_skills::README.md": {
@@ -18873,10 +18873,10 @@
       "source_url": "https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md",
       "canonical_web_url": "https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "c25221f5ef1f94e9a5b46bcab4e350010108472f",
-      "content_sha256": "49c031466caa915e6762ea97f032f8d886141258f8f7c9cb734fe5502bf96207",
-      "word_count": 9982,
-      "last_updated_utc": "2026-10-20T22:05:33.811655+00:00",
+      "git_blob_sha": "aff8fb5c81705947e66eaaaf1d772b9bf9ccecbb",
+      "content_sha256": "078b8e0bb5b59fb6d652739855a1b84bbf16883dc2326d2d0f5695a4bb7e7610",
+      "word_count": 10072,
+      "last_updated_utc": "2026-10-21T16:53:38.535983+00:00",
       "local_clean_path": "clean_sources/github_docs__content_copilot_reference_copilot-cli-reference_cli-config-dir-reference.md"
     },
     "github_docs::content/copilot/reference/copilot-cli-reference/cli-plugin-reference.md": {
@@ -18984,9 +18984,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "b56c4428b7fe66db6e271bfbd53293a75ac746d9cebe6081fae9b1b6cc274ca7",
+      "content_sha256": "1015e39fbc31a274dca940263a029e837103b5d244bc29cb0961698625831596",
       "word_count": 28087,
-      "last_updated_utc": "2026-10-21T13:24:27.306368+00:00",
+      "last_updated_utc": "2026-10-21T16:53:41.096313+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -18995,9 +18995,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "ba0b94ce703c9c9927861f4f69b57b07ae57350c3c710dc178f3997d9ef1bf15",
+      "content_sha256": "8bd13807eb6ecb724dbe912410c0afbe667ac52c9640aeb1ce887b3983554670",
       "word_count": 31568,
-      "last_updated_utc": "2026-10-21T13:24:26.993215+00:00",
+      "last_updated_utc": "2026-10-21T16:53:41.023677+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {

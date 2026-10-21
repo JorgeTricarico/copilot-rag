@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-10-21T13:24:28.451679+00:00
-- **Total Palabras**: 136,711 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-21T16:53:41.370042+00:00
+- **Total Palabras**: 136,801 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -2221,8 +2221,8 @@ When content capture is enabled, the following attributes are populated.
 # DOCUMENT_SOURCE: github_docs::content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md
-- **SHA256_FINGERPRINT**: `49c031466caa915e6762ea97f032f8d886141258f8f7c9cb734fe5502bf96207`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.811655+00:00
+- **SHA256_FINGERPRINT**: `078b8e0bb5b59fb6d652739855a1b84bbf16883dc2326d2d0f5695a4bb7e7610`
+- **LAST_VERIFIED_UTC**: 2026-10-21T16:53:38.535983+00:00
 ---
 
 **title**: GitHub Copilot CLI configuration directory
@@ -2270,7 +2270,7 @@ The following files are designed to be edited by you directly, or managed throug
 
 ### `settings.json`
 
-This is the primary configuration file for Copilot CLI. Within a session, you can use the interactive `/settings` command to change specific values, or run `/settings KEY VALUE` to set a single value. See [AUTOTITLE](/copilot/how-tos/copilot-cli/customize-copilot/change-settings). Alternatively, you can edit the `settings.json` file directly in a text editor. The file supports JSON with comments (JSONC).
+This is the primary configuration file for Copilot CLI. Within a session, you can use the interactive `/settings` command to change specific values, or run `/settings KEY VALUE` to set a single value. See [Change Settings](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/change-settings). Alternatively, you can edit the `settings.json` file directly in a text editor. The file supports JSON with comments (JSONC).
 
 By default, this file is located in the `~/.copilot` directory, which is the user-level configuration directory. It contains global user-level defaults for all repositories. You can change the location of this directory by setting the `COPILOT_HOME` environment variable to a different path.
 
@@ -2288,13 +2288,13 @@ For the full list of settings and how they interact with repository-level config
 > [!TIP]
 > Run `copilot help config` in your terminal for a quick reference.
 
-Use `copilot config` from your shell, outside a session, to read or change settings non-interactively—the scripting counterpart to the `/settings` slash command. Add `--repo` or `--local` to target `.github/copilot/settings.json` or `.github/copilot/settings.local.json` instead of your user settings file; only [repo-overridable keys](#repository-settings-githubcopilotsettingsjson) can be written there. See [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference#using-copilot-config) for the full command reference.
+Use `copilot config` from your shell, outside a session, to read or change settings non-interactively—the scripting counterpart to the `/settings` slash command. Add `--repo` or `--local` to target `.github/copilot/settings.json` or `.github/copilot/settings.local.json` instead of your user settings file; only [repo-overridable keys](#repository-settings-githubcopilotsettingsjson) can be written there. See [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#using-copilot-config) for the full command reference.
 
 ### `copilot-instructions.md`
 
 Personal custom instructions that apply to all your sessions, regardless of which project you're working in. This file works the same way as a repository-level `copilot-instructions.md` but applies globally.
 
-For more information, see [AUTOTITLE](/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions).
+For more information, see [Add Repository Instructions](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions).
 
 ### `instructions/`
 
@@ -2304,13 +2304,13 @@ Store additional personal instruction files here as `*.instructions.md` files. T
 
 Defines MCP (Model Context Protocol) servers available at the user level. These servers are available in all your sessions, regardless of which project directory you're in. Project-level MCP configurations (in `.mcp.json` or `.github/mcp.json`) take precedence over user-level definitions when server names conflict.
 
-For more information, see [AUTOTITLE](/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers).
+For more information, see [Add Mcp Servers](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers).
 
 ### `lsp-config.json`
 
 Defines Language Server Protocol (LSP) servers available at the user level. These servers provide language intelligence (diagnostics, completions, etc.) to the agent. Manage this file using the `/lsp` slash command, or edit it directly.
 
-For more information, see [AUTOTITLE](/copilot/how-tos/copilot-cli/set-up-copilot-cli/add-lsp-servers).
+For more information, see [Add Lsp Servers](https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/add-lsp-servers).
 
 ### `providers.json`
 
@@ -2322,19 +2322,19 @@ By default, this file is located at `~/.copilot/providers.json`. Override its lo
 
 Store personal custom agent definitions here as `.agent.md` files. Agents placed in this directory are available in all your sessions. If a personal agent and a project-level agent have the same ID—for example, if both top-level files are named `reviewer.agent.md`—the personal agent takes precedence. The optional `name` frontmatter field does not control deduplication, so agents with the same `name` but different IDs both load.
 
-For more information, see [AUTOTITLE](/copilot/how-tos/copilot-cli/customize-copilot/create-custom-agents-for-cli).
+For more information, see [Create Custom Agents For Cli](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/create-custom-agents-for-cli).
 
 ### `skills/`
 
 Store personal custom skill definitions here. Each skill lives in a subdirectory containing a `SKILL.md` file—for example, `~/.copilot/skills/my-skill/SKILL.md`. Personal skills are available in all your sessions. Project-level skills take precedence over personal skills if they share the same name.
 
-For more information, see [AUTOTITLE](/copilot/how-tos/copilot-cli/customize-copilot/add-skills).
+For more information, see [Add Skills](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-skills).
 
 ### `hooks/`
 
 Store user-level hook scripts here. These hooks apply to all your sessions. You can also define hooks inline in your user configuration file (`~/.copilot/settings.json`) using the `hooks` key. Repository-level hooks (in `.github/hooks/`) are loaded alongside user-level hooks.
 
-For more information, see [AUTOTITLE](/copilot/how-tos/copilot-cli/customize-copilot/use-hooks).
+For more information, see [Use Hooks](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/use-hooks).
 
 ### `extensions/`
 
@@ -2546,7 +2546,7 @@ Approve one MCP tool, memory writes, and extension permission access:
 
 Contains session history data, organized by session ID in subdirectories. Each session directory stores an event log (`events.jsonl`) and workspace artifacts (plans, checkpoints, tracked files). This data enables session resume (`--resume` or `--continue`).
 
-Deleting files from this directory only removes local copies. If you have synced sessions to your GitHub account, the synced data is stored separately and is not affected by local file deletion. You can delete or hide synced sessions from GitHub.com. For more information, see [AUTOTITLE](/copilot/concepts/security-governance-and-network-settings/session-data#deleting-session-data).
+Deleting files from this directory only removes local copies. If you have synced sessions to your GitHub account, the synced data is stored separately and is not affected by local file deletion. You can delete or hide synced sessions from GitHub.com. For more information, see [Session Data](https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/session-data#deleting-session-data).
 
 ### `command-history-state/`
 
@@ -2573,7 +2573,7 @@ This is separate from `~/.copilot/extensions/`, which stores user-authored exten
 
 Contains the files for plugins you have installed. Plugins installed from a marketplace are stored under `installed-plugins/{marketplace-name}/{plugin-name}/`. Directly installed plugins are stored under `installed-plugins/_direct/`. Manage plugins using the `copilot plugin` commands rather than editing this directory directly.
 
-For more information, see [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-plugin-reference).
+For more information, see [Cli Plugin Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-plugin-reference).
 
 ### `plugin-data/`
 
@@ -2682,17 +2682,17 @@ These settings apply across all your sessions and repositories. You can use the 
 | `disabledMcpServers` | `string[]` | `[]` | MCP server names to disable. Listed servers are configured but not started. |
 | `disabledSkills` | `string[]` | `[]` | Skill names to disable. Listed skills are discovered but not loaded. |
 | `dynamicRetrieval` | `{ skills?: boolean }` | unset | Per-category control of embeddings-based dynamic instruction retrieval. Set `skills` to `false` to disable retrieval for skills. |
-| `editorMode` | `"normal"` \| `"vim"` | `"normal"` | Input composer editing mode. Set by toggling the `/vim` slash command. See [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference#slash-commands-in-the-interactive-interface). |
+| `editorMode` | `"normal"` \| `"vim"` | `"normal"` | Input composer editing mode. Set by toggling the `/vim` slash command. See [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#slash-commands-in-the-interactive-interface). |
 | `effortLevel` | `string` | `"medium"` | Reasoning effort level for extended thinking: `"low"`, `"medium"`, `"high"`, or `"xhigh"`. Higher levels use more compute. |
 | `enabledMcpServers` | `string[]` | `[]` | Enable built-in MCP servers that are disabled by default. |
 | `enabledPlugins` | `Record<string, boolean>` | `{}` | Declarative plugin auto-install. Keys are plugin specs; values are `true` (enabled) or `false` (disabled). |
 | `experimental` | `boolean` | `false` | Enable experimental features. Can also be enabled with the `--experimental` command-line option or the `/experimental` slash command. |
 | `extraKnownMarketplaces` | `Record<string, {...}>` | `{}` | Additional plugin marketplaces. Each key is a marketplace name; the value specifies the required `source` (`"directory"`, `"git"`, or `"github"`). Set `autoUpdate: true` on an entry to opt that marketplace's installed plugins into session-start auto-update, the same as first-party plugins. This opt-in applies only to interactive and `-p` sessions—SDK and server sessions don't auto-update. The opt-in is honored when set in your own user settings, or in managed (MDM/server) settings. On a same-name collision, a built-in first-party marketplace wins, then a managed entry (which replaces the whole same-named user entry, so a managed entry without `"autoUpdate": true` removes the user's opt-in), then the user's own entry. |
 | `footer` | `object` | — | Controls which items appear in the status line. Sub-keys include `showModelEffort`, `showDirectory`, `showBranch`, `showContextWindow`, `showQuota`, `showAgent`, `showAiUsed`, `showCodeChanges`, `showUsername`, `showSandbox`, `showYolo`, and `showCustom` (all `boolean`). Managed by the `/statusline` slash command. |
-| `hooks` | `object` | — | Inline user-level hook definitions, keyed by event name. Uses the same schema as `.github/hooks/*.json` files. See [AUTOTITLE](/copilot/how-tos/copilot-cli/customize-copilot/use-hooks). |
+| `hooks` | `object` | — | Inline user-level hook definitions, keyed by event name. Uses the same schema as `.github/hooks/*.json` files. See [Use Hooks](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/use-hooks). |
 | `ide.autoConnect` | `boolean` | `true` | Automatically connect to an IDE workspace on startup. When `false`, you can still connect manually using the `/ide` command. |
 | `ide.openDiffOnEdit` | `boolean` | `true` | Open file edit diffs in the connected IDE for approval. When `false`, file edit approvals are shown only in the terminal. |
-| `ignoredSkillsLocations` | `string[]` | `[]` | Skill directories (and their descendants) excluded from discovery, regardless of which location would otherwise surface them. Supports `~`-relative paths. See [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference#skill-locations). |
+| `ignoredSkillsLocations` | `string[]` | `[]` | Skill directories (and their descendants) excluded from discovery, regardless of which location would otherwise surface them. Supports `~`-relative paths. See [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#skill-locations). |
 | `includeCoAuthoredBy` | `boolean` | `true` | Add a `Co-authored-by` trailer to git commits made by the agent. |
 | `inlineImages` | `boolean` | `true` | Render images inline using the Kitty graphics protocol. Requires a supported terminal (Ghostty, kitty, or WezTerm). When disabled, image attachments show a text placeholder. |
 | `keepAlive` | `"on"` \| `"off"` \| `"busy"` | `"off"` | Keep-alive mode applied at CLI startup. `"on"` always prevents the system from sleeping, `"busy"` prevents sleeping only while the agent is running, and `"off"` disables keep-alive. Also configurable with the `/keep-alive` slash command. |
@@ -2700,7 +2700,7 @@ These settings apply across all your sessions and repositories. You can use the 
 | `mergeStrategy` | `"rebase"` \| `"merge"` | — | Conflict resolution strategy for `/pr fix conflicts`. When set to `"rebase"`, conflicts are resolved by rebasing onto the base branch. When set to `"merge"`, the base branch is merged into the feature branch. If not configured, a picker dialog is shown. |
 | `model` | `string` | varies | AI model to use. Set to `"auto"` to let Copilot pick the best available model automatically. Managed by the `/model` slash command. |
 | `mouse` | `boolean` | `true` | Enable mouse support. Can also be set with `--mouse` or `--no-mouse`. |
-| `permissions.disableBypassPermissionsMode` | `string` | — | Set to `"disable"` to suppress all allow-all flags (`--allow-all-tools`, `--allow-all-paths`, `--allow-all-urls`, `--allow-all`, `--yolo`) at startup so they cannot be used to grant elevated permissions. Set to `"allow-auto-only"` to keep blocking full allow-all while still permitting `/allow-all auto` (LLM-assisted auto-approval). See [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference#restricting-the---allow-all-options). |
+| `permissions.disableBypassPermissionsMode` | `string` | — | Set to `"disable"` to suppress all allow-all flags (`--allow-all-tools`, `--allow-all-paths`, `--allow-all-urls`, `--allow-all`, `--yolo`) at startup so they cannot be used to grant elevated permissions. Set to `"allow-auto-only"` to keep blocking full allow-all while still permitting `/allow-all auto` (LLM-assisted auto-approval). See [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#restricting-the---allow-all-options). |
 | `pinnedPrompts` | `boolean` | `true` | Pin the current section's user prompt just below the top bar while scrolling the timeline, so it stays clear which request the visible output belongs to. CLI UI only—has no effect on prompts sent to the model. |
 | `powershellFlags` | `string[]` | `["-NoProfile", "-NoLogo"]` | Flags passed to PowerShell on startup. On Windows, the CLI prefers PowerShell 7+ (`pwsh`) and falls back to Windows PowerShell (`powershell.exe`) when `pwsh` is unavailable. Windows only. |
 | `proxyKerberosServicePrincipal` | `string` | unset | Service principal name (SPN) for Kerberos/Negotiate proxy authentication, overriding the derived `HTTP/<proxy-host>`. |
@@ -2714,7 +2714,7 @@ These settings apply across all your sessions and repositories. You can use the 
 | `sandbox.enabled` | `boolean` | `false` | Restrict shell commands, MCP/LSP servers, and built-in file/web tools to a sandboxed environment with limited file system and network access. Enable it from the `/sandbox` dialog or with `/sandbox enable`. |
 | `sandbox.auth.git` | `boolean` | `true` | Inject Git credentials into the sandbox so commands running inside it can authenticate with Git. Set to `false` to opt out. Renamed from `sandbox.gitAuth`; the old key has no migration and is ignored wherever it still appears. |
 | `sandbox.auth.gh` | `boolean` | `true` | Inject GitHub CLI (`gh`) credentials into the sandbox so commands running inside it can authenticate with the GitHub CLI. Set to `false` to opt out. Renamed from `sandbox.ghAuth`; the old key has no migration and is ignored wherever it still appears. |
-| `sandbox.credentials` | `object` | unset | Mask selected environment variables in sandboxed processes. Contains an `envVars` object keyed by variable name, with a non-empty `injectHosts` array for each entry. Processes receive placeholders, and the local proxy supplies the real values only in HTTPS request headers to those hosts. Stores variable names and host rules, not secret values. Requires sandboxing to be enabled. Configure from the `/sandbox` dialog's **Credentials** tab under **Masked environment variables**. See [AUTOTITLE](/copilot/how-tos/cloud-and-local-sandboxes/configuring-local-sandbox-settings#masking-environment-variables). |
+| `sandbox.credentials` | `object` | unset | Mask selected environment variables in sandboxed processes. Contains an `envVars` object keyed by variable name, with a non-empty `injectHosts` array for each entry. Processes receive placeholders, and the local proxy supplies the real values only in HTTPS request headers to those hosts. Stores variable names and host rules, not secret values. Requires sandboxing to be enabled. Configure from the `/sandbox` dialog's **Credentials** tab under **Masked environment variables**. See [Configuring Local Sandbox Settings](https://docs.github.com/en/copilot/how-tos/cloud-and-local-sandboxes/configuring-local-sandbox-settings#masking-environment-variables). |
 | `sandbox.userPolicy.network.allowLocalNetwork` | `boolean` | `false` | Control local network access, such as connections to local development servers. The effect on sandboxed commands depends on the operating system. On supported Windows hosts, enabling this setting also allows connections to the host's localhost. Older Windows versions keep localhost blocked even with this setting enabled. Windows proxying and host rules require this to be `true`. |
 | `sandbox.userPolicy.network.proxy` | `object` | unset | Route sandboxed network traffic through an HTTP(S) proxy. Fields: `url` (required), `username` (optional), `password` (optional). The URL must not contain credentials. Configure credentials in the `/sandbox` dialog's **Network** tab, which masks the password field. Literal passwords use the OS credential store when available, with a local file fallback. `settings.json` holds a secret reference. The password can instead be a whole-field `${VAR}` or `$VAR` environment-variable reference. Proxy enforcement differs by platform, as described below. |
 | `sandbox.userPolicy.network.allowedHosts` | `string[]` | `[]` | Hosts a sandboxed command is allowed to reach. Entries are exact hostnames, IP addresses, or `*.example.com` for subdomains but not the root domain (`*` matches every host). CIDR blocks are not supported. Do not include URLs or ports. A non-empty list blocks unmatched hosts, except for `localhost`, `127.0.0.1`, and `::1` when outbound and local network access are both enabled. These automatic entries do not change your saved list. Explicit deny rules and enterprise allowlists still apply. Configure from the `/sandbox` dialog's **Network** tab under **Host rules**. |
@@ -2724,20 +2724,21 @@ These settings apply across all your sessions and repositories. You can use the 
 | `screenReader` | `boolean` | `false` | Enable screen reader optimizations. |
 | `scrollbar` | `boolean` | `true` | Show the scrollbar in scrollable views. Set to `false` to hide it and use the full terminal width. |
 | `shellShortcut` | `boolean` | `true` | Let a lone `$` at the prompt, followed by <kbd>Enter</kbd>, open an interactive shell rooted at the session's working directory (activates only for a local, trusted, idle session on a real TTY). User- or managed-scoped only—not repo-overridable. |
+| `showReasoning` | `boolean` | None | Show model reasoning in the timeline. You can set this with `/config` or `/settings`, or toggle it with <kbd>Ctrl</kbd>+<kbd>T</kbd>. Your preference is saved across sessions. |
 | `showTimestamps` | `boolean` | `true` | Show dim `HH:mm` timestamps next to user messages in the timeline. |
 | `showTipsOnStartup` | `boolean` | `true` | Show a random command tip when the CLI starts. |
-| `sidebar` | `boolean` | `true` | Enable the current-session sidebar. Set to `false` to disable it entirely, hiding the composer hint and the <kbd>←</kbd> open gesture. See [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference#sidebar-and-sessions-tab-shortcuts). |
+| `sidebar` | `boolean` | `true` | Enable the current-session sidebar. Set to `false` to disable it entirely, hiding the composer hint and the <kbd>←</kbd> open gesture. See [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#sidebar-and-sessions-tab-shortcuts). |
 | `skillDirectories` | `string[]` | `[]` | Additional directories to search for custom skill definitions (in addition to `~/.copilot/skills/`). |
 | `statusLine` | `object` | — | Custom status line display. `type`: must be `"command"`. `command`: path to an executable script that receives session JSON on stdin and prints status content to stdout. `padding`: optional number of left-padding spaces. `refreshInterval`: optional integer number of seconds (`1`–`2147483`) to re-run the command on a timer instead of only on events; omit it to refresh only when the session state changes. If the command fails to spawn, exits non-zero, or fails to receive the status JSON on stdin, the CLI logs a warning once per continuous failure episode and leaves the status line blank instead of failing silently. Run with `--log-level all` to see the underlying error detail. |
-| `stayInAutopilot` | `boolean` | `true` | Remain in autopilot mode after each task completes. When enabled, the next prompt you enter after a task completes is also handled in autopilot mode. For more information, see [AUTOTITLE](/copilot/how-tos/copilot-cli/use-copilot-cli/use-autopilot-mode). |
+| `stayInAutopilot` | `boolean` | `true` | Remain in autopilot mode after each task completes. When enabled, the next prompt you enter after a task completes is also handled in autopilot mode. For more information, see [Use Autopilot Mode](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/use-autopilot-mode). |
 | `storeTokenPlaintext` | `boolean` | `false` | Allow authentication tokens to be stored in plain text in `config.json` when no system keychain is available. |
 | `stream` | `boolean` | `true` | Enable streaming responses. |
 | `streamerMode` | `boolean` | `false` | Hide preview model names, quota details, prompt timestamps, and the update-available notice. Useful when demonstrating Copilot CLI or screen sharing. |
 | `subagents.agents` | `object` | `{}` | Per-agent model configuration, keyed by agent name. Each value is an object with optional `model` (string), `modelPolicy` (`"preferred"` or `"required"`), `effortLevel` (string), and `contextTier` (`"default"`, `"long_context"`, or `"inherit"`) fields. Set `model`, `effortLevel`, or `contextTier` to `"inherit"` to use the parent session's value at dispatch time. `modelPolicy` has no effect when the agent definition itself sets `modelPolicy: "required"`—that lock can't be overridden here. Use the `/subagents` slash command to configure these settings interactively. |
 | `subagents.agents["rubber-duck"].autoInvoke` | `boolean` | `false` | Allow Copilot to proactively consult the rubber duck agent without being asked. To change this, run `/subagents`, select `rubber-duck`, press **Enter**, then toggle **Proactive invocation**. |
 | `subagents.disabledSubagents` | `string[]` | `[]` | Names of subagents that are turned off. Manage this list using the **On/Off** control for each agent in the `/subagents` picker in an interactive session. |
-| `subagents.maxConcurrency` | `number` | plan-based | Maximum concurrent subagents for this session. Only honored for usage-based billing users; ignored for all other plans. Capped at `32`. See [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference#subagent-limits). |
-| `subagents.maxDepth` | `number` | `6` | Maximum subagent nesting depth. Only honored for usage-based billing users; ignored for all other plans. Capped at `256`. See [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference#subagent-limits). |
+| `subagents.maxConcurrency` | `number` | plan-based | Maximum concurrent subagents for this session. Only honored for usage-based billing users; ignored for all other plans. Capped at `32`. See [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#subagent-limits). |
+| `subagents.maxDepth` | `number` | `6` | Maximum subagent nesting depth. Only honored for usage-based billing users; ignored for all other plans. Capped at `256`. See [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#subagent-limits). |
 | `tabs.enabled` | `boolean` | `true` | Show the home tab bar. Set to `false` to hide it entirely. |
 | `tabs.hide` | `string[]` | `[]` | Tab identifiers to hide. Accepted values: `"copilot"`, `"agents"`, `"issues"`, `"pull-requests"`, `"gists"` (matched case-insensitively). |
 | `tabs.sort` | `string[]` | `[]` | Order in which tabs are displayed. Tabs not listed keep their default relative order after the listed ones. Unknown identifiers are ignored. |
@@ -2760,7 +2761,7 @@ Host rules and `sandbox.userPolicy.network.proxy` use a built-in local proxy. Wh
 
 On macOS and Linux, the sandbox restricts direct connections so programs cannot avoid the proxy. On Windows, the sandbox relies on programs honoring the proxy settings. As a result, programs that ignore the proxy settings on Windows can connect directly and get around your host rules. Windows proxying and host rules also require a supported host and `allowLocalNetwork: true`, which permits private-network access. On Linux, proxy settings reject IPv6 address literals other than the `[::]` dual-stack wildcard. Use an IPv4 endpoint or a hostname with IPv4 support.
 
-Sandbox settings are user-level or enterprise-managed. They are not repository-overridable. For configuration steps and network limitations, see [AUTOTITLE](/copilot/how-tos/cloud-and-local-sandboxes/configuring-local-sandbox-settings).
+Sandbox settings are user-level or enterprise-managed. They are not repository-overridable. For configuration steps and network limitations, see [Configuring Local Sandbox Settings](https://docs.github.com/en/copilot/how-tos/cloud-and-local-sandboxes/configuring-local-sandbox-settings).
 
 Sandboxing is powered by [Microsoft eXecution Container (MXC)](https://github.com/microsoft/mxc), which provides platform-specific containment backends. Copilot CLI uses Seatbelt on macOS, Bubblewrap on Linux, and ProcessContainer on Windows.
 
@@ -2769,7 +2770,7 @@ Sandboxing is powered by [Microsoft eXecution Container (MXC)](https://github.co
 Repository settings apply to everyone who works in the repository. They are committed to the repository and shared with collaborators.
 
 > [!NOTE]
-> The plugin-related keys in the repository configuration file (`enabledPlugins` and `extraKnownMarketplaces`) are also read by Copilot cloud agent, not only Copilot CLI. This lets you enable the same plugins for both clients from a single file. For more information about plugins, see [AUTOTITLE](/copilot/concepts/agents/about-plugins).
+> The plugin-related keys in the repository configuration file (`enabledPlugins` and `extraKnownMarketplaces`) are also read by Copilot cloud agent, not only Copilot CLI. This lets you enable the same plugins for both clients from a single file. For more information about plugins, see [About Plugins](https://docs.github.com/en/copilot/concepts/agents/about-plugins).
 
 Only the keys listed in the following table are supported at the repository level. Any other keys—including keys that are valid in the user configuration file—are silently ignored. Each supported key has a directional merge policy that keeps the override fail-closed and safe.
 
@@ -2784,7 +2785,7 @@ Only the keys listed in the following table are supported at the repository leve
 | `effortLevel` | `string` | Replaced—repository takes precedence | Pin the default reasoning effort. |
 | `enabledPlugins` | `Record<string, boolean>` | Merged—repository overrides user for same key | Declarative plugin auto-install. |
 | `extraKnownMarketplaces` | `Record<string, {...}>` | Merged—repository overrides user for same key | Plugin marketplaces available in this repository. Each entry's `source` is required. An `autoUpdate: true` on an entry is accepted at the repository level but currently ignored—the auto-update opt-in is only honored when set in the user's own settings or in managed (MDM/server) settings. |
-| `hooks` | `object` | Merged—repository overrides user for same key | Hook definitions scoped to this repository. See [AUTOTITLE](/copilot/how-tos/copilot-cli/customize-copilot/use-hooks). |
+| `hooks` | `object` | Merged—repository overrides user for same key | Hook definitions scoped to this repository. See [Use Hooks](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/use-hooks). |
 | `includeCoAuthoredBy` | `boolean` | Replaced—repository takes precedence | Add a `Co-authored-by` trailer to commits. |
 | `mergeStrategy` | `"rebase"` \| `"merge"` | Replaced—repository takes precedence | Conflict resolution strategy for `/pr fix conflicts`. |
 | `model` | `string` | Replaced—repository takes precedence | Pin the default model for this repo. |
@@ -2818,7 +2819,7 @@ claude-sonnet-*
 
 Negated patterns (`!pattern`) aren't supported, the fallback model must be an exact ID (not a glob), and the fallback model must itself match one of the configured globs. Copilot CLI re-evaluates the policy on `/cd` and rejects an invalid file with an error before running.
 
-The allowlist governs only Copilot's built-in models. It cannot filter out custom models added using the bring your own API keys (BYOK) method. BYOK models remain listed and selectable regardless of the patterns you configure, and the `fallback:` directive never applies to them. For more information, see [AUTOTITLE](/copilot/how-tos/administer-copilot/manage-for-enterprise/enable-custom-models) and [AUTOTITLE](/copilot/how-tos/administer-copilot/manage-for-organization/enable-custom-models).
+The allowlist governs only Copilot's built-in models. It cannot filter out custom models added using the bring your own API keys (BYOK) method. BYOK models remain listed and selectable regardless of the patterns you configure, and the `fallback:` directive never applies to them. For more information, see [Enable Custom Models](https://docs.github.com/en/copilot/how-tos/administer-copilot/manage-for-enterprise/enable-custom-models) and [Enable Custom Models](https://docs.github.com/en/copilot/how-tos/administer-copilot/manage-for-organization/enable-custom-models).
 
 ### Local settings (`.github/copilot/settings.local.json`)
 
@@ -2888,12 +2889,12 @@ Only the following keys are supported in MDM managed settings.
 | `sandbox` | Set a sandbox policy floor that users cannot relax. Supported settings include `enabled`, `failIfUnavailable`, `allowBypass`, `addCurrentWorkingDirectory`, `sandboxMcpServers`, `sandboxLspServers`, `auth.git`, `auth.gh`, `allowDevToolAccess`, `learningMode`, and the `userPolicy.*` filesystem and network rules. The managed value always takes precedence over a user's own value in the safer direction. Turning the sandbox on, requiring it to succeed, and sandboxing MCP and LSP servers cannot be turned off. Disabling bypass or credential injection cannot be re-enabled. Filesystem allow lists can only be narrowed, and denied paths can only be added to. `failIfUnavailable` can only be set by an administrator and blocks the session when the sandbox cannot be established. For the settings users can set themselves, see [User settings](#user-settings-copilotsettingsjson) or run `copilot help sandbox`. |
 | `shellShortcut` | Force-enable or force-disable the `$` interactive shell shortcut for all users. A managed value always overrides the user's own `shellShortcut` setting. |
 | `strictKnownMarketplaces` | Restrict plugins to an allowlist of known marketplaces (a JSON array of marketplace specs). The allowlist also governs built-in marketplaces once set—an empty array (`[]`) hides and blocks every marketplace, including built-ins, not just user- or repository-added ones. |
-| `telemetry` | Push baseline OpenTelemetry export configuration: `enabled`, `endpoint`, `protocol`, `headers`, `resourceAttributes`, `captureContent`, `lockCaptureContent`, `serviceName`, and `headersProvider`. See [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference#opentelemetry-monitoring). |
+| `telemetry` | Push baseline OpenTelemetry export configuration: `enabled`, `endpoint`, `protocol`, `headers`, `resourceAttributes`, `captureContent`, `lockCaptureContent`, `serviceName`, and `headersProvider`. See [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#opentelemetry-monitoring). |
 
 > [!NOTE]
 > * `policyHelper.path` accepts an absolute path, a home-relative path (`~/...`), or a bare program name resolved from `PATH`. Other relative forms are rejected. The registration is accepted and validated, but the runtime doesn't yet invoke the helper—helper execution ships in a future release.
 > * When `remoteControl.mode` is `"requireSSO"`, list the allowed organizations in `remoteControl.githubDotComOrganizations`. The client must be SSO-authorized for at least one listed GitHub.com organization—it no longer needs to be authorized for all of them.
-> * Set `permissions.disableBypassPermissionsMode` to `"disable"` in MDM managed settings to enforce the restriction at the device level. Account switches cannot override this policy. Set it to `"allow-auto-only"` to block full allow-all escalation while still permitting `/permissions assisted` (LLM-assisted permission approval). If an unrecognized value is set, the CLI logs the issue and enforces `"disable"` as a fail-closed default, so a malformed managed policy still restricts the allow-all options instead of silently allowing them. See [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference#restricting-the---allow-all-options).
+> * Set `permissions.disableBypassPermissionsMode` to `"disable"` in MDM managed settings to enforce the restriction at the device level. Account switches cannot override this policy. Set it to `"allow-auto-only"` to block full allow-all escalation while still permitting `/permissions assisted` (LLM-assisted permission approval). If an unrecognized value is set, the CLI logs the issue and enforces `"disable"` as a fail-closed default, so a malformed managed policy still restricts the allow-all options instead of silently allowing them. See [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#restricting-the---allow-all-options).
 > * Most managed keys lock the entire row: a local edit is silently overridden by the managed value on the next load. `enabledPlugins` and `extraKnownMarketplaces` are the exception—the managed layer merges these maps with your own entries field-by-field instead of replacing them outright. This means the lock applies **per entry**, not to the whole key: a plugin or marketplace pinned by a managed policy can't be re-enabled, disabled, or repointed locally, but other entries in the same map remain fully user-controlled.
 > * `sandbox.learningMode` is Windows-only and can only be set through native MDM (for example, through Intune or the registry)—a `managed-settings.json` file value is ignored. On a host with denial capture, set it to `"allow"` to start sandboxed shell commands in record-and-allow mode instead of the default record-and-deny mode, recording each filesystem or process access and allowing it rather than refusing it (network policy is still enforced). This lets an administrator observe what a cohort's commands need before locking them down; it is not a containment mode. The status line shows `sandbox relaxed` and shell calls show `(sandbox relaxed)` while it applies. A `deny` value (the default), or removing the key, returns the cohort to the ordinary enforced sandbox, and `deny` from any managed channel always wins over `allow`. User settings and SDK hosts cannot set this key.
 
@@ -2977,11 +2978,11 @@ Rules:
 
 ## Further reading
 
-* [AUTOTITLE](/copilot/how-tos/copilot-cli)
-* [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference)
-* [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-programmatic-reference)
-* [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-plugin-reference)
-* [AUTOTITLE](/copilot/reference/hooks-reference)
+* [Copilot Cli](https://docs.github.com/en/copilot/how-tos/copilot-cli)
+* [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference)
+* [Cli Programmatic Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-programmatic-reference)
+* [Cli Plugin Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-plugin-reference)
+* [Hooks Reference](https://docs.github.com/en/copilot/reference/hooks-reference)
 
 
 ---
