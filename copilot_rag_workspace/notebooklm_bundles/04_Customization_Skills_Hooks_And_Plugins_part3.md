@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part3
-- **Generado (UTC)**: 2026-10-21T19:55:00.553477+00:00
-- **Total Palabras**: 449,592 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-22T03:58:31.434014+00:00
+- **Total Palabras**: 449,564 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -28865,11 +28865,11 @@ Transform this Python script into a polished, beginner-friendly project by refac
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/commit-message-storyteller/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/commit-message-storyteller/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/commit-message-storyteller/SKILL.md
-- **SHA256_FINGERPRINT**: `86b856700c98502eb576ac4826e417e98c3690bc848c417047da9d43912cfd56`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:21.517925+00:00
+- **SHA256_FINGERPRINT**: `5b4beff2fb400148343830cc352697f9bd48f2617e7be3a040c583d7e21a42dd`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.711001+00:00
 ---
 
-**description**: Analyzes git diffs or staged changes and generates narrative commit messages that explain WHY a change was made, not just what changed — following Conventional Commits format. Use when asked to "write a commit message", "generate a commit", "describe my changes", "what should I commit this as", "commit this", "summarize my diff", or "help me commit". Works with git diff output, staged files, or plain descriptions of changes.
+**description**: Analyzes git diffs or staged changes and generates narrative commit messages that explain WHY a change was made, not just what changed — following Conventional Commits format. Use when asked to "write a commit message", "describe my changes", "what should I commit this as", or "summarize my diff". Works with git diff output, staged files, or plain descriptions of changes. Does not run git commit; to stage files and make the commit, use the git-commit skill.
 
 # Commit Message Storyteller
 
@@ -28877,7 +28877,7 @@ Transforms raw git diffs and change descriptions into clear, story-driven commit
 
 ## When to Use This Skill
 
-- User says "write a commit message", "help me commit", or "generate a commit"
+- User says "write a commit message"
 - User pastes a git diff or describes code changes
 - User says "what should I commit this as?" or "summarize my diff"
 - User wants better commit history for their team or open-source project
@@ -28886,6 +28886,7 @@ Transforms raw git diffs and change descriptions into clear, story-driven commit
 ## Prerequisites
 
 Have at least one of the following ready:
+
 - Output from `git diff` or `git diff --staged`
 - A description of what you changed and why
 - A list of modified files
@@ -28907,7 +28908,7 @@ If the user provides a raw `git diff`, extract this context automatically from t
 Map the change to a Conventional Commits type using this guide:
 
 | Type | Use When |
-|------|----------|
+| ------ | ---------- |
 | `feat` | A new feature or capability is added |
 | `fix` | A bug or incorrect behavior is corrected |
 | `refactor` | Code restructured without changing behavior |
@@ -28915,7 +28916,8 @@ Map the change to a Conventional Commits type using this guide:
 | `docs` | Documentation only changes |
 | `style` | Formatting, whitespace, missing semicolons (no logic change) |
 | `test` | Adding or updating tests |
-| `chore` | Build process, dependency updates, config changes |
+| `build` | Build system or dependency changes |
+| `chore` | Other maintenance that does not change source or tests |
 | `ci` | CI/CD pipeline changes |
 | `revert` | Reverting a previous commit |
 
@@ -28925,7 +28927,7 @@ See `references/conventional-commits-guide.md` for detailed examples.
 
 Follow this structure:
 
-```
+```text
 <type>(<optional scope>): <short imperative summary>
 
 <body — the story: why this change was made, what problem it solves>
@@ -28936,12 +28938,14 @@ Follow this structure:
 #### Rules for Each Part
 
 **Subject line (first line):**
+
 - Use imperative mood: "add", "fix", "remove" — not "added" or "fixes"
 - Max 72 characters
 - No period at the end
 - Lowercase after the colon
 
 **Body (the story):**
+
 - Explain the *why*, not the *what* (the diff already shows the what)
 - Describe the problem that existed before this change
 - Mention any alternatives considered if relevant
@@ -28949,6 +28953,7 @@ Follow this structure:
 - Separate from subject with a blank line
 
 **Footer:**
+
 - Reference issues: `Closes #123`, `Fixes #456`, `Refs #789`
 - Mark breaking changes: `BREAKING CHANGE: <description>`
 
@@ -28958,7 +28963,7 @@ Produce the commit message in a copyable code block, followed by a one-line plai
 
 **Example output:**
 
-```
+```text
 fix(auth): prevent token refresh loop on expired sessions
 
 When a user's session expired mid-request, the auth middleware was
@@ -28988,7 +28993,7 @@ If the diff contains **logically separate changes**, split them into multiple co
 ## Edge Cases
 
 | Situation | How to Handle |
-|-----------|---------------|
+| ----------- | --------------- |
 | User provides no context beyond a diff | Infer type and scope from file names and changed symbols |
 | Changes span many files with no clear theme | Ask: "Is this one logical change, or multiple?" |
 | Breaking change detected | Add `BREAKING CHANGE:` footer automatically |
@@ -29014,19 +29019,19 @@ See `references/conventional-commits-guide.md` for type examples and scope guide
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/commit-message-storyteller/references/conventional-commits-guide.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/commit-message-storyteller/references/conventional-commits-guide.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/commit-message-storyteller/references/conventional-commits-guide.md
-- **SHA256_FINGERPRINT**: `f1f575e5af5cb7b2a42ce22dc2112190b2834fef7b31fe75bd44cd0af5db0e62`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:21.509253+00:00
+- **SHA256_FINGERPRINT**: `7e21e0076408f6e4d2f48cdd49b6cafcf6af94a85a1fe5df040730773e5539da`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.590558+00:00
 ---
 
 # Conventional Commits — Quick Reference Guide
 
-Full spec: https://www.conventionalcommits.org/en/v1.0.0/
+Full spec: <https://www.conventionalcommits.org/en/v1.0.0/>
 
 ---
 
 ## Format
 
-```
+```text
 <type>(<scope>): <description>
 
 [optional body]
@@ -29039,7 +29044,8 @@ Full spec: https://www.conventionalcommits.org/en/v1.0.0/
 ## Type Examples
 
 ### `feat` — New Feature
-```
+
+```text
 feat(payments): add Apple Pay support for checkout flow
 
 Users in supported regions can now complete purchases using Apple Pay.
@@ -29049,7 +29055,8 @@ Closes #88
 ```
 
 ### `fix` — Bug Fix
-```
+
+```text
 fix(api): correct off-by-one error in pagination offset
 
 The results page was skipping the last item on every page because the
@@ -29060,7 +29067,8 @@ Fixes #201
 ```
 
 ### `refactor` — Code Restructure (no behavior change)
-```
+
+```text
 refactor(user-service): extract email validation into shared utility
 
 Email validation logic was duplicated across 4 modules. Extracted into
@@ -29068,7 +29076,8 @@ Email validation logic was duplicated across 4 modules. Extracted into
 ```
 
 ### `perf` — Performance Improvement
-```
+
+```text
 perf(dashboard): lazy-load chart components to reduce initial bundle size
 
 The dashboard was importing all chart types upfront, adding ~180KB to the
@@ -29077,7 +29086,8 @@ by ~40% on slow connections.
 ```
 
 ### `docs` — Documentation Only
-```
+
+```text
 docs(readme): add local development setup instructions
 
 New contributors were struggling to get the dev environment running.
@@ -29086,7 +29096,8 @@ the database seed command.
 ```
 
 ### `test` — Tests Added or Updated
-```
+
+```text
 test(auth): add coverage for concurrent login edge cases
 
 The login flow had no tests for simultaneous requests from the same
@@ -29094,16 +29105,18 @@ session. Added tests that verify only one session token is issued
 when multiple requests arrive in the same tick.
 ```
 
-### `chore` — Maintenance / Config
-```
-chore(deps): upgrade eslint from v8 to v9
+### `build` — Build System / Dependencies
+
+```text
+build(deps): upgrade eslint from v8 to v9
 
 v8 reached end-of-life. Migrated config to flat config format required
 by v9. No rule changes — this is a tooling-only update.
 ```
 
 ### `ci` — CI/CD Pipeline
-```
+
+```text
 ci: add caching for node_modules in GitHub Actions
 
 Cold CI runs were taking 4+ minutes due to repeated installs.
@@ -29111,7 +29124,8 @@ Adding cache restore on lockfile hash reduces this to ~90 seconds.
 ```
 
 ### `revert` — Reverting a Commit
-```
+
+```text
 revert: feat(notifications): add push notification opt-in
 
 Reverts commit a3f92bc.
@@ -29125,6 +29139,7 @@ Rolling back until the root cause is identified.
 ## Scope Guidelines
 
 The `scope` is optional but strongly recommended. It should be:
+
 - A short noun identifying the area of the codebase: `auth`, `api`, `dashboard`, `payments`
 - Consistent across the project (don't mix `user` and `users`)
 - Omitted if the change is truly global
@@ -29135,7 +29150,7 @@ The `scope` is optional but strongly recommended. It should be:
 
 Add `BREAKING CHANGE:` in the footer (or use `!` after the type):
 
-```
+```text
 feat(api)!: remove v1 endpoints
 
 All v1 REST endpoints have been removed following the 6-month deprecation
@@ -29149,11 +29164,13 @@ BREAKING CHANGE: /api/v1/* routes no longer exist. See migration guide at docs/v
 ## Body Writing Tips
 
 Ask yourself before writing the body:
+
 - **What was broken / missing before this change?**
 - **Why was this approach chosen over alternatives?**
 - **What will be different for users or developers after this?**
 
 Avoid:
+
 - Restating what the diff already shows ("changed the variable name")
 - Vague language ("various improvements", "miscellaneous fixes")
 - Future tense ("this will fix...") — write in present/past tense
@@ -29163,7 +29180,7 @@ Avoid:
 ## Commit Message Anti-Patterns
 
 | ❌ Bad | ✅ Better |
-|--------|----------|
+| -------- | ---------- |
 | `fix bug` | `fix(cart): prevent duplicate items on rapid add-to-cart clicks` |
 | `updates` | `feat(profile): allow users to update display name` |
 | `WIP` | Don't commit WIP — stash it |
@@ -85502,129 +85519,131 @@ gh attach download "$URL" -O "$FILE"
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/git-commit/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/git-commit/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/git-commit/SKILL.md
-- **SHA256_FINGERPRINT**: `7207062b54478a35e4d5b8c1824eb3f524371d8e80776b7bcfb109969a3cc3a3`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:29.712705+00:00
+- **SHA256_FINGERPRINT**: `b1a344c79746b5a1277f6954b83ba066c4919eefa2bcf3a75c64c1f9d7215404`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.602303+00:00
 ---
 
-**description**: Execute git commit with conventional commit message analysis, intelligent staging, and message generation. Use when user asks to commit changes, create a git commit, or mentions "/commit". Supports: (1) Auto-detecting type and scope from changes, (2) Generating conventional commit messages from diff, (3) Interactive commit with optional type/scope/description overrides, (4) Intelligent file staging for logical grouping
+**description**: Use this skill when the user wants to make a Git commit or split changes into more than one commit. Also use it when the user types "/commit" or asks for a conventional commit. The skill examines the diff, stages the related files, writes a Conventional Commits message, and runs git commit. Do not use it when the user wants only a commit message and no commit. Do not use it to push, open a pull request, rebase, or change the commit history.
 
 # Git Commit with Conventional Commits
 
-## Overview
+Make Git commits that follow the [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/) specification. Get the type, the scope, and the summary from the diff.
 
-Create standardized, semantic git commits using the Conventional Commits specification. Analyze the actual diff to determine appropriate type, scope, and message.
+## Message Format
 
-## Conventional Commit Format
+```text
+<type>(<scope>): <summary>
 
-```
-<type>[optional scope]: <description>
+<body>
 
-[optional body]
-
-[optional footer(s)]
+<footer>
 ```
 
-## Commit Types
+- The scope, the body, and the footer are optional. Without a scope, write `<type>: <summary>`.
+- Write the summary in the imperative mood: "add", not "added" or "adds".
+- Keep the first line at 72 characters or less. Do not put a period at the end.
+- In the body, tell what changed and why.
+- Write each footer as `Token: value` or `Token #value`, for example `Refs: #456` or `Closes #123`. Conventional Commits accepts the two forms, but Git reads only `Token: value` as a trailer. In a token, use `-` in place of a space.
 
-| Type       | Purpose                        |
-| ---------- | ------------------------------ |
-| `feat`     | New feature                    |
-| `fix`      | Bug fix                        |
-| `docs`     | Documentation only             |
-| `style`    | Formatting/style (no logic)    |
-| `refactor` | Code refactor (no feature/fix) |
-| `perf`     | Performance improvement        |
-| `test`     | Add/update tests               |
-| `build`    | Build system/dependencies      |
-| `ci`       | CI/config changes              |
-| `chore`    | Maintenance/misc               |
-| `revert`   | Revert commit                  |
+## Types
+
+Conventional Commits defines only `feat` and `fix`. The other types come from the Angular convention ([`@commitlint/config-conventional`](https://github.com/conventional-changelog/commitlint/tree/master/%40commitlint/config-conventional)). If the repository has its own list, use that list.
+
+| Type       | Use it for                                     |
+| ---------- | ---------------------------------------------- |
+| `feat`     | A new feature                                  |
+| `fix`      | A bug fix                                      |
+| `docs`     | Documentation only                             |
+| `style`    | Formatting only, with no change to the logic   |
+| `refactor` | A code change that is not a feature or a fix   |
+| `perf`     | A performance improvement                      |
+| `test`     | New or changed tests                           |
+| `build`    | The build system or the dependencies           |
+| `ci`       | The CI configuration                           |
+| `chore`    | Other maintenance                              |
+| `revert`   | A revert of an earlier commit                  |
 
 ## Breaking Changes
 
-```
-# Exclamation mark after type/scope
-feat!: remove deprecated endpoint
+Put `!` before the colon, or add a `BREAKING CHANGE:` footer. Write the token in uppercase. `BREAKING-CHANGE:` is also correct.
 
-# BREAKING CHANGE footer
-feat: allow config to extend other configs
+```text
+feat(api)!: remove the v1 endpoints
 
-BREAKING CHANGE: `extends` key behavior changed
+BREAKING CHANGE: Clients must use the v2 endpoints.
 ```
 
 ## Workflow
 
-### 1. Analyze Diff
+### 1. Read the repository rules
+
+Find the commit rules before you write a message:
+
+- A commitlint configuration, for example `commitlint.config.js` or `.commitlintrc.json`.
+- `CONTRIBUTING.md`.
+- The recent messages: `git log --oneline -10`.
+
+If a repository rule is different from this skill, use the repository rule.
+
+### 2. Examine the changes
 
 ```bash
-# If files are staged, use staged diff
+git status --porcelain
 git diff --staged
-
-# If nothing staged, use working tree diff
 git diff
+```
 
-# Also check status
+If there are no changes, tell the user. Do not make an empty commit.
+
+### 3. Stage the files
+
+Put one logical change in each commit. If the staged files contain more than one change, first unstage the files of the other changes. Then stage the files for this change:
+
+```bash
+git reset -q -- path/to/other-file1 path/to/other-file2
+git add -- path/to/file1 path/to/file2
+git add -- '*.test.*'
+git add -- src/components/
+```
+
+- Put a glob in quotes. Without quotes, the shell expands the glob and does not find the files in subdirectories.
+- Do not use `git add -p` or `git add -i`. These commands wait for input from a person.
+- After you resolve a merge conflict, use `git add --resolved`. This command stages only the resolved files. If a file still has conflict markers, the command stops.
+- Examine the list of staged files with `git diff --staged --name-only`. Do not commit secrets, for example `.env` files, `credentials.json`, or private keys.
+
+### 4. Write the message
+
+Get each part from the diff:
+
+- **Type**: The kind of change.
+- **Scope**: The module or the area that the change affects.
+- **Summary**: What changed, in one line.
+
+### 5. Commit
+
+Give each paragraph with a different `-m` option. Git puts a blank line between the paragraphs. This command works in Bash, PowerShell, and other shells.
+
+```bash
+git commit -m "feat(auth): add token refresh"
+git commit -m "fix(parser): accept empty input" -m "An empty file caused a crash." -m "Closes: #123"
+```
+
+For a long message, write the message to a temporary file. Then run `git commit -F <file>`.
+
+### 6. Make sure that the commit is correct
+
+```bash
+git log -1 --stat
 git status --porcelain
 ```
 
-### 2. Stage Files (if needed)
+## Safety Rules
 
-If nothing is staged or you want to group changes differently:
-
-```bash
-# Stage specific files
-git add path/to/file1 path/to/file2
-
-# Stage by pattern
-git add *.test.*
-git add src/components/*
-
-# Interactive staging
-git add -p
-```
-
-**Never commit secrets** (.env, credentials.json, private keys).
-
-### 3. Generate Commit Message
-
-Analyze the diff to determine:
-
-- **Type**: What kind of change is this?
-- **Scope**: What area/module is affected?
-- **Description**: One-line summary of what changed (present tense, imperative mood, <72 chars)
-
-### 4. Execute Commit
-
-```bash
-# Single line
-git commit -m "<type>[scope]: <description>"
-
-# Multi-line with body/footer
-git commit -m "$(cat <<'EOF'
-<type>[scope]: <description>
-
-<optional body>
-
-<optional footer>
-EOF
-)"
-```
-
-## Best Practices
-
-- One logical change per commit
-- Present tense: "add" not "added"
-- Imperative mood: "fix bug" not "fixes bug"
-- Reference issues: `Closes #123`, `Refs #456`
-- Keep description under 72 characters
-
-## Git Safety Protocol
-
-- NEVER update git config
-- NEVER run destructive commands (--force, hard reset) without explicit request
-- NEVER skip hooks (--no-verify) unless user asks
-- NEVER force push to main/master
-- If commit fails due to hooks, fix and create NEW commit (don't amend)
+- Do not change the Git configuration.
+- Do not use `--no-verify` unless the user tells you to. Hooks can be in `.git/hooks` or in the Git configuration.
+- If a hook fails, Git does not make the commit. Fix the problem, stage the files again, and run the same `git commit` command again. Do not use `--amend`, because it changes the previous commit.
+- Do not change the commit history unless the user tells you to. Do not use `git reset --hard`, `git rebase`, or the experimental `git history` command.
+- Do not push unless the user tells you to. Do not force push to the default branch.
 
 
 ---
@@ -86408,99 +86427,3 @@ Load these as needed:
 * `references/report-format.md` — Output template: summary table, finding cards, and before/after
   remediation blocks.
   + Search patterns: `report`, `format`, `finding`, `summary`, `remediation`, `before`, `after`
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/github-actions-hardening/references/injection.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/github-actions-hardening/references/injection.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/github-actions-hardening/references/injection.md
-- **SHA256_FINGERPRINT**: `ebd6ef8d39ba6f1cd3dc13051e6ed4163d1d2ba36518cf0f7393836a211e58ff`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:30.150693+00:00
----
-
-# Script Injection
-
-`${{ <expr> }}` is substituted into the script **as text, before the shell runs**. Any expression
-that resolves to data an outside contributor controls is therefore a command-injection sink.
-
-## Attacker-Controllable Contexts
-
-These can be set by anyone who can open an issue, PR, or comment:
-
-| Context | Set by |
-| --- | --- |
-| `github.event.issue.title` / `.body` | Issue author |
-| `github.event.pull_request.title` / `.body` | PR author |
-| `github.event.pull_request.head.ref` / `.head.label` | PR author (branch name) |
-| `github.head_ref` | PR author (branch name) |
-| `github.event.comment.body` | Commenter |
-| `github.event.review.body` / `.review_comment.body` | Reviewer |
-| `github.event.commits.*.message` / `head_commit.message` | Commit author |
-| `github.event.commits.*.author.email` / `.name` | Commit author |
-| `github.event.pages.*.page_name` | Wiki editor |
-
-A branch named `$(<attacker-command>)` or an issue titled `"; <attacker-command> #` becomes shell
-when interpolated into a `run:` step.
-
-## The Vulnerable Pattern
-
-```yaml
-# VULNERABLE
-- run: |
-    echo "Reviewing PR: ${{ github.event.pull_request.title }}"
-    git checkout ${{ github.head_ref }}
-```
-
-## The Safe Pattern — Pass Through `env:`
-
-Bind the untrusted value to an environment variable, then reference the *shell* variable (quoted).
-The shell variable is data, never re-parsed as workflow syntax:
-
-```yaml
-# SAFE
-- env:
-    PR_TITLE: ${{ github.event.pull_request.title }}
-    HEAD_REF: ${{ github.head_ref }}
-  run: |
-    echo "Reviewing PR: $PR_TITLE"
-    git checkout "$HEAD_REF"
-```
-
-`${{ }}` now appears only on the `env:` side, where it is assigned as a value rather than spliced
-into a command. Always quote the shell variable (`"$PR_TITLE"`) to prevent word-splitting and
-globbing.
-
-## `actions/github-script`
-
-The same rule applies. Do not interpolate `${{ }}` into the `script:` body — pass it through the
-environment and read `process.env`:
-
-```yaml
-# VULNERABLE
-- uses: actions/github-script@<sha>
-  with:
-    script: console.log("${{ github.event.issue.title }}")
-
-# SAFE
-- uses: actions/github-script@<sha>
-  env:
-    TITLE: ${{ github.event.issue.title }}
-  with:
-    script: console.log(process.env.TITLE)
-```
-
-## Custom Action Inputs
-
-Passing untrusted `${{ }}` into a composite or JS action's `with:` inputs can be safe or not
-depending on whether the action itself interpolates the input into a shell. When in doubt, pass via
-`env:` and have the action read the environment, or sanitize/validate first (e.g. a branch name
-should match `^[A-Za-z0-9._/-]+$`).
-
-## Quick Audit Checklist
-
-1. Grep every `run:` and `script:` for `${{`.
-2. For each, resolve what the expression points to.
-3. If it can be set by a non-collaborator → rewrite via `env:` with a quoted shell variable.
-4. `github.actor`, `github.repository`, `github.sha`, `github.ref` (for branch protection contexts)
-   and similar server-controlled values are not attacker-set, but a defense-in-depth `env:` rewrite
-   costs nothing.

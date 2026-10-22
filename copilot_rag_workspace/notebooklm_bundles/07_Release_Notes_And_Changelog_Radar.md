@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-10-21T19:55:01.389946+00:00
-- **Total Palabras**: 14,835 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-22T03:58:31.506054+00:00
+- **Total Palabras**: 14,970 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -807,8 +807,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_144.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_144
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_144.md
-- **SHA256_FINGERPRINT**: `551a52158895e1377505407b2323627d2c5681245e362c48c33cf6226938f521`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:56.348753+00:00
+- **SHA256_FINGERPRINT**: `4cd73bae6f9374d13ef228d07b281c937e9986b138df5b5e52543b6383454df6`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:24.968132+00:00
 ---
 
 **MetaDescription**: Learn what is new in Visual Studio Code 1.144 (Insiders)
@@ -826,6 +826,18 @@ Welcome to the 1.144  release of Visual Studio Code.
 Happy Coding!
 
 ---
+
+## October 21, 2026
+
+* UI updates for Voice Mode. _[#343323: Simplify Voice Mode connection visuals and show GPT Live usage](https://github.com/microsoft/vscode/issues/343323)_
+
+* When session storage cleanup suggestions are enabled, the Agents window warns when a local worktree's disk has less than 5 GB available and offers cleanup of recent worktrees. _[#343230: add workspace almost full notification](https://github.com/microsoft/vscode/issues/343230)_
+
+* UI updates for embedded editors in the rich Markdown editor. _[#343191: Update rich Markdown editor package to 0.0.2-136](https://github.com/microsoft/vscode/issues/343191)_
+
+* In Voice Mode, the microphone button reflects its muted or active state. _[#337053: Reverse the mute and unmute microphone icons in voice mode](https://github.com/microsoft/vscode/issues/337053)_
+
+* When you paste a web link into Quick Open, choose from its available handlers, with the default listed first, or open the target to the side. _[#342544: Show available link handlers in a Quick Pick](https://github.com/microsoft/vscode/issues/342544)_
 
 ## October 20, 2026
 

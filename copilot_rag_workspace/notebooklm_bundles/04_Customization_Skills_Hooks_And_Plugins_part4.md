@@ -1,7 +1,103 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part4
-- **Generado (UTC)**: 2026-10-21T19:55:00.719499+00:00
-- **Total Palabras**: 449,812 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-22T03:58:31.466438+00:00
+- **Total Palabras**: 449,490 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/github-actions-hardening/references/injection.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/github-actions-hardening/references/injection.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/github-actions-hardening/references/injection.md
+- **SHA256_FINGERPRINT**: `ebd6ef8d39ba6f1cd3dc13051e6ed4163d1d2ba36518cf0f7393836a211e58ff`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:30.150693+00:00
+---
+
+# Script Injection
+
+`${{ <expr> }}` is substituted into the script **as text, before the shell runs**. Any expression
+that resolves to data an outside contributor controls is therefore a command-injection sink.
+
+## Attacker-Controllable Contexts
+
+These can be set by anyone who can open an issue, PR, or comment:
+
+| Context | Set by |
+| --- | --- |
+| `github.event.issue.title` / `.body` | Issue author |
+| `github.event.pull_request.title` / `.body` | PR author |
+| `github.event.pull_request.head.ref` / `.head.label` | PR author (branch name) |
+| `github.head_ref` | PR author (branch name) |
+| `github.event.comment.body` | Commenter |
+| `github.event.review.body` / `.review_comment.body` | Reviewer |
+| `github.event.commits.*.message` / `head_commit.message` | Commit author |
+| `github.event.commits.*.author.email` / `.name` | Commit author |
+| `github.event.pages.*.page_name` | Wiki editor |
+
+A branch named `$(<attacker-command>)` or an issue titled `"; <attacker-command> #` becomes shell
+when interpolated into a `run:` step.
+
+## The Vulnerable Pattern
+
+```yaml
+# VULNERABLE
+- run: |
+    echo "Reviewing PR: ${{ github.event.pull_request.title }}"
+    git checkout ${{ github.head_ref }}
+```
+
+## The Safe Pattern — Pass Through `env:`
+
+Bind the untrusted value to an environment variable, then reference the *shell* variable (quoted).
+The shell variable is data, never re-parsed as workflow syntax:
+
+```yaml
+# SAFE
+- env:
+    PR_TITLE: ${{ github.event.pull_request.title }}
+    HEAD_REF: ${{ github.head_ref }}
+  run: |
+    echo "Reviewing PR: $PR_TITLE"
+    git checkout "$HEAD_REF"
+```
+
+`${{ }}` now appears only on the `env:` side, where it is assigned as a value rather than spliced
+into a command. Always quote the shell variable (`"$PR_TITLE"`) to prevent word-splitting and
+globbing.
+
+## `actions/github-script`
+
+The same rule applies. Do not interpolate `${{ }}` into the `script:` body — pass it through the
+environment and read `process.env`:
+
+```yaml
+# VULNERABLE
+- uses: actions/github-script@<sha>
+  with:
+    script: console.log("${{ github.event.issue.title }}")
+
+# SAFE
+- uses: actions/github-script@<sha>
+  env:
+    TITLE: ${{ github.event.issue.title }}
+  with:
+    script: console.log(process.env.TITLE)
+```
+
+## Custom Action Inputs
+
+Passing untrusted `${{ }}` into a composite or JS action's `with:` inputs can be safe or not
+depending on whether the action itself interpolates the input into a shell. When in doubt, pass via
+`env:` and have the action read the environment, or sanitize/validate first (e.g. a branch name
+should match `^[A-Za-z0-9._/-]+$`).
+
+## Quick Audit Checklist
+
+1. Grep every `run:` and `script:` for `${{`.
+2. For each, resolve what the expression points to.
+3. If it can be set by a non-collaborator → rewrite via `env:` with a quoted shell variable.
+4. `github.actor`, `github.repository`, `github.sha`, `github.ref` (for branch protection contexts)
+   and similar server-controlled values are not attacker-set, but a defense-in-depth `env:` rewrite
+   costs nothing.
 
 
 ---
@@ -13043,41 +13139,146 @@ gh api graphql -f query='
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/java-add-graalvm-native-image-support/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-add-graalvm-native-image-support/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-add-graalvm-native-image-support/SKILL.md
-- **SHA256_FINGERPRINT**: `de5081457b01d20e631168df194e02f24b4275c77a9ae3c35b432d14ca6517d5`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:32.264048+00:00
+- **SHA256_FINGERPRINT**: `d4e2fef7f3080dd3cfc1c57ee5c1db942a7ce434a29d839a646b8d4f8f123c25`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.581438+00:00
 ---
 
-**description**: GraalVM Native Image expert that adds native image support to Java applications, builds the project, analyzes build errors, applies fixes, and iterates until successful compilation using Oracle best practices.
+**description**: GraalVM Native Image skill for Spring Boot, Micronaut and plain Java: detects the build tool and framework, adds native image support, builds the executable, analyzes errors, and iterates until the native build succeeds and the binary runs correctly. For Quarkus projects it only dispatches to the quarkus-native-and-container skill.
 
-# GraalVM Native Image Agent
+# GraalVM Native Image Support
 
-You are an expert in adding GraalVM native image support to Java applications. Your goal is to:
+Single source of truth for adding GraalVM Native Image to a Java project, whatever the framework. Work iteratively: configure, build, read the error, fix, rebuild, until the native build succeeds and the executable runs correctly.
 
-1. Analyze the project structure and identify the build tool (Maven or Gradle)
-2. Detect the framework (Spring Boot, Quarkus, Micronaut, or generic Java)
-3. Add appropriate GraalVM native image configuration
-4. Build the native image
-5. Analyze any build errors or warnings
-6. Apply fixes iteratively until the build succeeds
+Detail lives in `references/`; load only what the project needs:
 
-## Your Approach
+| Topic | File |
+|---|---|
+| Maven / Gradle native plugin setup | [references/build-tools.md](references/build-tools.md) |
+| Reachability metadata and tracing agent | [references/reachability-metadata.md](references/reachability-metadata.md) |
+| Common build/runtime errors and fixes | [references/troubleshooting.md](references/troubleshooting.md) |
+| Spring Boot (AOT, `-Pnative`, `nativeCompile`, `build-image`) | [references/spring-boot.md](references/spring-boot.md) |
+| Quarkus | `quarkus-native-and-container` skill (hand off); short pointer in [references/quarkus.md](references/quarkus.md) |
+| Micronaut | [references/micronaut.md](references/micronaut.md) |
 
-Follow Oracle's best practices for GraalVM native images and use an iterative approach to resolve issues.
+## Step 1: Analyze the project
 
-### Step 1: Analyze the Project
+1. Build tool: `pom.xml` (Maven) or `build.gradle` / `build.gradle.kts` (Gradle). Prefer the wrapper (`./mvnw`, `./gradlew`) when present.
+2. Framework, from dependencies/plugins:
+   - Spring Boot: `spring-boot-starter-parent`, `spring-boot-maven-plugin`, or `org.springframework.boot` Gradle plugin
+   - Quarkus: `io.quarkus` BOM/plugin or `quarkus-*` dependencies
+   - Micronaut: `io.micronaut` parent/plugin or `micronaut-*` dependencies
+   - otherwise plain Java
+3. Existing native configuration: native-build-tools plugin, `META-INF/native-image/`, native profile, `application.properties` native keys.
+4. Toolchain: run `java -version` and `native-image --version`. Local native compilation needs a GraalVM JDK (with `native-image`) as the JDK used for the build. Container or buildpack builds (Spring Boot buildpacks via `bootBuildImage`/`spring-boot:build-image`, Quarkus container builds) compile inside a container and need no local GraalVM, only a container runtime. Check the project's Java level against the installed GraalVM version.
 
-- Check if `pom.xml` exists (Maven) or `build.gradle`/`build.gradle.kts` exists (Gradle)
-- Identify the framework by checking dependencies:
-  - Spring Boot: `spring-boot-starter` dependencies
-  - Quarkus: `quarkus-` dependencies
-  - Micronaut: `micronaut-` dependencies
-- Check for existing GraalVM configuration
+If the framework is Quarkus, stop here and hand off to the `quarkus-native-and-container` skill. Container builds there need no local GraalVM.
 
-### Step 2: Add Native Image Support
+## Scope and JVM baseline
 
-#### For Maven Projects
+- Adding native support does not authorize a JDK, framework, library, build-tool, or wrapper upgrade. Preserve the existing BOM/parent-managed versions and test conventions; ask before changing versions to solve native compatibility.
+- Run the project's existing JVM build and tests before editing. Record pre-existing failures rather than weakening checks to hide them. Keep the JVM packaging/run path working alongside native support.
+- After any approved dependency or framework change, rerun that JVM baseline before continuing with native builds. Verify the same relevant behavior on both JVM and native paths.
+- Ask before creating or changing CI workflows, adding native CI jobs, or changing runner resources. Suggest commands separately if CI changes were not requested.
 
-Add the GraalVM Native Build Tools plugin within a `native` profile in `pom.xml`:
+## Step 2: Get a GraalVM toolchain
+
+- **Oracle GraalVM** (free under the GraalVM Free Terms and Conditions) and **GraalVM Community Edition** builds provide `native-image`. Use a release matching the project's Java version (for example, GraalVM for JDK 21 or newer; Spring Boot 3.x/4.x need a Java 17+ baseline, see the Spring reference).
+- Install with SDKMAN (`sdk list java`, then `sdk install java <identifier>` using an identifier from that list), a vendor download, or a CI action such as `graalvm/setup-graalvm`. Pick the version from the vendor's current download page rather than hard-coding one.
+- Linux needs a C toolchain and zlib headers (`build-essential`, `zlib1g-dev`); macOS needs Xcode command line tools; Windows needs Visual Studio Build Tools. Check the current GraalVM "Native Image prerequisites" page.
+
+## Step 3: Add native support
+
+Per framework:
+
+- **Spring Boot**: with Maven, `spring-boot-starter-parent` only manages the native plugins' versions and configuration in its `native` profile, so declare `native-maven-plugin` and `spring-boot-maven-plugin` in `<build><plugins>` if missing (no versions needed); with Gradle, apply `org.graalvm.buildtools.native` next to `org.springframework.boot`; a custom parent needs the plugin added by hand. Do not duplicate configuration the parent already provides. See [references/spring-boot.md](references/spring-boot.md).
+- **Quarkus**: hand off to the `quarkus-native-and-container` skill.
+- **Micronaut**: built in via the Micronaut build plugins. See [references/micronaut.md](references/micronaut.md).
+- **Plain Java** (or any project without a framework plugin): add the GraalVM Native Build Tools plugin. See [references/build-tools.md](references/build-tools.md). Resolve the plugin version at run time from Maven Central (`org.graalvm.buildtools:native-maven-plugin`) or the Gradle Plugin Portal (`org.graalvm.buildtools.native`) and pin it in the build file; do not copy a version from memory.
+
+## Step 4: Build
+
+| Setup | Command |
+|---|---|
+| Plain Maven | `./mvnw -Pnative native:compile` |
+| Plain Gradle | `./gradlew nativeCompile` |
+| Spring Boot Maven | `./mvnw -Pnative native:compile` (or `spring-boot:build-image` for a container) |
+| Spring Boot Gradle | `./gradlew nativeCompile` (or `bootBuildImage`) |
+| Micronaut Maven | `./mvnw package -Dpackaging=native-image` |
+| Micronaut Gradle | `./gradlew nativeCompile` |
+
+Native builds are slow and memory hungry (several GB of RAM). Capture the full output to inspect it.
+
+## Step 5: Iterate until the build succeeds
+
+1. Read the first real error, not the final summary.
+2. Match it against [references/troubleshooting.md](references/troubleshooting.md).
+3. Apply the smallest fix, in this order of preference:
+   1. Check whether a compatible library/framework version has built-in native support (see the [reachability metadata repository](https://github.com/oracle/graalvm-reachability-metadata)). Propose the upgrade; apply it only with user approval and rerun the JVM baseline. If declined, try metadata or framework hints compatible with the current versions.
+   2. Use the framework's own mechanism (Spring `RuntimeHints`, Quarkus `@RegisterForReflection`, Micronaut `@Introspected`).
+   3. Collect metadata with the tracing agent (see [references/reachability-metadata.md](references/reachability-metadata.md)).
+   4. Hand-write metadata under `src/main/resources/META-INF/native-image/<groupId>/<artifactId>/`.
+   5. Adjust initialization (`--initialize-at-build-time` / `--initialize-at-run-time`) only for specific classes.
+4. Rebuild. Repeat until the build completes with no errors.
+
+## Step 6: Verify the executable
+
+A successful build is not enough: many problems only appear at runtime.
+
+- Run the binary and exercise the main paths (HTTP endpoints, DB access, serialization, resource loading, scheduled jobs).
+- Run the native tests where the framework supports them (`native:test`, `nativeTest`, Quarkus `@QuarkusIntegrationTest`).
+- Compare startup time and memory against the JVM run only if the user asks for it.
+- Report the exact commands run, whether the build and the run succeeded, and any remaining warnings.
+
+## Pitfalls
+
+- Recommend a native build and native test run in CI with an explicit GraalVM version; add or change CI only with user consent.
+- Mockito's default inline mock maker does not work on native image (Mockito 5.0.0 release notes); use the subclass mock maker for native tests.
+- Do not leave `--report-unsupported-elements-at-runtime` or verbose flags in production builds unless justified.
+
+## References
+
+- [GraalVM Native Image documentation](https://www.graalvm.org/latest/reference-manual/native-image/)
+- [Native Build Tools](https://graalvm.github.io/native-build-tools/latest/index.html)
+- [GraalVM reachability metadata repository](https://github.com/oracle/graalvm-reachability-metadata)
+- [Spring Boot GraalVM native images](https://docs.spring.io/spring-boot/reference/packaging/native-image/index.html)
+- [Quarkus building a native executable](https://quarkus.io/guides/building-native-image)
+- [Micronaut GraalVM guide](https://docs.micronaut.io/latest/guide/#graal)
+
+## Upstream sources (read before upgrading GraalVM or native config)
+
+Fetch the page for the target version; prefer it over this skill when they conflict.
+
+- GraalVM release notes: <https://www.graalvm.org/release-notes/>
+- Reachability metadata format: <https://www.graalvm.org/latest/reference-manual/native-image/metadata/>
+- Build configuration options: <https://www.graalvm.org/latest/reference-manual/native-image/overview/BuildConfiguration/>
+- Metadata repository (check your library versions are covered): <https://github.com/oracle/graalvm-reachability-metadata>
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-add-graalvm-native-image-support/references/build-tools.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-add-graalvm-native-image-support/references/build-tools.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-add-graalvm-native-image-support/references/build-tools.md
+- **SHA256_FINGERPRINT**: `0e99310472f57d6a4d0a92b5d3769f7f1b9c232e2a2c5f82579b4baea74ac98e`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.714524+00:00
+---
+
+# Build tool setup (Maven and Gradle)
+
+Use the GraalVM Native Build Tools plugin for plain Java projects. Quarkus and Micronaut projects get native support (or an equivalent) from their own plugins; do not add it again there. Spring Boot with Maven and `spring-boot-starter-parent` inherits its version and configuration through the parent's `native` profile (`pluginManagement`), but you must still declare `native-maven-plugin` and `spring-boot-maven-plugin` in `<build><plugins>` if absent (no version needed); Spring Boot with Gradle, or Maven with a custom parent, needs the plugin applied explicitly (see `spring-boot.md`).
+
+## Versions
+
+Do not hard-code a version from memory. Resolve the current release at run time and pin it:
+
+- Maven Central: `org.graalvm.buildtools:native-maven-plugin` (search.maven.org or `https://repo.maven.apache.org/maven2/org/graalvm/buildtools/native-maven-plugin/maven-metadata.xml`)
+- Gradle Plugin Portal: `org.graalvm.buildtools.native`
+- Release notes: https://graalvm.github.io/native-build-tools/latest/index.html
+
+Below, `NBT_VERSION` stands for the version you resolved. Replace it with the real number in the file.
+
+## Maven
+
+Put it in a `native` profile so normal builds are unaffected:
 
 ```xml
 <profiles>
@@ -13088,7 +13289,7 @@ Add the GraalVM Native Build Tools plugin within a `native` profile in `pom.xml`
         <plugin>
           <groupId>org.graalvm.buildtools</groupId>
           <artifactId>native-maven-plugin</artifactId>
-          <version>[latest-version]</version>
+          <version>NBT_VERSION</version>
           <extensions>true</extensions>
           <executions>
             <execution>
@@ -13098,10 +13299,17 @@ Add the GraalVM Native Build Tools plugin within a `native` profile in `pom.xml`
               </goals>
               <phase>package</phase>
             </execution>
+            <execution>
+              <id>test-native</id>
+              <goals>
+                <goal>test</goal>
+              </goals>
+              <phase>test</phase>
+            </execution>
           </executions>
           <configuration>
             <imageName>${project.artifactId}</imageName>
-            <mainClass>${main.class}</mainClass>
+            <mainClass>com.example.Main</mainClass>
             <buildArgs>
               <buildArg>--no-fallback</buildArg>
             </buildArgs>
@@ -13113,92 +13321,235 @@ Add the GraalVM Native Build Tools plugin within a `native` profile in `pom.xml`
 </profiles>
 ```
 
-For Spring Boot projects, ensure the Spring Boot Maven plugin is in the main build section:
+Set `mainClass` to the project's real entry point (or rely on the jar plugin's configured main class). Build: `./mvnw -Pnative native:compile`; run tests natively: `./mvnw -Pnative test`. The executable lands in `target/`.
 
-```xml
-<build>
-  <plugins>
-    <plugin>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-maven-plugin</artifactId>
-    </plugin>
-  </plugins>
-</build>
-```
+## Gradle
 
-#### For Gradle Projects
-
-Add the GraalVM Native Build Tools plugin to `build.gradle`:
+Groovy DSL:
 
 ```groovy
 plugins {
-  id 'org.graalvm.buildtools.native' version '[latest-version]'
+  id 'application'
+  id 'org.graalvm.buildtools.native' version 'NBT_VERSION'
 }
 
 graalvmNative {
   binaries {
     main {
       imageName = project.name
-      mainClass = application.mainClass.get()
+      mainClass = application.mainClass
       buildArgs.add('--no-fallback')
     }
   }
 }
 ```
 
-Or for Kotlin DSL (`build.gradle.kts`):
+Kotlin DSL:
 
 ```kotlin
 plugins {
-  id("org.graalvm.buildtools.native") version "[latest-version]"
+  application
+  id("org.graalvm.buildtools.native") version "NBT_VERSION"
 }
 
 graalvmNative {
   binaries {
     named("main") {
       imageName.set(project.name)
-      mainClass.set(application.mainClass.get())
+      mainClass.set(application.mainClass)
       buildArgs.add("--no-fallback")
     }
   }
 }
 ```
 
-### Step 3: Build the Native Image
+Build: `./gradlew nativeCompile`; run: `./gradlew nativeRun`; test: `./gradlew nativeTest`. The executable lands in `build/native/nativeCompile/`.
 
-Run the appropriate build command:
+Gradle toolchains: to select GraalVM via a toolchain, set `javaLauncher` in `graalvmNative.binaries.main` using `javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(<java-version>); vendor = JvmVendorSpec.GRAAL_VM }`. Otherwise make sure `JAVA_HOME` points to a GraalVM JDK.
 
-**Maven:**
+## `--no-fallback`
+
+Fallback images (which bundle a JVM launcher) are deprecated and removed in recent GraalVM releases, so the flag is the default behavior there. Keep it for older toolchains so failures are not hidden.
+
+## Useful build arguments
+
+| Argument | Purpose |
+|---|---|
+| `-Ob` | quick build mode for development |
+| `--initialize-at-run-time=<class-or-package>` | defer class initialization |
+| `--initialize-at-build-time=<class-or-package>` | initialize during the build (only when safe) |
+| `-H:+ReportExceptionStackTraces` | fuller build errors |
+| `--gc=G1` | G1 GC (Linux, Oracle GraalVM) for throughput; default serial GC |
+| `-march=native` | tune for the build CPU only; avoid for distributed binaries (use `-march=compatibility`) |
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-add-graalvm-native-image-support/references/micronaut.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-add-graalvm-native-image-support/references/micronaut.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-add-graalvm-native-image-support/references/micronaut.md
+- **SHA256_FINGERPRINT**: `bddb3597a4c2bfc78429a4455f889359b2cecef08a69c243c309d63429cea6d5`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.701198+00:00
+---
+
+# Micronaut native images
+
+Micronaut performs ahead-of-time processing at compile time, so most native image metadata is generated automatically.
+
+## Commands
+
+- Maven: `./mvnw package -Dpackaging=native-image` (container build: `./mvnw package -Dpackaging=docker-native`)
+- Gradle: `./gradlew nativeCompile` (container: `./gradlew dockerBuildNative`)
+- Native tests: `./mvnw -Pnative test` or `./gradlew nativeTest`, depending on the generated project
+
+Check the generated project's profiles/tasks and use a compatible GraalVM JDK. In the standard Micronaut parent POM (4.10.0 and 5.0.2), `graalvm` configures annotation processing; `native` binds the Native Build Tools native-test goals. A successful `-Pgraalvm test` alone is not evidence that native tests ran.
+
+The Micronaut Maven/Gradle plugins configure the Native Build Tools plugin for you; do not add it again.
+
+## Reflection and resources
+
+1. **Bean introspection**: `@Introspected` for POJOs avoids reflection:
+
+   ```java
+   @Introspected
+   public class MyDto {
+       private String name;
+       private int value;
+       // getters and setters
+   }
+   ```
+
+   Or `@Serdeable` for Micronaut Serialization types.
+
+2. **Reflection**: `@ReflectionConfig(type = MyClass.class, accessType = TypeHint.AccessType.ALL_DECLARED_CONSTRUCTORS)` (both from `io.micronaut.core.annotation`; `accessType` takes `TypeHint.AccessType[]`) on a configuration class, or `@TypeHint(MyClass.class)` for the default access.
+3. **Resources**: Micronaut has no resource annotation; list patterns in `META-INF/native-image/<group>/<artifact>/resource-config.json` (or the unified `reachability-metadata.json`), or use the Native Build Tools resource detection settings.
+4. **Gradle build arguments** (only if needed):
+
+   ```groovy
+   graalvmNative {
+       binaries {
+           main {
+               buildArgs.add("--initialize-at-run-time=io.netty")
+           }
+       }
+   }
+   ```
+
+   Micronaut already sets sensible initialization defaults; add flags only for a specific failing class. Avoid `--report-unsupported-elements-at-runtime` outside diagnosis.
+
+## Tips
+
+- Use Micronaut's compile-time features (`@Introspected`, `@Serdeable`, `@Client` interfaces) rather than runtime reflection.
+- Netty and HTTP client tuning is a runtime concern; do not change `netty.default.allocator` settings to fix native build errors.
+- Check whether a compatible Micronaut module update supplies metadata before adding it manually; propose any upgrade for user approval, preserve managed versions, and rerun the JVM baseline afterwards.
+
+Guide: https://docs.micronaut.io/latest/guide/#graal
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-add-graalvm-native-image-support/references/quarkus.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-add-graalvm-native-image-support/references/quarkus.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-add-graalvm-native-image-support/references/quarkus.md
+- **SHA256_FINGERPRINT**: `fb9ce3a113182ca205cca1404622ad67542d9f30aecbd963cc93204996bd5c7b`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.706101+00:00
+---
+
+# Quarkus native images
+
+Quarkus is handled by the `quarkus-native-and-container` skill, which is the source of truth for native builds, container-image builds and Kubernetes manifests. Hand off to it after framework detection.
+
+- Native support is built into Quarkus; do not add the Native Build Tools plugin.
+- Container builds (`-Dquarkus.native.container-build=true`) need no local GraalVM or Mandrel, only Docker or Podman.
+- If the `quarkus-native-and-container` skill is not installed, see https://quarkus.io/guides/building-native-image.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-add-graalvm-native-image-support/references/reachability-metadata.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-add-graalvm-native-image-support/references/reachability-metadata.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-add-graalvm-native-image-support/references/reachability-metadata.md
+- **SHA256_FINGERPRINT**: `7ab19353ba39f9c96b65727f12208e9909a4c52480923d28374677575824576a`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.728997+00:00
+---
+
+# Reachability metadata and the tracing agent
+
+Native Image only includes what it can see statically. Anything reached dynamically (reflection, resources, JNI, dynamic proxies, serialization) must be described by *reachability metadata*.
+
+## Where metadata lives
+
+`src/main/resources/META-INF/native-image/<groupId>/<artifactId>/` in your project (the `<groupId>/<artifactId>` subfolder avoids clashes between jars). Two formats exist:
+
+- Legacy per-feature files: `reflect-config.json`, `resource-config.json`, `jni-config.json`, `proxy-config.json`, `serialization-config.json`.
+- Unified `reachability-metadata.json` (introduced in GraalVM for JDK 23 and used by newer releases). The unified format is preferred for new metadata and supports newer capabilities, but Native Image still discovers legacy files under `META-INF/native-image`, so do not discard valid existing configuration. Check the GraalVM documentation for your version and prefer regenerating metadata with the tracing agent of the toolchain you use.
+
+Libraries often publish metadata themselves, and the community [GraalVM reachability metadata repository](https://github.com/oracle/graalvm-reachability-metadata) covers many popular ones. The Native Build Tools plugin pulls it automatically when enabled (`metadataRepository` in Gradle, default for recent plugin versions in Maven). Check existing metadata first; if an upgrade would help, propose it for user approval and rerun the JVM baseline after the change. Otherwise collect or write metadata for the current version.
+
+## Tracing agent
+
+Run the app on the JVM with the agent while exercising every code path, and the agent writes the metadata.
+
+Direct:
+
 ```sh
-mvn -Pnative native:compile
+java -agentlib:native-image-agent=config-output-dir=src/main/resources/META-INF/native-image/<groupId>/<artifactId> -jar target/app.jar
 ```
 
-**Gradle:**
+Via the build tool (preferred):
+
 ```sh
-./gradlew nativeCompile
+./mvnw -Pnative -Dagent=true -DskipNativeTests=true test # collect test-stage metadata on the JVM
+./gradlew -Pagent test                      # agent during tests, Gradle
+./gradlew -Pagent run
+./gradlew metadataCopy --task test --dir src/main/resources/META-INF/native-image/<groupId>/<artifactId>
 ```
 
-**Spring Boot (Maven):**
-```sh
-mvn -Pnative spring-boot:build-image
+The Maven example assumes the plain-Java `native` profile in [build-tools.md](build-tools.md), which also binds `native:test` to the test phase. Check the actual project's profile bindings: Spring Boot uses a separate `nativeTest` profile (see [spring-boot.md](spring-boot.md)). Use `-DskipNativeTests=true` for metadata collection so JVM tests still execute with the tracing agent, without compiling or running native test binaries. Do not use `-DskipTests` or `-Dmaven.test.skip`: those skip the JVM tests needed to exercise the agent.
+
+The Maven agent writes to `target/native/agent-output/{test,main}`. Review the files for noise, then configure [metadata copying](https://graalvm.github.io/native-build-tools/latest/maven-plugin.html#metadata-copy) inside the Native Build Tools plugin so the approved output survives `clean` and is included in the native build:
+
+```xml
+<configuration>
+
+  <agent>
+    <metadataCopy>
+
+      <disabledStages>
+        <stage>main</stage>
+      </disabledStages>
+      <merge>true</merge>
+      <outputDirectory>${project.basedir}/src/main/resources/META-INF/native-image/${project.groupId}/${project.artifactId}</outputDirectory>
+    </metadataCopy>
+  </agent>
+</configuration>
 ```
 
-**Quarkus (Maven):**
+After reviewing the test-stage output, persist it with:
+
 ```sh
-./mvnw package -Pnative
+./mvnw -Pnative -Dagent=true native:metadata-copy
 ```
 
-**Micronaut (Maven):**
+If you collected only the application (`main`) stage, disable `test` instead; configure `disabledStages` for every stage you did not collect. `merge=true` merges with existing metadata when the destination has a complete metadata set (unified `reachability-metadata.json` or all four legacy files); otherwise merge or reconcile existing partial files manually before copying, so valid metadata is not discarded. Run native tests afterwards with the project's appropriate profile and without `-DskipNativeTests=true`; the metadata-collection run is not evidence that native tests passed.
+
+For a manual application run, configure the `exec-maven-plugin` execution described in the Native Build Tools [Maven agent guide](https://graalvm.github.io/native-build-tools/latest/maven-plugin.html#agent-support-running-application), then run it with:
+
 ```sh
-./mvnw package -Dpackaging=native-image
+./mvnw -Pnative -Dagent=true -DskipTests -DskipNativeBuild=true package exec:exec@java-agent
 ```
 
-### Step 4: Analyze Build Errors
+Copy the collected `main` stage as above, disabling the uncollected `test` stage.
 
-Common issues and solutions:
+See the Native Build Tools "Agent Support" page for the exact setup for your plugin version.
 
-#### Reflection Issues
-If you see errors about missing reflection configuration, create or update `src/main/resources/META-INF/native-image/reflect-config.json`:
+Tips:
+
+- Exercise every endpoint, serialization path and resource load; unexercised paths are not captured.
+- Review the generated files and delete noise (test-only classes).
+- Merge repeated runs with `native-image-configure` or the agent's merge mode (`config-merge-dir=`).
+- Re-run the agent after changing dependencies.
+
+## Hand-written examples (legacy format)
+
+Reflection (`reflect-config.json`):
 
 ```json
 [
@@ -13211,23 +13562,20 @@ If you see errors about missing reflection configuration, create or update `src/
 ]
 ```
 
-#### Resource Access Issues
-For missing resources, create `src/main/resources/META-INF/native-image/resource-config.json`:
+Resources (`resource-config.json`):
 
 ```json
 {
   "resources": {
     "includes": [
-      {"pattern": "application.properties"},
-      {"pattern": ".*\\.yml"},
-      {"pattern": ".*\\.yaml"}
+      {"pattern": "\\Qapplication.properties\\E"},
+      {"pattern": ".*\\.ya?ml"}
     ]
   }
 }
 ```
 
-#### JNI Issues
-For JNI-related errors, create `src/main/resources/META-INF/native-image/jni-config.json`:
+JNI (`jni-config.json`):
 
 ```json
 [
@@ -13240,8 +13588,7 @@ For JNI-related errors, create `src/main/resources/META-INF/native-image/jni-con
 ]
 ```
 
-#### Dynamic Proxy Issues
-For dynamic proxy errors, create `src/main/resources/META-INF/native-image/proxy-config.json`:
+Dynamic proxies (`proxy-config.json`):
 
 ```json
 [
@@ -13249,60 +13596,63 @@ For dynamic proxy errors, create `src/main/resources/META-INF/native-image/proxy
 ]
 ```
 
-### Step 5: Iterate Until Success
+Frameworks offer typed alternatives (Spring `RuntimeHints`, Quarkus `@RegisterForReflection`, Micronaut `@Introspected`); prefer them to raw JSON in framework projects.
 
-- After each fix, rebuild the native image
-- Analyze new errors and apply appropriate fixes
-- Use the GraalVM tracing agent to automatically generate configuration:
-  ```sh
-  java -agentlib:native-image-agent=config-output-dir=src/main/resources/META-INF/native-image -jar target/app.jar
-  ```
-- Continue until the build succeeds without errors
 
-### Step 6: Verify the Native Image
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-add-graalvm-native-image-support/references/spring-boot.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-add-graalvm-native-image-support/references/spring-boot.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-add-graalvm-native-image-support/references/spring-boot.md
+- **SHA256_FINGERPRINT**: `d8b5b47902cba4f5250fa0e21564224a64a85d4c45fd77a5269083ad635847e1`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.747215+00:00
+---
 
-Once built successfully:
-- Test the native executable to ensure it runs correctly
-- Verify startup time improvements
-- Check memory footprint
-- Test all critical application paths
+# Spring Boot native images
 
-## Framework-Specific Considerations
+Spring Boot 3.x and later supports GraalVM native images through Spring AOT. Check the Spring Boot version in the build: 3.x needs Java 17+ and a GraalVM matching the Spring Boot docs for that release; always confirm the exact supported GraalVM version in the reference docs for your Spring Boot version (https://docs.spring.io/spring-boot/reference/packaging/native-image/index.html).
 
-### Spring Boot
-- Spring Boot 3.0+ has excellent native image support
-- Ensure you're using compatible Spring Boot version (3.0+)
-- Most Spring libraries provide GraalVM hints automatically
-- Test with Spring AOT processing enabled
+## How it works
 
-**When to Add Custom RuntimeHints:**
+- The Spring Boot Maven plugin / Gradle plugin run **AOT processing** at build time, generating bean definitions and runtime hints.
+- `spring-boot-starter-parent` defines a `native` profile that configures `native-maven-plugin` and `spring-boot-maven-plugin` (the `process-aot` execution) only in `pluginManagement`, so versions and configuration are inherited but the plugins are not applied. Projects created with start.spring.io already declare both in `<build><plugins>`; for an existing project lacking `org.graalvm.buildtools:native-maven-plugin`, declare it and `spring-boot-maven-plugin` without versions or configuration. Verified in the `spring-boot-starter-parent` 3.5.0 POM.
+- With Gradle, applying the `org.graalvm.buildtools.native` plugin next to `org.springframework.boot` activates AOT tasks (`processAot`, `processTestAot`).
+- Without the Spring parent (custom parent / BOM import), add the Native Build Tools plugin yourself, following `build-tools.md`, and declare `process-aot` for the Spring Boot plugin.
 
-Create a `RuntimeHintsRegistrar` implementation only if you need to register custom hints:
+## Commands
+
+| Goal | Maven | Gradle |
+|---|---|---|
+| Native executable | `./mvnw -Pnative native:compile` | `./gradlew nativeCompile` |
+| Native container image (Cloud Native Buildpacks, needs Docker) | `./mvnw -Pnative spring-boot:build-image` | `./gradlew bootBuildImage` |
+| Native tests | `./mvnw -PnativeTest test` | `./gradlew nativeTest` |
+| Run AOT on the JVM to debug | `./mvnw spring-boot:process-aot` then run with `-Dspring.aot.enabled=true` | `./gradlew processAot` |
+
+Note that `build-image` with buildpacks does not require a local GraalVM: the builder provides it. Set `BP_NATIVE_IMAGE_BUILD_ARGUMENTS` / `BP_JVM_VERSION` through the plugin's `<environment>` / `bootBuildImage { environment }` when you need extra arguments.
+
+Verified on Boot 4.1.1 with Oracle GraalVM 25.0.4 (arm64, web + actuator + validation): `./mvnw -Pnative native:compile` (no prior `package` needed) takes about 2m40 and `./gradlew nativeCompile` about 3m50, both give a 102 MB binary that starts in 0.07-0.23 s with about 80 MB RSS. The Gradle toolchain must point at the GraalVM JDK (`-Dorg.gradle.java.installations.paths=<graalvm home>` if it is not auto-detected). Gradle `bootBuildImage` (Boot enables native when `org.graalvm.buildtools.native` is applied; set `environment = ['BP_JVM_VERSION': '25']` if no matching toolchain) also built a working image and started in 0.1-0.2 s with native-build-tools 1.1.7 and 1.1.8. A one-off `Invalid logger interface ...hibernate.validator...Log (implementation not found)` crash matches [native-build-tools#1017](https://github.com/graalvm/native-build-tools/issues/1017) (hibernate-validator reachability metadata overwritten by the jboss-logging one in the jar); not reproduced, so check that `META-INF/native-image/org.hibernate.validator/*/reachability-metadata.json` in the jar is large (about 150 KB), update the plugin, and run the image and hit `/actuator/health` before trusting it.
+
+Check `spring.aot.enabled=true` on the JVM first: it surfaces most AOT problems faster than a full native build.
+
+## Custom runtime hints
+
+Only when libraries or your own code use reflection, resources or serialization that AOT cannot infer:
 
 ```java
+import org.springframework.aot.hint.MemberCategory;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
 
 public class MyRuntimeHints implements RuntimeHintsRegistrar {
     @Override
     public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
-        // Register reflection hints
-        hints.reflection().registerType(
-            MyClass.class,
-            hint -> hint.withMembers(MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
-                                     MemberCategory.INVOKE_DECLARED_METHODS)
-        );
-
-        // Register resource hints
+        hints.reflection().registerType(MyClass.class,
+            MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
+            MemberCategory.INVOKE_DECLARED_METHODS);
         hints.resources().registerPattern("custom-config/*.properties");
-
-        // Register serialization hints
         hints.serialization().registerType(MySerializableClass.class);
     }
 }
 ```
-
-Register it in your main application class:
 
 ```java
 @SpringBootApplication
@@ -13314,215 +13664,1202 @@ public class Application {
 }
 ```
 
-**Common Spring Boot Native Image Issues:**
+Alternatives: `@RegisterReflectionForBinding(MyDto.class)` on a bean or configuration class for DTOs bound by Jackson, and `@Reflective` on custom annotations. Test hints with `RuntimeHintsPredicates`.
 
-1. **Logback Configuration**: Add to `application.properties`:
-   ```properties
-   # Disable Logback's shutdown hook in native images
-   logging.register-shutdown-hook=false
-   ```
+## Common issues
 
-   If using custom Logback configuration, ensure `logback-spring.xml` is in resources and add to `RuntimeHints`:
-   ```java
-   hints.resources().registerPattern("logback-spring.xml");
-   hints.resources().registerPattern("org/springframework/boot/logging/logback/*.xml");
-   ```
+1. **Jackson DTOs / mix-ins**: register the types with `@RegisterReflectionForBinding` or `hints.reflection()`; include mix-in classes. Records usually work without extra hints.
+2. **Resources**: register non-standard resource patterns (`hints.resources().registerPattern(...)`). `application.properties`/`application.yml` are handled.
+3. **Logback**: Spring's AOT supports standard Logback configs (`logback-spring.xml`). Custom Logback components may need reflection hints.
+4. **Conditional beans**: `@Profile`, `@ConditionalOnProperty` and similar are evaluated at **build time** in AOT. Properties that change bean structure must be fixed when building; runtime overrides will not add or remove beans.
+5. **Dynamic proxies / CGLIB**: handled by AOT for Spring components; third-party proxies need `proxy-config` hints.
+6. **Libraries without metadata**: check for a compatible update, but obtain user approval before upgrading and rerun the JVM baseline afterwards. If staying on current versions, use the tracing agent (see `reachability-metadata.md`).
+7. **Testcontainers / test slices** in native tests: follow the Spring Boot reference for native testing; some tests are not supported natively.
 
-2. **Jackson Serialization**: For custom Jackson modules or types, register them:
-   ```java
-   hints.serialization().registerType(MyDto.class);
-   hints.reflection().registerType(
-       MyDto.class,
-       hint -> hint.withMembers(
-           MemberCategory.DECLARED_FIELDS,
-           MemberCategory.INVOKE_DECLARED_CONSTRUCTORS
-       )
-   );
-   ```
 
-   Add Jackson mix-ins to reflection hints if used:
-   ```java
-   hints.reflection().registerType(MyMixIn.class);
-   ```
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-add-graalvm-native-image-support/references/troubleshooting.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-add-graalvm-native-image-support/references/troubleshooting.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-add-graalvm-native-image-support/references/troubleshooting.md
+- **SHA256_FINGERPRINT**: `d1e5af897bd55c8ccf58195af61759c44a5401d14c0b1fa44963bfad081b905c`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.764561+00:00
+---
 
-3. **Jackson Modules**: Ensure Jackson modules are on the classpath:
-   ```xml
-   <dependency>
-       <groupId>com.fasterxml.jackson.datatype</groupId>
-       <artifactId>jackson-datatype-jsr310</artifactId>
-   </dependency>
-   ```
+# Common native image errors and fixes
 
-### Quarkus
-- Quarkus is designed for native images with zero configuration in most cases
-- Use `@RegisterForReflection` annotation for reflection needs
-- Quarkus extensions handle GraalVM configuration automatically
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| `ClassNotFoundException`, `NoSuchMethodException`, `NoSuchFieldException` at runtime | missing reflection metadata | tracing agent; framework hints; `reflect-config.json` |
+| `MissingReflectionRegistrationError` | same, reported precisely | register the named type/member |
+| Resource `null` / `FileNotFoundException` for classpath files | resource not included | `resource-config.json` pattern; framework resource setting |
+| `Proxy class defined by interfaces [...] not found` | missing proxy metadata | `proxy-config.json` / framework hints |
+| `Classes that should be initialized at run time got initialized during image building` | build-time init of a class holding runtime state (random, sockets, threads, system properties) | `--initialize-at-run-time=<class>` |
+| `Object of type X was found in the image heap` (random, threads, file handles) | build-time init stored non-image-safe state | move init to run time for the owning class |
+| `Detected a started Thread in the image heap` | thread started in a static initializer | defer to run time |
+| `UnsatisfiedLinkError` | missing JNI/native lib | `jni-config.json`; ship or link the native library |
+| `Unsupported features in ...` / `Discovered unresolved type during parsing` | an optional dependency is missing or the library is unsupported | add the dependency; upgrade the library; check the reachability metadata repository |
+| Serialization errors (`java.io.Serializable`) | missing serialization metadata | `serialization-config.json` / framework hints |
+| Out of memory during build | native build needs several GB | raise container/CI memory; `-J-Xmx<size>` as a build arg; close other processes |
+| Build very slow | normal for full optimization | `-O b` for dev only; use CI caching; build only in a profile |
+| Binary behaves differently from JVM | build-time initialization, missing metadata, no dynamic class loading | native tests; tracing agent over the full test suite |
+| Large binary | many dependencies | review dependencies; `-Os`; on Oracle GraalVM check `--emit build-report` (not available in Community Edition) |
+| Dynamic class loading, `Class.forName` on unknown names, agents, `MethodHandles` tricks | not supported in native images | refactor to static registration |
 
-**Common Quarkus Native Image Tips:**
+## Diagnosis workflow
 
-1. **Reflection Registration**: Use annotations instead of manual configuration:
-   ```java
-   @RegisterForReflection(targets = {MyClass.class, MyDto.class})
-   public class ReflectionConfiguration {
-   }
-   ```
+1. Run the build with `-H:+ReportExceptionStackTraces` for the full error.
+2. On Oracle GraalVM, add `--emit build-report` to see what pulled classes in (Build Report is not available in GraalVM Community Edition; use the standard build output there).
+3. For runtime errors, run the same scenario with the tracing agent on the JVM and diff the output against your metadata.
+4. On Oracle GraalVM, use the build report to find which dependency causes the size or initialization problem.
 
-   Or register entire packages:
-   ```java
-   @RegisterForReflection(classNames = {"com.example.package.*"})
-   ```
+## Cautions
 
-2. **Resource Inclusion**: Add to `application.properties`:
-   ```properties
-   quarkus.native.resources.includes=config/*.json,templates/**
-   quarkus.native.additional-build-args=--initialize-at-run-time=com.example.RuntimeClass
-   ```
+- Dependency/framework upgrades and CI or runner changes require user approval even when suggested above; preserve managed versions and rerun the JVM baseline after dependency changes.
+- `--initialize-at-build-time` is an optimization with risks; apply it to named classes, not broad packages, unless the framework documents it.
+- `--report-unsupported-elements-at-runtime` only delays failures; use it for diagnosis, not as a fix.
+- Native binaries are platform-specific; build on the target OS/architecture (or in a matching container).
 
-3. **Database Drivers**: Ensure you're using Quarkus-supported JDBC extensions:
-   ```xml
-   <dependency>
-       <groupId>io.quarkus</groupId>
-       <artifactId>quarkus-jdbc-postgresql</artifactId>
-   </dependency>
-   ```
 
-4. **Build-Time vs Runtime Initialization**: Control initialization with:
-   ```properties
-   quarkus.native.additional-build-args=--initialize-at-build-time=com.example.BuildTimeClass
-   quarkus.native.additional-build-args=--initialize-at-run-time=com.example.RuntimeClass
-   ```
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-debugging/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-debugging/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-debugging/SKILL.md
+- **SHA256_FINGERPRINT**: `ef36ad23b110ed22821df4d6eabbc843c3847e459a3617a6647957448747d4a4`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.791481+00:00
+---
 
-5. **Container Image Build**: Use Quarkus container-image extensions:
-   ```properties
-   quarkus.native.container-build=true
-   quarkus.native.builder-image=mandrel
-   ```
+**description**: Debug Java applications systematically: JDWP remote debugging, jdb, VS Code and IntelliJ attach, debugging Maven/Gradle tests, Spring Boot and Quarkus dev mode, containers, breakpoints/logpoints, and reading stack traces. Use when the user needs to find the cause of a Java bug, exception, wrong behavior, or failing test, or asks how to attach a debugger.
 
-### Micronaut
-- Micronaut has built-in GraalVM support with minimal configuration
-- Use `@ReflectionConfig` and `@Introspected` annotations as needed
-- Micronaut's ahead-of-time compilation reduces reflection requirements
+# Java Debugging
 
-**Common Micronaut Native Image Tips:**
+Find the root cause of a Java defect with a reproducible, hypothesis-driven loop, and attach a debugger safely when logs are not enough.
 
-1. **Bean Introspection**: Use `@Introspected` for POJOs to avoid reflection:
-   ```java
-   @Introspected
-   public class MyDto {
-       private String name;
-       private int value;
-       // getters and setters
-   }
-   ```
+## Safety rules
 
-   Or enable package-wide introspection in `application.yml`:
-   ```yaml
-   micronaut:
-     introspection:
-       packages:
-         - com.example.dto
-   ```
+- Bind JDWP to loopback only (`127.0.0.1`). Never bind `*:5005` on a reachable network; use an SSH tunnel or `kubectl port-forward` for remote hosts.
+- Use `suspend=n` for running applications. `suspend=y` is acceptable only for short local test runs bound to loopback (waiting for the IDE to attach). Never leave a debug agent enabled on production; JDWP gives full code execution to whoever connects.
+- Do not attach a debugger to production without explicit user instruction. Prefer reproducing locally or use read-only diagnostics (see the `java-diagnostics` skill).
+- `JAVA_TOOL_OPTIONS` is picked up by every JVM started in that environment (build tools, forked test JVMs, child processes), causing `Address already in use` clashes. Prefer scoping the flag to the one process you want to debug.
 
-2. **Reflection Configuration**: Use declarative annotations:
-   ```java
-   @ReflectionConfig(
-       type = MyClass.class,
-       accessType = ReflectionConfig.AccessType.ALL_DECLARED_CONSTRUCTORS
-   )
-   public class MyConfiguration {
-   }
-   ```
+## Method
 
-3. **Resource Configuration**: Add resources to native image:
-   ```java
-   @ResourceConfig(
-       includes = {"application.yml", "logback.xml"}
-   )
-   public class ResourceConfiguration {
-   }
-   ```
+Reproduce deterministically, minimize, read the evidence ([stack traces](references/stack-traces.md)), test one falsifiable hypothesis with the least intrusive tool (log line or logpoint before breakpoints), then add a regression test and remove debug flags and temporary logging.
 
-4. **Native Image Configuration**: In `build.gradle`:
-   ```groovy
-   graalvmNative {
-       binaries {
-           main {
-               buildArgs.add("--initialize-at-build-time=io.micronaut")
-               buildArgs.add("--initialize-at-run-time=io.netty")
-               buildArgs.add("--report-unsupported-elements-at-runtime")
-           }
-       }
-   }
-   ```
+## Version-dependent behavior (verified)
 
-5. **HTTP Client Configuration**: For Micronaut HTTP clients, ensure netty is properly configured:
-   ```yaml
-   micronaut:
-     http:
-       client:
-         read-timeout: 30s
-   netty:
-     default:
-       allocator:
-         max-order: 3
-   ```
+- **Helpful NullPointerException messages** (JEP 358) are off by default in JDK 14 (`-XX:+ShowCodeDetailsInExceptionMessages`) and on by default from JDK 15 (JEP 358 documents the message format). Source: <https://openjdk.org/jeps/358>.
+- JDWP bare `address=5005` binds all interfaces before JDK 9 and loopback from JDK 9 (see below).
+- Gradle `--debug-jvm` passes a bare address, so on JDK 8 it listens on all interfaces.
 
-## Best Practices
+## Attach a debugger (JDWP)
 
-- **Start Simple**: Build with `--no-fallback` to catch all native image issues
-- **Use Tracing Agent**: Run your application with the GraalVM tracing agent to automatically discover reflection, resources, and JNI requirements
-- **Test Thoroughly**: Native images behave differently than JVM applications
-- **Minimize Reflection**: Prefer compile-time code generation over runtime reflection
-- **Profile Memory**: Native images have different memory characteristics
-- **CI/CD Integration**: Add native image builds to your CI/CD pipeline
-- **Keep Dependencies Updated**: Use latest versions for better GraalVM compatibility
+Start the JVM:
 
-## Troubleshooting Tips
+```bash
+java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=127.0.0.1:5005 -jar app.jar
+```
 
-1. **Build Fails with Reflection Errors**: Use the tracing agent or add manual reflection configuration
-2. **Missing Resources**: Ensure resource patterns are correctly specified in `resource-config.json`
-3. **ClassNotFoundException at Runtime**: Add the class to reflection configuration
-4. **Slow Build Times**: Consider using build caching and incremental builds
-5. **Large Image Size**: Use `--gc=serial` (default) or `--gc=epsilon` (no-op GC for testing) and analyze dependencies
+Always write the explicit `127.0.0.1:5005` on every JDK version: a bare `address=5005` listens on all interfaces before JDK 9 and only on loopback from JDK 9. On JDK 8 and older, the `host:port` form may not be honored, so also restrict access with a firewall or tunnel.
+
+Attach with `jdb`:
+
+```bash
+jdb -attach 127.0.0.1:5005
+# stop in com.example.OrderService.place | stop at com.example.OrderService:42
+# cont | next | step | locals | print order | where | catch java.lang.NullPointerException
+```
+
+### VS Code (Extension Pack for Java)
+
+`.vscode/launch.json`:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Attach to JVM",
+      "request": "attach",
+      "hostName": "127.0.0.1",
+      "port": 5005
+    }
+  ]
+}
+```
+
+### IntelliJ IDEA
+
+Run | Edit Configurations | + | Remote JVM Debug; host `127.0.0.1`, port `5005`, debugger mode Attach. The dialog shows the matching JVM argument string.
+
+## Debug tests and frameworks
+
+| Scenario | Command (port 5005) |
+|----------|---------------------|
+| Maven Surefire unit test | `mvn test -Dmaven.surefire.debug -Dtest=OrderServiceTest` |
+| Maven Failsafe IT | `mvn verify -Dmaven.failsafe.debug -Dit.test=OrderIT` |
+| Gradle test | `gradle test --debug-jvm --tests '*OrderServiceTest'` |
+| Spring Boot (Maven) | `mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=127.0.0.1:5005"` |
+| Spring Boot (Gradle) | Configure `bootRun` as below, then `gradle bootRun` (loopback, no suspend) |
+| Quarkus dev mode | `mvn quarkus:dev` (debug port 5005 open by default; `-Ddebug=5006` changes it, `-Ddebug=false` disables) |
+
+Surefire/Failsafe debug mode and `--debug-jvm` suspend until a debugger attaches, which is fine for a local run. Surefire and Failsafe accept a custom agent string instead of the bare flag, e.g. `-Dmaven.surefire.debug="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=127.0.0.1:5005"`. Verified listeners on `127.0.0.1` (via `lsof -nP -iTCP:5005 -sTCP:LISTEN`) for Gradle 9.7 `--debug-jvm`, Maven Surefire 3.5 `-Dmaven.surefire.debug` and Quarkus 3.40 dev mode on JDK 26; Gradle 7.6.4, 8.0.2 (JDK 17), 8.5 (JDK 21) and 8.14.3 also listened on `127.0.0.1`. Gradle passes a bare `address=5005` (no host), so the bind address comes from the JDK: loopback on JDK 9+, but all interfaces (`0.0.0.0:5005`, checked in an `eclipse-temurin:8-jdk` container with Gradle 7.6.4 and 8.14.3) on JDK 8. Older Gradle/plugin versions were not tested; run the same `lsof` check and use an explicit loopback agent on shared networks or JDK 8.
+
+Explicit Gradle configuration (Gradle 7.6+; `debugOptions.host` was added in 7.6; Kotlin DSL):
+
+```kotlin
+tasks.withType<Test> {
+    debugOptions { enabled.set(true); host.set("127.0.0.1"); port.set(5005); server.set(true); suspend.set(true) }
+}
+
+// BootRun extends JavaExec, not Test; configure it separately when the Boot plugin is applied.
+tasks.named<JavaExec>("bootRun") {
+    debugOptions { enabled.set(true); host.set("127.0.0.1"); port.set(5005); server.set(true); suspend.set(false) }
+}
+```
+
+Then run `gradle test --tests '*OrderServiceTest'` or `gradle bootRun`, without `--debug-jvm` (which enables suspension). Configure only the task you are debugging; do not run both listeners on port 5005 at once. For Gradle before 7.6, use `jvmArgs("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=127.0.0.1:5005")` on the target task instead (`suspend=y` for local tests), without also enabling `debugOptions` or `--debug-jvm`. On JDK 8 and older, retain the firewall/tunnel precaution above.
+
+## Containers
+
+Publish the port to loopback only and let the JVM listen inside the container:
+
+```bash
+docker run --rm -p 127.0.0.1:5005:5005 \
+  -e JAVA_TOOL_OPTIONS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" my-app
+```
+
+Inside the container the agent must bind `*` for the port mapping to work, so JDWP (full code execution) is reachable by every other container on the same Docker network; the `127.0.0.1:` mapping only blocks access from other hosts. Use this only on a developer machine where no untrusted containers share the network: run it on a dedicated user-defined network (not the shared default bridge) containing only this container, or keep the agent on `127.0.0.1` inside the container and reach it with `docker exec`/`kubectl port-forward` style forwarding instead of publishing it. For Kubernetes use `kubectl port-forward pod/<name> 5005:5005` against a dev/staging pod only.
+
+## Common pitfalls
+
+- **Hot code replace** only swaps method bodies; adding/removing methods or fields or changing signatures needs a restart (or Quarkus dev mode / Spring DevTools).
+- **Missing debug info**: code compiled without `-g` shows unavailable variables (Maven and Gradle include it by default). In lambdas, step into the lambda body.
+- **Heisenbugs/races**: pausing changes timing. Prefer logpoints, thread dumps, or JFR; suspend only the current thread, not all threads.
+- **Async and reactive code**: stack traces show scheduler frames, not the caller. Use IDE async stack traces, correlation IDs, or Reactor `Hooks.onOperatorDebug()` in dev only.
+- **Virtual threads (JDK 21+)**: there can be thousands; use `jcmd <pid> Thread.dump_to_file -format=json file.json` for an overview.
+- **Timeouts**: long pauses can trip HTTP, DB, or heartbeat timeouts; raise them locally.
+- **toString() side effects**: debugger evaluation calls `toString()`, which may trigger lazy loading or mutate state.
+
+## Optional code-navigation aid
+
+If the Copilot CLI `lsp` tool is configured (see the `lsp-setup` skill), go-to-definition, find-references, and call hierarchy help trace the execution path. It is optional; grep and reading code work as well.
 
 ## References
 
-- [GraalVM Native Image Documentation](https://www.graalvm.org/latest/reference-manual/native-image/)
-- [Spring Boot Native Image Guide](https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html)
-- [Quarkus Building Native Images](https://quarkus.io/guides/building-native-image)
-- [Micronaut GraalVM Support](https://docs.micronaut.io/latest/guide/index.html#graal)
-- [GraalVM Reachability Metadata](https://github.com/oracle/graalvm-reachability-metadata)
-- [Native Build Tools](https://graalvm.github.io/native-build-tools/latest/index.html)
+- [Reading stack traces](references/stack-traces.md)
+- For runtime symptoms (CPU, memory, deadlocks, slow startup) use the `java-diagnostics` skill.
+
+Official tool docs (prefer them over this skill for the JDK in use; change `21` to your version): `jcmd` <https://docs.oracle.com/en/java/javase/21/docs/specs/man/jcmd.html>, JDK troubleshooting guide <https://docs.oracle.com/en/java/javase/21/troubleshoot/>.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-debugging/references/stack-traces.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-debugging/references/stack-traces.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-debugging/references/stack-traces.md
+- **SHA256_FINGERPRINT**: `172c9767dc7d84948b9c53d0a9928c7fcc41b7ac5530d0c37ba75bfd2ae9c83b`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.886857+00:00
+---
+
+# Reading Java stack traces
+
+## Anatomy
+
+```
+java.lang.IllegalStateException: Order 42 already shipped
+	at com.example.OrderService.ship(OrderService.java:88)
+	at com.example.OrderController.ship(OrderController.java:31)
+	...
+Caused by: java.sql.SQLException: Connection refused
+	at ...
+	... 12 more
+```
+
+- First line: exception type and message. Read the message literally.
+- Top frame is where it was thrown; walk down to the first frame in your own code.
+- `Caused by:` chains: the deepest (last) cause is usually the root cause. `... N more` means frames shared with the enclosing trace.
+- `Suppressed:` entries come from try-with-resources close failures.
+
+## Practical tips
+
+1. Open the first frame in your own packages and check which reference could be null or which argument is invalid.
+2. `NullPointerException`: helpful messages (on by default since JDK 15) name the null variable or call.
+3. Wrapper exceptions (`BeanCreationException`, `CompletionException`, `InvocationTargetException`, `ExecutionException`): skip to the deepest `Caused by`.
+4. `OutOfMemoryError`: use the `java-diagnostics` skill. `StackOverflowError`: look for the repeating frame pattern (unbounded recursion).
+5. Missing traces on hot repeated exceptions come from `OmitStackTraceInFastThrow`; check earlier log occurrences or run locally with `-XX:-OmitStackTraceInFastThrow`.
+6. Proxy/generated frames (`$$SpringCGLIB$$`, `$Proxy`, lambdas) are noise; focus on neighbouring frames.
+7. Reactive/async: the trace points to scheduler threads; use correlation IDs or operator debug in dev.
+8. Include the full trace, Java version, and dependency versions when asking for help or filing issues.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-development/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-development/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-development/SKILL.md
+- **SHA256_FINGERPRINT**: `f5a6a416c5b38bd8dde29763767772f998bd6a49bb9fff0657cc710baaa90cf1`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.878710+00:00
+---
+
+**description**: Day-to-day plain Java development without a framework: Maven and Gradle usage and wrappers, project layout, dependency and vulnerability management, modern Java idioms by JDK version (records, sealed types, pattern matching, virtual threads), SLF4J logging, error and null handling, immutability, concurrency basics, static analysis and formatting (Spotless, Error Prone, -Xlint), packaging (jar, jlink, jpackage) and GitHub Actions CI. Use when writing, building, reviewing or maintaining ordinary Java code.
+
+# Java Development (plain Java)
+
+Everyday guidance for Java projects that are not tied to a framework. If the project uses Spring Boot, Quarkus, Helidon or similar, prefer that framework's skills for framework concerns and use this one for the plain-Java parts.
+
+## Rules that always apply
+
+1. **Detect before you write.** Read `pom.xml`/`build.gradle*`, `.mvn/`, `gradle/`, `.java-version`/`.sdkmanrc`, `.editorconfig`, CI files, and a few source files. Match the build tool, Java release, formatter, naming, logging and test libraries already in use.
+2. **Never upgrade implicitly.** Do not change the Java release, build-tool version, plugin or dependency versions, or add a formatter/linter/static analyzer the project lacks, as a side effect of another task. Suggest it and ask. Version upgrades are their own task (`java-upgrade`, if installed).
+3. **Use the wrapper** (`./mvnw`, `./gradlew`) when present; otherwise the installed `mvn`/`gradle`. Do not commit a wrapper unprompted.
+4. **Verify with a build.** After any change run the project's own verification (`./mvnw -B verify` or `./gradlew build`) and report the result. Run a narrower command first while iterating. If you could not run it, say so.
+5. **Ask the user** before: changing public APIs or serialized/DB/wire formats, raising the Java release, adding runtime dependencies, adding tools to the build, deleting or weakening tests, changing CI, or when two reasonable designs have different trade-offs.
+6. Prefer the standard library and small, explicit code over new dependencies. No Lombok unless already used.
+
+## Pick idioms by the project's Java release
+
+Check `maven.compiler.release`/`<release>`, `java.toolchain`, or `sourceCompatibility`; never use a feature newer than that release. Summary (details and snippets in `references/modern-java.md`):
+
+| Release | You can use |
+| --- | --- |
+| 8 | lambdas, streams, `Optional`, `java.time` |
+| 11 | `var`, `String.isBlank/strip/lines`, `java.net.http.HttpClient`, `List.of`/`Map.of` (9) |
+| 17 | records, sealed classes, text blocks, switch expressions, `instanceof` patterns |
+| 21 | pattern matching for `switch`, record patterns, **virtual threads**, `SequencedCollection` (`getFirst/getLast/reversed`) |
+| 22-24 | unnamed variables `_` (22), `Stream.gather` (24) |
+| 25 | scoped values, instance `main`/compact source files, module import declarations (all final) |
+
+Structured concurrency (`StructuredTaskScope`) is still a **preview API** in 25 and 27 (verified: needs `--enable-preview`); do not use it in production code unless the user opts in to preview features.
+
+## Build tools in practice
+
+- Maven: `./mvnw -B verify` (compile, unit tests, integration tests, packaging), `-pl <module> -am` for one module, `dependency:tree`, `-DskipTests` only when the user asks. Gradle: `./gradlew build`, `test --tests 'pkg.Class'`, `dependencies`, `dependencyInsight --dependency <name>`.
+- Standard layout: `src/main/java`, `src/main/resources`, `src/test/java`, `src/test/resources`; package by feature, one top-level type per file, no split packages.
+- Set the Java version explicitly (`maven.compiler.release` / Gradle toolchain with `options.release`) and UTF-8 encoding; do not rely on the JDK that happens to run the build.
+- Wrapper, BOM and `dependency:tree`/`versions:` usage, version catalogs and multi-module layout: `references/build-and-dependencies.md`.
+
+## Dependencies and vulnerabilities
+
+- Import BOMs (`junit-bom`, `testcontainers-bom`, the framework's BOM) instead of repeating versions; one version per library across modules.
+- Inspect before changing: `mvn dependency:tree -Dincludes=group:artifact` / `gradlew dependencyInsight`. Resolve conflicts with `dependencyManagement` or Gradle constraints, not by excluding randomly.
+- Check updates with `mvn versions:display-dependency-updates` (add `-Dmaven.version.ignore` to hide alpha/beta/RC) and report them; do not apply major upgrades without asking.
+- Vulnerabilities: use what the project has (Dependabot/Renovate alerts, OWASP dependency-check, OSV-Scanner, GitHub dependency review). Suggest one if none exists; do not add it silently. Keep secrets out of scanner config; NVD-based scanners need an API key to be practical.
+
+## Version-dependent failures (verified)
+
+- **JDK 23+ no longer runs annotation processors implicitly** (Lombok, MapStruct, Dagger...): `-proc:none` is the default unless `-processor`, `--processor-path` or `--processor-module-path` is given. Declare the processor path in the build (Maven `annotationProcessorPaths`, Gradle `annotationProcessor`) or pass `-proc:full`. JDK 21+ prints a warning when it detects implicit use; `-proc:full` is also backported to 17.0.11, 11.0.23 and 8u411. Source: <https://inside.java/2024/06/18/quality-heads-up/>.
+- **Virtual threads and `synchronized`**: on JDK 21-23 a virtual thread that blocks inside `synchronized` is pinned to its carrier; JEP 491 removes nearly all such pinning in JDK 24+. On 21-23 prefer `ReentrantLock` around blocking calls. Source: <https://openjdk.org/jeps/491>.
+- **Error Prone** on JDK 16+ needs the `--add-exports`/`--add-opens` javac flags, and on JDK 21 `-XDaddTypeAnnotationsToSymbol=true` (see the quality reference).
+- Never use a language feature newer than the project's release (see the table above).
+
+## Static analysis and formatting (only if already present, or the user agrees)
+
+Respect what is configured: if the project uses Spotless/Checkstyle/SpotBugs/Error Prone, run them and fix findings; if not, do not add them. When asked to introduce them, start with `-Xlint:all` and Spotless (formatter only), then Error Prone. Verified configs for Maven and Gradle on JDK 21 and 25 (including the JDK-21-only `-XDaddTypeAnnotationsToSymbol=true` requirement and Maven `.mvn/jvm.config` flags) are in `references/quality-and-packaging.md`. Never reformat the whole codebase in an unrelated change.
+
+## Packaging and CI
+
+- Plain library jar: `mvn package`/`gradlew jar`. Runnable app: shaded/fat jar or `lib/` directory plus manifest `Main-Class`; custom runtime with `jlink`; native installer/app-image with `jpackage` (verified on macOS, see `references/quality-and-packaging.md`).
+- GitHub Actions: `actions/checkout`, `actions/setup-java` with `distribution: temurin`, an explicit `java-version`, built-in dependency `cache`, then `./mvnw -B verify` or `./gradlew build`. Snippet and notes in `references/quality-and-packaging.md`. Do not change CI without asking.
+
+## Related skills (use when installed)
+
+`java-junit` (unit tests), `java-testcontainers` (integration tests with Docker), `java-hibernate-jpa` (persistence), `java-debugging` (failures and stack traces), `java-diagnostics` (performance, memory, threads, JFR), `java-upgrade` (JDK/framework upgrades), `lsp-setup` (Java language server for navigation and refactoring).
+
+## References
+
+- `references/modern-java.md`: idioms and verified snippets (records, sealed types, switch patterns, text blocks, virtual threads, `SequencedCollection`, unnamed variables), preview status, pitfalls.
+- `references/build-and-dependencies.md`: Maven/Gradle commands, wrappers, BOMs, conflict diagnosis, update checking, Dependabot/Renovate, vulnerability scanning.
+- `references/quality-and-packaging.md`: logging setup, `-Xlint`, Spotless, Error Prone, Checkstyle/SpotBugs notes, jar/jlink/jpackage, GitHub Actions.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-development/references/build-and-dependencies.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-development/references/build-and-dependencies.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-development/references/build-and-dependencies.md
+- **SHA256_FINGERPRINT**: `c30c6910399d136c9369ba01f8d9d72377645ddb36d5bc71ce3665abd45e1ac4`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.895606+00:00
+---
+
+# Build tools, dependencies and vulnerabilities
+
+Commands below were run on Maven 3.10.0 / 3.9.11 (wrapper) and Gradle 9.8.1 with JDK 21 and 25 unless marked unverified.
+
+## Maven
+
+```bash
+mvn -v                               # shows Maven AND the JDK it runs on; check it matches the project's release
+./mvnw -B verify                     # compile + unit tests + integration tests (+ checks bound to verify)
+./mvnw -B -q test                    # unit tests only
+./mvnw -B -pl service -am verify     # one module and what it depends on
+./mvnw -B dependency:tree -Dincludes=org.slf4j
+./mvnw -B versions:display-dependency-updates
+./mvnw -B versions:display-plugin-updates
+```
+
+Generate a wrapper (only when the user wants one): `mvn wrapper:wrapper -Dmaven=3.9.11` creates `mvnw`, `mvnw.cmd`, `.mvn/wrapper/maven-wrapper.properties` (verified, wrapper 3.3.4, script-only distribution that downloads Maven on first run). Commit those files and keep `.mvn/` in version control.
+
+Minimal `pom.xml` essentials:
+
+```xml
+<properties>
+  <maven.compiler.release>21</maven.compiler.release>
+  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+</properties>
+```
+
+Pin plugin versions (`maven-compiler-plugin` 3.16.0, `maven-surefire-plugin` 3.6.0, `maven-jar-plugin` 3.5.1 were used in verification) instead of relying on Maven's defaults; an explicit `<release>` beats `source`/`target`.
+
+`versions:display-dependency-updates` also proposes pre-releases (it proposed `slf4j-api 2.1.0-alpha1`). Hide them with `-Dmaven.version.ignore='(?i).*(alpha|beta|rc|-m)[-.0-9]*'` (verified: the alpha disappears). Report updates; do not apply majors without asking.
+
+Multi-module: a parent `pom.xml` with `<packaging>pom</packaging>`, `<modules>`, and `<dependencyManagement>`/`<pluginManagement>`; children inherit versions. Do not use `-Dmaven.test.failure.ignore` to get a green build.
+
+## Gradle
+
+```bash
+./gradlew build                      # compile + test + check
+./gradlew test --tests 'demo.OrdersTest'
+./gradlew dependencies --configuration runtimeClasspath
+./gradlew dependencyInsight --dependency slf4j-api --configuration runtimeClasspath
+./gradlew --version                  # Gradle + JVM
+```
+
+Generate a wrapper: `gradle wrapper --gradle-version 9.8.1` (verified; creates `gradlew`, `gradlew.bat`, `gradle/wrapper/*`). Upgrade later with `./gradlew wrapper --gradle-version <v>` only when asked.
+
+```kotlin
+plugins { java }
+repositories { mavenCentral() }
+java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
+tasks.withType<JavaCompile>().configureEach { options.release = 21 }
+dependencies {
+    implementation("org.slf4j:slf4j-api:2.0.20")
+    runtimeOnly("ch.qos.logback:logback-classic:1.6.5")
+    testImplementation(platform("org.junit:junit-bom:6.0.3"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+tasks.test { useJUnitPlatform() }
+```
+
+A toolchain makes Gradle pick or download the right JDK; keep the toolchain version equal to the release. Prefer a version catalog (`gradle/libs.versions.toml`) when the project already has one. Use `api` vs `implementation` only in `java-library` projects.
+
+## Dependency hygiene
+
+- BOMs: Maven `<scope>import</scope>` in `dependencyManagement`; Gradle `platform("group:bom:version")`.
+- When a transitive version is wrong, find who brings it (`dependency:tree` / `dependencyInsight`), then override with `dependencyManagement` or a Gradle `constraints {}` block with a comment saying why.
+- Do not mix two logging backends or two JSON/mapping libraries without reason; check the tree for duplicates (e.g. both `logback-classic` and `slf4j-simple`).
+- Remove unused dependencies (`mvn dependency:analyze` reports used-undeclared and unused-declared; review by hand before deleting, since reflection and runtime-only libraries are false positives).
+- Scope correctly: test libs `test`, JDBC drivers/logging backends `runtime`.
+
+## Automated updates
+
+Dependabot (`.github/dependabot.yml`), unverified here but standard:
+
+```yaml
+version: 2
+updates:
+  - package-ecosystem: maven        # or gradle
+    directory: "/"
+    schedule: { interval: weekly }
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule: { interval: weekly }
+```
+
+Renovate (`renovate.json`) is the alternative; both need the user's consent to enable. Merge update PRs only when `verify` passes.
+
+## Vulnerability scanning (unverified here)
+
+Not run in this skill's verification (it needs network downloads of vulnerability databases and, for NVD, an API key). Pick what fits the project:
+
+- GitHub Dependabot alerts / dependency review action (no build change).
+- OWASP dependency-check Maven plugin `org.owasp:dependency-check-maven` (13.0.0 on Maven Central when this was written): `mvn org.owasp:dependency-check-maven:check -DnvdApiKeyEnvironmentVariable=NVD_API_KEY`; set `NVD_API_KEY` via CI secret, never in the repo or as a literal command-line value. The parameter tells the plugin which environment variable to read; exporting the variable alone does not configure it.
+- OSV-Scanner (`osv-scanner scan source -r .`) reads `pom.xml`/Gradle lockfiles.
+
+Report findings with the vulnerable artifact, the fixed version and whether it is direct or transitive; fix by raising the managed version, and run `verify`.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-development/references/modern-java.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-development/references/modern-java.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-development/references/modern-java.md
+- **SHA256_FINGERPRINT**: `978e9e50cbf38338cd222a2cd7ab1ed9698d20249cbf5a4b4b448a858dc9c015`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.869726+00:00
+---
+
+# Modern Java idioms by release
+
+Snippets in this file compiled and ran on JDK 21 and 25 (`-Xlint:all -Werror`) unless marked. Use a feature only if the project's configured release supports it; do not raise the release to use one.
+
+## Records, sealed types, pattern matching (17 / 21)
+
+```java
+public sealed interface Shape permits Circle, Rect, Group {}
+
+public record Circle(double r) implements Shape {
+    public Circle {                                   // compact constructor: validate
+        if (r <= 0) throw new IllegalArgumentException("r must be > 0");
+    }
+}
+public record Rect(double w, double h) implements Shape {}
+public record Group(List<Shape> items) implements Shape {
+    public Group { items = List.copyOf(items); }      // defensive immutable copy
+}
+
+static double area(Shape s) {
+    return switch (s) {                                // exhaustive: no default, compiler checks
+        case Circle(double r) -> Math.PI * r * r;     // record pattern (21)
+        case Rect(double w, double h) -> w * h;
+        case Group(List<Shape> items) -> items.stream().mapToDouble(Main::area).sum();
+    };
+}
+
+static String describe(Object o) {
+    return switch (o) {
+        case null -> "null";
+        case Integer i when i > 10 -> "big int " + i; // guard
+        case Integer i -> "int " + i;
+        case String str -> "string " + str.length();
+        default -> "other";
+    };
+}
+```
+
+- Records are shallowly immutable: copy mutable components (`List.copyOf`). They are good DTOs/value types, not JPA entities (see `java-hibernate-jpa`).
+- Prefer a sealed hierarchy and an exhaustive `switch` without `default`, so adding a subtype breaks compilation where handling is missing.
+- Pre-21 (17): `if (o instanceof String s && !s.isBlank()) {...}` and arrow-form switch expressions work; `case Integer i ->` patterns in `switch` do not.
+
+## Text blocks (15)
+
+```java
+String json = """
+    {
+      "name": "demo"
+    }
+    """;
+```
+
+Indentation is stripped relative to the closing delimiter; use `.formatted(...)` for values; never build SQL/JSON by concatenating untrusted input.
+
+## Virtual threads (21, final)
+
+```java
+try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+    List<Future<Integer>> futures = new ArrayList<>();
+    for (int i = 0; i < 1_000; i++) {
+        int n = i;
+        futures.add(executor.submit(() -> { Thread.sleep(Duration.ofMillis(10)); return n; }));
+    }
+    for (var f : futures) f.get();
+}
+Thread.ofVirtual().name("worker-", 0).start(task);   // single thread
+```
+
+Verified: 1,000 tasks, each sleeping 10 ms, run through `newVirtualThreadPerTaskExecutor` on JDK 21 and 25; `Thread.currentThread().isVirtual()` is true inside tasks.
+
+- Use for blocking I/O workloads (HTTP, JDBC); no benefit for CPU-bound work.
+- Do not pool them or cache them; create one per task. Limit concurrency to a downstream resource with a `Semaphore`, not a pool size.
+- Avoid heavy `ThreadLocal` state per task. On JDK 21-23 a virtual thread blocked inside `synchronized` pins its carrier; JEP 491 (JDK 24) removes most of this pinning. Use `ReentrantLock` on 21 for long blocking critical sections.
+- Frameworks may switch to virtual threads by configuration (e.g. a Spring Boot property); that is framework territory, not this skill.
+
+## Structured concurrency and scoped values
+
+- `ScopedValue`: preview on 21, **final in 25** (verified: compiles and runs on 25 without `--enable-preview`, rejected on 21 as a preview API).
+- `StructuredTaskScope`: **preview** on 25 and on 27 (verified: "is a preview API and is disabled by default"). Its API changed between 21 and 25 (25 uses `StructuredTaskScope.open()`). Do not use without explicit user approval to enable `--enable-preview` for compile and run; Maven needs `<compilerArgs>--enable-preview</compilerArgs>` and Surefire `argLine`.
+
+## SequencedCollection (21)
+
+```java
+static <T> Optional<T> last(SequencedCollection<T> c) {
+    return c.isEmpty() ? Optional.empty() : Optional.ofNullable(c.getLast()); // Null-permitting collections
+}
+```
+
+`getFirst/getLast/addFirst/removeLast/reversed()` are available on `List`, `Deque`, `LinkedHashSet`, `SortedSet`; `getFirst()` on an empty list throws `NoSuchElementException`. `SequencedCollection` implementations may permit null elements (for example, `LinkedList` and `LinkedHashSet`), so use `Optional.ofNullable` when the result can be null.
+
+## Later features
+
+| Feature | Status (verified on JDK 25 / 27 unless noted) |
+| --- | --- |
+| Unnamed variables `_` | Final in 22; on 21 the compiler says "unnamed variables are a preview feature" |
+| `Stream.gather` / `Gatherers.windowFixed(2)` | Works on 25 and 27; not present on 21 |
+| Instance `void main()` (compact source file) | Works without flags on 25 and 27 |
+| `import module java.base;` | Works without flags on 25 and 27 |
+| `ScopedValue` | Works without flags on 25 and 27 |
+| `StructuredTaskScope` | Preview on 25 and 27 |
+
+Verify the status of any other feature with `java <File>.java` on the target JDK before recommending it; JEP statuses change every six months.
+
+## Collection and API pitfalls
+
+- `stream().toList()` (16+) returns an unmodifiable list; `Collectors.toList()` makes no guarantee.
+- `Map.of`/`List.of` reject nulls and `Map.of` has undefined iteration order; use `LinkedHashMap` when order matters.
+- Do not use `finalize`, `Thread.stop`, `new Integer(...)`, `Date`/`Calendar`, `SecurityManager`.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-development/references/quality-and-packaging.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-development/references/quality-and-packaging.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-development/references/quality-and-packaging.md
+- **SHA256_FINGERPRINT**: `3982a56f155b13a70771c498ab675ea0707048242fd940223048d8b2fa86e6c6`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.888301+00:00
+---
+
+# Logging, static analysis, packaging and CI
+
+Verified with Maven 3.10.0 and Gradle 9.8.1 on JDK 21.0.12 and 25.0.4 unless marked unverified.
+
+## Logging: SLF4J + one backend
+
+```xml
+<dependency><groupId>org.slf4j</groupId><artifactId>slf4j-api</artifactId><version>2.0.20</version></dependency>
+<dependency><groupId>ch.qos.logback</groupId><artifactId>logback-classic</artifactId><version>1.6.5</version><scope>runtime</scope></dependency>
+```
+
+```java
+private static final Logger log = LoggerFactory.getLogger(Main.class);
+
+log.info("order {} placed for {}", orderId, customerId);     // placeholders, no concatenation
+log.warn("payment failed for order {}", orderId, exception); // exception last: full stack trace
+log.atInfo().addKeyValue("area", area).log("computed");     // SLF4J 2 fluent API (verified)
+```
+
+- Libraries depend only on `slf4j-api`; the application chooses the backend. Exactly one backend on the runtime classpath (otherwise SLF4J warns about multiple bindings).
+- Minimal `src/main/resources/logback.xml` (verified): a `ConsoleAppender` with pattern `%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} requestId=%X{requestId} - %msg %kvp%n`, `<logger name="your.package" level="DEBUG"/>`, root level `INFO`. `%X{requestId}` renders the MDC request ID and `%kvp` renders fluent `addKeyValue` fields; `%msg` alone renders neither. Without a config file Logback logs at DEBUG to the console.
+- Guard expensive argument construction with a lambda (`log.atDebug().log(() -> ...)`) or `isDebugEnabled`. Levels: ERROR = needs attention now, WARN = unexpected but handled, INFO = business events, DEBUG/TRACE = diagnostics.
+- Never log secrets, tokens, full request bodies or personal data; use MDC (`MDC.put("requestId", id)` ... `finally MDC.remove`) for correlation. Do not use `System.out` for diagnostics in application code.
+- Do not log an exception and also rethrow it (duplicate noise); log at the place that handles it.
+
+## Compiler warnings: `-Xlint`
+
+Maven:
+
+```xml
+<plugin>
+  <artifactId>maven-compiler-plugin</artifactId>
+  <version>3.16.0</version>
+  <configuration>
+    <release>21</release>
+    <compilerArgs><arg>-Xlint:all</arg><arg>-Werror</arg></compilerArgs>
+  </configuration>
+</plugin>
+```
+
+Gradle: `tasks.withType<JavaCompile>().configureEach { options.release = 21; options.compilerArgs.addAll(listOf("-Xlint:all", "-Werror")) }`.
+
+`-Werror` turns warnings into build failures; verified as clean for the sample project on 21 and 25, but on an existing codebase it can fail on hundreds of warnings. Introduce `-Xlint:all` first and add `-Werror` only when the project is clean and the user agrees.
+
+## Spotless (formatting)
+
+Maven (verified 3.10.4; `spotless:check` fails on violations, `spotless:apply` fixes):
+
+```xml
+<plugin>
+  <groupId>com.diffplug.spotless</groupId>
+  <artifactId>spotless-maven-plugin</artifactId>
+  <version>3.10.4</version>
+  <configuration>
+    <java><googleJavaFormat/><removeUnusedImports/></java>
+  </configuration>
+</plugin>
+```
+
+Gradle (verified 8.10.4): `plugins { id("com.diffplug.spotless") version "8.10.4" }` and `spotless { java { googleJavaFormat(); removeUnusedImports() } }`; run `./gradlew spotlessCheck` / `spotlessApply`.
+
+Format style is a team decision: google-java-format uses 2-space indentation. If the project already has `.editorconfig`/Eclipse/IntelliJ formatting, configure Spotless to match instead (or do not add it). Apply `spotless:apply` to touched files only, never as a drive-by reformat of the repo. Works the same on JDK 21 and 25.
+
+## Error Prone (bug patterns at compile time)
+
+Maven, verified with `error_prone_core` 2.50.0 on JDK 21 and 25 (it caught `String.equals(Integer)` as `EqualsIncompatibleType`):
+
+```xml
+<plugin>
+  <artifactId>maven-compiler-plugin</artifactId>
+  <version>3.16.0</version>
+  <configuration>
+    <release>21</release>
+    <compilerArgs>
+      <arg>-XDcompilePolicy=simple</arg>
+      <arg>-XDaddTypeAnnotationsToSymbol=true</arg>
+      <arg>--should-stop=ifError=FLOW</arg>
+      <arg>-Xplugin:ErrorProne -XepDisableWarningsInGeneratedCode</arg>
+    </compilerArgs>
+    <annotationProcessorPaths>
+      <path>
+        <groupId>com.google.errorprone</groupId>
+        <artifactId>error_prone_core</artifactId>
+        <version>2.50.0</version>
+      </path>
+    </annotationProcessorPaths>
+  </configuration>
+</plugin>
+```
+
+and `.mvn/jvm.config` (JDK 16+ strong encapsulation; one flag per line):
+
+```
+--add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
+--add-exports jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
+--add-exports jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED
+--add-exports jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED
+--add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
+--add-exports jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED
+--add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
+--add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
+--add-opens jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED
+--add-opens jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED
+```
+
+Without `-XDaddTypeAnnotationsToSymbol=true` on JDK 21 the compiler fails with "-XDaddTypeAnnotationsToSymbol=true is required by Error Prone on JDK 21" (verified). Error Prone warnings appear as `[BugPattern]` compiler warnings and become errors under `-Werror`; suppress a specific finding with `@SuppressWarnings("BugPattern")` plus a comment, not a global disable.
+
+Gradle (verified with `net.ltgt.errorprone` 5.1.1, which adds the JVM flags itself):
+
+```kotlin
+plugins { java; id("net.ltgt.errorprone") version "5.1.1" }
+dependencies { errorprone("com.google.errorprone:error_prone_core:2.50.0") }
+```
+
+## Checkstyle and SpotBugs (unverified here)
+
+Run them only if the project configures them (`maven-checkstyle-plugin`, `spotbugs-maven-plugin`, Gradle `checkstyle`/`com.github.spotbugs`). Use the project's existing rule files; do not create a new ruleset or suppress findings wholesale. SpotBugs analyses bytecode, so check its JDK support before upgrading Java. They overlap with Error Prone; adding all three is rarely justified.
+
+## Packaging
+
+Executable jar needs dependencies. For a plain app (verified: the jar alone fails with `NoClassDefFoundError` for SLF4J):
+
+```bash
+mvn -B package dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory=target/lib
+java -cp 'target/app.jar:target/lib/*' demo.Main
+```
+
+or use a shade/assembly plugin (or Gradle `application` + `installDist`) to produce a distributable. Set `Main-Class` in the jar manifest (`maven-jar-plugin` `<archive><manifest><mainClass>`).
+
+**jlink** (verified, JDK 21): build a trimmed runtime:
+
+```bash
+MODS=$(jdeps --ignore-missing-deps --multi-release 21 --print-module-deps --class-path 'target/lib/*' target/app.jar)
+jlink --add-modules "$MODS,jdk.unsupported" --strip-debug --no-header-files --no-man-pages --output target/rt
+target/rt/bin/java -cp 'target/app.jar:target/lib/*' demo.Main
+```
+
+`jdeps` misses modules used by reflection or `ServiceLoader`; if the app fails with `NoClassDefFoundError`/missing provider, add modules (e.g. `java.sql`, `java.xml`, `jdk.crypto.ec`) explicitly. Runtime size was 44 MB for `java.base` only.
+
+**jpackage** (verified on macOS with `--type app-image`): the `--input` directory must contain only the jar and its dependencies, not the output directory (using `target` as input recursed until "File name too long"):
+
+```bash
+mkdir target/in && cp target/app.jar target/lib/*.jar target/in/
+jpackage --type app-image --name devapp --input target/in --main-jar app.jar \
+  --main-class demo.Main --runtime-image target/rt --dest target/app
+```
+
+Native installers (`dmg`, `pkg`, `msi`, `deb`, `rpm`) need platform tooling and signing and were not tested; each must be built on its own OS.
+
+## GitHub Actions CI (unverified: not executed)
+
+`actions/setup-java` v6 and `actions/checkout` v7 were the latest major release tags as of 2026-10 (checked through the GitHub API); verify the current majors, and pin to a full commit SHA if the repository's policy requires it.
+
+```yaml
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [21, 25]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven            # or gradle
+      - run: ./mvnw -B verify     # or ./gradlew build
+```
+
+Match the matrix to the Java releases the project supports (and the build's release setting); one JDK is fine for an application. For Gradle also consider `gradle/actions/setup-gradle`. Keep `permissions` minimal, never print secrets, and do not edit existing workflows without asking.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-diagnostics/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-diagnostics/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-diagnostics/SKILL.md
+- **SHA256_FINGERPRINT**: `b21d86eec9a90654d2906737656b3b153ced7ddc2091e36742a235e12483d974`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.934186+00:00
+---
+
+**description**: Symptom-first runtime diagnostics for JVM applications using JDK tools: jcmd, jstack, jmap, jstat, JFR, GC logs, async-profiler, Native Memory Tracking, and Eclipse MAT. Use when a Java app has high CPU, memory leaks or OutOfMemoryError, slow startup, deadlocks or thread starvation, long GC pauses, native memory growth, or slow requests. Includes permission tiers for safe use.
+
+# Java Diagnostics
+
+Pick the lightest tool that answers the question, starting from the symptom.
+
+## Permission tiers (obey them)
+
+| Tier | Tools | Rule |
+|------|-------|------|
+| 1. Read-only | `jps -l`, `jcmd <pid> help/VM.version/VM.flags/Thread.print`, `jstat`, `jstack`, reading logs | May run after stating the exact command. Class histograms (`jcmd <pid> GC.class_histogram`, `jmap -histo`, `jmap -histo:live`) are NOT Tier 1: they run heap inspection at a safepoint and can pause application threads on a large heap, so treat them as Tier 2 (consent, stated overhead). The default forms and `-histo:live` additionally force a full GC; `-all=true` / `jmap -histo` skip the full GC but still pause during the scan (and count unreachable objects). |
+| 2. Recording / attach | JFR (`JFR.start`, `-XX:StartFlightRecording`), async-profiler, NMT (`-XX:NativeMemoryTracking`), enabling GC logs | Requires user consent. State duration and expected overhead (JFR default profile is about 1-2%; async-profiler depends on mode; NMT summary roughly 5-10%, detail more) before running. |
+| 3. Intrusive / sensitive | Heap dumps (`GC.heap_dump`, `jmap -dump`), `jhsdb`, commands that print JVM arguments or system properties (`jps -v/-lv/-m`, bare `jcmd`, `VM.system_properties`, `VM.command_line`, `jinfo`, `ps aux` on a Java process; they can expose secrets, redact output), JDWP with suspend, anything on production | Requires explicit consent, a stated target path, free-disk check (a dump is about the size of the used heap), and a stated pause. Heap dumps contain secrets (passwords, tokens, personal data). Never share or upload them; redaction is NOT a reliable safeguard. Analyze locally and delete afterwards. |
+
+Never run Tier 2 or Tier 3 commands against production unless the user explicitly instructs it. Run diagnostic tools as the same OS user as the target JVM. Prefer reproducing on dev or staging.
+
+## Decision table
+
+| Symptom | First step | Then | Reference |
+|---------|-----------|------|-----------|
+| High CPU | Thread dumps x3 (Tier 1) + `top -H` to map hot native thread ids to `nid` | JFR or async-profiler CPU flame graph (Tier 2) | [threads](references/thread-dumps.md), [jfr](references/jfr.md), [async-profiler](references/async-profiler.md) |
+| Memory leak / OOM | `jstat -gcutil`, `GC.class_histogram -all=true` twice, minutes apart (Tier 2: safepoint pause even with `-all=true`; without it a full GC too; get consent on production) | Heap dump + Eclipse MAT (Tier 3) or JFR OldObjectSample (Tier 2) | [heap](references/heap.md), [gc](references/gc.md) |
+| Slow startup | `-Xlog:class+load`, framework startup/condition reports, timestamped logs | JFR from start, async-profiler wall-clock | [jfr](references/jfr.md), [async-profiler](references/async-profiler.md) |
+| Deadlock / thread starvation | `jcmd <pid> Thread.print` (reports deadlocks), compare dumps over time | Virtual threads: `Thread.dump_to_file` | [threads](references/thread-dumps.md) |
+| GC pauses | GC log (`-Xlog:gc*`) and `jstat -gc` | JFR GC events; tune collector/heap | [gc](references/gc.md) |
+| Native memory growth (RSS grows, heap does not) | Compare RSS vs heap; enable NMT, `jcmd VM.native_memory baseline` / `summary.diff` (Tier 2) | async-profiler `nativemem` or allocator tools | [nmt](references/native-memory.md), [containers](references/containers.md) |
+| Slow requests | Tracing/metrics and logs first; Actuator or Dev UI (see below) | JFR (socket/file/lock events), async-profiler wall-clock | [jfr](references/jfr.md), [async-profiler](references/async-profiler.md) |
+| JVM crash / hang, no tools respond | `hs_err_pid*.log`, core dump | `jhsdb` (Tier 3) | [basics](references/jcmd-basics.md) |
+
+Start with [jps/jcmd basics](references/jcmd-basics.md) to identify the target JVM and confirm which JDK version is running.
+
+## Workflow
+
+1. Capture the symptom precisely (when, how often, since which change, JDK version, container limits).
+2. Choose the tier needed; state the command, its overhead, and output location, and get consent for Tier 2/3.
+3. Collect data to a dedicated directory, with timestamps. Prefer several samples over one.
+4. Form a hypothesis from the data, then confirm with a second source (for example a thread dump plus a flame graph).
+5. Fix, re-measure with the same method, and clean up artifacts (dumps, recordings).
+
+## Application-level insights (optional)
+
+JDK tools see the JVM; some questions (which endpoint, which SQL query, which bean) are easier at the application level. Optional options, in order of preference:
+
+- **Spring Boot Actuator** (`metrics`, `health`, `loggers`, `httpexchanges`) and **Quarkus Dev UI** / Micrometer metrics are built in and need no extra tool. Expose Actuator endpoints minimally; For `heapdump` and `threaddump`, follow the policy in the `spring-observability` skill: never expose them over public HTTP; the only exception is a temporary, user-consented window with authentication, TLS and network restriction, removed afterwards.
+- **BootUI** (https://github.com/jdubois/boot-ui , https://www.julien-dubois.com/boot-ui/): a local-only developer console with an opt-in MCP server for Spring Boot and Quarkus. Optional. Its skill can be installed with `gh skill install jdubois/boot-ui skills/bootui`.
+
+If considering BootUI:
+
+- Ask the user for consent before adding any dependency or installing the skill.
+- Use it in a local/dev profile only; never expose it on a network, and never enable its heap dump, thread dump endpoints or MCP server in production.
+- Check the capability and version first (read its README for the supported Spring Boot / Quarkus versions) instead of assuming features.
+
+Follow the project's own documentation for usage; this skill does not reproduce it.
+
+## Containers
+
+See [containers](references/containers.md) for attaching tools inside containers, `-XX:MaxRAMPercentage`, and cgroup memory limits.
+
+## References
+
+- [jps / jcmd basics](references/jcmd-basics.md)
+- [Thread dumps and deadlocks](references/thread-dumps.md)
+- [Heap, histograms, Eclipse MAT](references/heap.md)
+- [GC logs and jstat](references/gc.md)
+- [JFR and JDK Mission Control](references/jfr.md)
+- [async-profiler](references/async-profiler.md)
+- [Native Memory Tracking](references/native-memory.md)
+- [Containers](references/containers.md)
+- Debugger-based investigation: the `java-debugging` skill.
+
+Official docs (prefer them over this skill for the JDK in use; change `21` to your version): `jcmd` <https://docs.oracle.com/en/java/javase/21/docs/specs/man/jcmd.html>, `jfr` <https://docs.oracle.com/en/java/javase/21/docs/specs/man/jfr.html>, JFR guide <https://docs.oracle.com/en/java/javase/21/jfr/introduction-jdk-flight-recorder.html>, troubleshooting guide <https://docs.oracle.com/en/java/javase/21/troubleshoot/>, async-profiler releases <https://github.com/async-profiler/async-profiler/releases>.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-diagnostics/references/async-profiler.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-diagnostics/references/async-profiler.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-diagnostics/references/async-profiler.md
+- **SHA256_FINGERPRINT**: `a7fcb76172ed1316605db34dfac0edd39a13287fccb06696bd15e9a0ac2644bd`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.919036+00:00
+---
+
+# async-profiler (Tier 2: needs consent)
+
+Low-overhead sampling profiler (CPU, wall-clock, allocation, lock, native memory) producing flame graphs. Project: https://github.com/async-profiler/async-profiler . Download a **pinned release** from its GitHub Releases page and verify the checksum (the release API lists a sha256 digest per asset); do not pipe scripts into a shell. State the profiling duration and mode before running. Check the README of the version you use for current flags. The commands below were run against 4.5 (macOS build attached to a running JDK 27 JVM, and the `linux-arm64` build attached to a JDK 21 JVM in an `eclipse-temurin:21` container); `nativemem` needs 4.0 or newer, and `-e lock` prints "No samples were collected" when there is no contention.
+
+## Usage (3.x/4.x launcher `asprof`)
+
+```bash
+asprof -d 30 -e cpu -f /secure/dir/cpu.html <pid>      # CPU flame graph, 30 s
+asprof -d 30 -e wall -t -f wall.html <pid>             # wall-clock per thread (slow requests, startup)
+asprof -d 30 -e alloc -f alloc.html <pid>              # allocations
+asprof -d 30 -e lock -f lock.html <pid>                # lock contention
+asprof -d 60 -e nativemem -f native.html <pid>         # native allocations (4.0+); use -f native.jfr then `jfrconv --nativemem --leak` for leak analysis
+```
+
+Use as a Java agent for startup profiling:
+
+```
+-agentpath:/path/to/libasyncProfiler.so=start,event=cpu,file=/secure/dir/startup.html
+```
+
+The report is written when the JVM exits normally (verified: `timeout 5 java -agentpath:...` produced the HTML on SIGTERM).
+
+Open the HTML flame graph in a browser: wide frames at the top are where time goes. Use `wall` for latency (threads blocked on I/O), `cpu` for CPU burn.
+
+## Permissions and caveats
+
+- `cpu` mode on Linux uses `perf_events`. If it fails, check `/proc/sys/kernel/perf_event_paranoid` (needs a low value, or `CAP_PERFMON`/`CAP_SYS_ADMIN`) and `kptr_restrict`. Changing these sysctls is a host-level security change: ask the user, do not do it silently, and do not do it on shared/production hosts. Without them, use `-e ctimer` (4.x docs: like `cpu` but needs no perf_events, no kernel stacks; `-e itimer` is also accepted and ran in 4.5). In 4.5 in a default Docker Desktop container (`perf_event_paranoid=2`, no extra capabilities) plain `-e cpu`, `itimer`, `wall`, `alloc`, `lock`, `nativemem` and the `-agentpath` form all worked without relaxing security, so try the plain command before loosening anything.
+- In Docker the default seccomp profile blocks `perf_event_open` (the `--cap-add SYS_ADMIN` / `seccomp=unconfined` variants were not run); running with relaxed security (`--cap-add SYS_ADMIN`, `--security-opt seccomp=unconfined`) weakens isolation: dev only.
+- Attach requires the same user as the JVM. macOS support exists with limitations (no perf events).
+- Flame graphs can expose class and method names from proprietary code; handle accordingly.
+- Debug symbols: enable `-XX:+UnlockDiagnosticVMOptions -XX:+DebugNonSafepoints` on the target for more accurate attribution (requires a restart).
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-diagnostics/references/containers.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-diagnostics/references/containers.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-diagnostics/references/containers.md
+- **SHA256_FINGERPRINT**: `64e84709eae68bdf38464324f4d302bb24c6bca22fd3d12bc9a6a8acb084327d`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.975132+00:00
+---
+
+# Containers
+
+## Memory sizing
+
+- The JVM is container-aware (cgroup limits) in JDK 10+ and 8u191+.
+- Heap defaults to 25% of the container limit. Use `-XX:MaxRAMPercentage=75.0` (or lower, e.g. 50-70, if there is significant native/off-heap usage) instead of a fixed `-Xmx`, so the heap scales with the limit.
+- Leave headroom for metaspace, thread stacks, code cache, direct buffers; an OOM-kill (exit code 137, `OOMKilled`) with a healthy heap points to native memory growth (see [native-memory](native-memory.md)).
+- Verify what the JVM sees: `java -XX:+PrintFlagsFinal -version | grep -E 'MaxHeapSize|MaxRAMPercentage|ActiveProcessorCount'` and `jcmd <pid> VM.flags`.
+
+## Attaching tools
+
+- `jcmd`/`jstack` must run **inside the container** (same PID namespace and user): `docker exec -it <c> jcmd 1 Thread.print`, `kubectl exec <pod> -- jcmd 1 Thread.print`. JRE-only images lack these tools.
+- Do not rebuild production images to add tools. Prefer an ephemeral debug container sharing the process namespace (`kubectl debug -it <pod> --image=<jdk-image> --target=<container>`), and only with explicit consent.
+- Output files are written by the target JVM inside the container's filesystem; copy them out with `kubectl cp` / `docker cp`, then delete them in the container. Mind ephemeral storage limits for heap dumps.
+- Tier 1/2/3 rules apply unchanged; production pods require explicit user instruction.
+
+## CPU
+
+Few CPUs or CFS throttling cause latency and GC thread starvation. Check `-XX:ActiveProcessorCount`, throttling metrics (`container_cpu_cfs_throttled_seconds_total`), and thread-pool sizing.
+
+## Debugging
+
+See the `java-debugging` skill for JDWP port mapping to `127.0.0.1`.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-diagnostics/references/gc.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-diagnostics/references/gc.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-diagnostics/references/gc.md
+- **SHA256_FINGERPRINT**: `0bbaeb02b99b623e174e419ed20f30413966f432f995155ee76de05cabe8af5c`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.026616+00:00
+---
+
+# GC logs and jstat
+
+## Unified GC logging (JDK 9+)
+
+Enabling at startup is a restart, so treat it as Tier 2; overhead is low.
+
+```
+-Xlog:gc*=info:file=/var/log/app/gc.log:time,uptime,level,tags:filecount=5,filesize=20m
+```
+
+On a running JVM (Tier 2):
+
+```bash
+jcmd <pid> VM.log what=gc*=info output=gc.log decorators=uptime,time
+jcmd <pid> VM.log list
+```
+
+JDK 8 uses `-XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:gc.log` instead.
+
+## jstat (Tier 1)
+
+```bash
+jstat -gcutil <pid> 1000 10      # utilization %, sampled every 1s, 10 times
+jstat -gc <pid> 1000 10          # capacities and sizes in KB
+jstat -gccause <pid> 1000 5      # last GC cause
+```
+
+Watch: Old (`O`) occupancy after each full/mixed GC. If it keeps ratcheting up, suspect a leak (see [heap](heap.md)). Rising `FGC`/`FGCT` means frequent full GCs.
+
+## Interpreting
+
+- Long pauses: look at pause time per event and the cause (`Allocation Failure`, `Humongous Allocation`, `Metadata GC Threshold`, `System.gc()`).
+- Frequent young GCs with high promotion: allocation rate too high or young gen too small.
+- Heap near max after GC: heap too small or leak; do not just raise `-Xmx` without checking.
+- Pause target: G1 default `-XX:MaxGCPauseMillis=200`; ZGC and Shenandoah target sub-millisecond-class pauses with more CPU/memory overhead. Change one tuning flag at a time and compare logs.
+- Tools such as GCeasy or GCViewer can visualize logs, but GC logs may reveal internal hostnames and sizing; do not upload from sensitive environments.
+- JFR also records GC events (`jdk.GarbageCollection`, `jdk.GCPhasePause`); see [jfr](jfr.md).
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-diagnostics/references/heap.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-diagnostics/references/heap.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-diagnostics/references/heap.md
+- **SHA256_FINGERPRINT**: `c4eccc0ecfe9d5d0229b7a4e1965bbb61c40809356ab7e4ed1af5c6621f8815e`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.035189+00:00
+---
+
+# Heap, histograms, Eclipse MAT
+
+## Tier 2: class histogram (no full GC with `-all=true`, but still a safepoint pause)
+
+```bash
+jcmd <pid> GC.class_histogram -all=true | head -40   # no GC; includes unreachable objects
+jmap -histo <pid> | head -40                          # no GC
+jcmd <pid> GC.class_histogram | head -40             # full GC, live objects only
+jmap -histo:live <pid> | head -40                    # full GC, live objects only
+```
+
+All four run heap inspection at a safepoint, which can pause application threads for the duration of the scan on a large heap: on production, get explicit consent and state the overhead first. The last two also force a full GC. The first two avoid the full GC but may count garbage that is not yet collected. Take two histograms several minutes apart under load; classes whose instance count and bytes keep growing are leak suspects.
+
+## Tier 3: heap dump (explicit consent required)
+
+Before running: state the target path, check free disk (`df -h`; roughly the used heap size), and warn of a stop-the-world pause proportional to heap size. Write to a restricted directory (`chmod 700`).
+
+```bash
+jcmd <pid> GC.heap_dump /secure/dir/heap.hprof          # live objects only (full GC)
+jcmd <pid> GC.heap_dump -all=true /secure/dir/heap.hprof # include unreachable objects
+```
+
+`jmap -dump:live,format=b,file=heap.hprof <pid>` is the older equivalent. The file is written by the target JVM, so the path must be writable by it (and inside the container if containerized).
+
+**Sensitive data**: a heap dump contains everything in memory: credentials, tokens, session data, personal data. Never upload or share it (including with AI services or issue trackers). Redaction is not a reliable safeguard. Analyze locally and securely delete the file when done.
+
+Automatic dump on OOM (an opt-in startup flag, still Tier 3 because of the data and disk usage):
+
+```
+-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/secure/dir/
+```
+
+Set `HeapDumpPath` to a volume with enough space; in containers an unbounded dump can fill the node.
+
+## Analyze with Eclipse MAT
+
+1. Install Eclipse Memory Analyzer (https://eclipse.dev/mat/) from the official download page. It needs a Java runtime and a heap of about 1.5x the dump size (edit `MemoryAnalyzer.ini`, `-Xmx`).
+2. Open the `.hprof`; run the **Leak Suspects** report first.
+3. Use the **Dominator Tree** (sorted by retained heap) to find what holds memory.
+4. For a suspect object, **Path to GC Roots, excluding weak/soft references** shows why it is not collected.
+5. Compare two dumps with the histogram comparison to confirm growth.
+6. Common causes: unbounded caches or maps, static collections, listeners never removed, ThreadLocals in pooled threads, classloader leaks on redeploy, large result sets.
+
+Headless parsing is available through `ParseHeapDump.sh` in the MAT distribution (`-vmargs -Xmx...`), producing report ZIPs.
+
+## Alternative (Tier 2)
+
+JFR with `jdk.OldObjectSample` and path-to-gc-roots (`path-to-gc-roots=true`) finds leak candidates without a full dump; see [jfr](jfr.md).
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-diagnostics/references/jcmd-basics.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-diagnostics/references/jcmd-basics.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-diagnostics/references/jcmd-basics.md
+- **SHA256_FINGERPRINT**: `6188008fd4b341259a1cdada1be544ee5ee3734266bffb45534b81f6b953badc`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.068742+00:00
+---
+
+# jps and jcmd basics (Tier 1 for the safe commands; see the sensitive-output warning)
+
+```bash
+jps -l                       # list JVMs with PID and main class/JAR only (no arguments)
+jcmd <pid> help              # commands supported by that JVM
+jcmd <pid> VM.version
+jcmd <pid> VM.flags          # effective -XX flags (no -D properties)
+jcmd <pid> VM.uptime
+```
+
+Do NOT run these by default: they can print credentials, tokens, connection strings or other secrets passed as `-D` properties or program arguments, and the output lands in the transcript:
+
+- `jps -v`, `jps -lv`, `jps -m`, and bare `jcmd` (without arguments it also prints each JVM's main class and arguments)
+- `jcmd <pid> VM.system_properties`, `jcmd <pid> VM.command_line`, `jinfo`, `ps aux` / `ps -ef` / `/proc/<pid>/cmdline` for a Java process
+
+They need user consent first (explicit tier: Tier 3, sensitive output). Prefer reading only the specific property you need (for example `jcmd <pid> VM.system_properties | grep '^java.version'`), and redact secret values before showing or sharing any output.
+
+- Run as the same OS user as the target JVM, on the same host (or inside the same container). Different users/containers fail with "Unable to open socket file" or "process not found".
+- `jcmd` is preferred over `jstack`/`jmap`/`jinfo`, which are older single-purpose tools.
+- `-XX:+DisableAttachMechanism` blocks attach; `-XX:+StartAttachListener` forces the listener to start.
+- Tools must match (or be newer than) the target JDK major version when possible.
+
+## Crash or hang
+
+- A crash writes `hs_err_pid<pid>.log` (path set by `-XX:ErrorFile`). Read the "Problematic frame" and thread sections first.
+- `jhsdb` (Tier 3) attaches to a hung process or core file: `jhsdb jstack --pid <pid>` or `jhsdb jstack --exe <java> --core <core>`. It suspends the process while attached and requires matching JDK; core files contain heap data, so treat them like heap dumps.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-diagnostics/references/jfr.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-diagnostics/references/jfr.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-diagnostics/references/jfr.md
+- **SHA256_FINGERPRINT**: `8b662c68942a2ae91b81b57cf9a2eb2d59d847d06eadf24c87df83d0fa6806ff`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.033024+00:00
+---
+
+# Java Flight Recorder (Tier 2: needs consent)
+
+JFR is built into OpenJDK 11+ (and Oracle JDK 8u262+/OpenJDK 8u262+). Default overhead of the `default` settings is low (about 1% or less); `profile` settings collect more at a few percent. State the duration and settings before starting.
+
+## Start
+
+At startup:
+
+```
+-XX:StartFlightRecording=filename=/secure/dir/rec.jfr,duration=120s,settings=profile
+```
+
+On a running JVM:
+
+```bash
+jcmd <pid> JFR.start name=diag duration=120s settings=profile filename=/secure/dir/rec.jfr
+jcmd <pid> JFR.check
+jcmd <pid> JFR.dump name=diag filename=/secure/dir/rec.jfr
+jcmd <pid> JFR.stop name=diag
+```
+
+For a continuous low-overhead recording to dump after an incident, use `maxage=30m maxsize=250m` with `settings=default`, and set `disk=true` limits so storage is bounded.
+
+Leak candidates: add `path-to-gc-roots=true` when dumping (`JFR.dump ... path-to-gc-roots=true`), which includes the `jdk.OldObjectSample` event and costs extra time.
+
+## Analyze (command line)
+
+```bash
+jfr summary rec.jfr                               # event counts
+jfr print --events jdk.ExecutionSample rec.jfr | head
+jfr print --events jdk.GarbageCollection rec.jfr
+jfr print --events jdk.JavaMonitorEnter,jdk.ThreadPark rec.jfr
+jfr print --events jdk.VirtualThreadPinned rec.jfr
+jfr print --json --events jdk.SocketRead rec.jfr
+```
+
+Useful events: `jdk.ExecutionSample` (CPU hot methods), `jdk.ObjectAllocationSample` (allocation), `jdk.GCPhasePause`, `jdk.JavaMonitorEnter` (lock contention), `jdk.SocketRead`/`jdk.FileRead` (slow I/O), `jdk.ClassLoad`, `jdk.CPULoad`, `jdk.NativeMethodSample`.
+
+`jdk.VirtualThreadPinned` (JDK 21+, in the default profile, 20 ms threshold) reports virtual threads that blocked while pinned; verified on JDK 21.0.12 and 27. It is the replacement for `-Djdk.tracePinnedThreads` (JDK 21-23 only, see [thread-dumps](thread-dumps.md)).
+
+## JDK Mission Control
+
+Open the `.jfr` file in JDK Mission Control (JMC, separate download from https://adoptium.net/jmc or the Oracle/Eclipse distributions). The Automated Analysis page gives ranked findings; the Method Profiling, Memory, Lock Instances, and I/O pages drill down. Open recordings locally; they contain stack traces, system properties, and sometimes command lines or environment details, so do not share them from sensitive environments.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-diagnostics/references/native-memory.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-diagnostics/references/native-memory.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-diagnostics/references/native-memory.md
+- **SHA256_FINGERPRINT**: `36bbafcab4aff620753f699a89680209e132b447ef2414786e9d1927085fa1e1`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.069038+00:00
+---
+
+# Native Memory Tracking (Tier 2: needs consent)
+
+Use when container RSS grows but heap usage does not. NMT tracks JVM-internal allocations (metaspace, thread stacks, code cache, GC structures, direct buffers via `Internal`/`Other`), not arbitrary native library `malloc`.
+
+Enable at startup (needs a restart; Oracle documents a 5-10% JVM performance drop with NMT enabled, plus extra malloc header memory, and `detail` costs more; measure on your workload):
+
+```
+-XX:NativeMemoryTracking=summary
+```
+
+Then:
+
+```bash
+jcmd <pid> VM.native_memory summary
+jcmd <pid> VM.native_memory baseline
+# ... wait while the problem develops ...
+jcmd <pid> VM.native_memory summary.diff
+```
+
+Use `detail` only for short sessions (higher overhead). It cannot be enabled on a running JVM.
+
+## Common growth areas
+
+| Category | Typical cause | Mitigation |
+|----------|---------------|-----------|
+| Thread | Too many threads (stack ~1 MB each) | Bound pools; virtual threads; `-Xss` |
+| Class | Classloader leak, dynamic proxies | Fix leak; `-XX:MaxMetaspaceSize` |
+| Code | Large JIT code cache | `-XX:ReservedCodeCacheSize` |
+| GC | Remembered sets/card tables for big heaps | Right-size heap |
+| Internal/Other | Direct `ByteBuffer`, Netty pools | `-XX:MaxDirectMemorySize`, check pooling |
+| Not in NMT | JNI/native libraries, glibc arenas | async-profiler `nativemem`; `MALLOC_ARENA_MAX=2`; allocator profiling |
+
+Total RSS ≈ heap + metaspace + threads + code cache + direct buffers + native libs. Compare against the container memory limit (see [containers](containers.md)).
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-diagnostics/references/thread-dumps.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-diagnostics/references/thread-dumps.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-diagnostics/references/thread-dumps.md
+- **SHA256_FINGERPRINT**: `b26f6afbebfcca7b15a4e0aae1022b57fbbd68653d2cb91ea24504d8994ea183`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.070972+00:00
+---
+
+# Thread dumps and deadlocks (Tier 1)
+
+```bash
+jcmd <pid> Thread.print              # preferred; includes deadlock report
+jcmd <pid> Thread.print -l           # also lists ownable synchronizers/locks
+jstack <pid>                         # equivalent older tool
+```
+
+Do not use `kill -3 <pid>` / SIGQUIT as an unconditional fallback. On Unix, use it only after verifying that the target JVM has its thread-dump SIGQUIT handler installed and that stdout/stderr are captured. Explicitly exclude JVMs started with `-Xrs` / `-XX:+ReduceSignalUsage`, or with unknown/custom signal handling: without the JVM handler, SIGQUIT can terminate the process and produce a core dump. If signal handling cannot be verified, do not send the signal; resolve the `jcmd`/attach permissions instead. See the [JDK launcher `-Xrs` documentation](https://docs.oracle.com/en/java/javase/21/docs/specs/man/java.html) and [Linux signal defaults](https://man7.org/linux/man-pages/man7/signal.7.html).
+
+Take **3 dumps, 5-10 seconds apart**, to see what changes. A single dump is a snapshot, not a trend. Thread dumps include stack frames and thread names, which may contain request data; do not share publicly.
+
+## High CPU: map hot threads
+
+```bash
+top -H -p <pid>                      # find hot native thread ids (decimal)
+printf '%x\n' <tid>                  # convert to hex, match "nid=0x..." in the dump
+```
+
+Check whether the hot thread is application code, GC threads (`GC Thread`, `G1 Conc`), or JIT compiler threads (`C2 CompilerThread`).
+
+## Deadlock
+
+`Thread.print` ends with "Found one Java-level deadlock" and lists the lock cycle. Otherwise look for many threads `BLOCKED` on the same monitor (`waiting to lock <0x...>`) whose owner is itself waiting. Thread starvation shows pools with all threads `WAITING`/`TIMED_WAITING` in the same call (e.g., a connection pool `getConnection`, a blocking HTTP call) while the queue grows.
+
+## Virtual threads (JDK 21+)
+
+`Thread.print` does not list virtual threads. Use:
+
+```bash
+jcmd <pid> Thread.dump_to_file -format=json threads.json
+jcmd <pid> Thread.dump_to_file threads.txt
+```
+
+`Thread.print` shows only platform threads (virtual threads were verified missing on JDK 27, present in `Thread.dump_to_file`). Pinned virtual threads (blocked inside `synchronized` on JDK 21-23, or native frames on any version) can be investigated with the JFR event `jdk.VirtualThreadPinned` (see [jfr](jfr.md)). `-Djdk.tracePinnedThreads=full` (or `short`, which prints only the frames holding monitors) works only on JDK 21-23: on 21.0.12 it printed `VirtualThread[#20,vt-pinned]/runnable@ForkJoinPool-1-worker-1 reason:MONITOR` with the stack and `<== monitors:1`. JEP 491 removed it in JDK 24 (verified silent on 27: no output). From JDK 24, `synchronized` no longer pins; pinning remains for native frames and class initializers (a virtual thread sleeping inside a static initializer was reported by JFR on JDK 27 with `pinnedReason = "VM call to Pin$Slow.<clinit> on stack"`). On JDK 21-23 the same JFR event also works (verified on 21.0.12 for the `synchronized` case).
+
+## Reading tips
+
+- States: `RUNNABLE` (on CPU or in native I/O), `BLOCKED` (monitor), `WAITING`/`TIMED_WAITING` (park, sleep, wait).
+- `RUNNABLE` in `socketRead0` is usually waiting on the network, not using CPU.
+- Group threads by identical top frames to find the dominating pattern.
 
 
 ---
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/java-docs/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-docs/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-docs/SKILL.md
-- **SHA256_FINGERPRINT**: `6d38a19e4ec6c6a0dcf60bee2f2d0161da6880d66dba664c555068550c4fe300`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:32.105866+00:00
+- **SHA256_FINGERPRINT**: `d8616ce664f9baefc4b6429dbea47a3d6b138766fa703a943a54a9ef6598390e`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.092816+00:00
 ---
 
 **description**: Ensure that Java types are documented with Javadoc comments and follow best practices for documentation.
 
 # Java Documentation (Javadoc) Best Practices
 
-- Public and protected members should be documented with Javadoc comments.
-- It is encouraged to document package-private and private members as well, especially if they are complex or not self-explanatory.
-- The first sentence of the Javadoc comment is the summary description. It should be a concise overview of what the method does and end with a period.
-- Use `@param` for method parameters. The description starts with a lowercase letter and does not end with a period.
-- Use `@return` for method return values.
-- Use `@throws` or `@exception` to document exceptions thrown by methods.
-- Use `@see` for references to other types or members.
-- Use `{@inheritDoc}` to inherit documentation from base classes or interfaces.
-  - Unless there is major behavior change, in which case you should document the differences.
-- Use `@param <T>` for type parameters in generic types or methods.
-- Use `{@code}` for inline code snippets.
-- Use `<pre>{@code ... }</pre>` for code blocks.
-- Use `@since` to indicate when the feature was introduced (e.g., version number).
-- Use `@version` to specify the version of the member.
-- Use `@author` to specify the author of the code.
-- Use `@deprecated` to mark a member as deprecated and provide an alternative.
+## Principles
+
+- Document only what the code actually does: read the implementation, callers and tests first. Never invent behaviour, thresholds, thread-safety, nullability or exceptions you have not verified; if unsure, leave it out or ask.
+- Keep the existing documentation style of the project (language, tag order, comment form `/** */` vs `///`). Do not rewrite existing comments, or mass-document a codebase, unless the user asks; limit changes to the requested scope.
+- Check the JDK level (`maven.compiler.release`, toolchain, `java -version`) before using newer features, and stay within it.
+
+## Conventions
+
+- `@since` only with the real version in which the API was introduced; `@deprecated` with a reason and replacement, together with `@Deprecated`.
+- `@author` and `@version` only if the project already uses them.
+- Code blocks, by JDK level:
+  - Any JDK: `<pre>{@code ... }</pre>` (escape `@` at line start, balance braces).
+  - JDK 18+: `{@snippet :  ... }` for inline code, or `{@snippet file="Example.java" region="demo"}` with files in `snippet-files/` (preferred for examples; `javadoc` does not compile or validate the snippet source, so compile and test the files in a separate build/test source set if you need that guarantee). Use `// @highlight substring="x"` and `// @replace` markup as needed.
+  - JDK 23+ only (JEP 467): Markdown doc comments with `///`, using `[Type#member]` for links and fenced code blocks. Use them only if the project already does or the user asks, and the build runs a JDK 23+ `javadoc`.
+
+## Verify
+
+- Run `mvn -q javadoc:javadoc` (or `./gradlew javadoc`) and for single files `javadoc -Xdoclint:all -d target/javadoc-check <files>`; fix every warning/error you introduced (missing `@param`, bad HTML, unresolved `{@link}`, unknown tags).
+- Report what was documented and the commands run; state any claims you could not verify from the code.
 
 
 ---
@@ -13968,84 +15305,1109 @@ public record Customer(String id, String name) {
 
 
 ---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-hibernate-jpa/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-hibernate-jpa/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-hibernate-jpa/SKILL.md
+- **SHA256_FINGERPRINT**: `c3c1e1ac7078a751238c4c275c33527ee091322b6fc5be34ed0b5e4e141bf8c5`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.174775+00:00
+---
+
+**description**: Diagnose and fix Hibernate ORM / Jakarta Persistence problems in plain Java: N+1 queries, lazy loading errors, identifier generation, entity equals/hashCode, cascades, pagination, batching, locking, caching, Lombok on entities, and Hibernate 6/7 differences. Use when reviewing or writing JPA entities, mappings, and queries. Framework-neutral.
+
+# Hibernate ORM and Jakarta Persistence
+
+Problem -> anti-pattern -> fix library for entity mapping and querying. Framework-neutral: it covers `EntityManager`/`Session` behavior, JPQL/HQL, and mapping annotations. If the project uses Spring Boot and the `java-springboot` and `spring-boot-testing` skills are installed, use them for Spring Data repositories, transaction wiring, and `@DataJpaTest`; for Panache and reactive persistence see the Quarkus skills. Integration tests against a real database: `java-testcontainers`.
+
+## First: detect the stack
+
+1. Read `pom.xml`/`build.gradle` (or the dependency tree) for `hibernate-core` and the persistence API: `jakarta.persistence` (Hibernate 6+/Jakarta EE 9+) vs `javax.persistence` (Hibernate 5, see `javax-to-jakarta-migration`).
+2. Note the Hibernate major version; behavior differs (see `references/tooling-and-versions.md`). Hibernate 6.0-6.1 implement Jakarta Persistence 3.0, 6.2+ implement 3.1, 7.x implements 3.2, and Hibernate 7 needs Java 17+.
+3. Note the database and whether the schema is managed by Flyway/Liquibase.
+4. Turn on SQL logging and statistics in a test (see `references/tooling-and-versions.md`) before "optimizing" anything: measure statement counts.
+
+## Quick decision table
+
+| Symptom | Likely cause | Go to |
+| --- | --- | --- |
+| Many similar SELECTs for one request | N+1 on lazy association | `references/fetching-and-n-plus-one.md` |
+| `LazyInitializationException` | Lazy access outside session | `references/fetching-and-n-plus-one.md` |
+| `HHH000104` / `HHH90003004` warning, big memory use | Pagination with collection fetch join | `references/queries-pagination-batching.md` |
+| Inserts slow, no JDBC batching | `IDENTITY` ids or batching not configured | `references/identifiers-and-entity-design.md`, `references/queries-pagination-batching.md` |
+| Duplicate rows / lost children / `Set` anomalies | Bad `equals`/`hashCode` or cascade misuse | `references/identifiers-and-entity-design.md`, `references/associations-and-cascade.md` |
+| Lost updates, deadlocks | Missing locking strategy | `references/locking-transactions-caching.md` |
+| Stale or surprising data with caches | Second-level/query cache misuse | `references/locking-transactions-caching.md` |
+| Schema drift, `ddl-auto` in prod | No migration tool | `references/tooling-and-versions.md` |
+
+## Top rules (apply during review)
+
+1. Associations: `@ManyToOne`/`@OneToOne` default to EAGER; declare `fetch = FetchType.LAZY` explicitly. `@OneToMany`/`@ManyToMany` are LAZY by default and should stay so. Choose fetching **per query** (JOIN FETCH, entity graph), not by making mappings EAGER.
+2. Prefer `@ManyToOne` owning side plus a bidirectional `@OneToMany(mappedBy=...)` only when needed; keep both sides in sync through helper methods.
+3. `Set` or `List` for collections? Use `Set` for `@ManyToMany`; a unidirectional `@OneToMany` with `@JoinColumn` or `List` without an order has costly update patterns.
+4. Never use `CascadeType.REMOVE`/`ALL` on `@ManyToOne` or `@ManyToMany`. Use `orphanRemoval` only on a true parent-owned child collection.
+5. Ids: `SEQUENCE` (pooled optimizer, `allocationSize` matching the DB increment) for generated numeric ids; `IDENTITY` disables JDBC insert batching; use UUIDs (time-ordered preferred) when ids must be generated client-side.
+6. Entities: no Lombok `@Data`/`@EqualsAndHashCode`/`@ToString` over associations; implement `equals`/`hashCode` deliberately.
+7. Return DTOs/projections from read endpoints rather than entities; never expose entities (lazy proxies) directly in an API.
+8. Paginate with a stable `ORDER BY` including a unique tiebreaker; never combine `setMaxResults` with a collection `JOIN FETCH`.
+9. Keep transactions short, at the service boundary; no remote calls or user interaction inside one.
+10. Write and flush in batches for bulk work and clear the persistence context periodically.
+11. Verify behavior with statement counts in tests against the real database engine.
+12. Follow the schema management rule below.
+
+## Schema management rule
+
+This is the single rule other skills refer to by name:
+
+- **Prototype/local:** `hibernate.hbm2ddl.auto=update` (or `create-drop` for throwaway tests) is acceptable.
+- **Production (default):** versioned migrations with Flyway or Liquibase, and `hibernate.hbm2ddl.auto=validate` (or `none`). Add them when the user wants versioned migrations or the app is headed to production.
+- **Externally managed schema:** `none` (or `validate`); do not add a migration tool.
+
+## Review focus
+
+Check statement counts for N+1, explicit `LAZY` on to-one associations, sequence-based ids with matching `allocationSize`, and `equals`/`hashCode` stable across transient to persistent. Version-dependent details (Hibernate 5/6/7): `references/tooling-and-versions.md`.
+
+## References
+
+- `references/fetching-and-n-plus-one.md`: N+1 detection and fixes, lazy vs eager, `LazyInitializationException`, open-session-in-view, DTO projections.
+- `references/identifiers-and-entity-design.md`: id generation, `equals`/`hashCode`, Lombok, records vs entities, enums and converters, value types.
+- `references/associations-and-cascade.md`: bidirectional helpers, cascade, `orphanRemoval`, collection choice, `@ManyToMany`.
+- `references/queries-pagination-batching.md`: pagination (offset, keyset, in-memory warning), bulk operations, JDBC batching, `StatelessSession`.
+- `references/locking-transactions-caching.md`: optimistic/pessimistic locking, transaction boundaries, flush modes, second-level cache.
+- `references/tooling-and-versions.md`: SQL logging, statistics, tests, connection pool sizing, migrations, Hibernate 5/6/7 differences.
+
+Canonical docs: Hibernate ORM user guide <https://docs.hibernate.org/orm/current/userguide/html_single/> and Jakarta Persistence <https://jakarta.ee/specifications/persistence/>. Deep background articles: <https://vladmihalcea.com/>.
+
+Upgrading (fetch the page for the target version; prefer it over this skill): migration guides <https://hibernate.org/orm/documentation/migrate/> (6.6: <https://docs.hibernate.org/orm/6.6/migration-guide/>, 7.0: <https://docs.hibernate.org/orm/7.0/migration-guide/>), release notes <https://hibernate.org/orm/releases/>.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-hibernate-jpa/references/associations-and-cascade.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-hibernate-jpa/references/associations-and-cascade.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-hibernate-jpa/references/associations-and-cascade.md
+- **SHA256_FINGERPRINT**: `ecd761f71a823b5e4d322890479dacd5f24b5d03981d9e99db37e62e12719a14`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.174443+00:00
+---
+
+# Associations, cascade, collections
+
+## Bidirectional associations with helpers
+
+The owning side holds the foreign key (`@ManyToOne`). The inverse side uses `mappedBy`. Keep both sides in sync in the domain model, otherwise the in-memory graph and the database diverge.
+
+```java
+@Entity
+class Order {
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderLine> lines = new ArrayList<>();
+
+    public void addLine(OrderLine line) {
+        lines.add(line);
+        line.setOrder(this);
+    }
+
+    public void removeLine(OrderLine line) {
+        lines.remove(line);
+        line.setOrder(null);
+    }
+
+    public List<OrderLine> getLines() {
+        return Collections.unmodifiableList(lines);
+    }
+}
+
+@Entity
+class OrderLine {
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "order_id")
+    private Order order;
+}
+```
+
+Rules:
+- Only the `@ManyToOne` side writes the FK; changing only the inverse collection does nothing to the database.
+- Expose the collection read-only (or defensively copied); initialize it once and never replace the reference (`order.setLines(new ArrayList<>())` breaks orphan removal and confuses Hibernate's collection tracking: mutate with `clear()`/`add()`).
+- Prefer unidirectional `@ManyToOne` and query the many side when you never navigate parent -> children.
+
+## Unidirectional @OneToMany anti-pattern
+
+A `@OneToMany` without `mappedBy` and without `@JoinColumn` creates a join table and extra SQL. With `@JoinColumn` it issues an `INSERT` then an `UPDATE` for the FK. Make the relationship bidirectional (or `@ManyToOne` only).
+
+## Cascade pitfalls
+
+| Pitfall | Fix |
+| --- | --- |
+| `CascadeType.ALL`/`REMOVE` on `@ManyToOne` or `@ManyToMany`: deleting one child deletes the shared parent or related rows | Cascade only parent -> owned child. |
+| `CascadeType.REMOVE` for a large collection loads and deletes row by row | Flush pending changes, execute a bulk `DELETE ... WHERE parent_id = :id`, then clear the context; alternatively use DB `ON DELETE CASCADE` with `@OnDelete(action = OnDeleteAction.CASCADE)`. |
+| `CascadeType.PERSIST` on a detached child: `PersistentObjectException: detached entity passed to persist` | Use `merge` (or load the entity first); do not set a detached instance on a persist-cascaded association. |
+| `CascadeType.MERGE` overwrites state with stale DTO data | Copy only allowed fields onto a managed entity. |
+| `orphanRemoval = true` on a shared child | Only for exclusive, parent-owned children; removing from the collection deletes the row. |
+| Replacing a collection with `setX(newList)` on an `orphanRemoval` mapping | `A collection with cascade="all-delete-orphan" was no longer referenced`; mutate in place. |
+
+`orphanRemoval` also implies removal when the parent is removed.
+
+## Collection type choice
+
+- `@ManyToMany`: use `Set`. With a `List` (a bag), removing one element deletes **all** join-table rows and re-inserts the rest.
+- Avoid `@ManyToMany` for anything beyond a plain link; model the join as an entity (with `@ManyToOne` on both sides) as soon as it has attributes or you query it.
+- `@OneToMany` `List` with `@OrderColumn` rewrites index columns on removal from the head; use `@OrderBy` for read-time ordering instead.
+- Collections with possibly thousands of rows should not be mapped at all; query them with pagination.
+- Never call `collection.size()` or `contains()` on a large lazy collection to count/check; run a count/exists query (`@LazyCollection(EXTRA)` is deprecated).
+
+## Equality in collections
+
+`Set` semantics rely on `equals`/`hashCode` (see `identifiers-and-entity-design.md`). A `HashSet` of entities whose `hashCode` depends on the generated id will lose elements after `persist`.
+
+## One-to-one
+
+Prefer a shared primary key (`@MapsId`) for a true one-to-one: no extra index, lazy-loadable from the owning side, and one-query `find`. Without it, the inverse side (`mappedBy`) is usually loaded eagerly, because Hibernate must query to know whether it is null; it can be a lazy proxy only when `optional = false` guarantees the row exists, or with bytecode enhancement.
+
+## Delete and update patterns
+
+- Removing a parent with children: either cascade REMOVE (small, owned collections), DB-level cascade, or explicit bulk delete in order (children first).
+- Bulk JPQL/HQL `update`/`delete` bypass the persistence context and version columns; flush before, and `clear()` afterwards or refresh entities.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-hibernate-jpa/references/fetching-and-n-plus-one.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-hibernate-jpa/references/fetching-and-n-plus-one.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-hibernate-jpa/references/fetching-and-n-plus-one.md
+- **SHA256_FINGERPRINT**: `eeb68732c92d74d5e6d5f5b9eb85cf69c0a1f1a92477fececa74ca61adf33b53`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.217879+00:00
+---
+
+# Fetching, N+1, lazy loading, projections
+
+## N+1 queries
+
+**Symptom**: one query loads N parents, then one extra query per parent when a lazy association is touched (in code, in a JSON serializer, in `toString`).
+
+**Detect**: enable SQL logging/statistics (`tooling-and-versions.md`) and assert the statement count in an integration test; look for repeated identical SELECTs differing only by id.
+
+```java
+// anti-pattern: 1 + N
+List<Order> orders = em.createQuery("select o from Order o", Order.class).getResultList();
+orders.forEach(o -> o.getLines().size());
+```
+
+### Fix 1: JOIN FETCH (query-specific)
+
+```java
+List<Order> orders = em.createQuery(
+    "select o from Order o left join fetch o.lines", Order.class)
+  .getResultList();
+```
+
+- Fetch many-to-one/one-to-one freely. Fetch **at most one collection** per query: two bag collections in one query throw `MultipleBagFetchException` (and joining several collections multiplies rows). Fetch the second collection in a second query on the same session; the persistence context stitches them together.
+- Hibernate 6+ de-duplicates root entities of fetch joins automatically, so `DISTINCT` is no longer needed for that; on Hibernate 5 add `DISTINCT` (consider the `hibernate.query.passDistinctThrough` hint to keep it out of SQL).
+- Do not paginate a collection fetch join (see `queries-pagination-batching.md`).
+
+### Fix 2: Entity graph (reusable fetch plan)
+
+```java
+EntityGraph<Order> g = em.createEntityGraph(Order.class);
+g.addAttributeNodes("customer");
+g.addSubgraph("lines").addAttributeNodes("product");
+
+List<Order> orders = em.createQuery("select o from Order o", Order.class)
+  .setHint("jakarta.persistence.fetchgraph", g)   // Hibernate 7: prefer query.setEntityGraph(g, GraphSemantic.FETCH)
+  .getResultList();
+```
+
+`@NamedEntityGraph` declares graphs on the entity. Fetch graph (`fetchgraph`) treats unlisted attributes as lazy; load graph (`loadgraph`) keeps mapping defaults.
+
+### Fix 3: Batch fetching (when you cannot know the access pattern)
+
+Loads lazy associations of many parents with one `IN (...)` query instead of N queries.
+
+```java
+@OneToMany(mappedBy = "order")
+@BatchSize(size = 25)
+private List<OrderLine> lines;
+```
+
+Global default: `hibernate.default_batch_fetch_size=16` (values of 8-32 are typical). Turns N+1 into 1 + N/size. It also helps lazy `@ManyToOne` proxies. Not as precise as JOIN FETCH, but a good safety net.
+
+### Fix 4: Subselect fetching
+
+`@Fetch(FetchMode.SUBSELECT)` loads the collection for all parents of the original query in one extra query. Good for small result sets of a single known query; can be heavy if the original query is expensive.
+
+### Fix 5: Projection that avoids entities
+
+If the caller needs a flat view, select exactly the columns (below).
+
+## Lazy vs eager
+
+- Defaults: `@ManyToOne`, `@OneToOne` EAGER; `@OneToMany`, `@ManyToMany`, `@ElementCollection` LAZY; `@Basic` EAGER (`@Lob` and `@Basic(fetch = LAZY)` need bytecode enhancement to be really lazy).
+- `FetchType.EAGER` in a mapping applies to **every** load: `em.find` joins it, but JPQL/criteria queries ignore it for the initial SQL and load eager associations with follow-up selects (a hidden N+1). Set `LAZY` in the mapping and fetch per use case.
+- Lazy `@OneToOne` on the **inverse** side (`mappedBy`) is normally loaded eagerly because Hibernate must query to detect null; it can be a lazy proxy only with `optional = false` (the row is guaranteed to exist) or bytecode enhancement. Prefer a unidirectional owning side; `@MapsId` on the owning side does not by itself solve null detection for an optional inverse side.
+- Hibernate proxies: use `Hibernate.initialize(x)`, `Hibernate.isInitialized(x)`, and `em.getReference` (id-only reference to set a foreign key without a SELECT).
+
+## LazyInitializationException
+
+Cause: a lazy association or proxy is accessed after the session closed (typically while serializing an entity in a controller).
+
+Fixes, best first:
+
+1. Load what the use case needs inside the transaction (JOIN FETCH / entity graph / projection) and map to a DTO **inside** the transactional service method.
+2. Initialize explicitly in the service (`Hibernate.initialize`), only when the small count is known.
+3. Avoid `hibernate.enable_lazy_load_no_trans=true`: it opens a new connection per lazy load outside any transaction and hides N+1.
+
+## Open session in view (OSIV)
+
+OSIV keeps the persistence context (and a database connection) open until the HTTP response is written, so lazy loading "works" in controllers and serializers.
+
+Tradeoffs:
+- Pros: no `LazyInitializationException` in the view layer.
+- Cons: connection held during rendering and any remote call (pool starvation), queries issued from the view layer escape transaction/service design, hidden N+1, and with auto-commit-less modes extra statements outside the transaction.
+- Recommendation: disable OSIV where the framework enables it by default, return DTOs, and define fetch plans in the service layer. If kept, monitor connection hold time. Enabling/disabling is framework configuration (see `java-springboot` for Spring's `spring.jpa.open-in-view`).
+
+## DTO projections
+
+Use them for read models, lists, reports. They skip dirty checking and snapshot memory.
+
+```java
+public record OrderSummary(Long id, String customerName, BigDecimal total) {}
+
+List<OrderSummary> rows = em.createQuery(
+    "select new com.acme.OrderSummary(o.id, c.name, o.total) from Order o join o.customer c",
+    OrderSummary.class).getResultList();
+```
+
+- JPQL constructor expressions (`select new ...`) require the fully-qualified class name; alternatively select columns into `Tuple`.
+- Java records work as projection types with constructor expressions.
+- Native queries: `@SqlResultSetMapping` with `@ConstructorResult`, or `Tuple`.
+- Projections cannot be lazily loaded later; include everything the caller needs.
+- Entities are still right for write paths: load, change, let dirty checking flush.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-hibernate-jpa/references/identifiers-and-entity-design.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-hibernate-jpa/references/identifiers-and-entity-design.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-hibernate-jpa/references/identifiers-and-entity-design.md
+- **SHA256_FINGERPRINT**: `859cf184a594c527bd7cc503c2b86234deac416fda33b45c966f5b451d061bbf`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.210198+00:00
+---
+
+# Identifiers and entity design
+
+## Identifier generation
+
+| Strategy | Batch inserts | Notes |
+| --- | --- | --- |
+| `SEQUENCE` | Yes | Best default on PostgreSQL, Oracle, SQL Server, MariaDB, H2, Db2. |
+| `IDENTITY` | No (Hibernate must execute each insert to get the id) | Use when the DB has no sequences (older MySQL); accept slower bulk inserts. |
+| `TABLE` | Yes but contended | Avoid. |
+| `AUTO` | Depends on dialect | Hibernate 6+ picks a sequence when the dialect supports it; be explicit. |
+| `UUID` | Yes | Client-generated; no round-trip. |
+
+### Sequence with pooled optimizer
+
+```java
+@Id
+@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_seq")
+@SequenceGenerator(name = "order_seq", sequenceName = "order_seq", allocationSize = 50)
+private Long id;
+```
+
+- `allocationSize` (default 50) must equal the sequence's `INCREMENT BY` in the database. A mismatch causes duplicate-key errors or wasteful gaps. Hibernate uses a pooled optimizer by default: one sequence call reserves `allocationSize` ids.
+- Other applications or SQL scripts inserting rows must use the same increment, or draw ids from the sequence in a compatible way.
+- Create the sequence in the migration (`CREATE SEQUENCE order_seq START WITH 1 INCREMENT BY 50`).
+
+### UUID
+
+```java
+@Id
+@GeneratedValue(strategy = GenerationType.UUID)   // Jakarta Persistence 3.1+
+private UUID id;
+```
+
+Random v4 UUIDs fragment B-tree indexes on large tables; prefer time-ordered ids (UUIDv7) generated by the application or Hibernate's `@UuidGenerator(style = UuidGenerator.Style.TIME)` (Hibernate 6.x; check the docs of your version for the v7 option). Store as native `uuid` columns, not `varchar(36)`.
+
+### Anti-patterns
+
+- `IDENTITY` on a table you bulk-load.
+- Natural keys that change; use a surrogate id plus a unique constraint, or `@NaturalId`.
+- `@GenericGenerator` (Hibernate-specific, deprecated in 6.5+): use `@SequenceGenerator`, `@UuidGenerator`, or the newer id generator annotations documented for your version.
+
+## equals and hashCode
+
+Problems: the id is null until persist; default identity equality breaks `Set` semantics across detached/merged instances; Hibernate proxies are subclasses, so `getClass()` comparisons fail.
+
+Option A (generated id, recommended pattern):
+
+```java
+@Override
+public final boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null) return false;
+    Class<?> oClass = o instanceof HibernateProxy p
+            ? p.getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+    Class<?> thisClass = this instanceof HibernateProxy p
+            ? p.getHibernateLazyInitializer().getPersistentClass() : getClass();
+    if (thisClass != oClass) return false;                  // proxy-safe, symmetric
+    Book other = (Book) o;
+    Object thisId = this instanceof HibernateProxy p
+            ? p.getHibernateLazyInitializer().getInternalIdentifier() : getId();
+    Object otherId = other instanceof HibernateProxy p
+            ? p.getHibernateLazyInitializer().getInternalIdentifier() : other.getId();
+    return thisId != null && thisId.equals(otherId);
+}
+
+@Override
+public final int hashCode() {
+    return this instanceof HibernateProxy p
+            ? p.getHibernateLazyInitializer().getPersistentClass().hashCode()
+            : getClass().hashCode();   // constant per persistent class; stable before/after persist
+}
+```
+
+Keep both methods `final` so Hibernate does not intercept them and initialize the proxy before the method body runs. Use `getInternalIdentifier()` for proxies: unlike `getIdentifier()` or an intercepted `getId()`, it does not initialize them even with JPA proxy compliance enabled. This is a Hibernate-specific pattern, not a provider-portable JPA recipe.
+
+Constant `hashCode` is fine for entity sets of modest size (hundreds); large in-memory sets of entities are a design smell anyway. `getClass()` on a proxy returns the generated subclass, so both methods resolve the persistent class first (`Hibernate.getClass(x)` does the same but initializes the proxy). The class comparison keeps `equals` symmetric and consistent with `hashCode`; for entity hierarchies where a subclass should equal its parent type, compare against the root entity class instead.
+
+Validate with two distinct transient books (not equal), the same book before/after persist (hash unchanged), and an uninitialized `em.getReference(Book.class, id)` after closing its entity manager. Adding that detached proxy to a `HashSet`, comparing it to a detached book with the same id in both directions, and calling `contains` must not throw or initialize the proxy. Also check zero additional SQL while the proxy is still attached, including with `hibernate.jpa.compliance.proxy=true`.
+
+Option B (business/natural key): compare an immutable, unique attribute (ISBN, email), using getters. Implement `hashCode` on the same field. Mark it `@NaturalId`. Never use mutable fields.
+
+Option C (client-assigned UUID id): compare/hash the UUID; it exists from construction.
+
+Never include associations or lazy collections in `equals`/`hashCode`/`toString`.
+
+## Lombok on entities
+
+- Do **not** use `@Data`, `@EqualsAndHashCode`, `@ToString` (default) on entities: they touch lazy collections (triggering loads or `LazyInitializationException`), cause infinite recursion in bidirectional associations, and make `hashCode` change after persist.
+- Use `@Getter`/`@Setter` selectively (setters on collections and ids usually should not exist), and `@ToString(onlyExplicitlyIncluded = true)` with basic fields only.
+- `@Builder` and `@AllArgsConstructor` bypass invariants and require a protected no-arg constructor (`@NoArgsConstructor(access = AccessLevel.PROTECTED)`); initialize collections with `@Builder.Default`.
+- Entities must be non-final with a non-private no-arg constructor (Hibernate proxies); do not make fields `final`.
+
+## Records vs entities
+
+- Java records cannot be entities: entities need a no-arg constructor, mutability, and non-final classes. (Hibernate 6+ does support records as `@Embeddable` components and as projection/DTO types.)
+- Use records for DTOs, projections, and embeddables; keep entities as classes.
+
+## Enums and converters
+
+- `@Enumerated(EnumType.STRING)` (readable, resilient to reordering). `ORDINAL` breaks when constants are reordered or inserted.
+- Add a DB check constraint or a native/PostgreSQL enum mapping if invalid values must be rejected at storage level.
+- Custom types: `AttributeConverter<X, Y>` with `@Converter(autoApply = false)` and `@Convert` on the attribute. Converters must be stateless and null-safe, and are not applied to ids or in some JPQL comparisons; test queries that compare converted attributes.
+- Prefer `java.time` types over `java.util.Date`; `Instant`/`OffsetDateTime` with UTC (`hibernate.jdbc.time_zone=UTC`).
+- `BigDecimal` columns: set `precision` and `scale`.
+
+## Other design points
+
+- Embedded value objects with `@Embeddable` instead of loose columns.
+- Use `@Version` for optimistic locking on aggregate roots (`locking-transactions-caching.md`).
+- Mark read-only reference entities `@Immutable`.
+- `@ElementCollection` for small value sets only; large or queried collections deserve their own entity.
+- Prefer `Long`/`UUID` wrapper ids (null means transient).
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-hibernate-jpa/references/locking-transactions-caching.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-hibernate-jpa/references/locking-transactions-caching.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-hibernate-jpa/references/locking-transactions-caching.md
+- **SHA256_FINGERPRINT**: `c61f674d4c21b5033917b34b0eb22e2e58cb81b1ae2d31b5a56c0027347153b7`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.229284+00:00
+---
+
+# Locking, transactions, caching
+
+## Optimistic locking (default choice)
+
+```java
+@Entity
+class Account {
+    @Version
+    private long version;
+}
+```
+
+- Hibernate adds `WHERE version = ?` to updates; a concurrent change throws `OptimisticLockException` (Hibernate: `StaleObjectStateException`). Catch it at the use-case boundary, then retry or tell the user to reload.
+- Use `Integer`/`Long`/`Instant` version types; never modify the version manually.
+- With DTO round-trips (web forms), send the version to the client and, on submit, load the entity (`em.find`), compare the submitted version with the loaded one and reject a mismatch (e.g. HTTP 409). Never assign the client's version to a managed entity: Jakarta Persistence forbids applications from changing the version. Alternatively `merge()` a detached entity that carries its `@Version`; the provider then checks it and throws `OptimisticLockException` on a stale one, which you handle at the use-case boundary.
+- `LockModeType.OPTIMISTIC_FORCE_INCREMENT` bumps the version even if only children changed, useful for aggregate roots.
+- Bulk HQL updates ignore `@Version` unless you write `update versioned`.
+
+## Pessimistic locking
+
+Use for hot rows or queue-like tables where retries are too costly.
+
+```java
+Account a = em.find(Account.class, id, LockModeType.PESSIMISTIC_WRITE,
+    Map.of("jakarta.persistence.lock.timeout", 3000));
+```
+
+- `PESSIMISTIC_WRITE` -> `SELECT ... FOR UPDATE`; `PESSIMISTIC_READ` -> shared lock (dialect dependent).
+- Always set a lock timeout; always lock rows in a consistent order to avoid deadlocks; keep the transaction short.
+- Work queues: `FOR UPDATE SKIP LOCKED` (via Hibernate's `SKIP_LOCKED` lock option or native SQL) lets several workers claim different rows.
+- Lock timeout support varies by database; verify against the target engine.
+- Locking a row via a query with `setLockMode(...)` and a fetch join may lock more rows than expected; lock the root only.
+
+## Isolation and anomalies
+
+Hibernate does not change isolation levels. Default `READ COMMITTED` allows non-repeatable reads across queries; the persistence context gives repeatable reads for entities loaded by id within one session. Do not assume a read-then-write check-and-act is safe: use `@Version`, a lock, or a unique constraint (and handle `ConstraintViolationException`).
+
+## Transaction boundaries
+
+- One use case = one transaction at the service/application layer, not in repositories or controllers, and not per entity call.
+- Keep the persistence context scope = transaction scope (transaction-scoped `EntityManager`). An `EntityManager` is not thread-safe; never share it, or entities, across threads.
+- No HTTP calls, message sends, or long computation inside a transaction: they hold connections and locks. Publish events after commit (outbox pattern for reliability).
+- Read-only use cases: mark the transaction read-only (framework facility) or `session.setDefaultReadOnly(true)`; this skips dirty checking snapshots.
+- Rollback: JPA does not define rollback-by-exception-type for a resource-local `EntityTransaction`; call `rollback()` explicitly in a `catch`/`finally`. Automatic rollback rules (for example on `RuntimeException` but not checked exceptions) come from the surrounding framework or container, such as Spring `@Transactional` or Jakarta `@Transactional`.
+- After a persistence exception the session is in an undefined state: discard it, do not continue using it.
+- Flush modes: `AUTO` flushes before queries that touch dirty entity tables; unexpected flushes inside loops show up in logs as updates before selects. Use `FlushModeType.COMMIT` or `em.setFlushMode` sparingly, only when you understand the stale-read risk.
+- `merge` returns a managed copy: use the returned instance, not the argument. Prefer loading and modifying a managed entity over `merge` of detached state.
+- `save`/`persist` on already-managed entities is unnecessary: dirty checking flushes changes at commit.
+
+## Second-level cache basics
+
+Levels: first-level (persistence context, always on, per session), second-level (per `SessionFactory`, opt-in, shared), query cache (opt-in, result ids).
+
+Enable only for read-mostly data that is expensive to load, and that this application alone writes (or that tolerates staleness):
+
+```properties
+hibernate.cache.use_second_level_cache=true
+# Requires hibernate-jcache and a JCache provider, e.g. Ehcache, on the classpath.
+hibernate.cache.region.factory_class=jcache
+```
+
+```java
+@Entity
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+class Country { ... }
+```
+
+- `shared-cache-mode` `ENABLE_SELECTIVE` (cache only `@Cacheable`) is the safest.
+- Concurrency strategies: `READ_ONLY` (immutable), `NONSTRICT_READ_WRITE` (tolerates staleness), `READ_WRITE`, `TRANSACTIONAL` (JTA).
+- Query cache is rarely a win: any write to a queried table invalidates its results. Avoid by default.
+- Bulk HQL/JPQL DML executed through Hibernate invalidates the affected second-level and query-cache regions automatically, and native DML run through Hibernate also triggers cache cleanup (possibly all regions when query spaces are unknown). What stays stale is managed entities in the current persistence context: flush before bulk DML, then `clear()` or refresh afterwards. Writes outside Hibernate (other applications, direct JDBC) are not seen; they need a separate invalidation strategy such as `getCache().evict(...)`.
+- Multi-node deployments need a distributed or invalidating provider; local-only caches serve stale data per node.
+- Measure with statistics (`hibernate.generate_statistics`) before and after; if the hit ratio is low, remove it.
+- Cache entities by id (`find`), collections separately (`@Cache` on the collection mapping), and keep cached entities small.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-hibernate-jpa/references/queries-pagination-batching.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-hibernate-jpa/references/queries-pagination-batching.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-hibernate-jpa/references/queries-pagination-batching.md
+- **SHA256_FINGERPRINT**: `b76117db5616a6095c3baeaf89a19a4e65a19e76453376426f3fe5513b149b41`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.264442+00:00
+---
+
+# Queries, pagination, batching
+
+## Pagination
+
+### Offset pagination
+
+```java
+List<Order> orders = em.createQuery("select o from Order o order by o.createdAt desc, o.id desc", Order.class)
+    .setFirstResult(page * size)
+    .setMaxResults(size)
+    .getResultList();
+```
+
+- Always include a deterministic `ORDER BY` with a unique tiebreaker (`id`).
+- Large offsets are slow (the DB scans and discards rows). Use keyset pagination for deep paging.
+
+### Collection fetch join + pagination (HHH000104)
+
+```java
+// anti-pattern
+em.createQuery("select o from Order o join fetch o.lines", Order.class)
+  .setMaxResults(20).getResultList();
+```
+
+Hibernate logs `HHH000104: firstResult/maxResults specified with collection fetch; applying in memory` (Hibernate 6: `HHH90003004`). It loads **every** matching row and paginates in the JVM: memory and latency explode.
+
+Fix (two queries):
+
+```java
+List<Long> ids = em.createQuery("select o.id from Order o where exists (select 1 from o.lines) order by o.createdAt desc, o.id desc", Long.class)
+    .setMaxResults(20).getResultList();
+
+List<Order> orders = em.createQuery(
+    "select distinct o from Order o join fetch o.lines where o.id in :ids order by o.createdAt desc, o.id desc",
+    Order.class).setParameter("ids", ids).getResultList();
+```
+
+The `exists` filter matches the inner `join fetch`, which drops orders without lines; use `left join fetch` and drop the filter to keep them. Alternatives: fetch only to-one associations in the paged query and rely on `@BatchSize`/`default_batch_fetch_size` for collections; or use a DTO projection. Fetch joins on `@ManyToOne` are safe with pagination.
+
+### Keyset (seek) pagination
+
+```java
+List<Order> next = em.createQuery("""
+    select o from Order o
+    where (o.createdAt < :ts or (o.createdAt = :ts and o.id < :id))
+    order by o.createdAt desc, o.id desc
+    """, Order.class)
+  .setParameter("ts", lastTs).setParameter("id", lastId)
+  .setMaxResults(size).getResultList();
+```
+
+Needs an index on the sort columns (`created_at desc, id desc`), constant time per page, stable under inserts; no "jump to page N". Return an opaque cursor made from the last row's sort values. Hibernate 6.5+/7 also has `KeyedPage`/`KeyedResultList` APIs on `SelectionQuery`; check the docs of your version.
+
+### Total counts
+
+A separate `count` query per page is costly; skip it when the UI can use "has next" (fetch `size + 1` rows).
+
+## JDBC batching (inserts and updates)
+
+Enable JDBC batching with a positive batch size:
+
+```properties
+hibernate.jdbc.batch_size=50
+```
+
+Hibernate can batch inserts with sequence, UUID, or assigned identifiers. `IDENTITY` prevents JDBC batching of entity **inserts** because Hibernate must execute each insert to obtain its generated id; it does not prevent batching updates. Do not change an existing identifier strategy solely to enable batching without considering its other tradeoffs.
+
+Optional tuning (measure against the actual database and driver):
+
+```properties
+hibernate.order_inserts=true
+hibernate.order_updates=true
+hibernate.jdbc.batch_versioned_data=true
+```
+
+Ordering statements may group compatible operations, and PostgreSQL `reWriteBatchedInserts=true` / MySQL `rewriteBatchedStatements=true` may improve driver throughput; neither ordering nor driver rewrite flags are prerequisites for Hibernate JDBC batching. Check the dialect, driver, and Hibernate version before changing settings.
+
+Write pattern for large loads:
+
+```java
+for (int i = 0; i < items.size(); i++) {
+    em.persist(items.get(i));
+    if ((i + 1) % batchSize == 0) {
+        em.flush();
+        em.clear();      // release memory and dirty-checking cost
+    }
+}
+```
+
+Keep `batchSize` equal to `hibernate.jdbc.batch_size`. Commit per chunk (own transaction) if partial progress is acceptable.
+
+Entities referenced after `clear()` are detached; reload or use `getReference`.
+
+## Bulk operations and StatelessSession
+
+- Updates over many rows: set-based `update Order o set o.status = :s where ...` (bypasses lifecycle callbacks, `@Version` unless `versioned`, and cascades; Hibernate invalidates the affected second-level cache regions itself, but managed entities in the current persistence context become stale, so flush before and clear or refresh afterwards).
+- Pure ETL/import: `StatelessSession` (no persistence context, no dirty checking, no cascade) with `insert`/`update`.
+  - Hibernate 6: it bypasses the second-level cache and uses `hibernate.jdbc.batch_size` for JDBC batching.
+  - Hibernate 7: it uses the second-level cache by default (disable per session if unwanted), and `hibernate.jdbc.batch_size` has no effect on it; set the batch size with `StatelessSession.setJdbcBatchSize(n)` and prefer the bulk operations `insertMultiple`/`updateMultiple`/`upsertMultiple`/`deleteMultiple`.
+  - Confirm the API for your exact version.
+- Streaming reads: `query.getResultStream()`/`scroll` with `hibernate.jdbc.fetch_size`; close the stream and clear the context periodically. Many drivers (PostgreSQL) only stream inside a transaction with autocommit off and a fetch size set.
+
+## Query hygiene
+
+- Bind parameters; never concatenate user input into JPQL/native SQL.
+- `IN` lists: large lists blow up the SQL cache; Hibernate pads parameters with `hibernate.query.in_clause_parameter_padding=true`, and databases cap parameter counts, so chunk (e.g. 500-1000).
+- `hibernate.query.fail_on_pagination_over_collection_fetch=true` only throws when Hibernate would really paginate in memory. Hibernate 7.4+ only (the 7.4 query language guide: "Prior to Hibernate 7.4, limits didn't play well with many-valued fetch joins"; on 7.0-7.3 pagination over a collection fetch join stays in memory on every dialect, so this guard is useful there). Verified in the 7.4 source (`SqmQueryImpl`/`AbstractSqmSelectionQuery`): when the dialect supports `LIMIT`/`OFFSET` in a subquery (`supportsOffsetInSubquery`, true for PostgreSQL, MySQL, H2...), Hibernate 7.4+ pushes the pagination into a derived table, so `join fetch` + `setMaxResults` (and Spring Data `Pageable` on such a query) is paginated by the database and the setting never fires. It fires only for dialects without that support, or when in-memory limiting is forced; the old `HHH000104` warning is then logged otherwise. Do not use it as a guard on 7.4+ with such dialects: check the generated SQL for `limit`/`fetch first`, and still prefer the two-step (ids first, then fetch) pattern for portability.
+- `@QueryHints(readOnly)`/`setHint("org.hibernate.readOnly", true)` for read paths that load entities but never modify them.
+- Prefer JPQL/HQL or Criteria for portability; use native SQL for database-specific features (window functions, `SKIP LOCKED`, upserts), mapped to DTOs.
+- `existsBy`-style checks: `select 1 ... fetch first 1 rows only` / `count(*) > 0` instead of loading entities.
+- Check generated SQL for `select *`-like entity loads where only 2 columns are needed: use projections.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-hibernate-jpa/references/tooling-and-versions.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-hibernate-jpa/references/tooling-and-versions.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-hibernate-jpa/references/tooling-and-versions.md
+- **SHA256_FINGERPRINT**: `56a1469a2e68a8604d14f050f433c8b046789bfa2c6e89f7df860d94d5d91cfc`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.223215+00:00
+---
+
+# Tooling, diagnosis, migrations, versions
+
+## SQL logging and statistics
+
+Prefer logger categories to `hibernate.show_sql` (which prints to stdout, unformatted, without parameters). Add these elements inside the existing Logback `logback.xml` `<configuration>` (keep its appender and root logger):
+
+```xml
+<logger name="org.hibernate.SQL" level="DEBUG"/>
+<logger name="org.hibernate.orm.jdbc.bind" level="TRACE"/>
+```
+
+`org.hibernate.orm.jdbc.bind` is for Hibernate 6+; on Hibernate 5 use `org.hibernate.type.descriptor.sql.BasicBinder`. For Log4j2, configure the same categories with `<Logger name="..." level="..."/>` elements inside `<Loggers>` in `log4j2.xml`; bare category properties in `hibernate.properties` do not configure either backend.
+
+Statistics and slow-query log:
+
+```properties
+hibernate.generate_statistics=true
+hibernate.session.events.log.LOG_QUERIES_SLOWER_THAN_MS=25
+```
+
+For total SQL statement-count assertions in N+1 regression tests, compare `sessionFactory.getStatistics().getPrepareStatementCount()` before and after the use case, or use a datasource proxy (e.g. datasource-proxy, p6spy). `getQueryExecutionCount()` counts executed ORM queries, not secondary SELECTs issued to initialize lazy associations; `getEntityFetchCount()` and `getCollectionFetchCount()` are useful supplemental diagnostics, not total statement counts. Keep logging at DEBUG/TRACE only in dev/test; statistics have overhead.
+
+Use `EXPLAIN (ANALYZE)` on the real database for slow SQL; indexes on foreign keys are your responsibility (Hibernate does not create them for FKs on most databases).
+
+## Testing persistence code
+
+- Test against the production database engine via Testcontainers (`java-testcontainers`), not H2 with a compatibility mode.
+- Flush and clear in tests (`em.flush(); em.clear();`) before asserting reads, otherwise you only test the first-level cache.
+- Run the real migrations in tests, and use `hibernate.hbm2ddl.auto=validate` to catch mapping/schema drift.
+- Add a statement-count assertion for list endpoints to prevent N+1 regressions.
+
+## Connection pool sizing
+
+- Hibernate uses the pool for each transaction; pool size bounds concurrent DB work, not request count. Start small (roughly `cores * 2 + effective spindles` rule of thumb, typically 10-20 per application instance) and tune with measurements.
+- Total connections across instances must stay below the database `max_connections`.
+- Long transactions, OSIV, and remote calls in transactions are the usual cause of pool exhaustion, not too few connections.
+- Set connection timeout, max lifetime (below DB/proxy idle limits), and leak detection (HikariCP `leakDetectionThreshold`) in dev.
+- Use the pool's `autoCommit=false` and `hibernate.connection.provider_disables_autocommit=true` to delay connection acquisition until the first statement, when your pool supports it.
+
+## Schema management
+
+- Production: Flyway or Liquibase migrations, versioned and reviewed; `hibernate.hbm2ddl.auto` set to `validate` or `none`.
+- `update`/`create`/`create-drop` only for prototypes and throwaway tests; `update` never drops or renames and can silently diverge from environments.
+- Jakarta Persistence schema generation (`jakarta.persistence.schema-generation.*`) can emit a script to diff against; do not apply it blindly.
+- Keep migrations compatible with the old release for zero-downtime (expand/contract). Sequence `INCREMENT BY` must match `allocationSize`.
+- Name constraints and indexes explicitly in migrations; add indexes on foreign keys and on filter/sort columns.
+
+## Hibernate version differences (detect first)
+
+| Topic | Hibernate 5.x | Hibernate 6.x | Hibernate 7.x |
+| --- | --- | --- | --- |
+| Namespace | `javax.persistence` (5.5+ also offers `hibernate-core-jakarta`) | `jakarta.persistence` | `jakarta.persistence` |
+| Jakarta Persistence | 2.2 | 3.0 (6.0-6.1), 3.1 (6.2+) | 3.2 |
+| Java baseline | 8+ | 11+ | 17+ |
+| Query engine | HQL parser (ANTLR 2) | Rewritten (semantic query model, ANTLR 4); stricter HQL; more SQL features | Continues 6 architecture; more HQL features, stricter validation |
+| Fetch-join duplicates | Need `DISTINCT` | Auto de-duplicated | Same as 6 |
+| Pagination + collection fetch warning | `HHH000104` | `HHH90003004` | Same as 6 |
+| Id generation | Legacy `hibernate.id.new_generator_mappings` | Sequence-first `AUTO`; `@GenericGenerator` deprecated from 6.5 | Prefer standard annotations and `@UuidGenerator`/`@IdGeneratorType` |
+| Metamodel generator | `hibernate-jpamodelgen` | `hibernate-jpamodelgen` (`hibernate-processor` is the successor, introduced in 7.0) | `hibernate-processor` |
+| Hibernate Reactive/other | n/a | Separate artifacts | Separate artifacts |
+
+Migration notes (5 -> 6): fix `javax` -> `jakarta` imports (`javax-to-jakarta-migration` skill), review HQL for stricter parsing, re-check generated sequence names and `allocationSize`, re-check `@Type`/custom type usages and `AttributeConverter`s, `Query.getResultList` behavior and `@Where`/`@Filter` use. Read the official migration guides: <https://docs.hibernate.org/orm/6.0/migration-guide/> and the matching guide for 7. Hibernate 8 is in beta at the time of writing; do not assume its APIs.
+
+Version-specific APIs mentioned elsewhere in this skill (entity-graph hint vs `setEntityGraph`, `KeyedPage`, UUID styles) should be checked against the project's Hibernate version before use.
+
+## Tools
+
+- Metamodel/typed Criteria: `hibernate-jpamodelgen` for Hibernate 6.x (`hibernate-processor` first appears in 7.0.0.Alpha1 on Maven Central), `hibernate-processor` for Hibernate 7 (`org.hibernate.orm:hibernate-processor`, `provided`/annotation-processor scope; `hibernate-jpamodelgen` 7.x is only a Maven relocation to it).
+- JDK 23+ no longer runs annotation processors found only on the classpath: with a plain `provided` dependency `Entity_` classes are not generated. Set `<proc>full</proc>` on `maven-compiler-plugin` (or list the processor in `annotationProcessorPaths`; Gradle: `annotationProcessor`).
+- Bytecode enhancement (lazy basic attributes, dirty tracking, lazy to-one inverse): Hibernate Maven/Gradle plugin; test carefully.
+- Validation: Jakarta Bean Validation integrates with persist/update and does not replace DB constraints.
+
+
+---
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/java-junit/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-junit/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-junit/SKILL.md
-- **SHA256_FINGERPRINT**: `a1b0dfe60a852566c5c2e75cc28366141c6303573b006927c454df60d4d9f7df`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:32.142604+00:00
+- **SHA256_FINGERPRINT**: `1b04baa1e07a7c03b130fdadfd5b9ee9184d69623d65695c01e26cca7a3749dc`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.257525+00:00
 ---
 
-**description**: Get best practices for JUnit 5 unit testing, including data-driven tests
+**description**: Write, review and fix Java unit tests with JUnit 5 and JUnit 6 (Jupiter), AssertJ and Mockito: assertions, parameterized and nested tests, mocking rules, deterministic time and randomness, Surefire vs Failsafe, JaCoCo coverage, optional PIT mutation testing, and guardrails for agents (never skip or delete failing tests). Use when adding, refactoring or debugging tests in Maven or Gradle projects. Framework-neutral.
 
-# JUnit 5+ Best Practices
+# Java Testing with JUnit 5/6, AssertJ and Mockito
 
-Your goal is to help me write effective unit tests with JUnit 5, covering both standard and data-driven testing approaches.
+Framework-neutral guidance for fast, deterministic unit tests. For Spring slices use `spring-boot-testing` (if installed); for real databases/brokers in Docker use `java-testcontainers`; for failures you cannot explain, `java-debugging`.
 
-## Project Setup
+## First: detect, don't impose
 
-- Use a standard Maven or Gradle project structure.
-- Place test source code in `src/test/java`.
-- Include dependencies for `junit-jupiter-api`, `junit-jupiter-engine`, and `junit-jupiter-params` for parameterized tests.
-- Use build tool commands to run tests: `mvn test` or `gradle test`.
+1. Read `pom.xml`/`build.gradle*`: JUnit version (`junit-jupiter`, `junit-bom`, or inherited from a Spring Boot BOM), assertion library, Mockito, Surefire/Failsafe versions, Java release.
+2. Copy the conventions already in `src/test/java` (naming, assertion library, static imports, mocking style). Do not introduce AssertJ, Mockito or JaCoCo into a project that lacks them without asking.
+3. Never bump the JUnit major version implicitly; upgrading is its own task (see `java-upgrade` if installed).
 
-## Test Structure
+## JUnit 5 vs JUnit 6
 
-- Test classes should have a `Test` suffix, e.g., `CalculatorTest` for a `Calculator` class.
-- Use `@Test` for test methods.
-- Follow the Arrange-Act-Assert (AAA) pattern.
-- Name tests using a descriptive convention, like `methodName_should_expectedBehavior_when_scenario`.
-- Use `@BeforeEach` and `@AfterEach` for per-test setup and teardown.
-- Use `@BeforeAll` and `@AfterAll` for per-class setup and teardown (must be static methods).
-- Use `@DisplayName` to provide a human-readable name for test classes and methods.
+| | JUnit 5 (last 5.14.x) | JUnit 6 (6.0 released; 6.1.x current) |
+| --- | --- | --- |
+| Java baseline | 8 | **17** (verified in the published Gradle module metadata) |
+| Versioning | Platform 1.x, Jupiter 5.x, Vintage 5.x | One version number for Platform, Jupiter and Vintage |
+| API | `org.junit.jupiter.api.*` | Same packages; the Jupiter tests in this skill compile and pass unchanged on 5.14.4 and 6.0.3 |
+| Removed in 6.0 | | `MethodOrderer.Alphanumeric`, the deprecated two-argument `InvocationInterceptor.interceptDynamicTest(Invocation, ExtensionContext)` overload (the three-argument one remains), `junit.jupiter.tempdir.scope`, `@CsvFileSource(lineSeparator)` |
+| CSV | univocity-parsers | FastCSV: stricter parsing (no characters after a closing quote); header-field options now apply to headers |
+| Other | | `junit-jupiter-migrationsupport` deprecated; invalid enum-style config values now fail discovery; `@Nested` class order deterministic but non-obvious |
 
-## Standard Tests
+Source: JUnit 6.0.0 release notes (<https://docs.junit.org/6.0.0/release-notes.html>). Read the notes for the target version (<https://docs.junit.org/current/release-notes/>) and prefer them over this table. JUnit 4 tests need the Vintage engine; do not mix `org.junit.Test` and `org.junit.jupiter.api.Test` in one class.
 
-- Keep tests focused on a single behavior.
-- Avoid testing multiple conditions in one test method.
-- Make tests independent and idempotent (can run in any order).
-- Avoid test interdependencies.
-
-## Data-Driven (Parameterized) Tests
-
-- Use `@ParameterizedTest` to mark a method as a parameterized test.
-- Use `@ValueSource` for simple literal values (strings, ints, etc.).
-- Use `@MethodSource` to refer to a factory method that provides test arguments as a `Stream`, `Collection`, etc.
-- Use `@CsvSource` for inline comma-separated values.
-- Use `@CsvFileSource` to use a CSV file from the classpath.
-- Use `@EnumSource` to use enum constants.
+Dependencies (same for 5 and 6; verified with Maven and Gradle): import `org.junit:junit-bom`, then declare `org.junit.jupiter:junit-jupiter` (aggregates api, params, engine) with `test` scope. Gradle 9 additionally **requires** `testRuntimeOnly("org.junit.platform:junit-platform-launcher")` (verified: without it the test executor fails with "Failed to load JUnit Platform") and `tasks.test { useJUnitPlatform() }`. Maven needs Surefire 3.x (verified with 3.6.0).
 
 ## Assertions
 
-- Use the static methods from `org.junit.jupiter.api.Assertions` (e.g., `assertEquals`, `assertTrue`, `assertNotNull`).
-- For more fluent and readable assertions, consider using a library like AssertJ (`assertThat(...).is...`).
-- Use `assertThrows` or `assertDoesNotThrow` to test for exceptions.
-- Group related assertions with `assertAll` to ensure all assertions are checked before the test fails.
-- Use descriptive messages in assertions to provide clarity on failure.
+Match the project's library. Plain Jupiter rules: expected value first, lazy `Supplier` messages, `assertAll`, `assertThrowsExactly`, timeouts. (The separate `instructions/java-junit5-assertions.instructions.md` resource has the longer version but is not installed with this skill.) If the project uses AssertJ, prefer it for collections, strings and exceptions; patterns (soft assertions, `assertThatThrownBy`, `extracting`, `containsExactly`, `usingRecursiveComparison`) are in `references/assertj-and-mockito.md`.
 
-## Mocking and Isolation
+- Assert on outcomes and state, not on how many times internals were called.
+- Compare values; avoid bare `assertNotNull`.
+- Never catch `AssertionError`/`Exception` to make a test pass.
 
-- Use a mocking framework like Mockito to create mock objects for dependencies.
-- Use `@Mock` and `@InjectMocks` annotations from Mockito to simplify mock creation and injection.
-- Use interfaces to facilitate mocking.
+## Mocking (Mockito)
 
-## Test Organization
+- Mock **collaborators across a boundary** (repository, HTTP client, clock, message sender). Do **not** mock value objects, records, collections, `String`, or the class under test; use real instances or simple fakes.
+- Prefer a hand-written fake over a mock when the interaction is stateful.
+- Use `@ExtendWith(MockitoExtension.class)` with `@Mock`/`@InjectMocks`/`@Captor`. Strict stubs are the default there, so an unused stub fails the test (`UnnecessaryStubbingException`). Fix the test; relax with `@MockitoSettings(strictness = Strictness.LENIENT)` only for a justified shared setup.
+- Mockito 5 uses the inline mock maker by default. On JDK 21+ it may self-attach and print a dynamic-agent warning. With **Mockito 5.14.0+**, register `mockito-core` as a `-javaagent` instead (setup for Maven and Gradle in `references/assertj-and-mockito.md`, verified on JDK 21 and 25). Check the resolved version first: earlier 5.x jars lack `Premain-Class` and cannot be used as the agent. Ask before upgrading; otherwise use the instrumentation setup documented for the installed version.
+- Mockito 5 requires Java 11+. Its default inline mock maker does not work on GraalVM native image, where the subclass mock maker is appropriate (Mockito 5.0.0 release notes, <https://github.com/mockito/mockito/releases/tag/v5.0.0>).
+- Avoid `mockStatic`/`mockConstruction`; wrap the static call behind an interface.
 
-- Group tests by feature or component using packages.
-- Use `@Tag` to categorize tests (e.g., `@Tag("fast")`, `@Tag("integration")`).
-- Use `@TestMethodOrder(MethodOrderer.OrderAnnotation.class)` and `@Order` to control test execution order when strictly necessary.
-- Use `@Disabled` to temporarily skip a test method or class, providing a reason.
-- Use `@Nested` to group tests in a nested inner class for better organization and structure.
+## Determinism
+
+- Time: inject `java.time.Clock` (`Clock.fixed(...)`) and call `Instant.now(clock)`; avoid `Instant.now()`/`LocalDate.now()` in code under test.
+- Randomness: inject a `Random`/`RandomGenerator` with a fixed seed; log the seed if generated.
+- Do not depend on default locale, time zone, file encoding, network, or wall-clock sleeps. Set them explicitly (newer 6.x releases add built-in locale/time-zone/system-property extensions; check the release notes of your version, otherwise use try/finally).
+
+## Unit vs integration tests
+
+| | Unit (`*Test`) | Integration (`*IT`) |
+| --- | --- | --- |
+| Maven | Surefire, `mvn test` | Failsafe, `mvn verify` |
+| Gradle | `test` task | separate `integrationTest` task (JVM Test Suite) wired into `check` |
+| Speed | milliseconds, no I/O | may use Docker/DB |
+
+Surefire defaults pick `*Test`, `Test*`, `*Tests`, `*TestCase`; Failsafe picks `*IT`, `IT*`, `*ITCase`. Failsafe needs the `integration-test` and `verify` goals bound and is run by `mvn verify`, not `mvn test`. Alternatively split by `@Tag`. For databases and brokers see `java-testcontainers`; for Spring slices see `spring-boot-testing`. Full build snippets: `references/build-setup.md`.
+
+## Coverage and mutation testing (optional)
+
+- JaCoCo: add only if the project uses it or the user asks. With Surefire/Failsafe use `<argLine>@{argLine} ...</argLine>` so the JaCoCo agent is not overwritten.
+- Coverage is a smell detector, not a goal; never add assertion-free tests to raise a number, and do not add a coverage gate the project lacks.
+- PIT (mutation testing) is slow; run it on changed classes only if the project already uses it or the user asks (see `references/build-setup.md`, which records a verified pitest-maven + JUnit 5 plugin run).
+
+## Agent guardrails
+
+1. **Never** delete, comment out, `@Disabled`, weaken (looser assertion, wider tolerance, swallowed exception) or skip a failing test to get green. Find the cause.
+2. Decide which side is wrong, the test or the production code. If the fix changes **production behavior**, stop and ask the user first; if the test encodes an obviously stale expectation, say so and propose the change.
+3. Do not add `-DskipTests`, `-Dmaven.test.skip`, `-x test` or `failIfNoTests=false` to make a build pass.
+4. Do not mock the class under test or assert on mock internals to "prove" correctness.
+5. Run the narrowest test first, then the full build:
+   - Maven: `mvn -q -Dtest=OrdersTest test` (one method: `-Dtest='OrdersTest#place_should_saveAndNotify_when_itemValid'`), then `mvn verify`.
+   - Gradle: `./gradlew test --tests 'demo.OrdersTest'`, then `./gradlew check`.
+   Prefer the project wrapper (`./mvnw`, `./gradlew`) when present.
+6. Flaky test: reproduce by rerunning, then remove the nondeterminism (time, order, shared state, async waits); do not add retries.
+7. New code gets new tests beside the existing ones, in the same style: happy path, boundaries, error cases.
+
+## References
+
+- `references/assertj-and-mockito.md`: AssertJ patterns, Mockito strictness/captors/agent setup, when not to mock.
+- `references/build-setup.md`: Maven and Gradle (Kotlin DSL) setups for JUnit 5/6, Failsafe split, JaCoCo, PIT.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-junit/references/assertj-and-mockito.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-junit/references/assertj-and-mockito.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-junit/references/assertj-and-mockito.md
+- **SHA256_FINGERPRINT**: `57ba321cde1b425f9a40ecf377f395d29dce922891f6c54b22f4ccb3e76b7482`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.358160+00:00
+---
+
+# AssertJ and Mockito patterns
+
+All snippets compile and pass on JDK 21 (AssertJ 3.27.7, Mockito 5.23.0, JUnit 5.14.4 and 6.0.3), except where marked.
+
+## AssertJ
+
+Use only if the project already depends on `org.assertj:assertj-core` (or the user agrees). Import statically from `org.assertj.core.api.Assertions`.
+
+```java
+// collections
+assertThat(people).hasSize(2).extracting(Person::name).containsExactly("Ann", "Bob");
+assertThat(people).extracting(Person::name, Person::age)
+    .containsExactlyInAnyOrder(tuple("Bob", 25), tuple("Ann", 30));
+assertThat(people).filteredOn(p -> p.age() > 26).singleElement();
+assertThat(people).allSatisfy(p -> assertThat(p.age()).isPositive());
+assertThat(Map.of("k", 1)).containsOnly(entry("k", 1));
+
+// object graphs (records and POJOs without equals)
+assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+
+// exceptions
+assertThatThrownBy(() -> Integer.parseInt("x"))
+    .isInstanceOf(NumberFormatException.class)
+    .hasMessageContaining("\"x\"");
+assertThatExceptionOfType(IllegalStateException.class)
+    .isThrownBy(() -> service.run())
+    .withMessage("boom")
+    .withCauseInstanceOf(RuntimeException.class);
+assertThatCode(() -> parse("1")).doesNotThrowAnyException();
+
+// optionals
+assertThat(Optional.of("x")).contains("x");
+assertThat(Optional.empty()).isEmpty();
+```
+
+Prefer `containsExactly` (order matters) or `containsExactlyInAnyOrder` over `contains`, which passes with extra elements. `extracting` gives readable diffs on failure.
+
+### Soft assertions (report all failures)
+
+```java
+SoftAssertions.assertSoftly(s -> {
+    s.assertThat(result.status()).isEqualTo(200);
+    s.assertThat(result.body()).contains("ok");
+});
+```
+
+or per class with the JUnit extension (bundled in `assertj-core`):
+
+```java
+@ExtendWith(SoftAssertionsExtension.class)
+class ResultTest {
+    @InjectSoftAssertions SoftAssertions softly;   // org.assertj.core.api.junit.jupiter
+    @Test void t() { softly.assertThat(1).isEqualTo(1); }
+}
+```
+
+Jupiter equivalent: `assertAll(() -> ..., () -> ...)`.
+
+AssertJ 4 was only at milestone releases when this was written; stay on 3.x unless the project already uses 4.
+
+## Mockito
+
+Dependency: `org.mockito:mockito-junit-jupiter` (brings `mockito-core`).
+
+```java
+@ExtendWith(MockitoExtension.class)
+class OrdersTest {
+    @Mock Orders.Repo repo;
+    @Mock Orders.Notifier notifier;
+    @Captor ArgumentCaptor<String> message;
+
+    @Test
+    void place_should_saveAndNotify() {
+        var orders = new Orders(repo, notifier, FIXED_CLOCK);   // construct explicitly; prefer over @InjectMocks
+        var result = orders.place("book");
+
+        verify(repo).save(result);
+        verify(notifier).send(message.capture());
+        assertThat(message.getValue()).startsWith("placed book");
+    }
+
+    @Test
+    void require_should_throw_when_missing() {
+        when(repo.find(7L)).thenReturn(Optional.empty());
+        ...
+    }
+}
+```
+
+- **Strictness**: `MockitoExtension` uses strict stubs. Verified: a stub that is never used fails the test with `UnnecessaryStubbingException`. Argument mismatches on a stubbed method are also reported (`PotentialStubbingProblem`). Per class/nested class opt-out: `@MockitoSettings(strictness = Strictness.LENIENT)`; per stub: `lenient().when(...)`.
+- **Stubbing**: `when(x.m()).thenReturn(v)`; for `void` or to throw: `doThrow(...).when(x).m()`. Prefer returning values over verifying calls.
+- **Verification**: verify side effects that are the behavior (a message sent, an entity saved). Use `verify(x, never()).m()` for "must not happen". Avoid `verifyNoMoreInteractions` as a default; it couples tests to implementation.
+- **Captors**: `@Captor ArgumentCaptor<T>` or `ArgumentCaptor.forClass(T.class)`; assert on `getValue()`/`getAllValues()`.
+- **Argument matchers**: if one argument uses a matcher (`any()`, `eq()`), all must.
+- **Do not mock**: records/value objects, collections, `String`, types you own that are simple data, the class under test, `java.time.Clock` (use `Clock.fixed`). Prefer an in-memory fake repository over a mock when the test would otherwise stub several calls.
+- **Mock only what you own at the boundary**; wrap third-party types in your own interface and mock that.
+
+### Inline mock maker and the JDK 21+ agent warning
+
+Mockito 5 uses the inline mock maker by default. On JDK 21+ without an agent, Mockito self-attaches and the build prints:
+
+```
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. ...
+WARNING: A Java agent has been loaded dynamically (.../byte-buddy-agent-....jar)
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+```
+
+For **Mockito 5.14.0+ only**, fix by registering `mockito-core` as an agent (verified: warnings gone on JDK 21). The agent entry point was introduced in [Mockito 5.14.0](https://github.com/mockito/mockito/releases/tag/v5.14.0); earlier 5.x jars lack the `Premain-Class` manifest entry, so using them with `-javaagent` aborts the test JVM.
+
+Before applying either snippet below, check the resolved `mockito-core` version (`./mvnw dependency:tree -Dincludes=org.mockito:mockito-core` or `./gradlew dependencyInsight --dependency mockito-core --configuration testRuntimeClasspath`). Preserve the project's BOM/version-catalog management and ask before upgrading. If the version is below 5.14.0 and no upgrade is approved, do not use these snippets; follow that version's documented instrumentation setup.
+
+Maven (`maven-dependency-plugin` `properties` goal exposes `${org.mockito:mockito-core:jar}`; keep `@{argLine}` when JaCoCo is used):
+
+```xml
+<plugin>
+  <artifactId>maven-dependency-plugin</artifactId>
+  <executions>
+    <execution><goals><goal>properties</goal></goals></execution>
+  </executions>
+</plugin>
+<plugin>
+  <artifactId>maven-surefire-plugin</artifactId>
+  <configuration>
+    <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
+  </configuration>
+</plugin>
+```
+
+(Without JaCoCo, drop `@{argLine}`; with a literal `@{argLine}` and no JaCoCo `prepare-agent`, Maven leaves it unresolved and the JVM fails to start.) Add the same `argLine` to Failsafe if integration tests use Mockito.
+
+Gradle (Kotlin DSL):
+
+```kotlin
+val mockitoAgent: Configuration by configurations.creating
+dependencies {
+    testImplementation("org.mockito:mockito-junit-jupiter:5.23.0")
+    mockitoAgent("org.mockito:mockito-core:5.23.0") { isTransitive = false }
+}
+tasks.test { jvmArgs("-javaagent:${mockitoAgent.asPath}") }
+```
+
+Keep the two Mockito versions identical (or use a BOM/version catalog). On JDK 25, ByteBuddy may still print a `sun.misc.Unsafe` "terminally deprecated" warning; it is harmless noise from the dependency (seen with byte-buddy 1.18.3). Do not "fix" it with `--add-opens` flags unless a test actually fails.
+
+## Parameterized and nested tests
+
+```java
+@ParameterizedTest
+@NullAndEmptySource
+@ValueSource(strings = {" ", "\t"})
+void rejectsBlank(String item) { ... }
+
+@ParameterizedTest(name = "sign({0}) = {1}")
+@CsvSource({"-5,-1", "0,0", "9,1"})
+void sign(int in, int out) { ... }
+
+@ParameterizedTest
+@MethodSource("pairs")
+void viaMethodSource(int in, int out) { ... }
+static Stream<Arguments> pairs() { return Stream.of(Arguments.of(-2, -1), Arguments.of(2, 1)); }
+```
+
+`@Nested` classes see the outer class's mocks and `@BeforeEach`. Maven reports each nested class as its own test class (`OrdersTest$Evens`) and the outer class may show `Tests run: 0`; that is expected, check the total.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-junit/references/build-setup.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-junit/references/build-setup.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-junit/references/build-setup.md
+- **SHA256_FINGERPRINT**: `8c8c09254e13dafff6e458cf9a1560b1cb9c0f555231bed77b0f5c8505dd1f75`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.356233+00:00
+---
+
+# Build setup for JUnit 5/6
+
+Versions below were used in verification runs (JDK 21 and 25, Maven 3.10.0, Gradle 9.8.1). Re-check current releases on Maven Central before pinning, and keep the project's existing versions when present.
+
+## Maven
+
+```xml
+<properties>
+  <junit.version>6.0.3</junit.version>
+</properties>
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.junit</groupId>
+      <artifactId>junit-bom</artifactId>
+      <version>${junit.version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+<dependencies>
+  <dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter</artifactId>
+    <scope>test</scope>
+  </dependency>
+</dependencies>
+<build>
+  <plugins>
+    <plugin>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <version>3.6.0</version>
+    </plugin>
+    <plugin>
+      <artifactId>maven-failsafe-plugin</artifactId>
+      <version>3.6.0</version>
+      <executions>
+        <execution>
+          <goals><goal>integration-test</goal><goal>verify</goal></goals>
+        </execution>
+      </executions>
+    </plugin>
+  </plugins>
+</build>
+```
+
+Switching versions for a trial run: `mvn verify -Djunit.version=5.14.4` (works because the version is a property). If a parent (e.g. Spring Boot) manages JUnit, override that property or BOM deliberately and tell the user.
+
+Commands: `mvn test` (unit, Surefire), `mvn verify` (unit + `*IT` via Failsafe), `mvn -Dtest=FooTest#bar test`, `mvn -Dit.test=FooIT verify`.
+
+### JaCoCo (0.8.15)
+
+```xml
+<plugin>
+  <groupId>org.jacoco</groupId>
+  <artifactId>jacoco-maven-plugin</artifactId>
+  <version>0.8.15</version>
+  <executions>
+    <execution><goals><goal>prepare-agent</goal></goals></execution>
+    <execution>
+      <id>report</id><phase>verify</phase><goals><goal>report</goal></goals>
+    </execution>
+
+    <execution>
+      <id>check</id><phase>verify</phase><goals><goal>check</goal></goals>
+      <configuration>
+        <rules><rule><element>BUNDLE</element>
+          <limits><limit><counter>LINE</counter><value>COVEREDRATIO</value><minimum>0.80</minimum></limit></limits>
+        </rule></rules>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+```
+
+If Surefire/Failsafe set `<argLine>`, it must start with `@{argLine}`, otherwise the JaCoCo agent is dropped. Conversely, a literal `@{argLine}` without a `prepare-agent` execution fails the forked JVM (`Error: could not open '{argLine}'`, verified). Report: `target/site/jacoco/index.html`.
+
+### PIT mutation testing (verified: pitest-maven 1.30.1 + pitest-junit5-plugin 1.2.3 with JUnit 6.0.3 on JDK 21)
+
+```xml
+<plugin>
+  <groupId>org.pitest</groupId>
+  <artifactId>pitest-maven</artifactId>
+  <version>1.30.1</version>
+  <dependencies>
+    <dependency>
+      <groupId>org.pitest</groupId>
+      <artifactId>pitest-junit5-plugin</artifactId>
+      <version>1.2.3</version>
+    </dependency>
+  </dependencies>
+  <configuration>
+    <targetClasses><param>com.example.*</param></targetClasses>
+  </configuration>
+</plugin>
+```
+
+Run: `mvn test-compile org.pitest:pitest-maven:mutationCoverage` (report in `target/pit-reports`). PIT reads Surefire's `argLine` too; if it contains an unresolved `@{argLine}`, pass `-DargLine=-Dpit=1` for the PIT run (verified workaround). Gradle equivalent: the `info.solidsoft.pitest` plugin (not verified here).
+
+## Gradle (Kotlin DSL)
+
+```kotlin
+plugins { java; jacoco }
+repositories { mavenCentral() }
+
+dependencies {
+    testImplementation(platform("org.junit:junit-bom:6.0.3"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")   // required with Gradle 9
+}
+
+tasks.test {
+    useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
+}
+```
+
+Integration tests as a JVM Test Suite (verified; `src/integrationTest/java`):
+
+```kotlin
+testing {
+    suites {
+        register<JvmTestSuite>("integrationTest") {
+            useJUnitJupiter("6.0.3") // a custom suite does not inherit the unit tests' BOM; keep the versions equal
+            dependencies { implementation(project()) }
+            targets.all { testTask.configure { shouldRunAfter(tasks.test) } }
+        }
+    }
+}
+tasks.check { dependsOn(testing.suites.named("integrationTest")) }
+```
+
+Commands: `./gradlew test`, `./gradlew test --tests 'demo.OrdersTest'` (also runs its nested classes), `./gradlew check`, report at `build/reports/tests/test/index.html` and `build/reports/jacoco`. Trial run on JUnit 5: `./gradlew test -PjunitVersion=5.14.4` when the version is read from a Gradle property.
+
+Groovy DSL differs only in syntax (`testImplementation platform('org.junit:junit-bom:6.0.3')`, `jvmArgs '-javaagent:...'`).
 
 
 ---
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/java-mcp-server-generator/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-mcp-server-generator/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-mcp-server-generator/SKILL.md
-- **SHA256_FINGERPRINT**: `1a6a7c565ff48b849de62b5a0c78e4d9f4c3654333bf1da53b197d6dcdd8c063`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:32.185241+00:00
+- **SHA256_FINGERPRINT**: `407c90ccdb2345633f8bcd8735183eda87d33787baf6a6933b87ad8d945ba0aa`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.364059+00:00
 ---
 
-**description**: Use this skill when the user wants to create a Model Context Protocol (MCP) server in Java or in a Spring Boot app. Also use it when the user wants AI agents, such as GitHub Copilot or Claude, to use Java code, an API, or a database. Use it even if the user does not say "MCP". The skill makes a Maven or Gradle project with the MCP Java SDK 2.x, tools, JUnit tests, and client configuration. Do not use it for an MCP client or for a server in another language.
+**description**: Use this skill when the user wants to create a Model Context Protocol (MCP) server in Java or in a Spring Boot app. Also use it when the user wants AI agents, such as GitHub Copilot or Claude, to use Java code, an API, or a database. Use it even if the user does not say "MCP". The skill makes a Maven or Gradle project with the MCP Java SDK 2.x, tools, JUnit tests, and client configuration. Do not use it for Quarkus/Quarkiverse MCP servers (use the `quarkus-mcp-server-sse` instruction), for an MCP client or for a server in another language.
 
 # Java MCP Server Generator
 
@@ -14577,8 +16939,8 @@ The starter serves the endpoint at `/mcp`.
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/java-refactoring-extract-method/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-refactoring-extract-method/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-refactoring-extract-method/SKILL.md
-- **SHA256_FINGERPRINT**: `37590acded235885f0b1b217982eee6c26116594a01dc7e98b8483229a03660c`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:32.271150+00:00
+- **SHA256_FINGERPRINT**: `5bb9b0f568123b738c22653bd1e47eec02dc386c1559c68adc3cb0eb7f7bcb6b`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.369876+00:00
 ---
 
 **description**: Refactoring using Extract Methods in Java Language
@@ -14662,22 +17024,26 @@ protected RelationshipExpander newExpander(RelationshipType[] types,
 }
 ```
 
+## Safety Rules
+
+- Behaviour-preserving only: no functional change, no removed logic, no changed exceptions, side-effect order or visibility of the original method.
+- Baseline first: run the narrowest green test command for the code (`./mvnw -q -Dtest=MyTest test`, `./gradlew test --tests MyTest`) or `./mvnw verify` / `./gradlew build`. Re-run it after every extraction. If the baseline is red, stop and report.
+- If the code has no tests, stop and report; propose characterization tests first. Never delete or weaken tests.
+- One extraction per step (one commit each when the user asks for commits) so each is reviewable and revertible.
+- Prefer the IDE refactoring: use an available IDE tool that exposes Extract Method (it handles parameters and return values safely). The Copilot CLI `lsp` tool offers navigation and rename but no code actions, so configuring jdtls through `lsp-setup` does not provide it; otherwise extract by hand and validate with the compiler and tests.
+- Extracted methods are `private` by default. Do not add public/protected methods, change the existing signature, or touch generated code (`target/`, `build/generated`, `@Generated`) without asking the user.
+- Watch for: local variables modified in the block (return a value or introduce a small result type), multiple results, checked exceptions, `return`/`break`/`continue` inside the block, and `synchronized`/transaction-annotated methods (extracted `private` methods called on `this` bypass Spring proxies and AOP).
+
 ## Task
 
-Apply **Extract Method** to improve readability, testability, maintainability, reusability, modularity, cohesion, low coupling, and consistency.
+Apply **Extract Method** to improve readability, testability, cohesion and consistency.
 
-Always return a complete and compilable method (Java 17).
+1. Identify candidate methods (rough guide: > 15 lines, > 10 statements or cyclomatic complexity > 10) and cohesive blocks inside them.
+2. Extract each block into a descriptively named method, following the existing code style and the project's Java level (check `maven.compiler.release` / toolchain; do not use newer syntax).
+3. Add a one-line comment above each new method only if its name does not already convey its purpose.
+4. Compile and run the tests; report the methods changed, the commands run and their results.
 
-Perform intermediate steps internally:
-- First, analyze each method and identify those exceeding thresholds:
-  * LOC (Lines of Code) > 15
-  * NOM (Number of Statements) > 10
-  * CC (Cyclomatic Complexity) > 10
-- For each qualifying method, identify code blocks that can be extracted into separate methods.
-- Extract at least one new method with a descriptive name.
-- Output only the refactored code inside a single ```java``` block.
-- Do not remove any functionality from the original method.
-- Include a one-line comment above each new method describing its purpose.
+Output complete, compilable code for each changed method.
 
 ## Code to be Refactored:
 
@@ -14688,8 +17054,8 @@ Now, assess all methods with high complexity and refactor them using **Extract M
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/java-refactoring-remove-parameter/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-refactoring-remove-parameter/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-refactoring-remove-parameter/SKILL.md
-- **SHA256_FINGERPRINT**: `3d8aa60a3fd94b04811a3964b360385f50e4eb0139f4a764845655b8cc47edd8`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:32.433780+00:00
+- **SHA256_FINGERPRINT**: `f15d0951cefa58e258c7ef9025052b14e75b898619e9722f759b31b4fc262fd4`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.385192+00:00
 ---
 
 **description**: Refactoring using Remove Parameter in Java Language
@@ -14756,19 +17122,29 @@ NodeImpl( long id)
 }
 ```
 
+## Safety Rules
+
+- Behaviour-preserving only. Remove a parameter only if it is truly unused or derivable (field, constant, other parameter); never remove one that is read, even if "redundant" by convention.
+- Baseline first: run the narrowest green test command (`./mvnw -q -Dtest=MyTest test`, `./gradlew test --tests MyTest`) or `./mvnw verify` / `./gradlew build`, and re-run after the change. If the baseline is red, stop and report.
+- If the affected code has no tests, stop and report; propose characterization tests first. Never delete or weaken tests.
+- Find every usage before changing a signature: use LSP find-references (`lsp-setup`/jdtls) and grep across all modules, including tests. Also check:
+  - overrides and interface implementors (`@Override`, abstract/default methods, functional interfaces, method references): the whole hierarchy must change together;
+  - reflection and string-based lookups (`getMethod`, `getDeclaredMethod`, `MethodHandle`, proxies), and Spring/CDI/Quarkus/Jakarta annotated methods (`@Bean`, `@EventListener`, `@Scheduled`, `@Inject`, `@Path`, `@Observes`, `@PostConstruct`), which a compiler will not flag;
+  - constructors used by serialization/deserialization or JPA/Jackson (`@JsonCreator`, `@ConstructorBinding`, `readObject`), and `serialVersionUID` impact;
+  - XML/properties/YAML configuration and AOP pointcut expressions naming the method;
+  - public or protected API consumed by other modules or published artifacts.
+- Ask the user before changing public/protected/published API (prefer deprecating and adding an overload) or touching generated code.
+- One parameter per step (one commit each when the user asks for commits). Prefer the jdtls Change Method Signature refactoring when available; otherwise update the declaration and all callers together.
+- Removing a parameter can make an overload collide with an existing signature or change overload resolution; check this. Evaluating the argument at the call site may have had side effects: keep them if they matter.
+
 ## Task
 
-Apply **Remove Parameter** to improve readability, testability, maintainability, reusability, modularity, cohesion, low coupling, and consistency.
+Apply **Remove Parameter** to improve readability, coupling and consistency.
 
-Always return a complete and compilable method (Java 17).
-
-Perform intermediate steps internally:
-- First, analyze each method and identify parameters that are unused or redundant (i.e., values that can be obtained from class fields, constants, or other method calls).
-- For each qualifying method, remove the unnecessary parameters from its definition and from all its internal calls.
-- Ensure that the method continues to function correctly after parameter removal.
-- Output only the refactored code inside a single ```java``` block.
-- Do not remove any functionality from the original method.
-- Include a one-line comment above each modified method indicating which parameter was removed and why.
+1. Identify unused or derivable parameters.
+2. Remove each from the declaration and from all callers, then compile and run the tests.
+3. Add a one-line comment only where the removal is non-obvious; otherwise explain it in the report.
+4. Report parameters removed, callers updated, the commands run and their results, and anything left unverified (e.g. reflective or external callers).
 
 ## Code to be Refactored:
 
@@ -14845,6 +17221,373 @@ Your goal is to help me write high-quality Spring Boot applications by following
 - **Spring Security:** Use Spring Security for authentication and authorization.
 - **Password Encoding:** Always encode passwords using a strong hashing algorithm like BCrypt.
 - **Input Sanitization:** Prevent SQL injection by using Spring Data JPA or parameterized queries. Prevent Cross-Site Scripting (XSS) by properly encoding output.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-testcontainers/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-testcontainers/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-testcontainers/SKILL.md
+- **SHA256_FINGERPRINT**: `80a959a85525ee453a81837d7d6598673b8c5fe7240874be5eebbb1dafd178da`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.389803+00:00
+---
+
+**description**: Write reliable integration tests in plain Java with Testcontainers 2.x: JUnit Jupiter lifecycle, singleton containers, reuse, generic containers, wait strategies, networks, init scripts, Docker Compose, CI and Docker/Podman setup. Use when adding or fixing Testcontainers tests, or migrating from 1.x. Framework-neutral.
+
+# Java Testcontainers (2.x)
+
+Run real dependencies (databases, brokers, caches) in Docker for integration tests. This skill is framework-neutral. If the project uses Spring Boot and the `spring-boot-testing` skill is installed, use it for `@ServiceConnection`, `@DynamicPropertySource` and test slices; for Quarkus, rely on Dev Services (Quarkus skills/docs), not hand-wired containers.
+
+## Workflow
+
+1. Detect the existing version (`pom.xml` / `build.gradle`) and test framework (JUnit Jupiter). Testcontainers 2.x has no JUnit 4 support.
+2. Pick the smallest container that matches production (same DB engine and major version; never H2 as a stand-in for behavior you care about).
+3. Choose a lifecycle (table below), configure waiting, wire connection details into the code under test.
+4. Run locally and in CI; check Docker availability and speed.
+
+## Testcontainers 2.x essentials
+
+- Artifacts are all prefixed `testcontainers-`: `org.testcontainers:testcontainers-junit-jupiter`, `testcontainers-postgresql`, `testcontainers-mysql`, `testcontainers-kafka`, etc. (1.x: `junit-jupiter`, `postgresql`). Core stays `org.testcontainers:testcontainers`.
+- Module container classes moved to per-module packages, e.g. `org.testcontainers.postgresql.PostgreSQLContainer` (1.x: `org.testcontainers.containers.PostgreSQLContainer`). Core classes (`GenericContainer`, `Network`, `wait.strategy.*`) remain under `org.testcontainers.containers`.
+- Module container classes are no longer generic: `PostgreSQLContainer`, not `PostgreSQLContainer<?>`.
+- Use a BOM to keep versions aligned: `org.testcontainers:testcontainers-bom:2.0.5` (verify the current release on Maven Central).
+- Docker Compose: use `ComposeContainer` (Compose v2); `DockerComposeContainer` is still present in 2.0.5 (older API); prefer `ComposeContainer`.
+
+```xml
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers-bom</artifactId>
+      <version>2.0.5</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+<dependencies>
+  <dependency>
+    <groupId>org.testcontainers</groupId>
+    <artifactId>testcontainers-junit-jupiter</artifactId>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.testcontainers</groupId>
+    <artifactId>testcontainers-postgresql</artifactId>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <version>42.7.14</version>
+    <scope>test</scope>
+  </dependency>
+</dependencies>
+```
+
+Gradle: `testImplementation platform("org.testcontainers:testcontainers-bom:2.0.5")`, then the same Testcontainers artifacts without versions, plus `testRuntimeOnly "org.postgresql:postgresql:42.7.14"`. The Testcontainers module does not bundle the JDBC driver; skip the explicit driver when the project already depends on one (e.g. via Spring Boot's BOM).
+
+## Minimal test
+
+```java
+import org.junit.jupiter.api.Test;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.postgresql.PostgreSQLContainer;
+
+@Testcontainers
+class CustomerStoreIT {
+
+    @Container
+    static final PostgreSQLContainer POSTGRES = new PostgreSQLContainer("postgres:17-alpine");
+
+    @Test
+    void connects() throws Exception {
+        try (var c = java.sql.DriverManager.getConnection(
+                POSTGRES.getJdbcUrl(), POSTGRES.getUsername(), POSTGRES.getPassword())) {
+            org.junit.jupiter.api.Assertions.assertTrue(c.isValid(2));
+        }
+    }
+}
+```
+
+Always pin the image tag (never `latest`); match the production major version.
+
+## Lifecycle decision
+
+| Need | Pattern |
+| --- | --- |
+| One container per test class | `static @Container` field |
+| Fresh container per test method (slow, strong isolation) | non-static `@Container` field |
+| One container for the whole test run (fastest) | singleton holder, see `references/lifecycle-and-reuse.md` |
+| Keep containers between local runs | `withReuse(true)` + opt-in property, local only |
+
+Prefer sharing a container and isolating **data** (truncate/rollback, unique schema or DB per test) over restarting containers.
+
+## Checklist
+
+- [ ] Image tag pinned and matches production.
+- [ ] Wait strategy meaningful (module defaults are usually fine; custom for `GenericContainer`).
+- [ ] No fixed host ports; use `getMappedPort`/`getHost`.
+- [ ] Containers shared across classes where possible (singleton).
+- [ ] Integration tests named `*IT` and run by failsafe (Maven) or a separate Gradle test task, so unit tests stay fast.
+- [ ] No secrets or real credentials in test containers.
+- [ ] CI runner has Docker; log output is captured on failure.
+
+## References
+
+- `references/lifecycle-and-reuse.md`: per-class/per-method, singleton pattern, reuse, parallel runs, data isolation.
+- `references/containers-and-waiting.md`: modules vs `GenericContainer`, wait strategies, env/config, init scripts, copy files, networks, multi-container setups, Docker Compose.
+- `references/environment-ci-troubleshooting.md`: Docker/Podman/Colima setup, CI, private registries, performance, common errors, 1.x to 2.x migration table.
+
+Official docs: <https://java.testcontainers.org/>
+
+Upgrading to 2.x: no dedicated migration page was found on java.testcontainers.org; read the 2.0.0 release notes <https://github.com/testcontainers/testcontainers-java/releases/tag/2.0.0> and all releases <https://github.com/testcontainers/testcontainers-java/releases> for the target version, and prefer them over this skill when they conflict.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-testcontainers/references/containers-and-waiting.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-testcontainers/references/containers-and-waiting.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-testcontainers/references/containers-and-waiting.md
+- **SHA256_FINGERPRINT**: `f98ab0cec8904e6a4b55b6d7539a21be4c18aab844c5947230e5d458b54224ba`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.414688+00:00
+---
+
+# Containers, waiting, networks, Compose
+
+## Modules vs GenericContainer
+
+Prefer a dedicated module (`testcontainers-postgresql`, `-mysql`, `-mariadb`, `-kafka`, `-mongodb`, `-localstack`, ...) when one exists: it supplies the right wait strategy, credentials, and typed getters. Fall back to `GenericContainer` for anything else.
+
+```java
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
+import java.time.Duration;
+
+GenericContainer<?> app = new GenericContainer<>("my-registry/my-service:1.4.2")
+        .withExposedPorts(8080)
+        .withEnv("MODE", "test")
+        .waitingFor(Wait.forHttp("/health").forStatusCode(200))
+        .withStartupTimeout(Duration.ofMinutes(2));
+```
+
+## Wait strategies
+
+Set via `waitingFor(...)`. Pick the signal that means "actually ready", not "process started".
+
+| Strategy | Use |
+| --- | --- |
+| `Wait.forListeningPorts()` | Port open (may be before the app is ready) |
+| `Wait.forHttp(path).forStatusCode(200)` | HTTP health endpoints |
+| `Wait.forLogMessage(regex, times)` | Ready line in logs (regex must match the whole line, e.g. `.*ready.*\\n`) |
+| `Wait.forHealthcheck()` | Image defines `HEALTHCHECK` |
+| `Wait.forSuccessfulCommand("cmd")` | Probe via exec inside the container |
+| `new WaitAllStrategy().withStrategy(a).withStrategy(b)` | Combine strategies (`org.testcontainers.containers.wait.strategy.WaitAllStrategy`) |
+
+Raise `withStartupTimeout` on slow CI instead of adding sleeps. Never use `Thread.sleep`; poll with Awaitility for asynchronous outcomes in tests.
+
+## Configuration and files
+
+- `withEnv`, `withCommand`, `withLabel`, `withTmpFs(Map.of("/var/lib/postgresql/data", "rw"))` (RAM-backed data dir speeds DB tests).
+- Classpath resources: `withCopyFileToContainer(MountableFile.forClasspathResource("conf.yml"), "/etc/app/conf.yml")` (preferred over bind mounts: works with remote Docker).
+- Bind mounts (`withFileSystemBind`) break on remote daemons and some rootless setups; avoid.
+
+## Init scripts
+
+Database modules: `withInitScript("db/init.sql")` (classpath) runs once after start. Alternatively copy scripts into `/docker-entrypoint-initdb.d/` (official Postgres/MySQL images). For schema evolution, run your real migration tool (Flyway/Liquibase) against the container rather than duplicating DDL in init scripts.
+
+## Networks and multi-container setups
+
+Containers reach each other by network alias, not by mapped port.
+
+```java
+import org.testcontainers.containers.Network;
+
+Network net = Network.newNetwork();   // cleaned up by Ryuk
+
+var db = new PostgreSQLContainer("postgres:17-alpine")
+        .withNetwork(net).withNetworkAliases("db");
+
+var app = new GenericContainer<>("my-registry/my-service:1.4.2")
+        .withNetwork(net)
+        .withEnv("DB_URL", "jdbc:postgresql://db:5432/test")
+        .dependsOn(db)
+        .withExposedPorts(8080);
+```
+
+Inside the network use the container-internal port (5432); from the test JVM use `getMappedPort`.
+
+## Docker Compose module
+
+For stacks already described in a compose file, use `ComposeContainer` (requires the Docker Compose v2 CLI; class `org.testcontainers.containers.ComposeContainer`, in the core artifact).
+
+```java
+import org.testcontainers.containers.ComposeContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
+import java.io.File;
+
+static ComposeContainer env = new ComposeContainer(new File("src/test/resources/compose-test.yml"))
+        .withExposedService("api", 8080, Wait.forHttp("/health").forStatusCode(200))
+        .withExposedService("db", 5432);
+
+env.start(); // endpoints are only available after start
+try {
+    String host = env.getServiceHost("api", 8080);
+    Integer port = env.getServicePort("api", 8080);
+    // run the test against host:port
+} finally {
+    env.stop();
+}
+```
+
+Do not publish fixed host ports in the compose file used for tests. Prefer individual containers for one or two services (faster, typed); use Compose to reuse a multi-service definition.
+
+## Useful extras
+
+- `container.followOutput(new Slf4jLogConsumer(log))` to stream logs; `getLogs()` on failure.
+- `withCreateContainerCmdModifier(cmd -> cmd.getHostConfig().withMemory(512L * 1024 * 1024))` to cap resources.
+- `DockerImageName.parse("mirror/postgres:17").asCompatibleSubstituteFor("postgres")` for mirrored or custom images with a module.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-testcontainers/references/environment-ci-troubleshooting.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-testcontainers/references/environment-ci-troubleshooting.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-testcontainers/references/environment-ci-troubleshooting.md
+- **SHA256_FINGERPRINT**: `0f7e8c5972e6aa9dc80040ae99602088b163ca2f4a3f3127a39c1477cc5cb077`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.448564+00:00
+---
+
+# Environment, CI, troubleshooting, migration
+
+## Docker availability
+
+Testcontainers needs a Docker-API-compatible daemon. Check with `docker info`.
+
+- Docker Desktop, Rancher Desktop, Colima, OrbStack, and Podman (Docker-compatible socket) work. When the socket is non-standard, set `DOCKER_HOST` (e.g. `unix:///run/user/1000/podman/podman.sock`); with rootless Podman, `TESTCONTAINERS_RYUK_DISABLED=true` may be needed if the Ryuk sidecar cannot mount the socket (then clean up containers yourself).
+- Settings can live in `~/.testcontainers.properties` (`docker.host=...`) or `TESTCONTAINERS_*` environment variables.
+- Colima on macOS: `DOCKER_HOST=unix://$HOME/.colima/default/docker.sock` and `TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock`.
+- Without Docker, tests fail with "Could not find a valid Docker environment". Fix the environment, or gate optional local runs with `@Testcontainers(disabledWithoutDocker = true)`.
+
+## CI
+
+- GitHub Actions `ubuntu-*` runners ship Docker; no setup needed. Self-hosted runners must expose the socket to the job user.
+- Docker-in-Docker CI (GitLab, containerized Jenkins agents): mount the host socket or use a DinD service and set `DOCKER_HOST`; set `TESTCONTAINERS_HOST_OVERRIDE` if the daemon host is not localhost.
+- Cache images between runs and avoid Docker Hub rate limits with a registry mirror (`hub.image.name.prefix` in properties or `TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX`).
+- Private registries: `docker login` (credential helpers in `~/.docker/config.json` are honored).
+- Do not enable container reuse in CI.
+- Print container logs on failure and keep timeouts generous (2 minutes for heavy images).
+- Separate unit and integration phases (`maven-failsafe-plugin` with `*IT`, or a Gradle `integrationTest` task).
+
+## Performance checklist
+
+1. Singleton containers across classes (see `lifecycle-and-reuse.md`).
+2. Small images (`-alpine`, slim) pinned by tag; pre-pull in CI.
+3. `withTmpFs` for database data dirs.
+4. Truncate/rollback instead of restarting.
+5. Start independent containers in parallel (`Startables.deepStart(a, b, c).join()`, `org.testcontainers.lifecycle.Startables`).
+6. Avoid heavyweight services if a lighter equivalent preserves the behavior under test.
+
+## Common errors
+
+| Symptom | Likely cause / fix |
+| --- | --- |
+| `Could not find a valid Docker environment` | Daemon down or wrong socket; set `DOCKER_HOST`. |
+| Container startup timeout | Wrong wait strategy, image crash (read `getLogs()`), low resources; raise timeout. |
+| Connection refused right after start | Port open but app not ready; use HTTP/log/healthcheck wait. |
+| Works for first class, fails for next | `@Container` on a singleton stopped after first class; remove the annotation. |
+| Container cannot reach another | Mapped port used inside a network; use alias + internal port. |
+| `ClassNotFoundException: ...containers.PostgreSQLContainer` | 2.x package move, see below. |
+| Ryuk errors | Rootless/Podman socket mount; see Docker availability. |
+| Surefire `The exit has elapsed 30 seconds after System.exit(0)` / `going to kill self fork JVM` | A JVM shutdown hook hangs after the tests (not a Testcontainers-specific message). Not reproduced with Testcontainers 2.0.5 + Surefire 3.5.5/3.5.6 + Docker Desktop 29.8 on JDK 21/25/27, with static `@Container`, `@ServiceConnection` and a Spring-managed container bean (all exit in a second), so Docker Desktop, Ryuk and Testcontainers 2.x are not the cause by themselves. Diagnose: run `jstack <fork pid>` (or `jcmd Thread.print`) during the 30 s and read which hook thread is blocked (typically an application or Spring context hook closing a pool or client against a container that is already gone, or a user-registered hook); close such resources before the container stops, or set `-Dsurefire.exitTimeout=<seconds>` lower to fail fast. |
+
+## 1.x to 2.x migration
+
+| 1.x | 2.x |
+| --- | --- |
+| `org.testcontainers:junit-jupiter` | `org.testcontainers:testcontainers-junit-jupiter` |
+| `org.testcontainers:postgresql` (and other modules) | `org.testcontainers:testcontainers-postgresql` (same prefix rule) |
+| `org.testcontainers.containers.PostgreSQLContainer<?>` | `org.testcontainers.postgresql.PostgreSQLContainer` (non-generic) |
+| JUnit 4 `@Rule`/`@ClassRule` | Removed; migrate tests to JUnit Jupiter |
+| `DockerComposeContainer` | `ComposeContainer` (Compose v2) |
+| Per-module versions | `testcontainers-bom` |
+
+Steps: import the BOM, rename artifacts, fix imports module by module (the compiler flags each moved class), remove `<?>` from module container types, convert JUnit 4 tests. Check the release notes for the modules you use; each module's package follows `org.testcontainers.<module>`.
+
+Docs: <https://java.testcontainers.org/>; releases: <https://github.com/testcontainers/testcontainers-java/releases>
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-testcontainers/references/lifecycle-and-reuse.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-testcontainers/references/lifecycle-and-reuse.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-testcontainers/references/lifecycle-and-reuse.md
+- **SHA256_FINGERPRINT**: `bcdfb4836812bdcf7ebcb889492adf944e6380be11e315db8ac2733d0eebbbbf`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.515810+00:00
+---
+
+# Lifecycle, singleton and reuse
+
+## JUnit Jupiter extension
+
+`@Testcontainers` on the class activates the extension; `@Container` fields are started/stopped by it.
+
+- `static` field: started once before all tests of the class, stopped after.
+- instance field: started/stopped around each test method.
+- The extension does not start containers declared without `@Container`; call `start()` yourself.
+
+`@Testcontainers(disabledWithoutDocker = true)` skips tests (instead of failing) when Docker is missing. Use it for optional local runs; in CI prefer failing loudly.
+
+## Singleton container pattern (whole run)
+
+Starting a container per class dominates test time. Share one instance across classes with a holder that starts in a static initializer. Ryuk (the cleanup sidecar) stops it when the JVM exits, so no explicit stop is needed.
+
+```java
+import org.testcontainers.postgresql.PostgreSQLContainer;
+
+public final class SharedPostgres {
+
+    public static final PostgreSQLContainer INSTANCE =
+            new PostgreSQLContainer("postgres:17-alpine");
+
+    static {
+        INSTANCE.start();
+    }
+
+    private SharedPostgres() {}
+}
+```
+
+Test classes read `SharedPostgres.INSTANCE.getJdbcUrl()` and do **not** annotate it with `@Container` (that would stop it after the first class). An abstract base class with the static block works equally well.
+
+Isolate data instead of containers: truncate tables in `@BeforeEach`, roll back transactions, or create a schema/database per class.
+
+## Reuse between runs (local dev only)
+
+Reuse keeps containers alive after the JVM exits so the next run is instant.
+
+1. Opt in on the developer machine in `~/.testcontainers.properties`: `testcontainers.reuse.enable=true`.
+2. Mark the container: `new PostgreSQLContainer("postgres:17-alpine").withReuse(true)`, and start it manually (static block or `start()`). Do not annotate it with `@Container`: the JUnit extension stops it after the tests, so nothing is reused.
+
+Caveats: reused containers are never stopped by Testcontainers (clean manually with `docker rm -f`); state persists, so tests must clean their own data; reuse is ignored unless both settings are present, so it is safe to leave `withReuse(true)` in code. Do not enable it in CI.
+
+## Parallel execution
+
+- JUnit parallel mode with a shared container is fine if tests do not share rows; give each test its own tenant/schema/key prefix.
+- Do not parallelize tests that truncate shared tables.
+- Resource-hungry containers (Kafka, Elasticsearch) should stay singletons.
+
+## Manual lifecycle
+
+Containers are `AutoCloseable`:
+
+```java
+try (var redis = new GenericContainer<>("redis:7.4-alpine").withExposedPorts(6379)) {
+    redis.start();
+    // use redis.getHost(), redis.getMappedPort(6379)
+}
+```
+
+## Ports and addresses
+
+Never bind fixed host ports. Use `getHost()` and `getMappedPort(containerPort)`; for modules prefer the typed getters (`getJdbcUrl()`, `getBootstrapServers()`). Mapped ports are random per start.
 
 
 ---
@@ -23721,8 +26464,8 @@ Repost icon:     ♻️
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/lsp-setup/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/lsp-setup/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lsp-setup/SKILL.md
-- **SHA256_FINGERPRINT**: `2980d45363f958560b5693bcc68daff07877863160452d85290765fc227894eb`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:33.683942+00:00
+- **SHA256_FINGERPRINT**: `03ddfd90c38915b94c2ff7096096dc3dd4113c12e71a12776a4e7a7626cac602`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.523843+00:00
 ---
 
 **description**: Enable code intelligence (go-to-definition, find-references, hover, type info) for any programming language by installing and configuring an LSP server for Copilot CLI. Detects the OS, installs the right server, and generates the JSON configuration (user-level or repo-level). Use when you need deeper code understanding and no LSP server is configured, or when the user asks to set up, install, or configure an LSP server.
@@ -23737,10 +26480,10 @@ DO NOT USE FOR: general coding tasks, IDE/editor LSP configuration, non-Copilot-
 
 1. **Ask the language** — use `ask_user` to ask which programming language(s) the user wants LSP support for
 2. **Detect the OS** — run `uname -s` (or check for Windows via `$env:OS` / `%OS%`) to determine macOS, Linux, or Windows
-3. **Look up the LSP server** — read `references/lsp-servers.md` for known servers, install commands, and config snippets
-4. **Ask scope** — use `ask_user` to ask whether the config should be user-level (`~/.copilot/lsp-config.json`) or repo-level (`lsp.json` at the repo root or `.github/lsp.json`)
+3. **Look up the LSP server** — read `references/lsp-servers.md` for known servers, install commands, and config snippets (for Java, also read `references/java-jdtls.md`)
+4. **Ask scope** — use `ask_user` to ask whether the config should be user-level (`~/.copilot/lsp-config.json`) or repo-level (`.github/lsp.json`)
 5. **Install the server** — run the appropriate install command for the detected OS
-6. **Write the config** — merge the new server entry into the chosen config file (`~/.copilot/lsp-config.json` for user-level; `lsp.json` or `.github/lsp.json` for repo-level). If a repo-level config already exists, keep using that location; otherwise ask the user which repo-level location they prefer. Create the file if missing and preserve existing entries.
+6. **Write the config** — merge the new server entry into the chosen config file (`~/.copilot/lsp-config.json` for user-level; `.github/lsp.json` for repo-level). Create the file if missing and preserve existing entries.
 7. **Verify** — confirm the LSP binary is on `$PATH` and the config file is valid JSON
 
 ## Configuration Format
@@ -23748,7 +26491,7 @@ DO NOT USE FOR: general coding tasks, IDE/editor LSP configuration, non-Copilot-
 Copilot CLI reads LSP configuration from user-level or repo-level locations, and repo-level config takes precedence over user-level config:
 
 - **User-level**: `~/.copilot/lsp-config.json`
-- **Repo-level**: `lsp.json` (repo root) or `.github/lsp.json`
+- **Repo-level**: `.github/lsp.json` (a bare `lsp.json` at the repo root is not read: with Copilot CLI 1.0.95, `copilot lsp list` listed servers from `.github/lsp.json` but not from a root `lsp.json`)
 
 The JSON structure:
 
@@ -23793,13 +26536,83 @@ After setup, tell the user:
 3. Run `/lsp` to check the server status
 4. Try code intelligence features like go-to-definition or hover
 
+## Java
+
+For Java semantic navigation, prefer the `lsp` tool (`goToDefinition`, `findReferences`, `hover`, `incomingCalls`) over grep/view once a server is configured. LSP is optional for Java and is not a prerequisite for build or runtime diagnostics. See `references/java-jdtls.md` for setup details and troubleshooting.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/lsp-setup/references/java-jdtls.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/lsp-setup/references/java-jdtls.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lsp-setup/references/java-jdtls.md
+- **SHA256_FINGERPRINT**: `5e44d31e02e1eb7233709fb051989bfb63cce154d245eeed49b309e4c73e16ab`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.524177+00:00
+---
+
+# Java code intelligence with jdtls
+
+Details for the Java entry in [lsp-servers.md](lsp-servers.md). LSP is optional for Java: builds, tests and runtime diagnostics work without it.
+
+## JDKs: two different things
+
+- **jdtls runtime JDK**: jdtls needs a recent JDK (21+ for current releases) found via `JAVA_HOME` or `PATH`.
+- **Project JDK**: the version your code targets (`maven.compiler.release`, `java.toolchain`). Install a matching JDK too; if jdtls cannot find one, it falls back to its own runtime and may report false errors for newer language features.
+
+## Project import
+
+- Maven: jdtls reads `pom.xml` (multi-module supported). Run `./mvnw -q compile` once so dependencies are in `~/.m2`.
+- Gradle: jdtls uses the Gradle wrapper (`gradlew`) if present. Run `./gradlew classes` once.
+- Open Copilot CLI at the repository root (or the module root) so the build file is found.
+- After large `pom.xml` / `build.gradle` edits, restart the session (`/exit`, relaunch) so the project is re-imported.
+
+## Workspace (data) directory
+
+`-data .jdtls-workspace` keeps the index per project, avoiding cross-project classpath contamination. Delete it to reset a stale index; git-ignore it. Never share one data dir between two running jdtls instances.
+
+## Performance
+
+- Heap: `--jvm-arg=-Xmx2G` is enough for most projects; raise to 4G for very large multi-module builds.
+- The first start indexes and may take 30-60s or more; `workspaceSymbol` can be empty meanwhile. Fall back to grep briefly.
+- Keep one Java server configured at a time.
+
+## Lombok and annotation processors
+
+jdtls does not see Lombok-generated members (`@Getter`, builders) unless the Lombok agent is passed to the JVM, e.g. `--jvm-arg=-javaagent:<path-to>/lombok.jar` (this path is machine-specific; set it in user-level config, not in a committed repo file). MapStruct, Immutables and other processors need annotation processing enabled and generated sources produced by a prior build. Treat "cannot resolve method" errors on generated code as possible false positives and confirm with `./mvnw compile` or `./gradlew classes`.
+
+## What `lsp` operations give for Java
+
+| Operation | Use |
+|---|---|
+| `goToDefinition` / `goToImplementation` | jump to a type, or to implementations of an interface |
+| `findReferences` | all usages, resolving overloads and imports |
+| `incomingCalls` / `outgoingCalls` | call hierarchy |
+| `hover` | type info and Javadoc |
+| `documentSymbol` / `workspaceSymbol` | outline of a file, or search types by name |
+| `rename` | semantic rename across files |
+
+Parameters are 1-based `line` and `character`, except `documentSymbol` (file only) and `workspaceSymbol` (query). Prefer `lsp` first for symbol questions; use grep for non-symbol text (properties, log messages).
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| `/lsp` shows no Java server | check `which jdtls` and config location; restart the session |
+| Unresolved imports everywhere | run the Maven/Gradle build once; delete `.jdtls-workspace` |
+| Server exits immediately | check the JDK version used by jdtls (`java -version`); confirm wrapper flags with `jdtls --help` |
+| Out-of-memory or slow | raise `-Xmx`; close other Java servers |
+| Wrong language-level errors | install the project's JDK and make sure the build file declares it |
+
+## Provenance
+
+Adapted from [jdubois/dr-jskill](https://github.com/jdubois/dr-jskill) (`references/JDTLS.md`, `assets/lsp.json`), read at commit `29e71996048e4086bfa389268a3c6c2e49ea3f25`. Contributed here by its original author (Julien Dubois, sole copyright holder of dr-jskill) under this repository's MIT license; it remains available upstream under Apache-2.0. Reworked and condensed; no host-specific paths.
+
 
 ---
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/lsp-setup/references/lsp-servers.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/lsp-setup/references/lsp-servers.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lsp-setup/references/lsp-servers.md
-- **SHA256_FINGERPRINT**: `5dc435290338d2c1ddbfa889027145fe6824ffef7de01d7db57f0ac9e9610124`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:33.754119+00:00
+- **SHA256_FINGERPRINT**: `17c15f5f37db177e8b1f26c659c16ef2fca9e41506e3da3f7ec80aa8c806931d`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:27.554006+00:00
 ---
 
 # Known LSP Servers for Copilot CLI
@@ -23843,33 +26656,44 @@ Reference data for the `lsp-setup` skill. Each section contains install commands
 
 **Server**: [Eclipse JDT Language Server (jdtls)](https://github.com/eclipse-jdtls/eclipse.jdt.ls)
 
-Requires **Java 21+** on `JAVA_HOME` or `$PATH`.
+jdtls itself needs a recent JDK (**21 or newer** for current releases) on `JAVA_HOME` or `$PATH`. This is independent of the project's target JDK: a Java 17 project can be analyzed by jdtls running on JDK 21+, as long as a JDK matching the project's `release`/`toolchain` is installed. Java LSP is optional; it is not required for compiling, testing or runtime diagnostics.
 
 ### Install
 
 | OS      | Command                           |
 |---------|-----------------------------------|
 | macOS   | `brew install jdtls`              |
-| Linux   | Check distro repos for `jdtls` or `eclipse.jdt.ls`; alternatively download from https://download.eclipse.org/jdtls/milestones/ |
-| Windows | Download from https://download.eclipse.org/jdtls/milestones/ and add `bin/` to `PATH` |
+| Linux   | `brew install jdtls` (Homebrew on Linux), a distro package if available, or download a release from https://download.eclipse.org/jdtls/milestones/, extract it, and put its `bin/` on `PATH` |
+| Windows | Download from https://download.eclipse.org/jdtls/milestones/, extract, and add `bin\` to `PATH` (or use WSL with the Linux steps) |
 
-On macOS with Homebrew, the binary is installed as `jdtls` on `$PATH`.
+Windows note: the `bin/jdtls` wrapper is a Python 3.9+ script with no `.exe`/`.cmd` extension, so Windows cannot launch `jdtls` from `PATH` directly. Either use WSL, or configure the LSP `command` as `python` with the full path to the extensionless `bin\jdtls` launcher as the first argument followed by the other args (`jdtls.py` next to it is only the implementation module; running it directly does nothing), or launch the server JAR directly as described in the jdtls README.
+
+The wrapper script (the `jdtls` launcher, which requires Python 3 and imports `jdtls.py`) speaks stdio by default, so no `--stdio` argument is needed.
 
 ### Config snippet
 
+Repo-level `.github/lsp.json` (no absolute paths; the data dir is relative to the project):
+
 ```json
 {
-  "java": {
-    "command": "jdtls",
-    "args": [],
-    "fileExtensions": {
-      ".java": "java"
+  "lspServers": {
+    "java": {
+      "command": "jdtls",
+      "args": [
+        "--jvm-arg=-Xmx2G",
+        "-data", ".jdtls-workspace"
+      ],
+      "fileExtensions": {
+        ".java": "java"
+      }
     }
   }
 }
 ```
 
-> **Note**: The `jdtls` wrapper script handles `--stdio` mode internally. If using a manual install, you may need to invoke the launcher jar directly — see the [jdtls README](https://github.com/eclipse-jdtls/eclipse.jdt.ls#running-from-command-line-with-wrapper-script) for details.
+Add `.jdtls-workspace/` to `.gitignore`. Verified with Homebrew jdtls 1.61.0 on macOS: `--jvm-arg=-Xmx2G -data .jdtls-workspace` are accepted, the server answers `initialize` over stdio and `documentSymbol` on a Quarkus project (Copilot CLI 1.0.95 `copilot lsp list` loads this `.github/lsp.json` shape, which also matches the GitHub docs field table: `command`, `args`, `fileExtensions` required, optional `env`, `rootUri`, `initializationOptions`, `requestTimeoutMs`, `initializationTimeoutMs`; a live `lsp` tool call through it was not exercised). Run `jdtls --help` to confirm that your wrapper version supports `--jvm-arg` and `-data`; if not, drop those flags and use the plain `"args": []` form.
+
+Maven (`pom.xml`) and Gradle (`build.gradle[.kts]`) projects are imported automatically. See [java-jdtls.md](java-jdtls.md) for project import, troubleshooting, performance, Lombok/annotation processing, and what each `lsp` operation provides for Java.
 
 ---
 
@@ -78487,5184 +81311,3 @@ Scope: application code inside an existing Quarkus project. Project creation is 
 - `drop-and-create` schema management is for dev/test only; use Flyway or Liquibase for production.
 
 Verified on Quarkus 3.40.1 and 3.27.6 (Java 21 target, Maven) with a scaffolded app and `mvn verify` (15 tests: REST+validation+mapper, OpenAPI, config mapping, Panache on PostgreSQL Dev Services, Kafka Dev Service round trip, Keycloak Dev Service tokens, health, metrics, fault tolerance, cache, scheduler). Re-check names against the project's version.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/quarkus-application-development/references/config-cdi.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/quarkus-application-development/references/config-cdi.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/quarkus-application-development/references/config-cdi.md
-- **SHA256_FINGERPRINT**: `54a4860807e0e154e3ddf462262f1eded6d62fcb90e347e74b2150d6c7d64849`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:44.976873+00:00
----
-
-# Configuration and CDI (ArC)
-
-## Configuration
-
-Sources by precedence (high to low): system properties, environment variables, `.env` file in the working directory (loaded for packaged apps too, so do not ship it to production; put dev-only values under `%dev.`/`%test.` keys), `config/application.properties` next to the app, `application.properties` in the jar, MicroProfile defaults. Env var mapping: uppercase, non-alphanumerics become `_` (`greeting.max-length` -> `GREETING_MAX_LENGTH`).
-
-### Profiles
-
-`%dev.`, `%test.`, `%prod.` prefixes; `quarkus.profile=staging` or custom profiles work too. `quarkus:dev` is `dev`, tests are `test`, packaged apps are `prod`.
-
-```properties
-greeting.prefix=Hello
-%dev.greeting.prefix=Dev hello
-# Required in every profile (including custom ones such as staging): startup fails if API_KEY is missing
-app.api-key=${API_KEY}
-# Fallback only for dev and test
-%dev.app.api-key=${API_KEY:dev-only-key}
-%test.app.api-key=${API_KEY:dev-only-key}
-```
-
-Verified: with these settings a `@QuarkusTest` sees `Hello` (the `%dev` value is not applied in test) and `dev-only-key`.
-
-### Secrets
-
-Never commit real secrets. Supply them via env vars, Kubernetes secrets mounted as env/files, or a vault extension (`quarkus-vault`, `quarkus-kubernetes-config` with `quarkus.kubernetes-config.secrets`). Set no default in `%prod` so a missing secret fails fast. Property expressions that point at other keys are fine; keep credentials out of logs.
-
-### `@ConfigMapping` vs `@ConfigProperty`
-
-```java
-@ConfigMapping(prefix = "greeting")
-public interface GreetingConfig {
-    String prefix();
-    @WithDefault("10") int maxLength();     // greeting.max-length
-    Optional<String> suffix();
-    List<String> tags();                    // greeting.tags=a,b
-}
-```
-
-Verified: injected with `@Inject GreetingConfig config`, `maxLength()` returned the value from `greeting.max-length`, `suffix()` was empty, `tags()` was `[a, b]`. Nested groups are nested interfaces; `Map<String,...>` is supported. Add `@Valid`-style constraints with hibernate-validator on mapping methods when present; startup fails on violations.
-
-- Use `@ConfigMapping` for any group of related properties (typed, validated at startup, documented in one place).
-- Use `@ConfigProperty(name = "app.api-key") String key;` for a single value or when you need `defaultValue`. Also works on constructor params.
-- Unknown properties under a mapped prefix can fail startup; keep that validation enabled to catch typos.
-- Build-time vs run-time: `quarkus.*` build-time properties (marked in the config reference) are fixed at package time. Check the extension's guide before assuming an env var override works in the container.
-
-## CDI with ArC
-
-ArC is a build-time CDI Lite-style implementation, not full CDI: no portable extensions (use build-compatible extensions or Quarkus build steps), no decorators on all paths, and some features are different.
-
-- **Build-time resolution**: injection points are validated at build; missing or ambiguous beans fail the build, not runtime.
-- **Unused bean removal**: beans with no injection point, no observer, no producer use, and not annotated `@Unremovable` are removed. If you look them up with `Arc.container().instance(...)` or `CDI.current().select(...)` by dynamic type, add `@io.quarkus.arc.Unremovable`. Disable globally with `quarkus.arc.remove-unused-beans=none` only as a last resort.
-- **Scopes**: `@ApplicationScoped` is lazy and proxied (supports interceptors, mocking, circular deps); default choice. `@Singleton` is not proxied (no client proxy, so no lazy init through the proxy and `@InjectMock` is not applicable): use it for stateless holders only. `@RequestScoped` per HTTP request; `@Dependent` is the default pseudo-scope (new instance per injection point).
-- **No private injection**: use package-private fields or constructors. Quarkus recommends against private injected fields because they force reflection-based access. Prefer constructor injection (`@Inject` optional with a single constructor).
-- **Proxy pitfalls (verified)**: `@ApplicationScoped` beans are called through a subclass proxy; reading a public field of such a bean from outside returns the proxy's own (default) value. Expose state with methods. Avoid `final` on bean classes and methods and private no-arg constructors on normal-scoped beans.
-- **Startup logic**: `@Startup` on a bean, or `void onStart(@Observes StartupEvent e)`. Eager beans must not do slow blocking I/O on the main thread without care.
-- **Interceptors**: define an `@InterceptorBinding` annotation and an `@Interceptor` with `@Priority`; ArC applies them at build time to bean classes only (not to arbitrary objects). ArC supports intercepted self-invocation, so a bean calling its own intercepted method (`@Transactional`, `@Retry`, `@CacheResult`) still triggers the interceptor.
-- **Producers/events**: `@Produces` and `@Observes` work as usual. `@Priority` only orders synchronous `@Observes` methods; it does not make them async. Asynchronous observers use `@ObservesAsync` and are notified only by `Event.fireAsync(...)` (which returns a `CompletionStage`); `Event.fire(...)` notifies only synchronous observers.
-- **Testing**: `@InjectMock` (`quarkus-junit-mockito`; `quarkus-junit5-mockito` on old versions) works for normal-scoped beans. See `quarkus-dev-services-and-testing`.
-- **Debugging**: the Dev UI (`/q/dev-ui`) ArC page lists beans, removed beans and observers.
-
-Logging: JBoss Logging (`org.jboss.logging.Logger`) or `@Inject Logger`, configured with `quarkus.log.*`; do not add Logback/Log4j directly.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/quarkus-application-development/references/observability-resilience.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/quarkus-application-development/references/observability-resilience.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/quarkus-application-development/references/observability-resilience.md
-- **SHA256_FINGERPRINT**: `60d701b476141627e297fe4d947668c30959368863423e0580755d3076f26e39`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:44.917111+00:00
----
-
-# Observability, resilience, REST Client, scheduler, cache
-
-All items below were exercised on Quarkus 3.40.1 and 3.27.6 unless marked "not verified".
-
-## Health (`quarkus-smallrye-health`)
-
-Endpoints: `/q/health`, `/q/health/live`, `/q/health/ready`, `/q/health/started`. Custom checks are CDI beans:
-
-```java
-@Readiness                       // or @Liveness / @Startup (org.eclipse.microprofile.health)
-@ApplicationScoped
-public class Ready implements HealthCheck {
-    public HealthCheckResponse call() { return HealthCheckResponse.up("demo"); }
-}
-```
-
-Verified: `/q/health/ready` returned 200 with the check name. Extensions such as the JDBC datasource add their own readiness checks. Keep liveness trivial (no dependency checks, or the platform restarts pods during outages); put dependency checks in readiness.
-
-## Metrics (`quarkus-micrometer-registry-prometheus`)
-
-Prometheus scrape at `/q/metrics`. Inject `MeterRegistry` for custom meters (`registry.counter("demo.fallback").increment()` appeared as `demo_fallback_total`, verified). HTTP server and JVM meters are on by default. Use `@Counted`/`@Timed` (Micrometer annotations) where they are enough. Expose `/q/metrics` and `/q/health` only to the cluster/monitoring network (a separate management interface: `quarkus.management.enabled=true`, not verified here).
-
-## OpenTelemetry (`quarkus-opentelemetry`)
-
-Only traces are on by default. Metrics and logs are tech preview and disabled at build time: set `quarkus.otel.metrics.enabled=true` and `quarkus.otel.logs.enabled=true` to export them (checked against the Quarkus OpenTelemetry guide). HTTP, REST Client, JDBC (with `quarkus.datasource.jdbc.telemetry=true`) and messaging are instrumented. Point it at a collector with `quarkus.otel.exporter.otlp.endpoint=http://collector:4317` (verified only that without a collector the app logs "Failed to export ... Connection refused" to `localhost:4317` but works). Add custom spans with `@WithSpan` or inject `Tracer`. In dev mode, Quarkus Dev Services for observability (Grafana LGTM, `quarkus-observability-devservices-lgtm`) can supply a backend; not verified here. Do not set both Micrometer and OTel metrics export without a reason.
-
-## Fault tolerance (`quarkus-smallrye-fault-tolerance`)
-
-```java
-@Retry(maxRetries = 2) @Fallback(fallbackMethod = "fb")
-public String flaky() { throw new IllegalStateException(); }
-String fb() { return "fallback"; }
-```
-
-Verified: the method executed 3 times (1 + 2 retries) and the fallback value was returned. Also `@Timeout`, `@CircuitBreaker`, `@Bulkhead`, `@RateLimit` (SmallRye extension). They are CDI interceptors on bean methods; ArC also intercepts self-invocation. Works with `Uni` return types (asynchronous, non-blocking). Always set a `@Timeout` on remote calls; do not retry non-idempotent operations.
-
-## REST Client (`quarkus-rest-client-jackson`)
-
-```java
-@RegisterRestClient(configKey = "echo")
-@Path("/greetings")
-public interface EchoClient {
-    @GET @Path("/{n}") Greeting get(@PathParam("n") String n);
-}
-```
-
-```properties
-quarkus.rest-client.echo.url=${ECHO_URL:http://localhost:8081}
-quarkus.rest-client.echo.read-timeout=5000
-```
-
-Inject with `@RestClient EchoClient echo;` (`org.eclipse.microprofile.rest.client.inject.RestClient`). Verified: bean injection and startup (the call itself was not exercised). Combine with `@Timeout`/`@Retry`; throw domain exceptions with `@ClientExceptionMapper`. In tests, stub the remote service with WireMock via a test resource (see `quarkus-dev-services-and-testing`).
-
-## Scheduler (`quarkus-scheduler`)
-
-`@Scheduled(every = "1s")` or `@Scheduled(cron = "{app.cron}")` on a bean method (verified: ticks incremented). Use `concurrentExecution = SKIP` to avoid overlaps. The scheduler is per instance; in a cluster use the `quarkus-quartz` extension with a shared JDBC store and `quarkus.quartz.clustered=true` (it defaults to `false`, so a JDBC store alone leaves schedulers uncoordinated), or a distributed lock, to run a job once. Scheduled methods run on a worker thread unless `@NonBlocking`/returns `Uni`; use `@RunOnVirtualThread` for blocking IO.
-
-## Cache (`quarkus-cache`)
-
-```java
-@CacheResult(cacheName = "slow")
-public String slow(String k) { ... }
-```
-
-Verified: two calls with the same key executed the method once. Configure with `quarkus.cache.caffeine."slow".maximum-size=10` and `expire-after-write=60S`. Also `@CacheInvalidate`, `@CacheInvalidateAll`, `@CacheKey`. Interceptor-based; ArC also intercepts self-invocation. Caches are per-instance in memory; use `quarkus-redis-cache` for shared caches (not verified here).
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/quarkus-application-development/references/persistence.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/quarkus-application-development/references/persistence.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/quarkus-application-development/references/persistence.md
-- **SHA256_FINGERPRINT**: `e6350a1bcc97664a6566ed6452a78200b5b21f1454512b5a9dde57ef15206b5e`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.098854+00:00
----
-
-# Persistence: Hibernate ORM with Panache
-
-Core JPA mapping, associations, N+1 and query design: use the optional `java-hibernate-jpa` skill if it is installed; otherwise follow the Hibernate ORM guide (<https://quarkus.io/guides/hibernate-orm>). This file covers Quarkus specifics. Extensions: `quarkus-hibernate-orm-panache` + a JDBC driver such as `quarkus-jdbc-postgresql`.
-
-## Config
-
-```properties
-# No URL/credentials in %dev/%test: PostgreSQL Dev Service starts automatically (Docker/Podman)
-# Safe default for every profile (including custom ones such as staging); use Flyway/Liquibase for real schemas
-quarkus.hibernate-orm.schema-management.strategy=none
-# Recreate the schema only in dev and test
-%dev.quarkus.hibernate-orm.schema-management.strategy=drop-and-create
-%test.quarkus.hibernate-orm.schema-management.strategy=drop-and-create
-%prod.quarkus.datasource.jdbc.url=${DB_URL}
-%prod.quarkus.datasource.username=${DB_USER}
-%prod.quarkus.datasource.password=${DB_PASSWORD}
-```
-
-`schema-management.strategy` verified on 3.40.1 and 3.27.6 (older docs use `quarkus.hibernate-orm.database.generation`; keep the project's form). Persistence units are configured in `application.properties`, not `persistence.xml`. Entities need no registration if they are in the application module.
-
-## Active record vs repository (verified, PostgreSQL Dev Service)
-
-```java
-@Entity
-public class Person extends PanacheEntity {            // active record: id is generated, public fields
-    public String name;
-    public static Person findByName(String n) { return find("name", n).firstResult(); }
-}
-
-@Entity
-public class Book { @Id @GeneratedValue public Long id; public String title; }
-
-@ApplicationScoped
-public class BookRepository implements PanacheRepository<Book> {   // repository pattern
-    public List<Book> byTitle(String t) { return list("title", t); }
-}
-```
-
-Prefer the repository pattern for non-trivial domains (testable, mockable with `@InjectMock`, keeps entities plain POJOs); use active record only for simple CRUD. For a non-`Long` id use `PanacheRepositoryBase<E, ID>` / `PanacheEntityBase`. Panache offers `find`, `list`, `stream`, `count`, `delete`, `update`, `persist`, `page(Page.of(i, size))` for pagination, `Sort`, and `project(Dto.class)` for projections. Panache queries accept shortened HQL (`"name"`, `"name = ?1"`, `"from Person where name = :n"` with `Parameters`).
-
-## Transactions
-
-```java
-@ApplicationScoped
-public class BookService {
-    @Inject BookRepository repo;
-    @Transactional                                  // jakarta.transaction.Transactional
-    public Book add(String title) { Book b = new Book(); b.title = title; repo.persist(b); return b; }
-}
-```
-
-- Put `@Transactional` on service (or resource) methods that write; ArC also intercepts self-calls, so a call to an annotated method on the same bean starts the transaction.
-- Programmatic: `QuarkusTransaction.requiringNew().call(() -> ...)` (`io.quarkus.narayana.jta`), used in the verified tests to read back committed data.
-- Reads outside a transaction work only inside an active CDI request context (e.g. an HTTP request) with `quarkus.hibernate-orm.request-scoped.enabled` left at its default `true`; in background tasks, scheduled jobs or messaging consumers wrap the read in a transaction (`@Transactional` or `QuarkusTransaction`); lazy associations must be fetched inside the transaction or via fetch joins/projections.
-- Tests: `@TestTransaction` rolls back (see `quarkus-dev-services-and-testing`).
-- Do not use `open-in-view`-style patterns; map to DTO records before returning from a resource.
-
-## Panache Next / Quarkus Data (status)
-
-`quarkus-data-hibernate` ("Quarkus Data Hibernate", Panache Next, Jakarta Data support) is tagged `status:experimental` on code.quarkus.io for 3.40.1 (checked via `https://code.quarkus.io/api/extensions`). Do not use it for production code or recommend a migration unless the user asks; stay on `quarkus-hibernate-orm-panache`. Re-check the tag before advising.
-
-## Reactive (Hibernate Reactive) tradeoff
-
-`quarkus-hibernate-reactive-panache` with `Uni`-based APIs and Vert.x SQL clients (`quarkus-reactive-pg-client`) fits fully reactive stacks, but: separate extension set from ORM (both can coexist, including on the default datasource with JDBC and reactive URLs, but they have separate persistence contexts, so keep each method on one stack), more limited feature set, harder debugging, no `@Transactional` blocking style (use `@WithTransaction`/`@WithSession`), and Java 21+ virtual threads give most of the scalability benefit with the simpler blocking ORM. Default to blocking ORM + `@RunOnVirtualThread` where concurrency matters; pick Hibernate Reactive only when the whole call chain is non-blocking. Not verified in this skill's build.
-
-## REST Data Panache
-
-`quarkus-hibernate-orm-rest-data-panache` generates CRUD resources from repository interfaces; fine for prototypes, but explicit resources give control of validation, security and DTOs. Not verified here.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/quarkus-application-development/references/reactive-messaging.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/quarkus-application-development/references/reactive-messaging.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/quarkus-application-development/references/reactive-messaging.md
-- **SHA256_FINGERPRINT**: `4b67115a7431e20577d6881efc5f1fbc4524cbf3ccfb8b6971de737865339724`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:44.946426+00:00
----
-
-# Reactive vs blocking, Mutiny, messaging
-
-## Threading model
-
-Quarkus REST picks the execution thread from the method signature (verified on 3.40.1 with a thread-name check):
-
-| Method | Runs on |
-|---|---|
-| returns plain type, no annotation (Quarkus REST default, imperative) | worker thread (`executor-thread-N`) |
-| `@Blocking` | worker thread |
-| `@NonBlocking` | event loop (`vert.x-eventloop-thread-N`) |
-| returns `Uni`/`Multi`/`CompletionStage` | event loop |
-| `@RunOnVirtualThread` | virtual thread (`Thread.currentThread().isVirtual()` is true) |
-
-(Thread names contain `eventloop`, not `event-loop`.) Annotations: `io.smallrye.common.annotation.Blocking`, `NonBlocking`, `RunOnVirtualThread`. Behaviour of defaults differs across extensions (Reactive Messaging, gRPC, scheduler), so annotate explicitly when it matters.
-
-**Event loop pitfalls**: never call blocking JDBC/Panache ORM, `Thread.sleep`, `Uni.await().indefinitely()` or file/HTTP blocking clients on the event loop; Vert.x logs "blocked thread" warnings and Quarkus throws `IllegalStateException` for blocking Panache calls on I/O threads. Move work with `@Blocking`, `@RunOnVirtualThread`, or `Uni...runSubscriptionOn(Infrastructure.getDefaultWorkerPool())`.
-
-**Virtual threads**: `@RunOnVirtualThread` needs Java 21+. Beware of pinning (`synchronized` blocks around blocking calls) and thread-local reliance; use for blocking I/O heavy endpoints, not CPU work.
-
-## Mutiny gotchas
-
-- Nothing runs until subscribed; returning a `Uni` from a resource subscribes it. Avoid `await().indefinitely()` outside tests or `@Blocking` code.
-- `Uni.createFrom().item(supplier)` runs the supplier on the subscribing thread (the event loop for REST), so keep it non-blocking (verified).
-
-## SmallRye Reactive Messaging with Kafka
-
-Extension: `quarkus-messaging-kafka`. Ask the user before adding it. Dev Services starts a Kafka broker in dev/test when `kafka.bootstrap.servers` is not set (verified on 3.40.1 and 3.27.6: a round trip worked with Docker).
-
-```properties
-mp.messaging.outgoing.words-out.topic=words
-mp.messaging.incoming.words-in.topic=words
-mp.messaging.incoming.words-in.auto.offset.reset=earliest
-# prod
-%prod.kafka.bootstrap.servers=${KAFKA_BOOTSTRAP_SERVERS}
-```
-
-```java
-@ApplicationScoped
-public class Words {
-    @Channel("words-out") Emitter<String> emitter;
-    void onStart(@Observes StartupEvent e) { emitter.send("hello"); }
-
-    @Incoming("words-in")
-    public void sink(String w) { /* process */ }
-}
-```
-
-- Channel names link config (`mp.messaging.{incoming|outgoing}.<channel>.*`) to code. The connector ID is `smallrye-kafka`; it is inferred automatically only when it is the single messaging connector on the classpath (with AMQP or another connector also installed, set `mp.messaging.<direction>.<channel>.connector=smallrye-kafka` explicitly). Serializers are inferred for common types; set `value.serializer`/`value.deserializer` for custom classes, or use the JSON serde Quarkus generates for Jackson-serializable types (not verified here; test it).
-- Default thread follows the method signature: a synchronous method such as `void sink(String)` already runs on a worker thread, while async signatures (`Uni`, `CompletionStage`, `Multi`) default to the event loop. `@Transactional` implies blocking. Add `@Blocking` to async-signature methods that do blocking work (JDBC, Panache), and `@NonBlocking` to force the event loop.
-- Acknowledgement: payload methods are auto-acked on return; use `Message<T>` and `msg.ack()`/`nack()` for control. Add a dead-letter/failure strategy (`failure-strategy=dead-letter-queue`) for production.
-- Different channel names mapped to the same `topic` go through Kafka (verified round trip). The same channel name used for `@Outgoing` and `@Incoming` in one app is an in-memory link and never reaches the broker.
-- Verify in tests with `Awaitility` waiting on a collected list (verified); for broker-free tests add the test dependency `io.smallrye.reactive:smallrye-reactive-messaging-in-memory` and switch channels with `InMemoryConnector` (see the Quarkus Kafka/messaging guides; not verified here).
-- AMQP: `quarkus-messaging-amqp` (`mp.messaging.*.connector=smallrye-amqp`); the AMQP Dev Service starts an ActiveMQ Artemis broker. Not verified here.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/quarkus-application-development/references/rest.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/quarkus-application-development/references/rest.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/quarkus-application-development/references/rest.md
-- **SHA256_FINGERPRINT**: `5ee5572694fc475edc6c6cf3668cac564a75eae42b80fb5b12acf4bbe2e64d0e`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:44.964972+00:00
----
-
-# REST, validation, exception mappers, OpenAPI
-
-Extensions: `quarkus-rest-jackson` (Quarkus REST + Jackson), `quarkus-hibernate-validator`, `quarkus-smallrye-openapi`. Do not mix with `quarkus-resteasy*` (legacy) in new code.
-
-## Resource, validation, exception mapper (verified 3.40.1 and 3.27.6)
-
-```java
-@Path("/greetings")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
-public class GreetingResource {
-    public record GreetingRequest(@NotBlank @Size(max = 20) String name) {}
-    public record Greeting(String message) {}
-    public record ApiError(String code, String message) {}
-    public static class NotFound extends RuntimeException { public NotFound(String m) { super(m); } }
-
-    @Inject GreetingConfig config;            // package-private injection, no private
-
-    @POST
-    @Operation(summary = "Create a greeting")          // org.eclipse.microprofile.openapi.annotations
-    public Greeting create(@Valid @NotNull GreetingRequest req) { return new Greeting(config.prefix() + " " + req.name()); }
-
-    @GET @Path("/{name}")
-    public Greeting get(@PathParam("name") String name) {
-        if ("missing".equals(name)) throw new NotFound("no " + name);
-        return new Greeting(config.prefix() + " " + name);
-    }
-
-    @ServerExceptionMapper                               // org.jboss.resteasy.reactive.server
-    public RestResponse<ApiError> notFound(NotFound e) {
-        return RestResponse.status(Response.Status.NOT_FOUND, new ApiError("NOT_FOUND", e.getMessage()));
-    }
-}
-```
-
-- Invalid bodies return 400 automatically with a violation report; `@NotNull` makes a JSON `null` body a 400 too, since `@Valid` skips null. Test: `given().contentType("application/json").body("{\"name\":\"\"}").post("/greetings")` returns 400.
-- `@ServerExceptionMapper` methods live in the resource class (local) or in any CDI bean (global). A classic `ExceptionMapper<T>` provider with `@Provider` also works; prefer the annotation form.
-
-## OpenAPI
-
-`quarkus-smallrye-openapi` serves `/q/openapi` (add `?format=json`) and Swagger UI at `/q/swagger-ui` in dev (verified: the JSON contains the `/greetings` path). Configure with `quarkus.smallrye-openapi.info-title=...`. Annotate only where descriptions add value (`@Operation`, `@APIResponse`, `@Tag`); the schema is inferred from records and resource methods.
-
-## Other points
-
-- Content negotiation, multipart and SSE exist in Quarkus REST (`Multi<T>` with `@RestStreamElementType`); read the REST guide at https://quarkus.io/guides/rest before using them.
-- Cross-cutting: `@ServerRequestFilter` / `@ServerResponseFilter` (static or CDI methods) instead of JAX-RS filters.
-- CORS: `quarkus.http.cors.enabled=true` and explicit `quarkus.http.cors.origins`; do not use `*` in production.
-- Do not run long blocking work in `Uni`-returning methods without `@Blocking`; see `reactive-messaging.md`.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/quarkus-application-development/references/security-oidc.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/quarkus-application-development/references/security-oidc.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/quarkus-application-development/references/security-oidc.md
-- **SHA256_FINGERPRINT**: `1a5c5623bd77ce17fc9078b9710989d44a00e142dd74833c79f3b7870602bce8`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.059270+00:00
----
-
-# Security: OIDC, roles, JWT
-
-Extension: `quarkus-oidc` (bearer token for services, authorization code flow for web apps). Ask the user before adding it. Alternative for self-issued tokens: `quarkus-smallrye-jwt` (`mp.jwt.verify.publickey.location`, `mp.jwt.verify.issuer`).
-
-## Keycloak Dev Service (verified on 3.40.1 and 3.27.6)
-
-With `quarkus-oidc` and no `quarkus.oidc.auth-server-url`, dev/test mode starts Keycloak and imports a `quarkus` realm with users `alice` (admin, user) and `bob` (user), client `quarkus-app`. First start is slow (about 50 s with image pull). Customize roles:
-
-```properties
-quarkus.keycloak.devservices.roles.alice=admin,user
-quarkus.keycloak.devservices.roles.bob=user
-```
-
-Dev UI (`/q/dev-ui`, OpenID Connect card) can log in and obtain tokens. For production set `%prod.quarkus.oidc.auth-server-url=${OIDC_URL}`, `%prod.quarkus.oidc.client-id`, and `credentials.secret` from env/secret store; never in git.
-
-## Bearer (service) and web-app modes
-
-- Default `quarkus.oidc.application-type=service`: expects `Authorization: Bearer <jwt>`.
-- Browser app: `quarkus.oidc.application-type=web-app` (session cookie, redirect to IdP). Pair with `quarkus.http.auth.permission.*` for path rules.
-
-## Authorization
-
-```java
-@Path("/secure")
-public class SecuredResource {
-    @Inject SecurityIdentity identity;
-
-    @GET @Path("/me") @Authenticated
-    public String me() { return identity.getPrincipal().getName(); }
-
-    @GET @Path("/admin") @RolesAllowed("admin")
-    public String admin() { return "admin ok"; }
-}
-```
-
-Verified results: no token gives 401; a token for `alice` gets 200 on `/secure/admin`; `bob` gets 403 there and 200 on `/secure/me`.
-
-- Secure by default: `quarkus.security.jaxrs.deny-unannotated-endpoints=true` (not verified here).
-- Fine-grained checks: `@PermissionsAllowed("read")` with a `SecurityIdentity` permission checker, or `@PermissionChecker` methods (`quarkus-security`); or inject `SecurityIdentity` and check `identity.hasRole(...)`. Not verified here.
-- JWT claims: inject `org.eclipse.microprofile.jwt.JsonWebToken` (with `quarkus-oidc`, `@Inject JsonWebToken jwt; jwt.getClaim("email")`). Default role lookup: a `groups` claim wins if present; otherwise Keycloak's `realm_access/roles`, and `resource_access/<quarkus.oidc.client-id>/roles` when a client id is configured (a token with non-empty `groups` uses those even if realm roles exist). Override with `quarkus.oidc.roles.role-claim-path`.
-- Calling downstream services with the user's token: `quarkus-rest-client-oidc-token-propagation`; with the service's own identity: `quarkus-rest-client-oidc-filter`. Not verified here.
-
-## Testing
-
-- Unit-style: `@TestSecurity(user = "u", roles = "admin")` with `quarkus-test-security` (verified: 200 for admin, 403 for another role).
-- Real tokens against the Dev Service: `quarkus-test-keycloak-server` provides `io.quarkus.test.keycloak.client.KeycloakTestClient`; `given().auth().oauth2(new KeycloakTestClient().getAccessToken("alice"))` (verified). Also see `quarkus-dev-services-and-testing`.
-- Keycloak container requires Docker; tests relying on it should be run where containers exist.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/quarkus-dev-services-and-testing/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/quarkus-dev-services-and-testing/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/quarkus-dev-services-and-testing/SKILL.md
-- **SHA256_FINGERPRINT**: `fdf5f38a665c1e949c0dbd5ba1464813d97fb1f2769e09b2972ab40f6e7cb626`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.185005+00:00
----
-
-**description**: Quarkus Dev Services and testing: zero-config containers, @QuarkusTest, @QuarkusIntegrationTest, test resources, RestAssured, @InjectMock, profiles and continuous testing. Use when writing or fixing tests in a Quarkus project.
-
-# Quarkus Dev Services and Testing
-
-Check the project's Quarkus version first. Framework-neutral Testcontainers usage can use the optional `java-testcontainers` skill if installed (otherwise see <https://java.testcontainers.org/>); this skill covers only Quarkus-specific features.
-
-## Dev Services
-
-In dev and test modes Quarkus starts containers (PostgreSQL, MySQL, Kafka, Redis, Keycloak, ...) automatically when the related extension is present and no connection is configured (Docker or Podman required).
-
-```properties
-# Global switch
-quarkus.devservices.enabled=true
-%dev.quarkus.datasource.devservices.image-name=postgres:17
-# Reuse container across restarts (also requires testcontainers.reuse.enable=true in ~/.testcontainers.properties)
-quarkus.datasource.devservices.reuse=true
-# Fixed port (optional)
-quarkus.datasource.devservices.port=5432
-# Share between apps in dev mode
-quarkus.kafka.devservices.shared=true
-```
-
-Disable one with `quarkus.<ext>.devservices.enabled=false`; configuring a URL/host explicitly also disables it. Dev UI (`/q/dev-ui`) lists running services.
-
-## Tests
-
-```java
-@QuarkusTest
-class GreetingResourceTest {
-    @Test
-    void hello() {
-        given().when().get("/hello").then().statusCode(200).body(is("Hello"));
-    }
-}
-```
-
-Dependencies, test scope: `io.quarkus:quarkus-junit` (3.31+, what the 3.40 template generates) or `quarkus-junit5` (3.27 template; still published and resolvable on 3.40) and `io.rest-assured:rest-assured`. Keep whichever the project already uses.
-
-- Inject beans in tests with `@Inject`; mock CDI beans with `io.quarkus.test.InjectMock` (`quarkus-junit-mockito`, formerly `quarkus-junit5-mockito`; verified mocking a `PanacheRepository` bean on 3.40.1).
-- Security: `@TestSecurity(user="alice", roles="admin")` (`quarkus-test-security`).
-- Profiles: `@TestProfile(MyProfile.class)` with `QuarkusTestProfile#getConfigOverrides()`; restarts the app, so use sparingly.
-- Transactions: `@TestTransaction` rolls back after the test.
-- `@QuarkusIntegrationTest` runs against the packaged artifact (jar, native binary or container); you cannot inject beans there, only call it over HTTP.
-
-## Test resources
-
-```java
-public class WireMockResource implements QuarkusTestResourceLifecycleManager {
-    public Map<String,String> start() { /* start, return config overrides */ return Map.of(); }
-    public void stop() { }
-}
-
-@QuarkusTest
-@WithTestResource(WireMockResource.class)   // io.quarkus.test.common.WithTestResource
-class MyTest { }
-```
-
-`@WithTestResource` (verified on 3.40.1) applies to the annotated test class; Quarkus restarts the app when the set of resources changes. The older `@QuarkusTestResource` still compiles and runs on 3.40.1 but applies globally to all tests unless `restrictToAnnotatedClass = true`. Do not put `@ConfigProperty` injection points for resource-supplied values in a test class: test classes are scanned as beans, and the app fails to start for other test classes that lack the resource. Prefer Dev Services over custom resources when an extension supports it.
-
-## Running
-
-```bash
-./mvnw test                 # unit/@QuarkusTest
-./mvnw verify -DskipITs=false  # also runs *IT via maven-failsafe-plugin
-```
-
-Gotcha: `*IT` classes (`@QuarkusIntegrationTest`) are run by Failsafe in the `verify` phase, and need the `quarkus-maven-plugin` `build` goal and the failsafe config (with `java.util.logging.manager` and `maven.home` system properties) generated by the project template. `./mvnw test` silently skips them, and the 3.27 and 3.40 templates also set `<skipITs>true</skipITs>`, so plain `./mvnw verify` skips them too (verified): pass `-DskipITs=false` (or `-Dnative`, whose profile flips it). With `-Dnative` and a container build on macOS or Windows, the binary is a Linux ELF and the IT fails with `Exit code is: '126'`; use a local Mandrel/GraalVM build for those.
-
-Continuous testing: run `./mvnw quarkus:dev` and press `r` to start or re-run tests and `p` to pause them (`h` lists the hotkeys); once running, tests re-run on code changes (`quarkus.test.continuous-testing=enabled|paused|disabled`).
-
-Verified on Quarkus 3.40.1 (JDK 26, Docker Desktop): `@QuarkusTest` with Dev Services PostgreSQL (`postgres:18` by default), `@TestTransaction`, `@TestProfile`, `@TestSecurity`, `@InjectMock`, `*IT` via Failsafe. `@QuarkusTest` and Dev Services on 3.27.6 as well.
-
-## Checklist
-
-- Use Dev Services before writing a custom resource.
-- Keep `@QuarkusTest` classes sharing the same profile/resources to avoid restarts.
-- Do not hard-code ports; RestAssured uses `quarkus.http.test-port` automatically.
-
-See also: <https://quarkus.io/guides/dev-services>, <https://quarkus.io/guides/getting-started-testing>; for upgrades use `quarkus update` (<https://quarkus.io/guides/update-quarkus>).
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/quarkus-native-and-container/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/quarkus-native-and-container/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/quarkus-native-and-container/SKILL.md
-- **SHA256_FINGERPRINT**: `d74288cc210a9fce1d5e8811ee2d58f9e268dd6404cc6c6f1e286f66d512aaea`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.128452+00:00
----
-
-**description**: Build Quarkus native executables (Mandrel/GraalVM), fix native failures with reflection registration, test the native binary, and produce container images and Kubernetes/OpenShift manifests. Use for native, Docker, Jib or Kubernetes work in a Quarkus project.
-
-# Quarkus Native and Container
-
-Check the project's Quarkus version first. For generic (non-Quarkus) GraalVM work, use the optional `java-add-graalvm-native-image-support` skill if installed (otherwise see the GraalVM docs, <https://www.graalvm.org/latest/reference-manual/native-image/>).
-
-## Native build
-
-```bash
-# container build: no local GraalVM needed (Docker/Podman required)
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-# local Mandrel/GraalVM (JAVA_HOME / GRAALVM_HOME must point to it)
-./mvnw package -Dnative
-# Gradle, Quarkus 3.10+ (add -Dquarkus.native.container-build=true without a local Mandrel)
-./gradlew build -Dquarkus.native.enabled=true -Dquarkus.package.jar.enabled=false
-# Gradle, older Quarkus
-./gradlew build -Dquarkus.package.type=native
-```
-
-`quarkus.package.type` was deprecated in 3.10 (the 3.10 migration guide replaces it with `quarkus.native.enabled` and `quarkus.package.jar.*`); it is still accepted in 3.40 with a warning. Version gate verified with Gradle: on 3.9.5 `-Dquarkus.native.enabled=true -Dquarkus.package.jar.enabled=false` is ignored ("Unrecognized configuration key" warnings) and only a JVM `quarkus-app` is built, while `-Dquarkus.package.type=native` produces the native runner; on 3.10.0, 3.27.6 and 3.40.1 the new keys produce the native runner (3.10.0 also accepts the old key with the deprecation warning). The Maven `native` profile in the generated `pom.xml` already sets `quarkus.native.enabled=true`, `quarkus.package.jar.enabled=false` and `skipITs=false` when `-Dnative` is passed.
-
-Local build verified on macOS arm64 with the Mandrel tarball for your Quarkus line from <https://github.com/graalvm/mandrel/releases> (`mandrel-java25-macos-aarch64-25.0.4.1-Final.tar.gz` for 3.40.1, extracted anywhere, `JAVA_HOME` pointing at its `Contents/Home`; Xcode command line tools are enough): 3.40.1 Maven `package -Dnative` took about 70 s and Gradle `build` with the two flags about 2.5 min; the runner is a Mach-O executable that starts in about 0.04 s, and `./mvnw verify -Dnative` ran the `*IT` against it successfully. Quarkus checks the Mandrel/GraalVM version: 3.40 refuses 23.1 ("Out of date version of GraalVM or Mandrel detected ... Quarkus currently supports 25.0.0"), so use Mandrel 25 with 3.40 and `mandrel-java21-macos-aarch64-23.1.12.1-Final` with 3.27.6 (Maven `verify -Dnative` and Gradle both verified there).
-
-Binary: `target/*-runner` (Maven) or `build/*-runner` (Gradle). A container build on macOS or Windows produces a Linux ELF that cannot run on the host: run it in a Linux container (for example `docker run -v "$PWD/target:/w:ro" registry.access.redhat.com/ubi9/ubi-minimal /w/<name>-runner` with the datasource passed through `QUARKUS_DATASOURCE_*` env vars), and note that `./mvnw verify -Dnative` then fails in the `*IT` with `Exit code is: '126'`. Mandrel is Red Hat's GraalVM distribution for Quarkus; the container build pulls a Mandrel builder image matching the project (3.40.1 used `quay.io/quarkus/ubi9-quarkus-mandrel-builder-image:jdk-25`, Mandrel 25.0.4.1, about 2.5 minutes including the image pull); override it with `quarkus.native.builder-image` if needed. Native builds are slow and memory-hungry (several GB); do them in CI or on demand, not on every test run.
-
-## Common native failures
-
-| Symptom | Fix |
-|---|---|
-| `ClassNotFoundException` / `NoSuchMethodException` at runtime (reflection, JSON serialization of DTOs) | annotate with `@RegisterForReflection` (or `@RegisterForReflection(targets = ...)` on a holder class for third-party types), or put a `reflection-config.json` in `src/main/resources` and set `quarkus.native.additional-build-args=-H:ReflectionConfigurationFiles=reflection-config.json` |
-| Missing resource files | `quarkus.native.resources.includes=templates/**` |
-| Library not supporting native | look for a Quarkus extension, or choose another library |
-| Class initialized at build time breaks | `--initialize-at-run-time=...` through `quarkus.native.additional-build-args` |
-| `OutOfMemoryError` during build | raise container memory or `quarkus.native.native-image-xmx` |
-| Dynamic proxies / serialization | register via annotations or extension |
-
-```java
-@RegisterForReflection(targets = ExternalDto.class)
-public record ProductDto(String name) {}
-```
-
-Prefer Quarkus extensions (they register reflection automatically) over raw libraries. Verified: a Panache + Quarkus REST app built natively and served JSON with a record DTO; Quarkus REST registers returned types itself, so `@RegisterForReflection` is mainly needed for types reached only reflectively (custom serialization, third-party types). Both rows were reproduced on 3.40.1 (local Mandrel 25): a resource calling `Class.forName("org.acme.Hidden").getDeclaredConstructor().newInstance()` returned HTTP 500 `ClassNotFoundException: org.acme.Hidden` in the native binary, and worked after adding `src/main/resources/reflection-config.json` (`[{ "name": "org.acme.Hidden", "allDeclaredConstructors": true }]`) with the documented `-H:ReflectionConfigurationFiles=reflection-config.json` (the relative file name resolves from `src/main/resources`). For the run-time initialization row, a `static final java.util.Random` in a class forced to build-time init (`--initialize-at-build-time=org.acme.Holder`) failed the build with "Detected an instance of Random/SplittableRandom class in the image heap ... mark it explicitly for run time initialization with '--initialize-at-run-time=<culprit>'"; switching to `--initialize-at-run-time=org.acme.Holder` fixed it, also combined with the reflection flag in one comma-separated `quarkus.native.additional-build-args`. Quarkus's generated native-image feature calls `RuntimeClassInitialization.initializeAtBuildTime("")` and then applies explicit run-time overrides, so classes default to build-time initialization. Your own static initializers (random seeds, clocks, env reads, threads) can therefore cause this failure too, not only libraries.
-
-## Test the native binary
-
-```java
-@QuarkusIntegrationTest
-class GreetingResourceIT extends GreetingResourceTest {}
-```
-
-```bash
-./mvnw verify -Dnative
-```
-
-`@QuarkusIntegrationTest` black-box tests run in the `verify` phase (Failsafe) against the native binary; no CDI injection.
-
-## Container images
-
-```bash
-quarkus extension add container-image-jib      # or container-image-docker
-./mvnw package -Dquarkus.container-image.build=true
-./mvnw package -Dnative -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true
-```
-
-`container-image-jib` needs no Docker daemon to push: with `DOCKER_HOST` pointing at a non-existent socket, `./mvnw package -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true -Dquarkus.container-image.registry=localhost:5055 -Dquarkus.container-image.insecure=true -Dquarkus.container-image.group=acme` pushed `acme/q340m:1.0.0-SNAPSHOT` to a local `registry:2` (3.40.1, JVM image). Without `push=true` Jib loads the image into a local Docker/Podman and fails with `Cannot get an executable name when no container runtime is available` when none is reachable. A tar-only output was not found or tested; the pushed image was not run.
-
-Dockerfiles for manual builds live in `src/main/docker` (`Dockerfile.jvm`, `Dockerfile.native`, `Dockerfile.native-micro`). Set `quarkus.container-image.registry/group/name/tag`, and `-Dquarkus.container-image.push=true` to push. Use pinned base-image tags and run as non-root.
-
-## Kubernetes / OpenShift
-
-```bash
-quarkus extension add kubernetes     # or: quarkus extension add openshift
-./mvnw package
-```
-
-Manifests are generated in `target/kubernetes/kubernetes.yml` (and `.json`) for the `kubernetes` extension, and in `target/kubernetes/openshift.yml` for `openshift`. Customize via properties; the prefix follows the target (`quarkus.kubernetes.*` for Kubernetes, `quarkus.openshift.*` for OpenShift):
-
-```properties
-quarkus.kubernetes.replicas=2
-quarkus.kubernetes.ingress.expose=true
-quarkus.kubernetes.env.secrets=app-secrets
-quarkus.kubernetes.resources.requests.memory=128Mi
-```
-
-The generated Deployment has no probes by default; with `quarkus-smallrye-health` installed it includes liveness, readiness and startup probes (`/q/health/live`, `/q/health/ready`, `/q/health/started`), and it sets `envFrom.secretRef` for `env.secrets` (verified on 3.40.1). Deploy with `quarkus.kubernetes.deploy=true` or `kubectl apply -f target/kubernetes/kubernetes.yml`. On OpenShift use the same properties under `quarkus.openshift.*`, expose the service with a Route via `quarkus.openshift.route.expose=true` (Kubernetes uses `quarkus.kubernetes.ingress.expose=true` instead), and apply with `oc apply -f target/kubernetes/openshift.yml` (or `quarkus.openshift.deploy=true`). Review generated YAML before applying; keep secrets out of it.
-
-See also: native executables <https://quarkus.io/guides/building-native-image>; upgrades via `quarkus update` (<https://quarkus.io/guides/update-quarkus>); GraalVM release notes <https://www.graalvm.org/release-notes/>.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/quasi-coder/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/quasi-coder/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/quasi-coder/SKILL.md
-- **SHA256_FINGERPRINT**: `990ff8b9e2ce019f3e7fcf82b2cf98c062a1c17999c85beaf6a8168d82067be0`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.153843+00:00
----
-
-**description**: Expert 10x engineer skill for interpreting and implementing code from shorthand, quasi-code, and natural language descriptions. Use when collaborators provide incomplete code snippets, pseudo-code, or descriptions with potential typos or incorrect terminology. Excels at translating non-technical or semi-technical descriptions into production-quality code.
-
-# Quasi-Coder Skill
-
-The Quasi-Coder skill transforms you into an expert 10x software engineer capable of interpreting and implementing production-quality code from shorthand notation, quasi-code, and natural language descriptions. This skill bridges the gap between collaborators with varying technical expertise and professional code implementation.
-
-Like an architect who can take a rough hand-drawn sketch and produce detailed blueprints, the quasi-coder extracts intent from imperfect descriptions and applies expert judgment to create robust, functional code.
-
-## When to Use This Skill
-
-- Collaborators provide shorthand or quasi-code notation
-- Receiving code descriptions that may contain typos or incorrect terminology
-- Working with team members who have varying levels of technical expertise
-- Translating big-picture ideas into detailed, production-ready implementations
-- Converting natural language requirements into functional code
-- Interpreting mixed-language pseudo-code into appropriate target languages
-- Processing instructions marked with `start-shorthand` and `end-shorthand` markers
-
-## Role
-
-As a quasi-coder, you operate as:
-
-- **Expert 10x Software Engineer**: Deep knowledge of computer science, design patterns, and best practices
-- **Creative Problem Solver**: Ability to understand intent from incomplete or imperfect descriptions
-- **Skilled Interpreter**: Similar to an architect reading a hand-drawn sketch and producing detailed blueprints
-- **Technical Translator**: Convert ideas from non-technical or semi-technical language into professional code
-- **Pattern Recognizer**: Extract the big picture from shorthand and apply expert judgment
-
-Your role is to refine and create the core mechanisms that make the project work, while the collaborator focuses on the big picture and core ideas.
-
-## Understanding Collaborator Expertise Levels
-
-Accurately assess the collaborator's technical expertise to determine how much interpretation and correction is needed:
-
-### High Confidence (90%+)
-The collaborator has a good understanding of the tools, languages, and best practices.
-
-**Your Approach:**
-- Trust their approach if technically sound
-- Make minor corrections for typos or syntax
-- Implement as described with professional polish
-- Suggest optimizations only when clearly beneficial
-
-### Medium Confidence (30-90%)
-The collaborator has intermediate knowledge but may miss edge cases or best practices.
-
-**Your Approach:**
-- Evaluate their approach critically
-- Suggest better alternatives when appropriate
-- Fill in missing error handling or validation
-- Apply professional patterns they may have overlooked
-- Educate gently on improvements
-
-### Low Confidence (<30%)
-The collaborator has limited or no professional knowledge of the tools being used.
-
-**Your Approach:**
-- Compensate for terminology errors or misconceptions
-- Find the best approach to achieve their stated goal
-- Translate their description into proper technical implementation
-- Use correct libraries, methods, and patterns
-- Educate gently on best practices without being condescending
-
-## Compensation Rules
-
-Apply these rules when interpreting collaborator descriptions:
-
-1. **>90% certain** the collaborator's method is incorrect or not best practice → Find and implement a better approach
-2. **>99% certain** the collaborator lacks professional knowledge of the tool → Compensate for erroneous descriptions and use correct implementation
-3. **>30% certain** the collaborator made mistakes in their description → Apply expert judgment and make necessary corrections
-4. **Uncertain** about intent or requirements → Ask clarifying questions before implementing
-
-Always prioritize the **goal** over the **method** when the method is clearly suboptimal.
-
-## Shorthand Interpretation
-
-The quasi-coder skill recognizes and processes special shorthand notation:
-
-### Markers and Boundaries
-
-Shorthand sections are typically bounded by markers:
-- **Open Marker**: `${language:comment} start-shorthand`
-- **Close Marker**: `${language:comment} end-shorthand`
-
-For example:
-```javascript
-// start-shorthand
-()=> add validation for email field
-()=> check if user is authenticated before allowing access
-// end-shorthand
-```
-
-### Shorthand Indicators
-
-Lines starting with `()=>` indicate shorthand that requires interpretation:
-- 90% comment-like (describing intent)
-- 10% pseudo-code (showing structure)
-- Must be converted to actual functional code
-- **ALWAYS remove the `()=>` lines** when implementing
-
-### Interpretation Process
-
-1. **Read the entire shorthand section** to understand the full context
-2. **Identify the goal** - what the collaborator wants to achieve
-3. **Assess technical accuracy** - are there terminology errors or misconceptions?
-4. **Determine best implementation** - use expert knowledge to choose optimal approach
-5. **Replace shorthand lines** with production-quality code
-6. **Apply appropriate syntax** for the target file type
-
-### Comment Handling
-
-- `REMOVE COMMENT` → Delete this comment in the final implementation
-- `NOTE` → Important information to consider during implementation
-- Natural language descriptions → Convert to valid code or proper documentation
-
-## Best Practices
-
-1. **Focus on Core Mechanisms**: Implement the essential functionality that makes the project work
-2. **Apply Expert Knowledge**: Use computer science principles, design patterns, and industry best practices
-3. **Handle Imperfections Gracefully**: Work with typos, incorrect terminology, and incomplete descriptions without judgment
-4. **Consider Context**: Look at available resources, existing code patterns, and project structure
-5. **Balance Vision with Excellence**: Respect the collaborator's vision while ensuring technical quality
-6. **Avoid Over-Engineering**: Implement what's needed, not what might be needed
-7. **Use Proper Tools**: Choose the right libraries, frameworks, and methods for the job
-8. **Document When Helpful**: Add comments for complex logic, but keep code self-documenting
-9. **Test Edge Cases**: Add error handling and validation the collaborator may have missed
-10. **Maintain Consistency**: Follow existing code style and patterns in the project
-
-## Working with Tools and Reference Files
-
-Collaborators may provide additional tools and reference files to support your work as a quasi-coder. Understanding how to leverage these resources effectively enhances implementation quality and ensures alignment with project requirements.
-
-### Types of Resources
-
-**Persistent Resources** - Used consistently throughout the project:
-- Project-specific coding standards and style guides
-- Architecture documentation and design patterns
-- Core library documentation and API references
-- Reusable utility scripts and helper functions
-- Configuration templates and environment setups
-- Team conventions and best practices documentation
-
-These resources should be referenced regularly to maintain consistency across all implementations.
-
-**Temporary Resources** - Needed for specific updates or short-term goals:
-- Feature-specific API documentation
-- One-time data migration scripts
-- Prototype code samples for reference
-- External service integration guides
-- Troubleshooting logs or debug information
-- Stakeholder requirements documents for current tasks
-
-These resources are relevant for immediate work but may not apply to future implementations.
-
-### Resource Management Best Practices
-
-1. **Identify Resource Types**: Determine if provided resources are persistent or temporary
-2. **Prioritize Persistent Resources**: Always check project-wide documentation before implementing
-3. **Apply Contextually**: Use temporary resources for specific tasks without over-generalizing
-4. **Ask for Clarification**: If resource relevance is unclear, ask the collaborator
-5. **Cross-Reference**: Verify that temporary resources don't conflict with persistent standards
-6. **Document Deviations**: If a temporary resource requires breaking persistent patterns, document why
-
-### Examples
-
-**Persistent Resource Usage**:
-```javascript
-// Collaborator provides: "Use our logging utility from utils/logger.js"
-// This is a persistent resource - use it consistently
-import { logger } from './utils/logger.js';
-
-function processData(data) {
-  logger.info('Processing data batch', { count: data.length });
-  // Implementation continues...
-}
-```
-
-**Temporary Resource Usage**:
-```javascript
-// Collaborator provides: "For this migration, use this data mapping from migration-map.json"
-// This is temporary - use only for current task
-import migrationMap from './temp/migration-map.json';
-
-function migrateUserData(oldData) {
-  // Use temporary mapping for one-time migration
-  return migrationMap[oldData.type] || oldData;
-}
-```
-
-When collaborators provide tools and references, treat them as valuable context that informs implementation decisions while still applying expert judgment to ensure code quality and maintainability.
-
-## Shorthand Key
-
-Quick reference for shorthand notation:
-
-```
-()=>        90% comment, 10% pseudo-code - interpret and implement
-            ALWAYS remove these lines when editing
-
-start-shorthand    Begin shorthand section
-end-shorthand      End shorthand section
-
-openPrompt         ["quasi-coder", "quasi-code", "shorthand"]
-language:comment   Single or multi-line comment in target language
-openMarker         "${language:comment} start-shorthand"
-closeMarker        "${language:comment} end-shorthand"
-```
-
-### Critical Rules
-
-- **ALWAYS remove `()=>` lines** when editing a file from shorthand
-- Replace shorthand with functional code, features, comments, documentation, or data
-- Sometimes shorthand requests non-code actions (run commands, create files, fetch data, generate graphics)
-- In all cases, remove the shorthand lines after implementing the request
-
-## Variables and Markers
-
-Formal specification of shorthand variables:
-
-```javascript
-openPrompt = ["quasi-coder", "quasi-code", "shorthand"]
-// Triggers that indicate quasi-coder should be used
-
-language:comment = "Single or multi-line comment of programming language"
-// Comment syntax appropriate for the file type
-
-openMarker = "${language:comment} start-shorthand"
-// Example: // start-shorthand (JavaScript)
-// Example: # start-shorthand (Python)
-// Example:  (HTML)
-
-closeMarker = "${language:comment} end-shorthand"
-// Example: // end-shorthand (JavaScript)
-// Example: # end-shorthand (Python)
-// Example:  (HTML)
-```
-
-## Example Workflow
-
-### Scenario: Collaborator Provides Shorthand
-
-**Input from Collaborator** (JavaScript file):
-```javascript
-// start-shorthand
-()=> create function that validates user input
-()=> check email format is correct
-()=> make sure password is at least 8 characters
-()=> return true if valid, false otherwise
-// end-shorthand
-```
-
-### Step 1: Assess Expertise Level
-- Collaborator knows they need validation
-- Using general terms, not specific library names
-- **Assessment**: Medium confidence (30-90%)
-
-### Step 2: Interpret Intent
-- Goal: Create input validation function
-- Needs: Email format check, password length check
-- Output: Boolean return value
-
-### Step 3: Apply Expert Implementation
-
-**Output (Production Code)**:
-```javascript
-/**
- * Validates user registration input
- * @param {string} email - User email address
- * @param {string} password - User password
- * @returns {boolean} True if input is valid, false otherwise
- */
-function validateUserInput(email, password) {
-  // Validate email format using standard regex pattern
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return false;
-  }
-
-  // Validate password meets minimum length requirement
-  if (!password || password.length < 8) {
-    return false;
-  }
-
-  return true;
-}
-```
-
-### Expert Decisions Made:
-1. Created function with proper parameters (email and password separate)
-2. Used standard email regex pattern (best practice)
-3. Added JSDoc comments for clarity
-4. Included null/undefined check for password
-5. Used descriptive function name
-6. Returned boolean as requested
-7. **Removed all `()=>` shorthand lines**
-
-## Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| **Unclear intent from collaborator** | Ask specific clarifying questions about the goal and expected behavior |
-| **Multiple valid approaches** | Present options with recommendations, explaining trade-offs of each |
-| **Collaborator insists on suboptimal approach** | Implement their approach but respectfully explain trade-offs and alternatives |
-| **Missing context or dependencies** | Read related files, check package.json, review existing patterns in the codebase |
-| **Conflicting requirements** | Clarify priorities with the collaborator before implementing |
-| **Shorthand requests non-code actions** | Execute the requested action (run commands, create files, fetch data) and remove shorthand |
-| **Terminology doesn't match available tools** | Research correct terminology and use appropriate libraries/methods |
-| **No markers but clear shorthand intent** | Process as shorthand even without formal markers if intent is clear |
-
-### Common Pitfalls to Avoid
-
-- **Don't leave `()=>` lines in the code** - Always remove shorthand notation
-- **Don't blindly follow incorrect technical descriptions** - Apply expert judgment
-- **Don't over-complicate simple requests** - Match complexity to the need
-- **Don't ignore the big picture** - Understand the goal, not just individual lines
-- **Don't be condescending** - Translate and implement respectfully
-- **Don't skip error handling** - Add professional error handling even if not mentioned
-
-## Advanced Usage
-
-### Mixed-Language Pseudo-Code
-
-When shorthand mixes languages or uses pseudo-code:
-
-```python
-# start-shorthand
-()=> use forEach to iterate over users array
-()=> for each user, if user.age > 18, add to adults list
-# end-shorthand
-```
-
-**Expert Translation** (Python doesn't have forEach, use appropriate Python pattern):
-```python
-# Filter adult users from the users list
-adults = [user for user in users if user.get('age', 0) > 18]
-```
-
-### Non-Code Actions
-
-```javascript
-// start-shorthand
-()=> fetch current weather from API
-()=> save response to weather.json file
-// end-shorthand
-```
-
-**Implementation**: Use appropriate tools to fetch data and save file, then remove shorthand lines.
-
-### Complex Multi-Step Logic
-
-```typescript
-// start-shorthand
-()=> check if user is logged in
-()=> if not, redirect to login page
-()=> if yes, load user dashboard with their data
-()=> show error if data fetch fails
-// end-shorthand
-```
-
-**Implementation**: Convert to proper TypeScript with authentication checks, routing, data fetching, and error handling.
-
-## Summary
-
-The Quasi-Coder skill enables expert-level interpretation and implementation of code from imperfect descriptions. By assessing collaborator expertise, applying technical knowledge, and maintaining professional standards, you bridge the gap between ideas and production-quality code.
-
-**Remember**: Always remove shorthand lines starting with `()=>` and replace them with functional, production-ready implementations that fulfill the collaborator's intent with expert-level quality.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react-audit-grep-patterns/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react-audit-grep-patterns/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react-audit-grep-patterns/SKILL.md
-- **SHA256_FINGERPRINT**: `86196bc6fb6e0d2d8db535d0beeb65d7aff5391421950b872197dde76313074f`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.187762+00:00
----
-
-**description**: Provides the complete, verified grep scan command library for auditing React codebases before a React 18.3.1 or React 19 upgrade. Use this skill whenever running a migration audit - for both the react18-auditor and react19-auditor agents. Contains every grep pattern needed to find deprecated APIs, removed APIs, unsafe lifecycle methods, batching vulnerabilities, test file issues, dependency conflicts, and React 19 specific removals. Always use this skill when writing audit scan commands - do not rely on memory for grep syntax, especially for the multi-line async setState patterns which require context flags.
-
-# React Audit Grep Patterns
-
-Complete scan command library for React 18.3.1 and React 19 migration audits.
-
-## Usage
-
-Read the relevant section for your target:
-- **`references/react18-scans.md`** - all scans for React 16/17 → 18.3.1 audit
-- **`references/react19-scans.md`** - all scans for React 18 → 19 audit
-- **`references/test-scans.md`** - test file specific scans (used by both auditors)
-- **`references/dep-scans.md`** - dependency and peer conflict scans
-
-## Base Patterns Used Across All Scans
-
-```bash
-# Standard flags used throughout:
-# -r = recursive
-# -n = show line numbers
-# -l = show filenames only (for counting affected files)
-# --include="*.js" --include="*.jsx" = JS/JSX files only
-# | grep -v "\.test\.\|\.spec\.\|__tests__" = exclude test files
-# | grep -v "node_modules" = safety (usually handled by not scanning node_modules)
-# 2>/dev/null = suppress "no files found" errors
-
-# Source files only (exclude tests):
-SRC_FLAGS='--include="*.js" --include="*.jsx"'
-EXCLUDE_TESTS='grep -v "\.test\.\|\.spec\.\|__tests__"'
-
-# Test files only:
-TEST_FLAGS='--include="*.test.js" --include="*.test.jsx" --include="*.spec.js" --include="*.spec.jsx"'
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react-audit-grep-patterns/references/dep-scans.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react-audit-grep-patterns/references/dep-scans.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react-audit-grep-patterns/references/dep-scans.md
-- **SHA256_FINGERPRINT**: `0123eda642e78e25c2cbdf811d56163bf591ab4bcdc658737398cf9cdea65e30`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.202994+00:00
----
-
-# Dependency Scans - Both Auditors
-
-Scans for dependency compatibility and peer conflicts. Run during both R18 and R19 audits.
-
----
-
-## Current Versions
-
-```bash
-# All react-related package versions in one shot
-cat package.json | python3 -c "
-import sys, json
-d = json.load(sys.stdin)
-deps = {**d.get('dependencies',{}), **d.get('devDependencies',{})}
-keys = ['react', 'react-dom', 'react-router', 'react-router-dom',
-        '@testing-library/react', '@testing-library/jest-dom',
-        '@testing-library/user-event', '@apollo/client', 'graphql',
-        '@emotion/react', '@emotion/styled', 'jest', 'enzyme',
-        'react-redux', '@reduxjs/toolkit', 'prop-types']
-for k in keys:
-    if k in deps:
-        print(f'{k}: {deps[k]}')
-" 2>/dev/null
-```
-
----
-
-## Peer Dependency Conflicts
-
-```bash
-# All peer dep warnings (must be 0 before migration completes)
-npm ls 2>&1 | grep -E "WARN|ERR|peer|invalid|unmet"
-
-# Count of peer errors
-npm ls 2>&1 | grep -E "WARN|ERR|peer|invalid|unmet" | wc -l
-
-# Specific package peer dep requirements
-npm info @testing-library/react peerDependencies 2>/dev/null
-npm info @apollo/client peerDependencies 2>/dev/null
-npm info @emotion/react peerDependencies 2>/dev/null
-npm info react-router-dom peerDependencies 2>/dev/null
-```
-
----
-
-## Enzyme Detection (R18 Blocker)
-
-```bash
-# In package.json
-cat package.json | python3 -c "
-import sys, json
-d = json.load(sys.stdin)
-deps = {**d.get('dependencies',{}), **d.get('devDependencies',{})}
-enzyme = {k: v for k, v in deps.items() if 'enzyme' in k.lower()}
-if enzyme:
-    print('BLOCKER - Enzyme found:', enzyme)
-else:
-    print('No Enzyme - OK')
-" 2>/dev/null
-
-# Enzyme adapter files
-find . -name "enzyme-adapter*" -not -path "*/node_modules/*" 2>/dev/null
-```
-
----
-
-## React Router Version Check
-
-```bash
-ROUTER=$(node -e "console.log(require('./node_modules/react-router-dom/package.json').version)" 2>/dev/null)
-echo "react-router-dom version: $ROUTER"
-
-# If v5 - flag for assessment
-if [[ $ROUTER == 5* ]]; then
-  echo "WARNING: react-router v5 found - requires scope assessment before upgrade"
-  echo "Run router migration scope scan:"
-  echo "  Routes: $(grep -rn "<Route\|<Switch\|<Redirect" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l) hits"
-  echo "  useHistory: $(grep -rn "useHistory()" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l) hits"
-fi
-```
-
----
-
-## Lock File Consistency
-
-```bash
-# Check lockfile is in sync with package.json
-npm ls --depth=0 2>&1 | head -20
-
-# Check for duplicate react installs (can cause hooks errors)
-find node_modules -name "package.json" -path "*/react/package.json" 2>/dev/null \
-  | grep -v "node_modules/node_modules" \
-  | xargs grep '"version"' | sort -u
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react-audit-grep-patterns/references/react18-scans.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react-audit-grep-patterns/references/react18-scans.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react-audit-grep-patterns/references/react18-scans.md
-- **SHA256_FINGERPRINT**: `abbdb330a019ca79aa9f3a31baaae5480bae618b7db81975cf164a63ccdb5f4a`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.324865+00:00
----
-
-# React 18.3.1 Audit - Complete Scan Commands
-
-Run in this order. Each section maps to a phase in the react18-auditor.
-
----
-
-## Phase 0 - Codebase Profile
-
-```bash
-# Total source files (excluding tests)
-find src/ \( -name "*.js" -o -name "*.jsx" \) \
-  | grep -v "\.test\.\|\.spec\.\|__tests__\|node_modules" \
-  | wc -l
-
-# Class component count
-grep -rl "extends React\.Component\|extends Component\|extends PureComponent" \
-  src/ --include="*.js" --include="*.jsx" \
-  | grep -v "\.test\." | wc -l
-
-# Function component rough count
-grep -rl "const [A-Z][a-zA-Z]* = \|function [A-Z][a-zA-Z]*(" \
-  src/ --include="*.js" --include="*.jsx" \
-  | grep -v "\.test\." | wc -l
-
-# Current React version
-node -e "console.log(require('./node_modules/react/package.json').version)" 2>/dev/null
-
-# StrictMode in use? (affects how many lifecycle warnings were already seen)
-grep -rn "StrictMode\|React\.StrictMode" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-```
-
----
-
-## Phase 1 - Unsafe Lifecycle Methods
-
-```bash
-# componentWillMount (without UNSAFE_ prefix)
-grep -rn "componentWillMount\b" \
-  src/ --include="*.js" --include="*.jsx" \
-  | grep -v "UNSAFE_componentWillMount\|\.test\."
-
-# componentWillReceiveProps (without UNSAFE_ prefix)
-grep -rn "componentWillReceiveProps\b" \
-  src/ --include="*.js" --include="*.jsx" \
-  | grep -v "UNSAFE_componentWillReceiveProps\|\.test\."
-
-# componentWillUpdate (without UNSAFE_ prefix)
-grep -rn "componentWillUpdate\b" \
-  src/ --include="*.js" --include="*.jsx" \
-  | grep -v "UNSAFE_componentWillUpdate\|\.test\."
-
-# Already partially migrated with UNSAFE_ prefix? (check if team already did partial work)
-grep -rn "UNSAFE_component" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-
-# Quick count summary:
-echo "=== Lifecycle Issue Summary ==="
-echo "componentWillMount: $(grep -rn "componentWillMount\b" src/ --include="*.js" --include="*.jsx" | grep -v "UNSAFE_\|\.test\." | wc -l)"
-echo "componentWillReceiveProps: $(grep -rn "componentWillReceiveProps\b" src/ --include="*.js" --include="*.jsx" | grep -v "UNSAFE_\|\.test\." | wc -l)"
-echo "componentWillUpdate: $(grep -rn "componentWillUpdate\b" src/ --include="*.js" --include="*.jsx" | grep -v "UNSAFE_\|\.test\." | wc -l)"
-```
-
----
-
-## Phase 2 - Automatic Batching Vulnerabilities
-
-```bash
-# Async class methods (primary risk zone)
-grep -rn "^\s*async [a-zA-Z]" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-
-# Arrow function async methods
-grep -rn "=\s*async\s*(" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-
-# setState inside .then() callbacks
-grep -rn "\.then\s*(" \
-  src/ --include="*.js" --include="*.jsx" -A 3 \
-  | grep "setState" | grep -v "\.test\."
-
-# setState inside .catch() callbacks
-grep -rn "\.catch\s*(" \
-  src/ --include="*.js" --include="*.jsx" -A 3 \
-  | grep "setState" | grep -v "\.test\."
-
-# setState inside setTimeout
-grep -rn "setTimeout" \
-  src/ --include="*.js" --include="*.jsx" -A 5 \
-  | grep "setState" | grep -v "\.test\."
-
-# this.state reads that follow an await (most dangerous pattern)
-grep -rn "this\.state\." \
-  src/ --include="*.js" --include="*.jsx" -B 3 \
-  | grep "await" | grep -v "\.test\."
-
-# document/window event handlers with setState
-grep -rn "addEventListener" \
-  src/ --include="*.js" --include="*.jsx" -A 5 \
-  | grep "setState" | grep -v "\.test\."
-```
-
----
-
-## Phase 3 - Legacy Context API
-
-```bash
-# Provider side
-grep -rn "childContextTypes\s*=" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-
-grep -rn "getChildContext\s*(" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-
-# Consumer side
-grep -rn "contextTypes\s*=" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-
-# this.context usage (may indicate legacy or modern - verify per hit)
-grep -rn "this\.context\." \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-
-# Count of distinct legacy contexts (by counting childContextTypes blocks)
-grep -rn "childContextTypes" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l
-```
-
----
-
-## Phase 4 - String Refs
-
-```bash
-# String ref assignments in JSX
-grep -rn 'ref="[^"]*"' \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-
-# Alternative quote style
-grep -rn "ref='[^']*'" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-
-# this.refs accessor usage
-grep -rn "this\.refs\." \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-```
-
----
-
-## Phase 5 - findDOMNode
-
-```bash
-grep -rn "findDOMNode\|ReactDOM\.findDOMNode" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-```
-
----
-
-## Phase 6 - Root API (ReactDOM.render)
-
-```bash
-grep -rn "ReactDOM\.render\s*(" \
-  src/ --include="*.js" --include="*.jsx"
-
-grep -rn "ReactDOM\.hydrate\s*(" \
-  src/ --include="*.js" --include="*.jsx"
-
-grep -rn "unmountComponentAtNode" \
-  src/ --include="*.js" --include="*.jsx"
-```
-
----
-
-## Phase 7 - Event Delegation (React 16 Carry-Over)
-
-```bash
-# document-level event listeners (may miss React events after React 17 delegation change)
-grep -rn "document\.addEventListener\|document\.removeEventListener" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-
-# window event listeners
-grep -rn "window\.addEventListener" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-```
-
----
-
-## Phase 8 - Enzyme Detection (Hard Blocker)
-
-```bash
-# Enzyme in package.json
-cat package.json | python3 -c "
-import sys, json
-d = json.load(sys.stdin)
-deps = {**d.get('dependencies',{}), **d.get('devDependencies',{})}
-enzyme_pkgs = [k for k in deps if 'enzyme' in k.lower()]
-print('Enzyme packages found:', enzyme_pkgs if enzyme_pkgs else 'NONE')
-"
-
-# Enzyme imports in test files
-grep -rn "from 'enzyme'\|require.*enzyme" \
-  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null | wc -l
-```
-
----
-
-## Full Summary Script
-
-Run this for a quick overview before detailed scanning:
-
-```bash
-#!/bin/bash
-echo "=============================="
-echo "React 18 Migration Audit Summary"
-echo "=============================="
-echo ""
-echo "LIFECYCLE METHODS:"
-echo "  componentWillMount:          $(grep -rn "componentWillMount\b" src/ --include="*.js" --include="*.jsx" | grep -v "UNSAFE_\|\.test\." | wc -l | tr -d ' ') hits"
-echo "  componentWillReceiveProps:   $(grep -rn "componentWillReceiveProps\b" src/ --include="*.js" --include="*.jsx" | grep -v "UNSAFE_\|\.test\." | wc -l | tr -d ' ') hits"
-echo "  componentWillUpdate:         $(grep -rn "componentWillUpdate\b" src/ --include="*.js" --include="*.jsx" | grep -v "UNSAFE_\|\.test\." | wc -l | tr -d ' ') hits"
-echo ""
-echo "LEGACY APIS:"
-echo "  Legacy context (providers):  $(grep -rn "childContextTypes" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l | tr -d ' ') hits"
-echo "  String refs (this.refs):     $(grep -rn "this\.refs\." src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l | tr -d ' ') hits"
-echo "  findDOMNode:                 $(grep -rn "findDOMNode" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l | tr -d ' ') hits"
-echo "  ReactDOM.render:             $(grep -rn "ReactDOM\.render\s*(" src/ --include="*.js" --include="*.jsx" | wc -l | tr -d ' ') hits"
-echo ""
-echo "ENZYME (BLOCKER):"
-echo "  Enzyme test files:           $(grep -rl "from 'enzyme'" src/ --include="*.test.*" 2>/dev/null | wc -l | tr -d ' ') files"
-echo ""
-echo "ASYNC BATCHING RISK:"
-echo "  Async class methods:         $(grep -rn "^\s*async [a-zA-Z]" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l | tr -d ' ') hits"
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react-audit-grep-patterns/references/react19-scans.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react-audit-grep-patterns/references/react19-scans.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react-audit-grep-patterns/references/react19-scans.md
-- **SHA256_FINGERPRINT**: `56042df41e58879eb5330d6941bc7b228ba92b8bdc611e82dd5b4bfe1f9ff116`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.409962+00:00
----
-
-# React 19 Audit - Complete Scan Commands
-
-Run in this order. Each section maps to a phase in the react19-auditor.
-
----
-
-## Phase 1 - Removed APIs (Breaking - Must Fix)
-
-```bash
-# 1. ReactDOM.render - REMOVED
-grep -rn "ReactDOM\.render\s*(" \
-  src/ --include="*.js" --include="*.jsx" 2>/dev/null
-
-# 2. ReactDOM.hydrate - REMOVED
-grep -rn "ReactDOM\.hydrate\s*(" \
-  src/ --include="*.js" --include="*.jsx" 2>/dev/null
-
-# 3. unmountComponentAtNode - REMOVED
-grep -rn "unmountComponentAtNode" \
-  src/ --include="*.js" --include="*.jsx" 2>/dev/null
-
-# 4. findDOMNode - REMOVED
-grep -rn "findDOMNode\|ReactDOM\.findDOMNode" \
-  src/ --include="*.js" --include="*.jsx" 2>/dev/null
-
-# 5. createFactory - REMOVED
-grep -rn "createFactory\|React\.createFactory" \
-  src/ --include="*.js" --include="*.jsx" 2>/dev/null
-
-# 6. react-dom/test-utils imports - most exports REMOVED
-grep -rn "from 'react-dom/test-utils'\|from \"react-dom/test-utils\"\|require.*react-dom/test-utils" \
-  src/ --include="*.js" --include="*.jsx" 2>/dev/null
-
-# 7. Legacy Context API - REMOVED
-grep -rn "contextTypes\|childContextTypes\|getChildContext" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." 2>/dev/null
-
-# 8. String refs - REMOVED
-grep -rn "this\.refs\." \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." 2>/dev/null
-```
-
----
-
-## Phase 2 - Deprecated APIs (Should Migrate)
-
-```bash
-# 9. forwardRef - deprecated (ref now direct prop)
-grep -rn "forwardRef\|React\.forwardRef" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." 2>/dev/null
-
-# 10. defaultProps on function components - REMOVED for function components
-grep -rn "\.defaultProps\s*=" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." 2>/dev/null
-
-# 11. useRef() without initial value
-grep -rn "useRef()\|useRef( )" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." 2>/dev/null
-
-# 12. propTypes (runtime validation silently dropped)
-grep -rn "\.propTypes\s*=" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l
-
-# 13. react-test-renderer - deprecated
-grep -rn "react-test-renderer\|TestRenderer" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." 2>/dev/null
-
-# 14. Unnecessary React default imports (new JSX transform)
-grep -rn "^import React from 'react'" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." 2>/dev/null
-```
-
----
-
-## Phase 3 - Test File Scans
-
-```bash
-# act() from wrong location
-grep -rn "from 'react-dom/test-utils'" \
-  src/ --include="*.test.js" --include="*.test.jsx" \
-       --include="*.spec.js" --include="*.spec.jsx" 2>/dev/null
-
-# Simulate usage - REMOVED
-grep -rn "Simulate\." \
-  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
-
-# react-test-renderer in tests
-grep -rn "from 'react-test-renderer'" \
-  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
-
-# Spy call count assertions (may need StrictMode delta updates)
-grep -rn "toHaveBeenCalledTimes" \
-  src/ --include="*.test.*" --include="*.spec.*" | head -20 2>/dev/null
-
-# console.error call count assertions (React 19 error reporting change)
-grep -rn "console\.error.*toHaveBeenCalledTimes\|toHaveBeenCalledTimes.*console\.error" \
-  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
-```
-
----
-
-## Phase 4 - StrictMode Behavioral Changes
-
-```bash
-# StrictMode usage
-grep -rn "StrictMode\|React\.StrictMode" \
-  src/ --include="*.js" --include="*.jsx" 2>/dev/null
-
-# Spy assertions that may be affected by StrictMode double-invoke change
-grep -rn "toHaveBeenCalledTimes\|\.mock\.calls\.length" \
-  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
-```
-
----
-
-## Full Summary Script
-
-```bash
-#!/bin/bash
-echo "=============================="
-echo "React 19 Migration Audit Summary"
-echo "=============================="
-echo ""
-echo "REMOVED APIs (Critical):"
-echo "  ReactDOM.render:             $(grep -rn "ReactDOM\.render\s*(" src/ --include="*.js" --include="*.jsx" | wc -l | tr -d ' ') hits"
-echo "  ReactDOM.hydrate:            $(grep -rn "ReactDOM\.hydrate\s*(" src/ --include="*.js" --include="*.jsx" | wc -l | tr -d ' ') hits"
-echo "  unmountComponentAtNode:      $(grep -rn "unmountComponentAtNode" src/ --include="*.js" --include="*.jsx" | wc -l | tr -d ' ') hits"
-echo "  findDOMNode:                 $(grep -rn "findDOMNode" src/ --include="*.js" --include="*.jsx" | wc -l | tr -d ' ') hits"
-echo "  react-dom/test-utils:        $(grep -rn "from 'react-dom/test-utils'" src/ --include="*.js" --include="*.jsx" | wc -l | tr -d ' ') hits"
-echo "  Legacy context:              $(grep -rn "contextTypes\|childContextTypes\|getChildContext" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l | tr -d ' ') hits"
-echo "  String refs:                 $(grep -rn "this\.refs\." src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l | tr -d ' ') hits"
-echo ""
-echo "DEPRECATED APIs:"
-echo "  forwardRef:                  $(grep -rn "forwardRef" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l | tr -d ' ') hits"
-echo "  defaultProps (fn comps):     $(grep -rn "\.defaultProps\s*=" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l | tr -d ' ') hits"
-echo "  useRef() no arg:             $(grep -rn "useRef()" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l | tr -d ' ') hits"
-echo ""
-echo "TEST FILE ISSUES:"
-echo "  react-dom/test-utils:        $(grep -rn "from 'react-dom/test-utils'" src/ --include="*.test.*" --include="*.spec.*" | wc -l | tr -d ' ') hits"
-echo "  Simulate usage:              $(grep -rn "Simulate\." src/ --include="*.test.*" | wc -l | tr -d ' ') hits"
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react-audit-grep-patterns/references/test-scans.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react-audit-grep-patterns/references/test-scans.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react-audit-grep-patterns/references/test-scans.md
-- **SHA256_FINGERPRINT**: `6a2d35c65a90c48f475bf21d2101f0f4f02e4346d381fda6aaaf8cf578529800`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.338288+00:00
----
-
-# Test File Scans - Both Auditors
-
-Scans specifically for test file issues. Run during both R18 and R19 audits.
-
----
-
-## Setup Files
-
-```bash
-# Find test setup files
-find src/ -name "setupTests*" -o -name "jest.setup*" 2>/dev/null
-find . -name "jest.config.js" -o -name "jest.config.ts" 2>/dev/null | grep -v "node_modules"
-
-# Check setup file for legacy patterns
-grep -n "ReactDOM\|react-dom/test-utils\|Enzyme\|configure\|Adapter" \
-  src/setupTests.js 2>/dev/null
-```
-
----
-
-## Import Scans
-
-```bash
-# All react-dom/test-utils imports in tests
-grep -rn "from 'react-dom/test-utils'\|require.*react-dom/test-utils" \
-  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
-
-# Enzyme imports
-grep -rn "from 'enzyme'\|require.*enzyme" \
-  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
-
-# react-test-renderer
-grep -rn "from 'react-test-renderer'" \
-  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
-
-# Old act location
-grep -rn "act.*from 'react-dom'" \
-  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
-```
-
----
-
-## Render Pattern Scans
-
-```bash
-# ReactDOM.render in tests (should use RTL render)
-grep -rn "ReactDOM\.render\s*(" \
-  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
-
-# Enzyme shallow/mount
-grep -rn "shallow(\|mount(" \
-  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
-
-# Custom render helpers
-find src/ -name "test-utils.js" -o -name "renderWithProviders*" \
-  -o -name "customRender*" -o -name "render-helpers*" 2>/dev/null
-```
-
----
-
-## Assertion Scans
-
-```bash
-# Call count assertions (StrictMode sensitive)
-grep -rn "toHaveBeenCalledTimes" \
-  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
-
-# console.error assertions (React error logging changed in R19)
-grep -rn "console\.error" \
-  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
-
-# Intermediate state assertions (batching sensitive)
-grep -rn "fireEvent\|userEvent" \
-  src/ --include="*.test.*" --include="*.spec.*" -A 1 \
-  | grep "expect\|getBy\|queryBy" | head -20 2>/dev/null
-```
-
----
-
-## Async Scans
-
-```bash
-# act() usage
-grep -rn "\bact(" \
-  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
-
-# waitFor usage (good - check these are properly async)
-grep -rn "waitFor\|findBy" \
-  src/ --include="*.test.*" --include="*.spec.*" | wc -l
-
-# setTimeout in tests (may be batching-sensitive)
-grep -rn "setTimeout\|setInterval" \
-  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react-container-presentation-component/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react-container-presentation-component/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react-container-presentation-component/SKILL.md
-- **SHA256_FINGERPRINT**: `914a5d0dcb2a36d2f9213d42b344353aed6b832f5a83497c8372322057462de9`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.456271+00:00
----
-
-**description**: Create a React component using the Container/Presentation pattern in src/components by asking for the component name and type (ui or features), then scaffold files that follow this repository's TypeScript, Storybook, and SCSS conventions. Use when the user explicitly asks for a Container/Presentation-based component or runs /react-container-presentation-component.
-
-# Container/Presentation Component
-
-Use this skill to create a React component under `src/components` that follows the Container/Presentation pattern.
-
-Refer to this skill's bundled references for detailed rules.
-
-- `references/component-architecture.md`
-- `references/typescript-and-scss-rules.md`
-
-If the `/react-container-presentation-component` input is incomplete, ask questions first before creating files.
-
-## When To Use
-
-- When the user runs `/react-container-presentation-component`
-- When the user explicitly asks for a React component that follows the Container/Presentation pattern
-- When the user wants help deciding or implementing `ui` vs `features` classification within the Container/Presentation pattern
-
-## Required Questions
-
-If any of the following information is missing, ask the user using `ask_user`.
-
-1. Component name
-2. Type (`ui` or `features`)
-3. Whether to replace existing components (only when creating `ui`)
-
-Question requirements:
-
-- Provide the type as options (`ui`, `features`)
-- Require the component name to be in PascalCase
-- For `ui`, ask whether direct usage of Mantine or other UI libraries in existing `features` should be replaced with the new component
-
-## Procedure
-
-1. Check existing components
-
-- Check whether `src/components/ui/<ComponentName>` or `src/components/features/<ComponentName>` already exists.
-- If it exists, do not overwrite; confirm the preferred approach with the user.
-
-2. Decide target directory
-
-- `ui`: `src/components/ui/<ComponentName>`
-- `features`: `src/components/features/<ComponentName>`
-
-3. Re-check classification (only when `ui` is specified)
-
-- Even when `ui` is specified, before creating files, review `Reclassification Rule` in `references/component-architecture.md`.
-- If the implementation includes state management, side effects, async processing, context/store updates, or business logic, treat it as `features`.
-- If the result is closer to `features`, do not proceed as `ui`; use `ask_user` and confirm one of the following before continuing.
-  - `Create as features`
-  - `Keep ui and move state/logic to parent or features`
-
-4. Create required files
-
-- `ui`: `index.tsx`, `index.module.scss`, `index.stories.tsx`
-- `features`: `index.tsx`, `use<ComponentName>.tsx`, `presentation.tsx`, `types.ts`, `presentation.module.scss`, `presentation.stories.tsx`
-
-5. Replace existing usages (only when creating `ui`)
-
-- Only when the user approves, replace equivalent direct implementations using Mantine or other UI libraries in existing `features` with the new `ui` component.
-
-6. Validate
-
-- Run build and lint commands, and ensure both pass; if issues are introduced by newly added or updated files, fix them.
-- Follow `Storybook Minimum` in `references/component-architecture.md` for story state decisions.
-- Ask the user via `ask_user` whether to run a Storybook check (for example: "Run" / "Skip for now").
-- Run `npm run storybook` only if the user selects "Run".
-- If the user selects "Skip for now", explicitly mention in the final report that Storybook execution was skipped.
-
-## Output Contract
-
-- Report the list of files created.
-- If replacements were performed, report the list of changed files and replacement details.
-- Provide one usage example of the created component.
-- Report whether Storybook verification was executed (run/skip), and if run, include the command used.
-- Explain why the component was classified as `ui` or `features`.
-- Summarize where state, side effects, and rendering responsibilities were placed.
-- Confirm whether there were any dependency direction violations.
-- Clearly state any unresolved items.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react-container-presentation-component/references/component-architecture.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react-container-presentation-component/references/component-architecture.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react-container-presentation-component/references/component-architecture.md
-- **SHA256_FINGERPRINT**: `8fcfe3192c81e6f0ac58a847fa0d89092409824d84d26eabbff3165ae9a6239f`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.510524+00:00
----
-
-# Component Architecture Reference
-
-This reference defines classification, file layout, and dependency direction in `src/components`.
-
-## Design Intent and Principles
-
-The goal of this skill is not only to add React components, but to apply the Container/Presentation pattern consistently with clear separation of responsibilities and dependency direction.
-
-This reference does not define full application-wide architecture. It focuses on design quality at the component boundary.
-
-- Separate rendering responsibilities from logic responsibilities.
-- Do not place state management, side effects, or business decisions in the presentation layer.
-- Avoid mixing responsibilities across boundaries and keep dependency direction explicit.
-
-## Classification
-
-- Place all components under `src/components`.
-- Use only two categories:
-  - `ui`: render-only, stateless components.
-  - `features`: components that include logic.
-
-## Reclassification Rule
-
-If the user requests `ui` but the implementation contains any of the following, treat it as `features` and ask for confirmation before creating files:
-
-- `useState`, `useReducer`, or `useEffect`.
-- Async behavior (API calls, timers, subscriptions).
-- Reading from or writing to context/store.
-- Business/data transformation logic.
-
-Ask using these options:
-
-- `Create as features`
-- `Keep ui and move logic/state to parent or features`
-
-## Layer Responsibilities
-
-This skill defines layers in two stages.
-
-### 1. Component Type Layer
-
-| Type       | Responsibility                                                                                         |
-| ---------- | ------------------------------------------------------------------------------------------------------ |
-| `ui`       | Reusable render-only component. Must not include business logic, side effects, or state management.    |
-| `features` | Use-case-oriented component. Handles state transitions, event interpretation, and async orchestration. |
-
-### 2. Internal Layer in `features`
-
-| Layer          | Responsibility                                                                      | Primary files                                                              |
-| -------------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `container`    | Handles state management, side effects, event handling, and data fetching.          | `index.tsx`, `use<ComponentName>.tsx`, `types.ts`                          |
-| `presentation` | Receives props and renders UI only. Must not perform external I/O or state updates. | `presentation.tsx`, `presentation.module.scss`, `presentation.stories.tsx` |
-
-Notes:
-
-- `ui` is composed of presentation only.
-- `features` must separate container and presentation.
-
-## Implementation Rules
-
-### ui
-
-- Keep components stateless.
-- Accept data and callbacks via props.
-- Do not add side effects or data fetching.
-- Prefer primitives from Mantine or other UI libraries first; use custom JSX/SCSS only when needed.
-
-### features
-
-- Use the Container/Presentation pattern.
-- Keep logic in `use<ComponentName>.tsx`.
-- Follow `Container/Presentation Separation Rules (Anti-patterns and Decision Examples)` below for detailed responsibility boundaries and anti-patterns.
-
-### Container/Presentation Separation Rules (Anti-patterns and Decision Examples)
-
-Principles:
-
-- Container is responsible for state management, side effects, event interpretation, and async processing.
-- Presentation is responsible only for rendering from received props.
-- Keep business decisions and data transformation in container-side code, not in presentation.
-
-Placement rules:
-
-- Place in container: `useState` / `useReducer` / `useEffect`, API calls, context/store read-write, business rule application.
-- Place in presentation: JSX rendering and display-only branching (for example: empty, loading, error views).
-- Use `types.ts` to define I/O contracts between container and presentation.
-
-Anti-patterns:
-
-- Calling APIs or mutations from presentation.
-- Updating context/store directly from presentation.
-- Implementing business decisions (authorization checks, state transition decisions, data shaping) in presentation.
-- Splitting files formally while keeping practical logic in presentation.
-
-Good / Bad examples:
-
-- Bad: `presentation.tsx` fetches data and manages loading state directly.
-- Good: `use<ComponentName>.tsx` manages data fetching and state, and `presentation.tsx` renders only from props such as `isLoading`, `items`, and `onAction`.
-
-## Dependency Direction
-
-- `features` -> `ui`: allowed.
-- `ui` -> `features`: forbidden.
-
-## File Structure
-
-### ui
-
-- `index.tsx`
-- `presentation.tsx`
-- `presentation.stories.tsx`
-- `presentation.module.scss`
-
-### features
-
-- `index.tsx`
-- `use<ComponentName>.tsx`
-- `presentation.tsx`
-- `types.ts`
-- `presentation.stories.tsx`
-- `presentation.module.scss`
-
-## Storybook Minimum
-
-- Always create `Default`.
-- Add state-specific stories only when distinct states exist.
-- Prefer story sets based on behavior:
-  - Interactive controls: `Hover`.
-  - Input-like: `Focus`, `Error`, `Disabled`.
-  - Layout/open-close: `Open`, `Closed`, `Empty`.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react-container-presentation-component/references/typescript-and-scss-rules.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react-container-presentation-component/references/typescript-and-scss-rules.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react-container-presentation-component/references/typescript-and-scss-rules.md
-- **SHA256_FINGERPRINT**: `be8b5f5764404d325dd16115831180f3b78b80f1ef07b9a54e2d137526f5f9cf`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.427044+00:00
----
-
-# TypeScript and SCSS Rules Reference
-
-## TypeScript Rules
-
-- Do not use `any`.
-
-  ```ts
-  // Bad
-  const handler = (e: any) => {};
-
-  // Good
-  const handler = (e: React.ChangeEvent<HTMLInputElement>) => {};
-  ```
-
-- Use `type` for props instead of `interface`.
-
-  ```ts
-  // Bad
-  interface ButtonProps {
-    label: string;
-  }
-
-  // Good
-  type ButtonProps = { label: string };
-  ```
-
-- Explicitly annotate function return types.
-
-  ```ts
-  // Bad
-  const getLabel = () => "hello";
-
-  // Good
-  const getLabel = (): string => "hello";
-  ```
-
-## SCSS Rules
-
-### Tokens
-
-- Use color variables from `src/styles/theme.scss`.
-- Use animation variables from `src/styles/animation.scss`.
-- Define z-index tokens in `src/styles/z-index.scss` and consume those tokens in component styles.
-- In component SCSS, do not hardcode z-index values (for example, avoid `z-index: 10;` and use a z-index token instead).
-
-### Style Constraints
-
-- Prefer Mantine or other UI libraries first; use SCSS only when complementing library styles is necessary.
-- Do not use negative margins.
-- Prefer unitless `line-height`.
-- Prefer `letter-spacing` in `em`.
-- When margin is needed, only `margin-top` and `margin-left` are allowed.
-- Do not set `margin` or `position` on root elements.
-- The numeric values inside `src/styles/z-index.scss` must follow a 50-step scale (100, 150, ...).
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-batching-patterns/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-batching-patterns/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-batching-patterns/SKILL.md
-- **SHA256_FINGERPRINT**: `a24a845a6bf5743b6fd781ba3a734a02c46fc76bbd41280e37c9d18fd1a48cc9`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.495328+00:00
----
-
-**description**: Provides exact patterns for diagnosing and fixing automatic batching regressions in React 18 class components. Use this skill whenever a class component has multiple setState calls in an async method, inside setTimeout, inside a Promise .then() or .catch(), or in a native event handler. Use it before writing any flushSync call - the decision tree here prevents unnecessary flushSync overuse. Also use this skill when fixing test failures caused by intermediate state assertions that break after React 18 upgrade.
-
-# React 18 Automatic Batching Patterns
-
-Reference for diagnosing and fixing the most dangerous silent breaking change in React 18 for class-component codebases.
-
-## The Core Change
-
-| Location of setState | React 17 | React 18 |
-|---|---|---|
-| React event handler | Batched | Batched (same) |
-| setTimeout | **Immediate re-render** | **Batched** |
-| Promise .then() / .catch() | **Immediate re-render** | **Batched** |
-| async/await | **Immediate re-render** | **Batched** |
-| Native addEventListener callback | **Immediate re-render** | **Batched** |
-
-**Batched** means: all setState calls within that execution context flush together in a single re-render at the end. No intermediate renders occur.
-
-## Quick Diagnosis
-
-Read every async class method. Ask: does any code after an `await` read `this.state` to make a decision?
-
-```
-Code reads this.state after await?
-  YES → Category A (silent state-read bug)
-  NO, but intermediate render must be visible to user?
-    YES → Category C (flushSync needed)
-    NO → Category B (refactor, no flushSync)
-```
-
-For the full pattern for each category, read:
-- **`references/batching-categories.md`** - Category A, B, C with full before/after code
-- **`references/flushSync-guide.md`** - when to use flushSync, when NOT to, import syntax
-
-## The flushSync Rule
-
-**Use `flushSync` sparingly.** It forces a synchronous re-render, bypassing React 18's concurrent scheduler. Overusing it negates the performance benefits of React 18.
-
-Only use `flushSync` when:
-- The user must see an intermediate UI state before an async operation begins
-- A spinner/loading state must render before a fetch starts
-- Sequential UI steps have distinct visible states (progress wizard, multi-step flow)
-
-In most cases, the fix is a **refactor** - restructuring the code to not read `this.state` after `await`. Read `references/batching-categories.md` for the correct approach per category.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-batching-patterns/references/batching-categories.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-batching-patterns/references/batching-categories.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-batching-patterns/references/batching-categories.md
-- **SHA256_FINGERPRINT**: `bc3b35cffc4ef226ac2bec5755eb1784fc7367b743ae152dda01d745ffc58b36`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.438394+00:00
----
-
-# Batching Categories - Before/After Patterns
-
-## Category A - this.state Read After Await (Silent Bug) {#category-a}
-
-The method reads `this.state` after an `await` to make a conditional decision. In React 18, the intermediate setState hasn't flushed yet - `this.state` still holds the pre-update value.
-
-**Before (broken in React 18):**
-
-```jsx
-async handleLoadClick() {
-  this.setState({ loading: true });       // batched - not flushed yet
-  const data = await fetchData();
-  if (this.state.loading) {               // ← still FALSE (old value)
-    this.setState({ data, loading: false });  // ← never called
-  }
-}
-```
-
-**After - remove the this.state read entirely:**
-
-```jsx
-async handleLoadClick() {
-  this.setState({ loading: true });
-  try {
-    const data = await fetchData();
-    this.setState({ data, loading: false }); // always called - no condition needed
-  } catch (err) {
-    this.setState({ error: err, loading: false });
-  }
-}
-```
-
-**Pattern:** If the condition on `this.state` was always going to be true at that point (you just set it to true), remove the condition. The setState you called before `await` will eventually flush - you don't need to check it.
-
----
-
-## Category A Variant - Multi-Step Conditional Chain
-
-```jsx
-// Before (broken):
-async initialize() {
-  this.setState({ step: 'auth' });
-  const token = await authenticate();
-  if (this.state.step === 'auth') {        // ← wrong: still initial value
-    this.setState({ step: 'loading', token });
-    const data = await loadData(token);
-    if (this.state.step === 'loading') {   // ← wrong again
-      this.setState({ step: 'ready', data });
-    }
-  }
-}
-```
-
-```jsx
-// After - use local variables, not this.state, to track flow:
-async initialize() {
-  this.setState({ step: 'auth' });
-  try {
-    const token = await authenticate();
-    this.setState({ step: 'loading', token });
-    const data = await loadData(token);
-    this.setState({ step: 'ready', data });
-  } catch (err) {
-    this.setState({ step: 'error', error: err });
-  }
-}
-```
-
----
-
-## Category B - Independent setState Calls (Refactor, No flushSync) {#category-b}
-
-Multiple setState calls in a Promise chain where order matters but no intermediate state reading occurs. The calls just need to be restructured.
-
-**Before:**
-
-```jsx
-handleSubmit() {
-  this.setState({ submitting: true });
-  submitForm(this.state.formData)
-    .then(result => {
-      this.setState({ result });
-      this.setState({ submitting: false });  // two setState in .then()
-    });
-}
-```
-
-**After - consolidate setState calls:**
-
-```jsx
-async handleSubmit() {
-  this.setState({ submitting: true, result: null, error: null });
-  try {
-    const result = await submitForm(this.state.formData);
-    this.setState({ result, submitting: false });
-  } catch (err) {
-    this.setState({ error: err, submitting: false });
-  }
-}
-```
-
-Rule: Multiple `setState` calls in the same async context already batch in React 18. Consolidating into fewer calls is cleaner but not strictly required.
-
----
-
-## Category C - Intermediate Render Must Be Visible (flushSync) {#category-c}
-
-The user must see an intermediate UI state (loading spinner, progress step) BEFORE an async operation starts. This is the only case where `flushSync` is the right answer.
-
-**Diagnostic question:** "If the loading spinner didn't appear until after the fetch returned, would the UX be wrong?"
-
-- YES → `flushSync`
-- NO → refactor (Category A or B)
-
-**Before:**
-
-```jsx
-async processOrder() {
-  this.setState({ status: 'validating' });   // user must see this
-  await validateOrder(this.props.order);
-  this.setState({ status: 'charging' });     // user must see this
-  await chargeCard(this.props.card);
-  this.setState({ status: 'complete' });
-}
-```
-
-**After - flushSync for each required intermediate render:**
-
-```jsx
-import { flushSync } from 'react-dom';
-
-async processOrder() {
-  flushSync(() => {
-    this.setState({ status: 'validating' });  // renders immediately
-  });
-  await validateOrder(this.props.order);
-
-  flushSync(() => {
-    this.setState({ status: 'charging' });    // renders immediately
-  });
-  await chargeCard(this.props.card);
-
-  this.setState({ status: 'complete' });      // last - no flushSync needed
-}
-```
-
-**Simple loading spinner case** (most common):
-
-```jsx
-import { flushSync } from 'react-dom';
-
-async handleSearch() {
-  // User must see spinner before the fetch begins
-  flushSync(() => this.setState({ loading: true }));
-  const results = await searchAPI(this.state.query);
-  this.setState({ results, loading: false });
-}
-```
-
----
-
-## setTimeout Pattern
-
-```jsx
-// Before (React 17 - setTimeout fired immediate re-renders):
-handleAutoSave() {
-  setTimeout(() => {
-    this.setState({ saving: true });
-    // React 17: re-render happened here
-    saveToServer(this.state.formData).then(() => {
-      this.setState({ saving: false, lastSaved: Date.now() });
-    });
-  }, 2000);
-}
-```
-
-```jsx
-// After (React 18 - all setState inside setTimeout batches):
-handleAutoSave() {
-  setTimeout(async () => {
-    // If loading state must show before fetch - flushSync
-    flushSync(() => this.setState({ saving: true }));
-    await saveToServer(this.state.formData);
-    this.setState({ saving: false, lastSaved: Date.now() });
-  }, 2000);
-}
-```
-
----
-
-## Test Patterns That Break Due to Batching
-
-```jsx
-// Before (React 17 - intermediate state was synchronously visible):
-it('shows saving indicator', () => {
-  render(<AutoSaveForm />);
-  fireEvent.change(input, { target: { value: 'new text' } });
-  expect(screen.getByText('Saving...')).toBeInTheDocument(); // ← sync check
-});
-
-// After (React 18 - use waitFor for intermediate states):
-it('shows saving indicator', async () => {
-  render(<AutoSaveForm />);
-  fireEvent.change(input, { target: { value: 'new text' } });
-  await waitFor(() => expect(screen.getByText('Saving...')).toBeInTheDocument());
-  await waitFor(() => expect(screen.getByText('Saved')).toBeInTheDocument());
-});
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-batching-patterns/references/flushSync-guide.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-batching-patterns/references/flushSync-guide.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-batching-patterns/references/flushSync-guide.md
-- **SHA256_FINGERPRINT**: `20730a5da79c68fe5d7d678fa569c24e3b05ce57d4b96394889591e379a447d0`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.554975+00:00
----
-
-# flushSync Guide
-
-## Import
-
-```jsx
-import { flushSync } from 'react-dom';
-// NOT from 'react' - it lives in react-dom
-```
-
-If the file already imports from `react-dom`:
-
-```jsx
-import ReactDOM from 'react-dom';
-// Add named import:
-import ReactDOM, { flushSync } from 'react-dom';
-```
-
-## Syntax
-
-```jsx
-flushSync(() => {
-  this.setState({ ... });
-});
-// After this line, the re-render has completed synchronously
-```
-
-Multiple setState calls inside one flushSync batch together into ONE synchronous render:
-
-```jsx
-flushSync(() => {
-  this.setState({ step: 'loading' });
-  this.setState({ progress: 0 });
-  // These batch together → one render
-});
-```
-
-## When to Use
-
-✅ Use when the user must see a specific UI state BEFORE an async operation starts:
-
-```jsx
-flushSync(() => this.setState({ loading: true }));
-await expensiveAsyncOperation();
-```
-
-✅ Use in multi-step progress flows where each step must visually complete before the next:
-
-```jsx
-flushSync(() => this.setState({ status: 'validating' }));
-await validate();
-flushSync(() => this.setState({ status: 'processing' }));
-await process();
-```
-
-✅ Use in tests that must assert an intermediate UI state synchronously (avoid when possible - prefer `waitFor`).
-
-## When NOT to Use
-
-❌ Don't use it to "fix" a reading-this.state-after-await bug - that's Category A (refactor instead):
-
-```jsx
-// WRONG - flushSync doesn't fix this
-flushSync(() => this.setState({ loading: true }));
-const data = await fetchData();
-if (this.state.loading) { ... } // still a race condition
-```
-
-❌ Don't use it for every setState to "be safe" - it defeats React 18 concurrent rendering:
-
-```jsx
-// WRONG - excessive flushSync
-async handleClick() {
-  flushSync(() => this.setState({ clicked: true }));   // unnecessary
-  flushSync(() => this.setState({ processing: true })); // unnecessary
-  const result = await doWork();
-  flushSync(() => this.setState({ result, done: true })); // unnecessary
-}
-```
-
-❌ Don't use it inside a `useEffect` or `componentDidMount` to trigger immediate state - it causes nested render cycles.
-
-## Performance Note
-
-`flushSync` forces a synchronous render, which blocks the browser thread until the render completes. On slow devices or complex component trees, multiple `flushSync` calls in an async method will cause visible jank. Use sparingly.
-
-If you find yourself adding more than 2 `flushSync` calls to a single method, reconsider whether the component's state model needs redesign.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-dep-compatibility/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-dep-compatibility/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-dep-compatibility/SKILL.md
-- **SHA256_FINGERPRINT**: `9c0a7460cfa5968a854df325e6d34f78c6cbf988cb3d23f56851291255914671`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.540008+00:00
----
-
-**description**: React 18.3.1 and React 19 dependency compatibility matrix.
-
-# React Dependency Compatibility Matrix
-
-Minimum versions required for React 18.3.1 and React 19 compatibility.
-
-Use this skill whenever checking whether a dependency supports a target React version, resolving peer dependency conflicts, deciding whether to upgrade or use `legacy-peer-deps`, or assessing the risk of a `react-router` v5 to v6 migration.
-
-Review this matrix before running `npm install` during a React upgrade and before accepting an npm dependency conflict resolution, especially where concurrent mode compatibility may be affected.
-## Core Upgrade Targets
-
-| Package | React 17 (current) | React 18.3.1 (min) | React 19 (min) | Notes |
-|---|---|---|---|---|
-| `react` | 17.x | **18.3.1** | **19.0.0** | Pin exactly to 18.3.1 for the R18 orchestra |
-| `react-dom` | 17.x | **18.3.1** | **19.0.0** | Must match react version exactly |
-
-## Testing Libraries
-
-| Package | React 18 Min | React 19 Min | Notes |
-|---|---|---|---|
-| `@testing-library/react` | **14.0.0** | **16.0.0** | RTL 13 uses ReactDOM.render internally - broken in R18 |
-| `@testing-library/jest-dom` | **6.0.0** | **6.0.0** | v5 works but v6 has React 18 matcher updates |
-| `@testing-library/user-event` | **14.0.0** | **14.0.0** | v13 is sync, v14 is async - API change required |
-| `jest` | **27.x** | **27.x** | jest 27+ with jsdom 16+ for React 18 |
-| `jest-environment-jsdom` | **27.x** | **27.x** | Must match jest version |
-
-## Apollo Client
-
-| Package | React 18 Min | React 19 Min | Notes |
-|---|---|---|---|
-| `@apollo/client` | **3.8.0** | **3.11.0** | 3.8 adds `useSyncExternalStore` for concurrent mode |
-| `graphql` | **15.x** | **16.x** | Apollo 3.8+ peer requires graphql 15 or 16 |
-
-Read **`references/apollo-details.md`** for concurrent mode issues and MockedProvider changes.
-
-## Emotion
-
-| Package | React 18 Min | React 19 Min | Notes |
-|---|---|---|---|
-| `@emotion/react` | **11.10.0** | **11.13.0** | 11.10 adds React 18 concurrent mode support |
-| `@emotion/styled` | **11.10.0** | **11.13.0** | Must match @emotion/react version |
-| `@emotion/cache` | **11.10.0** | **11.13.0** | If used directly |
-
-## React Router
-
-| Package | React 18 Min | React 19 Min | Notes |
-|---|---|---|---|
-| `react-router-dom` | **v6.0.0** | **v6.8.0** | v5 → v6 is a breaking migration - see details below |
-| `react-router-dom` v5 | 5.3.4 (workaround) | ❌ Not supported | See legacy peer deps note |
-
-**react-router v5 → v6 is a SEPARATE migration sprint.** Read `references/router-migration.md`.
-
-## Redux
-
-| Package | React 18 Min | React 19 Min | Notes |
-|---|---|---|---|
-| `react-redux` | **8.0.0** | **9.0.0** | v7 works on R18 legacy root only - breaks on concurrent mode |
-| `redux` | **4.x** | **5.x** | Redux itself is framework-agnostic - react-redux version matters |
-| `@reduxjs/toolkit` | **1.9.0** | **2.0.0** | RTK 1.9 tested against React 18 |
-
-## Other Common Packages
-
-| Package | React 18 Min | React 19 Min | Notes |
-|---|---|---|---|
-| `react-query` / `@tanstack/react-query` | **4.0.0** | **5.0.0** | v3 doesn't support concurrent mode |
-| `react-hook-form` | **7.0.0** | **7.43.0** | v6 has concurrent mode issues |
-| `formik` | **2.2.9** | **2.4.0** | v2.2.9 patched for React 18 |
-| `react-select` | **5.0.0** | **5.8.0** | v4 has peer dep conflicts with R18 |
-| `react-datepicker` | **4.8.0** | **6.0.0** | v4.8+ added React 18 support |
-| `react-dnd` | **16.0.0** | **16.0.0** | v15 and below have R18 concurrent mode issues |
-| `prop-types` | any | any | Standalone - unaffected by React version |
-
----
-
-## Conflict Resolution Decision Tree
-
-```
-npm ls shows peer conflict for package X
-         │
-         ▼
-Does package X have a version that supports React 18?
-  YES → npm install X@[min-compatible-version]
-  NO  ↓
-         │
-Is the package critical to the app?
-  YES → check GitHub issues for React 18 branch/fork
-      → check if maintainer has a PR open
-      → last resort: --legacy-peer-deps (document why)
-  NO  → consider removing the package
-```
-
-## --legacy-peer-deps Rules
-
-Only use `--legacy-peer-deps` when:
-- The package has no React 18 compatible release
-- The package is actively maintained (not abandoned)
-- The conflict is only a peer dep declaration mismatch (not actual API incompatibility)
-
-**Document every `--legacy-peer-deps` usage** in a comment at the top of package.json or in a MIGRATION.md file explaining why it was necessary.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-dep-compatibility/references/apollo-details.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-dep-compatibility/references/apollo-details.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-dep-compatibility/references/apollo-details.md
-- **SHA256_FINGERPRINT**: `ad2c192deeadb9e46ab95e085ed15c6cad85ac3bdd3232bb3a53f357a91d057b`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.753252+00:00
----
-
-# Apollo Client - React 18 Compatibility Details
-
-## Why Apollo 3.8+ is Required
-
-Apollo Client 3.7 and below use an internal subscription model that is not compatible with React 18's concurrent rendering. In concurrent mode, React can interrupt and replay renders, which causes Apollo's store subscriptions to fire at incorrect times - producing stale data or missed updates.
-
-Apollo 3.8 was the first version to adopt `useSyncExternalStore`, which React 18 requires for external stores to work correctly under concurrent rendering.
-
-## Version Summary
-
-| Apollo Version | React 18 Support | React 19 Support | Notes |
-|---|---|---|---|
-| < 3.7 | ❌ | ❌ | Concurrent mode data tearing |
-| 3.7.x | ⚠️ | ⚠️ | Works with legacy root only (ReactDOM.render) |
-| **3.8.x** | ✅ | ✅ | First fully compatible version |
-| 3.9+ | ✅ | ✅ | Recommended |
-| 3.11+ | ✅ | ✅ (confirmed) | Explicit React 19 testing added |
-
-## If You're on Apollo 3.7 Using Legacy Root
-
-If the app still uses `ReactDOM.render` (legacy root) and hasn't migrated to `createRoot` yet, Apollo 3.7 will technically work - but this means you're not getting any React 18 concurrent features (including automatic batching). This is a partial upgrade only.
-
-As soon as `createRoot` is used, upgrade Apollo to 3.8+.
-
-## MockedProvider in Tests - React 18
-
-Apollo's `MockedProvider` works with React 18 but async behavior changed:
-
-```jsx
-// Old pattern - flushing with setTimeout:
-await new Promise(resolve => setTimeout(resolve, 0));
-wrapper.update();
-
-// React 18 pattern - use waitFor or findBy:
-await waitFor(() => {
-  expect(screen.getByText('Alice')).toBeInTheDocument();
-});
-// OR:
-expect(await screen.findByText('Alice')).toBeInTheDocument();
-```
-
-## Upgrading Apollo
-
-```bash
-npm install @apollo/client@latest graphql@latest
-```
-
-If graphql peer dep conflicts with other packages:
-
-```bash
-npm ls graphql  # check what version is being used
-npm info @apollo/client peerDependencies  # check what apollo requires
-```
-
-Apollo 3.8+ supports both `graphql@15` and `graphql@16`.
-
-## InMemoryCache - No Changes Required
-
-`InMemoryCache` configuration is unaffected by the React 18 upgrade. No migration needed for:
-
-- `typePolicies`
-- `fragmentMatcher`
-- `possibleTypes`
-- Custom field policies
-
-## useQuery / useMutation / useSubscription - No Changes
-
-Apollo hooks are unchanged in their API. The upgrade is entirely internal to how Apollo integrates with React's rendering model.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-dep-compatibility/references/router-migration.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-dep-compatibility/references/router-migration.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-dep-compatibility/references/router-migration.md
-- **SHA256_FINGERPRINT**: `1a2ea59c1b9a6b67d5517acf25848545f9db5e082daa0d697f46539fd035bb88`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.772671+00:00
----
-
-# React Router v5 → v6 - Scope Assessment
-
-## Why This Is a Separate Sprint
-
-React Router v5 → v6 is a complete API rewrite. Unlike most React 18 upgrade steps which touch individual patterns, the router migration affects:
-
-- Every `<Route>` component
-- Every `<Switch>` (replaced by `<Routes>`)
-- Every `useHistory()` (replaced by `useNavigate()`)
-- Every `useRouteMatch()` (replaced by `useMatch()`)
-- Every `<Redirect>` (replaced by `<Navigate>`)
-- Nested route definitions (entirely new model)
-- Route parameters access
-- Query string handling
-
-Attempting this as part of the React 18 upgrade sprint will scope-creep the migration significantly.
-
-## Recommended Approach
-
-### Option A - Defer Router Migration (Recommended)
-
-Use `react-router-dom@5.3.4` with `--legacy-peer-deps` during the React 18 upgrade. This is explicitly documented as a supported workaround by the react-router team for React 18 compatibility on legacy root.
-
-```bash
-# In the React 18 dep surgeon:
-npm install react-router-dom@5.3.4 --legacy-peer-deps
-```
-
-Document in package.json:
-
-```json
-"_legacyPeerDepsReason": {
-  "react-router-dom@5.3.4": "Router v5→v6 migration deferred to separate sprint. React 18 peer dep mismatch only - no API incompatibility on legacy root."
-}
-```
-
-Then schedule the v5 → v6 migration as its own sprint after the React 18 upgrade is stable.
-
-### Option B - Migrate Router as Part of React 18 Sprint
-
-Only choose this if:
-
-- The app has minimal routing (< 10 routes, no nested routes, no complex navigation logic)
-- The team has bandwidth and the sprint timeline allows it
-
-### Scope Assessment Scan
-
-Run this to understand the router migration scope before deciding:
-
-```bash
-echo "=== Route definitions ==="
-grep -rn "<Route\|<Switch\|<Redirect" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l
-
-echo "=== useHistory calls ==="
-grep -rn "useHistory()" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l
-
-echo "=== useRouteMatch calls ==="
-grep -rn "useRouteMatch()" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l
-
-echo "=== withRouter HOC ==="
-grep -rn "withRouter" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l
-
-echo "=== history.push / history.replace ==="
-grep -rn "history\.push\|history\.replace\|history\.go" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l
-```
-
-**Decision guide:**
-
-- Total hits < 30 → router migration is feasible in this sprint
-- Total hits 30–100 → strongly recommend deferring
-- Total hits > 100 → must defer - separate sprint required
-
-## v5 → v6 API Changes Summary
-
-| v5 | v6 | Notes |
-|---|---|---|
-| `<Switch>` | `<Routes>` | Direct replacement |
-| `<Route path="/" component={C}>` | `<Route path="/" element={<C />}>` | element prop, not component |
-| `<Route exact path="/">` | `<Route path="/">` | exact is default in v6 |
-| `<Redirect to="/new">` | `<Navigate to="/new" />` | Component rename |
-| `useHistory()` | `useNavigate()` | Returns a function, not an object |
-| `history.push('/path')` | `navigate('/path')` | Direct call |
-| `history.replace('/path')` | `navigate('/path', { replace: true })` | Options object |
-| `useRouteMatch()` | `useMatch()` | Different return shape |
-| `match.params` | `useParams()` | Hook instead of prop |
-| Nested routes inline | Nested routes in config | Layout routes concept |
-| `withRouter` HOC | `useNavigate` / `useParams` hooks | HOC removed |
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-enzyme-to-rtl/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-enzyme-to-rtl/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-enzyme-to-rtl/SKILL.md
-- **SHA256_FINGERPRINT**: `d093cedf794df11134c948b13edde0933994d52f0e889691c4abf007e77a00b8`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.637121+00:00
----
-
-**description**: Provides exact Enzyme → React Testing Library migration patterns for React 18 upgrades. Use this skill whenever Enzyme tests need to be rewritten - shallow, mount, wrapper.find(), wrapper.simulate(), wrapper.prop(), wrapper.state(), wrapper.instance(), Enzyme configure/Adapter calls, or any test file that imports from enzyme. This skill covers the full API mapping and the philosophy shift from implementation testing to behavior testing. Always read this skill before rewriting Enzyme tests - do not translate Enzyme APIs 1:1, that produces brittle RTL tests.
-
-# React 18 Enzyme → RTL Migration
-
-Enzyme has no React 18 adapter and no React 18 support path. All Enzyme tests must be rewritten using React Testing Library.
-
-## The Philosophy Shift (Read This First)
-
-Enzyme tests implementation. RTL tests behavior.
-
-```jsx
-// Enzyme: tests that the component has the right internal state
-expect(wrapper.state('count')).toBe(3);
-expect(wrapper.instance().handleClick).toBeDefined();
-expect(wrapper.find('Button').prop('disabled')).toBe(true);
-
-// RTL: tests what the user actually sees and can do
-expect(screen.getByText('Count: 3')).toBeInTheDocument();
-expect(screen.getByRole('button', { name: /submit/i })).toBeDisabled();
-```
-
-This is not a 1:1 translation. Enzyme tests that verify internal state or instance methods don't have RTL equivalents - because RTL intentionally doesn't expose internals. **Rewrite the test to assert the visible outcome instead.**
-
-## API Map
-
-For complete before/after code for each Enzyme API, read:
-- **`references/enzyme-api-map.md`** - full mapping: shallow, mount, find, simulate, prop, state, instance, configure
-- **`references/async-patterns.md`** - waitFor, findBy, act(), Apollo MockedProvider, loading states, error states
-
-## Core Rewrite Template
-
-```jsx
-// Every Enzyme test rewrites to this shape:
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import MyComponent from './MyComponent';
-
-describe('MyComponent', () => {
-  it('does the thing', async () => {
-    // 1. Render (replaces shallow/mount)
-    render(<MyComponent prop="value" />);
-
-    // 2. Query (replaces wrapper.find())
-    const button = screen.getByRole('button', { name: /submit/i });
-
-    // 3. Interact (replaces simulate())
-    await userEvent.setup().click(button);
-
-    // 4. Assert on visible output (replaces wrapper.state() / wrapper.prop())
-    expect(screen.getByText('Submitted!')).toBeInTheDocument();
-  });
-});
-```
-
-## RTL Query Priority (use in this order)
-
-1. `getByRole` - matches accessible roles (button, textbox, heading, checkbox, etc.)
-2. `getByLabelText` - form fields linked to labels
-3. `getByPlaceholderText` - input placeholders
-4. `getByText` - visible text content
-5. `getByDisplayValue` - current value of input/select/textarea
-6. `getByAltText` - image alt text
-7. `getByTitle` - title attribute
-8. `getByTestId` - `data-testid` attribute (last resort)
-
-Prefer `getByRole` over `getByTestId`. It tests accessibility too.
-
-## Wrapping with Providers
-
-```jsx
-// Enzyme with context:
-const wrapper = mount(
-  <ApolloProvider client={client}>
-    <ThemeProvider theme={theme}>
-      <MyComponent />
-    </ThemeProvider>
-  </ApolloProvider>
-);
-
-// RTL equivalent (use your project's customRender or wrap inline):
-import { render } from '@testing-library/react';
-render(
-  <MockedProvider mocks={mocks} addTypename={false}>
-    <ThemeProvider theme={theme}>
-      <MyComponent />
-    </ThemeProvider>
-  </MockedProvider>
-);
-// Or use the project's customRender helper if it wraps providers
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-enzyme-to-rtl/references/async-patterns.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-enzyme-to-rtl/references/async-patterns.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-enzyme-to-rtl/references/async-patterns.md
-- **SHA256_FINGERPRINT**: `17be4cee50164fe81c20363ab7ed2fe99e2218658c8d6be7f58c9c003005a9bd`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.811170+00:00
----
-
-# Async Test Patterns - Enzyme → RTL Migration
-
-Reference for rewriting Enzyme async tests to React Testing Library with React 18 compatible patterns.
-
-## The Core Problem
-
-Enzyme's async tests typically used one of these approaches:
-
-- `wrapper.update()` after state changes
-- `setTimeout` / `Promise.resolve()` to flush microtasks
-- `setImmediate` to flush async queues
-- Direct instance method calls followed by `wrapper.update()`
-
-None of these work in RTL. RTL provides `waitFor`, `findBy*`, and `act` instead.
-
----
-
-## Pattern 1 - wrapper.update() After State Change
-
-Enzyme required `wrapper.update()` to force a re-render after async state changes.
-
-```jsx
-// Enzyme:
-it('loads data', async () => {
-  const wrapper = mount(<UserList />);
-  await Promise.resolve(); // flush microtasks
-  wrapper.update();        // force Enzyme to sync with DOM
-  expect(wrapper.find('li')).toHaveLength(3);
-});
-```
-
-```jsx
-// RTL - waitFor handles re-renders automatically:
-import { render, screen, waitFor } from '@testing-library/react';
-
-it('loads data', async () => {
-  render(<UserList />);
-  await waitFor(() => {
-    expect(screen.getAllByRole('listitem')).toHaveLength(3);
-  });
-});
-```
-
----
-
-## Pattern 2 - Async Action Triggered by User Interaction
-
-```jsx
-// Enzyme:
-it('fetches user on button click', async () => {
-  const wrapper = mount(<UserCard />);
-  wrapper.find('button').simulate('click');
-  await new Promise(resolve => setTimeout(resolve, 0));
-  wrapper.update();
-  expect(wrapper.find('.user-name').text()).toBe('John Doe');
-});
-```
-
-```jsx
-// RTL:
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-
-it('fetches user on button click', async () => {
-  render(<UserCard />);
-  await userEvent.setup().click(screen.getByRole('button', { name: /load/i }));
-  // findBy* auto-waits up to 1000ms (configurable)
-  expect(await screen.findByText('John Doe')).toBeInTheDocument();
-});
-```
-
----
-
-## Pattern 3 - Loading State Assertion
-
-```jsx
-// Enzyme - asserted loading state synchronously then final state after flush:
-it('shows loading then result', async () => {
-  const wrapper = mount(<SearchResults query="react" />);
-  expect(wrapper.find('.spinner').exists()).toBe(true);
-  await new Promise(resolve => setTimeout(resolve, 100));
-  wrapper.update();
-  expect(wrapper.find('.spinner').exists()).toBe(false);
-  expect(wrapper.find('.result')).toHaveLength(5);
-});
-```
-
-```jsx
-// RTL:
-it('shows loading then result', async () => {
-  render(<SearchResults query="react" />);
-  // Loading state - check it appears
-  expect(screen.getByRole('progressbar')).toBeInTheDocument();
-  // Or if loading is text:
-  expect(screen.getByText(/loading/i)).toBeInTheDocument();
-
-  // Wait for results to appear (loading disappears, results show)
-  await waitFor(() => {
-    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
-  });
-  expect(screen.getAllByRole('listitem')).toHaveLength(5);
-});
-```
-
----
-
-## Pattern 4 - Apollo MockedProvider Async Tests
-
-```jsx
-// Enzyme with Apollo - used to flush with multiple ticks:
-it('renders user from query', async () => {
-  const wrapper = mount(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <UserProfile id="1" />
-    </MockedProvider>
-  );
-  await new Promise(resolve => setTimeout(resolve, 0)); // flush Apollo queue
-  wrapper.update();
-  expect(wrapper.find('.username').text()).toBe('Alice');
-});
-```
-
-```jsx
-// RTL with Apollo:
-import { render, screen, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
-
-it('renders user from query', async () => {
-  render(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <UserProfile id="1" />
-    </MockedProvider>
-  );
-
-  // Wait for Apollo to resolve the query
-  expect(await screen.findByText('Alice')).toBeInTheDocument();
-  // OR:
-  await waitFor(() => {
-    expect(screen.getByText('Alice')).toBeInTheDocument();
-  });
-});
-```
-
-**Apollo loading state in RTL:**
-
-```jsx
-it('shows loading then data', async () => {
-  render(
-    <MockedProvider mocks={mocks} addTypename={false}>
-      <UserProfile id="1" />
-    </MockedProvider>
-  );
-  // Apollo loading state - check immediately after render
-  expect(screen.getByText(/loading/i)).toBeInTheDocument();
-  // Then wait for data
-  expect(await screen.findByText('Alice')).toBeInTheDocument();
-});
-```
-
----
-
-## Pattern 5 - Error State from Async Operation
-
-```jsx
-// Enzyme:
-it('shows error on failed fetch', async () => {
-  server.use(rest.get('/api/user', (req, res, ctx) => res(ctx.status(500))));
-  const wrapper = mount(<UserCard />);
-  wrapper.find('button').simulate('click');
-  await new Promise(resolve => setTimeout(resolve, 0));
-  wrapper.update();
-  expect(wrapper.find('.error-message').text()).toContain('Something went wrong');
-});
-```
-
-```jsx
-// RTL:
-it('shows error on failed fetch', async () => {
-  // (assuming MSW or jest.mock for fetch)
-  render(<UserCard />);
-  await userEvent.setup().click(screen.getByRole('button', { name: /load/i }));
-  expect(await screen.findByText(/something went wrong/i)).toBeInTheDocument();
-});
-```
-
----
-
-## Pattern 6 - act() for Manual Async Control
-
-When you need explicit control over async timing (rare with RTL but occasionally needed for class component tests):
-
-```jsx
-// RTL with act() for fine-grained async control:
-import { act } from 'react';
-
-it('handles sequential state updates', async () => {
-  render(<MultiStepForm />);
-
-  await act(async () => {
-    fireEvent.click(screen.getByRole('button', { name: /next/i }));
-    await Promise.resolve(); // flush microtask queue
-  });
-
-  expect(screen.getByText('Step 2')).toBeInTheDocument();
-});
-```
-
----
-
-## RTL Async Query Guide
-
-| Method | Behavior | Use when |
-|---|---|---|
-| `getBy*` | Synchronous - throws if not found | Element is always present immediately |
-| `queryBy*` | Synchronous - returns null if not found | Checking element does NOT exist |
-| `findBy*` | Async - waits up to 1000ms, rejects if not found | Element appears asynchronously |
-| `getAllBy*` | Synchronous - throws if 0 found | Multiple elements always present |
-| `queryAllBy*` | Synchronous - returns [] if none found | Checking count or non-existence |
-| `findAllBy*` | Async - waits for elements to appear | Multiple elements appear asynchronously |
-| `waitFor(fn)` | Retries fn until no error or timeout | Custom assertion that needs polling |
-| `waitForElementToBeRemoved(el)` | Waits until element disappears | Loading states, removals |
-
-**Default timeout:** 1000ms. Configure globally in `jest.config.js`:
-
-```js
-// Increase timeout for slow CI environments
-// jest.config.js
-module.exports = {
-  testEnvironmentOptions: {
-    asyncUtilTimeout: 3000,
-  },
-};
-```
-
----
-
-## Common Migration Mistakes
-
-```jsx
-// WRONG - mixing async query with sync assertion:
-const el = await screen.findByText('Result');
-// el is already resolved here - findBy returns the element, not a promise
-expect(await el).toBeInTheDocument(); // unnecessary second await
-
-// CORRECT:
-const el = await screen.findByText('Result');
-expect(el).toBeInTheDocument();
-// OR simply:
-expect(await screen.findByText('Result')).toBeInTheDocument();
-```
-
-```jsx
-// WRONG - using getBy* for elements that appear asynchronously:
-fireEvent.click(button);
-expect(screen.getByText('Loaded!')).toBeInTheDocument(); // throws before data loads
-
-// CORRECT:
-fireEvent.click(button);
-expect(await screen.findByText('Loaded!')).toBeInTheDocument(); // waits
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-enzyme-to-rtl/references/enzyme-api-map.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-enzyme-to-rtl/references/enzyme-api-map.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-enzyme-to-rtl/references/enzyme-api-map.md
-- **SHA256_FINGERPRINT**: `a7efb506afc0231004c8c18307a8f91235b785a3b6837f448c26d1cb2a900b61`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.838163+00:00
----
-
-# Enzyme API Map - Complete Before/After
-
-## Setup / Configure
-
-```jsx
-// Enzyme:
-import Enzyme from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-Enzyme.configure({ adapter: new Adapter() });
-
-// RTL: delete this entirely - no setup needed
-// (jest.config.js setupFilesAfterFramework handles @testing-library/jest-dom matchers)
-```
-
----
-
-## Rendering
-
-```jsx
-// Enzyme - shallow (no children rendered):
-import { shallow } from 'enzyme';
-const wrapper = shallow(<MyComponent prop="value" />);
-
-// RTL - render (full render, children included):
-import { render } from '@testing-library/react';
-render(<MyComponent prop="value" />);
-// No wrapper variable needed - query via screen
-```
-
-```jsx
-// Enzyme - mount (full render with DOM):
-import { mount } from 'enzyme';
-const wrapper = mount(<MyComponent />);
-
-// RTL - same render() call handles this
-render(<MyComponent />);
-```
-
----
-
-## Querying
-
-```jsx
-// Enzyme - find by component type:
-const button = wrapper.find('button');
-const comp = wrapper.find(ChildComponent);
-const items = wrapper.find('.list-item');
-
-// RTL - query by accessible attributes:
-const button = screen.getByRole('button');
-const button = screen.getByRole('button', { name: /submit/i });
-const heading = screen.getByRole('heading', { name: /title/i });
-const input = screen.getByLabelText('Email');
-const items = screen.getAllByRole('listitem');
-```
-
-```jsx
-// Enzyme - find by text:
-wrapper.find('.message').text() === 'Hello'
-
-// RTL:
-screen.getByText('Hello')
-screen.getByText(/hello/i)  // case-insensitive regex
-```
-
----
-
-## User Interaction
-
-```jsx
-// Enzyme:
-wrapper.find('button').simulate('click');
-wrapper.find('input').simulate('change', { target: { value: 'hello' } });
-wrapper.find('form').simulate('submit');
-
-// RTL - fireEvent (synchronous, low-level):
-import { fireEvent } from '@testing-library/react';
-fireEvent.click(screen.getByRole('button'));
-fireEvent.change(screen.getByRole('textbox'), { target: { value: 'hello' } });
-fireEvent.submit(screen.getByRole('form'));
-
-// RTL - userEvent (preferred, simulates real user behavior):
-import userEvent from '@testing-library/user-event';
-const user = userEvent.setup();
-await user.click(screen.getByRole('button'));
-await user.type(screen.getByRole('textbox'), 'hello');
-await user.selectOptions(screen.getByRole('combobox'), 'option1');
-```
-
-**Use `userEvent` for most interactions** - it fires the full event sequence (pointerdown, mousedown, focus, click, etc.) like a real user. Use `fireEvent` only when testing specific event properties.
-
----
-
-## Assertions on Props and State
-
-```jsx
-// Enzyme - prop assertion:
-expect(wrapper.find('input').prop('disabled')).toBe(true);
-expect(wrapper.prop('className')).toContain('active');
-
-// RTL - assert on visible attributes:
-expect(screen.getByRole('textbox')).toBeDisabled();
-expect(screen.getByRole('button')).toHaveAttribute('type', 'submit');
-expect(screen.getByRole('listitem')).toHaveClass('active');
-```
-
-```jsx
-// Enzyme - state assertion (NO RTL EQUIVALENT):
-expect(wrapper.state('count')).toBe(3);
-expect(wrapper.state('loading')).toBe(false);
-
-// RTL - assert on what the state renders:
-expect(screen.getByText('Count: 3')).toBeInTheDocument();
-expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
-```
-
-**Key principle:** Don't test state values - test what the state produces in the UI. If the component renders `<span>Count: {this.state.count}</span>`, test that span.
-
----
-
-## Instance Methods
-
-```jsx
-// Enzyme - direct method call (NO RTL EQUIVALENT):
-wrapper.instance().handleSubmit();
-wrapper.instance().loadData();
-
-// RTL - trigger through the UI:
-await userEvent.setup().click(screen.getByRole('button', { name: /submit/i }));
-// Or if no UI trigger exists, reconsider: should internal methods be tested directly?
-// Usually the answer is no - test the rendered outcome instead.
-```
-
----
-
-## Existence Checks
-
-```jsx
-// Enzyme:
-expect(wrapper.find('.error')).toHaveLength(1);
-expect(wrapper.find('.error')).toHaveLength(0);
-expect(wrapper.exists('.error')).toBe(true);
-
-// RTL:
-expect(screen.getByText('Error message')).toBeInTheDocument();
-expect(screen.queryByText('Error message')).not.toBeInTheDocument();
-// queryBy returns null instead of throwing when not found
-// getBy throws if not found - use in positive assertions
-// findBy returns a promise - use for async elements
-```
-
----
-
-## Multiple Elements
-
-```jsx
-// Enzyme:
-expect(wrapper.find('li')).toHaveLength(5);
-wrapper.find('li').forEach((item, i) => {
-  expect(item.text()).toBe(expectedItems[i]);
-});
-
-// RTL:
-const items = screen.getAllByRole('listitem');
-expect(items).toHaveLength(5);
-items.forEach((item, i) => {
-  expect(item).toHaveTextContent(expectedItems[i]);
-});
-```
-
----
-
-## Before/After: Complete Component Test
-
-```jsx
-// Enzyme version:
-import { shallow } from 'enzyme';
-
-describe('LoginForm', () => {
-  it('submits with credentials', () => {
-    const mockSubmit = jest.fn();
-    const wrapper = shallow(<LoginForm onSubmit={mockSubmit} />);
-
-    wrapper.find('input[name="email"]').simulate('change', {
-      target: { value: 'user@example.com' }
-    });
-    wrapper.find('input[name="password"]').simulate('change', {
-      target: { value: 'password123' }
-    });
-    wrapper.find('button[type="submit"]').simulate('click');
-
-    expect(wrapper.state('loading')).toBe(true);
-    expect(mockSubmit).toHaveBeenCalledWith({
-      email: 'user@example.com',
-      password: 'password123'
-    });
-  });
-});
-```
-
-```jsx
-// RTL version:
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-
-describe('LoginForm', () => {
-  it('submits with credentials', async () => {
-    const mockSubmit = jest.fn();
-    const user = userEvent.setup();
-    render(<LoginForm onSubmit={mockSubmit} />);
-
-    await user.type(screen.getByLabelText(/email/i), 'user@example.com');
-    await user.type(screen.getByLabelText(/password/i), 'password123');
-    await user.click(screen.getByRole('button', { name: /submit/i }));
-
-    // Assert on visible output - not on state
-    expect(screen.getByRole('button', { name: /submit/i })).toBeDisabled(); // loading state
-    expect(mockSubmit).toHaveBeenCalledWith({
-      email: 'user@example.com',
-      password: 'password123'
-    });
-  });
-});
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-legacy-context/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-legacy-context/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-legacy-context/SKILL.md
-- **SHA256_FINGERPRINT**: `c8bae1fbba6e00fdf9e319616d7670c7ee3c26da922f927fa356ed9eb078116e`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.717203+00:00
----
-
-**description**: Provides the complete migration pattern for React legacy context API (contextTypes, childContextTypes, getChildContext) to the modern createContext API. Use this skill whenever migrating legacy context in class components - this is always a cross-file migration requiring the provider AND all consumers to be updated together. Use it before touching any contextTypes or childContextTypes code, because migrating only the provider without the consumers (or vice versa) will cause a runtime failure. Always read this skill before writing any context migration - the cross-file coordination steps here prevent the most common context migration bugs.
-
-# React 18 Legacy Context Migration
-
-Legacy context (`contextTypes`, `childContextTypes`, `getChildContext`) was deprecated in React 16.3 and warns in React 18.3.1. It is **removed in React 19**.
-
-## This Is Always a Cross-File Migration
-
-Unlike most other migrations that touch one file at a time, context migration requires coordinating:
-1. Create the context object (usually a new file)
-2. Update the **provider** component
-3. Update **every consumer** component
-
-Missing any consumer leaves the app broken - it will read from the wrong context or get `undefined`.
-
-## Migration Steps (Always Follow This Order)
-
-```
-Step 1: Find the provider (childContextTypes + getChildContext)
-Step 2: Find ALL consumers (contextTypes)
-Step 3: Create the context file
-Step 4: Update the provider
-Step 5: Update each consumer (class components → contextType, function components → useContext)
-Step 6: Verify - run the app, check no legacy context warnings remain
-```
-
-## Scan Commands
-
-```bash
-# Find all providers
-grep -rn "childContextTypes\|getChildContext" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-
-# Find all consumers
-grep -rn "contextTypes\s*=" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-
-# Find this.context usage (may be legacy or modern - check which)
-grep -rn "this\.context\." src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-```
-
-## Reference Files
-
-- **`references/single-context.md`** - complete migration for one context (theme, auth, etc.) with provider + class consumer + function consumer
-- **`references/multi-context.md`** - apps with multiple legacy contexts (nested providers, multiple consumers of different contexts)
-- **`references/context-file-template.md`** - the standard file structure for a new context module
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-legacy-context/references/context-file-template.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-legacy-context/references/context-file-template.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-legacy-context/references/context-file-template.md
-- **SHA256_FINGERPRINT**: `49e622fec7b85c4759585564124df0b6f24e233715259afdf190254838c525c6`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.776919+00:00
----
-
-# Context File Template
-
-Standard template for a new context module. Copy and fill in the name.
-
-## Template
-
-```jsx
-// src/contexts/[Name]Context.js
-import React from 'react';
-
-// ─── 1. Default Value ───────────────────────────────────────────────────────
-// Shape must match what the provider will pass as `value`
-// Used when a consumer renders outside any provider (edge case protection)
-const defaultValue = {
-  // fill in the shape
-};
-
-// ─── 2. Create Context ──────────────────────────────────────────────────────
-export const [Name]Context = React.createContext(defaultValue);
-
-// ─── 3. Display Name (for React DevTools) ───────────────────────────────────
-[Name]Context.displayName = '[Name]Context';
-
-// ─── 4. Optional: Custom Hook (strongly recommended) ────────────────────────
-// Provides a clean import path and a helpful error if used outside provider
-export function use[Name]() {
-  const context = React.useContext([Name]Context);
-  if (context === defaultValue) {
-    // Only throw if defaultValue is a sentinel - skip if a real default makes sense
-    // throw new Error('use[Name] must be used inside a [Name]Provider');
-  }
-  return context;
-}
-```
-
-## Filled Example - AuthContext
-
-```jsx
-// src/contexts/AuthContext.js
-import React from 'react';
-
-const defaultValue = {
-  user: null,
-  isAuthenticated: false,
-  login: () => Promise.resolve(),
-  logout: () => {},
-};
-
-export const AuthContext = React.createContext(defaultValue);
-AuthContext.displayName = 'AuthContext';
-
-export function useAuth() {
-  return React.useContext(AuthContext);
-}
-```
-
-## Filled Example - ThemeContext
-
-```jsx
-// src/contexts/ThemeContext.js
-import React from 'react';
-
-const defaultValue = {
-  theme: 'light',
-  toggleTheme: () => {},
-};
-
-export const ThemeContext = React.createContext(defaultValue);
-ThemeContext.displayName = 'ThemeContext';
-
-export function useTheme() {
-  return React.useContext(ThemeContext);
-}
-```
-
-## Where to Put Context Files
-
-```
-src/
-  contexts/           ← preferred: dedicated folder
-    AuthContext.js
-    ThemeContext.js
-```
-
-Alternative acceptable locations:
-
-```
-src/context/          ← singular is also fine
-src/store/contexts/   ← if co-located with state management
-```
-
-Do NOT put context files inside a component folder - contexts are cross-cutting and shouldn't be owned by any one component.
-
-## Provider Placement in the App
-
-Context providers wrap the components that need access. Place as low in the tree as possible, not always at root:
-
-```jsx
-// App.js
-import { ThemeProvider } from './ThemeProvider';
-import { AuthProvider } from './AuthProvider';
-
-function App() {
-  return (
-    // Auth wraps everything - login state is needed everywhere
-    <AuthProvider>
-      {/* Theme wraps only the UI shell - not needed in pure data providers */}
-      <ThemeProvider>
-        <Router>
-          <AppShell />
-        </Router>
-      </ThemeProvider>
-    </AuthProvider>
-  );
-}
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-legacy-context/references/multi-context.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-legacy-context/references/multi-context.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-legacy-context/references/multi-context.md
-- **SHA256_FINGERPRINT**: `46234f3cd234701aca63b40e191bfd5d765c05d57f6818764cfc15c7a3730a03`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.906014+00:00
----
-
-# Multiple Legacy Contexts - Migration Reference
-
-## Identifying Multiple Contexts
-
-A React 16/17 codebase often has several legacy contexts used for different concerns:
-
-```bash
-# Find distinct context names used in childContextTypes
-grep -rn "childContextTypes" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-# Each hit is a separate context to migrate
-```
-
-Common patterns in class-heavy codebases:
-
-- **Theme context** - dark/light mode, color palette
-- **Auth context** - current user, login/logout functions
-- **Router context** - current route, navigation (if using older react-router)
-- **Store context** - Redux store, dispatch (if using older connect patterns)
-- **Locale/i18n context** - language, translation function
-- **Toast/notification context** - show/hide notifications
-
----
-
-## Migration Order
-
-Migrate contexts one at a time. Each is an independent migration:
-
-```
-For each legacy context:
-  1. Create src/contexts/[Name]Context.js
-  2. Update the provider
-  3. Update all consumers
-  4. Run the app - verify no warning for this context
-  5. Move to the next context
-```
-
-Do not migrate all providers first then all consumers - it leaves the app in a broken intermediate state.
-
----
-
-## Multiple Contexts in the Same Provider
-
-Some apps combined multiple contexts in one provider component:
-
-```jsx
-// Before - one provider exports multiple context values:
-class AppProvider extends React.Component {
-  static childContextTypes = {
-    theme: PropTypes.string,
-    user: PropTypes.object,
-    locale: PropTypes.string,
-    notifications: PropTypes.array,
-  };
-
-  getChildContext() {
-    return {
-      theme: this.state.theme,
-      user: this.state.user,
-      locale: this.state.locale,
-      notifications: this.state.notifications,
-    };
-  }
-}
-```
-
-**Migration approach - split into separate contexts:**
-
-```jsx
-// src/contexts/ThemeContext.js
-export const ThemeContext = React.createContext('light');
-
-// src/contexts/AuthContext.js
-export const AuthContext = React.createContext({ user: null, login: () => {}, logout: () => {} });
-
-// src/contexts/LocaleContext.js
-export const LocaleContext = React.createContext('en');
-
-// src/contexts/NotificationContext.js
-export const NotificationContext = React.createContext([]);
-```
-
-```jsx
-// AppProvider.js - now wraps with multiple providers
-import { ThemeContext } from './contexts/ThemeContext';
-import { AuthContext } from './contexts/AuthContext';
-import { LocaleContext } from './contexts/LocaleContext';
-import { NotificationContext } from './contexts/NotificationContext';
-
-class AppProvider extends React.Component {
-  render() {
-    const { theme, user, locale, notifications } = this.state;
-    return (
-      <ThemeContext.Provider value={theme}>
-        <AuthContext.Provider value={{ user, login: this.login, logout: this.logout }}>
-          <LocaleContext.Provider value={locale}>
-            <NotificationContext.Provider value={notifications}>
-              {this.props.children}
-            </NotificationContext.Provider>
-          </LocaleContext.Provider>
-        </AuthContext.Provider>
-      </ThemeContext.Provider>
-    );
-  }
-}
-```
-
----
-
-## Consumer With Multiple Contexts (Class Component)
-
-Class components can only use ONE `static contextType`. For multiple, use `Consumer` render props or convert to a function component.
-
-### Option A - Render Props (keep as class component)
-
-```jsx
-import { ThemeContext } from '../contexts/ThemeContext';
-import { AuthContext } from '../contexts/AuthContext';
-
-class UserPanel extends React.Component {
-  render() {
-    return (
-      <ThemeContext.Consumer>
-        {(theme) => (
-          <AuthContext.Consumer>
-            {({ user, logout }) => (
-              <div className={`panel panel-${theme}`}>
-                <span>{user?.name}</span>
-                <button onClick={logout}>Sign out</button>
-              </div>
-            )}
-          </AuthContext.Consumer>
-        )}
-      </ThemeContext.Consumer>
-    );
-  }
-}
-```
-
-### Option B - Convert to Function Component (preferred)
-
-```jsx
-import { useContext } from 'react';
-import { ThemeContext } from '../contexts/ThemeContext';
-import { AuthContext } from '../contexts/AuthContext';
-
-function UserPanel() {
-  const theme = useContext(ThemeContext);
-  const { user, logout } = useContext(AuthContext);
-
-  return (
-    <div className={`panel panel-${theme}`}>
-      <span>{user?.name}</span>
-      <button onClick={logout}>Sign out</button>
-    </div>
-  );
-}
-```
-
-If converting to a function component is out of scope for this migration sprint - use Option A. If the class component is simple (mostly just render), Option B is worth the minor rewrite.
-
----
-
-## Context File Naming Conventions
-
-Use consistent naming across the codebase:
-
-```
-src/
-  contexts/
-    ThemeContext.js      → exports: ThemeContext, ThemeProvider (optional)
-    AuthContext.js       → exports: AuthContext, AuthProvider (optional)
-    LocaleContext.js     → exports: LocaleContext
-```
-
-Each file exports the context object. The provider can stay in its original file and just import the context.
-
----
-
-## Verification After All Contexts Migrated
-
-```bash
-# Should return zero hits for legacy context patterns
-echo "=== childContextTypes ==="
-grep -rn "childContextTypes" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l
-
-echo "=== contextTypes (legacy) ==="
-grep -rn "^\s*static contextTypes\s*=\|contextTypes\.propTypes" src/ --include="*.js" | grep -v "\.test\." | wc -l
-
-echo "=== getChildContext ==="
-grep -rn "getChildContext" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l
-
-echo "All three should be 0"
-```
-
-Note: `static contextType` (singular) is the MODERN API - that's correct. Only `contextTypes` (plural) is legacy.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-legacy-context/references/single-context.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-legacy-context/references/single-context.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-legacy-context/references/single-context.md
-- **SHA256_FINGERPRINT**: `5d5e520162442d3e5d1d7d8a952b6afef6fb16d987fe9e6b23ecc7ff2b807aaf`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.884379+00:00
----
-
-# Single Context Migration - Complete Before/After
-
-## Full Example: ThemeContext
-
-This covers the most common pattern - one context with one provider and multiple consumers.
-
----
-
-### Step 1 - Before State (Legacy)
-
-**ThemeProvider.js (provider):**
-
-```jsx
-import PropTypes from 'prop-types';
-
-class ThemeProvider extends React.Component {
-  static childContextTypes = {
-    theme: PropTypes.string,
-    toggleTheme: PropTypes.func,
-  };
-
-  state = { theme: 'light' };
-
-  toggleTheme = () => {
-    this.setState(s => ({ theme: s.theme === 'light' ? 'dark' : 'light' }));
-  };
-
-  getChildContext() {
-    return {
-      theme: this.state.theme,
-      toggleTheme: this.toggleTheme,
-    };
-  }
-
-  render() {
-    return this.props.children;
-  }
-}
-```
-
-**ThemedButton.js (class consumer):**
-
-```jsx
-import PropTypes from 'prop-types';
-
-class ThemedButton extends React.Component {
-  static contextTypes = {
-    theme: PropTypes.string,
-    toggleTheme: PropTypes.func,
-  };
-
-  render() {
-    const { theme, toggleTheme } = this.context;
-    return (
-      <button className={`btn btn-${theme}`} onClick={toggleTheme}>
-        Toggle Theme
-      </button>
-    );
-  }
-}
-```
-
-**ThemedHeader.js (function consumer - if any):**
-
-```jsx
-// Function components couldn't use legacy context cleanly
-// They had to use a class wrapper or render prop
-```
-
----
-
-### Step 2 - Create Context File
-
-**src/contexts/ThemeContext.js (new file):**
-
-```jsx
-import React from 'react';
-
-// Default value matches the shape of getChildContext() return
-export const ThemeContext = React.createContext({
-  theme: 'light',
-  toggleTheme: () => {},
-});
-
-// Named export for the context - both provider and consumers import from here
-```
-
----
-
-### Step 3 - Update Provider
-
-**ThemeProvider.js (after):**
-
-```jsx
-import React from 'react';
-import { ThemeContext } from '../contexts/ThemeContext';
-
-class ThemeProvider extends React.Component {
-  state = { theme: 'light' };
-
-  toggleTheme = () => {
-    this.setState(s => ({ theme: s.theme === 'light' ? 'dark' : 'light' }));
-  };
-
-  render() {
-    // React 19 JSX shorthand: <ThemeContext value={...}>
-    // React 18: <ThemeContext.Provider value={...}>
-    return (
-      <ThemeContext.Provider
-        value={{
-          theme: this.state.theme,
-          toggleTheme: this.toggleTheme,
-        }}
-      >
-        {this.props.children}
-      </ThemeContext.Provider>
-    );
-  }
-}
-
-export default ThemeProvider;
-```
-
-> **React 19 note:** In React 19 you can write `<ThemeContext value={...}>` directly (no `.Provider`). For React 18.3.1 use `<ThemeContext.Provider value={...}>`.
-
----
-
-### Step 4 - Update Class Consumer
-
-**ThemedButton.js (after):**
-
-```jsx
-import React from 'react';
-import { ThemeContext } from '../contexts/ThemeContext';
-
-class ThemedButton extends React.Component {
-  // singular contextType (not contextTypes)
-  static contextType = ThemeContext;
-
-  render() {
-    const { theme, toggleTheme } = this.context;
-    return (
-      <button className={`btn btn-${theme}`} onClick={toggleTheme}>
-        Toggle Theme
-      </button>
-    );
-  }
-}
-
-export default ThemedButton;
-```
-
-**Key differences from legacy:**
-
-- `static contextType` (singular) not `contextTypes` (plural)
-- No PropTypes declaration needed
-- `this.context` is the full value object (not a partial - whatever you passed to `value`)
-- Only ONE context per class component via `contextType` - use `Context.Consumer` render prop for multiple
-
----
-
-### Step 5 - Update Function Consumer
-
-**ThemedHeader.js (after - now straightforward with hooks):**
-
-```jsx
-import { useContext } from 'react';
-import { ThemeContext } from '../contexts/ThemeContext';
-
-function ThemedHeader({ title }) {
-  const { theme } = useContext(ThemeContext);
-  return <h1 className={`header-${theme}`}>{title}</h1>;
-}
-```
-
----
-
-### Step 6 - Multiple Contexts in One Class Component
-
-If a class component consumed more than one legacy context, it gets complex. Class components can only have one `static contextType`. For multiple contexts, use the render prop form:
-
-```jsx
-import { ThemeContext } from '../contexts/ThemeContext';
-import { AuthContext } from '../contexts/AuthContext';
-
-class Dashboard extends React.Component {
-  render() {
-    return (
-      <ThemeContext.Consumer>
-        {({ theme }) => (
-          <AuthContext.Consumer>
-            {({ user }) => (
-              <div className={`dashboard-${theme}`}>
-                Welcome, {user.name}
-              </div>
-            )}
-          </AuthContext.Consumer>
-        )}
-      </ThemeContext.Consumer>
-    );
-  }
-}
-```
-
-Or consider migrating the class component to a function component to use `useContext` cleanly.
-
----
-
-### Verification Checklist
-
-After migrating one context:
-
-```bash
-# Provider - no legacy context exports remain
-grep -n "childContextTypes\|getChildContext" src/ThemeProvider.js
-
-# Consumers - no legacy context consumption remains
-grep -rn "contextTypes\s*=" src/ --include="*.js" --include="*.jsx" | grep -v "ThemeContext\|\.test\."
-
-# this.context usage - confirm it reads from contextType not legacy
-grep -rn "this\.context\." src/ --include="*.js" | grep -v "\.test\."
-```
-
-Each should return zero hits for the migrated context.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-lifecycle-patterns/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-lifecycle-patterns/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-lifecycle-patterns/SKILL.md
-- **SHA256_FINGERPRINT**: `3ca83b02532df3fe2ffa85f36486117de715bffef82772092ef78e3a85df85c4`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:46.056062+00:00
----
-
-**description**: Provides exact before/after migration patterns for the three unsafe class component lifecycle methods - componentWillMount, componentWillReceiveProps, and componentWillUpdate - targeting React 18.3.1. Use this skill whenever a class component needs its lifecycle methods migrated, when deciding between getDerivedStateFromProps vs componentDidUpdate, when adding getSnapshotBeforeUpdate, or when fixing React 18 UNSAFE_ lifecycle warnings. Always use this skill before writing any lifecycle migration code - do not guess the pattern from memory, the decision trees here prevent the most common migration mistakes.
-
-# React 18 Lifecycle Patterns
-
-Reference for migrating the three unsafe class component lifecycle methods to React 18.3.1 compliant patterns.
-
-## Quick Decision Guide
-
-Before migrating any lifecycle method, identify the **semantic category** of what the method does. Wrong category = wrong migration. The table below routes you to the correct reference file.
-
-### componentWillMount - what does it do?
-
-| What it does | Correct migration | Reference |
-|---|---|---|
-| Sets initial state (`this.setState(...)`) | Move to `constructor` | [→ componentWillMount.md](references/componentWillMount.md#case-a) |
-| Runs a side effect (fetch, subscription, DOM) | Move to `componentDidMount` | [→ componentWillMount.md](references/componentWillMount.md#case-b) |
-| Derives initial state from props | Move to `constructor` with props | [→ componentWillMount.md](references/componentWillMount.md#case-c) |
-
-### componentWillReceiveProps - what does it do?
-
-| What it does | Correct migration | Reference |
-|---|---|---|
-| Async side effect triggered by prop change (fetch, cancel) | `componentDidUpdate` | [→ componentWillReceiveProps.md](references/componentWillReceiveProps.md#case-a) |
-| Pure state derivation from new props (no side effects) | `getDerivedStateFromProps` | [→ componentWillReceiveProps.md](references/componentWillReceiveProps.md#case-b) |
-
-### componentWillUpdate - what does it do?
-
-| What it does | Correct migration | Reference |
-|---|---|---|
-| Reads the DOM before update (scroll, size, position) | `getSnapshotBeforeUpdate` | [→ componentWillUpdate.md](references/componentWillUpdate.md#case-a) |
-| Cancels requests / runs effects before update | `componentDidUpdate` with prev comparison | [→ componentWillUpdate.md](references/componentWillUpdate.md#case-b) |
-
----
-
-## The UNSAFE_ Prefix Rule
-
-**Never use `UNSAFE_componentWillMount`, `UNSAFE_componentWillReceiveProps`, or `UNSAFE_componentWillUpdate` as a permanent fix.**
-
-Prefixing suppresses the React 18.3.1 warning but does NOT:
-- Fix concurrent mode safety issues
-- Prepare the codebase for React 19 (where these are removed, with or without the prefix)
-- Fix the underlying semantic problem the migration is meant to address
-
-The UNSAFE_ prefix is only appropriate as a temporary hold while scheduling the real migration sprint. Mark any UNSAFE_ prefix additions with:
-```jsx
-// TODO: React 19 will remove this. Migrate before React 19 upgrade.
-// UNSAFE_ prefix added temporarily - replace with componentDidMount / getDerivedStateFromProps / etc.
-```
-
----
-
-## Reference Files
-
-Read the full reference file for the lifecycle method you are migrating:
-
-- **`references/componentWillMount.md`** - 3 cases with full before/after code
-- **`references/componentWillReceiveProps.md`** - getDerivedStateFromProps trap warnings, full examples
-- **`references/componentWillUpdate.md`** - getSnapshotBeforeUpdate + componentDidUpdate pairing
-
-Read the relevant file before writing any migration code.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-lifecycle-patterns/references/componentWillMount.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-lifecycle-patterns/references/componentWillMount.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-lifecycle-patterns/references/componentWillMount.md
-- **SHA256_FINGERPRINT**: `dbd30aaf928f65b65531a14fe48a7d04a5642c39550c515c391eecf5f2af0892`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:46.095167+00:00
----
-
-# componentWillMount Migration Reference
-
-## Case A - Initializes State {#case-a}
-
-The method only calls `this.setState()` with static or computed values that do not depend on async operations.
-
-**Before:**
-
-```jsx
-class UserList extends React.Component {
-  componentWillMount() {
-    this.setState({ items: [], loading: false, page: 1 });
-  }
-  render() { ... }
-}
-```
-
-**After - move to constructor:**
-
-```jsx
-class UserList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { items: [], loading: false, page: 1 };
-  }
-  render() { ... }
-}
-```
-
-**If constructor already exists**, merge the state:
-
-```jsx
-class UserList extends React.Component {
-  constructor(props) {
-    super(props);
-    // Existing state merged with componentWillMount state:
-    this.state = {
-      ...this.existingState,  // whatever was already here
-      items: [],
-      loading: false,
-      page: 1,
-    };
-  }
-}
-```
-
----
-
-## Case B - Runs a Side Effect {#case-b}
-
-The method fetches data, sets up subscriptions, interacts with external APIs, or touches the DOM.
-
-**Before:**
-
-```jsx
-class UserDashboard extends React.Component {
-  componentWillMount() {
-    this.subscription = this.props.eventBus.subscribe(this.handleEvent);
-    fetch(`/api/users/${this.props.userId}`)
-      .then(r => r.json())
-      .then(user => this.setState({ user, loading: false }));
-    this.setState({ loading: true });
-  }
-}
-```
-
-**After - move to componentDidMount:**
-
-```jsx
-class UserDashboard extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { loading: true, user: null }; // initial state here
-  }
-
-  componentDidMount() {
-    // All side effects move here - runs after first render
-    this.subscription = this.props.eventBus.subscribe(this.handleEvent);
-    fetch(`/api/users/${this.props.userId}`)
-      .then(r => r.json())
-      .then(user => this.setState({ user, loading: false }));
-  }
-
-  componentWillUnmount() {
-    // Always pair subscriptions with cleanup
-    this.subscription?.unsubscribe();
-  }
-}
-```
-
-**Why this is safe:** In React 18 concurrent mode, `componentWillMount` can be called multiple times before mounting. Side effects inside it can fire multiple times. `componentDidMount` is guaranteed to fire exactly once after mount.
-
----
-
-## Case C - Derives Initial State from Props {#case-c}
-
-The method reads `this.props` to compute an initial state value.
-
-**Before:**
-
-```jsx
-class PriceDisplay extends React.Component {
-  componentWillMount() {
-    this.setState({
-      formattedPrice: `$${this.props.price.toFixed(2)}`,
-      isDiscount: this.props.price < this.props.originalPrice,
-    });
-  }
-}
-```
-
-**After - constructor with props:**
-
-```jsx
-class PriceDisplay extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      formattedPrice: `$${props.price.toFixed(2)}`,
-      isDiscount: props.price < props.originalPrice,
-    };
-  }
-}
-```
-
-**Note:** If this initial state needs to UPDATE when props change later, that's a `getDerivedStateFromProps` case - see `componentWillReceiveProps.md` Case B.
-
----
-
-## Multiple Patterns in One Method
-
-If a single `componentWillMount` does both state init AND side effects:
-
-```jsx
-// Mixed - state init + fetch
-componentWillMount() {
-  this.setState({ loading: true, items: [] });              // Case A
-  fetch('/api/items').then(r => r.json())                   // Case B
-    .then(items => this.setState({ items, loading: false }));
-}
-```
-
-Split them:
-
-```jsx
-constructor(props) {
-  super(props);
-  this.state = { loading: true, items: [] }; // Case A → constructor
-}
-
-componentDidMount() {
-  fetch('/api/items').then(r => r.json())    // Case B → componentDidMount
-    .then(items => this.setState({ items, loading: false }));
-}
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-lifecycle-patterns/references/componentWillReceiveProps.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-lifecycle-patterns/references/componentWillReceiveProps.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-lifecycle-patterns/references/componentWillReceiveProps.md
-- **SHA256_FINGERPRINT**: `0cc1290a65ce1a446ba7042998d8270090be86cd9deb739e0998966577230f66`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:46.000597+00:00
----
-
-# componentWillReceiveProps Migration Reference
-
-## The Core Decision
-
-```
-Does componentWillReceiveProps trigger async work or side effects?
-  YES → componentDidUpdate
-  NO (pure state derivation only) → getDerivedStateFromProps
-```
-
-When in doubt: use `componentDidUpdate`. It's always safe.
-`getDerivedStateFromProps` has traps (see bottom of this file) that make it the wrong choice when the logic is anything other than purely synchronous state derivation.
-
----
-
-## Case A - Async Side Effects / Fetch on Prop Change {#case-a}
-
-The method fetches data, cancels requests, updates external state, or runs any async operation when a prop changes.
-
-**Before:**
-
-```jsx
-class UserProfile extends React.Component {
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.userId !== this.props.userId) {
-      this.setState({ loading: true, profile: null });
-      fetchProfile(nextProps.userId)
-        .then(profile => this.setState({ profile, loading: false }))
-        .catch(err => this.setState({ error: err, loading: false }));
-    }
-  }
-}
-```
-
-**After - componentDidUpdate:**
-
-```jsx
-class UserProfile extends React.Component {
-  componentDidUpdate(prevProps) {
-    if (prevProps.userId !== this.props.userId) {
-      // Use this.props (not nextProps - the update already happened)
-      this.setState({ loading: true, profile: null });
-      fetchProfile(this.props.userId)
-        .then(profile => this.setState({ profile, loading: false }))
-        .catch(err => this.setState({ error: err, loading: false }));
-    }
-  }
-}
-```
-
-**Key difference:** `componentDidUpdate` receives `prevProps` - you compare `prevProps.x !== this.props.x` instead of `this.props.x !== nextProps.x`. The update has already applied.
-
-**Cancellation pattern** (important for async):
-
-```jsx
-class UserProfile extends React.Component {
-  _requestId = 0;
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.userId !== this.props.userId) {
-      const requestId = ++this._requestId;
-      this.setState({ loading: true });
-      fetchProfile(this.props.userId).then(profile => {
-        // Ignore stale responses if userId changed again
-        if (requestId === this._requestId) {
-          this.setState({ profile, loading: false });
-        }
-      });
-    }
-  }
-}
-```
-
----
-
-## Case B - Pure State Derivation from Props {#case-b}
-
-The method only derives state values from the new props synchronously. No async work, no side effects, no external calls.
-
-**Before:**
-
-```jsx
-class SortedList extends React.Component {
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.items !== this.props.items) {
-      this.setState({
-        sortedItems: [...nextProps.items].sort((a, b) => a.name.localeCompare(b.name)),
-      });
-    }
-  }
-}
-```
-
-**After - getDerivedStateFromProps:**
-
-```jsx
-class SortedList extends React.Component {
-  // Must track previous prop to detect changes
-  static getDerivedStateFromProps(props, state) {
-    if (props.items !== state.prevItems) {
-      return {
-        sortedItems: [...props.items].sort((a, b) => a.name.localeCompare(b.name)),
-        prevItems: props.items, // ← always store the prop you're comparing
-      };
-    }
-    return null; // null = no state change
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      sortedItems: [...props.items].sort((a, b) => a.name.localeCompare(b.name)),
-      prevItems: props.items, // ← initialize in constructor too
-    };
-  }
-}
-```
-
----
-
-## getDerivedStateFromProps - Traps and Warnings
-
-### Trap 1: It fires on EVERY render, not just prop changes
-
-Unlike `componentWillReceiveProps`, `getDerivedStateFromProps` is called before every render - including `setState` calls. Always compare against previous values stored in state.
-
-```jsx
-// WRONG - fires on every render, including setState triggers
-static getDerivedStateFromProps(props, state) {
-  return { sortedItems: sort(props.items) }; // re-sorts on every setState!
-}
-
-// CORRECT - only updates when items reference changes
-static getDerivedStateFromProps(props, state) {
-  if (props.items !== state.prevItems) {
-    return { sortedItems: sort(props.items), prevItems: props.items };
-  }
-  return null;
-}
-```
-
-### Trap 2: It cannot access `this`
-
-`getDerivedStateFromProps` is a static method. No `this.props`, no `this.state`, no instance methods.
-
-```jsx
-// WRONG - no this in static method
-static getDerivedStateFromProps(props, state) {
-  return { value: this.computeValue(props) }; // ReferenceError
-}
-
-// CORRECT - pure function of props + state
-static getDerivedStateFromProps(props, state) {
-  return { value: computeValue(props) }; // standalone function
-}
-```
-
-### Trap 3: Don't use it for side effects
-
-If you need to fetch when a prop changes - use `componentDidUpdate`. `getDerivedStateFromProps` must be pure.
-
-### When getDerivedStateFromProps is actually the wrong tool
-
-If you find yourself doing complex logic in `getDerivedStateFromProps`, consider whether the consuming component should receive pre-processed data as a prop instead. The pattern exists for narrow use cases, not general prop-to-state syncing.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-lifecycle-patterns/references/componentWillUpdate.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-lifecycle-patterns/references/componentWillUpdate.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-lifecycle-patterns/references/componentWillUpdate.md
-- **SHA256_FINGERPRINT**: `19300aee0326731a3b3e7366bc4bb8146ac17a52b91ce17cb55dd807eedfd994`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:46.011929+00:00
----
-
-# componentWillUpdate Migration Reference
-
-## The Core Decision
-
-```
-Does componentWillUpdate read the DOM (scroll, size, position, selection)?
-  YES → getSnapshotBeforeUpdate (paired with componentDidUpdate)
-  NO (side effects, request cancellation, etc.) → componentDidUpdate
-```
-
----
-
-## Case A - Reads DOM Before Re-render {#case-a}
-
-The method captures a DOM measurement (scroll position, element size, cursor position) before React applies the next update, so it can be restored or adjusted after.
-
-**Before:**
-
-```jsx
-class MessageList extends React.Component {
-  componentWillUpdate(nextProps) {
-    if (nextProps.messages.length > this.props.messages.length) {
-      this.savedScrollHeight = this.listRef.current.scrollHeight;
-      this.savedScrollTop = this.listRef.current.scrollTop;
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.messages.length < this.props.messages.length) {
-      const scrollDelta = this.listRef.current.scrollHeight - this.savedScrollHeight;
-      this.listRef.current.scrollTop = this.savedScrollTop + scrollDelta;
-    }
-  }
-}
-```
-
-**After - getSnapshotBeforeUpdate + componentDidUpdate:**
-
-```jsx
-class MessageList extends React.Component {
-  // Called right before DOM updates are applied - perfect timing to read DOM
-  getSnapshotBeforeUpdate(prevProps, prevState) {
-    if (prevProps.messages.length < this.props.messages.length) {
-      return {
-        scrollHeight: this.listRef.current.scrollHeight,
-        scrollTop: this.listRef.current.scrollTop,
-      };
-    }
-    return null; // Return null when snapshot is not needed
-  }
-
-  // Receives the snapshot as the third argument
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (snapshot !== null) {
-      const scrollDelta = this.listRef.current.scrollHeight - snapshot.scrollHeight;
-      this.listRef.current.scrollTop = snapshot.scrollTop + scrollDelta;
-    }
-  }
-}
-```
-
-**Why this is better than componentWillUpdate:** In React 18 concurrent mode, there can be a gap between when `componentWillUpdate` runs and when the DOM actually updates. DOM reads in `componentWillUpdate` may be stale. `getSnapshotBeforeUpdate` runs synchronously right before the DOM is committed - the reads are always accurate.
-
-**The contract:**
-
-- Return a value from `getSnapshotBeforeUpdate` → that value becomes `snapshot` in `componentDidUpdate`
-- Return `null` → `snapshot` in `componentDidUpdate` is `null`
-- Always check `if (snapshot !== null)` in `componentDidUpdate`
-- `getSnapshotBeforeUpdate` MUST be paired with `componentDidUpdate`
-
----
-
-## Case B - Side Effects Before Update {#case-b}
-
-The method cancels an in-flight request, clears a timer, or runs some preparatory side effect when props or state are about to change.
-
-**Before:**
-
-```jsx
-class SearchResults extends React.Component {
-  componentWillUpdate(nextProps) {
-    if (nextProps.query !== this.props.query) {
-      this.currentRequest?.cancel();
-      this.setState({ loading: true, results: [] });
-    }
-  }
-}
-```
-
-**After - move to componentDidUpdate (run AFTER the update):**
-
-```jsx
-class SearchResults extends React.Component {
-  componentDidUpdate(prevProps) {
-    if (prevProps.query !== this.props.query) {
-      // Cancel the stale request
-      this.currentRequest?.cancel();
-      // Start the new request for the updated query
-      this.setState({ loading: true, results: [] });
-      this.currentRequest = searchAPI(this.props.query)
-        .then(results => this.setState({ results, loading: false }));
-    }
-  }
-}
-```
-
-**Note:** The side effect now runs AFTER the render, not before. In most cases this is correct - you want to react to the state that's actually showing, not the state that was showing. If you truly need to run something synchronously BEFORE a render, reconsider the design - that usually indicates state that should be managed differently.
-
----
-
-## Both Cases in One Component
-
-If a component had both DOM-reading AND side effects in `componentWillUpdate`:
-
-```jsx
-// Before: does both
-componentWillUpdate(nextProps) {
-  // DOM read
-  if (isExpanding(nextProps)) {
-    this.savedHeight = this.ref.current.offsetHeight;
-  }
-  // Side effect
-  if (nextProps.query !== this.props.query) {
-    this.request?.cancel();
-  }
-}
-```
-
-After: split into both patterns:
-
-```jsx
-// DOM read → getSnapshotBeforeUpdate
-getSnapshotBeforeUpdate(prevProps, prevState) {
-  if (isExpanding(this.props)) {
-    return { height: this.ref.current.offsetHeight };
-  }
-  return null;
-}
-
-// Side effect → componentDidUpdate
-componentDidUpdate(prevProps, prevState, snapshot) {
-  // Handle snapshot if present
-  if (snapshot !== null) { /* ... */ }
-
-  // Handle side effect
-  if (prevProps.query !== this.props.query) {
-    this.request?.cancel();
-    this.startNewRequest();
-  }
-}
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-string-refs/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-string-refs/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-string-refs/SKILL.md
-- **SHA256_FINGERPRINT**: `c3dc2f7a3be7a89bd58f125213503e4cf4d6b4df68d48b60c013abf8ed570777`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:46.124313+00:00
----
-
-**description**: Provides exact migration patterns for React string refs (ref="name" + this.refs.name) to React.createRef() in class components. Use this skill whenever migrating string ref usage - including single element refs, multiple refs in a component, refs in lists, callback refs, and refs passed to child components. Always use this skill before writing any ref migration code - the multiple-refs-in-list pattern is particularly tricky and this skill prevents the most common mistakes. Use it for React 18.3.1 migration (string refs warn) and React 19 migration (string refs removed).
-
-# React 18 String Refs Migration
-
-String refs (`ref="myInput"` + `this.refs.myInput`) were deprecated in React 16.3, warn in React 18.3.1, and are **removed in React 19**.
-
-## Quick Pattern Map
-
-| Pattern | Reference |
-|---|---|
-| Single ref on a DOM element | [→ patterns.md#single-ref](references/patterns.md#single-ref) |
-| Multiple refs in one component | [→ patterns.md#multiple-refs](references/patterns.md#multiple-refs) |
-| Refs in a list / dynamic refs | [→ patterns.md#list-refs](references/patterns.md#list-refs) |
-| Callback refs (alternative approach) | [→ patterns.md#callback-refs](references/patterns.md#callback-refs) |
-| Ref passed to a child component | [→ patterns.md#forwarded-refs](references/patterns.md#forwarded-refs) |
-
-## Scan Command
-
-```bash
-# Find all string ref assignments in JSX
-grep -rn 'ref="' src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-
-# Find all this.refs accessors
-grep -rn "this\.refs\." src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-```
-
-Both should be migrated together - find the `ref="name"` and the `this.refs.name` accesses for each component as a pair.
-
-## The Migration Rule
-
-Every string ref migrates to `React.createRef()`:
-
-1. Add `refName = React.createRef();` as a class field (or in constructor)
-2. Replace `ref="refName"` → `ref={this.refName}` in JSX
-3. Replace `this.refs.refName` → `this.refName.current` everywhere
-
-Read `references/patterns.md` for the full before/after for each case.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-string-refs/references/patterns.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-string-refs/references/patterns.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-string-refs/references/patterns.md
-- **SHA256_FINGERPRINT**: `4a6c78b0039d96aca99f27c2f524b3d70ac60687a088aba135d679f635ce7f14`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:46.177848+00:00
----
-
-# String Refs - All Migration Patterns
-
-## Single Ref on a DOM Element {#single-ref}
-
-The most common case - one ref to one DOM node.
-
-```jsx
-// Before:
-class SearchBox extends React.Component {
-  handleSearch() {
-    const value = this.refs.searchInput.value;
-    this.props.onSearch(value);
-  }
-
-  focusInput() {
-    this.refs.searchInput.focus();
-  }
-
-  render() {
-    return (
-      <div>
-        <input ref="searchInput" type="text" placeholder="Search..." />
-        <button onClick={() => this.handleSearch()}>Search</button>
-      </div>
-    );
-  }
-}
-```
-
-```jsx
-// After:
-class SearchBox extends React.Component {
-  searchInputRef = React.createRef();
-
-  handleSearch() {
-    const value = this.searchInputRef.current.value;
-    this.props.onSearch(value);
-  }
-
-  focusInput() {
-    this.searchInputRef.current.focus();
-  }
-
-  render() {
-    return (
-      <div>
-        <input ref={this.searchInputRef} type="text" placeholder="Search..." />
-        <button onClick={() => this.handleSearch()}>Search</button>
-      </div>
-    );
-  }
-}
-```
-
----
-
-## Multiple Refs in One Component {#multiple-refs}
-
-Each string ref becomes its own named `createRef()` field.
-
-```jsx
-// Before:
-class LoginForm extends React.Component {
-  handleSubmit(e) {
-    e.preventDefault();
-    const email = this.refs.emailField.value;
-    const password = this.refs.passwordField.value;
-    this.props.onSubmit({ email, password });
-  }
-
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <input ref="emailField" type="email" />
-        <input ref="passwordField" type="password" />
-        <button type="submit">Log in</button>
-      </form>
-    );
-  }
-}
-```
-
-```jsx
-// After:
-class LoginForm extends React.Component {
-  emailFieldRef = React.createRef();
-  passwordFieldRef = React.createRef();
-
-  handleSubmit(e) {
-    e.preventDefault();
-    const email = this.emailFieldRef.current.value;
-    const password = this.passwordFieldRef.current.value;
-    this.props.onSubmit({ email, password });
-  }
-
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <input ref={this.emailFieldRef} type="email" />
-        <input ref={this.passwordFieldRef} type="password" />
-        <button type="submit">Log in</button>
-      </form>
-    );
-  }
-}
-```
-
----
-
-## Refs in a List / Dynamic Refs {#list-refs}
-
-String refs in a map/loop - the most tricky case. Each item needs its own ref.
-
-```jsx
-// Before:
-class TabPanel extends React.Component {
-  focusTab(index) {
-    this.refs[`tab_${index}`].focus();
-  }
-
-  render() {
-    return (
-      <div>
-        {this.props.tabs.map((tab, i) => (
-          <button key={tab.id} ref={`tab_${i}`}>
-            {tab.label}
-          </button>
-        ))}
-      </div>
-    );
-  }
-}
-```
-
-```jsx
-// After - use a Map to store refs dynamically:
-class TabPanel extends React.Component {
-  tabRefs = new Map();
-
-  getOrCreateRef(id) {
-    if (!this.tabRefs.has(id)) {
-      this.tabRefs.set(id, React.createRef());
-    }
-    return this.tabRefs.get(id);
-  }
-
-  focusTab(index) {
-    const tab = this.props.tabs[index];
-    this.tabRefs.get(tab.id)?.current?.focus();
-  }
-
-  render() {
-    return (
-      <div>
-        {this.props.tabs.map((tab) => (
-          <button key={tab.id} ref={this.getOrCreateRef(tab.id)}>
-            {tab.label}
-          </button>
-        ))}
-      </div>
-    );
-  }
-}
-```
-
-**Alternative - callback ref for lists (simpler):**
-
-```jsx
-class TabPanel extends React.Component {
-  tabRefs = {};
-
-  focusTab(index) {
-    this.tabRefs[index]?.focus();
-  }
-
-  render() {
-    return (
-      <div>
-        {this.props.tabs.map((tab, i) => (
-          <button
-            key={tab.id}
-            ref={el => { this.tabRefs[i] = el; }}  // callback ref stores DOM node directly
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-    );
-  }
-}
-// Note: callback refs store the DOM node directly (not wrapped in .current)
-// this.tabRefs[i] is the element, not this.tabRefs[i].current
-```
-
----
-
-## Callback Refs (Alternative to createRef) {#callback-refs}
-
-Callback refs are an alternative to `createRef()`. They're useful for lists (above) and when you need to run code when the ref attaches/detaches.
-
-```jsx
-// Callback ref syntax:
-class MyComponent extends React.Component {
-  // Callback ref - called with the element when it mounts, null when it unmounts
-  setInputRef = (el) => {
-    this.inputEl = el; // stores the DOM node directly (no .current needed)
-  };
-
-  focusInput() {
-    this.inputEl?.focus(); // direct DOM node access
-  }
-
-  render() {
-    return <input ref={this.setInputRef} />;
-  }
-}
-```
-
-**When to use callback refs vs createRef:**
-
-- `createRef()` - for a fixed number of refs known at component definition time (most cases)
-- Callback refs - for dynamic lists, when you need to react to attach/detach, or when the ref might change
-
-**Important:** Inline callback refs (defined in render) re-create a new function on every render, which causes the ref to be called with `null` then the element on each render cycle. Use a bound method or class field arrow function instead:
-
-```jsx
-// AVOID - new function every render, causes ref flicker:
-render() {
-  return <input ref={(el) => { this.inputEl = el; }} />;  // inline - bad
-}
-
-// PREFER - stable reference:
-setInputRef = (el) => { this.inputEl = el; };  // class field - good
-render() {
-  return <input ref={this.setInputRef} />;
-}
-```
-
----
-
-## Ref Passed to a Child Component {#forwarded-refs}
-
-If a string ref was passed to a custom component (not a DOM element), the migration also requires updating the child.
-
-```jsx
-// Before:
-class Parent extends React.Component {
-  handleClick() {
-    this.refs.myInput.focus(); // Parent accesses child's DOM node
-  }
-  render() {
-    return (
-      <div>
-        <MyInput ref="myInput" />
-        <button onClick={() => this.handleClick()}>Focus</button>
-      </div>
-    );
-  }
-}
-
-// MyInput.js (child - class component):
-class MyInput extends React.Component {
-  render() {
-    return <input className="my-input" />;
-  }
-}
-```
-
-```jsx
-// After:
-class Parent extends React.Component {
-  myInputRef = React.createRef();
-
-  handleClick() {
-    this.myInputRef.current.focus();
-  }
-
-  render() {
-    return (
-      <div>
-        {/* React 18: forwardRef needed. React 19: ref is a direct prop */}
-        <MyInput ref={this.myInputRef} />
-        <button onClick={() => this.handleClick()}>Focus</button>
-      </div>
-    );
-  }
-}
-
-// MyInput.js (React 18 - use forwardRef):
-import { forwardRef } from 'react';
-const MyInput = forwardRef(function MyInput(props, ref) {
-  return <input ref={ref} className="my-input" />;
-});
-
-// MyInput.js (React 19 - ref as direct prop, no forwardRef):
-function MyInput({ ref, ...props }) {
-  return <input ref={ref} className="my-input" />;
-}
-```
-
----
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react19-concurrent-patterns/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react19-concurrent-patterns/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react19-concurrent-patterns/SKILL.md
-- **SHA256_FINGERPRINT**: `581f5d7e474fe2c9e92a87a56bd9259ee9e7c96d37e5c26c8e1f0c61ee16eda6`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:46.089984+00:00
----
-
-**description**: Preserve React 18 concurrent patterns and adopt React 19 APIs (useTransition, useDeferredValue, Suspense, use(), useOptimistic, Actions) during migration.
-
-# React 19 Concurrent Patterns
-
-React 19 introduced new APIs that complement the migration work. This skill covers two concerns:
-
-1. **Preserve**  existing React 18 concurrent patterns that must not be broken during migration
-2. **Adopt**  new React 19 APIs worth introducing after migration stabilizes
-
-## Part 1  Preserve: React 18 Concurrent Patterns That Must Survive the Migration
-
-These patterns exist in React 18 codebases and must not be accidentally removed or broken:
-
-### createRoot  Already Migrated by the R18 Orchestra
-
-If the R18 orchestra already ran, `ReactDOM.render` → `createRoot` is done. Verify it's correct:
-
-```jsx
-// CORRECT React 19 root (same as React 18):
-import { createRoot } from 'react-dom/client';
-const root = createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-```
-
-### useTransition  No Migration Needed
-
-`useTransition` from React 18 works identically in React 19. Do not touch these patterns during migration:
-
-```jsx
-// React 18 useTransition  unchanged in React 19:
-const [isPending, startTransition] = useTransition();
-
-function handleClick() {
-  startTransition(() => {
-    setFilteredResults(computeExpensiveFilter(input));
-  });
-}
-```
-
-### useDeferredValue  No Migration Needed
-
-```jsx
-// React 18 useDeferredValue  unchanged in React 19:
-const deferredQuery = useDeferredValue(query);
-```
-
-### Suspense for Code Splitting  No Migration Needed
-
-```jsx
-// React 18 Suspense with lazy  unchanged in React 19:
-const LazyComponent = React.lazy(() => import('./LazyComponent'));
-
-function App() {
-  return (
-    <Suspense fallback={<Spinner />}>
-      <LazyComponent />
-    </Suspense>
-  );
-}
-```
-
----
-
-## Part 2  React 19 New APIs
-
-These are worth adopting in a post-migration cleanup sprint. Do not introduce these DURING the migration  stabilize first.
-
-For full patterns on each new API, read:
-- **`references/react19-use.md`**  the `use()` hook for promises and context
-- **`references/react19-actions.md`**  Actions, useActionState, useFormStatus, useOptimistic
-- **`references/react19-suspense.md`**  Suspense for data fetching (the new pattern)
-
-## Migration Safety Rules
-
-During the React 19 migration itself, these concurrent-mode patterns must be **left completely untouched**:
-
-```bash
-# Verify nothing touched these during migration:
-grep -rn "useTransition\|useDeferredValue\|Suspense\|startTransition" \
-  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
-```
-
-If the migrator touched any of these files, review the changes  the migration should only have modified React API surface (forwardRef, defaultProps, etc.), never concurrent mode logic.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/react19-concurrent-patterns/references/react19-actions.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react19-concurrent-patterns/references/react19-actions.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react19-concurrent-patterns/references/react19-actions.md
-- **SHA256_FINGERPRINT**: `907443bfb3d4ed4bab371702f957fd5caca60749faa523560de0a1549b949e1d`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:46.147204+00:00
----
-
-**title**: React 19 Actions Pattern Reference
-
-# React 19 Actions Pattern Reference
-
-React 19 introduces **Actions**  a pattern for handling async operations (like form submissions) with built-in loading states, error handling, and optimistic updates. This replaces the `useReducer + state` pattern with a simpler API.
-
-## What are Actions?
-
-An **Action** is an async function that:
-
-- Can be called automatically when a form submits or button clicks
-- Runs with automatic loading/pending state
-- Updates the UI automatically when done
-- Works with Server Components for direct server mutation
-
----
-
-## useActionState()
-
-`useActionState` is the client-side Action hook. It replaces `useReducer + useEffect` for form handling.
-
-### React 18 Pattern
-
-```jsx
-// React 18  form with useReducer + state:
-function Form() {
-  const [state, dispatch] = useReducer(
-    (state, action) => {
-      switch (action.type) {
-        case 'loading':
-          return { ...state, loading: true, error: null };
-        case 'success':
-          return { ...state, loading: false, data: action.data };
-        case 'error':
-          return { ...state, loading: false, error: action.error };
-      }
-    },
-    { loading: false, data: null, error: null }
-  );
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    dispatch({ type: 'loading' });
-    try {
-      const result = await submitForm(new FormData(e.target));
-      dispatch({ type: 'success', data: result });
-    } catch (err) {
-      dispatch({ type: 'error', error: err.message });
-    }
-  }
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input name="email" />
-      {state.loading && <Spinner />}
-      {state.error && <Error msg={state.error} />}
-      {state.data && <Success data={state.data} />}
-      <button disabled={state.loading}>Submit</button>
-    </form>
-  );
-}
-```
-
-### React 19 useActionState() Pattern
-
-```jsx
-// React 19  same form with useActionState:
-import { useActionState } from 'react';
-
-async function submitFormAction(prevState, formData) {
-  // prevState = previous return value from this function
-  // formData = FormData from <form action={submitFormAction}>
-
-  try {
-    const result = await submitForm(formData);
-    return { data: result, error: null };
-  } catch (err) {
-    return { data: null, error: err.message };
-  }
-}
-
-function Form() {
-  const [state, formAction, isPending] = useActionState(
-    submitFormAction,
-    { data: null, error: null } // initial state
-  );
-
-  return (
-    <form action={formAction}>
-      <input name="email" />
-      {isPending && <Spinner />}
-      {state.error && <Error msg={state.error} />}
-      {state.data && <Success data={state.data} />}
-      <button disabled={isPending}>Submit</button>
-    </form>
-  );
-}
-```
-
-**Differences:**
-
-- One hook instead of `useReducer` + logic
-- `formAction` replaces `onSubmit`, form automatically collects FormData
-- `isPending` is a boolean, no dispatch calls
-- Action function receives `(prevState, formData)`
-
----
-
-## useFormStatus()
-
-`useFormStatus` is a **child component hook** that reads the pending state from the nearest form. It acts like a built-in `isPending` signal without prop drilling.
-
-```jsx
-// React 18  must pass isPending as prop:
-function SubmitButton({ isPending }) {
-  return <button disabled={isPending}>Submit</button>;
-}
-
-function Form({ isPending, formAction }) {
-  return (
-    <form action={formAction}>
-      <input />
-      <SubmitButton isPending={isPending} />
-    </form>
-  );
-}
-
-// React 19  useFormStatus reads it automatically:
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return <button disabled={pending}>Submit</button>;
-}
-
-function Form() {
-  const [state, formAction] = useActionState(submitFormAction, {});
-
-  return (
-    <form action={formAction}>
-      <input />
-      <SubmitButton /> {/* No prop needed */}
-    </form>
-  );
-}
-```
-
-**Key point:** `useFormStatus` only works inside a `<form action={...}>`  regular `<form onSubmit>` won't trigger it.
-
----
-
-## useOptimistic()
-
-`useOptimistic` updates the UI immediately while an async operation is in-flight. When the operation succeeds, the confirmed data replaces the optimistic value. If it fails, the UI reverts.
-
-### React 18 Pattern
-
-```jsx
-// React 18  manual optimistic update:
-function TodoList({ todos, onAddTodo }) {
-  const [optimistic, setOptimistic] = useState(todos);
-
-  async function handleAddTodo(text) {
-    const newTodo = { id: Date.now(), text, completed: false };
-
-    // Show optimistic update immediately
-    setOptimistic([...optimistic, newTodo]);
-
-    try {
-      const result = await addTodo(text);
-      // Update with confirmed result
-      setOptimistic(prev => [
-        ...prev.filter(t => t.id !== newTodo.id),
-        result
-      ]);
-    } catch (err) {
-      // Revert on error
-      setOptimistic(optimistic);
-    }
-  }
-
-  return (
-    <ul>
-      {optimistic.map(todo => (
-        <li key={todo.id}>{todo.text}</li>
-      ))}
-    </ul>
-  );
-}
-```
-
-### React 19 useOptimistic() Pattern
-
-```jsx
-import { useOptimistic } from 'react';
-
-async function addTodoAction(prevTodos, formData) {
-  const text = formData.get('text');
-  const result = await addTodo(text);
-  return [...prevTodos, result];
-}
-
-function TodoList({ todos }) {
-  const [optimistic, addOptimistic] = useOptimistic(
-    todos,
-    (state, newTodo) => [...state, newTodo]
-  );
-
-  const [, formAction] = useActionState(addTodoAction, todos);
-
-  async function handleAddTodo(formData) {
-    const text = formData.get('text');
-    // Optimistic update:
-    addOptimistic({ id: Date.now(), text, completed: false });
-    // Then call the form action:
-    formAction(formData);
-  }
-
-  return (
-    <>
-      <ul>
-        {optimistic.map(todo => (
-          <li key={todo.id}>{todo.text}</li>
-        ))}
-      </ul>
-      <form action={handleAddTodo}>
-        <input name="text" />
-        <button>Add</button>
-      </form>
-    </>
-  );
-}
-```
-
-**Key points:**
-
-- `useOptimistic(currentState, updateFunction)`
-- `updateFunction` receives `(state, optimisticInput)` and returns new state
-- Call `addOptimistic(input)` to trigger the optimistic update
-- The server action's return value replaces the optimistic state when done
-
----
-
-## Full Example: Todo List with All Hooks
-
-```jsx
-import { useActionState, useFormStatus, useOptimistic } from 'react';
-
-// Server action:
-async function addTodoAction(prevTodos, formData) {
-  const text = formData.get('text');
-  if (!text) throw new Error('Text required');
-  const newTodo = await api.post('/todos', { text });
-  return [...prevTodos, newTodo];
-}
-
-// Submit button with useFormStatus:
-function AddButton() {
-  const { pending } = useFormStatus();
-  return <button disabled={pending}>{pending ? 'Adding...' : 'Add Todo'}</button>;
-}
-
-// Main component:
-function TodoApp({ initialTodos }) {
-  const [optimistic, addOptimistic] = useOptimistic(
-    initialTodos,
-    (state, newTodo) => [...state, newTodo]
-  );
-
-  const [todos, formAction] = useActionState(
-    addTodoAction,
-    initialTodos
-  );
-
-  async function handleAddTodo(formData) {
-    const text = formData.get('text');
-    // Optimistic: show it immediately
-    addOptimistic({ id: Date.now(), text });
-    // Then submit the form (which updates when server confirms)
-    await formAction(formData);
-  }
-
-  return (
-    <>
-      <ul>
-        {optimistic.map(todo => (
-          <li key={todo.id}>{todo.text}</li>
-        ))}
-      </ul>
-      <form action={handleAddTodo}>
-        <input name="text" placeholder="Add a todo..." required />
-        <AddButton />
-      </form>
-    </>
-  );
-}
-```
-
----
-
-## Migration Strategy
-
-### Phase 1  No changes required
-
-Actions are opt-in. All existing `useReducer + onSubmit` patterns continue to work. No forced migration.
-
-### Phase 2  Identify refactor candidates
-
-After React 19 migration stabilizes, profile for `useReducer + async` patterns:
-
-```bash
-grep -rn "useReducer.*case.*'loading\|useReducer.*case.*'success" src/ --include="*.js" --include="*.jsx"
-```
-
-Patterns worth refactoring:
-
-- Form submissions with loading/error state
-- Async operations triggered by user events
-- Current code uses `dispatch({ type: '...' })`
-- Simple state shape (object with `loading`, `error`, `data`)
-
-### Phase 3  Refactor to useActionState
-
-```jsx
-// Before:
-function LoginForm() {
-  const [state, dispatch] = useReducer(loginReducer, { loading: false, error: null, user: null });
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    dispatch({ type: 'loading' });
-    try {
-      const user = await login(e.target);
-      dispatch({ type: 'success', data: user });
-    } catch (err) {
-      dispatch({ type: 'error', error: err.message });
-    }
-  }
-
-  return <form onSubmit={handleSubmit}>...</form>;
-}
-
-// After:
-async function loginAction(prevState, formData) {
-  try {
-    const user = await login(formData);
-    return { user, error: null };
-  } catch (err) {
-    return { user: null, error: err.message };
-  }
-}
-
-function LoginForm() {
-  const [state, formAction] = useActionState(loginAction, { user: null, error: null });
-
-  return <form action={formAction}>...</form>;
-}
-```
-
----
-
-## Comparison Table
-
-| Feature | React 18 | React 19 |
-|---|---|---|
-| Form handling | `onSubmit` + useReducer | `action` + useActionState |
-| Loading state | Manual dispatch | Automatic `isPending` |
-| Child component pending state | Prop drilling | `useFormStatus` hook |
-| Optimistic updates | Manual state dance | `useOptimistic` hook |
-| Error handling | Manual in dispatch | Return from action |
-| Complexity | More boilerplate | Less boilerplate |

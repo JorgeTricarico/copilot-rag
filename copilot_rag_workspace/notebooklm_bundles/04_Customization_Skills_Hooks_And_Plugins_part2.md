@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part2
-- **Generado (UTC)**: 2026-10-21T19:55:00.404141+00:00
-- **Total Palabras**: 449,812 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-22T03:58:31.402603+00:00
+- **Total Palabras**: 449,965 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -31218,13 +31218,15 @@ If Context7 cannot find a reliable source:
 # DOCUMENT_SOURCE: github_awesome-copilot::instructions/convert-cassandra-to-spring-data-cosmos.instructions.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/instructions/convert-cassandra-to-spring-data-cosmos.instructions.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/convert-cassandra-to-spring-data-cosmos.instructions.md
-- **SHA256_FINGERPRINT**: `68b40bf0c3bcd5632acff5c95e98ceef794fd176b912fa306368049782dcf89c`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:07.560170+00:00
+- **SHA256_FINGERPRINT**: `eb4fa003a06c1a53372991804e7e09ac50376200c5f039f5c1387e06af8ae4df`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.543448+00:00
 ---
 
 **description**: Step-by-step guide for converting Spring Boot Cassandra applications to use Azure Cosmos DB with Spring Data Cosmos
 
 # Comprehensive Guide: Converting Spring Boot Cassandra Applications to use Azure Cosmos DB with Spring Data Cosmos (spring-data-cosmos)
+
+> **Guard:** Apply this guide ONLY when the user explicitly asks to migrate to Azure Cosmos DB. Detecting Cassandra in a project does not authorize a migration. Otherwise, follow the Spring Boot guidance.
 
 ## Applicability
 
@@ -32331,13 +32333,15 @@ This guide covers all major aspects of converting from Cassandra to Cosmos DB, i
 # DOCUMENT_SOURCE: github_awesome-copilot::instructions/convert-jpa-to-spring-data-cosmos.instructions.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/instructions/convert-jpa-to-spring-data-cosmos.instructions.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/convert-jpa-to-spring-data-cosmos.instructions.md
-- **SHA256_FINGERPRINT**: `d131ba9dbe0af1069b5545104e1c31a87c23fbec58c784f1c39adacecceb712a`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:07.575199+00:00
+- **SHA256_FINGERPRINT**: `48a3dd8526f694801b81beae3d3c61ae7300aac1acec1ad7f5de7ff920671c42`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.526101+00:00
 ---
 
 **description**: Step-by-step guide for converting Spring Boot JPA applications to use Azure Cosmos DB with Spring Data Cosmos
 
 # Convert Spring JPA project to Spring Data Cosmos
+
+> **Guard:** Apply this guide ONLY when the user explicitly asks to migrate to Azure Cosmos DB. Detecting JPA in a project does not authorize a migration. Otherwise, follow the `java-hibernate-jpa` and Spring Boot guidance.
 
 This generalized guide applies to any JPA to Spring Data Cosmos DB conversion project.
 
@@ -51894,15 +51898,17 @@ Use these instructions for Java and Kotlin projects developed in IntelliJ IDEA. 
 # DOCUMENT_SOURCE: github_awesome-copilot::instructions/java-junit5-assertions.instructions.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/instructions/java-junit5-assertions.instructions.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/java-junit5-assertions.instructions.md
-- **SHA256_FINGERPRINT**: `d377386881ccfd1cc15bb48718468663f6f04f8aae57da0765f642ce90fc4dc0`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:09.497020+00:00
+- **SHA256_FINGERPRINT**: `6085429f0b7501a40c79e7aba88e636f825cc7820b5cd096ebfe0db3f925e4e1`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.588119+00:00
 ---
 
 **description**: Standardizes JUnit 5 (Jupiter) assertions with best practices for performance, readability, and modern features (5.8+). Covers Supplier messages, assertAll, assertThrowsExactly, and performance-critical timeouts.
 
 # JUnit 5 Assertions Best Practices
 
-Follow these best practices when writing, reviewing, or refactoring Java test code with JUnit Jupiter (JUnit 5). These rules focus on test accuracy, performance (lazy evaluation), and leveraging modern Jupiter features.
+Follow these best practices when writing, reviewing, or refactoring Java test code with JUnit Jupiter (JUnit 5 and JUnit 6; the `org.junit.jupiter.api.Assertions` API used here is the same in both). These rules focus on test accuracy, performance (lazy evaluation), and leveraging modern Jupiter features.
+
+If the project already standardizes on AssertJ, follow that instead for new assertions and keep these rules for Jupiter-style tests. Never rewrite a project's existing assertion style just to match this file. See the `java-junit` skill for the wider testing guidance.
 
 ## 1. Imports
 
@@ -52066,8 +52072,8 @@ assertArrayEquals(expectedArray, actualArray);
 # DOCUMENT_SOURCE: github_awesome-copilot::instructions/java-mcp-server.instructions.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/instructions/java-mcp-server.instructions.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/java-mcp-server.instructions.md
-- **SHA256_FINGERPRINT**: `4213e3f47c595566e4a9f98fd3f50e72a21affa2f90fd13ebb722a51e44f1af8`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:09.401998+00:00
+- **SHA256_FINGERPRINT**: `e4f24db05b7588eebff4fb2778509ca248443ff735ec30cdc497d9e571ac4502`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.556372+00:00
 ---
 
 **description**: Instructions for building Model Context Protocol (MCP) servers in Java with the MCP Java SDK 2.x
@@ -52075,6 +52081,8 @@ assertArrayEquals(expectedArray, actualArray);
 # Java MCP Server Development
 
 These instructions apply to the [MCP Java SDK](https://github.com/modelcontextprotocol/java-sdk) 2.x. SDK 2.0.x supports the MCP specification revision [2025-11-25](https://modelcontextprotocol.io/specification/2025-11-25) and the earlier revisions. SDK 3.x will add the revision [2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28).
+
+> **Scope:** Apply these instructions only to projects that use the MCP Java SDK directly. Do not apply them to Quarkus or Quarkiverse MCP servers; use the `quarkus-mcp-server-sse` instruction for those.
 
 ## Instructions
 

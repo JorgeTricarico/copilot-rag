@@ -1,7 +1,5188 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-10-21T19:55:00.871111+00:00
-- **Total Palabras**: 240,254 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-22T03:58:31.490064+00:00
+- **Total Palabras**: 264,165 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/quarkus-application-development/references/config-cdi.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/quarkus-application-development/references/config-cdi.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/quarkus-application-development/references/config-cdi.md
+- **SHA256_FINGERPRINT**: `54a4860807e0e154e3ddf462262f1eded6d62fcb90e347e74b2150d6c7d64849`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:44.976873+00:00
+---
+
+# Configuration and CDI (ArC)
+
+## Configuration
+
+Sources by precedence (high to low): system properties, environment variables, `.env` file in the working directory (loaded for packaged apps too, so do not ship it to production; put dev-only values under `%dev.`/`%test.` keys), `config/application.properties` next to the app, `application.properties` in the jar, MicroProfile defaults. Env var mapping: uppercase, non-alphanumerics become `_` (`greeting.max-length` -> `GREETING_MAX_LENGTH`).
+
+### Profiles
+
+`%dev.`, `%test.`, `%prod.` prefixes; `quarkus.profile=staging` or custom profiles work too. `quarkus:dev` is `dev`, tests are `test`, packaged apps are `prod`.
+
+```properties
+greeting.prefix=Hello
+%dev.greeting.prefix=Dev hello
+# Required in every profile (including custom ones such as staging): startup fails if API_KEY is missing
+app.api-key=${API_KEY}
+# Fallback only for dev and test
+%dev.app.api-key=${API_KEY:dev-only-key}
+%test.app.api-key=${API_KEY:dev-only-key}
+```
+
+Verified: with these settings a `@QuarkusTest` sees `Hello` (the `%dev` value is not applied in test) and `dev-only-key`.
+
+### Secrets
+
+Never commit real secrets. Supply them via env vars, Kubernetes secrets mounted as env/files, or a vault extension (`quarkus-vault`, `quarkus-kubernetes-config` with `quarkus.kubernetes-config.secrets`). Set no default in `%prod` so a missing secret fails fast. Property expressions that point at other keys are fine; keep credentials out of logs.
+
+### `@ConfigMapping` vs `@ConfigProperty`
+
+```java
+@ConfigMapping(prefix = "greeting")
+public interface GreetingConfig {
+    String prefix();
+    @WithDefault("10") int maxLength();     // greeting.max-length
+    Optional<String> suffix();
+    List<String> tags();                    // greeting.tags=a,b
+}
+```
+
+Verified: injected with `@Inject GreetingConfig config`, `maxLength()` returned the value from `greeting.max-length`, `suffix()` was empty, `tags()` was `[a, b]`. Nested groups are nested interfaces; `Map<String,...>` is supported. Add `@Valid`-style constraints with hibernate-validator on mapping methods when present; startup fails on violations.
+
+- Use `@ConfigMapping` for any group of related properties (typed, validated at startup, documented in one place).
+- Use `@ConfigProperty(name = "app.api-key") String key;` for a single value or when you need `defaultValue`. Also works on constructor params.
+- Unknown properties under a mapped prefix can fail startup; keep that validation enabled to catch typos.
+- Build-time vs run-time: `quarkus.*` build-time properties (marked in the config reference) are fixed at package time. Check the extension's guide before assuming an env var override works in the container.
+
+## CDI with ArC
+
+ArC is a build-time CDI Lite-style implementation, not full CDI: no portable extensions (use build-compatible extensions or Quarkus build steps), no decorators on all paths, and some features are different.
+
+- **Build-time resolution**: injection points are validated at build; missing or ambiguous beans fail the build, not runtime.
+- **Unused bean removal**: beans with no injection point, no observer, no producer use, and not annotated `@Unremovable` are removed. If you look them up with `Arc.container().instance(...)` or `CDI.current().select(...)` by dynamic type, add `@io.quarkus.arc.Unremovable`. Disable globally with `quarkus.arc.remove-unused-beans=none` only as a last resort.
+- **Scopes**: `@ApplicationScoped` is lazy and proxied (supports interceptors, mocking, circular deps); default choice. `@Singleton` is not proxied (no client proxy, so no lazy init through the proxy and `@InjectMock` is not applicable): use it for stateless holders only. `@RequestScoped` per HTTP request; `@Dependent` is the default pseudo-scope (new instance per injection point).
+- **No private injection**: use package-private fields or constructors. Quarkus recommends against private injected fields because they force reflection-based access. Prefer constructor injection (`@Inject` optional with a single constructor).
+- **Proxy pitfalls (verified)**: `@ApplicationScoped` beans are called through a subclass proxy; reading a public field of such a bean from outside returns the proxy's own (default) value. Expose state with methods. Avoid `final` on bean classes and methods and private no-arg constructors on normal-scoped beans.
+- **Startup logic**: `@Startup` on a bean, or `void onStart(@Observes StartupEvent e)`. Eager beans must not do slow blocking I/O on the main thread without care.
+- **Interceptors**: define an `@InterceptorBinding` annotation and an `@Interceptor` with `@Priority`; ArC applies them at build time to bean classes only (not to arbitrary objects). ArC supports intercepted self-invocation, so a bean calling its own intercepted method (`@Transactional`, `@Retry`, `@CacheResult`) still triggers the interceptor.
+- **Producers/events**: `@Produces` and `@Observes` work as usual. `@Priority` only orders synchronous `@Observes` methods; it does not make them async. Asynchronous observers use `@ObservesAsync` and are notified only by `Event.fireAsync(...)` (which returns a `CompletionStage`); `Event.fire(...)` notifies only synchronous observers.
+- **Testing**: `@InjectMock` (`quarkus-junit-mockito`; `quarkus-junit5-mockito` on old versions) works for normal-scoped beans. See `quarkus-dev-services-and-testing`.
+- **Debugging**: the Dev UI (`/q/dev-ui`) ArC page lists beans, removed beans and observers.
+
+Logging: JBoss Logging (`org.jboss.logging.Logger`) or `@Inject Logger`, configured with `quarkus.log.*`; do not add Logback/Log4j directly.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/quarkus-application-development/references/observability-resilience.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/quarkus-application-development/references/observability-resilience.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/quarkus-application-development/references/observability-resilience.md
+- **SHA256_FINGERPRINT**: `60d701b476141627e297fe4d947668c30959368863423e0580755d3076f26e39`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:44.917111+00:00
+---
+
+# Observability, resilience, REST Client, scheduler, cache
+
+All items below were exercised on Quarkus 3.40.1 and 3.27.6 unless marked "not verified".
+
+## Health (`quarkus-smallrye-health`)
+
+Endpoints: `/q/health`, `/q/health/live`, `/q/health/ready`, `/q/health/started`. Custom checks are CDI beans:
+
+```java
+@Readiness                       // or @Liveness / @Startup (org.eclipse.microprofile.health)
+@ApplicationScoped
+public class Ready implements HealthCheck {
+    public HealthCheckResponse call() { return HealthCheckResponse.up("demo"); }
+}
+```
+
+Verified: `/q/health/ready` returned 200 with the check name. Extensions such as the JDBC datasource add their own readiness checks. Keep liveness trivial (no dependency checks, or the platform restarts pods during outages); put dependency checks in readiness.
+
+## Metrics (`quarkus-micrometer-registry-prometheus`)
+
+Prometheus scrape at `/q/metrics`. Inject `MeterRegistry` for custom meters (`registry.counter("demo.fallback").increment()` appeared as `demo_fallback_total`, verified). HTTP server and JVM meters are on by default. Use `@Counted`/`@Timed` (Micrometer annotations) where they are enough. Expose `/q/metrics` and `/q/health` only to the cluster/monitoring network (a separate management interface: `quarkus.management.enabled=true`, not verified here).
+
+## OpenTelemetry (`quarkus-opentelemetry`)
+
+Only traces are on by default. Metrics and logs are tech preview and disabled at build time: set `quarkus.otel.metrics.enabled=true` and `quarkus.otel.logs.enabled=true` to export them (checked against the Quarkus OpenTelemetry guide). HTTP, REST Client, JDBC (with `quarkus.datasource.jdbc.telemetry=true`) and messaging are instrumented. Point it at a collector with `quarkus.otel.exporter.otlp.endpoint=http://collector:4317` (verified only that without a collector the app logs "Failed to export ... Connection refused" to `localhost:4317` but works). Add custom spans with `@WithSpan` or inject `Tracer`. In dev mode, Quarkus Dev Services for observability (Grafana LGTM, `quarkus-observability-devservices-lgtm`) can supply a backend; not verified here. Do not set both Micrometer and OTel metrics export without a reason.
+
+## Fault tolerance (`quarkus-smallrye-fault-tolerance`)
+
+```java
+@Retry(maxRetries = 2) @Fallback(fallbackMethod = "fb")
+public String flaky() { throw new IllegalStateException(); }
+String fb() { return "fallback"; }
+```
+
+Verified: the method executed 3 times (1 + 2 retries) and the fallback value was returned. Also `@Timeout`, `@CircuitBreaker`, `@Bulkhead`, `@RateLimit` (SmallRye extension). They are CDI interceptors on bean methods; ArC also intercepts self-invocation. Works with `Uni` return types (asynchronous, non-blocking). Always set a `@Timeout` on remote calls; do not retry non-idempotent operations.
+
+## REST Client (`quarkus-rest-client-jackson`)
+
+```java
+@RegisterRestClient(configKey = "echo")
+@Path("/greetings")
+public interface EchoClient {
+    @GET @Path("/{n}") Greeting get(@PathParam("n") String n);
+}
+```
+
+```properties
+quarkus.rest-client.echo.url=${ECHO_URL:http://localhost:8081}
+quarkus.rest-client.echo.read-timeout=5000
+```
+
+Inject with `@RestClient EchoClient echo;` (`org.eclipse.microprofile.rest.client.inject.RestClient`). Verified: bean injection and startup (the call itself was not exercised). Combine with `@Timeout`/`@Retry`; throw domain exceptions with `@ClientExceptionMapper`. In tests, stub the remote service with WireMock via a test resource (see `quarkus-dev-services-and-testing`).
+
+## Scheduler (`quarkus-scheduler`)
+
+`@Scheduled(every = "1s")` or `@Scheduled(cron = "{app.cron}")` on a bean method (verified: ticks incremented). Use `concurrentExecution = SKIP` to avoid overlaps. The scheduler is per instance; in a cluster use the `quarkus-quartz` extension with a shared JDBC store and `quarkus.quartz.clustered=true` (it defaults to `false`, so a JDBC store alone leaves schedulers uncoordinated), or a distributed lock, to run a job once. Scheduled methods run on a worker thread unless `@NonBlocking`/returns `Uni`; use `@RunOnVirtualThread` for blocking IO.
+
+## Cache (`quarkus-cache`)
+
+```java
+@CacheResult(cacheName = "slow")
+public String slow(String k) { ... }
+```
+
+Verified: two calls with the same key executed the method once. Configure with `quarkus.cache.caffeine."slow".maximum-size=10` and `expire-after-write=60S`. Also `@CacheInvalidate`, `@CacheInvalidateAll`, `@CacheKey`. Interceptor-based; ArC also intercepts self-invocation. Caches are per-instance in memory; use `quarkus-redis-cache` for shared caches (not verified here).
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/quarkus-application-development/references/persistence.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/quarkus-application-development/references/persistence.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/quarkus-application-development/references/persistence.md
+- **SHA256_FINGERPRINT**: `e6350a1bcc97664a6566ed6452a78200b5b21f1454512b5a9dde57ef15206b5e`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.098854+00:00
+---
+
+# Persistence: Hibernate ORM with Panache
+
+Core JPA mapping, associations, N+1 and query design: use the optional `java-hibernate-jpa` skill if it is installed; otherwise follow the Hibernate ORM guide (<https://quarkus.io/guides/hibernate-orm>). This file covers Quarkus specifics. Extensions: `quarkus-hibernate-orm-panache` + a JDBC driver such as `quarkus-jdbc-postgresql`.
+
+## Config
+
+```properties
+# No URL/credentials in %dev/%test: PostgreSQL Dev Service starts automatically (Docker/Podman)
+# Safe default for every profile (including custom ones such as staging); use Flyway/Liquibase for real schemas
+quarkus.hibernate-orm.schema-management.strategy=none
+# Recreate the schema only in dev and test
+%dev.quarkus.hibernate-orm.schema-management.strategy=drop-and-create
+%test.quarkus.hibernate-orm.schema-management.strategy=drop-and-create
+%prod.quarkus.datasource.jdbc.url=${DB_URL}
+%prod.quarkus.datasource.username=${DB_USER}
+%prod.quarkus.datasource.password=${DB_PASSWORD}
+```
+
+`schema-management.strategy` verified on 3.40.1 and 3.27.6 (older docs use `quarkus.hibernate-orm.database.generation`; keep the project's form). Persistence units are configured in `application.properties`, not `persistence.xml`. Entities need no registration if they are in the application module.
+
+## Active record vs repository (verified, PostgreSQL Dev Service)
+
+```java
+@Entity
+public class Person extends PanacheEntity {            // active record: id is generated, public fields
+    public String name;
+    public static Person findByName(String n) { return find("name", n).firstResult(); }
+}
+
+@Entity
+public class Book { @Id @GeneratedValue public Long id; public String title; }
+
+@ApplicationScoped
+public class BookRepository implements PanacheRepository<Book> {   // repository pattern
+    public List<Book> byTitle(String t) { return list("title", t); }
+}
+```
+
+Prefer the repository pattern for non-trivial domains (testable, mockable with `@InjectMock`, keeps entities plain POJOs); use active record only for simple CRUD. For a non-`Long` id use `PanacheRepositoryBase<E, ID>` / `PanacheEntityBase`. Panache offers `find`, `list`, `stream`, `count`, `delete`, `update`, `persist`, `page(Page.of(i, size))` for pagination, `Sort`, and `project(Dto.class)` for projections. Panache queries accept shortened HQL (`"name"`, `"name = ?1"`, `"from Person where name = :n"` with `Parameters`).
+
+## Transactions
+
+```java
+@ApplicationScoped
+public class BookService {
+    @Inject BookRepository repo;
+    @Transactional                                  // jakarta.transaction.Transactional
+    public Book add(String title) { Book b = new Book(); b.title = title; repo.persist(b); return b; }
+}
+```
+
+- Put `@Transactional` on service (or resource) methods that write; ArC also intercepts self-calls, so a call to an annotated method on the same bean starts the transaction.
+- Programmatic: `QuarkusTransaction.requiringNew().call(() -> ...)` (`io.quarkus.narayana.jta`), used in the verified tests to read back committed data.
+- Reads outside a transaction work only inside an active CDI request context (e.g. an HTTP request) with `quarkus.hibernate-orm.request-scoped.enabled` left at its default `true`; in background tasks, scheduled jobs or messaging consumers wrap the read in a transaction (`@Transactional` or `QuarkusTransaction`); lazy associations must be fetched inside the transaction or via fetch joins/projections.
+- Tests: `@TestTransaction` rolls back (see `quarkus-dev-services-and-testing`).
+- Do not use `open-in-view`-style patterns; map to DTO records before returning from a resource.
+
+## Panache Next / Quarkus Data (status)
+
+`quarkus-data-hibernate` ("Quarkus Data Hibernate", Panache Next, Jakarta Data support) is tagged `status:experimental` on code.quarkus.io for 3.40.1 (checked via `https://code.quarkus.io/api/extensions`). Do not use it for production code or recommend a migration unless the user asks; stay on `quarkus-hibernate-orm-panache`. Re-check the tag before advising.
+
+## Reactive (Hibernate Reactive) tradeoff
+
+`quarkus-hibernate-reactive-panache` with `Uni`-based APIs and Vert.x SQL clients (`quarkus-reactive-pg-client`) fits fully reactive stacks, but: separate extension set from ORM (both can coexist, including on the default datasource with JDBC and reactive URLs, but they have separate persistence contexts, so keep each method on one stack), more limited feature set, harder debugging, no `@Transactional` blocking style (use `@WithTransaction`/`@WithSession`), and Java 21+ virtual threads give most of the scalability benefit with the simpler blocking ORM. Default to blocking ORM + `@RunOnVirtualThread` where concurrency matters; pick Hibernate Reactive only when the whole call chain is non-blocking. Not verified in this skill's build.
+
+## REST Data Panache
+
+`quarkus-hibernate-orm-rest-data-panache` generates CRUD resources from repository interfaces; fine for prototypes, but explicit resources give control of validation, security and DTOs. Not verified here.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/quarkus-application-development/references/reactive-messaging.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/quarkus-application-development/references/reactive-messaging.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/quarkus-application-development/references/reactive-messaging.md
+- **SHA256_FINGERPRINT**: `4b67115a7431e20577d6881efc5f1fbc4524cbf3ccfb8b6971de737865339724`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:44.946426+00:00
+---
+
+# Reactive vs blocking, Mutiny, messaging
+
+## Threading model
+
+Quarkus REST picks the execution thread from the method signature (verified on 3.40.1 with a thread-name check):
+
+| Method | Runs on |
+|---|---|
+| returns plain type, no annotation (Quarkus REST default, imperative) | worker thread (`executor-thread-N`) |
+| `@Blocking` | worker thread |
+| `@NonBlocking` | event loop (`vert.x-eventloop-thread-N`) |
+| returns `Uni`/`Multi`/`CompletionStage` | event loop |
+| `@RunOnVirtualThread` | virtual thread (`Thread.currentThread().isVirtual()` is true) |
+
+(Thread names contain `eventloop`, not `event-loop`.) Annotations: `io.smallrye.common.annotation.Blocking`, `NonBlocking`, `RunOnVirtualThread`. Behaviour of defaults differs across extensions (Reactive Messaging, gRPC, scheduler), so annotate explicitly when it matters.
+
+**Event loop pitfalls**: never call blocking JDBC/Panache ORM, `Thread.sleep`, `Uni.await().indefinitely()` or file/HTTP blocking clients on the event loop; Vert.x logs "blocked thread" warnings and Quarkus throws `IllegalStateException` for blocking Panache calls on I/O threads. Move work with `@Blocking`, `@RunOnVirtualThread`, or `Uni...runSubscriptionOn(Infrastructure.getDefaultWorkerPool())`.
+
+**Virtual threads**: `@RunOnVirtualThread` needs Java 21+. Beware of pinning (`synchronized` blocks around blocking calls) and thread-local reliance; use for blocking I/O heavy endpoints, not CPU work.
+
+## Mutiny gotchas
+
+- Nothing runs until subscribed; returning a `Uni` from a resource subscribes it. Avoid `await().indefinitely()` outside tests or `@Blocking` code.
+- `Uni.createFrom().item(supplier)` runs the supplier on the subscribing thread (the event loop for REST), so keep it non-blocking (verified).
+
+## SmallRye Reactive Messaging with Kafka
+
+Extension: `quarkus-messaging-kafka`. Ask the user before adding it. Dev Services starts a Kafka broker in dev/test when `kafka.bootstrap.servers` is not set (verified on 3.40.1 and 3.27.6: a round trip worked with Docker).
+
+```properties
+mp.messaging.outgoing.words-out.topic=words
+mp.messaging.incoming.words-in.topic=words
+mp.messaging.incoming.words-in.auto.offset.reset=earliest
+# prod
+%prod.kafka.bootstrap.servers=${KAFKA_BOOTSTRAP_SERVERS}
+```
+
+```java
+@ApplicationScoped
+public class Words {
+    @Channel("words-out") Emitter<String> emitter;
+    void onStart(@Observes StartupEvent e) { emitter.send("hello"); }
+
+    @Incoming("words-in")
+    public void sink(String w) { /* process */ }
+}
+```
+
+- Channel names link config (`mp.messaging.{incoming|outgoing}.<channel>.*`) to code. The connector ID is `smallrye-kafka`; it is inferred automatically only when it is the single messaging connector on the classpath (with AMQP or another connector also installed, set `mp.messaging.<direction>.<channel>.connector=smallrye-kafka` explicitly). Serializers are inferred for common types; set `value.serializer`/`value.deserializer` for custom classes, or use the JSON serde Quarkus generates for Jackson-serializable types (not verified here; test it).
+- Default thread follows the method signature: a synchronous method such as `void sink(String)` already runs on a worker thread, while async signatures (`Uni`, `CompletionStage`, `Multi`) default to the event loop. `@Transactional` implies blocking. Add `@Blocking` to async-signature methods that do blocking work (JDBC, Panache), and `@NonBlocking` to force the event loop.
+- Acknowledgement: payload methods are auto-acked on return; use `Message<T>` and `msg.ack()`/`nack()` for control. Add a dead-letter/failure strategy (`failure-strategy=dead-letter-queue`) for production.
+- Different channel names mapped to the same `topic` go through Kafka (verified round trip). The same channel name used for `@Outgoing` and `@Incoming` in one app is an in-memory link and never reaches the broker.
+- Verify in tests with `Awaitility` waiting on a collected list (verified); for broker-free tests add the test dependency `io.smallrye.reactive:smallrye-reactive-messaging-in-memory` and switch channels with `InMemoryConnector` (see the Quarkus Kafka/messaging guides; not verified here).
+- AMQP: `quarkus-messaging-amqp` (`mp.messaging.*.connector=smallrye-amqp`); the AMQP Dev Service starts an ActiveMQ Artemis broker. Not verified here.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/quarkus-application-development/references/rest.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/quarkus-application-development/references/rest.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/quarkus-application-development/references/rest.md
+- **SHA256_FINGERPRINT**: `5ee5572694fc475edc6c6cf3668cac564a75eae42b80fb5b12acf4bbe2e64d0e`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:44.964972+00:00
+---
+
+# REST, validation, exception mappers, OpenAPI
+
+Extensions: `quarkus-rest-jackson` (Quarkus REST + Jackson), `quarkus-hibernate-validator`, `quarkus-smallrye-openapi`. Do not mix with `quarkus-resteasy*` (legacy) in new code.
+
+## Resource, validation, exception mapper (verified 3.40.1 and 3.27.6)
+
+```java
+@Path("/greetings")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+public class GreetingResource {
+    public record GreetingRequest(@NotBlank @Size(max = 20) String name) {}
+    public record Greeting(String message) {}
+    public record ApiError(String code, String message) {}
+    public static class NotFound extends RuntimeException { public NotFound(String m) { super(m); } }
+
+    @Inject GreetingConfig config;            // package-private injection, no private
+
+    @POST
+    @Operation(summary = "Create a greeting")          // org.eclipse.microprofile.openapi.annotations
+    public Greeting create(@Valid @NotNull GreetingRequest req) { return new Greeting(config.prefix() + " " + req.name()); }
+
+    @GET @Path("/{name}")
+    public Greeting get(@PathParam("name") String name) {
+        if ("missing".equals(name)) throw new NotFound("no " + name);
+        return new Greeting(config.prefix() + " " + name);
+    }
+
+    @ServerExceptionMapper                               // org.jboss.resteasy.reactive.server
+    public RestResponse<ApiError> notFound(NotFound e) {
+        return RestResponse.status(Response.Status.NOT_FOUND, new ApiError("NOT_FOUND", e.getMessage()));
+    }
+}
+```
+
+- Invalid bodies return 400 automatically with a violation report; `@NotNull` makes a JSON `null` body a 400 too, since `@Valid` skips null. Test: `given().contentType("application/json").body("{\"name\":\"\"}").post("/greetings")` returns 400.
+- `@ServerExceptionMapper` methods live in the resource class (local) or in any CDI bean (global). A classic `ExceptionMapper<T>` provider with `@Provider` also works; prefer the annotation form.
+
+## OpenAPI
+
+`quarkus-smallrye-openapi` serves `/q/openapi` (add `?format=json`) and Swagger UI at `/q/swagger-ui` in dev (verified: the JSON contains the `/greetings` path). Configure with `quarkus.smallrye-openapi.info-title=...`. Annotate only where descriptions add value (`@Operation`, `@APIResponse`, `@Tag`); the schema is inferred from records and resource methods.
+
+## Other points
+
+- Content negotiation, multipart and SSE exist in Quarkus REST (`Multi<T>` with `@RestStreamElementType`); read the REST guide at https://quarkus.io/guides/rest before using them.
+- Cross-cutting: `@ServerRequestFilter` / `@ServerResponseFilter` (static or CDI methods) instead of JAX-RS filters.
+- CORS: `quarkus.http.cors.enabled=true` and explicit `quarkus.http.cors.origins`; do not use `*` in production.
+- Do not run long blocking work in `Uni`-returning methods without `@Blocking`; see `reactive-messaging.md`.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/quarkus-application-development/references/security-oidc.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/quarkus-application-development/references/security-oidc.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/quarkus-application-development/references/security-oidc.md
+- **SHA256_FINGERPRINT**: `1a5c5623bd77ce17fc9078b9710989d44a00e142dd74833c79f3b7870602bce8`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.059270+00:00
+---
+
+# Security: OIDC, roles, JWT
+
+Extension: `quarkus-oidc` (bearer token for services, authorization code flow for web apps). Ask the user before adding it. Alternative for self-issued tokens: `quarkus-smallrye-jwt` (`mp.jwt.verify.publickey.location`, `mp.jwt.verify.issuer`).
+
+## Keycloak Dev Service (verified on 3.40.1 and 3.27.6)
+
+With `quarkus-oidc` and no `quarkus.oidc.auth-server-url`, dev/test mode starts Keycloak and imports a `quarkus` realm with users `alice` (admin, user) and `bob` (user), client `quarkus-app`. First start is slow (about 50 s with image pull). Customize roles:
+
+```properties
+quarkus.keycloak.devservices.roles.alice=admin,user
+quarkus.keycloak.devservices.roles.bob=user
+```
+
+Dev UI (`/q/dev-ui`, OpenID Connect card) can log in and obtain tokens. For production set `%prod.quarkus.oidc.auth-server-url=${OIDC_URL}`, `%prod.quarkus.oidc.client-id`, and `credentials.secret` from env/secret store; never in git.
+
+## Bearer (service) and web-app modes
+
+- Default `quarkus.oidc.application-type=service`: expects `Authorization: Bearer <jwt>`.
+- Browser app: `quarkus.oidc.application-type=web-app` (session cookie, redirect to IdP). Pair with `quarkus.http.auth.permission.*` for path rules.
+
+## Authorization
+
+```java
+@Path("/secure")
+public class SecuredResource {
+    @Inject SecurityIdentity identity;
+
+    @GET @Path("/me") @Authenticated
+    public String me() { return identity.getPrincipal().getName(); }
+
+    @GET @Path("/admin") @RolesAllowed("admin")
+    public String admin() { return "admin ok"; }
+}
+```
+
+Verified results: no token gives 401; a token for `alice` gets 200 on `/secure/admin`; `bob` gets 403 there and 200 on `/secure/me`.
+
+- Secure by default: `quarkus.security.jaxrs.deny-unannotated-endpoints=true` (not verified here).
+- Fine-grained checks: `@PermissionsAllowed("read")` with a `SecurityIdentity` permission checker, or `@PermissionChecker` methods (`quarkus-security`); or inject `SecurityIdentity` and check `identity.hasRole(...)`. Not verified here.
+- JWT claims: inject `org.eclipse.microprofile.jwt.JsonWebToken` (with `quarkus-oidc`, `@Inject JsonWebToken jwt; jwt.getClaim("email")`). Default role lookup: a `groups` claim wins if present; otherwise Keycloak's `realm_access/roles`, and `resource_access/<quarkus.oidc.client-id>/roles` when a client id is configured (a token with non-empty `groups` uses those even if realm roles exist). Override with `quarkus.oidc.roles.role-claim-path`.
+- Calling downstream services with the user's token: `quarkus-rest-client-oidc-token-propagation`; with the service's own identity: `quarkus-rest-client-oidc-filter`. Not verified here.
+
+## Testing
+
+- Unit-style: `@TestSecurity(user = "u", roles = "admin")` with `quarkus-test-security` (verified: 200 for admin, 403 for another role).
+- Real tokens against the Dev Service: `quarkus-test-keycloak-server` provides `io.quarkus.test.keycloak.client.KeycloakTestClient`; `given().auth().oauth2(new KeycloakTestClient().getAccessToken("alice"))` (verified). Also see `quarkus-dev-services-and-testing`.
+- Keycloak container requires Docker; tests relying on it should be run where containers exist.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/quarkus-dev-services-and-testing/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/quarkus-dev-services-and-testing/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/quarkus-dev-services-and-testing/SKILL.md
+- **SHA256_FINGERPRINT**: `fdf5f38a665c1e949c0dbd5ba1464813d97fb1f2769e09b2972ab40f6e7cb626`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.185005+00:00
+---
+
+**description**: Quarkus Dev Services and testing: zero-config containers, @QuarkusTest, @QuarkusIntegrationTest, test resources, RestAssured, @InjectMock, profiles and continuous testing. Use when writing or fixing tests in a Quarkus project.
+
+# Quarkus Dev Services and Testing
+
+Check the project's Quarkus version first. Framework-neutral Testcontainers usage can use the optional `java-testcontainers` skill if installed (otherwise see <https://java.testcontainers.org/>); this skill covers only Quarkus-specific features.
+
+## Dev Services
+
+In dev and test modes Quarkus starts containers (PostgreSQL, MySQL, Kafka, Redis, Keycloak, ...) automatically when the related extension is present and no connection is configured (Docker or Podman required).
+
+```properties
+# Global switch
+quarkus.devservices.enabled=true
+%dev.quarkus.datasource.devservices.image-name=postgres:17
+# Reuse container across restarts (also requires testcontainers.reuse.enable=true in ~/.testcontainers.properties)
+quarkus.datasource.devservices.reuse=true
+# Fixed port (optional)
+quarkus.datasource.devservices.port=5432
+# Share between apps in dev mode
+quarkus.kafka.devservices.shared=true
+```
+
+Disable one with `quarkus.<ext>.devservices.enabled=false`; configuring a URL/host explicitly also disables it. Dev UI (`/q/dev-ui`) lists running services.
+
+## Tests
+
+```java
+@QuarkusTest
+class GreetingResourceTest {
+    @Test
+    void hello() {
+        given().when().get("/hello").then().statusCode(200).body(is("Hello"));
+    }
+}
+```
+
+Dependencies, test scope: `io.quarkus:quarkus-junit` (3.31+, what the 3.40 template generates) or `quarkus-junit5` (3.27 template; still published and resolvable on 3.40) and `io.rest-assured:rest-assured`. Keep whichever the project already uses.
+
+- Inject beans in tests with `@Inject`; mock CDI beans with `io.quarkus.test.InjectMock` (`quarkus-junit-mockito`, formerly `quarkus-junit5-mockito`; verified mocking a `PanacheRepository` bean on 3.40.1).
+- Security: `@TestSecurity(user="alice", roles="admin")` (`quarkus-test-security`).
+- Profiles: `@TestProfile(MyProfile.class)` with `QuarkusTestProfile#getConfigOverrides()`; restarts the app, so use sparingly.
+- Transactions: `@TestTransaction` rolls back after the test.
+- `@QuarkusIntegrationTest` runs against the packaged artifact (jar, native binary or container); you cannot inject beans there, only call it over HTTP.
+
+## Test resources
+
+```java
+public class WireMockResource implements QuarkusTestResourceLifecycleManager {
+    public Map<String,String> start() { /* start, return config overrides */ return Map.of(); }
+    public void stop() { }
+}
+
+@QuarkusTest
+@WithTestResource(WireMockResource.class)   // io.quarkus.test.common.WithTestResource
+class MyTest { }
+```
+
+`@WithTestResource` (verified on 3.40.1) applies to the annotated test class; Quarkus restarts the app when the set of resources changes. The older `@QuarkusTestResource` still compiles and runs on 3.40.1 but applies globally to all tests unless `restrictToAnnotatedClass = true`. Do not put `@ConfigProperty` injection points for resource-supplied values in a test class: test classes are scanned as beans, and the app fails to start for other test classes that lack the resource. Prefer Dev Services over custom resources when an extension supports it.
+
+## Running
+
+```bash
+./mvnw test                 # unit/@QuarkusTest
+./mvnw verify -DskipITs=false  # also runs *IT via maven-failsafe-plugin
+```
+
+Gotcha: `*IT` classes (`@QuarkusIntegrationTest`) are run by Failsafe in the `verify` phase, and need the `quarkus-maven-plugin` `build` goal and the failsafe config (with `java.util.logging.manager` and `maven.home` system properties) generated by the project template. `./mvnw test` silently skips them, and the 3.27 and 3.40 templates also set `<skipITs>true</skipITs>`, so plain `./mvnw verify` skips them too (verified): pass `-DskipITs=false` (or `-Dnative`, whose profile flips it). With `-Dnative` and a container build on macOS or Windows, the binary is a Linux ELF and the IT fails with `Exit code is: '126'`; use a local Mandrel/GraalVM build for those.
+
+Continuous testing: run `./mvnw quarkus:dev` and press `r` to start or re-run tests and `p` to pause them (`h` lists the hotkeys); once running, tests re-run on code changes (`quarkus.test.continuous-testing=enabled|paused|disabled`).
+
+Verified on Quarkus 3.40.1 (JDK 26, Docker Desktop): `@QuarkusTest` with Dev Services PostgreSQL (`postgres:18` by default), `@TestTransaction`, `@TestProfile`, `@TestSecurity`, `@InjectMock`, `*IT` via Failsafe. `@QuarkusTest` and Dev Services on 3.27.6 as well.
+
+## Checklist
+
+- Use Dev Services before writing a custom resource.
+- Keep `@QuarkusTest` classes sharing the same profile/resources to avoid restarts.
+- Do not hard-code ports; RestAssured uses `quarkus.http.test-port` automatically.
+
+See also: <https://quarkus.io/guides/dev-services>, <https://quarkus.io/guides/getting-started-testing>; for upgrades use `quarkus update` (<https://quarkus.io/guides/update-quarkus>).
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/quarkus-native-and-container/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/quarkus-native-and-container/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/quarkus-native-and-container/SKILL.md
+- **SHA256_FINGERPRINT**: `d74288cc210a9fce1d5e8811ee2d58f9e268dd6404cc6c6f1e286f66d512aaea`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.128452+00:00
+---
+
+**description**: Build Quarkus native executables (Mandrel/GraalVM), fix native failures with reflection registration, test the native binary, and produce container images and Kubernetes/OpenShift manifests. Use for native, Docker, Jib or Kubernetes work in a Quarkus project.
+
+# Quarkus Native and Container
+
+Check the project's Quarkus version first. For generic (non-Quarkus) GraalVM work, use the optional `java-add-graalvm-native-image-support` skill if installed (otherwise see the GraalVM docs, <https://www.graalvm.org/latest/reference-manual/native-image/>).
+
+## Native build
+
+```bash
+# container build: no local GraalVM needed (Docker/Podman required)
+./mvnw package -Dnative -Dquarkus.native.container-build=true
+# local Mandrel/GraalVM (JAVA_HOME / GRAALVM_HOME must point to it)
+./mvnw package -Dnative
+# Gradle, Quarkus 3.10+ (add -Dquarkus.native.container-build=true without a local Mandrel)
+./gradlew build -Dquarkus.native.enabled=true -Dquarkus.package.jar.enabled=false
+# Gradle, older Quarkus
+./gradlew build -Dquarkus.package.type=native
+```
+
+`quarkus.package.type` was deprecated in 3.10 (the 3.10 migration guide replaces it with `quarkus.native.enabled` and `quarkus.package.jar.*`); it is still accepted in 3.40 with a warning. Version gate verified with Gradle: on 3.9.5 `-Dquarkus.native.enabled=true -Dquarkus.package.jar.enabled=false` is ignored ("Unrecognized configuration key" warnings) and only a JVM `quarkus-app` is built, while `-Dquarkus.package.type=native` produces the native runner; on 3.10.0, 3.27.6 and 3.40.1 the new keys produce the native runner (3.10.0 also accepts the old key with the deprecation warning). The Maven `native` profile in the generated `pom.xml` already sets `quarkus.native.enabled=true`, `quarkus.package.jar.enabled=false` and `skipITs=false` when `-Dnative` is passed.
+
+Local build verified on macOS arm64 with the Mandrel tarball for your Quarkus line from <https://github.com/graalvm/mandrel/releases> (`mandrel-java25-macos-aarch64-25.0.4.1-Final.tar.gz` for 3.40.1, extracted anywhere, `JAVA_HOME` pointing at its `Contents/Home`; Xcode command line tools are enough): 3.40.1 Maven `package -Dnative` took about 70 s and Gradle `build` with the two flags about 2.5 min; the runner is a Mach-O executable that starts in about 0.04 s, and `./mvnw verify -Dnative` ran the `*IT` against it successfully. Quarkus checks the Mandrel/GraalVM version: 3.40 refuses 23.1 ("Out of date version of GraalVM or Mandrel detected ... Quarkus currently supports 25.0.0"), so use Mandrel 25 with 3.40 and `mandrel-java21-macos-aarch64-23.1.12.1-Final` with 3.27.6 (Maven `verify -Dnative` and Gradle both verified there).
+
+Binary: `target/*-runner` (Maven) or `build/*-runner` (Gradle). A container build on macOS or Windows produces a Linux ELF that cannot run on the host: run it in a Linux container (for example `docker run -v "$PWD/target:/w:ro" registry.access.redhat.com/ubi9/ubi-minimal /w/<name>-runner` with the datasource passed through `QUARKUS_DATASOURCE_*` env vars), and note that `./mvnw verify -Dnative` then fails in the `*IT` with `Exit code is: '126'`. Mandrel is Red Hat's GraalVM distribution for Quarkus; the container build pulls a Mandrel builder image matching the project (3.40.1 used `quay.io/quarkus/ubi9-quarkus-mandrel-builder-image:jdk-25`, Mandrel 25.0.4.1, about 2.5 minutes including the image pull); override it with `quarkus.native.builder-image` if needed. Native builds are slow and memory-hungry (several GB); do them in CI or on demand, not on every test run.
+
+## Common native failures
+
+| Symptom | Fix |
+|---|---|
+| `ClassNotFoundException` / `NoSuchMethodException` at runtime (reflection, JSON serialization of DTOs) | annotate with `@RegisterForReflection` (or `@RegisterForReflection(targets = ...)` on a holder class for third-party types), or put a `reflection-config.json` in `src/main/resources` and set `quarkus.native.additional-build-args=-H:ReflectionConfigurationFiles=reflection-config.json` |
+| Missing resource files | `quarkus.native.resources.includes=templates/**` |
+| Library not supporting native | look for a Quarkus extension, or choose another library |
+| Class initialized at build time breaks | `--initialize-at-run-time=...` through `quarkus.native.additional-build-args` |
+| `OutOfMemoryError` during build | raise container memory or `quarkus.native.native-image-xmx` |
+| Dynamic proxies / serialization | register via annotations or extension |
+
+```java
+@RegisterForReflection(targets = ExternalDto.class)
+public record ProductDto(String name) {}
+```
+
+Prefer Quarkus extensions (they register reflection automatically) over raw libraries. Verified: a Panache + Quarkus REST app built natively and served JSON with a record DTO; Quarkus REST registers returned types itself, so `@RegisterForReflection` is mainly needed for types reached only reflectively (custom serialization, third-party types). Both rows were reproduced on 3.40.1 (local Mandrel 25): a resource calling `Class.forName("org.acme.Hidden").getDeclaredConstructor().newInstance()` returned HTTP 500 `ClassNotFoundException: org.acme.Hidden` in the native binary, and worked after adding `src/main/resources/reflection-config.json` (`[{ "name": "org.acme.Hidden", "allDeclaredConstructors": true }]`) with the documented `-H:ReflectionConfigurationFiles=reflection-config.json` (the relative file name resolves from `src/main/resources`). For the run-time initialization row, a `static final java.util.Random` in a class forced to build-time init (`--initialize-at-build-time=org.acme.Holder`) failed the build with "Detected an instance of Random/SplittableRandom class in the image heap ... mark it explicitly for run time initialization with '--initialize-at-run-time=<culprit>'"; switching to `--initialize-at-run-time=org.acme.Holder` fixed it, also combined with the reflection flag in one comma-separated `quarkus.native.additional-build-args`. Quarkus's generated native-image feature calls `RuntimeClassInitialization.initializeAtBuildTime("")` and then applies explicit run-time overrides, so classes default to build-time initialization. Your own static initializers (random seeds, clocks, env reads, threads) can therefore cause this failure too, not only libraries.
+
+## Test the native binary
+
+```java
+@QuarkusIntegrationTest
+class GreetingResourceIT extends GreetingResourceTest {}
+```
+
+```bash
+./mvnw verify -Dnative
+```
+
+`@QuarkusIntegrationTest` black-box tests run in the `verify` phase (Failsafe) against the native binary; no CDI injection.
+
+## Container images
+
+```bash
+quarkus extension add container-image-jib      # or container-image-docker
+./mvnw package -Dquarkus.container-image.build=true
+./mvnw package -Dnative -Dquarkus.native.container-build=true -Dquarkus.container-image.build=true
+```
+
+`container-image-jib` needs no Docker daemon to push: with `DOCKER_HOST` pointing at a non-existent socket, `./mvnw package -Dquarkus.container-image.build=true -Dquarkus.container-image.push=true -Dquarkus.container-image.registry=localhost:5055 -Dquarkus.container-image.insecure=true -Dquarkus.container-image.group=acme` pushed `acme/q340m:1.0.0-SNAPSHOT` to a local `registry:2` (3.40.1, JVM image). Without `push=true` Jib loads the image into a local Docker/Podman and fails with `Cannot get an executable name when no container runtime is available` when none is reachable. A tar-only output was not found or tested; the pushed image was not run.
+
+Dockerfiles for manual builds live in `src/main/docker` (`Dockerfile.jvm`, `Dockerfile.native`, `Dockerfile.native-micro`). Set `quarkus.container-image.registry/group/name/tag`, and `-Dquarkus.container-image.push=true` to push. Use pinned base-image tags and run as non-root.
+
+## Kubernetes / OpenShift
+
+```bash
+quarkus extension add kubernetes     # or: quarkus extension add openshift
+./mvnw package
+```
+
+Manifests are generated in `target/kubernetes/kubernetes.yml` (and `.json`) for the `kubernetes` extension, and in `target/kubernetes/openshift.yml` for `openshift`. Customize via properties; the prefix follows the target (`quarkus.kubernetes.*` for Kubernetes, `quarkus.openshift.*` for OpenShift):
+
+```properties
+quarkus.kubernetes.replicas=2
+quarkus.kubernetes.ingress.expose=true
+quarkus.kubernetes.env.secrets=app-secrets
+quarkus.kubernetes.resources.requests.memory=128Mi
+```
+
+The generated Deployment has no probes by default; with `quarkus-smallrye-health` installed it includes liveness, readiness and startup probes (`/q/health/live`, `/q/health/ready`, `/q/health/started`), and it sets `envFrom.secretRef` for `env.secrets` (verified on 3.40.1). Deploy with `quarkus.kubernetes.deploy=true` or `kubectl apply -f target/kubernetes/kubernetes.yml`. On OpenShift use the same properties under `quarkus.openshift.*`, expose the service with a Route via `quarkus.openshift.route.expose=true` (Kubernetes uses `quarkus.kubernetes.ingress.expose=true` instead), and apply with `oc apply -f target/kubernetes/openshift.yml` (or `quarkus.openshift.deploy=true`). Review generated YAML before applying; keep secrets out of it.
+
+See also: native executables <https://quarkus.io/guides/building-native-image>; upgrades via `quarkus update` (<https://quarkus.io/guides/update-quarkus>); GraalVM release notes <https://www.graalvm.org/release-notes/>.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/quasi-coder/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/quasi-coder/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/quasi-coder/SKILL.md
+- **SHA256_FINGERPRINT**: `990ff8b9e2ce019f3e7fcf82b2cf98c062a1c17999c85beaf6a8168d82067be0`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.153843+00:00
+---
+
+**description**: Expert 10x engineer skill for interpreting and implementing code from shorthand, quasi-code, and natural language descriptions. Use when collaborators provide incomplete code snippets, pseudo-code, or descriptions with potential typos or incorrect terminology. Excels at translating non-technical or semi-technical descriptions into production-quality code.
+
+# Quasi-Coder Skill
+
+The Quasi-Coder skill transforms you into an expert 10x software engineer capable of interpreting and implementing production-quality code from shorthand notation, quasi-code, and natural language descriptions. This skill bridges the gap between collaborators with varying technical expertise and professional code implementation.
+
+Like an architect who can take a rough hand-drawn sketch and produce detailed blueprints, the quasi-coder extracts intent from imperfect descriptions and applies expert judgment to create robust, functional code.
+
+## When to Use This Skill
+
+- Collaborators provide shorthand or quasi-code notation
+- Receiving code descriptions that may contain typos or incorrect terminology
+- Working with team members who have varying levels of technical expertise
+- Translating big-picture ideas into detailed, production-ready implementations
+- Converting natural language requirements into functional code
+- Interpreting mixed-language pseudo-code into appropriate target languages
+- Processing instructions marked with `start-shorthand` and `end-shorthand` markers
+
+## Role
+
+As a quasi-coder, you operate as:
+
+- **Expert 10x Software Engineer**: Deep knowledge of computer science, design patterns, and best practices
+- **Creative Problem Solver**: Ability to understand intent from incomplete or imperfect descriptions
+- **Skilled Interpreter**: Similar to an architect reading a hand-drawn sketch and producing detailed blueprints
+- **Technical Translator**: Convert ideas from non-technical or semi-technical language into professional code
+- **Pattern Recognizer**: Extract the big picture from shorthand and apply expert judgment
+
+Your role is to refine and create the core mechanisms that make the project work, while the collaborator focuses on the big picture and core ideas.
+
+## Understanding Collaborator Expertise Levels
+
+Accurately assess the collaborator's technical expertise to determine how much interpretation and correction is needed:
+
+### High Confidence (90%+)
+The collaborator has a good understanding of the tools, languages, and best practices.
+
+**Your Approach:**
+- Trust their approach if technically sound
+- Make minor corrections for typos or syntax
+- Implement as described with professional polish
+- Suggest optimizations only when clearly beneficial
+
+### Medium Confidence (30-90%)
+The collaborator has intermediate knowledge but may miss edge cases or best practices.
+
+**Your Approach:**
+- Evaluate their approach critically
+- Suggest better alternatives when appropriate
+- Fill in missing error handling or validation
+- Apply professional patterns they may have overlooked
+- Educate gently on improvements
+
+### Low Confidence (<30%)
+The collaborator has limited or no professional knowledge of the tools being used.
+
+**Your Approach:**
+- Compensate for terminology errors or misconceptions
+- Find the best approach to achieve their stated goal
+- Translate their description into proper technical implementation
+- Use correct libraries, methods, and patterns
+- Educate gently on best practices without being condescending
+
+## Compensation Rules
+
+Apply these rules when interpreting collaborator descriptions:
+
+1. **>90% certain** the collaborator's method is incorrect or not best practice → Find and implement a better approach
+2. **>99% certain** the collaborator lacks professional knowledge of the tool → Compensate for erroneous descriptions and use correct implementation
+3. **>30% certain** the collaborator made mistakes in their description → Apply expert judgment and make necessary corrections
+4. **Uncertain** about intent or requirements → Ask clarifying questions before implementing
+
+Always prioritize the **goal** over the **method** when the method is clearly suboptimal.
+
+## Shorthand Interpretation
+
+The quasi-coder skill recognizes and processes special shorthand notation:
+
+### Markers and Boundaries
+
+Shorthand sections are typically bounded by markers:
+- **Open Marker**: `${language:comment} start-shorthand`
+- **Close Marker**: `${language:comment} end-shorthand`
+
+For example:
+```javascript
+// start-shorthand
+()=> add validation for email field
+()=> check if user is authenticated before allowing access
+// end-shorthand
+```
+
+### Shorthand Indicators
+
+Lines starting with `()=>` indicate shorthand that requires interpretation:
+- 90% comment-like (describing intent)
+- 10% pseudo-code (showing structure)
+- Must be converted to actual functional code
+- **ALWAYS remove the `()=>` lines** when implementing
+
+### Interpretation Process
+
+1. **Read the entire shorthand section** to understand the full context
+2. **Identify the goal** - what the collaborator wants to achieve
+3. **Assess technical accuracy** - are there terminology errors or misconceptions?
+4. **Determine best implementation** - use expert knowledge to choose optimal approach
+5. **Replace shorthand lines** with production-quality code
+6. **Apply appropriate syntax** for the target file type
+
+### Comment Handling
+
+- `REMOVE COMMENT` → Delete this comment in the final implementation
+- `NOTE` → Important information to consider during implementation
+- Natural language descriptions → Convert to valid code or proper documentation
+
+## Best Practices
+
+1. **Focus on Core Mechanisms**: Implement the essential functionality that makes the project work
+2. **Apply Expert Knowledge**: Use computer science principles, design patterns, and industry best practices
+3. **Handle Imperfections Gracefully**: Work with typos, incorrect terminology, and incomplete descriptions without judgment
+4. **Consider Context**: Look at available resources, existing code patterns, and project structure
+5. **Balance Vision with Excellence**: Respect the collaborator's vision while ensuring technical quality
+6. **Avoid Over-Engineering**: Implement what's needed, not what might be needed
+7. **Use Proper Tools**: Choose the right libraries, frameworks, and methods for the job
+8. **Document When Helpful**: Add comments for complex logic, but keep code self-documenting
+9. **Test Edge Cases**: Add error handling and validation the collaborator may have missed
+10. **Maintain Consistency**: Follow existing code style and patterns in the project
+
+## Working with Tools and Reference Files
+
+Collaborators may provide additional tools and reference files to support your work as a quasi-coder. Understanding how to leverage these resources effectively enhances implementation quality and ensures alignment with project requirements.
+
+### Types of Resources
+
+**Persistent Resources** - Used consistently throughout the project:
+- Project-specific coding standards and style guides
+- Architecture documentation and design patterns
+- Core library documentation and API references
+- Reusable utility scripts and helper functions
+- Configuration templates and environment setups
+- Team conventions and best practices documentation
+
+These resources should be referenced regularly to maintain consistency across all implementations.
+
+**Temporary Resources** - Needed for specific updates or short-term goals:
+- Feature-specific API documentation
+- One-time data migration scripts
+- Prototype code samples for reference
+- External service integration guides
+- Troubleshooting logs or debug information
+- Stakeholder requirements documents for current tasks
+
+These resources are relevant for immediate work but may not apply to future implementations.
+
+### Resource Management Best Practices
+
+1. **Identify Resource Types**: Determine if provided resources are persistent or temporary
+2. **Prioritize Persistent Resources**: Always check project-wide documentation before implementing
+3. **Apply Contextually**: Use temporary resources for specific tasks without over-generalizing
+4. **Ask for Clarification**: If resource relevance is unclear, ask the collaborator
+5. **Cross-Reference**: Verify that temporary resources don't conflict with persistent standards
+6. **Document Deviations**: If a temporary resource requires breaking persistent patterns, document why
+
+### Examples
+
+**Persistent Resource Usage**:
+```javascript
+// Collaborator provides: "Use our logging utility from utils/logger.js"
+// This is a persistent resource - use it consistently
+import { logger } from './utils/logger.js';
+
+function processData(data) {
+  logger.info('Processing data batch', { count: data.length });
+  // Implementation continues...
+}
+```
+
+**Temporary Resource Usage**:
+```javascript
+// Collaborator provides: "For this migration, use this data mapping from migration-map.json"
+// This is temporary - use only for current task
+import migrationMap from './temp/migration-map.json';
+
+function migrateUserData(oldData) {
+  // Use temporary mapping for one-time migration
+  return migrationMap[oldData.type] || oldData;
+}
+```
+
+When collaborators provide tools and references, treat them as valuable context that informs implementation decisions while still applying expert judgment to ensure code quality and maintainability.
+
+## Shorthand Key
+
+Quick reference for shorthand notation:
+
+```
+()=>        90% comment, 10% pseudo-code - interpret and implement
+            ALWAYS remove these lines when editing
+
+start-shorthand    Begin shorthand section
+end-shorthand      End shorthand section
+
+openPrompt         ["quasi-coder", "quasi-code", "shorthand"]
+language:comment   Single or multi-line comment in target language
+openMarker         "${language:comment} start-shorthand"
+closeMarker        "${language:comment} end-shorthand"
+```
+
+### Critical Rules
+
+- **ALWAYS remove `()=>` lines** when editing a file from shorthand
+- Replace shorthand with functional code, features, comments, documentation, or data
+- Sometimes shorthand requests non-code actions (run commands, create files, fetch data, generate graphics)
+- In all cases, remove the shorthand lines after implementing the request
+
+## Variables and Markers
+
+Formal specification of shorthand variables:
+
+```javascript
+openPrompt = ["quasi-coder", "quasi-code", "shorthand"]
+// Triggers that indicate quasi-coder should be used
+
+language:comment = "Single or multi-line comment of programming language"
+// Comment syntax appropriate for the file type
+
+openMarker = "${language:comment} start-shorthand"
+// Example: // start-shorthand (JavaScript)
+// Example: # start-shorthand (Python)
+// Example:  (HTML)
+
+closeMarker = "${language:comment} end-shorthand"
+// Example: // end-shorthand (JavaScript)
+// Example: # end-shorthand (Python)
+// Example:  (HTML)
+```
+
+## Example Workflow
+
+### Scenario: Collaborator Provides Shorthand
+
+**Input from Collaborator** (JavaScript file):
+```javascript
+// start-shorthand
+()=> create function that validates user input
+()=> check email format is correct
+()=> make sure password is at least 8 characters
+()=> return true if valid, false otherwise
+// end-shorthand
+```
+
+### Step 1: Assess Expertise Level
+- Collaborator knows they need validation
+- Using general terms, not specific library names
+- **Assessment**: Medium confidence (30-90%)
+
+### Step 2: Interpret Intent
+- Goal: Create input validation function
+- Needs: Email format check, password length check
+- Output: Boolean return value
+
+### Step 3: Apply Expert Implementation
+
+**Output (Production Code)**:
+```javascript
+/**
+ * Validates user registration input
+ * @param {string} email - User email address
+ * @param {string} password - User password
+ * @returns {boolean} True if input is valid, false otherwise
+ */
+function validateUserInput(email, password) {
+  // Validate email format using standard regex pattern
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return false;
+  }
+
+  // Validate password meets minimum length requirement
+  if (!password || password.length < 8) {
+    return false;
+  }
+
+  return true;
+}
+```
+
+### Expert Decisions Made:
+1. Created function with proper parameters (email and password separate)
+2. Used standard email regex pattern (best practice)
+3. Added JSDoc comments for clarity
+4. Included null/undefined check for password
+5. Used descriptive function name
+6. Returned boolean as requested
+7. **Removed all `()=>` shorthand lines**
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| **Unclear intent from collaborator** | Ask specific clarifying questions about the goal and expected behavior |
+| **Multiple valid approaches** | Present options with recommendations, explaining trade-offs of each |
+| **Collaborator insists on suboptimal approach** | Implement their approach but respectfully explain trade-offs and alternatives |
+| **Missing context or dependencies** | Read related files, check package.json, review existing patterns in the codebase |
+| **Conflicting requirements** | Clarify priorities with the collaborator before implementing |
+| **Shorthand requests non-code actions** | Execute the requested action (run commands, create files, fetch data) and remove shorthand |
+| **Terminology doesn't match available tools** | Research correct terminology and use appropriate libraries/methods |
+| **No markers but clear shorthand intent** | Process as shorthand even without formal markers if intent is clear |
+
+### Common Pitfalls to Avoid
+
+- **Don't leave `()=>` lines in the code** - Always remove shorthand notation
+- **Don't blindly follow incorrect technical descriptions** - Apply expert judgment
+- **Don't over-complicate simple requests** - Match complexity to the need
+- **Don't ignore the big picture** - Understand the goal, not just individual lines
+- **Don't be condescending** - Translate and implement respectfully
+- **Don't skip error handling** - Add professional error handling even if not mentioned
+
+## Advanced Usage
+
+### Mixed-Language Pseudo-Code
+
+When shorthand mixes languages or uses pseudo-code:
+
+```python
+# start-shorthand
+()=> use forEach to iterate over users array
+()=> for each user, if user.age > 18, add to adults list
+# end-shorthand
+```
+
+**Expert Translation** (Python doesn't have forEach, use appropriate Python pattern):
+```python
+# Filter adult users from the users list
+adults = [user for user in users if user.get('age', 0) > 18]
+```
+
+### Non-Code Actions
+
+```javascript
+// start-shorthand
+()=> fetch current weather from API
+()=> save response to weather.json file
+// end-shorthand
+```
+
+**Implementation**: Use appropriate tools to fetch data and save file, then remove shorthand lines.
+
+### Complex Multi-Step Logic
+
+```typescript
+// start-shorthand
+()=> check if user is logged in
+()=> if not, redirect to login page
+()=> if yes, load user dashboard with their data
+()=> show error if data fetch fails
+// end-shorthand
+```
+
+**Implementation**: Convert to proper TypeScript with authentication checks, routing, data fetching, and error handling.
+
+## Summary
+
+The Quasi-Coder skill enables expert-level interpretation and implementation of code from imperfect descriptions. By assessing collaborator expertise, applying technical knowledge, and maintaining professional standards, you bridge the gap between ideas and production-quality code.
+
+**Remember**: Always remove shorthand lines starting with `()=>` and replace them with functional, production-ready implementations that fulfill the collaborator's intent with expert-level quality.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react-audit-grep-patterns/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react-audit-grep-patterns/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react-audit-grep-patterns/SKILL.md
+- **SHA256_FINGERPRINT**: `86196bc6fb6e0d2d8db535d0beeb65d7aff5391421950b872197dde76313074f`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.187762+00:00
+---
+
+**description**: Provides the complete, verified grep scan command library for auditing React codebases before a React 18.3.1 or React 19 upgrade. Use this skill whenever running a migration audit - for both the react18-auditor and react19-auditor agents. Contains every grep pattern needed to find deprecated APIs, removed APIs, unsafe lifecycle methods, batching vulnerabilities, test file issues, dependency conflicts, and React 19 specific removals. Always use this skill when writing audit scan commands - do not rely on memory for grep syntax, especially for the multi-line async setState patterns which require context flags.
+
+# React Audit Grep Patterns
+
+Complete scan command library for React 18.3.1 and React 19 migration audits.
+
+## Usage
+
+Read the relevant section for your target:
+- **`references/react18-scans.md`** - all scans for React 16/17 → 18.3.1 audit
+- **`references/react19-scans.md`** - all scans for React 18 → 19 audit
+- **`references/test-scans.md`** - test file specific scans (used by both auditors)
+- **`references/dep-scans.md`** - dependency and peer conflict scans
+
+## Base Patterns Used Across All Scans
+
+```bash
+# Standard flags used throughout:
+# -r = recursive
+# -n = show line numbers
+# -l = show filenames only (for counting affected files)
+# --include="*.js" --include="*.jsx" = JS/JSX files only
+# | grep -v "\.test\.\|\.spec\.\|__tests__" = exclude test files
+# | grep -v "node_modules" = safety (usually handled by not scanning node_modules)
+# 2>/dev/null = suppress "no files found" errors
+
+# Source files only (exclude tests):
+SRC_FLAGS='--include="*.js" --include="*.jsx"'
+EXCLUDE_TESTS='grep -v "\.test\.\|\.spec\.\|__tests__"'
+
+# Test files only:
+TEST_FLAGS='--include="*.test.js" --include="*.test.jsx" --include="*.spec.js" --include="*.spec.jsx"'
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react-audit-grep-patterns/references/dep-scans.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react-audit-grep-patterns/references/dep-scans.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react-audit-grep-patterns/references/dep-scans.md
+- **SHA256_FINGERPRINT**: `0123eda642e78e25c2cbdf811d56163bf591ab4bcdc658737398cf9cdea65e30`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.202994+00:00
+---
+
+# Dependency Scans - Both Auditors
+
+Scans for dependency compatibility and peer conflicts. Run during both R18 and R19 audits.
+
+---
+
+## Current Versions
+
+```bash
+# All react-related package versions in one shot
+cat package.json | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+deps = {**d.get('dependencies',{}), **d.get('devDependencies',{})}
+keys = ['react', 'react-dom', 'react-router', 'react-router-dom',
+        '@testing-library/react', '@testing-library/jest-dom',
+        '@testing-library/user-event', '@apollo/client', 'graphql',
+        '@emotion/react', '@emotion/styled', 'jest', 'enzyme',
+        'react-redux', '@reduxjs/toolkit', 'prop-types']
+for k in keys:
+    if k in deps:
+        print(f'{k}: {deps[k]}')
+" 2>/dev/null
+```
+
+---
+
+## Peer Dependency Conflicts
+
+```bash
+# All peer dep warnings (must be 0 before migration completes)
+npm ls 2>&1 | grep -E "WARN|ERR|peer|invalid|unmet"
+
+# Count of peer errors
+npm ls 2>&1 | grep -E "WARN|ERR|peer|invalid|unmet" | wc -l
+
+# Specific package peer dep requirements
+npm info @testing-library/react peerDependencies 2>/dev/null
+npm info @apollo/client peerDependencies 2>/dev/null
+npm info @emotion/react peerDependencies 2>/dev/null
+npm info react-router-dom peerDependencies 2>/dev/null
+```
+
+---
+
+## Enzyme Detection (R18 Blocker)
+
+```bash
+# In package.json
+cat package.json | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+deps = {**d.get('dependencies',{}), **d.get('devDependencies',{})}
+enzyme = {k: v for k, v in deps.items() if 'enzyme' in k.lower()}
+if enzyme:
+    print('BLOCKER - Enzyme found:', enzyme)
+else:
+    print('No Enzyme - OK')
+" 2>/dev/null
+
+# Enzyme adapter files
+find . -name "enzyme-adapter*" -not -path "*/node_modules/*" 2>/dev/null
+```
+
+---
+
+## React Router Version Check
+
+```bash
+ROUTER=$(node -e "console.log(require('./node_modules/react-router-dom/package.json').version)" 2>/dev/null)
+echo "react-router-dom version: $ROUTER"
+
+# If v5 - flag for assessment
+if [[ $ROUTER == 5* ]]; then
+  echo "WARNING: react-router v5 found - requires scope assessment before upgrade"
+  echo "Run router migration scope scan:"
+  echo "  Routes: $(grep -rn "<Route\|<Switch\|<Redirect" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l) hits"
+  echo "  useHistory: $(grep -rn "useHistory()" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l) hits"
+fi
+```
+
+---
+
+## Lock File Consistency
+
+```bash
+# Check lockfile is in sync with package.json
+npm ls --depth=0 2>&1 | head -20
+
+# Check for duplicate react installs (can cause hooks errors)
+find node_modules -name "package.json" -path "*/react/package.json" 2>/dev/null \
+  | grep -v "node_modules/node_modules" \
+  | xargs grep '"version"' | sort -u
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react-audit-grep-patterns/references/react18-scans.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react-audit-grep-patterns/references/react18-scans.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react-audit-grep-patterns/references/react18-scans.md
+- **SHA256_FINGERPRINT**: `abbdb330a019ca79aa9f3a31baaae5480bae618b7db81975cf164a63ccdb5f4a`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.324865+00:00
+---
+
+# React 18.3.1 Audit - Complete Scan Commands
+
+Run in this order. Each section maps to a phase in the react18-auditor.
+
+---
+
+## Phase 0 - Codebase Profile
+
+```bash
+# Total source files (excluding tests)
+find src/ \( -name "*.js" -o -name "*.jsx" \) \
+  | grep -v "\.test\.\|\.spec\.\|__tests__\|node_modules" \
+  | wc -l
+
+# Class component count
+grep -rl "extends React\.Component\|extends Component\|extends PureComponent" \
+  src/ --include="*.js" --include="*.jsx" \
+  | grep -v "\.test\." | wc -l
+
+# Function component rough count
+grep -rl "const [A-Z][a-zA-Z]* = \|function [A-Z][a-zA-Z]*(" \
+  src/ --include="*.js" --include="*.jsx" \
+  | grep -v "\.test\." | wc -l
+
+# Current React version
+node -e "console.log(require('./node_modules/react/package.json').version)" 2>/dev/null
+
+# StrictMode in use? (affects how many lifecycle warnings were already seen)
+grep -rn "StrictMode\|React\.StrictMode" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+```
+
+---
+
+## Phase 1 - Unsafe Lifecycle Methods
+
+```bash
+# componentWillMount (without UNSAFE_ prefix)
+grep -rn "componentWillMount\b" \
+  src/ --include="*.js" --include="*.jsx" \
+  | grep -v "UNSAFE_componentWillMount\|\.test\."
+
+# componentWillReceiveProps (without UNSAFE_ prefix)
+grep -rn "componentWillReceiveProps\b" \
+  src/ --include="*.js" --include="*.jsx" \
+  | grep -v "UNSAFE_componentWillReceiveProps\|\.test\."
+
+# componentWillUpdate (without UNSAFE_ prefix)
+grep -rn "componentWillUpdate\b" \
+  src/ --include="*.js" --include="*.jsx" \
+  | grep -v "UNSAFE_componentWillUpdate\|\.test\."
+
+# Already partially migrated with UNSAFE_ prefix? (check if team already did partial work)
+grep -rn "UNSAFE_component" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+
+# Quick count summary:
+echo "=== Lifecycle Issue Summary ==="
+echo "componentWillMount: $(grep -rn "componentWillMount\b" src/ --include="*.js" --include="*.jsx" | grep -v "UNSAFE_\|\.test\." | wc -l)"
+echo "componentWillReceiveProps: $(grep -rn "componentWillReceiveProps\b" src/ --include="*.js" --include="*.jsx" | grep -v "UNSAFE_\|\.test\." | wc -l)"
+echo "componentWillUpdate: $(grep -rn "componentWillUpdate\b" src/ --include="*.js" --include="*.jsx" | grep -v "UNSAFE_\|\.test\." | wc -l)"
+```
+
+---
+
+## Phase 2 - Automatic Batching Vulnerabilities
+
+```bash
+# Async class methods (primary risk zone)
+grep -rn "^\s*async [a-zA-Z]" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+
+# Arrow function async methods
+grep -rn "=\s*async\s*(" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+
+# setState inside .then() callbacks
+grep -rn "\.then\s*(" \
+  src/ --include="*.js" --include="*.jsx" -A 3 \
+  | grep "setState" | grep -v "\.test\."
+
+# setState inside .catch() callbacks
+grep -rn "\.catch\s*(" \
+  src/ --include="*.js" --include="*.jsx" -A 3 \
+  | grep "setState" | grep -v "\.test\."
+
+# setState inside setTimeout
+grep -rn "setTimeout" \
+  src/ --include="*.js" --include="*.jsx" -A 5 \
+  | grep "setState" | grep -v "\.test\."
+
+# this.state reads that follow an await (most dangerous pattern)
+grep -rn "this\.state\." \
+  src/ --include="*.js" --include="*.jsx" -B 3 \
+  | grep "await" | grep -v "\.test\."
+
+# document/window event handlers with setState
+grep -rn "addEventListener" \
+  src/ --include="*.js" --include="*.jsx" -A 5 \
+  | grep "setState" | grep -v "\.test\."
+```
+
+---
+
+## Phase 3 - Legacy Context API
+
+```bash
+# Provider side
+grep -rn "childContextTypes\s*=" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+
+grep -rn "getChildContext\s*(" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+
+# Consumer side
+grep -rn "contextTypes\s*=" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+
+# this.context usage (may indicate legacy or modern - verify per hit)
+grep -rn "this\.context\." \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+
+# Count of distinct legacy contexts (by counting childContextTypes blocks)
+grep -rn "childContextTypes" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l
+```
+
+---
+
+## Phase 4 - String Refs
+
+```bash
+# String ref assignments in JSX
+grep -rn 'ref="[^"]*"' \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+
+# Alternative quote style
+grep -rn "ref='[^']*'" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+
+# this.refs accessor usage
+grep -rn "this\.refs\." \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+```
+
+---
+
+## Phase 5 - findDOMNode
+
+```bash
+grep -rn "findDOMNode\|ReactDOM\.findDOMNode" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+```
+
+---
+
+## Phase 6 - Root API (ReactDOM.render)
+
+```bash
+grep -rn "ReactDOM\.render\s*(" \
+  src/ --include="*.js" --include="*.jsx"
+
+grep -rn "ReactDOM\.hydrate\s*(" \
+  src/ --include="*.js" --include="*.jsx"
+
+grep -rn "unmountComponentAtNode" \
+  src/ --include="*.js" --include="*.jsx"
+```
+
+---
+
+## Phase 7 - Event Delegation (React 16 Carry-Over)
+
+```bash
+# document-level event listeners (may miss React events after React 17 delegation change)
+grep -rn "document\.addEventListener\|document\.removeEventListener" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+
+# window event listeners
+grep -rn "window\.addEventListener" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+```
+
+---
+
+## Phase 8 - Enzyme Detection (Hard Blocker)
+
+```bash
+# Enzyme in package.json
+cat package.json | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+deps = {**d.get('dependencies',{}), **d.get('devDependencies',{})}
+enzyme_pkgs = [k for k in deps if 'enzyme' in k.lower()]
+print('Enzyme packages found:', enzyme_pkgs if enzyme_pkgs else 'NONE')
+"
+
+# Enzyme imports in test files
+grep -rn "from 'enzyme'\|require.*enzyme" \
+  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null | wc -l
+```
+
+---
+
+## Full Summary Script
+
+Run this for a quick overview before detailed scanning:
+
+```bash
+#!/bin/bash
+echo "=============================="
+echo "React 18 Migration Audit Summary"
+echo "=============================="
+echo ""
+echo "LIFECYCLE METHODS:"
+echo "  componentWillMount:          $(grep -rn "componentWillMount\b" src/ --include="*.js" --include="*.jsx" | grep -v "UNSAFE_\|\.test\." | wc -l | tr -d ' ') hits"
+echo "  componentWillReceiveProps:   $(grep -rn "componentWillReceiveProps\b" src/ --include="*.js" --include="*.jsx" | grep -v "UNSAFE_\|\.test\." | wc -l | tr -d ' ') hits"
+echo "  componentWillUpdate:         $(grep -rn "componentWillUpdate\b" src/ --include="*.js" --include="*.jsx" | grep -v "UNSAFE_\|\.test\." | wc -l | tr -d ' ') hits"
+echo ""
+echo "LEGACY APIS:"
+echo "  Legacy context (providers):  $(grep -rn "childContextTypes" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l | tr -d ' ') hits"
+echo "  String refs (this.refs):     $(grep -rn "this\.refs\." src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l | tr -d ' ') hits"
+echo "  findDOMNode:                 $(grep -rn "findDOMNode" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l | tr -d ' ') hits"
+echo "  ReactDOM.render:             $(grep -rn "ReactDOM\.render\s*(" src/ --include="*.js" --include="*.jsx" | wc -l | tr -d ' ') hits"
+echo ""
+echo "ENZYME (BLOCKER):"
+echo "  Enzyme test files:           $(grep -rl "from 'enzyme'" src/ --include="*.test.*" 2>/dev/null | wc -l | tr -d ' ') files"
+echo ""
+echo "ASYNC BATCHING RISK:"
+echo "  Async class methods:         $(grep -rn "^\s*async [a-zA-Z]" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l | tr -d ' ') hits"
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react-audit-grep-patterns/references/react19-scans.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react-audit-grep-patterns/references/react19-scans.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react-audit-grep-patterns/references/react19-scans.md
+- **SHA256_FINGERPRINT**: `56042df41e58879eb5330d6941bc7b228ba92b8bdc611e82dd5b4bfe1f9ff116`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.409962+00:00
+---
+
+# React 19 Audit - Complete Scan Commands
+
+Run in this order. Each section maps to a phase in the react19-auditor.
+
+---
+
+## Phase 1 - Removed APIs (Breaking - Must Fix)
+
+```bash
+# 1. ReactDOM.render - REMOVED
+grep -rn "ReactDOM\.render\s*(" \
+  src/ --include="*.js" --include="*.jsx" 2>/dev/null
+
+# 2. ReactDOM.hydrate - REMOVED
+grep -rn "ReactDOM\.hydrate\s*(" \
+  src/ --include="*.js" --include="*.jsx" 2>/dev/null
+
+# 3. unmountComponentAtNode - REMOVED
+grep -rn "unmountComponentAtNode" \
+  src/ --include="*.js" --include="*.jsx" 2>/dev/null
+
+# 4. findDOMNode - REMOVED
+grep -rn "findDOMNode\|ReactDOM\.findDOMNode" \
+  src/ --include="*.js" --include="*.jsx" 2>/dev/null
+
+# 5. createFactory - REMOVED
+grep -rn "createFactory\|React\.createFactory" \
+  src/ --include="*.js" --include="*.jsx" 2>/dev/null
+
+# 6. react-dom/test-utils imports - most exports REMOVED
+grep -rn "from 'react-dom/test-utils'\|from \"react-dom/test-utils\"\|require.*react-dom/test-utils" \
+  src/ --include="*.js" --include="*.jsx" 2>/dev/null
+
+# 7. Legacy Context API - REMOVED
+grep -rn "contextTypes\|childContextTypes\|getChildContext" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." 2>/dev/null
+
+# 8. String refs - REMOVED
+grep -rn "this\.refs\." \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." 2>/dev/null
+```
+
+---
+
+## Phase 2 - Deprecated APIs (Should Migrate)
+
+```bash
+# 9. forwardRef - deprecated (ref now direct prop)
+grep -rn "forwardRef\|React\.forwardRef" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." 2>/dev/null
+
+# 10. defaultProps on function components - REMOVED for function components
+grep -rn "\.defaultProps\s*=" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." 2>/dev/null
+
+# 11. useRef() without initial value
+grep -rn "useRef()\|useRef( )" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." 2>/dev/null
+
+# 12. propTypes (runtime validation silently dropped)
+grep -rn "\.propTypes\s*=" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l
+
+# 13. react-test-renderer - deprecated
+grep -rn "react-test-renderer\|TestRenderer" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." 2>/dev/null
+
+# 14. Unnecessary React default imports (new JSX transform)
+grep -rn "^import React from 'react'" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." 2>/dev/null
+```
+
+---
+
+## Phase 3 - Test File Scans
+
+```bash
+# act() from wrong location
+grep -rn "from 'react-dom/test-utils'" \
+  src/ --include="*.test.js" --include="*.test.jsx" \
+       --include="*.spec.js" --include="*.spec.jsx" 2>/dev/null
+
+# Simulate usage - REMOVED
+grep -rn "Simulate\." \
+  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
+
+# react-test-renderer in tests
+grep -rn "from 'react-test-renderer'" \
+  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
+
+# Spy call count assertions (may need StrictMode delta updates)
+grep -rn "toHaveBeenCalledTimes" \
+  src/ --include="*.test.*" --include="*.spec.*" | head -20 2>/dev/null
+
+# console.error call count assertions (React 19 error reporting change)
+grep -rn "console\.error.*toHaveBeenCalledTimes\|toHaveBeenCalledTimes.*console\.error" \
+  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
+```
+
+---
+
+## Phase 4 - StrictMode Behavioral Changes
+
+```bash
+# StrictMode usage
+grep -rn "StrictMode\|React\.StrictMode" \
+  src/ --include="*.js" --include="*.jsx" 2>/dev/null
+
+# Spy assertions that may be affected by StrictMode double-invoke change
+grep -rn "toHaveBeenCalledTimes\|\.mock\.calls\.length" \
+  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
+```
+
+---
+
+## Full Summary Script
+
+```bash
+#!/bin/bash
+echo "=============================="
+echo "React 19 Migration Audit Summary"
+echo "=============================="
+echo ""
+echo "REMOVED APIs (Critical):"
+echo "  ReactDOM.render:             $(grep -rn "ReactDOM\.render\s*(" src/ --include="*.js" --include="*.jsx" | wc -l | tr -d ' ') hits"
+echo "  ReactDOM.hydrate:            $(grep -rn "ReactDOM\.hydrate\s*(" src/ --include="*.js" --include="*.jsx" | wc -l | tr -d ' ') hits"
+echo "  unmountComponentAtNode:      $(grep -rn "unmountComponentAtNode" src/ --include="*.js" --include="*.jsx" | wc -l | tr -d ' ') hits"
+echo "  findDOMNode:                 $(grep -rn "findDOMNode" src/ --include="*.js" --include="*.jsx" | wc -l | tr -d ' ') hits"
+echo "  react-dom/test-utils:        $(grep -rn "from 'react-dom/test-utils'" src/ --include="*.js" --include="*.jsx" | wc -l | tr -d ' ') hits"
+echo "  Legacy context:              $(grep -rn "contextTypes\|childContextTypes\|getChildContext" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l | tr -d ' ') hits"
+echo "  String refs:                 $(grep -rn "this\.refs\." src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l | tr -d ' ') hits"
+echo ""
+echo "DEPRECATED APIs:"
+echo "  forwardRef:                  $(grep -rn "forwardRef" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l | tr -d ' ') hits"
+echo "  defaultProps (fn comps):     $(grep -rn "\.defaultProps\s*=" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l | tr -d ' ') hits"
+echo "  useRef() no arg:             $(grep -rn "useRef()" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l | tr -d ' ') hits"
+echo ""
+echo "TEST FILE ISSUES:"
+echo "  react-dom/test-utils:        $(grep -rn "from 'react-dom/test-utils'" src/ --include="*.test.*" --include="*.spec.*" | wc -l | tr -d ' ') hits"
+echo "  Simulate usage:              $(grep -rn "Simulate\." src/ --include="*.test.*" | wc -l | tr -d ' ') hits"
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react-audit-grep-patterns/references/test-scans.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react-audit-grep-patterns/references/test-scans.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react-audit-grep-patterns/references/test-scans.md
+- **SHA256_FINGERPRINT**: `6a2d35c65a90c48f475bf21d2101f0f4f02e4346d381fda6aaaf8cf578529800`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.338288+00:00
+---
+
+# Test File Scans - Both Auditors
+
+Scans specifically for test file issues. Run during both R18 and R19 audits.
+
+---
+
+## Setup Files
+
+```bash
+# Find test setup files
+find src/ -name "setupTests*" -o -name "jest.setup*" 2>/dev/null
+find . -name "jest.config.js" -o -name "jest.config.ts" 2>/dev/null | grep -v "node_modules"
+
+# Check setup file for legacy patterns
+grep -n "ReactDOM\|react-dom/test-utils\|Enzyme\|configure\|Adapter" \
+  src/setupTests.js 2>/dev/null
+```
+
+---
+
+## Import Scans
+
+```bash
+# All react-dom/test-utils imports in tests
+grep -rn "from 'react-dom/test-utils'\|require.*react-dom/test-utils" \
+  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
+
+# Enzyme imports
+grep -rn "from 'enzyme'\|require.*enzyme" \
+  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
+
+# react-test-renderer
+grep -rn "from 'react-test-renderer'" \
+  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
+
+# Old act location
+grep -rn "act.*from 'react-dom'" \
+  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
+```
+
+---
+
+## Render Pattern Scans
+
+```bash
+# ReactDOM.render in tests (should use RTL render)
+grep -rn "ReactDOM\.render\s*(" \
+  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
+
+# Enzyme shallow/mount
+grep -rn "shallow(\|mount(" \
+  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
+
+# Custom render helpers
+find src/ -name "test-utils.js" -o -name "renderWithProviders*" \
+  -o -name "customRender*" -o -name "render-helpers*" 2>/dev/null
+```
+
+---
+
+## Assertion Scans
+
+```bash
+# Call count assertions (StrictMode sensitive)
+grep -rn "toHaveBeenCalledTimes" \
+  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
+
+# console.error assertions (React error logging changed in R19)
+grep -rn "console\.error" \
+  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
+
+# Intermediate state assertions (batching sensitive)
+grep -rn "fireEvent\|userEvent" \
+  src/ --include="*.test.*" --include="*.spec.*" -A 1 \
+  | grep "expect\|getBy\|queryBy" | head -20 2>/dev/null
+```
+
+---
+
+## Async Scans
+
+```bash
+# act() usage
+grep -rn "\bact(" \
+  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
+
+# waitFor usage (good - check these are properly async)
+grep -rn "waitFor\|findBy" \
+  src/ --include="*.test.*" --include="*.spec.*" | wc -l
+
+# setTimeout in tests (may be batching-sensitive)
+grep -rn "setTimeout\|setInterval" \
+  src/ --include="*.test.*" --include="*.spec.*" 2>/dev/null
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react-container-presentation-component/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react-container-presentation-component/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react-container-presentation-component/SKILL.md
+- **SHA256_FINGERPRINT**: `914a5d0dcb2a36d2f9213d42b344353aed6b832f5a83497c8372322057462de9`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.456271+00:00
+---
+
+**description**: Create a React component using the Container/Presentation pattern in src/components by asking for the component name and type (ui or features), then scaffold files that follow this repository's TypeScript, Storybook, and SCSS conventions. Use when the user explicitly asks for a Container/Presentation-based component or runs /react-container-presentation-component.
+
+# Container/Presentation Component
+
+Use this skill to create a React component under `src/components` that follows the Container/Presentation pattern.
+
+Refer to this skill's bundled references for detailed rules.
+
+- `references/component-architecture.md`
+- `references/typescript-and-scss-rules.md`
+
+If the `/react-container-presentation-component` input is incomplete, ask questions first before creating files.
+
+## When To Use
+
+- When the user runs `/react-container-presentation-component`
+- When the user explicitly asks for a React component that follows the Container/Presentation pattern
+- When the user wants help deciding or implementing `ui` vs `features` classification within the Container/Presentation pattern
+
+## Required Questions
+
+If any of the following information is missing, ask the user using `ask_user`.
+
+1. Component name
+2. Type (`ui` or `features`)
+3. Whether to replace existing components (only when creating `ui`)
+
+Question requirements:
+
+- Provide the type as options (`ui`, `features`)
+- Require the component name to be in PascalCase
+- For `ui`, ask whether direct usage of Mantine or other UI libraries in existing `features` should be replaced with the new component
+
+## Procedure
+
+1. Check existing components
+
+- Check whether `src/components/ui/<ComponentName>` or `src/components/features/<ComponentName>` already exists.
+- If it exists, do not overwrite; confirm the preferred approach with the user.
+
+2. Decide target directory
+
+- `ui`: `src/components/ui/<ComponentName>`
+- `features`: `src/components/features/<ComponentName>`
+
+3. Re-check classification (only when `ui` is specified)
+
+- Even when `ui` is specified, before creating files, review `Reclassification Rule` in `references/component-architecture.md`.
+- If the implementation includes state management, side effects, async processing, context/store updates, or business logic, treat it as `features`.
+- If the result is closer to `features`, do not proceed as `ui`; use `ask_user` and confirm one of the following before continuing.
+  - `Create as features`
+  - `Keep ui and move state/logic to parent or features`
+
+4. Create required files
+
+- `ui`: `index.tsx`, `index.module.scss`, `index.stories.tsx`
+- `features`: `index.tsx`, `use<ComponentName>.tsx`, `presentation.tsx`, `types.ts`, `presentation.module.scss`, `presentation.stories.tsx`
+
+5. Replace existing usages (only when creating `ui`)
+
+- Only when the user approves, replace equivalent direct implementations using Mantine or other UI libraries in existing `features` with the new `ui` component.
+
+6. Validate
+
+- Run build and lint commands, and ensure both pass; if issues are introduced by newly added or updated files, fix them.
+- Follow `Storybook Minimum` in `references/component-architecture.md` for story state decisions.
+- Ask the user via `ask_user` whether to run a Storybook check (for example: "Run" / "Skip for now").
+- Run `npm run storybook` only if the user selects "Run".
+- If the user selects "Skip for now", explicitly mention in the final report that Storybook execution was skipped.
+
+## Output Contract
+
+- Report the list of files created.
+- If replacements were performed, report the list of changed files and replacement details.
+- Provide one usage example of the created component.
+- Report whether Storybook verification was executed (run/skip), and if run, include the command used.
+- Explain why the component was classified as `ui` or `features`.
+- Summarize where state, side effects, and rendering responsibilities were placed.
+- Confirm whether there were any dependency direction violations.
+- Clearly state any unresolved items.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react-container-presentation-component/references/component-architecture.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react-container-presentation-component/references/component-architecture.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react-container-presentation-component/references/component-architecture.md
+- **SHA256_FINGERPRINT**: `8fcfe3192c81e6f0ac58a847fa0d89092409824d84d26eabbff3165ae9a6239f`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.510524+00:00
+---
+
+# Component Architecture Reference
+
+This reference defines classification, file layout, and dependency direction in `src/components`.
+
+## Design Intent and Principles
+
+The goal of this skill is not only to add React components, but to apply the Container/Presentation pattern consistently with clear separation of responsibilities and dependency direction.
+
+This reference does not define full application-wide architecture. It focuses on design quality at the component boundary.
+
+- Separate rendering responsibilities from logic responsibilities.
+- Do not place state management, side effects, or business decisions in the presentation layer.
+- Avoid mixing responsibilities across boundaries and keep dependency direction explicit.
+
+## Classification
+
+- Place all components under `src/components`.
+- Use only two categories:
+  - `ui`: render-only, stateless components.
+  - `features`: components that include logic.
+
+## Reclassification Rule
+
+If the user requests `ui` but the implementation contains any of the following, treat it as `features` and ask for confirmation before creating files:
+
+- `useState`, `useReducer`, or `useEffect`.
+- Async behavior (API calls, timers, subscriptions).
+- Reading from or writing to context/store.
+- Business/data transformation logic.
+
+Ask using these options:
+
+- `Create as features`
+- `Keep ui and move logic/state to parent or features`
+
+## Layer Responsibilities
+
+This skill defines layers in two stages.
+
+### 1. Component Type Layer
+
+| Type       | Responsibility                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------ |
+| `ui`       | Reusable render-only component. Must not include business logic, side effects, or state management.    |
+| `features` | Use-case-oriented component. Handles state transitions, event interpretation, and async orchestration. |
+
+### 2. Internal Layer in `features`
+
+| Layer          | Responsibility                                                                      | Primary files                                                              |
+| -------------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `container`    | Handles state management, side effects, event handling, and data fetching.          | `index.tsx`, `use<ComponentName>.tsx`, `types.ts`                          |
+| `presentation` | Receives props and renders UI only. Must not perform external I/O or state updates. | `presentation.tsx`, `presentation.module.scss`, `presentation.stories.tsx` |
+
+Notes:
+
+- `ui` is composed of presentation only.
+- `features` must separate container and presentation.
+
+## Implementation Rules
+
+### ui
+
+- Keep components stateless.
+- Accept data and callbacks via props.
+- Do not add side effects or data fetching.
+- Prefer primitives from Mantine or other UI libraries first; use custom JSX/SCSS only when needed.
+
+### features
+
+- Use the Container/Presentation pattern.
+- Keep logic in `use<ComponentName>.tsx`.
+- Follow `Container/Presentation Separation Rules (Anti-patterns and Decision Examples)` below for detailed responsibility boundaries and anti-patterns.
+
+### Container/Presentation Separation Rules (Anti-patterns and Decision Examples)
+
+Principles:
+
+- Container is responsible for state management, side effects, event interpretation, and async processing.
+- Presentation is responsible only for rendering from received props.
+- Keep business decisions and data transformation in container-side code, not in presentation.
+
+Placement rules:
+
+- Place in container: `useState` / `useReducer` / `useEffect`, API calls, context/store read-write, business rule application.
+- Place in presentation: JSX rendering and display-only branching (for example: empty, loading, error views).
+- Use `types.ts` to define I/O contracts between container and presentation.
+
+Anti-patterns:
+
+- Calling APIs or mutations from presentation.
+- Updating context/store directly from presentation.
+- Implementing business decisions (authorization checks, state transition decisions, data shaping) in presentation.
+- Splitting files formally while keeping practical logic in presentation.
+
+Good / Bad examples:
+
+- Bad: `presentation.tsx` fetches data and manages loading state directly.
+- Good: `use<ComponentName>.tsx` manages data fetching and state, and `presentation.tsx` renders only from props such as `isLoading`, `items`, and `onAction`.
+
+## Dependency Direction
+
+- `features` -> `ui`: allowed.
+- `ui` -> `features`: forbidden.
+
+## File Structure
+
+### ui
+
+- `index.tsx`
+- `presentation.tsx`
+- `presentation.stories.tsx`
+- `presentation.module.scss`
+
+### features
+
+- `index.tsx`
+- `use<ComponentName>.tsx`
+- `presentation.tsx`
+- `types.ts`
+- `presentation.stories.tsx`
+- `presentation.module.scss`
+
+## Storybook Minimum
+
+- Always create `Default`.
+- Add state-specific stories only when distinct states exist.
+- Prefer story sets based on behavior:
+  - Interactive controls: `Hover`.
+  - Input-like: `Focus`, `Error`, `Disabled`.
+  - Layout/open-close: `Open`, `Closed`, `Empty`.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react-container-presentation-component/references/typescript-and-scss-rules.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react-container-presentation-component/references/typescript-and-scss-rules.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react-container-presentation-component/references/typescript-and-scss-rules.md
+- **SHA256_FINGERPRINT**: `be8b5f5764404d325dd16115831180f3b78b80f1ef07b9a54e2d137526f5f9cf`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.427044+00:00
+---
+
+# TypeScript and SCSS Rules Reference
+
+## TypeScript Rules
+
+- Do not use `any`.
+
+  ```ts
+  // Bad
+  const handler = (e: any) => {};
+
+  // Good
+  const handler = (e: React.ChangeEvent<HTMLInputElement>) => {};
+  ```
+
+- Use `type` for props instead of `interface`.
+
+  ```ts
+  // Bad
+  interface ButtonProps {
+    label: string;
+  }
+
+  // Good
+  type ButtonProps = { label: string };
+  ```
+
+- Explicitly annotate function return types.
+
+  ```ts
+  // Bad
+  const getLabel = () => "hello";
+
+  // Good
+  const getLabel = (): string => "hello";
+  ```
+
+## SCSS Rules
+
+### Tokens
+
+- Use color variables from `src/styles/theme.scss`.
+- Use animation variables from `src/styles/animation.scss`.
+- Define z-index tokens in `src/styles/z-index.scss` and consume those tokens in component styles.
+- In component SCSS, do not hardcode z-index values (for example, avoid `z-index: 10;` and use a z-index token instead).
+
+### Style Constraints
+
+- Prefer Mantine or other UI libraries first; use SCSS only when complementing library styles is necessary.
+- Do not use negative margins.
+- Prefer unitless `line-height`.
+- Prefer `letter-spacing` in `em`.
+- When margin is needed, only `margin-top` and `margin-left` are allowed.
+- Do not set `margin` or `position` on root elements.
+- The numeric values inside `src/styles/z-index.scss` must follow a 50-step scale (100, 150, ...).
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-batching-patterns/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-batching-patterns/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-batching-patterns/SKILL.md
+- **SHA256_FINGERPRINT**: `a24a845a6bf5743b6fd781ba3a734a02c46fc76bbd41280e37c9d18fd1a48cc9`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.495328+00:00
+---
+
+**description**: Provides exact patterns for diagnosing and fixing automatic batching regressions in React 18 class components. Use this skill whenever a class component has multiple setState calls in an async method, inside setTimeout, inside a Promise .then() or .catch(), or in a native event handler. Use it before writing any flushSync call - the decision tree here prevents unnecessary flushSync overuse. Also use this skill when fixing test failures caused by intermediate state assertions that break after React 18 upgrade.
+
+# React 18 Automatic Batching Patterns
+
+Reference for diagnosing and fixing the most dangerous silent breaking change in React 18 for class-component codebases.
+
+## The Core Change
+
+| Location of setState | React 17 | React 18 |
+|---|---|---|
+| React event handler | Batched | Batched (same) |
+| setTimeout | **Immediate re-render** | **Batched** |
+| Promise .then() / .catch() | **Immediate re-render** | **Batched** |
+| async/await | **Immediate re-render** | **Batched** |
+| Native addEventListener callback | **Immediate re-render** | **Batched** |
+
+**Batched** means: all setState calls within that execution context flush together in a single re-render at the end. No intermediate renders occur.
+
+## Quick Diagnosis
+
+Read every async class method. Ask: does any code after an `await` read `this.state` to make a decision?
+
+```
+Code reads this.state after await?
+  YES → Category A (silent state-read bug)
+  NO, but intermediate render must be visible to user?
+    YES → Category C (flushSync needed)
+    NO → Category B (refactor, no flushSync)
+```
+
+For the full pattern for each category, read:
+- **`references/batching-categories.md`** - Category A, B, C with full before/after code
+- **`references/flushSync-guide.md`** - when to use flushSync, when NOT to, import syntax
+
+## The flushSync Rule
+
+**Use `flushSync` sparingly.** It forces a synchronous re-render, bypassing React 18's concurrent scheduler. Overusing it negates the performance benefits of React 18.
+
+Only use `flushSync` when:
+- The user must see an intermediate UI state before an async operation begins
+- A spinner/loading state must render before a fetch starts
+- Sequential UI steps have distinct visible states (progress wizard, multi-step flow)
+
+In most cases, the fix is a **refactor** - restructuring the code to not read `this.state` after `await`. Read `references/batching-categories.md` for the correct approach per category.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-batching-patterns/references/batching-categories.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-batching-patterns/references/batching-categories.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-batching-patterns/references/batching-categories.md
+- **SHA256_FINGERPRINT**: `bc3b35cffc4ef226ac2bec5755eb1784fc7367b743ae152dda01d745ffc58b36`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.438394+00:00
+---
+
+# Batching Categories - Before/After Patterns
+
+## Category A - this.state Read After Await (Silent Bug) {#category-a}
+
+The method reads `this.state` after an `await` to make a conditional decision. In React 18, the intermediate setState hasn't flushed yet - `this.state` still holds the pre-update value.
+
+**Before (broken in React 18):**
+
+```jsx
+async handleLoadClick() {
+  this.setState({ loading: true });       // batched - not flushed yet
+  const data = await fetchData();
+  if (this.state.loading) {               // ← still FALSE (old value)
+    this.setState({ data, loading: false });  // ← never called
+  }
+}
+```
+
+**After - remove the this.state read entirely:**
+
+```jsx
+async handleLoadClick() {
+  this.setState({ loading: true });
+  try {
+    const data = await fetchData();
+    this.setState({ data, loading: false }); // always called - no condition needed
+  } catch (err) {
+    this.setState({ error: err, loading: false });
+  }
+}
+```
+
+**Pattern:** If the condition on `this.state` was always going to be true at that point (you just set it to true), remove the condition. The setState you called before `await` will eventually flush - you don't need to check it.
+
+---
+
+## Category A Variant - Multi-Step Conditional Chain
+
+```jsx
+// Before (broken):
+async initialize() {
+  this.setState({ step: 'auth' });
+  const token = await authenticate();
+  if (this.state.step === 'auth') {        // ← wrong: still initial value
+    this.setState({ step: 'loading', token });
+    const data = await loadData(token);
+    if (this.state.step === 'loading') {   // ← wrong again
+      this.setState({ step: 'ready', data });
+    }
+  }
+}
+```
+
+```jsx
+// After - use local variables, not this.state, to track flow:
+async initialize() {
+  this.setState({ step: 'auth' });
+  try {
+    const token = await authenticate();
+    this.setState({ step: 'loading', token });
+    const data = await loadData(token);
+    this.setState({ step: 'ready', data });
+  } catch (err) {
+    this.setState({ step: 'error', error: err });
+  }
+}
+```
+
+---
+
+## Category B - Independent setState Calls (Refactor, No flushSync) {#category-b}
+
+Multiple setState calls in a Promise chain where order matters but no intermediate state reading occurs. The calls just need to be restructured.
+
+**Before:**
+
+```jsx
+handleSubmit() {
+  this.setState({ submitting: true });
+  submitForm(this.state.formData)
+    .then(result => {
+      this.setState({ result });
+      this.setState({ submitting: false });  // two setState in .then()
+    });
+}
+```
+
+**After - consolidate setState calls:**
+
+```jsx
+async handleSubmit() {
+  this.setState({ submitting: true, result: null, error: null });
+  try {
+    const result = await submitForm(this.state.formData);
+    this.setState({ result, submitting: false });
+  } catch (err) {
+    this.setState({ error: err, submitting: false });
+  }
+}
+```
+
+Rule: Multiple `setState` calls in the same async context already batch in React 18. Consolidating into fewer calls is cleaner but not strictly required.
+
+---
+
+## Category C - Intermediate Render Must Be Visible (flushSync) {#category-c}
+
+The user must see an intermediate UI state (loading spinner, progress step) BEFORE an async operation starts. This is the only case where `flushSync` is the right answer.
+
+**Diagnostic question:** "If the loading spinner didn't appear until after the fetch returned, would the UX be wrong?"
+
+- YES → `flushSync`
+- NO → refactor (Category A or B)
+
+**Before:**
+
+```jsx
+async processOrder() {
+  this.setState({ status: 'validating' });   // user must see this
+  await validateOrder(this.props.order);
+  this.setState({ status: 'charging' });     // user must see this
+  await chargeCard(this.props.card);
+  this.setState({ status: 'complete' });
+}
+```
+
+**After - flushSync for each required intermediate render:**
+
+```jsx
+import { flushSync } from 'react-dom';
+
+async processOrder() {
+  flushSync(() => {
+    this.setState({ status: 'validating' });  // renders immediately
+  });
+  await validateOrder(this.props.order);
+
+  flushSync(() => {
+    this.setState({ status: 'charging' });    // renders immediately
+  });
+  await chargeCard(this.props.card);
+
+  this.setState({ status: 'complete' });      // last - no flushSync needed
+}
+```
+
+**Simple loading spinner case** (most common):
+
+```jsx
+import { flushSync } from 'react-dom';
+
+async handleSearch() {
+  // User must see spinner before the fetch begins
+  flushSync(() => this.setState({ loading: true }));
+  const results = await searchAPI(this.state.query);
+  this.setState({ results, loading: false });
+}
+```
+
+---
+
+## setTimeout Pattern
+
+```jsx
+// Before (React 17 - setTimeout fired immediate re-renders):
+handleAutoSave() {
+  setTimeout(() => {
+    this.setState({ saving: true });
+    // React 17: re-render happened here
+    saveToServer(this.state.formData).then(() => {
+      this.setState({ saving: false, lastSaved: Date.now() });
+    });
+  }, 2000);
+}
+```
+
+```jsx
+// After (React 18 - all setState inside setTimeout batches):
+handleAutoSave() {
+  setTimeout(async () => {
+    // If loading state must show before fetch - flushSync
+    flushSync(() => this.setState({ saving: true }));
+    await saveToServer(this.state.formData);
+    this.setState({ saving: false, lastSaved: Date.now() });
+  }, 2000);
+}
+```
+
+---
+
+## Test Patterns That Break Due to Batching
+
+```jsx
+// Before (React 17 - intermediate state was synchronously visible):
+it('shows saving indicator', () => {
+  render(<AutoSaveForm />);
+  fireEvent.change(input, { target: { value: 'new text' } });
+  expect(screen.getByText('Saving...')).toBeInTheDocument(); // ← sync check
+});
+
+// After (React 18 - use waitFor for intermediate states):
+it('shows saving indicator', async () => {
+  render(<AutoSaveForm />);
+  fireEvent.change(input, { target: { value: 'new text' } });
+  await waitFor(() => expect(screen.getByText('Saving...')).toBeInTheDocument());
+  await waitFor(() => expect(screen.getByText('Saved')).toBeInTheDocument());
+});
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-batching-patterns/references/flushSync-guide.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-batching-patterns/references/flushSync-guide.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-batching-patterns/references/flushSync-guide.md
+- **SHA256_FINGERPRINT**: `20730a5da79c68fe5d7d678fa569c24e3b05ce57d4b96394889591e379a447d0`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.554975+00:00
+---
+
+# flushSync Guide
+
+## Import
+
+```jsx
+import { flushSync } from 'react-dom';
+// NOT from 'react' - it lives in react-dom
+```
+
+If the file already imports from `react-dom`:
+
+```jsx
+import ReactDOM from 'react-dom';
+// Add named import:
+import ReactDOM, { flushSync } from 'react-dom';
+```
+
+## Syntax
+
+```jsx
+flushSync(() => {
+  this.setState({ ... });
+});
+// After this line, the re-render has completed synchronously
+```
+
+Multiple setState calls inside one flushSync batch together into ONE synchronous render:
+
+```jsx
+flushSync(() => {
+  this.setState({ step: 'loading' });
+  this.setState({ progress: 0 });
+  // These batch together → one render
+});
+```
+
+## When to Use
+
+✅ Use when the user must see a specific UI state BEFORE an async operation starts:
+
+```jsx
+flushSync(() => this.setState({ loading: true }));
+await expensiveAsyncOperation();
+```
+
+✅ Use in multi-step progress flows where each step must visually complete before the next:
+
+```jsx
+flushSync(() => this.setState({ status: 'validating' }));
+await validate();
+flushSync(() => this.setState({ status: 'processing' }));
+await process();
+```
+
+✅ Use in tests that must assert an intermediate UI state synchronously (avoid when possible - prefer `waitFor`).
+
+## When NOT to Use
+
+❌ Don't use it to "fix" a reading-this.state-after-await bug - that's Category A (refactor instead):
+
+```jsx
+// WRONG - flushSync doesn't fix this
+flushSync(() => this.setState({ loading: true }));
+const data = await fetchData();
+if (this.state.loading) { ... } // still a race condition
+```
+
+❌ Don't use it for every setState to "be safe" - it defeats React 18 concurrent rendering:
+
+```jsx
+// WRONG - excessive flushSync
+async handleClick() {
+  flushSync(() => this.setState({ clicked: true }));   // unnecessary
+  flushSync(() => this.setState({ processing: true })); // unnecessary
+  const result = await doWork();
+  flushSync(() => this.setState({ result, done: true })); // unnecessary
+}
+```
+
+❌ Don't use it inside a `useEffect` or `componentDidMount` to trigger immediate state - it causes nested render cycles.
+
+## Performance Note
+
+`flushSync` forces a synchronous render, which blocks the browser thread until the render completes. On slow devices or complex component trees, multiple `flushSync` calls in an async method will cause visible jank. Use sparingly.
+
+If you find yourself adding more than 2 `flushSync` calls to a single method, reconsider whether the component's state model needs redesign.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-dep-compatibility/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-dep-compatibility/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-dep-compatibility/SKILL.md
+- **SHA256_FINGERPRINT**: `9c0a7460cfa5968a854df325e6d34f78c6cbf988cb3d23f56851291255914671`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.540008+00:00
+---
+
+**description**: React 18.3.1 and React 19 dependency compatibility matrix.
+
+# React Dependency Compatibility Matrix
+
+Minimum versions required for React 18.3.1 and React 19 compatibility.
+
+Use this skill whenever checking whether a dependency supports a target React version, resolving peer dependency conflicts, deciding whether to upgrade or use `legacy-peer-deps`, or assessing the risk of a `react-router` v5 to v6 migration.
+
+Review this matrix before running `npm install` during a React upgrade and before accepting an npm dependency conflict resolution, especially where concurrent mode compatibility may be affected.
+## Core Upgrade Targets
+
+| Package | React 17 (current) | React 18.3.1 (min) | React 19 (min) | Notes |
+|---|---|---|---|---|
+| `react` | 17.x | **18.3.1** | **19.0.0** | Pin exactly to 18.3.1 for the R18 orchestra |
+| `react-dom` | 17.x | **18.3.1** | **19.0.0** | Must match react version exactly |
+
+## Testing Libraries
+
+| Package | React 18 Min | React 19 Min | Notes |
+|---|---|---|---|
+| `@testing-library/react` | **14.0.0** | **16.0.0** | RTL 13 uses ReactDOM.render internally - broken in R18 |
+| `@testing-library/jest-dom` | **6.0.0** | **6.0.0** | v5 works but v6 has React 18 matcher updates |
+| `@testing-library/user-event` | **14.0.0** | **14.0.0** | v13 is sync, v14 is async - API change required |
+| `jest` | **27.x** | **27.x** | jest 27+ with jsdom 16+ for React 18 |
+| `jest-environment-jsdom` | **27.x** | **27.x** | Must match jest version |
+
+## Apollo Client
+
+| Package | React 18 Min | React 19 Min | Notes |
+|---|---|---|---|
+| `@apollo/client` | **3.8.0** | **3.11.0** | 3.8 adds `useSyncExternalStore` for concurrent mode |
+| `graphql` | **15.x** | **16.x** | Apollo 3.8+ peer requires graphql 15 or 16 |
+
+Read **`references/apollo-details.md`** for concurrent mode issues and MockedProvider changes.
+
+## Emotion
+
+| Package | React 18 Min | React 19 Min | Notes |
+|---|---|---|---|
+| `@emotion/react` | **11.10.0** | **11.13.0** | 11.10 adds React 18 concurrent mode support |
+| `@emotion/styled` | **11.10.0** | **11.13.0** | Must match @emotion/react version |
+| `@emotion/cache` | **11.10.0** | **11.13.0** | If used directly |
+
+## React Router
+
+| Package | React 18 Min | React 19 Min | Notes |
+|---|---|---|---|
+| `react-router-dom` | **v6.0.0** | **v6.8.0** | v5 → v6 is a breaking migration - see details below |
+| `react-router-dom` v5 | 5.3.4 (workaround) | ❌ Not supported | See legacy peer deps note |
+
+**react-router v5 → v6 is a SEPARATE migration sprint.** Read `references/router-migration.md`.
+
+## Redux
+
+| Package | React 18 Min | React 19 Min | Notes |
+|---|---|---|---|
+| `react-redux` | **8.0.0** | **9.0.0** | v7 works on R18 legacy root only - breaks on concurrent mode |
+| `redux` | **4.x** | **5.x** | Redux itself is framework-agnostic - react-redux version matters |
+| `@reduxjs/toolkit` | **1.9.0** | **2.0.0** | RTK 1.9 tested against React 18 |
+
+## Other Common Packages
+
+| Package | React 18 Min | React 19 Min | Notes |
+|---|---|---|---|
+| `react-query` / `@tanstack/react-query` | **4.0.0** | **5.0.0** | v3 doesn't support concurrent mode |
+| `react-hook-form` | **7.0.0** | **7.43.0** | v6 has concurrent mode issues |
+| `formik` | **2.2.9** | **2.4.0** | v2.2.9 patched for React 18 |
+| `react-select` | **5.0.0** | **5.8.0** | v4 has peer dep conflicts with R18 |
+| `react-datepicker` | **4.8.0** | **6.0.0** | v4.8+ added React 18 support |
+| `react-dnd` | **16.0.0** | **16.0.0** | v15 and below have R18 concurrent mode issues |
+| `prop-types` | any | any | Standalone - unaffected by React version |
+
+---
+
+## Conflict Resolution Decision Tree
+
+```
+npm ls shows peer conflict for package X
+         │
+         ▼
+Does package X have a version that supports React 18?
+  YES → npm install X@[min-compatible-version]
+  NO  ↓
+         │
+Is the package critical to the app?
+  YES → check GitHub issues for React 18 branch/fork
+      → check if maintainer has a PR open
+      → last resort: --legacy-peer-deps (document why)
+  NO  → consider removing the package
+```
+
+## --legacy-peer-deps Rules
+
+Only use `--legacy-peer-deps` when:
+- The package has no React 18 compatible release
+- The package is actively maintained (not abandoned)
+- The conflict is only a peer dep declaration mismatch (not actual API incompatibility)
+
+**Document every `--legacy-peer-deps` usage** in a comment at the top of package.json or in a MIGRATION.md file explaining why it was necessary.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-dep-compatibility/references/apollo-details.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-dep-compatibility/references/apollo-details.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-dep-compatibility/references/apollo-details.md
+- **SHA256_FINGERPRINT**: `ad2c192deeadb9e46ab95e085ed15c6cad85ac3bdd3232bb3a53f357a91d057b`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.753252+00:00
+---
+
+# Apollo Client - React 18 Compatibility Details
+
+## Why Apollo 3.8+ is Required
+
+Apollo Client 3.7 and below use an internal subscription model that is not compatible with React 18's concurrent rendering. In concurrent mode, React can interrupt and replay renders, which causes Apollo's store subscriptions to fire at incorrect times - producing stale data or missed updates.
+
+Apollo 3.8 was the first version to adopt `useSyncExternalStore`, which React 18 requires for external stores to work correctly under concurrent rendering.
+
+## Version Summary
+
+| Apollo Version | React 18 Support | React 19 Support | Notes |
+|---|---|---|---|
+| < 3.7 | ❌ | ❌ | Concurrent mode data tearing |
+| 3.7.x | ⚠️ | ⚠️ | Works with legacy root only (ReactDOM.render) |
+| **3.8.x** | ✅ | ✅ | First fully compatible version |
+| 3.9+ | ✅ | ✅ | Recommended |
+| 3.11+ | ✅ | ✅ (confirmed) | Explicit React 19 testing added |
+
+## If You're on Apollo 3.7 Using Legacy Root
+
+If the app still uses `ReactDOM.render` (legacy root) and hasn't migrated to `createRoot` yet, Apollo 3.7 will technically work - but this means you're not getting any React 18 concurrent features (including automatic batching). This is a partial upgrade only.
+
+As soon as `createRoot` is used, upgrade Apollo to 3.8+.
+
+## MockedProvider in Tests - React 18
+
+Apollo's `MockedProvider` works with React 18 but async behavior changed:
+
+```jsx
+// Old pattern - flushing with setTimeout:
+await new Promise(resolve => setTimeout(resolve, 0));
+wrapper.update();
+
+// React 18 pattern - use waitFor or findBy:
+await waitFor(() => {
+  expect(screen.getByText('Alice')).toBeInTheDocument();
+});
+// OR:
+expect(await screen.findByText('Alice')).toBeInTheDocument();
+```
+
+## Upgrading Apollo
+
+```bash
+npm install @apollo/client@latest graphql@latest
+```
+
+If graphql peer dep conflicts with other packages:
+
+```bash
+npm ls graphql  # check what version is being used
+npm info @apollo/client peerDependencies  # check what apollo requires
+```
+
+Apollo 3.8+ supports both `graphql@15` and `graphql@16`.
+
+## InMemoryCache - No Changes Required
+
+`InMemoryCache` configuration is unaffected by the React 18 upgrade. No migration needed for:
+
+- `typePolicies`
+- `fragmentMatcher`
+- `possibleTypes`
+- Custom field policies
+
+## useQuery / useMutation / useSubscription - No Changes
+
+Apollo hooks are unchanged in their API. The upgrade is entirely internal to how Apollo integrates with React's rendering model.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-dep-compatibility/references/router-migration.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-dep-compatibility/references/router-migration.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-dep-compatibility/references/router-migration.md
+- **SHA256_FINGERPRINT**: `1a2ea59c1b9a6b67d5517acf25848545f9db5e082daa0d697f46539fd035bb88`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.772671+00:00
+---
+
+# React Router v5 → v6 - Scope Assessment
+
+## Why This Is a Separate Sprint
+
+React Router v5 → v6 is a complete API rewrite. Unlike most React 18 upgrade steps which touch individual patterns, the router migration affects:
+
+- Every `<Route>` component
+- Every `<Switch>` (replaced by `<Routes>`)
+- Every `useHistory()` (replaced by `useNavigate()`)
+- Every `useRouteMatch()` (replaced by `useMatch()`)
+- Every `<Redirect>` (replaced by `<Navigate>`)
+- Nested route definitions (entirely new model)
+- Route parameters access
+- Query string handling
+
+Attempting this as part of the React 18 upgrade sprint will scope-creep the migration significantly.
+
+## Recommended Approach
+
+### Option A - Defer Router Migration (Recommended)
+
+Use `react-router-dom@5.3.4` with `--legacy-peer-deps` during the React 18 upgrade. This is explicitly documented as a supported workaround by the react-router team for React 18 compatibility on legacy root.
+
+```bash
+# In the React 18 dep surgeon:
+npm install react-router-dom@5.3.4 --legacy-peer-deps
+```
+
+Document in package.json:
+
+```json
+"_legacyPeerDepsReason": {
+  "react-router-dom@5.3.4": "Router v5→v6 migration deferred to separate sprint. React 18 peer dep mismatch only - no API incompatibility on legacy root."
+}
+```
+
+Then schedule the v5 → v6 migration as its own sprint after the React 18 upgrade is stable.
+
+### Option B - Migrate Router as Part of React 18 Sprint
+
+Only choose this if:
+
+- The app has minimal routing (< 10 routes, no nested routes, no complex navigation logic)
+- The team has bandwidth and the sprint timeline allows it
+
+### Scope Assessment Scan
+
+Run this to understand the router migration scope before deciding:
+
+```bash
+echo "=== Route definitions ==="
+grep -rn "<Route\|<Switch\|<Redirect" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l
+
+echo "=== useHistory calls ==="
+grep -rn "useHistory()" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l
+
+echo "=== useRouteMatch calls ==="
+grep -rn "useRouteMatch()" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l
+
+echo "=== withRouter HOC ==="
+grep -rn "withRouter" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l
+
+echo "=== history.push / history.replace ==="
+grep -rn "history\.push\|history\.replace\|history\.go" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l
+```
+
+**Decision guide:**
+
+- Total hits < 30 → router migration is feasible in this sprint
+- Total hits 30–100 → strongly recommend deferring
+- Total hits > 100 → must defer - separate sprint required
+
+## v5 → v6 API Changes Summary
+
+| v5 | v6 | Notes |
+|---|---|---|
+| `<Switch>` | `<Routes>` | Direct replacement |
+| `<Route path="/" component={C}>` | `<Route path="/" element={<C />}>` | element prop, not component |
+| `<Route exact path="/">` | `<Route path="/">` | exact is default in v6 |
+| `<Redirect to="/new">` | `<Navigate to="/new" />` | Component rename |
+| `useHistory()` | `useNavigate()` | Returns a function, not an object |
+| `history.push('/path')` | `navigate('/path')` | Direct call |
+| `history.replace('/path')` | `navigate('/path', { replace: true })` | Options object |
+| `useRouteMatch()` | `useMatch()` | Different return shape |
+| `match.params` | `useParams()` | Hook instead of prop |
+| Nested routes inline | Nested routes in config | Layout routes concept |
+| `withRouter` HOC | `useNavigate` / `useParams` hooks | HOC removed |
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-enzyme-to-rtl/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-enzyme-to-rtl/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-enzyme-to-rtl/SKILL.md
+- **SHA256_FINGERPRINT**: `d093cedf794df11134c948b13edde0933994d52f0e889691c4abf007e77a00b8`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.637121+00:00
+---
+
+**description**: Provides exact Enzyme → React Testing Library migration patterns for React 18 upgrades. Use this skill whenever Enzyme tests need to be rewritten - shallow, mount, wrapper.find(), wrapper.simulate(), wrapper.prop(), wrapper.state(), wrapper.instance(), Enzyme configure/Adapter calls, or any test file that imports from enzyme. This skill covers the full API mapping and the philosophy shift from implementation testing to behavior testing. Always read this skill before rewriting Enzyme tests - do not translate Enzyme APIs 1:1, that produces brittle RTL tests.
+
+# React 18 Enzyme → RTL Migration
+
+Enzyme has no React 18 adapter and no React 18 support path. All Enzyme tests must be rewritten using React Testing Library.
+
+## The Philosophy Shift (Read This First)
+
+Enzyme tests implementation. RTL tests behavior.
+
+```jsx
+// Enzyme: tests that the component has the right internal state
+expect(wrapper.state('count')).toBe(3);
+expect(wrapper.instance().handleClick).toBeDefined();
+expect(wrapper.find('Button').prop('disabled')).toBe(true);
+
+// RTL: tests what the user actually sees and can do
+expect(screen.getByText('Count: 3')).toBeInTheDocument();
+expect(screen.getByRole('button', { name: /submit/i })).toBeDisabled();
+```
+
+This is not a 1:1 translation. Enzyme tests that verify internal state or instance methods don't have RTL equivalents - because RTL intentionally doesn't expose internals. **Rewrite the test to assert the visible outcome instead.**
+
+## API Map
+
+For complete before/after code for each Enzyme API, read:
+- **`references/enzyme-api-map.md`** - full mapping: shallow, mount, find, simulate, prop, state, instance, configure
+- **`references/async-patterns.md`** - waitFor, findBy, act(), Apollo MockedProvider, loading states, error states
+
+## Core Rewrite Template
+
+```jsx
+// Every Enzyme test rewrites to this shape:
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import MyComponent from './MyComponent';
+
+describe('MyComponent', () => {
+  it('does the thing', async () => {
+    // 1. Render (replaces shallow/mount)
+    render(<MyComponent prop="value" />);
+
+    // 2. Query (replaces wrapper.find())
+    const button = screen.getByRole('button', { name: /submit/i });
+
+    // 3. Interact (replaces simulate())
+    await userEvent.setup().click(button);
+
+    // 4. Assert on visible output (replaces wrapper.state() / wrapper.prop())
+    expect(screen.getByText('Submitted!')).toBeInTheDocument();
+  });
+});
+```
+
+## RTL Query Priority (use in this order)
+
+1. `getByRole` - matches accessible roles (button, textbox, heading, checkbox, etc.)
+2. `getByLabelText` - form fields linked to labels
+3. `getByPlaceholderText` - input placeholders
+4. `getByText` - visible text content
+5. `getByDisplayValue` - current value of input/select/textarea
+6. `getByAltText` - image alt text
+7. `getByTitle` - title attribute
+8. `getByTestId` - `data-testid` attribute (last resort)
+
+Prefer `getByRole` over `getByTestId`. It tests accessibility too.
+
+## Wrapping with Providers
+
+```jsx
+// Enzyme with context:
+const wrapper = mount(
+  <ApolloProvider client={client}>
+    <ThemeProvider theme={theme}>
+      <MyComponent />
+    </ThemeProvider>
+  </ApolloProvider>
+);
+
+// RTL equivalent (use your project's customRender or wrap inline):
+import { render } from '@testing-library/react';
+render(
+  <MockedProvider mocks={mocks} addTypename={false}>
+    <ThemeProvider theme={theme}>
+      <MyComponent />
+    </ThemeProvider>
+  </MockedProvider>
+);
+// Or use the project's customRender helper if it wraps providers
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-enzyme-to-rtl/references/async-patterns.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-enzyme-to-rtl/references/async-patterns.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-enzyme-to-rtl/references/async-patterns.md
+- **SHA256_FINGERPRINT**: `17be4cee50164fe81c20363ab7ed2fe99e2218658c8d6be7f58c9c003005a9bd`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.811170+00:00
+---
+
+# Async Test Patterns - Enzyme → RTL Migration
+
+Reference for rewriting Enzyme async tests to React Testing Library with React 18 compatible patterns.
+
+## The Core Problem
+
+Enzyme's async tests typically used one of these approaches:
+
+- `wrapper.update()` after state changes
+- `setTimeout` / `Promise.resolve()` to flush microtasks
+- `setImmediate` to flush async queues
+- Direct instance method calls followed by `wrapper.update()`
+
+None of these work in RTL. RTL provides `waitFor`, `findBy*`, and `act` instead.
+
+---
+
+## Pattern 1 - wrapper.update() After State Change
+
+Enzyme required `wrapper.update()` to force a re-render after async state changes.
+
+```jsx
+// Enzyme:
+it('loads data', async () => {
+  const wrapper = mount(<UserList />);
+  await Promise.resolve(); // flush microtasks
+  wrapper.update();        // force Enzyme to sync with DOM
+  expect(wrapper.find('li')).toHaveLength(3);
+});
+```
+
+```jsx
+// RTL - waitFor handles re-renders automatically:
+import { render, screen, waitFor } from '@testing-library/react';
+
+it('loads data', async () => {
+  render(<UserList />);
+  await waitFor(() => {
+    expect(screen.getAllByRole('listitem')).toHaveLength(3);
+  });
+});
+```
+
+---
+
+## Pattern 2 - Async Action Triggered by User Interaction
+
+```jsx
+// Enzyme:
+it('fetches user on button click', async () => {
+  const wrapper = mount(<UserCard />);
+  wrapper.find('button').simulate('click');
+  await new Promise(resolve => setTimeout(resolve, 0));
+  wrapper.update();
+  expect(wrapper.find('.user-name').text()).toBe('John Doe');
+});
+```
+
+```jsx
+// RTL:
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+it('fetches user on button click', async () => {
+  render(<UserCard />);
+  await userEvent.setup().click(screen.getByRole('button', { name: /load/i }));
+  // findBy* auto-waits up to 1000ms (configurable)
+  expect(await screen.findByText('John Doe')).toBeInTheDocument();
+});
+```
+
+---
+
+## Pattern 3 - Loading State Assertion
+
+```jsx
+// Enzyme - asserted loading state synchronously then final state after flush:
+it('shows loading then result', async () => {
+  const wrapper = mount(<SearchResults query="react" />);
+  expect(wrapper.find('.spinner').exists()).toBe(true);
+  await new Promise(resolve => setTimeout(resolve, 100));
+  wrapper.update();
+  expect(wrapper.find('.spinner').exists()).toBe(false);
+  expect(wrapper.find('.result')).toHaveLength(5);
+});
+```
+
+```jsx
+// RTL:
+it('shows loading then result', async () => {
+  render(<SearchResults query="react" />);
+  // Loading state - check it appears
+  expect(screen.getByRole('progressbar')).toBeInTheDocument();
+  // Or if loading is text:
+  expect(screen.getByText(/loading/i)).toBeInTheDocument();
+
+  // Wait for results to appear (loading disappears, results show)
+  await waitFor(() => {
+    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+  });
+  expect(screen.getAllByRole('listitem')).toHaveLength(5);
+});
+```
+
+---
+
+## Pattern 4 - Apollo MockedProvider Async Tests
+
+```jsx
+// Enzyme with Apollo - used to flush with multiple ticks:
+it('renders user from query', async () => {
+  const wrapper = mount(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <UserProfile id="1" />
+    </MockedProvider>
+  );
+  await new Promise(resolve => setTimeout(resolve, 0)); // flush Apollo queue
+  wrapper.update();
+  expect(wrapper.find('.username').text()).toBe('Alice');
+});
+```
+
+```jsx
+// RTL with Apollo:
+import { render, screen, waitFor } from '@testing-library/react';
+import { MockedProvider } from '@apollo/client/testing';
+
+it('renders user from query', async () => {
+  render(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <UserProfile id="1" />
+    </MockedProvider>
+  );
+
+  // Wait for Apollo to resolve the query
+  expect(await screen.findByText('Alice')).toBeInTheDocument();
+  // OR:
+  await waitFor(() => {
+    expect(screen.getByText('Alice')).toBeInTheDocument();
+  });
+});
+```
+
+**Apollo loading state in RTL:**
+
+```jsx
+it('shows loading then data', async () => {
+  render(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <UserProfile id="1" />
+    </MockedProvider>
+  );
+  // Apollo loading state - check immediately after render
+  expect(screen.getByText(/loading/i)).toBeInTheDocument();
+  // Then wait for data
+  expect(await screen.findByText('Alice')).toBeInTheDocument();
+});
+```
+
+---
+
+## Pattern 5 - Error State from Async Operation
+
+```jsx
+// Enzyme:
+it('shows error on failed fetch', async () => {
+  server.use(rest.get('/api/user', (req, res, ctx) => res(ctx.status(500))));
+  const wrapper = mount(<UserCard />);
+  wrapper.find('button').simulate('click');
+  await new Promise(resolve => setTimeout(resolve, 0));
+  wrapper.update();
+  expect(wrapper.find('.error-message').text()).toContain('Something went wrong');
+});
+```
+
+```jsx
+// RTL:
+it('shows error on failed fetch', async () => {
+  // (assuming MSW or jest.mock for fetch)
+  render(<UserCard />);
+  await userEvent.setup().click(screen.getByRole('button', { name: /load/i }));
+  expect(await screen.findByText(/something went wrong/i)).toBeInTheDocument();
+});
+```
+
+---
+
+## Pattern 6 - act() for Manual Async Control
+
+When you need explicit control over async timing (rare with RTL but occasionally needed for class component tests):
+
+```jsx
+// RTL with act() for fine-grained async control:
+import { act } from 'react';
+
+it('handles sequential state updates', async () => {
+  render(<MultiStepForm />);
+
+  await act(async () => {
+    fireEvent.click(screen.getByRole('button', { name: /next/i }));
+    await Promise.resolve(); // flush microtask queue
+  });
+
+  expect(screen.getByText('Step 2')).toBeInTheDocument();
+});
+```
+
+---
+
+## RTL Async Query Guide
+
+| Method | Behavior | Use when |
+|---|---|---|
+| `getBy*` | Synchronous - throws if not found | Element is always present immediately |
+| `queryBy*` | Synchronous - returns null if not found | Checking element does NOT exist |
+| `findBy*` | Async - waits up to 1000ms, rejects if not found | Element appears asynchronously |
+| `getAllBy*` | Synchronous - throws if 0 found | Multiple elements always present |
+| `queryAllBy*` | Synchronous - returns [] if none found | Checking count or non-existence |
+| `findAllBy*` | Async - waits for elements to appear | Multiple elements appear asynchronously |
+| `waitFor(fn)` | Retries fn until no error or timeout | Custom assertion that needs polling |
+| `waitForElementToBeRemoved(el)` | Waits until element disappears | Loading states, removals |
+
+**Default timeout:** 1000ms. Configure globally in `jest.config.js`:
+
+```js
+// Increase timeout for slow CI environments
+// jest.config.js
+module.exports = {
+  testEnvironmentOptions: {
+    asyncUtilTimeout: 3000,
+  },
+};
+```
+
+---
+
+## Common Migration Mistakes
+
+```jsx
+// WRONG - mixing async query with sync assertion:
+const el = await screen.findByText('Result');
+// el is already resolved here - findBy returns the element, not a promise
+expect(await el).toBeInTheDocument(); // unnecessary second await
+
+// CORRECT:
+const el = await screen.findByText('Result');
+expect(el).toBeInTheDocument();
+// OR simply:
+expect(await screen.findByText('Result')).toBeInTheDocument();
+```
+
+```jsx
+// WRONG - using getBy* for elements that appear asynchronously:
+fireEvent.click(button);
+expect(screen.getByText('Loaded!')).toBeInTheDocument(); // throws before data loads
+
+// CORRECT:
+fireEvent.click(button);
+expect(await screen.findByText('Loaded!')).toBeInTheDocument(); // waits
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-enzyme-to-rtl/references/enzyme-api-map.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-enzyme-to-rtl/references/enzyme-api-map.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-enzyme-to-rtl/references/enzyme-api-map.md
+- **SHA256_FINGERPRINT**: `a7efb506afc0231004c8c18307a8f91235b785a3b6837f448c26d1cb2a900b61`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.838163+00:00
+---
+
+# Enzyme API Map - Complete Before/After
+
+## Setup / Configure
+
+```jsx
+// Enzyme:
+import Enzyme from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+Enzyme.configure({ adapter: new Adapter() });
+
+// RTL: delete this entirely - no setup needed
+// (jest.config.js setupFilesAfterFramework handles @testing-library/jest-dom matchers)
+```
+
+---
+
+## Rendering
+
+```jsx
+// Enzyme - shallow (no children rendered):
+import { shallow } from 'enzyme';
+const wrapper = shallow(<MyComponent prop="value" />);
+
+// RTL - render (full render, children included):
+import { render } from '@testing-library/react';
+render(<MyComponent prop="value" />);
+// No wrapper variable needed - query via screen
+```
+
+```jsx
+// Enzyme - mount (full render with DOM):
+import { mount } from 'enzyme';
+const wrapper = mount(<MyComponent />);
+
+// RTL - same render() call handles this
+render(<MyComponent />);
+```
+
+---
+
+## Querying
+
+```jsx
+// Enzyme - find by component type:
+const button = wrapper.find('button');
+const comp = wrapper.find(ChildComponent);
+const items = wrapper.find('.list-item');
+
+// RTL - query by accessible attributes:
+const button = screen.getByRole('button');
+const button = screen.getByRole('button', { name: /submit/i });
+const heading = screen.getByRole('heading', { name: /title/i });
+const input = screen.getByLabelText('Email');
+const items = screen.getAllByRole('listitem');
+```
+
+```jsx
+// Enzyme - find by text:
+wrapper.find('.message').text() === 'Hello'
+
+// RTL:
+screen.getByText('Hello')
+screen.getByText(/hello/i)  // case-insensitive regex
+```
+
+---
+
+## User Interaction
+
+```jsx
+// Enzyme:
+wrapper.find('button').simulate('click');
+wrapper.find('input').simulate('change', { target: { value: 'hello' } });
+wrapper.find('form').simulate('submit');
+
+// RTL - fireEvent (synchronous, low-level):
+import { fireEvent } from '@testing-library/react';
+fireEvent.click(screen.getByRole('button'));
+fireEvent.change(screen.getByRole('textbox'), { target: { value: 'hello' } });
+fireEvent.submit(screen.getByRole('form'));
+
+// RTL - userEvent (preferred, simulates real user behavior):
+import userEvent from '@testing-library/user-event';
+const user = userEvent.setup();
+await user.click(screen.getByRole('button'));
+await user.type(screen.getByRole('textbox'), 'hello');
+await user.selectOptions(screen.getByRole('combobox'), 'option1');
+```
+
+**Use `userEvent` for most interactions** - it fires the full event sequence (pointerdown, mousedown, focus, click, etc.) like a real user. Use `fireEvent` only when testing specific event properties.
+
+---
+
+## Assertions on Props and State
+
+```jsx
+// Enzyme - prop assertion:
+expect(wrapper.find('input').prop('disabled')).toBe(true);
+expect(wrapper.prop('className')).toContain('active');
+
+// RTL - assert on visible attributes:
+expect(screen.getByRole('textbox')).toBeDisabled();
+expect(screen.getByRole('button')).toHaveAttribute('type', 'submit');
+expect(screen.getByRole('listitem')).toHaveClass('active');
+```
+
+```jsx
+// Enzyme - state assertion (NO RTL EQUIVALENT):
+expect(wrapper.state('count')).toBe(3);
+expect(wrapper.state('loading')).toBe(false);
+
+// RTL - assert on what the state renders:
+expect(screen.getByText('Count: 3')).toBeInTheDocument();
+expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+```
+
+**Key principle:** Don't test state values - test what the state produces in the UI. If the component renders `<span>Count: {this.state.count}</span>`, test that span.
+
+---
+
+## Instance Methods
+
+```jsx
+// Enzyme - direct method call (NO RTL EQUIVALENT):
+wrapper.instance().handleSubmit();
+wrapper.instance().loadData();
+
+// RTL - trigger through the UI:
+await userEvent.setup().click(screen.getByRole('button', { name: /submit/i }));
+// Or if no UI trigger exists, reconsider: should internal methods be tested directly?
+// Usually the answer is no - test the rendered outcome instead.
+```
+
+---
+
+## Existence Checks
+
+```jsx
+// Enzyme:
+expect(wrapper.find('.error')).toHaveLength(1);
+expect(wrapper.find('.error')).toHaveLength(0);
+expect(wrapper.exists('.error')).toBe(true);
+
+// RTL:
+expect(screen.getByText('Error message')).toBeInTheDocument();
+expect(screen.queryByText('Error message')).not.toBeInTheDocument();
+// queryBy returns null instead of throwing when not found
+// getBy throws if not found - use in positive assertions
+// findBy returns a promise - use for async elements
+```
+
+---
+
+## Multiple Elements
+
+```jsx
+// Enzyme:
+expect(wrapper.find('li')).toHaveLength(5);
+wrapper.find('li').forEach((item, i) => {
+  expect(item.text()).toBe(expectedItems[i]);
+});
+
+// RTL:
+const items = screen.getAllByRole('listitem');
+expect(items).toHaveLength(5);
+items.forEach((item, i) => {
+  expect(item).toHaveTextContent(expectedItems[i]);
+});
+```
+
+---
+
+## Before/After: Complete Component Test
+
+```jsx
+// Enzyme version:
+import { shallow } from 'enzyme';
+
+describe('LoginForm', () => {
+  it('submits with credentials', () => {
+    const mockSubmit = jest.fn();
+    const wrapper = shallow(<LoginForm onSubmit={mockSubmit} />);
+
+    wrapper.find('input[name="email"]').simulate('change', {
+      target: { value: 'user@example.com' }
+    });
+    wrapper.find('input[name="password"]').simulate('change', {
+      target: { value: 'password123' }
+    });
+    wrapper.find('button[type="submit"]').simulate('click');
+
+    expect(wrapper.state('loading')).toBe(true);
+    expect(mockSubmit).toHaveBeenCalledWith({
+      email: 'user@example.com',
+      password: 'password123'
+    });
+  });
+});
+```
+
+```jsx
+// RTL version:
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+describe('LoginForm', () => {
+  it('submits with credentials', async () => {
+    const mockSubmit = jest.fn();
+    const user = userEvent.setup();
+    render(<LoginForm onSubmit={mockSubmit} />);
+
+    await user.type(screen.getByLabelText(/email/i), 'user@example.com');
+    await user.type(screen.getByLabelText(/password/i), 'password123');
+    await user.click(screen.getByRole('button', { name: /submit/i }));
+
+    // Assert on visible output - not on state
+    expect(screen.getByRole('button', { name: /submit/i })).toBeDisabled(); // loading state
+    expect(mockSubmit).toHaveBeenCalledWith({
+      email: 'user@example.com',
+      password: 'password123'
+    });
+  });
+});
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-legacy-context/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-legacy-context/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-legacy-context/SKILL.md
+- **SHA256_FINGERPRINT**: `c8bae1fbba6e00fdf9e319616d7670c7ee3c26da922f927fa356ed9eb078116e`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.717203+00:00
+---
+
+**description**: Provides the complete migration pattern for React legacy context API (contextTypes, childContextTypes, getChildContext) to the modern createContext API. Use this skill whenever migrating legacy context in class components - this is always a cross-file migration requiring the provider AND all consumers to be updated together. Use it before touching any contextTypes or childContextTypes code, because migrating only the provider without the consumers (or vice versa) will cause a runtime failure. Always read this skill before writing any context migration - the cross-file coordination steps here prevent the most common context migration bugs.
+
+# React 18 Legacy Context Migration
+
+Legacy context (`contextTypes`, `childContextTypes`, `getChildContext`) was deprecated in React 16.3 and warns in React 18.3.1. It is **removed in React 19**.
+
+## This Is Always a Cross-File Migration
+
+Unlike most other migrations that touch one file at a time, context migration requires coordinating:
+1. Create the context object (usually a new file)
+2. Update the **provider** component
+3. Update **every consumer** component
+
+Missing any consumer leaves the app broken - it will read from the wrong context or get `undefined`.
+
+## Migration Steps (Always Follow This Order)
+
+```
+Step 1: Find the provider (childContextTypes + getChildContext)
+Step 2: Find ALL consumers (contextTypes)
+Step 3: Create the context file
+Step 4: Update the provider
+Step 5: Update each consumer (class components → contextType, function components → useContext)
+Step 6: Verify - run the app, check no legacy context warnings remain
+```
+
+## Scan Commands
+
+```bash
+# Find all providers
+grep -rn "childContextTypes\|getChildContext" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+
+# Find all consumers
+grep -rn "contextTypes\s*=" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+
+# Find this.context usage (may be legacy or modern - check which)
+grep -rn "this\.context\." src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+```
+
+## Reference Files
+
+- **`references/single-context.md`** - complete migration for one context (theme, auth, etc.) with provider + class consumer + function consumer
+- **`references/multi-context.md`** - apps with multiple legacy contexts (nested providers, multiple consumers of different contexts)
+- **`references/context-file-template.md`** - the standard file structure for a new context module
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-legacy-context/references/context-file-template.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-legacy-context/references/context-file-template.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-legacy-context/references/context-file-template.md
+- **SHA256_FINGERPRINT**: `49e622fec7b85c4759585564124df0b6f24e233715259afdf190254838c525c6`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.776919+00:00
+---
+
+# Context File Template
+
+Standard template for a new context module. Copy and fill in the name.
+
+## Template
+
+```jsx
+// src/contexts/[Name]Context.js
+import React from 'react';
+
+// ─── 1. Default Value ───────────────────────────────────────────────────────
+// Shape must match what the provider will pass as `value`
+// Used when a consumer renders outside any provider (edge case protection)
+const defaultValue = {
+  // fill in the shape
+};
+
+// ─── 2. Create Context ──────────────────────────────────────────────────────
+export const [Name]Context = React.createContext(defaultValue);
+
+// ─── 3. Display Name (for React DevTools) ───────────────────────────────────
+[Name]Context.displayName = '[Name]Context';
+
+// ─── 4. Optional: Custom Hook (strongly recommended) ────────────────────────
+// Provides a clean import path and a helpful error if used outside provider
+export function use[Name]() {
+  const context = React.useContext([Name]Context);
+  if (context === defaultValue) {
+    // Only throw if defaultValue is a sentinel - skip if a real default makes sense
+    // throw new Error('use[Name] must be used inside a [Name]Provider');
+  }
+  return context;
+}
+```
+
+## Filled Example - AuthContext
+
+```jsx
+// src/contexts/AuthContext.js
+import React from 'react';
+
+const defaultValue = {
+  user: null,
+  isAuthenticated: false,
+  login: () => Promise.resolve(),
+  logout: () => {},
+};
+
+export const AuthContext = React.createContext(defaultValue);
+AuthContext.displayName = 'AuthContext';
+
+export function useAuth() {
+  return React.useContext(AuthContext);
+}
+```
+
+## Filled Example - ThemeContext
+
+```jsx
+// src/contexts/ThemeContext.js
+import React from 'react';
+
+const defaultValue = {
+  theme: 'light',
+  toggleTheme: () => {},
+};
+
+export const ThemeContext = React.createContext(defaultValue);
+ThemeContext.displayName = 'ThemeContext';
+
+export function useTheme() {
+  return React.useContext(ThemeContext);
+}
+```
+
+## Where to Put Context Files
+
+```
+src/
+  contexts/           ← preferred: dedicated folder
+    AuthContext.js
+    ThemeContext.js
+```
+
+Alternative acceptable locations:
+
+```
+src/context/          ← singular is also fine
+src/store/contexts/   ← if co-located with state management
+```
+
+Do NOT put context files inside a component folder - contexts are cross-cutting and shouldn't be owned by any one component.
+
+## Provider Placement in the App
+
+Context providers wrap the components that need access. Place as low in the tree as possible, not always at root:
+
+```jsx
+// App.js
+import { ThemeProvider } from './ThemeProvider';
+import { AuthProvider } from './AuthProvider';
+
+function App() {
+  return (
+    // Auth wraps everything - login state is needed everywhere
+    <AuthProvider>
+      {/* Theme wraps only the UI shell - not needed in pure data providers */}
+      <ThemeProvider>
+        <Router>
+          <AppShell />
+        </Router>
+      </ThemeProvider>
+    </AuthProvider>
+  );
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-legacy-context/references/multi-context.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-legacy-context/references/multi-context.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-legacy-context/references/multi-context.md
+- **SHA256_FINGERPRINT**: `46234f3cd234701aca63b40e191bfd5d765c05d57f6818764cfc15c7a3730a03`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.906014+00:00
+---
+
+# Multiple Legacy Contexts - Migration Reference
+
+## Identifying Multiple Contexts
+
+A React 16/17 codebase often has several legacy contexts used for different concerns:
+
+```bash
+# Find distinct context names used in childContextTypes
+grep -rn "childContextTypes" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+# Each hit is a separate context to migrate
+```
+
+Common patterns in class-heavy codebases:
+
+- **Theme context** - dark/light mode, color palette
+- **Auth context** - current user, login/logout functions
+- **Router context** - current route, navigation (if using older react-router)
+- **Store context** - Redux store, dispatch (if using older connect patterns)
+- **Locale/i18n context** - language, translation function
+- **Toast/notification context** - show/hide notifications
+
+---
+
+## Migration Order
+
+Migrate contexts one at a time. Each is an independent migration:
+
+```
+For each legacy context:
+  1. Create src/contexts/[Name]Context.js
+  2. Update the provider
+  3. Update all consumers
+  4. Run the app - verify no warning for this context
+  5. Move to the next context
+```
+
+Do not migrate all providers first then all consumers - it leaves the app in a broken intermediate state.
+
+---
+
+## Multiple Contexts in the Same Provider
+
+Some apps combined multiple contexts in one provider component:
+
+```jsx
+// Before - one provider exports multiple context values:
+class AppProvider extends React.Component {
+  static childContextTypes = {
+    theme: PropTypes.string,
+    user: PropTypes.object,
+    locale: PropTypes.string,
+    notifications: PropTypes.array,
+  };
+
+  getChildContext() {
+    return {
+      theme: this.state.theme,
+      user: this.state.user,
+      locale: this.state.locale,
+      notifications: this.state.notifications,
+    };
+  }
+}
+```
+
+**Migration approach - split into separate contexts:**
+
+```jsx
+// src/contexts/ThemeContext.js
+export const ThemeContext = React.createContext('light');
+
+// src/contexts/AuthContext.js
+export const AuthContext = React.createContext({ user: null, login: () => {}, logout: () => {} });
+
+// src/contexts/LocaleContext.js
+export const LocaleContext = React.createContext('en');
+
+// src/contexts/NotificationContext.js
+export const NotificationContext = React.createContext([]);
+```
+
+```jsx
+// AppProvider.js - now wraps with multiple providers
+import { ThemeContext } from './contexts/ThemeContext';
+import { AuthContext } from './contexts/AuthContext';
+import { LocaleContext } from './contexts/LocaleContext';
+import { NotificationContext } from './contexts/NotificationContext';
+
+class AppProvider extends React.Component {
+  render() {
+    const { theme, user, locale, notifications } = this.state;
+    return (
+      <ThemeContext.Provider value={theme}>
+        <AuthContext.Provider value={{ user, login: this.login, logout: this.logout }}>
+          <LocaleContext.Provider value={locale}>
+            <NotificationContext.Provider value={notifications}>
+              {this.props.children}
+            </NotificationContext.Provider>
+          </LocaleContext.Provider>
+        </AuthContext.Provider>
+      </ThemeContext.Provider>
+    );
+  }
+}
+```
+
+---
+
+## Consumer With Multiple Contexts (Class Component)
+
+Class components can only use ONE `static contextType`. For multiple, use `Consumer` render props or convert to a function component.
+
+### Option A - Render Props (keep as class component)
+
+```jsx
+import { ThemeContext } from '../contexts/ThemeContext';
+import { AuthContext } from '../contexts/AuthContext';
+
+class UserPanel extends React.Component {
+  render() {
+    return (
+      <ThemeContext.Consumer>
+        {(theme) => (
+          <AuthContext.Consumer>
+            {({ user, logout }) => (
+              <div className={`panel panel-${theme}`}>
+                <span>{user?.name}</span>
+                <button onClick={logout}>Sign out</button>
+              </div>
+            )}
+          </AuthContext.Consumer>
+        )}
+      </ThemeContext.Consumer>
+    );
+  }
+}
+```
+
+### Option B - Convert to Function Component (preferred)
+
+```jsx
+import { useContext } from 'react';
+import { ThemeContext } from '../contexts/ThemeContext';
+import { AuthContext } from '../contexts/AuthContext';
+
+function UserPanel() {
+  const theme = useContext(ThemeContext);
+  const { user, logout } = useContext(AuthContext);
+
+  return (
+    <div className={`panel panel-${theme}`}>
+      <span>{user?.name}</span>
+      <button onClick={logout}>Sign out</button>
+    </div>
+  );
+}
+```
+
+If converting to a function component is out of scope for this migration sprint - use Option A. If the class component is simple (mostly just render), Option B is worth the minor rewrite.
+
+---
+
+## Context File Naming Conventions
+
+Use consistent naming across the codebase:
+
+```
+src/
+  contexts/
+    ThemeContext.js      → exports: ThemeContext, ThemeProvider (optional)
+    AuthContext.js       → exports: AuthContext, AuthProvider (optional)
+    LocaleContext.js     → exports: LocaleContext
+```
+
+Each file exports the context object. The provider can stay in its original file and just import the context.
+
+---
+
+## Verification After All Contexts Migrated
+
+```bash
+# Should return zero hits for legacy context patterns
+echo "=== childContextTypes ==="
+grep -rn "childContextTypes" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l
+
+echo "=== contextTypes (legacy) ==="
+grep -rn "^\s*static contextTypes\s*=\|contextTypes\.propTypes" src/ --include="*.js" | grep -v "\.test\." | wc -l
+
+echo "=== getChildContext ==="
+grep -rn "getChildContext" src/ --include="*.js" --include="*.jsx" | grep -v "\.test\." | wc -l
+
+echo "All three should be 0"
+```
+
+Note: `static contextType` (singular) is the MODERN API - that's correct. Only `contextTypes` (plural) is legacy.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-legacy-context/references/single-context.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-legacy-context/references/single-context.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-legacy-context/references/single-context.md
+- **SHA256_FINGERPRINT**: `5d5e520162442d3e5d1d7d8a952b6afef6fb16d987fe9e6b23ecc7ff2b807aaf`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:45.884379+00:00
+---
+
+# Single Context Migration - Complete Before/After
+
+## Full Example: ThemeContext
+
+This covers the most common pattern - one context with one provider and multiple consumers.
+
+---
+
+### Step 1 - Before State (Legacy)
+
+**ThemeProvider.js (provider):**
+
+```jsx
+import PropTypes from 'prop-types';
+
+class ThemeProvider extends React.Component {
+  static childContextTypes = {
+    theme: PropTypes.string,
+    toggleTheme: PropTypes.func,
+  };
+
+  state = { theme: 'light' };
+
+  toggleTheme = () => {
+    this.setState(s => ({ theme: s.theme === 'light' ? 'dark' : 'light' }));
+  };
+
+  getChildContext() {
+    return {
+      theme: this.state.theme,
+      toggleTheme: this.toggleTheme,
+    };
+  }
+
+  render() {
+    return this.props.children;
+  }
+}
+```
+
+**ThemedButton.js (class consumer):**
+
+```jsx
+import PropTypes from 'prop-types';
+
+class ThemedButton extends React.Component {
+  static contextTypes = {
+    theme: PropTypes.string,
+    toggleTheme: PropTypes.func,
+  };
+
+  render() {
+    const { theme, toggleTheme } = this.context;
+    return (
+      <button className={`btn btn-${theme}`} onClick={toggleTheme}>
+        Toggle Theme
+      </button>
+    );
+  }
+}
+```
+
+**ThemedHeader.js (function consumer - if any):**
+
+```jsx
+// Function components couldn't use legacy context cleanly
+// They had to use a class wrapper or render prop
+```
+
+---
+
+### Step 2 - Create Context File
+
+**src/contexts/ThemeContext.js (new file):**
+
+```jsx
+import React from 'react';
+
+// Default value matches the shape of getChildContext() return
+export const ThemeContext = React.createContext({
+  theme: 'light',
+  toggleTheme: () => {},
+});
+
+// Named export for the context - both provider and consumers import from here
+```
+
+---
+
+### Step 3 - Update Provider
+
+**ThemeProvider.js (after):**
+
+```jsx
+import React from 'react';
+import { ThemeContext } from '../contexts/ThemeContext';
+
+class ThemeProvider extends React.Component {
+  state = { theme: 'light' };
+
+  toggleTheme = () => {
+    this.setState(s => ({ theme: s.theme === 'light' ? 'dark' : 'light' }));
+  };
+
+  render() {
+    // React 19 JSX shorthand: <ThemeContext value={...}>
+    // React 18: <ThemeContext.Provider value={...}>
+    return (
+      <ThemeContext.Provider
+        value={{
+          theme: this.state.theme,
+          toggleTheme: this.toggleTheme,
+        }}
+      >
+        {this.props.children}
+      </ThemeContext.Provider>
+    );
+  }
+}
+
+export default ThemeProvider;
+```
+
+> **React 19 note:** In React 19 you can write `<ThemeContext value={...}>` directly (no `.Provider`). For React 18.3.1 use `<ThemeContext.Provider value={...}>`.
+
+---
+
+### Step 4 - Update Class Consumer
+
+**ThemedButton.js (after):**
+
+```jsx
+import React from 'react';
+import { ThemeContext } from '../contexts/ThemeContext';
+
+class ThemedButton extends React.Component {
+  // singular contextType (not contextTypes)
+  static contextType = ThemeContext;
+
+  render() {
+    const { theme, toggleTheme } = this.context;
+    return (
+      <button className={`btn btn-${theme}`} onClick={toggleTheme}>
+        Toggle Theme
+      </button>
+    );
+  }
+}
+
+export default ThemedButton;
+```
+
+**Key differences from legacy:**
+
+- `static contextType` (singular) not `contextTypes` (plural)
+- No PropTypes declaration needed
+- `this.context` is the full value object (not a partial - whatever you passed to `value`)
+- Only ONE context per class component via `contextType` - use `Context.Consumer` render prop for multiple
+
+---
+
+### Step 5 - Update Function Consumer
+
+**ThemedHeader.js (after - now straightforward with hooks):**
+
+```jsx
+import { useContext } from 'react';
+import { ThemeContext } from '../contexts/ThemeContext';
+
+function ThemedHeader({ title }) {
+  const { theme } = useContext(ThemeContext);
+  return <h1 className={`header-${theme}`}>{title}</h1>;
+}
+```
+
+---
+
+### Step 6 - Multiple Contexts in One Class Component
+
+If a class component consumed more than one legacy context, it gets complex. Class components can only have one `static contextType`. For multiple contexts, use the render prop form:
+
+```jsx
+import { ThemeContext } from '../contexts/ThemeContext';
+import { AuthContext } from '../contexts/AuthContext';
+
+class Dashboard extends React.Component {
+  render() {
+    return (
+      <ThemeContext.Consumer>
+        {({ theme }) => (
+          <AuthContext.Consumer>
+            {({ user }) => (
+              <div className={`dashboard-${theme}`}>
+                Welcome, {user.name}
+              </div>
+            )}
+          </AuthContext.Consumer>
+        )}
+      </ThemeContext.Consumer>
+    );
+  }
+}
+```
+
+Or consider migrating the class component to a function component to use `useContext` cleanly.
+
+---
+
+### Verification Checklist
+
+After migrating one context:
+
+```bash
+# Provider - no legacy context exports remain
+grep -n "childContextTypes\|getChildContext" src/ThemeProvider.js
+
+# Consumers - no legacy context consumption remains
+grep -rn "contextTypes\s*=" src/ --include="*.js" --include="*.jsx" | grep -v "ThemeContext\|\.test\."
+
+# this.context usage - confirm it reads from contextType not legacy
+grep -rn "this\.context\." src/ --include="*.js" | grep -v "\.test\."
+```
+
+Each should return zero hits for the migrated context.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-lifecycle-patterns/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-lifecycle-patterns/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-lifecycle-patterns/SKILL.md
+- **SHA256_FINGERPRINT**: `3ca83b02532df3fe2ffa85f36486117de715bffef82772092ef78e3a85df85c4`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:46.056062+00:00
+---
+
+**description**: Provides exact before/after migration patterns for the three unsafe class component lifecycle methods - componentWillMount, componentWillReceiveProps, and componentWillUpdate - targeting React 18.3.1. Use this skill whenever a class component needs its lifecycle methods migrated, when deciding between getDerivedStateFromProps vs componentDidUpdate, when adding getSnapshotBeforeUpdate, or when fixing React 18 UNSAFE_ lifecycle warnings. Always use this skill before writing any lifecycle migration code - do not guess the pattern from memory, the decision trees here prevent the most common migration mistakes.
+
+# React 18 Lifecycle Patterns
+
+Reference for migrating the three unsafe class component lifecycle methods to React 18.3.1 compliant patterns.
+
+## Quick Decision Guide
+
+Before migrating any lifecycle method, identify the **semantic category** of what the method does. Wrong category = wrong migration. The table below routes you to the correct reference file.
+
+### componentWillMount - what does it do?
+
+| What it does | Correct migration | Reference |
+|---|---|---|
+| Sets initial state (`this.setState(...)`) | Move to `constructor` | [→ componentWillMount.md](references/componentWillMount.md#case-a) |
+| Runs a side effect (fetch, subscription, DOM) | Move to `componentDidMount` | [→ componentWillMount.md](references/componentWillMount.md#case-b) |
+| Derives initial state from props | Move to `constructor` with props | [→ componentWillMount.md](references/componentWillMount.md#case-c) |
+
+### componentWillReceiveProps - what does it do?
+
+| What it does | Correct migration | Reference |
+|---|---|---|
+| Async side effect triggered by prop change (fetch, cancel) | `componentDidUpdate` | [→ componentWillReceiveProps.md](references/componentWillReceiveProps.md#case-a) |
+| Pure state derivation from new props (no side effects) | `getDerivedStateFromProps` | [→ componentWillReceiveProps.md](references/componentWillReceiveProps.md#case-b) |
+
+### componentWillUpdate - what does it do?
+
+| What it does | Correct migration | Reference |
+|---|---|---|
+| Reads the DOM before update (scroll, size, position) | `getSnapshotBeforeUpdate` | [→ componentWillUpdate.md](references/componentWillUpdate.md#case-a) |
+| Cancels requests / runs effects before update | `componentDidUpdate` with prev comparison | [→ componentWillUpdate.md](references/componentWillUpdate.md#case-b) |
+
+---
+
+## The UNSAFE_ Prefix Rule
+
+**Never use `UNSAFE_componentWillMount`, `UNSAFE_componentWillReceiveProps`, or `UNSAFE_componentWillUpdate` as a permanent fix.**
+
+Prefixing suppresses the React 18.3.1 warning but does NOT:
+- Fix concurrent mode safety issues
+- Prepare the codebase for React 19 (where these are removed, with or without the prefix)
+- Fix the underlying semantic problem the migration is meant to address
+
+The UNSAFE_ prefix is only appropriate as a temporary hold while scheduling the real migration sprint. Mark any UNSAFE_ prefix additions with:
+```jsx
+// TODO: React 19 will remove this. Migrate before React 19 upgrade.
+// UNSAFE_ prefix added temporarily - replace with componentDidMount / getDerivedStateFromProps / etc.
+```
+
+---
+
+## Reference Files
+
+Read the full reference file for the lifecycle method you are migrating:
+
+- **`references/componentWillMount.md`** - 3 cases with full before/after code
+- **`references/componentWillReceiveProps.md`** - getDerivedStateFromProps trap warnings, full examples
+- **`references/componentWillUpdate.md`** - getSnapshotBeforeUpdate + componentDidUpdate pairing
+
+Read the relevant file before writing any migration code.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-lifecycle-patterns/references/componentWillMount.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-lifecycle-patterns/references/componentWillMount.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-lifecycle-patterns/references/componentWillMount.md
+- **SHA256_FINGERPRINT**: `dbd30aaf928f65b65531a14fe48a7d04a5642c39550c515c391eecf5f2af0892`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:46.095167+00:00
+---
+
+# componentWillMount Migration Reference
+
+## Case A - Initializes State {#case-a}
+
+The method only calls `this.setState()` with static or computed values that do not depend on async operations.
+
+**Before:**
+
+```jsx
+class UserList extends React.Component {
+  componentWillMount() {
+    this.setState({ items: [], loading: false, page: 1 });
+  }
+  render() { ... }
+}
+```
+
+**After - move to constructor:**
+
+```jsx
+class UserList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { items: [], loading: false, page: 1 };
+  }
+  render() { ... }
+}
+```
+
+**If constructor already exists**, merge the state:
+
+```jsx
+class UserList extends React.Component {
+  constructor(props) {
+    super(props);
+    // Existing state merged with componentWillMount state:
+    this.state = {
+      ...this.existingState,  // whatever was already here
+      items: [],
+      loading: false,
+      page: 1,
+    };
+  }
+}
+```
+
+---
+
+## Case B - Runs a Side Effect {#case-b}
+
+The method fetches data, sets up subscriptions, interacts with external APIs, or touches the DOM.
+
+**Before:**
+
+```jsx
+class UserDashboard extends React.Component {
+  componentWillMount() {
+    this.subscription = this.props.eventBus.subscribe(this.handleEvent);
+    fetch(`/api/users/${this.props.userId}`)
+      .then(r => r.json())
+      .then(user => this.setState({ user, loading: false }));
+    this.setState({ loading: true });
+  }
+}
+```
+
+**After - move to componentDidMount:**
+
+```jsx
+class UserDashboard extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { loading: true, user: null }; // initial state here
+  }
+
+  componentDidMount() {
+    // All side effects move here - runs after first render
+    this.subscription = this.props.eventBus.subscribe(this.handleEvent);
+    fetch(`/api/users/${this.props.userId}`)
+      .then(r => r.json())
+      .then(user => this.setState({ user, loading: false }));
+  }
+
+  componentWillUnmount() {
+    // Always pair subscriptions with cleanup
+    this.subscription?.unsubscribe();
+  }
+}
+```
+
+**Why this is safe:** In React 18 concurrent mode, `componentWillMount` can be called multiple times before mounting. Side effects inside it can fire multiple times. `componentDidMount` is guaranteed to fire exactly once after mount.
+
+---
+
+## Case C - Derives Initial State from Props {#case-c}
+
+The method reads `this.props` to compute an initial state value.
+
+**Before:**
+
+```jsx
+class PriceDisplay extends React.Component {
+  componentWillMount() {
+    this.setState({
+      formattedPrice: `$${this.props.price.toFixed(2)}`,
+      isDiscount: this.props.price < this.props.originalPrice,
+    });
+  }
+}
+```
+
+**After - constructor with props:**
+
+```jsx
+class PriceDisplay extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      formattedPrice: `$${props.price.toFixed(2)}`,
+      isDiscount: props.price < props.originalPrice,
+    };
+  }
+}
+```
+
+**Note:** If this initial state needs to UPDATE when props change later, that's a `getDerivedStateFromProps` case - see `componentWillReceiveProps.md` Case B.
+
+---
+
+## Multiple Patterns in One Method
+
+If a single `componentWillMount` does both state init AND side effects:
+
+```jsx
+// Mixed - state init + fetch
+componentWillMount() {
+  this.setState({ loading: true, items: [] });              // Case A
+  fetch('/api/items').then(r => r.json())                   // Case B
+    .then(items => this.setState({ items, loading: false }));
+}
+```
+
+Split them:
+
+```jsx
+constructor(props) {
+  super(props);
+  this.state = { loading: true, items: [] }; // Case A → constructor
+}
+
+componentDidMount() {
+  fetch('/api/items').then(r => r.json())    // Case B → componentDidMount
+    .then(items => this.setState({ items, loading: false }));
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-lifecycle-patterns/references/componentWillReceiveProps.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-lifecycle-patterns/references/componentWillReceiveProps.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-lifecycle-patterns/references/componentWillReceiveProps.md
+- **SHA256_FINGERPRINT**: `0cc1290a65ce1a446ba7042998d8270090be86cd9deb739e0998966577230f66`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:46.000597+00:00
+---
+
+# componentWillReceiveProps Migration Reference
+
+## The Core Decision
+
+```
+Does componentWillReceiveProps trigger async work or side effects?
+  YES → componentDidUpdate
+  NO (pure state derivation only) → getDerivedStateFromProps
+```
+
+When in doubt: use `componentDidUpdate`. It's always safe.
+`getDerivedStateFromProps` has traps (see bottom of this file) that make it the wrong choice when the logic is anything other than purely synchronous state derivation.
+
+---
+
+## Case A - Async Side Effects / Fetch on Prop Change {#case-a}
+
+The method fetches data, cancels requests, updates external state, or runs any async operation when a prop changes.
+
+**Before:**
+
+```jsx
+class UserProfile extends React.Component {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.userId !== this.props.userId) {
+      this.setState({ loading: true, profile: null });
+      fetchProfile(nextProps.userId)
+        .then(profile => this.setState({ profile, loading: false }))
+        .catch(err => this.setState({ error: err, loading: false }));
+    }
+  }
+}
+```
+
+**After - componentDidUpdate:**
+
+```jsx
+class UserProfile extends React.Component {
+  componentDidUpdate(prevProps) {
+    if (prevProps.userId !== this.props.userId) {
+      // Use this.props (not nextProps - the update already happened)
+      this.setState({ loading: true, profile: null });
+      fetchProfile(this.props.userId)
+        .then(profile => this.setState({ profile, loading: false }))
+        .catch(err => this.setState({ error: err, loading: false }));
+    }
+  }
+}
+```
+
+**Key difference:** `componentDidUpdate` receives `prevProps` - you compare `prevProps.x !== this.props.x` instead of `this.props.x !== nextProps.x`. The update has already applied.
+
+**Cancellation pattern** (important for async):
+
+```jsx
+class UserProfile extends React.Component {
+  _requestId = 0;
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.userId !== this.props.userId) {
+      const requestId = ++this._requestId;
+      this.setState({ loading: true });
+      fetchProfile(this.props.userId).then(profile => {
+        // Ignore stale responses if userId changed again
+        if (requestId === this._requestId) {
+          this.setState({ profile, loading: false });
+        }
+      });
+    }
+  }
+}
+```
+
+---
+
+## Case B - Pure State Derivation from Props {#case-b}
+
+The method only derives state values from the new props synchronously. No async work, no side effects, no external calls.
+
+**Before:**
+
+```jsx
+class SortedList extends React.Component {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.items !== this.props.items) {
+      this.setState({
+        sortedItems: [...nextProps.items].sort((a, b) => a.name.localeCompare(b.name)),
+      });
+    }
+  }
+}
+```
+
+**After - getDerivedStateFromProps:**
+
+```jsx
+class SortedList extends React.Component {
+  // Must track previous prop to detect changes
+  static getDerivedStateFromProps(props, state) {
+    if (props.items !== state.prevItems) {
+      return {
+        sortedItems: [...props.items].sort((a, b) => a.name.localeCompare(b.name)),
+        prevItems: props.items, // ← always store the prop you're comparing
+      };
+    }
+    return null; // null = no state change
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      sortedItems: [...props.items].sort((a, b) => a.name.localeCompare(b.name)),
+      prevItems: props.items, // ← initialize in constructor too
+    };
+  }
+}
+```
+
+---
+
+## getDerivedStateFromProps - Traps and Warnings
+
+### Trap 1: It fires on EVERY render, not just prop changes
+
+Unlike `componentWillReceiveProps`, `getDerivedStateFromProps` is called before every render - including `setState` calls. Always compare against previous values stored in state.
+
+```jsx
+// WRONG - fires on every render, including setState triggers
+static getDerivedStateFromProps(props, state) {
+  return { sortedItems: sort(props.items) }; // re-sorts on every setState!
+}
+
+// CORRECT - only updates when items reference changes
+static getDerivedStateFromProps(props, state) {
+  if (props.items !== state.prevItems) {
+    return { sortedItems: sort(props.items), prevItems: props.items };
+  }
+  return null;
+}
+```
+
+### Trap 2: It cannot access `this`
+
+`getDerivedStateFromProps` is a static method. No `this.props`, no `this.state`, no instance methods.
+
+```jsx
+// WRONG - no this in static method
+static getDerivedStateFromProps(props, state) {
+  return { value: this.computeValue(props) }; // ReferenceError
+}
+
+// CORRECT - pure function of props + state
+static getDerivedStateFromProps(props, state) {
+  return { value: computeValue(props) }; // standalone function
+}
+```
+
+### Trap 3: Don't use it for side effects
+
+If you need to fetch when a prop changes - use `componentDidUpdate`. `getDerivedStateFromProps` must be pure.
+
+### When getDerivedStateFromProps is actually the wrong tool
+
+If you find yourself doing complex logic in `getDerivedStateFromProps`, consider whether the consuming component should receive pre-processed data as a prop instead. The pattern exists for narrow use cases, not general prop-to-state syncing.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-lifecycle-patterns/references/componentWillUpdate.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-lifecycle-patterns/references/componentWillUpdate.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-lifecycle-patterns/references/componentWillUpdate.md
+- **SHA256_FINGERPRINT**: `19300aee0326731a3b3e7366bc4bb8146ac17a52b91ce17cb55dd807eedfd994`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:46.011929+00:00
+---
+
+# componentWillUpdate Migration Reference
+
+## The Core Decision
+
+```
+Does componentWillUpdate read the DOM (scroll, size, position, selection)?
+  YES → getSnapshotBeforeUpdate (paired with componentDidUpdate)
+  NO (side effects, request cancellation, etc.) → componentDidUpdate
+```
+
+---
+
+## Case A - Reads DOM Before Re-render {#case-a}
+
+The method captures a DOM measurement (scroll position, element size, cursor position) before React applies the next update, so it can be restored or adjusted after.
+
+**Before:**
+
+```jsx
+class MessageList extends React.Component {
+  componentWillUpdate(nextProps) {
+    if (nextProps.messages.length > this.props.messages.length) {
+      this.savedScrollHeight = this.listRef.current.scrollHeight;
+      this.savedScrollTop = this.listRef.current.scrollTop;
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.messages.length < this.props.messages.length) {
+      const scrollDelta = this.listRef.current.scrollHeight - this.savedScrollHeight;
+      this.listRef.current.scrollTop = this.savedScrollTop + scrollDelta;
+    }
+  }
+}
+```
+
+**After - getSnapshotBeforeUpdate + componentDidUpdate:**
+
+```jsx
+class MessageList extends React.Component {
+  // Called right before DOM updates are applied - perfect timing to read DOM
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    if (prevProps.messages.length < this.props.messages.length) {
+      return {
+        scrollHeight: this.listRef.current.scrollHeight,
+        scrollTop: this.listRef.current.scrollTop,
+      };
+    }
+    return null; // Return null when snapshot is not needed
+  }
+
+  // Receives the snapshot as the third argument
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (snapshot !== null) {
+      const scrollDelta = this.listRef.current.scrollHeight - snapshot.scrollHeight;
+      this.listRef.current.scrollTop = snapshot.scrollTop + scrollDelta;
+    }
+  }
+}
+```
+
+**Why this is better than componentWillUpdate:** In React 18 concurrent mode, there can be a gap between when `componentWillUpdate` runs and when the DOM actually updates. DOM reads in `componentWillUpdate` may be stale. `getSnapshotBeforeUpdate` runs synchronously right before the DOM is committed - the reads are always accurate.
+
+**The contract:**
+
+- Return a value from `getSnapshotBeforeUpdate` → that value becomes `snapshot` in `componentDidUpdate`
+- Return `null` → `snapshot` in `componentDidUpdate` is `null`
+- Always check `if (snapshot !== null)` in `componentDidUpdate`
+- `getSnapshotBeforeUpdate` MUST be paired with `componentDidUpdate`
+
+---
+
+## Case B - Side Effects Before Update {#case-b}
+
+The method cancels an in-flight request, clears a timer, or runs some preparatory side effect when props or state are about to change.
+
+**Before:**
+
+```jsx
+class SearchResults extends React.Component {
+  componentWillUpdate(nextProps) {
+    if (nextProps.query !== this.props.query) {
+      this.currentRequest?.cancel();
+      this.setState({ loading: true, results: [] });
+    }
+  }
+}
+```
+
+**After - move to componentDidUpdate (run AFTER the update):**
+
+```jsx
+class SearchResults extends React.Component {
+  componentDidUpdate(prevProps) {
+    if (prevProps.query !== this.props.query) {
+      // Cancel the stale request
+      this.currentRequest?.cancel();
+      // Start the new request for the updated query
+      this.setState({ loading: true, results: [] });
+      this.currentRequest = searchAPI(this.props.query)
+        .then(results => this.setState({ results, loading: false }));
+    }
+  }
+}
+```
+
+**Note:** The side effect now runs AFTER the render, not before. In most cases this is correct - you want to react to the state that's actually showing, not the state that was showing. If you truly need to run something synchronously BEFORE a render, reconsider the design - that usually indicates state that should be managed differently.
+
+---
+
+## Both Cases in One Component
+
+If a component had both DOM-reading AND side effects in `componentWillUpdate`:
+
+```jsx
+// Before: does both
+componentWillUpdate(nextProps) {
+  // DOM read
+  if (isExpanding(nextProps)) {
+    this.savedHeight = this.ref.current.offsetHeight;
+  }
+  // Side effect
+  if (nextProps.query !== this.props.query) {
+    this.request?.cancel();
+  }
+}
+```
+
+After: split into both patterns:
+
+```jsx
+// DOM read → getSnapshotBeforeUpdate
+getSnapshotBeforeUpdate(prevProps, prevState) {
+  if (isExpanding(this.props)) {
+    return { height: this.ref.current.offsetHeight };
+  }
+  return null;
+}
+
+// Side effect → componentDidUpdate
+componentDidUpdate(prevProps, prevState, snapshot) {
+  // Handle snapshot if present
+  if (snapshot !== null) { /* ... */ }
+
+  // Handle side effect
+  if (prevProps.query !== this.props.query) {
+    this.request?.cancel();
+    this.startNewRequest();
+  }
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-string-refs/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-string-refs/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-string-refs/SKILL.md
+- **SHA256_FINGERPRINT**: `c3dc2f7a3be7a89bd58f125213503e4cf4d6b4df68d48b60c013abf8ed570777`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:46.124313+00:00
+---
+
+**description**: Provides exact migration patterns for React string refs (ref="name" + this.refs.name) to React.createRef() in class components. Use this skill whenever migrating string ref usage - including single element refs, multiple refs in a component, refs in lists, callback refs, and refs passed to child components. Always use this skill before writing any ref migration code - the multiple-refs-in-list pattern is particularly tricky and this skill prevents the most common mistakes. Use it for React 18.3.1 migration (string refs warn) and React 19 migration (string refs removed).
+
+# React 18 String Refs Migration
+
+String refs (`ref="myInput"` + `this.refs.myInput`) were deprecated in React 16.3, warn in React 18.3.1, and are **removed in React 19**.
+
+## Quick Pattern Map
+
+| Pattern | Reference |
+|---|---|
+| Single ref on a DOM element | [→ patterns.md#single-ref](references/patterns.md#single-ref) |
+| Multiple refs in one component | [→ patterns.md#multiple-refs](references/patterns.md#multiple-refs) |
+| Refs in a list / dynamic refs | [→ patterns.md#list-refs](references/patterns.md#list-refs) |
+| Callback refs (alternative approach) | [→ patterns.md#callback-refs](references/patterns.md#callback-refs) |
+| Ref passed to a child component | [→ patterns.md#forwarded-refs](references/patterns.md#forwarded-refs) |
+
+## Scan Command
+
+```bash
+# Find all string ref assignments in JSX
+grep -rn 'ref="' src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+
+# Find all this.refs accessors
+grep -rn "this\.refs\." src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+```
+
+Both should be migrated together - find the `ref="name"` and the `this.refs.name` accesses for each component as a pair.
+
+## The Migration Rule
+
+Every string ref migrates to `React.createRef()`:
+
+1. Add `refName = React.createRef();` as a class field (or in constructor)
+2. Replace `ref="refName"` → `ref={this.refName}` in JSX
+3. Replace `this.refs.refName` → `this.refName.current` everywhere
+
+Read `references/patterns.md` for the full before/after for each case.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react18-string-refs/references/patterns.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react18-string-refs/references/patterns.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react18-string-refs/references/patterns.md
+- **SHA256_FINGERPRINT**: `4a6c78b0039d96aca99f27c2f524b3d70ac60687a088aba135d679f635ce7f14`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:46.177848+00:00
+---
+
+# String Refs - All Migration Patterns
+
+## Single Ref on a DOM Element {#single-ref}
+
+The most common case - one ref to one DOM node.
+
+```jsx
+// Before:
+class SearchBox extends React.Component {
+  handleSearch() {
+    const value = this.refs.searchInput.value;
+    this.props.onSearch(value);
+  }
+
+  focusInput() {
+    this.refs.searchInput.focus();
+  }
+
+  render() {
+    return (
+      <div>
+        <input ref="searchInput" type="text" placeholder="Search..." />
+        <button onClick={() => this.handleSearch()}>Search</button>
+      </div>
+    );
+  }
+}
+```
+
+```jsx
+// After:
+class SearchBox extends React.Component {
+  searchInputRef = React.createRef();
+
+  handleSearch() {
+    const value = this.searchInputRef.current.value;
+    this.props.onSearch(value);
+  }
+
+  focusInput() {
+    this.searchInputRef.current.focus();
+  }
+
+  render() {
+    return (
+      <div>
+        <input ref={this.searchInputRef} type="text" placeholder="Search..." />
+        <button onClick={() => this.handleSearch()}>Search</button>
+      </div>
+    );
+  }
+}
+```
+
+---
+
+## Multiple Refs in One Component {#multiple-refs}
+
+Each string ref becomes its own named `createRef()` field.
+
+```jsx
+// Before:
+class LoginForm extends React.Component {
+  handleSubmit(e) {
+    e.preventDefault();
+    const email = this.refs.emailField.value;
+    const password = this.refs.passwordField.value;
+    this.props.onSubmit({ email, password });
+  }
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <input ref="emailField" type="email" />
+        <input ref="passwordField" type="password" />
+        <button type="submit">Log in</button>
+      </form>
+    );
+  }
+}
+```
+
+```jsx
+// After:
+class LoginForm extends React.Component {
+  emailFieldRef = React.createRef();
+  passwordFieldRef = React.createRef();
+
+  handleSubmit(e) {
+    e.preventDefault();
+    const email = this.emailFieldRef.current.value;
+    const password = this.passwordFieldRef.current.value;
+    this.props.onSubmit({ email, password });
+  }
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <input ref={this.emailFieldRef} type="email" />
+        <input ref={this.passwordFieldRef} type="password" />
+        <button type="submit">Log in</button>
+      </form>
+    );
+  }
+}
+```
+
+---
+
+## Refs in a List / Dynamic Refs {#list-refs}
+
+String refs in a map/loop - the most tricky case. Each item needs its own ref.
+
+```jsx
+// Before:
+class TabPanel extends React.Component {
+  focusTab(index) {
+    this.refs[`tab_${index}`].focus();
+  }
+
+  render() {
+    return (
+      <div>
+        {this.props.tabs.map((tab, i) => (
+          <button key={tab.id} ref={`tab_${i}`}>
+            {tab.label}
+          </button>
+        ))}
+      </div>
+    );
+  }
+}
+```
+
+```jsx
+// After - use a Map to store refs dynamically:
+class TabPanel extends React.Component {
+  tabRefs = new Map();
+
+  getOrCreateRef(id) {
+    if (!this.tabRefs.has(id)) {
+      this.tabRefs.set(id, React.createRef());
+    }
+    return this.tabRefs.get(id);
+  }
+
+  focusTab(index) {
+    const tab = this.props.tabs[index];
+    this.tabRefs.get(tab.id)?.current?.focus();
+  }
+
+  render() {
+    return (
+      <div>
+        {this.props.tabs.map((tab) => (
+          <button key={tab.id} ref={this.getOrCreateRef(tab.id)}>
+            {tab.label}
+          </button>
+        ))}
+      </div>
+    );
+  }
+}
+```
+
+**Alternative - callback ref for lists (simpler):**
+
+```jsx
+class TabPanel extends React.Component {
+  tabRefs = {};
+
+  focusTab(index) {
+    this.tabRefs[index]?.focus();
+  }
+
+  render() {
+    return (
+      <div>
+        {this.props.tabs.map((tab, i) => (
+          <button
+            key={tab.id}
+            ref={el => { this.tabRefs[i] = el; }}  // callback ref stores DOM node directly
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+    );
+  }
+}
+// Note: callback refs store the DOM node directly (not wrapped in .current)
+// this.tabRefs[i] is the element, not this.tabRefs[i].current
+```
+
+---
+
+## Callback Refs (Alternative to createRef) {#callback-refs}
+
+Callback refs are an alternative to `createRef()`. They're useful for lists (above) and when you need to run code when the ref attaches/detaches.
+
+```jsx
+// Callback ref syntax:
+class MyComponent extends React.Component {
+  // Callback ref - called with the element when it mounts, null when it unmounts
+  setInputRef = (el) => {
+    this.inputEl = el; // stores the DOM node directly (no .current needed)
+  };
+
+  focusInput() {
+    this.inputEl?.focus(); // direct DOM node access
+  }
+
+  render() {
+    return <input ref={this.setInputRef} />;
+  }
+}
+```
+
+**When to use callback refs vs createRef:**
+
+- `createRef()` - for a fixed number of refs known at component definition time (most cases)
+- Callback refs - for dynamic lists, when you need to react to attach/detach, or when the ref might change
+
+**Important:** Inline callback refs (defined in render) re-create a new function on every render, which causes the ref to be called with `null` then the element on each render cycle. Use a bound method or class field arrow function instead:
+
+```jsx
+// AVOID - new function every render, causes ref flicker:
+render() {
+  return <input ref={(el) => { this.inputEl = el; }} />;  // inline - bad
+}
+
+// PREFER - stable reference:
+setInputRef = (el) => { this.inputEl = el; };  // class field - good
+render() {
+  return <input ref={this.setInputRef} />;
+}
+```
+
+---
+
+## Ref Passed to a Child Component {#forwarded-refs}
+
+If a string ref was passed to a custom component (not a DOM element), the migration also requires updating the child.
+
+```jsx
+// Before:
+class Parent extends React.Component {
+  handleClick() {
+    this.refs.myInput.focus(); // Parent accesses child's DOM node
+  }
+  render() {
+    return (
+      <div>
+        <MyInput ref="myInput" />
+        <button onClick={() => this.handleClick()}>Focus</button>
+      </div>
+    );
+  }
+}
+
+// MyInput.js (child - class component):
+class MyInput extends React.Component {
+  render() {
+    return <input className="my-input" />;
+  }
+}
+```
+
+```jsx
+// After:
+class Parent extends React.Component {
+  myInputRef = React.createRef();
+
+  handleClick() {
+    this.myInputRef.current.focus();
+  }
+
+  render() {
+    return (
+      <div>
+        {/* React 18: forwardRef needed. React 19: ref is a direct prop */}
+        <MyInput ref={this.myInputRef} />
+        <button onClick={() => this.handleClick()}>Focus</button>
+      </div>
+    );
+  }
+}
+
+// MyInput.js (React 18 - use forwardRef):
+import { forwardRef } from 'react';
+const MyInput = forwardRef(function MyInput(props, ref) {
+  return <input ref={ref} className="my-input" />;
+});
+
+// MyInput.js (React 19 - ref as direct prop, no forwardRef):
+function MyInput({ ref, ...props }) {
+  return <input ref={ref} className="my-input" />;
+}
+```
+
+---
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react19-concurrent-patterns/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react19-concurrent-patterns/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react19-concurrent-patterns/SKILL.md
+- **SHA256_FINGERPRINT**: `581f5d7e474fe2c9e92a87a56bd9259ee9e7c96d37e5c26c8e1f0c61ee16eda6`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:46.089984+00:00
+---
+
+**description**: Preserve React 18 concurrent patterns and adopt React 19 APIs (useTransition, useDeferredValue, Suspense, use(), useOptimistic, Actions) during migration.
+
+# React 19 Concurrent Patterns
+
+React 19 introduced new APIs that complement the migration work. This skill covers two concerns:
+
+1. **Preserve**  existing React 18 concurrent patterns that must not be broken during migration
+2. **Adopt**  new React 19 APIs worth introducing after migration stabilizes
+
+## Part 1  Preserve: React 18 Concurrent Patterns That Must Survive the Migration
+
+These patterns exist in React 18 codebases and must not be accidentally removed or broken:
+
+### createRoot  Already Migrated by the R18 Orchestra
+
+If the R18 orchestra already ran, `ReactDOM.render` → `createRoot` is done. Verify it's correct:
+
+```jsx
+// CORRECT React 19 root (same as React 18):
+import { createRoot } from 'react-dom/client';
+const root = createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+```
+
+### useTransition  No Migration Needed
+
+`useTransition` from React 18 works identically in React 19. Do not touch these patterns during migration:
+
+```jsx
+// React 18 useTransition  unchanged in React 19:
+const [isPending, startTransition] = useTransition();
+
+function handleClick() {
+  startTransition(() => {
+    setFilteredResults(computeExpensiveFilter(input));
+  });
+}
+```
+
+### useDeferredValue  No Migration Needed
+
+```jsx
+// React 18 useDeferredValue  unchanged in React 19:
+const deferredQuery = useDeferredValue(query);
+```
+
+### Suspense for Code Splitting  No Migration Needed
+
+```jsx
+// React 18 Suspense with lazy  unchanged in React 19:
+const LazyComponent = React.lazy(() => import('./LazyComponent'));
+
+function App() {
+  return (
+    <Suspense fallback={<Spinner />}>
+      <LazyComponent />
+    </Suspense>
+  );
+}
+```
+
+---
+
+## Part 2  React 19 New APIs
+
+These are worth adopting in a post-migration cleanup sprint. Do not introduce these DURING the migration  stabilize first.
+
+For full patterns on each new API, read:
+- **`references/react19-use.md`**  the `use()` hook for promises and context
+- **`references/react19-actions.md`**  Actions, useActionState, useFormStatus, useOptimistic
+- **`references/react19-suspense.md`**  Suspense for data fetching (the new pattern)
+
+## Migration Safety Rules
+
+During the React 19 migration itself, these concurrent-mode patterns must be **left completely untouched**:
+
+```bash
+# Verify nothing touched these during migration:
+grep -rn "useTransition\|useDeferredValue\|Suspense\|startTransition" \
+  src/ --include="*.js" --include="*.jsx" | grep -v "\.test\."
+```
+
+If the migrator touched any of these files, review the changes  the migration should only have modified React API surface (forwardRef, defaultProps, etc.), never concurrent mode logic.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/react19-concurrent-patterns/references/react19-actions.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/react19-concurrent-patterns/references/react19-actions.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/react19-concurrent-patterns/references/react19-actions.md
+- **SHA256_FINGERPRINT**: `907443bfb3d4ed4bab371702f957fd5caca60749faa523560de0a1549b949e1d`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:46.147204+00:00
+---
+
+**title**: React 19 Actions Pattern Reference
+
+# React 19 Actions Pattern Reference
+
+React 19 introduces **Actions**  a pattern for handling async operations (like form submissions) with built-in loading states, error handling, and optimistic updates. This replaces the `useReducer + state` pattern with a simpler API.
+
+## What are Actions?
+
+An **Action** is an async function that:
+
+- Can be called automatically when a form submits or button clicks
+- Runs with automatic loading/pending state
+- Updates the UI automatically when done
+- Works with Server Components for direct server mutation
+
+---
+
+## useActionState()
+
+`useActionState` is the client-side Action hook. It replaces `useReducer + useEffect` for form handling.
+
+### React 18 Pattern
+
+```jsx
+// React 18  form with useReducer + state:
+function Form() {
+  const [state, dispatch] = useReducer(
+    (state, action) => {
+      switch (action.type) {
+        case 'loading':
+          return { ...state, loading: true, error: null };
+        case 'success':
+          return { ...state, loading: false, data: action.data };
+        case 'error':
+          return { ...state, loading: false, error: action.error };
+      }
+    },
+    { loading: false, data: null, error: null }
+  );
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    dispatch({ type: 'loading' });
+    try {
+      const result = await submitForm(new FormData(e.target));
+      dispatch({ type: 'success', data: result });
+    } catch (err) {
+      dispatch({ type: 'error', error: err.message });
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input name="email" />
+      {state.loading && <Spinner />}
+      {state.error && <Error msg={state.error} />}
+      {state.data && <Success data={state.data} />}
+      <button disabled={state.loading}>Submit</button>
+    </form>
+  );
+}
+```
+
+### React 19 useActionState() Pattern
+
+```jsx
+// React 19  same form with useActionState:
+import { useActionState } from 'react';
+
+async function submitFormAction(prevState, formData) {
+  // prevState = previous return value from this function
+  // formData = FormData from <form action={submitFormAction}>
+
+  try {
+    const result = await submitForm(formData);
+    return { data: result, error: null };
+  } catch (err) {
+    return { data: null, error: err.message };
+  }
+}
+
+function Form() {
+  const [state, formAction, isPending] = useActionState(
+    submitFormAction,
+    { data: null, error: null } // initial state
+  );
+
+  return (
+    <form action={formAction}>
+      <input name="email" />
+      {isPending && <Spinner />}
+      {state.error && <Error msg={state.error} />}
+      {state.data && <Success data={state.data} />}
+      <button disabled={isPending}>Submit</button>
+    </form>
+  );
+}
+```
+
+**Differences:**
+
+- One hook instead of `useReducer` + logic
+- `formAction` replaces `onSubmit`, form automatically collects FormData
+- `isPending` is a boolean, no dispatch calls
+- Action function receives `(prevState, formData)`
+
+---
+
+## useFormStatus()
+
+`useFormStatus` is a **child component hook** that reads the pending state from the nearest form. It acts like a built-in `isPending` signal without prop drilling.
+
+```jsx
+// React 18  must pass isPending as prop:
+function SubmitButton({ isPending }) {
+  return <button disabled={isPending}>Submit</button>;
+}
+
+function Form({ isPending, formAction }) {
+  return (
+    <form action={formAction}>
+      <input />
+      <SubmitButton isPending={isPending} />
+    </form>
+  );
+}
+
+// React 19  useFormStatus reads it automatically:
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return <button disabled={pending}>Submit</button>;
+}
+
+function Form() {
+  const [state, formAction] = useActionState(submitFormAction, {});
+
+  return (
+    <form action={formAction}>
+      <input />
+      <SubmitButton /> {/* No prop needed */}
+    </form>
+  );
+}
+```
+
+**Key point:** `useFormStatus` only works inside a `<form action={...}>`  regular `<form onSubmit>` won't trigger it.
+
+---
+
+## useOptimistic()
+
+`useOptimistic` updates the UI immediately while an async operation is in-flight. When the operation succeeds, the confirmed data replaces the optimistic value. If it fails, the UI reverts.
+
+### React 18 Pattern
+
+```jsx
+// React 18  manual optimistic update:
+function TodoList({ todos, onAddTodo }) {
+  const [optimistic, setOptimistic] = useState(todos);
+
+  async function handleAddTodo(text) {
+    const newTodo = { id: Date.now(), text, completed: false };
+
+    // Show optimistic update immediately
+    setOptimistic([...optimistic, newTodo]);
+
+    try {
+      const result = await addTodo(text);
+      // Update with confirmed result
+      setOptimistic(prev => [
+        ...prev.filter(t => t.id !== newTodo.id),
+        result
+      ]);
+    } catch (err) {
+      // Revert on error
+      setOptimistic(optimistic);
+    }
+  }
+
+  return (
+    <ul>
+      {optimistic.map(todo => (
+        <li key={todo.id}>{todo.text}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+### React 19 useOptimistic() Pattern
+
+```jsx
+import { useOptimistic } from 'react';
+
+async function addTodoAction(prevTodos, formData) {
+  const text = formData.get('text');
+  const result = await addTodo(text);
+  return [...prevTodos, result];
+}
+
+function TodoList({ todos }) {
+  const [optimistic, addOptimistic] = useOptimistic(
+    todos,
+    (state, newTodo) => [...state, newTodo]
+  );
+
+  const [, formAction] = useActionState(addTodoAction, todos);
+
+  async function handleAddTodo(formData) {
+    const text = formData.get('text');
+    // Optimistic update:
+    addOptimistic({ id: Date.now(), text, completed: false });
+    // Then call the form action:
+    formAction(formData);
+  }
+
+  return (
+    <>
+      <ul>
+        {optimistic.map(todo => (
+          <li key={todo.id}>{todo.text}</li>
+        ))}
+      </ul>
+      <form action={handleAddTodo}>
+        <input name="text" />
+        <button>Add</button>
+      </form>
+    </>
+  );
+}
+```
+
+**Key points:**
+
+- `useOptimistic(currentState, updateFunction)`
+- `updateFunction` receives `(state, optimisticInput)` and returns new state
+- Call `addOptimistic(input)` to trigger the optimistic update
+- The server action's return value replaces the optimistic state when done
+
+---
+
+## Full Example: Todo List with All Hooks
+
+```jsx
+import { useActionState, useFormStatus, useOptimistic } from 'react';
+
+// Server action:
+async function addTodoAction(prevTodos, formData) {
+  const text = formData.get('text');
+  if (!text) throw new Error('Text required');
+  const newTodo = await api.post('/todos', { text });
+  return [...prevTodos, newTodo];
+}
+
+// Submit button with useFormStatus:
+function AddButton() {
+  const { pending } = useFormStatus();
+  return <button disabled={pending}>{pending ? 'Adding...' : 'Add Todo'}</button>;
+}
+
+// Main component:
+function TodoApp({ initialTodos }) {
+  const [optimistic, addOptimistic] = useOptimistic(
+    initialTodos,
+    (state, newTodo) => [...state, newTodo]
+  );
+
+  const [todos, formAction] = useActionState(
+    addTodoAction,
+    initialTodos
+  );
+
+  async function handleAddTodo(formData) {
+    const text = formData.get('text');
+    // Optimistic: show it immediately
+    addOptimistic({ id: Date.now(), text });
+    // Then submit the form (which updates when server confirms)
+    await formAction(formData);
+  }
+
+  return (
+    <>
+      <ul>
+        {optimistic.map(todo => (
+          <li key={todo.id}>{todo.text}</li>
+        ))}
+      </ul>
+      <form action={handleAddTodo}>
+        <input name="text" placeholder="Add a todo..." required />
+        <AddButton />
+      </form>
+    </>
+  );
+}
+```
+
+---
+
+## Migration Strategy
+
+### Phase 1  No changes required
+
+Actions are opt-in. All existing `useReducer + onSubmit` patterns continue to work. No forced migration.
+
+### Phase 2  Identify refactor candidates
+
+After React 19 migration stabilizes, profile for `useReducer + async` patterns:
+
+```bash
+grep -rn "useReducer.*case.*'loading\|useReducer.*case.*'success" src/ --include="*.js" --include="*.jsx"
+```
+
+Patterns worth refactoring:
+
+- Form submissions with loading/error state
+- Async operations triggered by user events
+- Current code uses `dispatch({ type: '...' })`
+- Simple state shape (object with `loading`, `error`, `data`)
+
+### Phase 3  Refactor to useActionState
+
+```jsx
+// Before:
+function LoginForm() {
+  const [state, dispatch] = useReducer(loginReducer, { loading: false, error: null, user: null });
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    dispatch({ type: 'loading' });
+    try {
+      const user = await login(e.target);
+      dispatch({ type: 'success', data: user });
+    } catch (err) {
+      dispatch({ type: 'error', error: err.message });
+    }
+  }
+
+  return <form onSubmit={handleSubmit}>...</form>;
+}
+
+// After:
+async function loginAction(prevState, formData) {
+  try {
+    const user = await login(formData);
+    return { user, error: null };
+  } catch (err) {
+    return { user: null, error: err.message };
+  }
+}
+
+function LoginForm() {
+  const [state, formAction] = useActionState(loginAction, { user: null, error: null });
+
+  return <form action={formAction}>...</form>;
+}
+```
+
+---
+
+## Comparison Table
+
+| Feature | React 18 | React 19 |
+|---|---|---|
+| Form handling | `onSubmit` + useReducer | `action` + useActionState |
+| Loading state | Manual dispatch | Automatic `isPending` |
+| Child component pending state | Prop drilling | `useFormStatus` hook |
+| Optimistic updates | Manual state dance | `useOptimistic` hook |
+| Error handling | Manual in dispatch | Return from action |
+| Complexity | More boilerplate | Less boilerplate |
 
 
 ---
@@ -40357,8 +45538,8 @@ For an old Local setup, **Chat: Configure Hooks** lists its files, and the **Git
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/language-models.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/language-models
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/language-models.md
-- **SHA256_FINGERPRINT**: `ab93d3e1418e9bb92eef666cbb83b99c7226fac8ffaf2ae0f05c76eed1fdfe84`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.758493+00:00
+- **SHA256_FINGERPRINT**: `637898a658de9d984fc2363830e86c1ed5ff34d8997a9d6323d6ebbd4593057f`
+- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:25.012177+00:00
 ---
 
 **MetaDescription**: Configure chat, inline, and voice models in VS Code. Use your own API key or run models on your device.
@@ -40463,15 +45644,15 @@ On-device models differ from [BYOK local models](#bring-your-own-language-model-
 
 1. In a Copilot harness session, open the model picker and select the **On This Device** tab. Models that are not downloaded appear dimmed with a **Download** action.
 
-    ![Screenshot showing the On This Device tab in the model picker with MAI Code 1.1 Flash and a Download action.](images/language-models/on-device-model-picker.png)
+    ![Screenshot showing the On This Device tab in the model picker with MAI Code 1.1 Flash and a Download action.](images/language-models/on-device-model-picker-2.png)
 
 1. Select the model name to open its details, review the download size, source (Azure ML registry), and license, and then select **Download**.
 
-    ![Screenshot showing the details page for MAI Code 1.1 Flash with the download size, source, license, and a Download button.](images/language-models/on-device-model-download-details.png)
+    ![Screenshot showing the details page for MAI Code 1.1 Flash with the download size, source, license, and a Download button.](images/language-models/on-device-model-download-details-2.png)
 
 1. Track progress in the notice above the chat input. You can keep using Copilot while the model downloads, and select **Pause** to pause the download.
 
-    ![Screenshot showing a download progress notice for MAI Code 1.1 Flash above the chat input with a Pause button.](images/language-models/on-device-model-download-progress.png)
+    ![Screenshot showing a download progress notice for MAI Code 1.1 Flash above the chat input with a Pause button.](images/language-models/on-device-model-download-progress-2.png)
 
 VS Code stores models in `~/.copilot/azureml-models` and shares them with other Copilot apps, such as Copilot CLI.
 
@@ -40479,11 +45660,11 @@ VS Code stores models in `~/.copilot/azureml-models` and shares them with other 
 
 After the download finishes, VS Code verifies the files and loads the model. Loading can take a few minutes, and the notice above the chat input shows the progress, with a **Cancel** action. When the model is ready, select **Switch to MAI Code 1.1 Flash** in the notice, or select the model from the **On This Device** tab.
 
-![Screenshot showing a notice above the chat input that says MAI Code 1.1 Flash is ready on this device, with Not Now and Switch to MAI Code 1.1 Flash buttons.](images/language-models/on-device-model-ready.png)
+![Screenshot showing a notice above the chat input that says MAI Code 1.1 Flash is ready on this device, with Not Now and Switch to MAI Code 1.1 Flash buttons.](images/language-models/on-device-model-ready-2.png)
 
 When you select an on-device model, the model picker and the footer of each response show the model name followed by **On-device**. On-device responses don't use AI credits, and the response footer shows **0 credits**.
 
-![Screenshot showing a chat response labeled MAI Code 1.1 Flash On-device with 0 credits, and the model picker showing the on-device model.](images/language-models/on-device-model-response.png)
+![Screenshot showing a chat response labeled MAI Code 1.1 Flash On-device with 0 credits, and the model picker showing the on-device model.](images/language-models/on-device-model-response-2.png)
 
 To change how the model runs, hover over the model in the **On This Device** tab and select **Details**. On the details page, you can:
 
@@ -40491,7 +45672,7 @@ To change how the model runs, hover over the model in the **On This Device** tab
 * Choose the **Context** size. The available sizes depend on the GPU memory of your device, and the page shows the estimated memory for the selected size. Changing the context size reloads the model after running responses finish.
 * Stop or remove the model by using the icons at the top of the page.
 
-![Screenshot showing the details page of an installed on-device model with Effort Level, Context, and Use in Auto options.](images/language-models/on-device-model-details.png)
+![Screenshot showing the details page of an installed on-device model with Effort Level, Context, and Use in Auto options.](images/language-models/on-device-model-details-2.png)
 
 ### Use an on-device model with auto-model selection
 
