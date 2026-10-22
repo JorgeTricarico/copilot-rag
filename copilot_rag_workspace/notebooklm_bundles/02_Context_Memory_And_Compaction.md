@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 02_Context_Memory_And_Compaction
-- **Generado (UTC)**: 2026-10-21T03:46:01.314112+00:00
-- **Total Palabras**: 5,859 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-22T16:53:38.326315+00:00
+- **Total Palabras**: 5,865 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -381,8 +381,8 @@ To learn more about Copilot's security, privacy, compliance, and transparency, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/chat/copilot-chat-context.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/chat/copilot-chat-context
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/chat/copilot-chat-context.md
-- **SHA256_FINGERPRINT**: `ff16b068681721ba2318ebc79665da1f540d3fad11b9db11335e513c44341209`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:56.155105+00:00
+- **SHA256_FINGERPRINT**: `af2ccf4472eb7266daf20629721e7f9f97273136eabb00f0cd7b939af72b3da2`
+- **LAST_VERIFIED_UTC**: 2026-10-22T16:53:31.696637+00:00
 ---
 
 **MetaDescription**: Add files, symbols, images, browser content, and other context to AI prompts in Visual Studio Code for more relevant responses.
@@ -400,7 +400,7 @@ For background on what context is and how VS Code assembles it, see [Context con
 
 You can explicitly add context to your prompt by typing `#` followed by the context item you want to mention. VS Code supports different types of context items: files, folders, code symbols, tools, terminal output, source control changes, and more.
 
-Type the `#` symbol in the chat input field to see a list of available context items, or select **Add Context** in the Chat view to open the context picker.
+Type the `#` symbol in the chat input field to see a list of available context items, or select **Add Context** (`+` icon) in the Chat view to open the context picker.
 
 ![Screenshot of VS Code Chat view, showing the chat variable picker.](./images/copilot-chat/copilot-chat-view-chat-variables.png)
 
@@ -417,7 +417,7 @@ To provide specific files, folders, or symbols as context, add them to the chat 
 
 * Drag and drop files or folders from the Explorer view, Search view, or editor tabs onto the Chat view to add them as context.
 
-* Select **Add Context** in the Chat view and select **Files & Folders** or **Symbols** from the Quick Pick.
+* Select **Add Context** (`+` icon) in the Chat view and select **Files & Folders** or **Symbols** from the Quick Pick.
 
 Use `#codebase` to request a search for relevant code across the workspace. It doesn't add the entire codebase to the model's context. Learn about [workspace search and indexing](/docs/agents/reference/workspace-context.md).
 
@@ -428,7 +428,9 @@ When you start a session in the Agents window, the first folder or repository yo
 You can attach project and GitHub context to a request:
 
 * In the Agents window, select **Folder** or **Repository** to attach another project. An attached project provides request context and doesn't become another workspace root.
-* In any chat input, select **Add Context**, and then select **Issue...** or **Pull Request...**. If multiple GitHub repositories are available, select a repository before you choose the issue or pull request.
+
+* In any chat input, select **Add Context** (`+` icon), and then select **Issue...** or **Pull Request...**. If multiple GitHub repositories are available, select a repository before you choose the issue or pull request.
+
 * Paste a GitHub issue or pull request URL directly into the prompt. The URL remains in the prompt, and VS Code automatically adds the item as a context attachment.
 
 You can attach multiple items. The attachments are preserved in a draft and included when you send the request. Learn more about [starting an agent session in the Agents window](/docs/agents/run/agents-window.md#start-an-agent-session).

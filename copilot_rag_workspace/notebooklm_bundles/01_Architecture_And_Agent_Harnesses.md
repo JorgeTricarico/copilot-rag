@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-10-21T19:55:00.204145+00:00
-- **Total Palabras**: 25,323 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-22T16:53:38.325810+00:00
+- **Total Palabras**: 25,567 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1885,8 +1885,8 @@ To disable AI features for a specific workspace, configure the ``chat.disableAIF
 # DOCUMENT_SOURCE: microsoft_vscode::src/vs/workbench/contrib/chat/chatCodeOrganization.md
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/chat/chatCodeOrganization.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/workbench/contrib/chat/chatCodeOrganization.md
-- **SHA256_FINGERPRINT**: `186cf7f9de22d11facc1a4975f2ef9fb646b4147019a84b6f275776985b337fd`
-- **LAST_VERIFIED_UTC**: 2026-10-21T19:54:43.412272+00:00
+- **SHA256_FINGERPRINT**: `36084c736651a4d17713459df54e76866bf508c815b22c2711f0ed12393ff2bd`
+- **LAST_VERIFIED_UTC**: 2026-10-22T16:53:33.052964+00:00
 ---
 
 # workbench/contrib/chat Code Organization
@@ -1904,6 +1904,8 @@ Onboarding tours, new-session composer tips and first-run notices, Agents Window
 For local testing, set `"experiments.override.chatOpenInAgentsTitleBarLabel": "Try Agents"` in user settings with a fresh profile/data directory. Assignments are refreshed through the assignment service. A triggered scorecard can use `monacoworkbench/experimentTrigger` with `treatmentName == "chatOpenInAgentsTitleBarLabel"`; eligible rendered actions log the trigger in both control and treatment.
 
 The boolean treatment `chatOpenInAgentsTitleBarExpandOnHover` applies to all users, independently of the copy experiment. It defaults to `true`; `false` keeps the action icon-only on pointer hover, while keyboard focus still reveals the label. Tooltips, accessible names, and action behavior remain available. Set `"experiments.override.chatOpenInAgentsTitleBarExpandOnHover": false` to test locally. Its `experimentTrigger` fires on pointer hover in both arms after the assignment resolves.
+
+The experimental setting `chat.titleBar.openInAgentsWindow.richHover` (`experiment: { mode: 'auto' }`) controls what users who are new to the Agents Window (`createdSessionCount < 2`) see when they hover or focus the action. `none` keeps the simple tooltip and the expanding label. The other values show a hover card (`AgentsWindowHoverCard`: a compact graphic, a title, a description, and an Open Agents Window button) and keep the action icon-only, even on keyboard focus. Each is named after its graphic, like the values of `chat.welcomePage.agentsWindowGraphic`: `manyWindowsToOne` shows editor windows for several projects becoming one Agents Window, and `windowComparison` shows the editor window and the Agents Window side by side. The card uses the same managed hover as the tooltip, so it also shows on keyboard focus and can be focused with Cmd/Ctrl+K Cmd/Ctrl+I. Other users always see the simple tooltip, and the action switches as the count or the setting changes. Its `experimentTrigger` (`treatmentName == "config.chat.titleBar.openInAgentsWindow.richHover"`) fires in every arm when a new user hovers or focuses the action. While the card shows, the label never does, so the card arms neither apply nor trigger the copy and expansion treatments. Set `"chat.titleBar.openInAgentsWindow.richHover": "manyWindowsToOne"` or `"windowComparison"` with a fresh profile/data directory to test locally.
 
 ## Key Folders
 
@@ -1996,8 +1998,8 @@ observation, or a user-facing interruption classification.
 # DOCUMENT_SOURCE: microsoft_vscode::src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md
-- **SHA256_FINGERPRINT**: `c27bacb0598f0a52ab2fe10fe5aec2a04dc5ebeadb739a04bb9d1f5740ee42b9`
-- **LAST_VERIFIED_UTC**: 2026-10-21T19:54:43.441409+00:00
+- **SHA256_FINGERPRINT**: `6d55d48453dc0327d37c550ab4bb76c2acb1bc0bfbd21278329eb6050f3648a5`
+- **LAST_VERIFIED_UTC**: 2026-10-22T16:53:33.072051+00:00
 ---
 
 # Agent Plugins Architecture
@@ -2207,9 +2209,12 @@ In Copilot Agent Host sessions, the runtime reads `strictPluginOnlyCustomization
 | `chat.plugins.lastUpdateCheck.v1` | Timestamp of last periodic update check |
 
 ### Enablement Storage
+Stored in `StorageScope.APPLICATION`, so every window and profile (including the Agents Window's `agents` profile) shares the same switches. Values from non-default profiles are merged in once, "off wins" (`customizationEnablementStorage.ts`).
+
 | Key | Description |
 |-----|-------------|
 | `agentPlugins.enablement` | Per-plugin enable/disable state (shared `EnablementModel`) |
+| `agentPlugins.enablementIdentities` | Aliases from relocated install URIs to the URI their enablement is stored under |
 
 ## Reactivity Model
 

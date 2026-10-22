@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-10-21T19:55:00.951398+00:00
-- **Total Palabras**: 136,801 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-22T16:53:38.429068+00:00
+- **Total Palabras**: 136,872 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -2221,8 +2221,8 @@ When content capture is enabled, the following attributes are populated.
 # DOCUMENT_SOURCE: github_docs::content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md
-- **SHA256_FINGERPRINT**: `078b8e0bb5b59fb6d652739855a1b84bbf16883dc2326d2d0f5695a4bb7e7610`
-- **LAST_VERIFIED_UTC**: 2026-10-21T19:54:39.321367+00:00
+- **SHA256_FINGERPRINT**: `47f18d450bc08eb7b1c9175b4df2e089cb21050addc073781254ee2a0b398f18`
+- **LAST_VERIFIED_UTC**: 2026-10-22T16:53:32.158319+00:00
 ---
 
 **title**: GitHub Copilot CLI configuration directory
@@ -2758,6 +2758,10 @@ These settings apply across all your sessions and repositories. You can use the 
 The `/sandbox` dialog groups Git authentication, `gh` authentication, and masked environment variables under a dedicated **Credentials** tab, and shows the `settings.json` path where the current sandbox configuration is stored. On the **Filesystem** tab, the configured path list is summarized by permission (for example, `2 read/write, 1 read-only`) behind a **User-configured paths** row. Press <kbd>Enter</kbd> on that row to open the full list, which takes over the cursor and tab bar until you press <kbd>Esc</kbd>. Configured paths are displayed as absolute paths rather than `./`-relative or `~`-shortened forms. Typing `~/path` when adding a path still expands it to your home directory. Press <kbd>Ctrl</kbd>+<kbd>E</kbd> in the `/sandbox` dialog to save any pending changes and open `settings.json` in your editor (`COPILOT_EDITOR`, `VISUAL`, or `EDITOR`), matching the same shortcut in `/settings`. The dialog reloads its state from disk after you edit and save the file.
 
 Host rules and `sandbox.userPolicy.network.proxy` use a built-in local proxy. When both are configured, the local proxy applies the host rules before forwarding traffic to the upstream proxy. Upstream credentials stay outside the sandboxed child process. Host rules and proxy settings are inactive when outbound access is off.
+
+When no proxy is set in sandbox settings, the local proxy selects its upstream proxy from the first non-empty environment variable on the host in this order: `HTTPS_PROXY`, `HTTP_PROXY`, `ALL_PROXY`. Only `http://` and `https://` proxies are supported, not `socks5`.
+
+Destinations matching the host's `NO_PROXY` bypass only this inherited upstream proxy. The sandbox's local proxy still handles these connections and applies its host rules. A proxy configured in sandbox settings ignores `NO_PROXY`.
 
 On macOS and Linux, the sandbox restricts direct connections so programs cannot avoid the proxy. On Windows, the sandbox relies on programs honoring the proxy settings. As a result, programs that ignore the proxy settings on Windows can connect directly and get around your host rules. Windows proxying and host rules also require a supported host and `allowLocalNetwork: true`, which permits private-network access. On Linux, proxy settings reject IPv6 address literals other than the `[::]` dual-stack wildcard. Use an IPv4 endpoint or a hostname with IPv4 support.
 
