@@ -4,7 +4,7 @@
 
 # Functional API overview
 
-The **Functional API** allows you to add LangGraph's key features ([persistence](/oss/python/langgraph/persistence), [memory](/oss/python/langgraph/add-memory), [human-in-the-loop](/oss/python/langgraph/interrupts), and [streaming](/oss/python/langgraph/streaming)) to your applications with minimal changes to your existing code.
+The **Functional API** allows you to add LangGraph's key features ([persistence](/oss/python/langgraph/persistence.md), [memory](/oss/python/langgraph/add-memory.md), [human-in-the-loop](/oss/python/langgraph/interrupts.md), and [streaming](/oss/python/langgraph/streaming.md)) to your applications with minimal changes to your existing code.
 
 It is designed to integrate these features into existing code that may use standard language primitives for branching and control flow, such as `if` statements, `for` loops, and function calls. Unlike many data orchestration frameworks that require restructuring code into an explicit pipeline or DAG, the Functional API allows you to incorporate these capabilities without enforcing a rigid execution model.
 
@@ -17,22 +17,22 @@ This provides a minimal abstraction for building workflows with state management
 
 > [!TIP]
 >
-> For information on how to use the functional API, see [Use Functional API](/oss/python/langgraph/use-functional-api).
+> For information on how to use the functional API, see [Use Functional API](/oss/python/langgraph/use-functional-api.md).
 
 ## Functional API vs. Graph API
 
-For users who prefer a more declarative approach, LangGraph's [Graph API](/oss/python/langgraph/graph-api) allows you to define workflows using a Graph paradigm. Both APIs share the same underlying runtime, so you can use them together in the same application.
+For users who prefer a more declarative approach, LangGraph's [Graph API](/oss/python/langgraph/graph-api.md) allows you to define workflows using a Graph paradigm. Both APIs share the same underlying runtime, so you can use them together in the same application.
 
 Here are some key differences:
 
 * **Control flow**: The Functional API does not require thinking about graph structure. You can use standard Python constructs to define workflows. This will usually trim the amount of code you need to write.
-* **Short-term memory**: The **GraphAPI** requires declaring a [**State**](/oss/python/langgraph/graph-api#state) and may require defining [**reducers**](/oss/python/langgraph/graph-api#reducers) to manage updates to the graph state. `@entrypoint` and `@tasks` do not require explicit state management as their state is scoped to the function and is not shared across functions.
-* **Checkpointing**: Both APIs generate and use checkpoints. In the **Graph API** a new checkpoint is generated after every [superstep](/oss/python/langgraph/graph-api). In the **Functional API**, when tasks are executed, their results are saved to an existing checkpoint associated with the given entrypoint instead of creating a new checkpoint.
+* **Short-term memory**: The **GraphAPI** requires declaring a [**State**](/oss/python/langgraph/graph-api.md#state) and may require defining [**reducers**](/oss/python/langgraph/graph-api.md#reducers) to manage updates to the graph state. `@entrypoint` and `@tasks` do not require explicit state management as their state is scoped to the function and is not shared across functions.
+* **Checkpointing**: Both APIs generate and use checkpoints. In the **Graph API** a new checkpoint is generated after every [superstep](/oss/python/langgraph/graph-api.md). In the **Functional API**, when tasks are executed, their results are saved to an existing checkpoint associated with the given entrypoint instead of creating a new checkpoint.
 * **Visualization**: The Graph API makes it easy to visualize the workflow as a graph which can be useful for debugging, understanding the workflow, and sharing with others. The Functional API does not support visualization as the graph is dynamically generated during runtime.
 
 ## Example
 
-Below we demonstrate a simple application that writes an essay and [interrupts](/oss/python/langgraph/interrupts) to request human review.
+Below we demonstrate a simple application that writes an essay and [interrupts](/oss/python/langgraph/interrupts.md) to request human review.
 
 ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from langgraph.checkpoint.memory import InMemorySaver
@@ -144,7 +144,7 @@ def workflow(topic: str) -> dict:
 
 ## Entrypoint
 
-The [`@entrypoint`](https://reference.langchain.com/python/langgraph/func/entrypoint) decorator can be used to create a workflow from a function. It encapsulates workflow logic and manages execution flow, including handling *long-running tasks* and [interrupts](/oss/python/langgraph/interrupts).
+The [`@entrypoint`](https://reference.langchain.com/python/langgraph/func/entrypoint) decorator can be used to create a workflow from a function. It encapsulates workflow logic and manages execution flow, including handling *long-running tasks* and [interrupts](/oss/python/langgraph/interrupts.md).
 
 ### Definition
 
@@ -194,8 +194,8 @@ When declaring an `entrypoint`, you can request access to additional parameters 
 | Parameter | Description |
 | - | - |
 | **previous** | Access the state associated with the previous `checkpoint` for the given thread. See [short-term-memory](#short-term-memory). |
-| **store** | An instance of \[BaseStore]\[langgraph.store.base.BaseStore]. Useful for [long-term memory](/oss/python/langgraph/use-functional-api#long-term-memory). |
-| **writer** | Use to access the StreamWriter when working with Async Python \< 3.11. See [streaming with functional API for details](/oss/python/langgraph/use-functional-api#streaming). |
+| **store** | An instance of \[BaseStore]\[langgraph.store.base.BaseStore]. Useful for [long-term memory](/oss/python/langgraph/use-functional-api.md#long-term-memory). |
+| **writer** | Use to access the StreamWriter when working with Async Python \< 3.11. See [streaming with functional API for details](/oss/python/langgraph/use-functional-api.md#streaming). |
 | **config** | For accessing run time configuration. See [RunnableConfig](https://reference.langchain.com/python/langchain-core/runnables/config/RunnableConfig) for information. |
 
 > [!WARNING]
@@ -417,7 +417,7 @@ async for message in stream.messages:
 
 ### Short-term memory
 
-When an `entrypoint` is defined with a `checkpointer`, it stores information between successive invocations on the same **thread id** in [checkpoints](/oss/python/langgraph/checkpointers#checkpoints).
+When an `entrypoint` is defined with a `checkpointer`, it stores information between successive invocations on the same **thread id** in [checkpoints](/oss/python/langgraph/checkpointers.md#checkpoints).
 
 This allows accessing the state from the previous invocation using the `previous` parameter.
 
@@ -469,7 +469,7 @@ my_workflow.invoke(1, config)  # 6 (previous was 3 * 2 from the previous invocat
 A **task** represents a discrete unit of work, such as an API call or data processing step. It has two key characteristics:
 
 * **Asynchronous Execution**: Tasks are designed to be executed asynchronously, allowing multiple operations to run concurrently without blocking.
-* **Checkpointing**: Task results are saved to a checkpoint, enabling resumption of the workflow from the last saved state. (See [persistence](/oss/python/langgraph/persistence) for more details).
+* **Checkpointing**: Task results are saved to a checkpoint, enabling resumption of the workflow from the last saved state. (See [persistence](/oss/python/langgraph/persistence.md) for more details).
 
 ### Definition
 
@@ -492,7 +492,7 @@ def slow_computation(input_value):
 
 ### Execution
 
-**Tasks** can only be called from within an **entrypoint**, another **task**, or a [state graph node](/oss/python/langgraph/graph-api#nodes).
+**Tasks** can only be called from within an **entrypoint**, another **task**, or a [state graph node](/oss/python/langgraph/graph-api.md#nodes).
 
 Tasks *cannot* be called directly from the main application code.
 
@@ -524,7 +524,7 @@ async def my_workflow(some_input: int) -> int:
 * **Checkpointing**: When you need to save the result of a long-running operation to a checkpoint, so you don't need to recompute it when resuming the workflow.
 * **Human-in-the-loop**: If you're building a workflow that requires human intervention, you MUST use **tasks** to encapsulate any randomness (e.g., API calls) to ensure that the workflow can be resumed correctly. See the [determinism](#determinism) section for more details.
 * **Parallel Execution**: For I/O-bound tasks, **tasks** enable parallel execution, allowing multiple operations to run concurrently without blocking (e.g., calling multiple APIs).
-* **Observability**: Wrapping operations in **tasks** provides a way to track the progress of the workflow and monitor the execution of individual operations using [LangSmith](/langsmith/observability).
+* **Observability**: Wrapping operations in **tasks** provides a way to track the progress of the workflow and monitor the execution of individual operations using [LangSmith](/langsmith/observability.md).
 * **Retryable Work**: When work needs to be retried to handle failures or inconsistencies, **tasks** provide a way to encapsulate and manage the retry logic.
 
 ## Serialization
@@ -544,9 +544,9 @@ Providing non-serializable inputs or outputs will result in a runtime error when
 
 When you resume a workflow run, the code does **NOT** resume from the **same line of code** where execution stopped. Execution returns to a checkpoint boundary, and the workflow **replays** forward until it reaches the pause again.
 
-For the Functional API, replay starts at the beginning of the **entrypoint** while LangGraph restores completed [**task**](/oss/python/langgraph/functional-api#task) and [**subgraph**](/oss/python/langgraph/use-subgraphs) results from the checkpointer instead of recomputing them. That preserves the recorded order of steps across pauses, including for long-running or non-deterministic **task** outputs.
+For the Functional API, replay starts at the beginning of the **entrypoint** while LangGraph restores completed [**task**](/oss/python/langgraph/functional-api.md#task) and [**subgraph**](/oss/python/langgraph/use-subgraphs.md) results from the checkpointer instead of recomputing them. That preserves the recorded order of steps across pauses, including for long-running or non-deterministic **task** outputs.
 
-To use features like **human-in-the-loop**, you must place non-deterministic work (for example, random values) and side effects (for example, file writes or API calls) in [**tasks**](/oss/python/langgraph/functional-api#task).
+To use features like **human-in-the-loop**, you must place non-deterministic work (for example, random values) and side effects (for example, file writes or API calls) in [**tasks**](/oss/python/langgraph/functional-api.md#task).
 
 Different runs of a workflow can produce different results, but resuming a **specific** thread should replay the same persisted **task** and **subgraph** results.
 
@@ -678,12 +678,12 @@ def my_workflow(inputs: dict) -> int:
 
 ## Learn more
 
-* [How to use the Functional API](/oss/python/langgraph/use-functional-api)
-* [Graph API conceptual overview](/oss/python/langgraph/graph-api)
-* [Choosing between Graph API and Functional API](/oss/python/langgraph/choosing-apis)
+* [How to use the Functional API](/oss/python/langgraph/use-functional-api.md)
+* [Graph API conceptual overview](/oss/python/langgraph/graph-api.md)
+* [Choosing between Graph API and Functional API](/oss/python/langgraph/choosing-apis.md)
 
 ***
 
-[Connect these docs](/use-these-docs) to your agent of choice via MCP for real-time answers.
+[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/functional-api.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

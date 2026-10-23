@@ -4,11 +4,11 @@
 
 # Use the functional API
 
-The [**Functional API**](/oss/python/langgraph/functional-api) allows you to add LangGraph's key features ([persistence](/oss/python/langgraph/persistence), [memory](/oss/python/langgraph/add-memory), [human-in-the-loop](/oss/python/langgraph/interrupts), and [streaming](/oss/python/langgraph/streaming)) to your applications with minimal changes to your existing code.
+The [**Functional API**](/oss/python/langgraph/functional-api.md) allows you to add LangGraph's key features ([persistence](/oss/python/langgraph/persistence.md), [memory](/oss/python/langgraph/add-memory.md), [human-in-the-loop](/oss/python/langgraph/interrupts.md), and [streaming](/oss/python/langgraph/streaming.md)) to your applications with minimal changes to your existing code.
 
 > [!TIP]
 >
-> For conceptual information on the functional API, see [Functional API](/oss/python/langgraph/functional-api).
+> For conceptual information on the functional API, see [Functional API](/oss/python/langgraph/functional-api.md).
 
 ## Creating a simple workflow
 
@@ -150,7 +150,7 @@ def graph(numbers: list[int]) -> list[str]:
 
 ## Calling graphs
 
-The **Functional API** and the [**Graph API**](/oss/python/langgraph/graph-api) can be used together in the same application as they share the same underlying runtime.
+The **Functional API** and the [**Graph API**](/oss/python/langgraph/graph-api.md) can be used together in the same application as they share the same underlying runtime.
 
 ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from langgraph.func import entrypoint
@@ -252,7 +252,7 @@ def my_workflow(inputs: dict) -> int:
 ## Streaming
 
 The **Functional API** uses the same streaming mechanism as the **Graph API**. Please
-read the [**streaming guide**](/oss/python/langgraph/streaming) section for more details.
+read the [**streaming guide**](/oss/python/langgraph/streaming.md) section for more details.
 
 Example of using the streaming API to stream value chunks from a workflow run.
 
@@ -280,7 +280,7 @@ for mode, chunk in stream.interleave("values"):
 >
 > **Async with Python \< 3.11**
 > If using Python \< 3.11 and writing async code, using [`get_stream_writer`](https://reference.langchain.com/python/langgraph/config/get_stream_writer) will not work. Instead please
-> use the `StreamWriter` class directly. See [Async with Python \< 3.11](/oss/python/langgraph/streaming#async) for more details.
+> use the `StreamWriter` class directly. See [Async with Python \< 3.11](/oss/python/langgraph/streaming.md#async) for more details.
 >
 > ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 > from langgraph.types import StreamWriter
@@ -471,11 +471,11 @@ main.invoke(None, config=config)
 
 ## Human-in-the-loop
 
-The functional API supports [human-in-the-loop](/oss/python/langgraph/interrupts) workflows using the [`interrupt`](https://reference.langchain.com/python/langgraph/types/interrupt) function and the `Command` primitive.
+The functional API supports [human-in-the-loop](/oss/python/langgraph/interrupts.md) workflows using the [`interrupt`](https://reference.langchain.com/python/langgraph/types/interrupt) function and the `Command` primitive.
 
 ### Basic human-in-the-loop workflow
 
-We will create three [tasks](/oss/python/langgraph/functional-api#task):
+We will create three [tasks](/oss/python/langgraph/functional-api.md#task):
 
 1. Append `"bar"`.
 2. Pause for human input. When resuming, append human input.
@@ -502,7 +502,7 @@ def step_3(input_query):
     return f"{input_query} qux"
 ```
 
-We can now compose these tasks in an [entrypoint](/oss/python/langgraph/functional-api#entrypoint):
+We can now compose these tasks in an [entrypoint](/oss/python/langgraph/functional-api.md#entrypoint):
 
 ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from langgraph.checkpoint.memory import InMemorySaver
@@ -518,7 +518,7 @@ def graph(input_query):
     return result_3
 ```
 
-[interrupt()](/oss/python/langgraph/interrupts#pause-using-interrupt) is called inside a task, enabling a human to review and edit the output of the previous task. The results of prior tasks-- in this case `step_1`-- are persisted, so that they are not run again following the [`interrupt`](https://reference.langchain.com/python/langgraph/types/interrupt).
+[interrupt()](/oss/python/langgraph/interrupts.md#pause-using-interrupt) is called inside a task, enabling a human to review and edit the output of the previous task. The results of prior tasks-- in this case `step_1`-- are persisted, so that they are not run again following the [`interrupt`](https://reference.langchain.com/python/langgraph/types/interrupt).
 
 Let's send in a query string:
 
@@ -577,7 +577,7 @@ def review_tool_call(tool_call: ToolCall) -> Union[ToolCall, ToolMessage]:
         )
 ```
 
-We can now update our [entrypoint](/oss/python/langgraph/functional-api#entrypoint) to review the generated tool calls. If a tool call is accepted or revised, we execute in the same way as before. Otherwise, we just append the [`ToolMessage`](https://reference.langchain.com/python/langchain-core/messages/tool/ToolMessage) supplied by the human. The results of prior tasks—in this case the initial model call—are persisted, so that they are not run again following the [`interrupt`](https://reference.langchain.com/python/langgraph/types/interrupt).
+We can now update our [entrypoint](/oss/python/langgraph/functional-api.md#entrypoint) to review the generated tool calls. If a tool call is accepted or revised, we execute in the same way as before. Otherwise, we just append the [`ToolMessage`](https://reference.langchain.com/python/langchain-core/messages/tool/ToolMessage) supplied by the human. The results of prior tasks—in this case the initial model call—are persisted, so that they are not run again following the [`interrupt`](https://reference.langchain.com/python/langgraph/types/interrupt).
 
 ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from langgraph.checkpoint.memory import InMemorySaver
@@ -628,7 +628,7 @@ def agent(messages, previous):
 
 ## Short-term memory
 
-Short-term memory allows storing information across different **invocations** of the same **thread id**. See [short-term memory](/oss/python/langgraph/functional-api#short-term-memory) for more details.
+Short-term memory allows storing information across different **invocations** of the same **thread id**. See [short-term memory](/oss/python/langgraph/functional-api.md#short-term-memory) for more details.
 
 ### Manage checkpoints
 
@@ -814,18 +814,18 @@ for snapshot in stream.values:
 
 ## Long-term memory
 
-[long-term memory](/oss/python/concepts/memory#long-term-memory) allows storing information across different **thread ids**. This could be useful for learning information about a given user in one conversation and using it in another.
+[long-term memory](/oss/python/concepts/memory.md#long-term-memory) allows storing information across different **thread ids**. This could be useful for learning information about a given user in one conversation and using it in another.
 
 ## Workflows
 
-* [Workflows and agent](/oss/python/langgraph/workflows-agents) guide for more examples of how to build workflows using the Functional API.
+* [Workflows and agent](/oss/python/langgraph/workflows-agents.md) guide for more examples of how to build workflows using the Functional API.
 
 ## Integrate with other libraries
 
-* [Add LangGraph's features to other frameworks using the functional API](/langsmith/deploy-other-frameworks): Add LangGraph features like persistence, memory and streaming to other agent frameworks that do not provide them out of the box.
+* [Add LangGraph's features to other frameworks using the functional API](/langsmith/deploy-other-frameworks.md): Add LangGraph features like persistence, memory and streaming to other agent frameworks that do not provide them out of the box.
 
 ***
 
-[Connect these docs](/use-these-docs) to your agent of choice via MCP for real-time answers.
+[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/use-functional-api.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

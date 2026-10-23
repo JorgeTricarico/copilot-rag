@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-10-22T16:53:38.431853+00:00
-- **Total Palabras**: 15,100 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-23T04:01:53.204543+00:00
+- **Total Palabras**: 15,522 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -346,8 +346,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_143.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_143
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_143.md
-- **SHA256_FINGERPRINT**: `7ea28c0361adddd1bce0ef97308ba1f8dab08aba52fe39961bfb6a7fa43e4faa`
-- **LAST_VERIFIED_UTC**: 2026-10-21T13:24:20.837332+00:00
+- **SHA256_FINGERPRINT**: `d71684e764cfa540bd5656a71f8df1d4af8827a20c6a3bf410f803a3e784ad17`
+- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:44.290349+00:00
 ---
 
 **MetaDescription**: Learn what's new in Visual Studio Code 1.143
@@ -358,9 +358,9 @@ Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://
 
 ---
 
-_Last updated: October 19, 2026_
-
 Welcome to the 1.143  release of Visual Studio Code.
+
+**Update 1.143.1**: The update addresses these [issues](https://github.com/microsoft/vscode/pulls?q=is%3Apr+milestone%3A1.143.1+is%3Aclosed+label%3Acandidate).
 
 ## Release highlights
 
@@ -1130,6 +1130,47 @@ We really appreciate people trying our new features as soon as they are ready, s
 
 
 ---
+# DOCUMENT_SOURCE: vscode_insiders::endgame-plan_343623
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/343623
+- **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/343623
+- **SHA256_FINGERPRINT**: `0db38d2f8adffce4c1154c147c4435581b3c5a8c2f5ae81113980c08c71a0971`
+- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:53.027709+00:00
+---
+
+# VS Code Insiders Roadmap: 1.143.1 Endgame
+- **Issue Number**: #343623
+- **Category**: `endgame-plan`
+- **State**: open
+- **Source Issue**: https://github.com/microsoft/vscode/issues/343623
+
+- [x] Create a milestone `1.143.1` **@hediet**
+- [x] Bump the version number & run `npm i` to bump `package-lock.json` as well. Ensure there are no other `package-lock.json` changes. **@hediet**
+- [x] [🔖candidate issues](https://github.com/issues?q=org%3Amicrosoft%20is%3Aissue%20milestone%3A%221.143.1%22%20label%3Acandidate)
+- [x] Assign candidate issues to the recovery milestone **team**
+- [x] Review the `candidate` issues, and if they pass the review assign them to the recovery milestone **team**
+- [x] All `candidate` fixes are peer reviewed and pushed to `main` and then cherry-picked into the release branch **team**
+- [ ] Initiate `insiders` build from `main`
+- [ ] Issues are tested in the `insiders` **team**
+- [ ] Build and manually release Insider from main branch for vscode.dev (if there were vscode.dev candidates)
+  - [ ] Issues are tested in the `insiders` **team**
+- [x] Build `stable` for all platforms from release branch **@hediet**
+- [x] Issues are verified on `stable` build and the `verified` label is added **@hediet**
+- [x] Check `https://github.com/Microsoft/vscode/compare/release/<x.y>` to ensure no other commits have been made in the release branch **@hediet**
+- [x] The `insiders` build with all candidate fixes needs to be in the wild for 24 hours before recovery release, unless explicitly approved by @kieferrm
+- [x] Update the release notes and include a link to a query for the fixed issues @ntrogh
+- [x] Publish website @ntrogh
+- [x] Publish stable build **@hediet**
+- [ ] (if there were vscode.dev candidates) Trigger the [vscode.dev Deploy pipeline](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) for `release/x.y` for the `prod` deployment target. **@hediet**
+  - [ ] Request approval from another team member at the necessary step to deploy the vscode.dev build. **@hediet**
+- [x] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `auto`; the release pipeline job requires two approvals) **@hediet**
+- [x] Create an official release **@hediet**
+  - [x] Create a tag (make sure you pull the release branch first): `git tag <x.y.z> release/<x.y>`
+  - [x] Push the tag: `git push origin <x.y.z>`
+  - [x] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right `... > Create Release`. Use the correct title and description from our release notes. [Example](https://github.com/microsoft/vscode/releases/tag/1.81.1)
+- [x] Close the milestone on [GitHub](https://github.com/microsoft/vscode/milestones) **@hediet**
+
+
+---
 # DOCUMENT_SOURCE: vscode_insiders::iteration-plan_271045
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/271045
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/271045
@@ -1761,11 +1802,39 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `fbfc1e9842c7fa75972040ff02bde01c46bcfca0f55ec688bcce6c9e719db075`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:35.801198+00:00
+- **SHA256_FINGERPRINT**: `dca844dfc219422b4719bd02afe74b8cc1ac0e559bd5e1e304ba4101dc5570fd`
+- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:50.687157+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
+
+## GitHub Copilot in Visual Studio — September update
+- **Date**: Fri, 23 Oct 2026 00:17:51 +0000
+- **URL**: https://github.blog/changelog/2026-10-22-github-copilot-in-visual-studio-september-update-2
+
+September 2026 brought deeper visibility into your work: explore pull requests without leaving chat, bring the AI model your team trusts, and fix vulnerable packages the moment Visual Studio flags...
+The post GitHub Copilot in Visual Studio — September update appeared first on The GitHub Blog .
+
+## Custom skills, agents, and MCP servers in usage metrics API
+- **Date**: Thu, 22 Oct 2026 22:19:17 +0000
+- **URL**: https://github.blog/changelog/2026-10-22-custom-skills-agents-and-mcp-servers-in-usage-metrics-api
+
+Copilot usage metrics now show the names of the skills, custom agents, Model Context Protocol (MCP) servers, slash commands, and plugins that your organization creates, instead of grouping them under...
+The post Custom skills, agents, and MCP servers in usage metrics API appeared first on The GitHub Blog .
+
+## Global default for Copilot features generally available
+- **Date**: Thu, 22 Oct 2026 20:44:28 +0000
+- **URL**: https://github.blog/changelog/2026-10-22-global-default-for-copilot-features-generally-available
+
+In September, we announced a global default policy for generally available GitHub Copilot features and supported client capabilities on Copilot Business and Copilot Enterprise plans. Starting today, we’re gradually rolling...
+The post Global default for Copilot features generally available appeared first on The GitHub Blog .
+
+## Industry comparisons in the Copilot impact dashboard
+- **Date**: Thu, 22 Oct 2026 16:28:24 +0000
+- **URL**: https://github.blog/changelog/2026-10-22-industry-comparisons-in-the-copilot-impact-dashboard
+
+The Copilot impact dashboard now includes an “Industry comparison” section. Enterprises, and organizations that aren’t owned by an enterprise, can compare their Copilot agentic adoption and leverage with aggregated benchmarks...
+The post Industry comparisons in the Copilot impact dashboard appeared first on The GitHub Blog .
 
 ## Copilot model policy API for enterprise, orgs, and teams
 - **Date**: Mon, 19 Oct 2026 21:32:18 +0000
@@ -1808,31 +1877,3 @@ The post Agentic autofix for code scanning alerts general availability appeared 
 
 HydraFusion has an updated model pool, improved orchestration workflows, and introduces HydraFusion Max. Both HydraFusion and HydraFusion Max are available across VS Code, the GitHub Copilot app, and GitHub Copilot...
 The post HydraFusion updates and new Max option appeared first on The GitHub Blog .
-
-## Gemini 4 Argon in GitHub Copilot
-- **Date**: Tue, 13 Oct 2026 18:39:56 +0000
-- **URL**: https://github.blog/changelog/2026-10-13-gemini-4-argon-in-github-copilot
-
-Gemini 4 Argon, Google’s newest frontier model, is now generally available in GitHub Copilot. It is designed for complex coding, agentic, and reasoning tasks. In early testing, Gemini 4 Argon...
-The post Gemini 4 Argon in GitHub Copilot appeared first on The GitHub Blog .
-
-## Enterprise managed settings enforcement updates
-- **Date**: Tue, 13 Oct 2026 15:20:10 +0000
-- **URL**: https://github.blog/changelog/2026-10-13-enterprise-managed-settings-enforcement-updates
-
-Enterprise administrators can now require supported GitHub Copilot clients to retrieve current server-managed settings at startup instead of relying on a cached policy. We are also adding minimum client version...
-The post Enterprise managed settings enforcement updates appeared first on The GitHub Blog .
-
-## Client telemetry user attribution and configurable capture
-- **Date**: Mon, 12 Oct 2026 22:38:00 +0000
-- **URL**: https://github.blog/changelog/2026-10-12-client-telemetry-user-attribution-and-configurable-capture
-
-Enterprise administrators can now use telemetry in managed settings to attribute GitHub Copilot activity to a user without collecting their prompts, responses, or tool content. The telemetry.capture.identity setting adds three...
-The post Client telemetry user attribution and configurable capture appeared first on The GitHub Blog .
-
-## New controls and chat improvements in Copilot for JetBrains
-- **Date**: Sat, 10 Oct 2026 18:53:39 +0000
-- **URL**: https://github.blog/changelog/2026-10-10-new-controls-and-chat-improvements-in-copilot-for-jetbrains
-
-This update brings more control over default models and MCP server in GitHub Copilot for JetBrains. It also makes diagnostics easier to address, improves chat navigation and account controls, and...
-The post New controls and chat improvements in Copilot for JetBrains appeared first on The GitHub Blog .

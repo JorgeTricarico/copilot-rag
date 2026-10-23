@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-10-22T16:53:38.419952+00:00
-- **Total Palabras**: 269,319 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-23T04:01:53.170222+00:00
+- **Total Palabras**: 270,885 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -44692,8 +44692,8 @@ Use the [agent plugin authoring reference](/docs/agents/reference/agent-plugin-r
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/agent-skills.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/agent-skills
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-skills.md
-- **SHA256_FINGERPRINT**: `3aa926cf3ee32b4fa7d0ae3a70646426b7ade6ef38f25a91d178daa714d9143d`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.632122+00:00
+- **SHA256_FINGERPRINT**: `693ab21084252b195b2d1b4d824906b76a3199a9ece1201c60eceeddd9851f79`
+- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:44.200100+00:00
 ---
 
 **MetaDescription**: Create portable Agent Skills in VS Code for specialized AI workflows across supported coding agents.
@@ -44764,7 +44764,7 @@ Skills are stored in directories with a `SKILL.md` file that defines the skill's
 > The Codex harness is disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
 
 > [!NOTE]
-> **For Local harness sessions:** The ``chat.agentSkillsLocations`` setting adds other skill locations. This setting is deprecated and isn't read by Copilot harness sessions. To reuse those skills with the Copilot harness, [move them to supported locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations).
+> Prefer native harness folders over custom search locations. The ``chat.agentSkillsLocations`` setting remains supported and is not deprecated, and the editor forwards skills from additional configured locations to Agent Host harnesses. Custom locations are not recommended for Copilot workflows because GitHub Copilot CLI and the GitHub Copilot app do not inherit editor settings. [Move existing skills to native harness locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations) to use them across Copilot clients.
 
 > [!TIP]
 > In a monorepo, enable ``chat.useCustomizationsInParentRepositories`` to discover skills from the parent repository root. Learn more about [parent repository discovery](/docs/agent-customization/overview.md#use-customizations-in-a-monorepo).
@@ -45090,8 +45090,8 @@ Learn more about the Agent Skills standard at [agentskills.io](https://agentskil
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/custom-agents.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/custom-agents
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/custom-agents.md
-- **SHA256_FINGERPRINT**: `c8e0f4a7398c91ca7101f233395d182019eca249be655f3911f51dbe54626204`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.641369+00:00
+- **SHA256_FINGERPRINT**: `580be412915c85f3332ff72f018910c15a92b4e1eb626a5ba171d78b36d499b4`
+- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:44.193504+00:00
 ---
 
 **MetaDescription**: Create and manage custom agents in VS Code for specialized development roles, tools, and workflows.
@@ -45219,7 +45219,9 @@ For Claude-specific fields and compatibility with Local, see the [Claude agent f
 
 The **Local** harness stores user-level custom agents in VS Code profile storage, separate from harness user folders such as `~/.copilot/agents` and `~/.claude/agents`. To reuse profile-based agents with another harness, [move them to that harness's user folder](/docs/agent-customization/migrate-customizations.md#move-user-agents-and-instructions).
 
-The deprecated ``chat.agentFilesLocations`` and ``chat.modeFilesLocations`` settings add other locations for the Local harness only. To reuse agents from these locations with the Copilot harness, [move them to supported locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations).
+Prefer native harness folders, such as `.github/agents` and `~/.copilot/agents`, over custom search locations. The ``chat.agentFilesLocations`` setting remains supported and is not deprecated. The editor forwards agents from additional configured locations to Agent Host harnesses, including Copilot, for compatibility with existing editor workflows. The older `chat.modeFilesLocations` setting is deprecated.
+
+Custom locations are not recommended for Copilot workflows because GitHub Copilot CLI and the GitHub Copilot app do not inherit editor location settings. To use agents across Copilot clients, [move them to native harness locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations).
 
 If an agent has `hooks` in its frontmatter, review the [agent-scoped hook conversion limitation](/docs/agent-customization/hooks.md#agent-scoped-hooks). Plugin-provided agents can appear and run without their scoped hooks because conversion currently omits the `hooks` field. Retain the scoped definition and leave the affected hook migration incomplete; do not broaden it to repository-wide or plugin-wide execution as a workaround.
 
@@ -45316,8 +45318,8 @@ Custom agents can restrict which tools are available, which gives you control ov
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/custom-instructions.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/custom-instructions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/custom-instructions.md
-- **SHA256_FINGERPRINT**: `517b98c6e7cf539cfb36f11035a4e3ce114a9ad527edc76cd2b1d949fcd439c1`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.580829+00:00
+- **SHA256_FINGERPRINT**: `2a5063a689e507791f5a1e796a6069181936ce02635af2876e5809db40af5850`
+- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:44.177656+00:00
 ---
 
 **MetaDescription**: Create custom instructions in VS Code that align AI responses with project standards and development practices.
@@ -45444,7 +45446,9 @@ The supported location depends on the session type and selected harness.
 Use the Agent Customizations editor to create user instructions in a location supported by the selected harness. To move profile-based instructions to a supported harness user folder, use [user customization migration](/docs/agent-customization/migrate-customizations.md#move-user-agents-and-instructions).
 
 > [!NOTE]
-> **For Local harness sessions:** Workspace instruction files use `.github/instructions` or `.claude/rules`, and user instructions use VS Code profile storage. The deprecated ``chat.instructionsFilesLocations`` setting adds other locations for the Local harness only. To reuse those instructions with the Copilot harness, [move them to supported locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations).
+> **For Local harness sessions:** Workspace instruction files use `.github/instructions` or `.claude/rules`, and user instructions use VS Code profile storage.
+>
+> Prefer native harness folders over custom search locations. The ``chat.instructionsFilesLocations`` setting remains supported and is not deprecated, and the editor forwards instructions from additional configured locations to Agent Host harnesses. Custom locations are not recommended for Copilot workflows because GitHub Copilot CLI and the GitHub Copilot app do not inherit editor settings. [Move existing instructions to native harness locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations) to use them across Copilot clients.
 
 VS Code searches these folders recursively, which enables you to organize instructions files in subdirectories. For example, you can group instructions by team, language, or module:
 
@@ -46491,17 +46495,19 @@ Yes, you can use BYOK models, including local models, without a Copilot plan and
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/migrate-customizations.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/migrate-customizations
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/migrate-customizations.md
-- **SHA256_FINGERPRINT**: `88a7e039d89eac22cf93ea129071a667bb39b3373081a96b4ef6f9c8d36579f9`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.791674+00:00
+- **SHA256_FINGERPRINT**: `f43768f3f0b4ec31c01290ed0e5da186b64a9fcf683dd9fd33808318923b2060`
+- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:44.207434+00:00
 ---
 
-**MetaDescription**: Migrate hooks and other customizations and replace deprecated integrations in VS Code.
+**MetaDescription**: Migrate agent customizations and resolve harness compatibility gaps in VS Code.
 
 # Migrate customizations to the Copilot harness in VS Code
 
 Move existing customizations to the Copilot harness, including customizations that require manual changes. When VS Code shows a customization migration notice, use the migration list to move or convert the detected files, settings, or MCP servers.
 
 This article covers supported migrations, [manual hook migration](#migrate-hooks), and replacements for [deprecated tool sets](#replace-tool-sets) and [chat participants](#replace-chat-participants). Hooks can come from user folders, settings, repositories, custom agents, or plugins. These manual migrations do not appear as automatic conversions in the migration list.
+
+For answers about keeping Local available, MCP secrets, custom discovery paths, and agent tool names, see the [migration FAQ](#frequently-asked-questions).
 
 > [!NOTE]
 > This article covers migration to the Copilot harness. For the Claude or Codex harness, use the locations and formats in the provider documentation.
@@ -46537,7 +46543,7 @@ You only need to migrate each item once. Keep the original until you verify the 
 
 ## Why migration is needed
 
-The Copilot harness reads customizations from Copilot folders and portable formats. If a customization is stored in your VS Code profile or a location configured through `chat.*FilesLocations` settings, move it to a supported location to use it in a Copilot harness session.
+The Copilot harness reads customizations from Copilot folders and portable formats. Move custom agents, instructions, and skills from editor-specific storage and configured custom locations to native harness folders so they can be discovered across Copilot clients. VS Code can [forward files from configured locations](#move-customizations-from-configured-locations) for compatibility with existing editor workflows, but other clients do not inherit those settings.
 
 > [!NOTE]
 > **For Local harness sessions:** The agent reads VS Code profile customizations and the additional locations configured through those settings. Moving a customization for the Copilot harness doesn't change which sources the Local harness reads.
@@ -46590,8 +46596,10 @@ Use the following table to decide whether a server can migrate automatically and
 | Standard `command`, `args`, `env`, `url`, and `headers` values | Migrates automatically and adds `tools: ["*"]` | Inspect the server's tools. Replace `*` with the specific tools Copilot should invoke when you do not want every server tool available. |
 | `${workspaceFolder}`, `${workspaceRoot}`, `${workspaceFolderBasename}`, `${workspaceRootFolderName}`, `${cwd}`, or `${pathSeparator}` | Migrates after VS Code resolves the variable and writes its current value | Review the resulting value before you share the destination file or use it on another machine. |
 | `gallery`, `version`, `dev`, or `sandboxEnabled` | Migrates with changes and removes these properties | Review the migration warning. Decide how to handle updates, development behavior, or sandboxing after migration. |
-| `${input:...}`, `${config:...}`, `${command:...}`, or other interactive VS Code variables | Does not migrate automatically | Reconfigure the value for the Copilot harness. Do not copy a resolved secret into the MCP file. |
-| `${env:NAME}` | Does not migrate automatically | Use `$NAME`, `${NAME}`, or `${NAME:-default}`, and define the variable in the environment used to start the agent. |
+| Eligible non-password `promptString` or `pickString` inputs declared in the same source file | Migrates to environment-variable references | Review the generated variable names and defaults. Stdio entries can include default or empty values in `env`. HTTP entries use references in URLs or headers. |
+| Password inputs, command inputs, `${command:...}`, or other unsupported variables | Does not migrate automatically | If environment variables meet your requirements, [replace the input with an environment-variable reference](#replace-input-prompts-with-environment-variables). Do not copy a resolved secret into the MCP file. |
+| `${config:...}` | Eligible setting references migrate to environment-variable entries based on the effective setting values | Review generated values before sharing the file. Unlike an environment-variable reference, this conversion can write setting values into the destination configuration. |
+| `${env:NAME}` | Eligible references migrate automatically to `${NAME}` | The reference is preserved without writing the resolved environment value. Define the variable in the environment of the host that runs or connects to the server. |
 | `cwd` | Does not migrate automatically | Add `cwd` manually only when the server requires it, and verify the path on the machine where the agent runs. |
 | `envFile` | Does not migrate automatically | Export the required variables in the environment used to start the agent and reference them from `env`. Do not copy secret values into the MCP file. |
 | SSE transport | Does not migrate automatically | Use `type: "sse"` only when the server does not support Streamable HTTP. SSE is deprecated. |
@@ -46600,7 +46608,7 @@ Use the following table to decide whether a server can migrate automatically and
 | Additional VS Code-specific properties | Does not migrate automatically | Remove or replace the unsupported property before you retry. |
 | A different server with the same name in the destination or another workspace root | Migration stops without changing the source | Rename or remove the conflicting server, and then retry. |
 
-Input variables need special attention. The VS Code MCP format can prompt for values such as API keys through `${input:api-key}`. The Copilot MCP format does not use this VS Code input flow, so these servers require manual configuration.
+Input variables need special attention. The VS Code MCP format can prompt for values such as API keys through `${input:api-key}`. The Copilot MCP format does not use this input flow. Migration converts eligible non-secret inputs to environment variables, but password and command inputs require manual changes.
 
 > [!IMPORTANT]
 > VS Code per-server sandbox settings and top-level `sandbox` rules do not transfer to the Copilot harness configuration. The Copilot harness uses session-level sandbox settings. Local stdio MCP servers run in the Copilot harness sandbox only when local sandboxing and MCP server sandboxing are enabled. Remote HTTP and SSE servers are not locally sandboxed. Review these settings before enabling a migrated server.
@@ -46612,6 +46620,49 @@ When a server requires manual work:
 1. Follow the [Copilot CLI MCP server guidance](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers) for the destination configuration.
 1. Decide how to provide secrets, authentication, or environment-specific paths. Do not copy sensitive values into a committed file.
 1. Test the server with the Copilot harness before you remove the original entry.
+
+### Replace input prompts with environment variables
+
+Portable `.mcp.json` and Copilot user `mcp-config.json` support environment-variable references. If your security requirements permit environment variables, use them instead of input prompts. This keeps credential values out of the configuration file, but does not provide prompting or secret storage.
+
+For example, an HTTP server in `.vscode/mcp.json` might use `"Authorization": "Bearer ${input:api-key}"`. Create the corresponding portable entry with `${SERVICE_API_KEY}` instead:
+
+```json
+{
+    "mcpServers": {
+        "service": {
+            "type": "http",
+            "url": "https://api.example.com/mcp",
+            "headers": {
+                "Authorization": "Bearer ${SERVICE_API_KEY}"
+            },
+            "tools": ["*"]
+        }
+    }
+}
+```
+
+Replace the example URL with your server's endpoint. For a stdio server, reference the variable in its `env` values instead:
+
+```json
+{
+    "env": {
+        "API_KEY": "${SERVICE_API_KEY}"
+    }
+}
+```
+
+Add this `env` object to the server's existing command and arguments. To update a portable entry, use **Chat: Open Customizations** > **MCP Servers**, select the server, and edit its headers or environment variables in the [configuration form](/docs/agents/run/manage-mcp-servers.md#edit-an-mcp-server-configuration). Enter the reference, not the credential value, then select **Save**.
+
+Before testing:
+
+1. Provide `SERVICE_API_KEY` through your organization's approved environment or credential-injection mechanism. It must be available to the host that runs the stdio server or connects to the HTTP server.
+1. For a remote or Dev Container session, configure the variable in that host or container. Setting it in an unrelated terminal does not update an already-running Agent Host. If you change the launch environment, restart the affected client or Agent Host so it inherits the change.
+1. Verify that the server connects and its tools work in a Copilot session. Remove an old input declaration only after no remaining server uses it, and retire the original server entry after verification.
+
+Use `${NAME}` rather than the VS Code-specific `${env:NAME}` in the portable file. For non-secret defaults, `${NAME:-default}` is also supported. Do not put a secret in a default or replace a reference with a literal credential in the form or JSON.
+
+Environment variables are not a secret store. This migration does not meet a requirement to avoid both environment variables and credentials in files. See [prompted-secret limitations](#can-copilot-pass-a-prompted-secret-to-an-http-mcp-server-without-an-environment-variable-or-a-file).
 
 ## Convert prompt files to skills
 
@@ -46648,14 +46699,19 @@ After migration, start a Copilot harness session and verify that the agents and 
 
 ## Move customizations from configured locations
 
-The following settings add file locations for the Local harness, but the Copilot harness does not read them:
+Use native Copilot folders rather than adding custom search locations. Native locations let the harness discover customizations without relying on the editor. GitHub Copilot CLI and the GitHub Copilot app do not inherit VS Code location settings.
+
+The following settings remain supported for compatibility with existing editor workflows and are not deprecated:
 
 * ``chat.agentFilesLocations``
-* ``chat.modeFilesLocations``
 * ``chat.instructionsFilesLocations``
 * ``chat.agentSkillsLocations``
 
-Location migration moves detected custom agents, instructions, and skills to the Copilot folders for their scope:
+VS Code forwards files discovered in additional configured locations to Agent Host harnesses, including Copilot. The harness does not read the settings itself. Additional locations supplement the harness's built-in locations without removing them. The older `chat.modeFilesLocations` setting is deprecated.
+
+Although these settings remain supported, custom locations are not recommended for Copilot workflows because they are editor-specific. If an MCP tool downloads specialist agents, update it to write to a native workspace or user agent folder rather than adding another search location.
+
+Move existing files to the native Copilot folders for their scope:
 
 | Customization | Workspace destination | User destination |
 |---------------|-----------------------|------------------|
@@ -46672,7 +46728,10 @@ To migrate custom locations:
 
 Prompt files from ``chat.promptFilesLocations`` are handled by [prompt file migration](#convert-prompt-files-to-skills), not location migration.
 
-This migration applies only to the deprecated VS Code `chat.*FilesLocations` settings. GitHub Copilot CLI separately supports additional instruction directories through `COPILOT_CUSTOM_INSTRUCTIONS_DIRS`. VS Code does not migrate or clear that environment variable.
+Standalone GitHub Copilot CLI does not inherit these editor settings. It separately supports additional instruction directories through `COPILOT_CUSTOM_INSTRUCTIONS_DIRS`. VS Code does not migrate or clear that environment variable.
+
+> [!NOTE]
+> The migration list can suggest moving files from configured locations even when they work through editor forwarding. Review the destinations and avoid leaving duplicate active copies after migration. The migration suggestion behavior is tracked in [microsoft/vscode#342185](https://github.com/microsoft/vscode/issues/342185).
 
 ## Customizations without automatic migration
 
@@ -47084,6 +47143,50 @@ After you complete a migration:
 1. Remove old files and settings after the migrated customization works.
 
 For remote or Dev Container sessions, perform this check in the destination environment. User customization folders belong to the machine or container where the agent runs.
+
+## Frequently asked questions
+
+### Can I keep using Local while adapting my customizations?
+
+Yes. In the editor's Chat view, start a new session and select **Local** as the **Session Target**. Local availability and automatic Copilot selection depend on your settings and organization policies. See [Keep Local available while migrating](/docs/agents/run/agent-harnesses.md#can-i-keep-local-available-while-migrating).
+
+Administrators can use the temporary `vscode.temporaryDefaultToLocalHarness` enterprise-managed setting, available from version 1.142. It keeps Local available and suppresses automatic Copilot routing, but Local does not enforce Copilot runtime-only sandbox and permission rules. Review the [administrator guidance and security caveat](/docs/enterprise/manage-ai-settings.md#keep-local-harness-as-default).
+
+### Why are MCP servers with input prompts missing?
+
+Servers that require `${input:...}` or `${command:...}` variables are not forwarded from `.vscode/mcp.json` or profile `mcp.json` to the Copilot harness. The server's tools are therefore unavailable in the session. Resolving the prompt in a Local session first does not help: Copilot forwarding rejects these variables before resolving their values, including cached values.
+
+Moving the same configuration to `.mcp.json` does not add input-prompt support. Migration converts eligible non-secret inputs to environment variables. For password inputs or other manual changes, see [Replace input prompts with environment variables](#replace-input-prompts-with-environment-variables). Keep the original configuration until you have a supported authentication method and have verified the tools in a Copilot session. See [MCP input variables](/docs/agents/reference/mcp-configuration.md#input-variables-for-sensitive-data) and the open reports [microsoft/vscode#334271](https://github.com/microsoft/vscode/issues/334271) and [microsoft/vscode#337311](https://github.com/microsoft/vscode/issues/337311).
+
+### Can Copilot pass a prompted secret to an HTTP MCP server without an environment variable or a file?
+
+There is no built-in MCP configuration option that passes a VS Code `${input:...}` value or reads an existing `SecretStorage` value into an HTTP server's authentication header for the Copilot harness. Setting `password: true` on an input does not change this limitation.
+
+If the server supports OAuth, use its supported authorization flow instead of configuring a static bearer token. OAuth is a separate authentication mechanism, not a way to forward a prompted API key. Authentication UI gaps are tracked in [microsoft/vscode#339960](https://github.com/microsoft/vscode/issues/339960).
+
+If the server requires a fixed bearer token and your requirements exclude both environment variables and credentials in files, the Copilot harness has no equivalent built-in input-prompt workflow. Continue using Local for that integration while you evaluate supported authentication options. Do not replace the placeholder with a literal secret in either a shared or personal MCP file: personal files can also be read by tools and included in logs or other artifacts. See [Authentication and secrets](/docs/agents/reference/mcp-configuration.md#authentication-and-secrets).
+
+### Do I need to move every custom agent into the repository agents folder?
+
+Use a native Copilot location, but it does not have to be a repository folder. Store shared agents in `.github/agents` and personal agents in `~/.copilot/agents`. These are the recommended locations for using agents across Copilot clients.
+
+The ``chat.agentFilesLocations`` setting is not deprecated, and the editor forwards agents from additional configured locations to the Copilot harness. This is compatibility support, not the recommended setup: GitHub Copilot CLI and the GitHub Copilot app do not read this editor setting. See [configured-location migration](#move-customizations-from-configured-locations).
+
+For dynamically downloaded agents, configure the tool that generates them to use a native workspace or user agent folder. Verify that the generated files are valid agent files and appear in **Chat: Open Customizations** for the selected harness. If they remain missing, include the product version, local or remote environment, path, and a minimal agent definition in a bug report. Remove secrets from the report.
+
+### Why does my coordinator's subagent invocation stop working?
+
+Local invokes subagents with `runSubagent`. The Copilot harness uses its native `task` tool. An instruction that requires a specific Local tool name does not switch to the Copilot tool automatically.
+
+Review both the coordinator's Markdown instructions and its `tools` list. Prefer instructions such as 'delegate this review to the reviewer agent' when the workflow should work across harnesses. If the workflow requires an explicit tool call, adapt its name and arguments to the selected harness instead of only renaming the tool. Verify that each specialist is discovered and available for subagent invocation. See [Subagents by harness](/docs/agents/run/subagents.md#subagents-by-harness).
+
+### Why does an agent fail with a tool-discovery capability error?
+
+Finding an agent file does not mean that its tool list is compatible with the selected harness. References such as `vscode/toolSearch`, Local tool IDs, and user-defined tool sets are not a portable Copilot tool configuration.
+
+Review each entry in `tools` against the capabilities available in the Copilot session. Check the [Tools tab](/docs/agents/run/tools.md#manage-tool-availability-for-the-copilot-harness), the [custom agent tool reference](/docs/agents/reference/custom-agent-file-reference.md#tools), and [tool-set migration guidance](#replace-tool-sets). Keep required capabilities explicitly configured. Removing the entire tool restriction is not an equivalent migration.
+
+Do not assume that removing a prefix or replacing a tool name fixes every discovery error. Harness-aware editing and tool validation are tracked in [microsoft/vscode#342854](https://github.com/microsoft/vscode/issues/342854) and [microsoft/vscode#342881](https://github.com/microsoft/vscode/issues/342881). A separate open report, [microsoft/vscode#342961](https://github.com/microsoft/vscode/issues/342961), describes tool search returning no results even when MCP tools are callable. If compatible tools still cannot be discovered, report the exact error, selected model, agent tool list, and environment rather than treating every discovery failure as an authentication problem.
 
 ## Related resources
 

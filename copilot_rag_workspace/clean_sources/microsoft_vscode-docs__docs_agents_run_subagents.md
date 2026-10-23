@@ -34,6 +34,8 @@ Your [agent harness](/docs/agents/run/agent-harnesses.md#compare-agent-harnesses
 
 The **Copilot** harness manages delegation to built-in or custom subagents. Request a subagent in your prompt, or let the main agent decide when to delegate. For native agent behavior and configuration, see [built-in and custom agents in Copilot](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-custom-agents).
 
+Copilot uses the native `task` tool for delegation, rather than Local's `runSubagent`. When migrating a coordinator agent, review both instructions that name the tool and the agent's tool list. Do not assume the tools accept identical arguments. See the [subagent migration FAQ](/docs/agent-customization/migrate-customizations.md#why-does-my-coordinators-subagent-invocation-stop-working).
+
 The **Claude** harness manages its own subagents, with separate context and configurable instructions and tools. Request delegation in your prompt, or let the agent choose an appropriate subagent. See [Claude subagents](https://code.claude.com/docs/en/sub-agents) for native configuration and behavior.
 
 The **Codex** harness uses provider-native subagents to run independent tasks and collect their results. Ask Codex to delegate in your prompt, and see [Codex subagents](https://developers.openai.com/codex/multi-agent) for native configuration and behavior. For availability and integration-specific setup, see [Use the Codex harness](/docs/agents/run/agent-harnesses.md#codex).

@@ -22,7 +22,7 @@ for message in stream.messages:
 final_state = stream.output
 ```
 
-To stream against a graph deployed behind an Agent Server, see the [LangSmith Streaming API](/langsmith/streaming).
+To stream against a graph deployed behind an Agent Server, see the [LangSmith Streaming API](/langsmith/streaming.md).
 
 ## How the pieces fit together
 
@@ -70,7 +70,7 @@ The run stream exposes typed projections over one underlying event flow:
 
 Multiple consumers can read these projections concurrently. Reading `stream.messages` does not consume events needed by `stream.values`, `stream.subgraphs`, or `stream.output`.
 
-Event streaming sits one level above [streaming](/oss/python/langgraph/streaming), which exposes raw graph execution events through `stream_mode` modes such as `updates`, `values`, `messages`, `custom`, `checkpoints`, `tasks`, and `debug`. Use streaming when you need low-level access to those modes; use event streaming when application code benefits from typed projections.
+Event streaming sits one level above [streaming](/oss/python/langgraph/streaming.md), which exposes raw graph execution events through `stream_mode` modes such as `updates`, `values`, `messages`, `custom`, `checkpoints`, `tasks`, and `debug`. Use streaming when you need low-level access to those modes; use event streaming when application code benefits from typed projections.
 
 ## Stream messages
 
@@ -107,7 +107,7 @@ for subgraph in stream.subgraphs:
 
 `subgraph.graph_name` is the `name` of the compiled graph or agent. A named agent dispatched from a tool (for example, a `create_agent(name=...)` invoked through the Deep Agents `task` tool) surfaces here under that name, and the `lifecycle` event that opens the scope carries a `cause` linking back to the dispatching tool call. See [Lifecycle](#lifecycle) for more information.
 
-For product-specific streams, see [Deep Agents streaming](/oss/python/deepagents/event-streaming) for subagent streams and [LangChain agent streaming](/oss/python/langchain/streaming) for tool calls and middleware events.
+For product-specific streams, see [Deep Agents streaming](/oss/python/deepagents/event-streaming.md) for subagent streams and [LangChain agent streaming](/oss/python/langchain/streaming.md) for tool calls and middleware events.
 
 ## Stream state
 
@@ -160,7 +160,7 @@ for name, item in stream.interleave("values", "messages", "subgraphs"):
 
 When a graph pauses for human input, inspect `stream.interrupted` and `stream.interrupts`, then resume by calling `stream_events(..., version="v3")` again with `Command`.
 
-Resume requires a graph compiled with a checkpointer and a config carrying a thread ID — see [persistence](/oss/python/langgraph/persistence).
+Resume requires a graph compiled with a checkpointer and a config carrying a thread ID — see [persistence](/oss/python/langgraph/persistence.md).
 
 ```py theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from langgraph.types import Command
@@ -505,15 +505,15 @@ for tool_call in stream.tool_calls:
 
 LangGraph defines the streaming primitives. For using streaming with LangChain or Deep Agents, review the relevant product docs:
 
-* [LangChain agent streaming](/oss/python/langchain/event-streaming) covers ReAct-style agent messages, tool calls, and middleware updates.
-* [Deep Agents streaming](/oss/python/deepagents/event-streaming) covers subagents, nested messages, and subagent tool calls.
-* [LangChain frontend patterns](/oss/python/langchain/frontend/overview) and [LangGraph frontend patterns](/oss/python/langgraph/frontend/overview) show UI use cases built on top of streamed state.
-* [LangSmith Streaming API](/langsmith/streaming) covers streaming against a graph deployed behind an Agent Server.
+* [LangChain agent streaming](/oss/python/langchain/event-streaming.md) covers ReAct-style agent messages, tool calls, and middleware updates.
+* [Deep Agents streaming](/oss/python/deepagents/event-streaming.md) covers subagents, nested messages, and subagent tool calls.
+* [LangChain frontend patterns](/oss/python/langchain/frontend/overview.md) and [LangGraph frontend patterns](/oss/python/langgraph/frontend/overview.md) show UI use cases built on top of streamed state.
+* [LangSmith Streaming API](/langsmith/streaming.md) covers streaming against a graph deployed behind an Agent Server.
 
 The wire-level event and command formats are defined in the [Agent Protocol](https://github.com/langchain-ai/agent-protocol) repository and consumable as [`langchain-protocol`](https://pypi.org/project/langchain-protocol/) on PyPI and [`@langchain/protocol`](https://www.npmjs.com/package/@langchain/protocol) on npm.
 
 ***
 
-[Connect these docs](/use-these-docs) to your agent of choice via MCP for real-time answers.
+[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/event-streaming.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

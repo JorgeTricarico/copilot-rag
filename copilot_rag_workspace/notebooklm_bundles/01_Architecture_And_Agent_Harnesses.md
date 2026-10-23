@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-10-22T16:53:38.325810+00:00
-- **Total Palabras**: 25,567 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-23T04:01:53.029017+00:00
+- **Total Palabras**: 25,877 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1497,8 +1497,8 @@ Before using agents on an existing project, review the [recommended security bas
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/agent-harnesses.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/agent-harnesses
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/agent-harnesses.md
-- **SHA256_FINGERPRINT**: `c78d91f27d721b2d89615c7055bc849e79b82a1c94ee98d64bb9aee90d98a4a3`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.365197+00:00
+- **SHA256_FINGERPRINT**: `3fa858fc13919514eb2ba25ea2e2709bae50a028219c5b3604b8ccdb481d9b7f`
+- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:44.213977+00:00
 ---
 
 **MetaDescription**: Compare agent harnesses and built-in agents in Visual Studio Code, select one for a session, and review provider requirements.
@@ -1725,6 +1725,27 @@ Start with **Copilot** for day-to-day coding and agent tasks, especially when yo
 
 If your workflow depends on specific tools or customizations that aren't supported by the Copilot harness, please [let us know](https://github.com/microsoft/vscode/issues). Before moving an existing workflow, check [tool availability](/docs/agents/run/tools.md#manage-tool-availability-for-the-copilot-harness), [MCP configuration compatibility](/docs/agents/reference/mcp-configuration.md#configuration-file), and [hook compatibility](/docs/agent-customization/hooks.md#migrate-hooks-between-harnesses).
 
+### Can I keep Local available while migrating?
+
+Yes. Local remains an editor harness option while you adapt integrations that depend on it. Start a new session in the editor's Chat view and select **Local** from **Session Target**. Local is not available in the Agents window.
+
+For an unmanaged editor, the following experimental settings make Local visible and turn off automatic Copilot preference:
+
+```json
+{
+    "chat.editor.localAgent.enabled": true,
+    "chat.defaultToCopilotHarness": false,
+    "chat.editor.preferCopilotHarness": false
+}
+```
+
+An organization policy can override user settings. Starting with version 1.142, administrators can set `vscode.temporaryDefaultToLocalHarness` to `true` in [enterprise-managed settings](/docs/enterprise/manage-ai-settings.md#keep-local-harness-as-default). This temporary control keeps Local available and suppresses automatic Copilot routing, including routing triggered by managed sandbox and permission settings. It preserves explicit, remembered, and current harness choices.
+
+> [!WARNING]
+> Local does not enforce runtime-only sandbox and permission rules. Administrators must review the security impact before using the temporary Local default. Copilot harness sessions continue to enforce those rules.
+
+For customization-specific blockers and next steps, see the [migration FAQ](/docs/agent-customization/migrate-customizations.md#frequently-asked-questions).
+
 ### Does running locally mean the language model runs on my machine?
 
 No. The harness coordinates the session and its tools, but the language model can run elsewhere. A session that edits files and runs commands on your machine can still send model requests to a hosted service. The **Local** harness name does not mean that the model runs locally or that the session works offline. Learn how [harnesses differ from models and execution environments](/docs/agents/concepts/agent-harnesses.md#how-a-harness-differs-from-other-agent-concepts).
@@ -1885,8 +1906,8 @@ To disable AI features for a specific workspace, configure the ``chat.disableAIF
 # DOCUMENT_SOURCE: microsoft_vscode::src/vs/workbench/contrib/chat/chatCodeOrganization.md
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/chat/chatCodeOrganization.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/workbench/contrib/chat/chatCodeOrganization.md
-- **SHA256_FINGERPRINT**: `36084c736651a4d17713459df54e76866bf508c815b22c2711f0ed12393ff2bd`
-- **LAST_VERIFIED_UTC**: 2026-10-22T16:53:33.052964+00:00
+- **SHA256_FINGERPRINT**: `a7af6dd9bf2bfe05046742c18f0a3f7968a7aad50214bf2173c37a8ce13997a2`
+- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:45.358168+00:00
 ---
 
 # workbench/contrib/chat Code Organization
@@ -1928,6 +1949,10 @@ The experimental setting `chat.titleBar.openInAgentsWindow.richHover` (`experime
 - `participants/` - Chat participant management (sometimes called "agents" in code).
 - `tools/` - Language model tools infrastructure and services.
 	- `builtinTools/` - Implementations of some built-in tools.
+
+## Rejected Agent Host requests
+
+`AgentHostSessionHandler` listens for a local `chat/turnStarted` rejection before dispatch, including while subscription updates are buffered, and reports the reason through the normal failed-request UI. The prompt and error remain in the live transcript, including across history refreshes, without restoring text over a newer composer draft. Rejected requests are not added to the host's accepted turn history.
 
 ## Markdown file images
 
@@ -1998,8 +2023,8 @@ observation, or a user-facing interruption classification.
 # DOCUMENT_SOURCE: microsoft_vscode::src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md
-- **SHA256_FINGERPRINT**: `6d55d48453dc0327d37c550ab4bb76c2acb1bc0bfbd21278329eb6050f3648a5`
-- **LAST_VERIFIED_UTC**: 2026-10-22T16:53:33.072051+00:00
+- **SHA256_FINGERPRINT**: `7b428083fd0e8d0455e85446753d58f7dfef99f49ef07d6b4349baa54f0de19e`
+- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:45.350568+00:00
 ---
 
 # Agent Plugins Architecture
@@ -2243,5 +2268,7 @@ The entire system is built on `IObservable`:
 - **Lazy instantiation** — the service is registered as `InstantiationType.Delayed` and only created on first injection.
 
 Synthetic `.plugin/plugin.json` plus `.mcp.json` bundles created by customization synchronization remain legacy Open Plugin packages. Root Agent Plugin recognition is also used for direct standalone installs, but `MarketplaceType.OpenPlugin` and the existing marketplace protocol remain unchanged because Agent Plugins v1 defines no marketplace format.
+
+The synced bundle can also contain client-authored instruction rules without source files. Remote Copilot sessions receive an always-applied image rule through this path: use an absolute Markdown image path, and call `view` once only if no tool has already returned the image. The client resolves matching paths from raster image bytes in that chat's tool results, including restored history, without requiring the original sandbox file. Path inference accepts common path arguments and avoids ambiguous multi-image or multi-path results; stable host-provided resource identities remain the long-term solution.
 
 Provider adapters do not delegate strict packages to legacy SDK plugin discovery. Copilot explicitly receives skills and MCP, Codex explicitly receives skills and MCP, and Claude explicitly receives remote MCP. Remote MCP transport selection remains the responsibility of each provider's existing auto-detection. The Claude SDK currently has no external skill-directory API or per-server stdio working-directory option, so strict Claude skills and stdio MCP are skipped rather than reinterpreted.

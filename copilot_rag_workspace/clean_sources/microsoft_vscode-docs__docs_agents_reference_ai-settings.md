@@ -330,7 +330,7 @@ Learn how to [migrate agent customizations](/docs/agent-customization/migrate-cu
 
 | Setting and Description | Default |
 |------------------------|---------------|
-| ``chat.instructionsFilesLocations`` _(Deprecated)_<br/>Configure custom instruction locations for the Local harness. Use [customization migration](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations) to move instructions to supported locations. | `{ ".github/instructions": true, ".claude/rules": true, "~/.copilot/instructions": true, "~/.claude/rules": true }` |
+| ``chat.instructionsFilesLocations``<br/>Additional instruction locations discovered by the editor and forwarded to Agent Host harnesses. Supported, but not recommended for Copilot workflows because other clients do not inherit this setting. Prefer [native harness locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations). | `{ ".github/instructions": true, ".claude/rules": true, "~/.copilot/instructions": true, "~/.claude/rules": true }` |
 | ``chat.includeApplyingInstructions``<br/>Automatically add instruction files with a matching `applyTo` pattern to chat requests. | `true` |
 | ``chat.includeReferencedInstructions``<br/>Automatically add instruction files referenced via Markdown links to chat requests. | `false` |
 | ``github.copilot.chat.codeGeneration.useInstructionFiles``<br/>Automatically add custom instructions from `.github/copilot-instructions.md` to chat requests. | `true` |
@@ -356,7 +356,7 @@ Learn how to [migrate agent customizations](/docs/agent-customization/migrate-cu
 
 | Setting and Description | Default |
 |------------------------|---------------|
-| ``chat.agentFilesLocations`` _(Deprecated)_<br/>Configure custom agent locations for the Local harness. Use [customization migration](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations) to move agents to supported locations. | `{ ".github/agents": true, ".claude/agents": true, "~/.copilot/agents": true }` |
+| ``chat.agentFilesLocations``<br/>Additional custom agent locations discovered by the editor and forwarded to Agent Host harnesses. Supported, but not recommended for Copilot workflows because other clients do not inherit this setting. Prefer [native harness locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations). | `{ ".github/agents": true, ".claude/agents": true, "~/.copilot/agents": true }` |
 | ``github.copilot.chat.cli.customAgents.enabled`` <br/>Enable using custom agents in Copilot harness sessions. | `false` |
 | ``github.copilot.chat.organizationCustomAgents.enabled`` <br/>Enable discovery of custom agents defined at the GitHub organization level. | `true` |
 
@@ -365,7 +365,7 @@ Learn how to [migrate agent customizations](/docs/agent-customization/migrate-cu
 | Setting and Description | Default |
 |------------------------|---------------|
 | ``chat.useAgentSkills`` <br/>Enable support for [agent skills](/docs/agent-customization/agent-skills.md) in VS Code. | `true` |
-| ``chat.agentSkillsLocations`` _(Deprecated)_<br/>Configure agent skill locations for the Local harness. This setting and the Local agent will be removed in a future release. Use [customization migration](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations) to move skills to supported locations. | `{ ".agents/skills": true, ".github/skills": true, ".claude/skills": true, "~/.agents/skills": true, "~/.copilot/skills": true, "~/.claude/skills": true }` |
+| ``chat.agentSkillsLocations``<br/>Additional skill locations discovered by the editor and forwarded to Agent Host harnesses. Supported, but not recommended for Copilot workflows because other clients do not inherit this setting. Prefer [native harness locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations). | `{ ".agents/skills": true, ".github/skills": true, ".claude/skills": true, "~/.agents/skills": true, "~/.copilot/skills": true, "~/.claude/skills": true }` |
 | ``github.copilot.chat.skillTool.enabled`` _(Experimental)_<br/>Enable the dedicated skill tool for invoking [agent skills](/docs/agent-customization/agent-skills.md). Required to run skills with [`context: fork`](/docs/agent-customization/agent-skills.md#run-a-skill-in-a-forked-context) in a separate subagent context. | `false` |
 
 ## Observability settings

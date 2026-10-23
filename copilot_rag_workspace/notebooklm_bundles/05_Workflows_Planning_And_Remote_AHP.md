@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-10-22T16:53:38.429068+00:00
-- **Total Palabras**: 136,872 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-23T04:01:53.195938+00:00
+- **Total Palabras**: 137,005 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -8829,8 +8829,8 @@ Chat participants are not supported in the Copilot harness. Ask the agent direct
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/ai-settings.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/ai-settings
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/ai-settings.md
-- **SHA256_FINGERPRINT**: `8185fb90dd48ff0343abd1a3e486345c882e5cace9bec998aad255ac5091e983`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.141352+00:00
+- **SHA256_FINGERPRINT**: `fa6b2df68f1ac3c155ce9126d851306c9f16ede1de36eebd8f49afcf2e8796db`
+- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:44.186171+00:00
 ---
 
 **MetaDescription**: Configure AI features and agents in Visual Studio Code, including chat, agent sessions, dictation, and accessibility settings.
@@ -9165,7 +9165,7 @@ Learn how to [migrate agent customizations](/docs/agent-customization/migrate-cu
 
 | Setting and Description | Default |
 |------------------------|---------------|
-| ``chat.instructionsFilesLocations`` _(Deprecated)_<br/>Configure custom instruction locations for the Local harness. Use [customization migration](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations) to move instructions to supported locations. | `{ ".github/instructions": true, ".claude/rules": true, "~/.copilot/instructions": true, "~/.claude/rules": true }` |
+| ``chat.instructionsFilesLocations``<br/>Additional instruction locations discovered by the editor and forwarded to Agent Host harnesses. Supported, but not recommended for Copilot workflows because other clients do not inherit this setting. Prefer [native harness locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations). | `{ ".github/instructions": true, ".claude/rules": true, "~/.copilot/instructions": true, "~/.claude/rules": true }` |
 | ``chat.includeApplyingInstructions``<br/>Automatically add instruction files with a matching `applyTo` pattern to chat requests. | `true` |
 | ``chat.includeReferencedInstructions``<br/>Automatically add instruction files referenced via Markdown links to chat requests. | `false` |
 | ``github.copilot.chat.codeGeneration.useInstructionFiles``<br/>Automatically add custom instructions from `.github/copilot-instructions.md` to chat requests. | `true` |
@@ -9191,7 +9191,7 @@ Learn how to [migrate agent customizations](/docs/agent-customization/migrate-cu
 
 | Setting and Description | Default |
 |------------------------|---------------|
-| ``chat.agentFilesLocations`` _(Deprecated)_<br/>Configure custom agent locations for the Local harness. Use [customization migration](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations) to move agents to supported locations. | `{ ".github/agents": true, ".claude/agents": true, "~/.copilot/agents": true }` |
+| ``chat.agentFilesLocations``<br/>Additional custom agent locations discovered by the editor and forwarded to Agent Host harnesses. Supported, but not recommended for Copilot workflows because other clients do not inherit this setting. Prefer [native harness locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations). | `{ ".github/agents": true, ".claude/agents": true, "~/.copilot/agents": true }` |
 | ``github.copilot.chat.cli.customAgents.enabled`` <br/>Enable using custom agents in Copilot harness sessions. | `false` |
 | ``github.copilot.chat.organizationCustomAgents.enabled`` <br/>Enable discovery of custom agents defined at the GitHub organization level. | `true` |
 
@@ -9200,7 +9200,7 @@ Learn how to [migrate agent customizations](/docs/agent-customization/migrate-cu
 | Setting and Description | Default |
 |------------------------|---------------|
 | ``chat.useAgentSkills`` <br/>Enable support for [agent skills](/docs/agent-customization/agent-skills.md) in VS Code. | `true` |
-| ``chat.agentSkillsLocations`` _(Deprecated)_<br/>Configure agent skill locations for the Local harness. This setting and the Local agent will be removed in a future release. Use [customization migration](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations) to move skills to supported locations. | `{ ".agents/skills": true, ".github/skills": true, ".claude/skills": true, "~/.agents/skills": true, "~/.copilot/skills": true, "~/.claude/skills": true }` |
+| ``chat.agentSkillsLocations``<br/>Additional skill locations discovered by the editor and forwarded to Agent Host harnesses. Supported, but not recommended for Copilot workflows because other clients do not inherit this setting. Prefer [native harness locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations). | `{ ".agents/skills": true, ".github/skills": true, ".claude/skills": true, "~/.agents/skills": true, "~/.copilot/skills": true, "~/.claude/skills": true }` |
 | ``github.copilot.chat.skillTool.enabled`` _(Experimental)_<br/>Enable the dedicated skill tool for invoking [agent skills](/docs/agent-customization/agent-skills.md). Required to run skills with [`context: fork`](/docs/agent-customization/agent-skills.md#run-a-skill-in-a-forked-context) in a separate subagent context. | `false` |
 
 ## Observability settings
@@ -9375,8 +9375,8 @@ Open the pet's context menu to access these actions:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/custom-agent-file-reference.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/custom-agent-file-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/custom-agent-file-reference.md
-- **SHA256_FINGERPRINT**: `4d515f9a9913da1b397531361d456ca4e56789e4b6637778b711fd5f5112e24f`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.263894+00:00
+- **SHA256_FINGERPRINT**: `f9d57a43cc06a5582c70dcf2c1c0424ac43bb20aa05cce2a2358ee09504d130b`
+- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:44.182761+00:00
 ---
 
 **MetaDescription**: Look up custom agent file syntax, frontmatter fields, defaults, and harness-specific configuration in VS Code.
@@ -9442,6 +9442,8 @@ tools: ['read', 'search', '<server name>/*']
 Replace `<server name>` with the name of a configured MCP server. If `tools` is omitted in Local, the tools enabled in the tools picker are available. Unavailable tools are ignored.
 
 For Copilot and other harnesses, check [tool availability](/docs/agents/run/tools.md) before reusing a Local agent's tool list.
+
+Local references such as `agent/runSubagent` and `vscode/toolSearch` are not portable tool names. Copilot uses its native `task` tool for delegation, and its tool-discovery capability depends on the session's available tools. Review the tool list and any instructions that require a particular tool, rather than only moving the agent file. For compatibility checks and related open issues, see the [tool-discovery migration FAQ](/docs/agent-customization/migrate-customizations.md#why-does-an-agent-fail-with-a-tool-discovery-capability-error).
 
 ### Model preferences
 
@@ -13881,8 +13883,8 @@ Reindex after restoring session files from a backup, an unexpected crash, manual
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/subagents.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/subagents
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/subagents.md
-- **SHA256_FINGERPRINT**: `babca1fb85ba42de54770361e486b3794d8b74cf21ae7a61fd29a9273f5987ed`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:56.201955+00:00
+- **SHA256_FINGERPRINT**: `7834d1ea6b10b296c1208120988c55577f99f6be1aa7b100fad44de3188912aa`
+- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:44.329703+00:00
 ---
 
 **MetaDescription**: Delegate focused tasks to context-isolated subagents in VS Code and review results in the main chat.
@@ -13920,6 +13922,8 @@ Your [agent harness](/docs/agents/run/agent-harnesses.md#compare-agent-harnesses
 > Provider documentation also covers CLI workflows. Commands and configuration options can differ in VS Code. Use the [harness guide](/docs/agents/run/agent-harnesses.md) for integration-specific setup and limitations.
 
 The **Copilot** harness manages delegation to built-in or custom subagents. Request a subagent in your prompt, or let the main agent decide when to delegate. For native agent behavior and configuration, see [built-in and custom agents in Copilot](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-custom-agents).
+
+Copilot uses the native `task` tool for delegation, rather than Local's `runSubagent`. When migrating a coordinator agent, review both instructions that name the tool and the agent's tool list. Do not assume the tools accept identical arguments. See the [subagent migration FAQ](/docs/agent-customization/migrate-customizations.md#why-does-my-coordinators-subagent-invocation-stop-working).
 
 The **Claude** harness manages its own subagents, with separate context and configurable instructions and tools. Request delegation in your prompt, or let the agent choose an appropriate subagent. See [Claude subagents](https://code.claude.com/docs/en/sub-agents) for native configuration and behavior.
 

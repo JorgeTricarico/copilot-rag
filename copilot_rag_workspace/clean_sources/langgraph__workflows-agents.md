@@ -11,15 +11,15 @@ This guide reviews common workflow and agent patterns.
 
 ![Agent Workflow](https://mintcdn.com/langchain-5e9cc07a/-_xGPoyjhyiDWTPJ/oss/images/agent_workflow.png?fit=max\&auto=format\&n=-_xGPoyjhyiDWTPJ\&q=85\&s=c217c9ef517ee556cae3fc928a21dc55)
 
-LangGraph offers several benefits when building agents and workflows, including [persistence](/oss/python/langgraph/persistence), [streaming](/oss/python/langgraph/streaming), and support for debugging as well as [deployment](/oss/python/langgraph/deploy).
+LangGraph offers several benefits when building agents and workflows, including [persistence](/oss/python/langgraph/persistence.md), [streaming](/oss/python/langgraph/streaming.md), and support for debugging as well as [deployment](/oss/python/langgraph/deploy.md).
 
 > [!TIP]
 >
-> Trace and compare these workflow patterns with [LangSmith](https://smith.langchain.com?utm_source=docs\&utm_medium=cta\&utm_campaign=langsmith-signup\&utm_content=oss-langgraph-workflows-agents). Follow the [tracing quickstart](/langsmith/trace-with-langgraph) to see how data flows through each step. We recommend you also set up [LangSmith Engine](/langsmith/engine) which monitors your traces, detects issues, and proposes fixes.
+> Trace and compare these workflow patterns with [LangSmith](https://smith.langchain.com?utm_source=docs\&utm_medium=cta\&utm_campaign=langsmith-signup\&utm_content=oss-langgraph-workflows-agents). Follow the [tracing quickstart](/langsmith/trace-with-langgraph.md) to see how data flows through each step. We recommend you also set up [LangSmith Engine](/langsmith/engine.md) which monitors your traces, detects issues, and proposes fixes.
 
 ## Setup
 
-To build a workflow or agent, you can use [any chat model](/oss/python/integrations/chat) that supports structured outputs and tool calling. The following example uses Anthropic:
+To build a workflow or agent, you can use [any chat model](/oss/python/integrations/chat.md) that supports structured outputs and tool calling. The following example uses Anthropic:
 
 1. Install dependencies:
 
@@ -46,7 +46,7 @@ llm = ChatAnthropic(model="claude-sonnet-4-6")
 
 ## LLMs and augmentations
 
-Workflows and agentic systems are based on LLMs and the various augmentations you add to them. [Tool calling](/oss/python/langchain/tools), [structured outputs](/oss/python/langchain/structured-output), and [short term memory](/oss/python/langchain/short-term-memory) are a few options for tailoring LLMs to your needs.
+Workflows and agentic systems are based on LLMs and the various augmentations you add to them. [Tool calling](/oss/python/langchain/tools.md), [structured outputs](/oss/python/langchain/structured-output.md), and [short term memory](/oss/python/langchain/short-term-memory.md) are a few options for tailoring LLMs to your needs.
 
 ![LLM augmentations](https://mintcdn.com/langchain-5e9cc07a/-_xGPoyjhyiDWTPJ/oss/images/augmented_llm.png?fit=max\&auto=format\&n=-_xGPoyjhyiDWTPJ\&q=85\&s=7ea9656f46649b3ebac19e8309ae9006)
 
@@ -713,7 +713,7 @@ Markdown(state["final_report"])
 
 ## Evaluator-optimizer
 
-In evaluator-optimizer workflows, one LLM call creates a response and the other evaluates that response. If the evaluator or a [human-in-the-loop](/oss/python/langgraph/interrupts) determines the response needs refinement, feedback is provided and the response is recreated. This loop continues until an acceptable response is generated.
+In evaluator-optimizer workflows, one LLM call creates a response and the other evaluates that response. If the evaluator or a [human-in-the-loop](/oss/python/langgraph/interrupts.md) determines the response needs refinement, feedback is provided and the response is recreated. This loop continues until an acceptable response is generated.
 
 Evaluator-optimizer workflows are commonly used when there's particular success criteria for a task, but iteration is required to meet that criteria. For example, there's not always a perfect match when translating text between two languages. It might take a few iterations to generate a translation with the same meaning across the two languages.
 
@@ -847,13 +847,13 @@ for snapshot in stream.values:
 
 ## Agents
 
-Agents are typically implemented as an LLM performing actions using [tools](/oss/python/langchain/tools). They operate in continuous feedback loops, and are used in situations where problems and solutions are unpredictable. Agents have more autonomy than workflows, and can make decisions about the tools they use and how to solve problems. You can still define the available toolset and guidelines for how agents behave.
+Agents are typically implemented as an LLM performing actions using [tools](/oss/python/langchain/tools.md). They operate in continuous feedback loops, and are used in situations where problems and solutions are unpredictable. Agents have more autonomy than workflows, and can make decisions about the tools they use and how to solve problems. You can still define the available toolset and guidelines for how agents behave.
 
 ![agent.png](https://mintcdn.com/langchain-5e9cc07a/-_xGPoyjhyiDWTPJ/oss/images/agent.png?fit=max\&auto=format\&n=-_xGPoyjhyiDWTPJ\&q=85\&s=bd8da41dbf8b5e6fc9ea6bb10cb63e38)
 
 > [!NOTE]
 >
-> To get started with agents, see the [quickstart](/oss/python/langchain/quickstart) or read more about [how they work](/oss/python/langchain/agents) in LangChain.
+> To get started with agents, see the [quickstart](/oss/python/langchain/quickstart.md) or read more about [how they work](/oss/python/langchain/agents.md) in LangChain.
 
 ```python Using tools theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from langchain.tools import tool
@@ -1128,6 +1128,6 @@ result = graph.invoke(
 
 ***
 
-[Connect these docs](/use-these-docs) to your agent of choice via MCP for real-time answers.
+[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/workflows-agents.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

@@ -15,14 +15,14 @@ This pages describes how to set up Studio with your local LangChain agent.
 Before you begin, ensure you have the following:
 
 * **A LangSmith account**: Sign up (for free) or log in at [smith.langchain.com](https://smith.langchain.com?utm_source=docs\&utm_medium=cta\&utm_campaign=langsmith-signup\&utm_content=oss-langgraph-studio).
-* **A LangSmith API key**: Follow the [Create an API key](/langsmith/create-account-api-key) guide.
-* If you don't want data [traced](/langsmith/observability-concepts#traces) to LangSmith, set `LANGSMITH_TRACING=false` in your application's `.env` file. With tracing disabled, no data leaves your local server.
+* **A LangSmith API key**: Follow the [Create an API key](/langsmith/create-account-api-key.md) guide.
+* If you don't want data [traced](/langsmith/observability-concepts.md#traces) to LangSmith, set `LANGSMITH_TRACING=false` in your application's `.env` file. With tracing disabled, no data leaves your local server.
 
 ## Set up local Agent server
 
 ### 1. Install the LangGraph CLI
 
-The [LangGraph CLI](/langsmith/cli) provides a local development server (also called [Agent Server](/langsmith/agent-server)) that connects your agent to Studio.
+The [LangGraph CLI](/langsmith/cli.md) provides a local development server (also called [Agent Server](/langsmith/agent-server.md)) that connects your agent to Studio.
 
 ```shell theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 # Python >= 3.11 is required.
@@ -84,7 +84,7 @@ The [`create_agent`](https://reference.langchain.com/python/langchain/agents/fac
 
 > [!NOTE]
 >
-> For detailed explanations of each key in the JSON object of the configuration file, refer to the [LangGraph configuration file reference](/langsmith/cli#configuration-file).
+> For detailed explanations of each key in the JSON object of the configuration file, refer to the [LangGraph configuration file reference](/langsmith/cli.md#configuration-file).
 
 At this point, the project structure will look like this:
 
@@ -118,24 +118,24 @@ langgraph dev
 
 > [!WARNING]
 >
-> Safari blocks `localhost` connections to Studio. To work around this, run the above command with `--tunnel` to access Studio via a secure tunnel. You'll need to manually add the tunnel URL to allowed origins by clicking **Connect to a local server** in the Studio UI. See the [troubleshooting guide](/langsmith/troubleshooting-studio#safari-connection-issues) for steps.
+> Safari blocks `localhost` connections to Studio. To work around this, run the above command with `--tunnel` to access Studio via a secure tunnel. You'll need to manually add the tunnel URL to allowed origins by clicking **Connect to a local server** in the Studio UI. See the [troubleshooting guide](/langsmith/troubleshooting-studio.md#safari-connection-issues) for steps.
 
 Once the server is running, your agent is accessible both via API at `http://127.0.0.1:2024` and through the Studio UI at `https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024`:
 
 ![Agent view in the Studio UI](https://mintcdn.com/langchain-5e9cc07a/TCDks4pdsHdxWmuJ/oss/images/studio_create-agent.png?fit=max\&auto=format\&n=TCDks4pdsHdxWmuJ\&q=85\&s=ebd259e9fa24af7d011dfcc568f74be2)
 
-With Studio connected to your local agent, you can iterate quickly on your agent's behavior. Run a test input, inspect the full execution trace including prompts, tool arguments, return values, and token/latency metrics in [LangSmith](/langsmith/observability-studio). When something goes wrong, Studio captures exceptions with the surrounding state to help you understand what happened.
+With Studio connected to your local agent, you can iterate quickly on your agent's behavior. Run a test input, inspect the full execution trace including prompts, tool arguments, return values, and token/latency metrics in [LangSmith](/langsmith/observability-studio.md). When something goes wrong, Studio captures exceptions with the surrounding state to help you understand what happened.
 
 The development server supports hot-reloading—make changes to prompts or tool signatures in your code, and Studio reflects them immediately. Re-run conversation threads from any step to test your changes without starting over. This workflow scales from simple single-tool agents to complex multi-node graphs.
 
-For more information on how to run Studio, refer to the following guides in the [LangSmith docs](/langsmith/observability):
+For more information on how to run Studio, refer to the following guides in the [LangSmith docs](/langsmith/observability.md):
 
-* [Run application](/langsmith/use-studio#run-application)
-* [Manage assistants](/langsmith/use-studio#manage-assistants)
-* [Manage threads](/langsmith/use-studio#manage-threads)
-* [Iterate on prompts](/langsmith/observability-studio)
-* [Debug LangSmith traces](/langsmith/observability-studio#debug-langsmith-traces)
-* [Add node to dataset](/langsmith/observability-studio#add-node-to-dataset)
+* [Run application](/langsmith/use-studio.md#run-application)
+* [Manage assistants](/langsmith/use-studio.md#manage-assistants)
+* [Manage threads](/langsmith/use-studio.md#manage-threads)
+* [Iterate on prompts](/langsmith/observability-studio.md)
+* [Debug LangSmith traces](/langsmith/observability-studio.md#debug-langsmith-traces)
+* [Add node to dataset](/langsmith/observability-studio.md#add-node-to-dataset)
 
 ## Video guide
 
@@ -143,6 +143,6 @@ For more information on how to run Studio, refer to the following guides in the 
 
 ***
 
-[Connect these docs](/use-these-docs) to your agent of choice via MCP for real-time answers.
+[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/studio.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

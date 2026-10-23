@@ -30,7 +30,7 @@ Use the **Functional API** when you want:
 
 ### When to use the Graph API
 
-The [Graph API](/oss/python/langgraph/graph-api) uses a declarative approach where you define nodes, edges, and shared state to create a visual graph structure.
+The [Graph API](/oss/python/langgraph/graph-api.md) uses a declarative approach where you define nodes, edges, and shared state to create a visual graph structure.
 
 **1. Complex decision trees and branching logic**
 
@@ -119,7 +119,7 @@ workflow.add_node("output_formatting", frontend_team_function)
 
 ### When to use the Functional API
 
-The [Functional API](/oss/python/langgraph/functional-api) uses an imperative approach that integrates LangGraph features into standard procedural code.
+The [Functional API](/oss/python/langgraph/functional-api.md) uses an imperative approach that integrates LangGraph features into standard procedural code.
 
 **1. Existing procedural code**
 
@@ -313,6 +313,6 @@ Both APIs provide the same core LangGraph features (persistence, streaming, huma
 
 ***
 
-[Connect these docs](/use-these-docs) to your agent of choice via MCP for real-time answers.
+[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/choosing-apis.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

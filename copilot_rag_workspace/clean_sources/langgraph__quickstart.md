@@ -6,6 +6,8 @@
 
 This quickstart demonstrates how to build a calculator agent using the LangGraph Graph API or the Functional API.
 
+Build the LangGraph calculator quickstart
+
 Build a LangGraph calculator agent in this working directory by following the LangGraph quickstart.
 
 ## Step 1: Read the guide
@@ -39,7 +41,9 @@ Implement the selected quickstart path end to end: tools for add, multiply, and 
 >
 > **Using an AI coding assistant?**
 >
-> * Install the [LangChain Docs MCP servers](/use-these-docs) to give your agent access to up-to-date LangChain documentation and examples.
+> * Install the [LangChain Docs MCP servers](/use-these-docs.md) to give your agent access to up-to-date LangChain documentation and examples.
+>
+>   Connect LangChain docs MCP servers
 >
 >   Connect both LangChain documentation MCP servers to my coding agent so it can look up current LangChain, LangGraph, and LangSmith docs and API reference.
 >
@@ -57,6 +61,8 @@ Implement the selected quickstart path end to end: tools for add, multiply, and 
 >
 >   Do not invent alternate MCP URLs. After configuring, confirm both servers are listed and reachable.
 > * Install [LangChain Skills](https://github.com/langchain-ai/langchain-skills) to improve your agent's performance on LangChain ecosystem tasks.
+>
+>   Install LangChain Skills
 >
 >   Install LangChain Skills for my coding agent so it can perform better on LangChain, LangGraph, and Deep Agents tasks.
 >
@@ -77,11 +83,11 @@ Implement the selected quickstart path end to end: tools for add, multiply, and 
 * [Use the Graph API](#use-the-graph-api) if you prefer to define your agent as a graph of nodes and edges.
 * [Use the Functional API](#use-the-functional-api) if you prefer to define your agent as a single function.
 
-For conceptual information, see [Graph API overview](/oss/python/langgraph/graph-api) and [Functional API overview](/oss/python/langgraph/functional-api).
+For conceptual information, see [Graph API overview](/oss/python/langgraph/graph-api.md) and [Functional API overview](/oss/python/langgraph/functional-api.md).
 
 > [!NOTE]
 >
-> For this example, you will need to set up a [Claude (Anthropic)](https://www.anthropic.com/) account and get an API key. Then, set the `ANTHROPIC_API_KEY` environment variable in your terminal. See [chat model integrations](/oss/python/integrations/chat) for all available providers. If you use [LangSmith Gateway](/langsmith/llm-gateway), you can [bring your own provider keys](/langsmith/llm-gateway-quickstart#send-a-request) or use [Gateway Credits](/langsmith/llm-gateway-credits) to access models without a provider key.
+> For this example, you will need to set up a [Claude (Anthropic)](https://www.anthropic.com/) account and get an API key. Then, set the `ANTHROPIC_API_KEY` environment variable in your terminal. See [chat model integrations](/oss/python/integrations/chat.md) for all available providers. If you use [LangSmith Gateway](/langsmith/llm-gateway.md), you can [bring your own provider keys](/langsmith/llm-gateway-quickstart.md#send-a-request) or use [Gateway Credits](/langsmith/llm-gateway-credits.md) to access models without a provider key.
 
 **Use the Graph API**
 
@@ -258,9 +264,9 @@ for m in messages["messages"]:
 
 > [!TIP]
 >
-> Trace and debug your agent with [LangSmith](https://smith.langchain.com?utm_source=docs\&utm_medium=cta\&utm_campaign=langsmith-signup\&utm_content=oss-langgraph-quickstart). Follow the [tracing quickstart](/langsmith/trace-with-langgraph) to get set up. When ready for production, see [Deploy](/langsmith/deployment) for hosting options.
+> Trace and debug your agent with [LangSmith](https://smith.langchain.com?utm_source=docs\&utm_medium=cta\&utm_campaign=langsmith-signup\&utm_content=oss-langgraph-quickstart). Follow the [tracing quickstart](/langsmith/trace-with-langgraph.md) to get set up. When ready for production, see [Deploy](/langsmith/deployment.md) for hosting options.
 >
-> We recommend you also set up [LangSmith Engine](/langsmith/engine) which monitors your traces, detects issues, and proposes fixes.
+> We recommend you also set up [LangSmith Engine](/langsmith/engine.md) which monitors your traces, detects issues, and proposes fixes.
 
 Congratulations! You've built your first agent using the LangGraph Graph API.
 
@@ -555,9 +561,9 @@ for snapshot in stream.values:
 
 > [!TIP]
 >
-> Trace and debug your agent with [LangSmith](https://smith.langchain.com?utm_source=docs\&utm_medium=cta\&utm_campaign=langsmith-signup\&utm_content=oss-langgraph-quickstart). Follow the [tracing quickstart](/langsmith/trace-with-langgraph) to get set up. When ready for production, see [Deploy](/langsmith/deployment) for hosting options.
+> Trace and debug your agent with [LangSmith](https://smith.langchain.com?utm_source=docs\&utm_medium=cta\&utm_campaign=langsmith-signup\&utm_content=oss-langgraph-quickstart). Follow the [tracing quickstart](/langsmith/trace-with-langgraph.md) to get set up. When ready for production, see [Deploy](/langsmith/deployment.md) for hosting options.
 >
-> We recommend you also set up [LangSmith Engine](/langsmith/engine) which monitors your traces, detects issues, and proposes fixes.
+> We recommend you also set up [LangSmith Engine](/langsmith/engine.md) which monitors your traces, detects issues, and proposes fixes.
 
 Congratulations! You've built your first agent using the LangGraph Functional API.
 
@@ -680,6 +686,6 @@ Congratulations! You've built your first agent using the LangGraph Functional AP
 
 ***
 
-[Connect these docs](/use-these-docs) to your agent of choice via MCP for real-time answers.
+[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/quickstart.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

@@ -6,9 +6,9 @@ Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://
 
 ---
 
-_Last updated: October 19, 2026_
-
 Welcome to the 1.143  release of Visual Studio Code.
+
+**Update 1.143.1**: The update addresses these [issues](https://github.com/microsoft/vscode/pulls?q=is%3Apr+milestone%3A1.143.1+is%3Aclosed+label%3Acandidate).
 
 ## Release highlights
 

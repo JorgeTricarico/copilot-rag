@@ -33,10 +33,10 @@ def workflow(messages: list[str]) -> str:
 
 ## Related
 
-* Read more about [persistence](/oss/python/langgraph/persistence).
+* Read more about [persistence](/oss/python/langgraph/persistence.md).
 
 ***
 
-[Connect these docs](/use-these-docs) to your agent of choice via MCP for real-time answers.
+[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/errors/MISSING_CHECKPOINTER.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

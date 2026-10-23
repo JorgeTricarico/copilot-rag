@@ -4,14 +4,14 @@
 
 # Memory
 
-AI applications need [memory](/oss/python/concepts/memory) to share context across multiple interactions. In LangGraph, you can add two types of memory:
+AI applications need [memory](/oss/python/concepts/memory.md) to share context across multiple interactions. In LangGraph, you can add two types of memory:
 
-* [Add short-term memory](#add-short-term-memory) as a part of your agent's [state](/oss/python/langgraph/graph-api#state) to enable multi-turn conversations.
+* [Add short-term memory](#add-short-term-memory) as a part of your agent's [state](/oss/python/langgraph/graph-api.md#state) to enable multi-turn conversations.
 * [Add long-term memory](#add-long-term-memory) to store user-specific or application-level data across sessions.
 
 ## Add short-term memory
 
-**Short-term** memory (thread-level [persistence](/oss/python/langgraph/persistence)) enables agents to track multi-turn conversations. To add short-term memory:
+**Short-term** memory (thread-level [persistence](/oss/python/langgraph/persistence.md)) enables agents to track multi-turn conversations. To add short-term memory:
 
 ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from langgraph.checkpoint.memory import InMemorySaver  # [!code highlight]
@@ -463,7 +463,7 @@ with PostgresSaver.from_conn_string(DB_URI) as checkpointer:  # [!code highlight
 
 ### Use in subgraphs
 
-If your graph contains [subgraphs](/oss/python/langgraph/use-subgraphs), you only need to provide the checkpointer when compiling the parent graph. LangGraph will automatically propagate the checkpointer to the child subgraphs.
+If your graph contains [subgraphs](/oss/python/langgraph/use-subgraphs.md), you only need to provide the checkpointer when compiling the parent graph. LangGraph will automatically propagate the checkpointer to the child subgraphs.
 
 ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from langgraph.graph import START, StateGraph
@@ -493,7 +493,7 @@ checkpointer = InMemorySaver()
 graph = builder.compile(checkpointer=checkpointer)  # [!code highlight]
 ```
 
-You can configure subgraph-specific checkpointing behavior. See [subgraph persistence](/oss/python/langgraph/use-subgraphs#subgraph-persistence) for details on persistence levels including interrupt support and stateful continuations.
+You can configure subgraph-specific checkpointing behavior. See [subgraph persistence](/oss/python/langgraph/use-subgraphs.md#subgraph-persistence) for details on persistence levels including interrupt support and stateful continuations.
 
 ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 subgraph_builder = StateGraph(...)
@@ -1261,7 +1261,7 @@ builder.add_node(call_model)
 
 You can delete messages from the graph state to manage the message history. This is useful when you want to remove specific messages or clear the entire message history.
 
-To delete messages from the graph state, you can use the `RemoveMessage`. For `RemoveMessage` to work, you need to use a state key with [`add_messages`](https://reference.langchain.com/python/langgraph/graph/message/add_messages) [reducer](/oss/python/langgraph/graph-api#reducers), like [`MessagesState`](/oss/python/langgraph/graph-api#messagesstate).
+To delete messages from the graph state, you can use the `RemoveMessage`. For `RemoveMessage` to work, you need to use a state key with [`add_messages`](https://reference.langchain.com/python/langgraph/graph/message/add_messages) [reducer](/oss/python/langgraph/graph-api.md#reducers), like [`MessagesState`](/oss/python/langgraph/graph-api#messagesstate).
 
 To remove specific messages:
 
@@ -1724,6 +1724,6 @@ We recommend running migrations as a dedicated deployment step, or you can ensur
 
 ***
 
-[Connect these docs](/use-these-docs) to your agent of choice via MCP for real-time answers.
+[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/add-memory.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

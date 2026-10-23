@@ -6,13 +6,13 @@
 
 In this tutorial we will build a custom agent that can answer questions about a SQL database using LangGraph.
 
-LangChain offers built-in [agent](/oss/python/langchain/agents) implementations, implemented using [LangGraph](/oss/python/langgraph/overview) primitives. If deeper customization is required, agents can be implemented directly in LangGraph. This guide demonstrates an example implementation of a SQL agent. For a practical introduction, see [building a SQL agent using higher-level LangChain abstractions](/oss/python/langchain/sql-agent).
+LangChain offers built-in [agent](/oss/python/langchain/agents.md) implementations, implemented using [LangGraph](/oss/python/langgraph/overview.md) primitives. If deeper customization is required, agents can be implemented directly in LangGraph. This guide demonstrates an example implementation of a SQL agent. For a practical introduction, see [building a SQL agent using higher-level LangChain abstractions](/oss/python/langchain/sql-agent.md).
 
 > [!WARNING]
 >
 > Building Q\&A systems of SQL databases requires executing model-generated SQL queries. There are inherent risks in doing this. Make sure that your database connection permissions are always scoped as narrowly as possible for your agent's needs. This will mitigate, though not eliminate, the risks of building a model-driven system.
 
-The [prebuilt agent](/oss/python/langchain/sql-agent) lets us get started quickly, but we relied on the system prompt to constrain its behavior—for example, we instructed the agent to always start with the "list tables" tool, and to always run a query-checker tool before executing the query.
+The [prebuilt agent](/oss/python/langchain/sql-agent.md) lets us get started quickly, but we relied on the system prompt to constrain its behavior—for example, we instructed the agent to always start with the "list tables" tool, and to always run a query-checker tool before executing the query.
 
 We can enforce a higher degree of control in LangGraph by customizing the agent. Here, we implement a simple ReAct-agent setup, with dedicated nodes for specific tool-calls. We will use the same \[state] as the prebuilt agent.
 
@@ -20,9 +20,9 @@ We can enforce a higher degree of control in LangGraph by customizing the agent.
 
 We will cover the following concepts:
 
-* [Tools](/oss/python/langchain/tools) for reading from SQL databases
-* The LangGraph [Graph API](/oss/python/langgraph/graph-api), including state, nodes, edges, and conditional edges.
-* [Human-in-the-loop](/oss/python/langgraph/interrupts) processes
+* [Tools](/oss/python/langchain/tools.md) for reading from SQL databases
+* The LangGraph [Graph API](/oss/python/langgraph/graph-api.md), including state, nodes, edges, and conditional edges.
+* [Human-in-the-loop](/oss/python/langgraph/interrupts.md) processes
 
 ## Setup
 
@@ -43,7 +43,7 @@ export LANGSMITH_API_KEY="..."
 
 ## 1. Select an LLM
 
-Select a model that supports [tool-calling](/oss/python/integrations/providers/overview):
+Select a model that supports [tool-calling](/oss/python/integrations/providers/overview.md):
 
 **OpenAI**
 
@@ -335,7 +335,7 @@ Sample output: [(1, 'AC/DC'), (2, 'Accept'), (3, 'Aerosmith'), (4, 'Alanis Moris
 >
 > The following database tools are minimal wrappers for demonstration purposes only. They are not intended to be secure or used in production. Use narrowly scoped database permissions and add application-specific validation before executing model-generated SQL.
 
-We can implement database [tools](/oss/python/langchain/tools) as thin wrappers using the `@tool` decorator from `langchain.tools`:
+We can implement database [tools](/oss/python/langchain/tools.md) as thin wrappers using the `@tool` decorator from `langchain.tools`:
 
 ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 import sqlite3
@@ -560,7 +560,7 @@ def check_query(state: MessagesState):
 
 ## 5. Implement the agent
 
-We can now assemble these steps into a workflow using the [Graph API](/oss/python/langgraph/graph-api). We define a [conditional edge](/oss/python/langgraph/graph-api#conditional-edges) at the query generation step that will route to the query checker if a query is generated, or end if there are no tool calls present, such that the LLM has delivered a response to the query.
+We can now assemble these steps into a workflow using the [Graph API](/oss/python/langgraph/graph-api.md). We define a [conditional edge](/oss/python/langgraph/graph-api.md#conditional-edges) at the query generation step that will route to the query checker if a query is generated, or end if there are no tool calls present, such that the LLM has delivered a response to the query.
 
 ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 def should_continue(state: MessagesState) -> Literal[END, "check_query"]:
@@ -701,9 +701,9 @@ The genre with the longest tracks on average is "Sci Fi & Fantasy," with an aver
 
 It can be prudent to check the agent's SQL queries before they are executed for any unintended actions or inefficiencies.
 
-Here we leverage LangGraph's [human-in-the-loop](/oss/python/langgraph/interrupts) features to pause the run before executing a SQL query and wait for human review. Using LangGraph's [persistence layer](/oss/python/langgraph/persistence), we can pause the run indefinitely (or at least as long as the persistence layer is alive).
+Here we leverage LangGraph's [human-in-the-loop](/oss/python/langgraph/interrupts.md) features to pause the run before executing a SQL query and wait for human review. Using LangGraph's [persistence layer](/oss/python/langgraph/persistence.md), we can pause the run indefinitely (or at least as long as the persistence layer is alive).
 
-Let's wrap the `sql_db_query` tool in a node that receives human input. We can implement this using the [interrupt](/oss/python/langgraph/interrupts) function. Below, we allow for input to approve the tool call, edit its arguments, or provide user feedback.
+Let's wrap the `sql_db_query` tool in a node that receives human input. We can implement this using the [interrupt](/oss/python/langgraph/interrupts.md) function. Below, we allow for input to approve the tool call, edit its arguments, or provide user feedback.
 
 ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from langchain.tools import tool
@@ -744,9 +744,9 @@ run_query_node = ToolNode([run_query_tool_with_interrupt], name="run_query")  # 
 
 > [!NOTE]
 >
-> The above implementation follows the [tool interrupt example](/oss/python/langgraph/interrupts#interrupts-in-tools) in the broader [human-in-the-loop](/oss/python/langgraph/interrupts) guide. Refer to that guide for details and alternatives.
+> The above implementation follows the [tool interrupt example](/oss/python/langgraph/interrupts.md#interrupts-in-tools) in the broader [human-in-the-loop](/oss/python/langgraph/interrupts.md) guide. Refer to that guide for details and alternatives.
 
-Let's now re-assemble our graph. We will replace the programmatic check with human review. Note that we now include a [checkpointer](/oss/python/langgraph/persistence); this is required to pause and resume the run.
+Let's now re-assemble our graph. We will replace the programmatic check with human review. Note that we now include a [checkpointer](/oss/python/langgraph/persistence.md); this is required to pause and resume the run.
 
 ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from langgraph.checkpoint.memory import InMemorySaver
@@ -813,7 +813,7 @@ INTERRUPTED:
 }
 ```
 
-We can accept or edit the tool call using [Command](/oss/python/langgraph/use-graph-api#combine-control-flow-and-state-updates-with-command):
+We can accept or edit the tool call using [Command](/oss/python/langgraph/use-graph-api.md#combine-control-flow-and-state-updates-with-command):
 
 ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from langgraph.types import Command
@@ -850,14 +850,14 @@ Name: sql_db_query
 The genre with the longest average track length is "Sci Fi & Fantasy" with an average length of about 2,911,783 milliseconds. Other genres with long average track lengths include "Science Fiction," "Drama," "TV Shows," and "Comedy."
 ```
 
-Refer to the [human-in-the-loop guide](/oss/python/langgraph/interrupts) for details.
+Refer to the [human-in-the-loop guide](/oss/python/langgraph/interrupts.md) for details.
 
 ## Next steps
 
-Check out the [Evaluate a graph](/langsmith/evaluate-graph) guide for evaluating LangGraph applications, including SQL agents like this one, using LangSmith.
+Check out the [Evaluate a graph](/langsmith/evaluate-graph.md) guide for evaluating LangGraph applications, including SQL agents like this one, using LangSmith.
 
 ***
 
-[Connect these docs](/use-these-docs) to your agent of choice via MCP for real-time answers.
+[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/sql-agent.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).
