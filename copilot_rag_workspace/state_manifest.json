@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-10-23T04:01:53.244570+00:00",
+  "last_sync_utc": "2026-10-23T16:45:06.603660+00:00",
   "total_documents": 1937,
   "documents": {
     "anthropics_skills::README.md": {
@@ -19258,10 +19258,10 @@
       "source_url": "https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/acp-server.md",
       "canonical_web_url": "https://docs.github.com/en/copilot/reference/copilot-cli-reference/acp-server",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "23d3911edf8a0eb5b6e127135799492e9dd32231",
-      "content_sha256": "0dc2c23d3c925b13ab2d51b7cb7dc19158bb3b9d08eec8a820096a5a0112e539",
-      "word_count": 1773,
-      "last_updated_utc": "2026-10-20T22:05:33.910204+00:00",
+      "git_blob_sha": "08a75d7eae3a13e5039cdd54e673a7a8a35ad193",
+      "content_sha256": "ee7a709b243345121e598e11b1a343647c5a19c04aff9216ffeb6c0a8afa2ed8",
+      "word_count": 1804,
+      "last_updated_utc": "2026-10-23T16:44:59.523113+00:00",
       "local_clean_path": "clean_sources/github_docs__content_copilot_reference_copilot-cli-reference_acp-server.md"
     },
     "github_docs::content/copilot/reference/copilot-cli-reference/cli-command-reference.md": {
@@ -19269,10 +19269,10 @@
       "source_url": "https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-command-reference.md",
       "canonical_web_url": "https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "f199be6f4fdd3a4c31f02e0ad5302d5acea38ad0",
-      "content_sha256": "5376df716b94f5ae7270928211ba13719ea176d222ebf336cfda4278711de6ff",
-      "word_count": 23464,
-      "last_updated_utc": "2026-10-20T22:05:33.948802+00:00",
+      "git_blob_sha": "23fb2ab4f674a7dd9cc0c7e3b882c0da7264e153",
+      "content_sha256": "24f6bbf729109079fd38d4169ccbbb651be9c7206d104be2e89844b37e8682c4",
+      "word_count": 23623,
+      "last_updated_utc": "2026-10-23T16:44:59.522272+00:00",
       "local_clean_path": "clean_sources/github_docs__content_copilot_reference_copilot-cli-reference_cli-command-reference.md"
     },
     "github_docs::content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md": {
@@ -19280,10 +19280,10 @@
       "source_url": "https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md",
       "canonical_web_url": "https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "2f46073644521d1d1ec292174a04181930b62507",
-      "content_sha256": "47f18d450bc08eb7b1c9175b4df2e089cb21050addc073781254ee2a0b398f18",
-      "word_count": 10143,
-      "last_updated_utc": "2026-10-22T16:53:32.158319+00:00",
+      "git_blob_sha": "0796a6d5a073ed0083444e3f325068762f0ab92d",
+      "content_sha256": "6b4d403ef77390384b72b81767f1442ae9e09334f930aa4ce11eb70548806acc",
+      "word_count": 10163,
+      "last_updated_utc": "2026-10-23T16:44:59.397145+00:00",
       "local_clean_path": "clean_sources/github_docs__content_copilot_reference_copilot-cli-reference_cli-config-dir-reference.md"
     },
     "github_docs::content/copilot/reference/copilot-cli-reference/cli-plugin-reference.md": {
@@ -19336,9 +19336,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/add-memory",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "5509aa8cccff0f0d96720d94460cb389f6a49d639f807c95bb0370fdb94c4f84",
-      "word_count": 7153,
-      "last_updated_utc": "2026-10-23T04:01:51.650717+00:00",
+      "content_sha256": "cd0fef40fabad999f7c258812e51e37c05d8f8d3078dffa43b38bfc8003f5676",
+      "word_count": 8007,
+      "last_updated_utc": "2026-10-23T16:45:04.465689+00:00",
       "local_clean_path": "clean_sources/langgraph__add-memory.md"
     },
     "langgraph::agentic-rag": {
@@ -19391,9 +19391,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "2ffdcae4ae1660b1fa054fd51c93d449ee650f14cd48df85887703185605d8d7",
-      "word_count": 28096,
-      "last_updated_utc": "2026-10-23T04:01:51.815513+00:00",
+      "content_sha256": "7eec6bbb71e8f76fbfa739e85b862f399b3833bea49fef0ba70704620bbd7e92",
+      "word_count": 28915,
+      "last_updated_utc": "2026-10-23T16:45:04.816405+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -19402,9 +19402,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "a2aaca470fac5b0a813eaccbaad4d28889895278d77fefbf18c3d750e9462418",
-      "word_count": 31581,
-      "last_updated_utc": "2026-10-23T04:01:51.756162+00:00",
+      "content_sha256": "34831cb26d41d608dbda4d34fb235bcd8feeac418e711850b0b6df9821bc8a0a",
+      "word_count": 32541,
+      "last_updated_utc": "2026-10-23T16:45:04.590676+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -19512,9 +19512,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/event-streaming",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "cade331258e46f6136c3a1a228b9d400e8296297fb21949cef645de66b576e54",
-      "word_count": 2608,
-      "last_updated_utc": "2026-10-23T04:01:51.887170+00:00",
+      "content_sha256": "222a9457520401aea048fea0d6a7bcf1a12bd435bd52e1a1917238fe43b3a751",
+      "word_count": 2734,
+      "last_updated_utc": "2026-10-23T16:45:04.902458+00:00",
       "local_clean_path": "clean_sources/langgraph__event-streaming.md"
     },
     "langgraph::fault-tolerance": {
@@ -19754,9 +19754,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/use-functional-api",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "4c2a1a55f53c009acd28fb03d72358ba3b293353c792a1151a07d4e363432b72",
+      "content_sha256": "0dbb478062f0f753e4e167c98679158370f3acb2473d99e3dbd01316748af66d",
       "word_count": 3398,
-      "last_updated_utc": "2026-10-23T04:01:52.293527+00:00",
+      "last_updated_utc": "2026-10-23T16:45:05.842656+00:00",
       "local_clean_path": "clean_sources/langgraph__use-functional-api.md"
     },
     "langgraph::use-graph-api": {

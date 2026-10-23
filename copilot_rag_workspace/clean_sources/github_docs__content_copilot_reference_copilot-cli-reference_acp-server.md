@@ -20,7 +20,7 @@ The Agent Client Protocol (ACP) is a protocol that standardizes communication be
 
 Use the `--acp` option of the `copilot` command to start the CLI's ACP server. You can specify the transport mode with either the `--stdio` or `--port` options. If no transport mode is specified, the server defaults to stdio mode.
 
-ACP mode allows sessions with a configured bring-your-own-key (BYOK) provider (`COPILOT_PROVIDER_*` environment variables, or a providers configuration file—see `COPILOT_PROVIDERS_CONFIG` in [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference#environment-variables)) to run without GitHub login, matching the behavior of `-p`/interactive mode.
+ACP mode allows sessions with a configured bring-your-own-key (BYOK) provider (`COPILOT_PROVIDER_*` environment variables, or a providers configuration file—see `COPILOT_PROVIDERS_CONFIG` in [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#environment-variables)) to run without GitHub login, matching the behavior of `-p`/interactive mode.
 
 ### Options applied to every session
 
@@ -39,6 +39,8 @@ copilot --acp --port 3000 --effort=max --available-tools="bash,view"
 ```
 
 Every session the connected client opens against that server inherits those settings. Because the values are fixed when the server starts, a client cannot change them per session through `session/new`.
+
+Sessions also honor saved sandbox settings and the `--sandbox` and `--no-sandbox` options, including when a session is resumed. An enterprise-managed policy that enforces sandboxing will override `--no-sandbox`.
 
 ### stdio mode
 
@@ -233,7 +235,7 @@ Slash commands that depend on the interactive terminal interface are not handled
 
 Because ACP clients have no interactive pickers, a built-in command that would normally open a submenu instead returns its options as text. Provide the subcommand explicitly to get a direct result—for example, `/session info` or `/mcp list` rather than `/session` or `/mcp` on its own.
 
-For a complete list of slash commands for Copilot CLI, see [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference#slash-commands-in-the-interactive-interface).
+For a complete list of slash commands for Copilot CLI, see [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#slash-commands-in-the-interactive-interface).
 
 ## Further reading
 
