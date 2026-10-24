@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-10-23T04:01:53.204543+00:00
-- **Total Palabras**: 15,522 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-24T03:56:06.265177+00:00
+- **Total Palabras**: 15,530 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1802,11 +1802,25 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `dca844dfc219422b4719bd02afe74b8cc1ac0e559bd5e1e304ba4101dc5570fd`
-- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:50.687157+00:00
+- **SHA256_FINGERPRINT**: `fdab2a66951610a3d199a0a738e98e08f4e3c39255ab4c615a7a9ac10c28fba7`
+- **LAST_VERIFIED_UTC**: 2026-10-24T03:56:03.527599+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
+
+## Usage metrics API adds usage from tools like OpenCode
+- **Date**: Fri, 23 Oct 2026 23:42:03 +0000
+- **URL**: https://github.blog/changelog/2026-10-23-usage-metrics-api-adds-usage-from-tools-like-opencode
+
+The Copilot usage metrics API now reports model usage from more of the tools your developers use with Copilot, including tools like OpenCode that weren’t previously captured in your reports....
+The post Usage metrics API adds usage from tools like OpenCode appeared first on The GitHub Blog .
+
+## Turn notifications into code with GitHub Copilot in Teams
+- **Date**: Fri, 23 Oct 2026 21:29:58 +0000
+- **URL**: https://github.blog/changelog/2026-10-23-turn-notifications-into-code-with-github-copilot-in-teams
+
+The new GitHub app in Teams brings notifications and Copilot together, helping teams turn issues into fixes and ship code faster without leaving the conversation. Get notified in channels, group...
+The post Turn notifications into code with GitHub Copilot in Teams appeared first on The GitHub Blog .
 
 ## GitHub Copilot in Visual Studio — September update
 - **Date**: Fri, 23 Oct 2026 00:17:51 +0000
@@ -1863,17 +1877,3 @@ The post Multi-repository support and other improvements for GitHub in Slack and
 
 We will deprecate the following models across all GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions) on November 16th, 2026: Model Deprecation date...
 The post Upcoming deprecation of selected GitHub Copilot models in mid-November appeared first on The GitHub Blog .
-
-## Agentic autofix for code scanning alerts general availability
-- **Date**: Thu, 15 Oct 2026 13:49:20 +0000
-- **URL**: https://github.blog/changelog/2026-10-15-agentic-autofix-for-code-scanning-alerts-general-availability
-
-Agentic autofix for code scanning alerts is now generally available. It remediates alerts by working across your codebase the way a developer would: it explores relevant files, proposes a fix,...
-The post Agentic autofix for code scanning alerts general availability appeared first on The GitHub Blog .
-
-## HydraFusion updates and new Max option
-- **Date**: Wed, 14 Oct 2026 20:01:35 +0000
-- **URL**: https://github.blog/changelog/2026-10-14-hydrafusion-updates-and-new-max-option
-
-HydraFusion has an updated model pool, improved orchestration workflows, and introduces HydraFusion Max. Both HydraFusion and HydraFusion Max are available across VS Code, the GitHub Copilot app, and GitHub Copilot...
-The post HydraFusion updates and new Max option appeared first on The GitHub Blog .

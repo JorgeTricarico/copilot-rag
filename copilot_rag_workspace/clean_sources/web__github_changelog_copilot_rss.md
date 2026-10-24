@@ -1,5 +1,19 @@
 # GitHub Copilot Official Changelog Feed
 
+## Usage metrics API adds usage from tools like OpenCode
+- **Date**: Fri, 23 Oct 2026 23:42:03 +0000
+- **URL**: https://github.blog/changelog/2026-10-23-usage-metrics-api-adds-usage-from-tools-like-opencode
+
+The Copilot usage metrics API now reports model usage from more of the tools your developers use with Copilot, including tools like OpenCode that weren’t previously captured in your reports....
+The post Usage metrics API adds usage from tools like OpenCode appeared first on The GitHub Blog .
+
+## Turn notifications into code with GitHub Copilot in Teams
+- **Date**: Fri, 23 Oct 2026 21:29:58 +0000
+- **URL**: https://github.blog/changelog/2026-10-23-turn-notifications-into-code-with-github-copilot-in-teams
+
+The new GitHub app in Teams brings notifications and Copilot together, helping teams turn issues into fixes and ship code faster without leaving the conversation. Get notified in channels, group...
+The post Turn notifications into code with GitHub Copilot in Teams appeared first on The GitHub Blog .
+
 ## GitHub Copilot in Visual Studio — September update
 - **Date**: Fri, 23 Oct 2026 00:17:51 +0000
 - **URL**: https://github.blog/changelog/2026-10-22-github-copilot-in-visual-studio-september-update-2
@@ -55,17 +69,3 @@ The post Multi-repository support and other improvements for GitHub in Slack and
 
 We will deprecate the following models across all GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions) on November 16th, 2026: Model Deprecation date...
 The post Upcoming deprecation of selected GitHub Copilot models in mid-November appeared first on The GitHub Blog .
-
-## Agentic autofix for code scanning alerts general availability
-- **Date**: Thu, 15 Oct 2026 13:49:20 +0000
-- **URL**: https://github.blog/changelog/2026-10-15-agentic-autofix-for-code-scanning-alerts-general-availability
-
-Agentic autofix for code scanning alerts is now generally available. It remediates alerts by working across your codebase the way a developer would: it explores relevant files, proposes a fix,...
-The post Agentic autofix for code scanning alerts general availability appeared first on The GitHub Blog .
-
-## HydraFusion updates and new Max option
-- **Date**: Wed, 14 Oct 2026 20:01:35 +0000
-- **URL**: https://github.blog/changelog/2026-10-14-hydrafusion-updates-and-new-max-option
-
-HydraFusion has an updated model pool, improved orchestration workflows, and introduces HydraFusion Max. Both HydraFusion and HydraFusion Max are available across VS Code, the GitHub Copilot app, and GitHub Copilot...
-The post HydraFusion updates and new Max option appeared first on The GitHub Blog .

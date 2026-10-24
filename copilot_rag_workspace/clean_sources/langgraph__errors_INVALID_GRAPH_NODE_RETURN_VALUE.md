@@ -47,6 +47,6 @@ The following may help resolve this error:
 
 ***
 
-[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
+[Connect these docs](https://docs.langchain.com/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/errors/INVALID_GRAPH_NODE_RETURN_VALUE.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

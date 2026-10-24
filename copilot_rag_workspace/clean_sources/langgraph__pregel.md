@@ -349,7 +349,7 @@ app.invoke({"value": "a"})
 
 ## High-level API
 
-LangGraph provides two high-level APIs for creating a Pregel application: the [StateGraph (Graph API)](/oss/python/langgraph/graph-api.md) and the [Functional API](/oss/python/langgraph/functional-api.md).
+LangGraph provides two high-level APIs for creating a Pregel application: the [StateGraph (Graph API)](https://docs.langchain.com/oss/python/langgraph/graph-api.md) and the [Functional API](https://docs.langchain.com/oss/python/langgraph/functional-api.md).
 
 **StateGraph (Graph API)**
 
@@ -425,7 +425,7 @@ You should see something like this
 
 **Functional API**
 
-In the [Functional API](/oss/python/langgraph/functional-api.md), you can use an [`@entrypoint`](https://reference.langchain.com/python/langgraph/func/entrypoint) to create a Pregel application. The `entrypoint` decorator allows you to define a function that takes input and returns output.
+In the [Functional API](https://docs.langchain.com/oss/python/langgraph/functional-api.md), you can use an [`@entrypoint`](https://reference.langchain.com/python/langgraph/func/entrypoint) to create a Pregel application. The `entrypoint` decorator allows you to define a function that takes input and returns output.
 
 ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from typing import TypedDict
@@ -461,6 +461,6 @@ Channels:
 
 ***
 
-[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
+[Connect these docs](https://docs.langchain.com/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/pregel.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

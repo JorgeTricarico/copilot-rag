@@ -6,14 +6,14 @@
 
 > LangGraph stores provide cross-thread long-term memory, complementing per-thread checkpointer persistence.
 
-Stores let agents persist information across threads, including user preferences, accumulated knowledge, and facts that should survive beyond a single conversation. Unlike [checkpointers](/oss/python/langgraph/checkpointers.md), which save the full graph state scoped to one thread, stores hold arbitrary key-value data accessible from any thread.
+Stores let agents persist information across threads, including user preferences, accumulated knowledge, and facts that should survive beyond a single conversation. Unlike [checkpointers](https://docs.langchain.com/oss/python/langgraph/checkpointers.md), which save the full graph state scoped to one thread, stores hold arbitrary key-value data accessible from any thread.
 
 ![Model of shared state](https://mintcdn.com/langchain-5e9cc07a/dL5Sn6Cmy9pwtY0V/oss/images/shared_state.png?fit=max\&auto=format\&n=dL5Sn6Cmy9pwtY0V\&q=85\&s=354526fb48c5eb11b4b2684a2df40d6c)
 
 > [!NOTE]
 >
 > **Agent Server handles stores automatically**
-> When using the [Agent Server](/langsmith/agent-server.md), you do not need to implement or configure stores manually. The API handles all storage infrastructure for you behind the scenes.
+> When using the [Agent Server](https://docs.langchain.com/langsmith/agent-server.md), you do not need to implement or configure stores manually. The API handles all storage infrastructure for you behind the scenes.
 
 > [!NOTE]
 >
@@ -21,7 +21,7 @@ Stores let agents persist information across threads, including user preferences
 
 > [!NOTE]
 >
-> See [store integrations](/oss/python/integrations/long-term-memory/index.md) for the full list of available providers.
+> See [store integrations](https://docs.langchain.com/oss/python/integrations/long-term-memory/index.md) for the full list of available providers.
 
 ## Basic usage
 
@@ -286,7 +286,7 @@ for update in graph.stream(
     print(update)
 ```
 
-When you use LangSmith locally (e.g., in [Studio](/langsmith/studio.md)) or [hosted](/langsmith/platform-setup.md), the base store is available to use by default and you do not need to specify it during graph compilation. To enable semantic search, however, you **do** need to configure the indexing settings in your `langgraph.json` file. For example:
+When you use LangSmith locally (e.g., in [Studio](https://docs.langchain.com/langsmith/studio.md)) or [hosted](https://docs.langchain.com/langsmith/platform-setup.md), the base store is available to use by default and you do not need to specify it during graph compilation. To enable semantic search, however, you **do** need to configure the indexing settings in your `langgraph.json` file. For example:
 
 ```json theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 {
@@ -301,7 +301,7 @@ When you use LangSmith locally (e.g., in [Studio](/langsmith/studio.md)) or [hos
 }
 ```
 
-See the [deployment guide](/langsmith/semantic-search.md) for more details and configuration options.
+See the [deployment guide](https://docs.langchain.com/langsmith/semantic-search.md) for more details and configuration options.
 
 ## Build a custom store
 
@@ -405,11 +405,11 @@ async def test_search_prefix(store, reference):
 
 ### Next steps
 
-* [Add a custom store to Agent Server](/langsmith/custom-store.md) — deploying your implementation
-* [Checkpointers](/oss/python/langgraph/checkpointers.md) — thread-scoped state persistence
+* [Add a custom store to Agent Server](https://docs.langchain.com/langsmith/custom-store.md) — deploying your implementation
+* [Checkpointers](https://docs.langchain.com/oss/python/langgraph/checkpointers.md) — thread-scoped state persistence
 
 ***
 
-[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
+[Connect these docs](https://docs.langchain.com/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/stores.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

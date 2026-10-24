@@ -4,14 +4,14 @@
 
 # Memory
 
-AI applications need [memory](/oss/python/concepts/memory.md) to share context across multiple interactions. In LangGraph, you can add two types of memory:
+AI applications need [memory](https://docs.langchain.com/oss/python/concepts/memory.md) to share context across multiple interactions. In LangGraph, you can add two types of memory:
 
-* [Add short-term memory](#add-short-term-memory) as a part of your agent's [state](/oss/python/langgraph/graph-api.md#state) to enable multi-turn conversations.
+* [Add short-term memory](#add-short-term-memory) as a part of your agent's [state](https://docs.langchain.com/oss/python/langgraph/graph-api.md#state) to enable multi-turn conversations.
 * [Add long-term memory](#add-long-term-memory) to store user-specific or application-level data across sessions.
 
 ## Add short-term memory
 
-**Short-term** memory (thread-level [persistence](/oss/python/langgraph/persistence.md)) enables agents to track multi-turn conversations. To add short-term memory:
+**Short-term** memory (thread-level [persistence](https://docs.langchain.com/oss/python/langgraph/persistence.md)) enables agents to track multi-turn conversations. To add short-term memory:
 
 ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from langgraph.checkpoint.memory import InMemorySaver  # [!code highlight]
@@ -154,7 +154,7 @@ with PostgresSaver.from_conn_string(DB_URI) as checkpointer:  # [!code highlight
 > > [!TIP]
 > >
 > > **Setup**
-> > To use the [MongoDB checkpointer](https://pypi.org/project/langgraph-checkpoint-mongodb/), you will need a MongoDB cluster. Follow [this guide](https://www.mongodb.com/docs/guides/atlas/cluster/) to create a cluster if you don't already have one. For an agent-focused walkthrough, see [short-term memory with MongoDB Atlas](/oss/python/integrations/memory/mongodb-short-term-memory).
+> > To use the [MongoDB checkpointer](https://pypi.org/project/langgraph-checkpoint-mongodb/), you will need a MongoDB cluster. Follow [this guide](https://www.mongodb.com/docs/guides/atlas/cluster/) to create a cluster if you don't already have one. For an agent-focused walkthrough, see [short-term memory with MongoDB Atlas](https://docs.langchain.com/oss/python/integrations/memory/mongodb-short-term-memory).
 >
 > **Sync**
 >
@@ -463,7 +463,7 @@ with PostgresSaver.from_conn_string(DB_URI) as checkpointer:  # [!code highlight
 
 ### Use in subgraphs
 
-If your graph contains [subgraphs](/oss/python/langgraph/use-subgraphs.md), you only need to provide the checkpointer when compiling the parent graph. LangGraph will automatically propagate the checkpointer to the child subgraphs.
+If your graph contains [subgraphs](https://docs.langchain.com/oss/python/langgraph/use-subgraphs.md), you only need to provide the checkpointer when compiling the parent graph. LangGraph will automatically propagate the checkpointer to the child subgraphs.
 
 ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from langgraph.graph import START, StateGraph
@@ -493,7 +493,7 @@ checkpointer = InMemorySaver()
 graph = builder.compile(checkpointer=checkpointer)  # [!code highlight]
 ```
 
-You can configure subgraph-specific checkpointing behavior. See [subgraph persistence](/oss/python/langgraph/use-subgraphs.md#subgraph-persistence) for details on persistence levels including interrupt support and stateful continuations.
+You can configure subgraph-specific checkpointing behavior. See [subgraph persistence](https://docs.langchain.com/oss/python/langgraph/use-subgraphs.md#subgraph-persistence) for details on persistence levels including interrupt support and stateful continuations.
 
 ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 subgraph_builder = StateGraph(...)
@@ -742,7 +742,7 @@ with PostgresStore.from_conn_string(DB_URI) as store:  # [!code highlight]
 >
 > > [!TIP]
 > >
-> > Semantic search with `query` needs MongoDB Vector Search (`$vectorSearch`), which runs on [MongoDB Atlas](https://www.mongodb.com/docs/atlas/) or on self-managed MongoDB with [Search and Vector Search](https://www.mongodb.com/docs/search/self-managed/current/) (`mongot`). A plain `mongod` without `mongot` is not enough. Pass `index_config` from `create_vector_index_config` when you open the store. Index creation can exceed the default 15 second wait, so set `auto_index_timeout` higher on first run. For Atlas cluster setup, see [this guide](https://www.mongodb.com/docs/guides/atlas/cluster/). For vector index setup and an agent-focused walkthrough, see [long-term memory with MongoDB Atlas](/oss/python/integrations/memory/mongodb-long-term-memory).
+> > Semantic search with `query` needs MongoDB Vector Search (`$vectorSearch`), which runs on [MongoDB Atlas](https://www.mongodb.com/docs/atlas/) or on self-managed MongoDB with [Search and Vector Search](https://www.mongodb.com/docs/search/self-managed/current/) (`mongot`). A plain `mongod` without `mongot` is not enough. Pass `index_config` from `create_vector_index_config` when you open the store. Index creation can exceed the default 15 second wait, so set `auto_index_timeout` higher on first run. For Atlas cluster setup, see [this guide](https://www.mongodb.com/docs/guides/atlas/cluster/). For vector index setup and an agent-focused walkthrough, see [long-term memory with MongoDB Atlas](https://docs.langchain.com/oss/python/integrations/memory/mongodb-long-term-memory).
 >
 > **Async**
 >
@@ -1446,7 +1446,7 @@ builder.add_node(call_model)
 
 You can delete messages from the graph state to manage the message history. This is useful when you want to remove specific messages or clear the entire message history.
 
-To delete messages from the graph state, you can use the `RemoveMessage`. For `RemoveMessage` to work, you need to use a state key with [`add_messages`](https://reference.langchain.com/python/langgraph/graph/message/add_messages) [reducer](/oss/python/langgraph/graph-api.md#reducers), like [`MessagesState`](/oss/python/langgraph/graph-api#messagesstate).
+To delete messages from the graph state, you can use the `RemoveMessage`. For `RemoveMessage` to work, you need to use a state key with [`add_messages`](https://reference.langchain.com/python/langgraph/graph/message/add_messages) [reducer](https://docs.langchain.com/oss/python/langgraph/graph-api.md#reducers), like [`MessagesState`](https://docs.langchain.com/oss/python/langgraph/graph-api#messagesstate).
 
 To remove specific messages:
 
@@ -1530,7 +1530,7 @@ The problem with trimming or removing messages, as shown above, is that you may 
 
 ![Summary](https://mintcdn.com/langchain-5e9cc07a/ybiAaBfoBvFquMDz/oss/images/summary.png?fit=max\&auto=format\&n=ybiAaBfoBvFquMDz\&q=85\&s=c8ed3facdccd4ef5c7e52902c72ba938)
 
-Prompting and orchestration logic can be used to summarize the message history. For example, in LangGraph you can extend the [`MessagesState`](/oss/python/langgraph/graph-api#working-with-messages-in-graph-state) to include a `summary` key:
+Prompting and orchestration logic can be used to summarize the message history. For example, in LangGraph you can extend the [`MessagesState`](https://docs.langchain.com/oss/python/langgraph/graph-api#working-with-messages-in-graph-state) to include a `summary` key:
 
 ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from langgraph.graph import MessagesState
@@ -1909,6 +1909,6 @@ We recommend running migrations as a dedicated deployment step, or you can ensur
 
 ***
 
-[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
+[Connect these docs](https://docs.langchain.com/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/add-memory.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

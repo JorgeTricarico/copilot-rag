@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-10-23T16:45:06.603660+00:00",
+  "last_sync_utc": "2026-10-24T03:56:06.443082+00:00",
   "total_documents": 1937,
   "documents": {
     "anthropics_skills::README.md": {
@@ -19336,9 +19336,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/add-memory",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "cd0fef40fabad999f7c258812e51e37c05d8f8d3078dffa43b38bfc8003f5676",
+      "content_sha256": "d6cbbb3f895a2b2f341395cc7072fc2d3caf703c2816ceb53f3a3ec4d1f4703b",
       "word_count": 8007,
-      "last_updated_utc": "2026-10-23T16:45:04.465689+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.523767+00:00",
       "local_clean_path": "clean_sources/langgraph__add-memory.md"
     },
     "langgraph::agentic-rag": {
@@ -19347,9 +19347,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/agentic-rag",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "55407fb1cf28f23c2dad282b3ef7c970852cb4845aa270902b765c873d660879",
+      "content_sha256": "3f9a132bee4a4b95edb17c0a38775fa5185c68b2ae98fe2d68720e32ef72b145",
       "word_count": 2192,
-      "last_updated_utc": "2026-10-23T04:01:51.568978+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.446866+00:00",
       "local_clean_path": "clean_sources/langgraph__agentic-rag.md"
     },
     "langgraph::application-structure": {
@@ -19358,9 +19358,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/application-structure",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "4fdfbea3c1b361b928cf02c8acfbddfebefefa59f7d8b265261c7fb407bc0089",
+      "content_sha256": "3cc05b06ec8c4297fe2cb81d4d240396cc042750e6e28a1263ac3bd822ba54bc",
       "word_count": 715,
-      "last_updated_utc": "2026-10-23T04:01:51.636404+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.412870+00:00",
       "local_clean_path": "clean_sources/langgraph__application-structure.md"
     },
     "langgraph::backward-compatibility": {
@@ -19369,9 +19369,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/backward-compatibility",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "c349fd9ad046858ea1581032d608eef367606a5b9cb9745ce3caa1457d778199",
+      "content_sha256": "ef4bdddb21d074e4366ad13e39f64a6e98edd6ed0ea19391b98318d7bb9ffa58",
       "word_count": 1498,
-      "last_updated_utc": "2026-10-23T04:01:51.541176+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.454880+00:00",
       "local_clean_path": "clean_sources/langgraph__backward-compatibility.md"
     },
     "langgraph::case-studies": {
@@ -19380,9 +19380,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/case-studies",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "23fe81ba7269625d18cd6c76b53e07c7346b011f3e9ba96bd5f9c99d0d7f3c90",
+      "content_sha256": "338926f634d93a1ac24084de414d2c8c75b4101e2112a78df8684cbce807417d",
       "word_count": 774,
-      "last_updated_utc": "2026-10-23T04:01:51.640170+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.466741+00:00",
       "local_clean_path": "clean_sources/langgraph__case-studies.md"
     },
     "langgraph::changelog-js": {
@@ -19391,9 +19391,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "7eec6bbb71e8f76fbfa739e85b862f399b3833bea49fef0ba70704620bbd7e92",
-      "word_count": 28915,
-      "last_updated_utc": "2026-10-23T16:45:04.816405+00:00",
+      "content_sha256": "640c6d905cad0148e84e650975c7449f010a6b2cc04e8aa4faf828d0d8147b4a",
+      "word_count": 26546,
+      "last_updated_utc": "2026-10-24T03:56:04.765354+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -19402,9 +19402,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "34831cb26d41d608dbda4d34fb235bcd8feeac418e711850b0b6df9821bc8a0a",
-      "word_count": 32541,
-      "last_updated_utc": "2026-10-23T16:45:04.590676+00:00",
+      "content_sha256": "195cd845cf25b43167bcab376b765ba7f5b6392b59df128d4dcbf0d5fea8229a",
+      "word_count": 29768,
+      "last_updated_utc": "2026-10-24T03:56:04.642995+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -19413,9 +19413,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/checkpointers",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "f7d3bb82beea80661b83b5ef53e86d56a5c8008c86b5e34597b020a83fde825b",
+      "content_sha256": "6f2416670d7079c8b2bd51c4eaa1346e7a0e28026eed8e6d2d6498aa868ad2db",
       "word_count": 4787,
-      "last_updated_utc": "2026-10-23T04:01:51.642208+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.443084+00:00",
       "local_clean_path": "clean_sources/langgraph__checkpointers.md"
     },
     "langgraph::choosing-apis": {
@@ -19424,9 +19424,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/choosing-apis",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "77d01b1657dea5c8f232ed2761fed839985a1e51b8e398830470f15d7e0224e7",
+      "content_sha256": "36b6328cb6d15836e19106b6e9cfffc5cf25be5f56b7578af2a48277125ae4c1",
       "word_count": 1147,
-      "last_updated_utc": "2026-10-23T04:01:51.902154+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.576869+00:00",
       "local_clean_path": "clean_sources/langgraph__choosing-apis.md"
     },
     "langgraph::deploy": {
@@ -19435,9 +19435,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/deploy",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "6859fd2189af88b44f8f5acee9abaf3dd28f9611860659ca66622a5a002769b4",
+      "content_sha256": "cc807665512d8b83b1d1844e4cf27ddefffd40c4c8a4987e0c53a1ed32013197",
       "word_count": 546,
-      "last_updated_utc": "2026-10-23T04:01:51.744169+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.652705+00:00",
       "local_clean_path": "clean_sources/langgraph__deploy.md"
     },
     "langgraph::errors_GRAPH_RECURSION_LIMIT": {
@@ -19446,9 +19446,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "b5a162755448a1b516dac5e73cf0ce45487cc48b8d030a16fac6a047fa9f8a49",
+      "content_sha256": "211dcaa10c297eba9796615e4a073b5255fd2661bbf5a2f759ea8dce8482b376",
       "word_count": 174,
-      "last_updated_utc": "2026-10-23T04:01:51.826602+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.579230+00:00",
       "local_clean_path": "clean_sources/langgraph__errors_GRAPH_RECURSION_LIMIT.md"
     },
     "langgraph::errors_INVALID_CHAT_HISTORY": {
@@ -19457,9 +19457,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/errors/INVALID_CHAT_HISTORY",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "7eeaa147d383f0b694ae1745ec3e39298c4b5eb4cc2020377e1b4e920a729beb",
+      "content_sha256": "4a6da576e374eb0d9e4991b619ddddaeb65caf166d50c729837667f8e4b96912",
       "word_count": 336,
-      "last_updated_utc": "2026-10-23T04:01:51.763152+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.706928+00:00",
       "local_clean_path": "clean_sources/langgraph__errors_INVALID_CHAT_HISTORY.md"
     },
     "langgraph::errors_INVALID_CONCURRENT_GRAPH_UPDATE": {
@@ -19468,9 +19468,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/errors/INVALID_CONCURRENT_GRAPH_UPDATE",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "89cb980301935a9179e3d1b7868d7655ecb1c66653c6007a63b087a3f6b752fe",
+      "content_sha256": "6681b4e02ba5ae5c1098c3b5256cd3323375c868f3b2e007cf19a1c1033ce6be",
       "word_count": 282,
-      "last_updated_utc": "2026-10-23T04:01:51.815930+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.700864+00:00",
       "local_clean_path": "clean_sources/langgraph__errors_INVALID_CONCURRENT_GRAPH_UPDATE.md"
     },
     "langgraph::errors_INVALID_GRAPH_NODE_RETURN_VALUE": {
@@ -19479,9 +19479,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/errors/INVALID_GRAPH_NODE_RETURN_VALUE",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "b1c00ea3cc75a4003d65ad9225173d2543c4395693332311d9d95ba46112571a",
+      "content_sha256": "6622342654e8b7eeb41546d3595be3656f7955e4614db352db3fe07fa40b34f0",
       "word_count": 181,
-      "last_updated_utc": "2026-10-23T04:01:51.805707+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.842654+00:00",
       "local_clean_path": "clean_sources/langgraph__errors_INVALID_GRAPH_NODE_RETURN_VALUE.md"
     },
     "langgraph::errors_MISSING_CHECKPOINTER": {
@@ -19490,9 +19490,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/errors/MISSING_CHECKPOINTER",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "5b1c9d1ebbbb40b882974e0661ebbd5576c70b1c40f481e70b8d927e930cef60",
+      "content_sha256": "97ae27809478d90a76b01262d5d2f51e32c6cdae38dd825829d94a89f3a39a3c",
       "word_count": 163,
-      "last_updated_utc": "2026-10-23T04:01:51.871864+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.836499+00:00",
       "local_clean_path": "clean_sources/langgraph__errors_MISSING_CHECKPOINTER.md"
     },
     "langgraph::errors_MULTIPLE_SUBGRAPHS": {
@@ -19501,9 +19501,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/errors/MULTIPLE_SUBGRAPHS",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "771b6aa8fdd277a1cc50cda368fc0ba8d6735f98a86fd163455ecf6d6a71c519",
+      "content_sha256": "f3840cbb194fa8bcc9182c45c9c7a02b56a28495c735fd687e73d79f533e1db7",
       "word_count": 196,
-      "last_updated_utc": "2026-10-23T04:01:51.842306+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.885332+00:00",
       "local_clean_path": "clean_sources/langgraph__errors_MULTIPLE_SUBGRAPHS.md"
     },
     "langgraph::event-streaming": {
@@ -19512,9 +19512,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/event-streaming",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "222a9457520401aea048fea0d6a7bcf1a12bd435bd52e1a1917238fe43b3a751",
+      "content_sha256": "20db1f8a237835b4a861ed33c614a2c61ac17502338ed13411c483e25b5d39e1",
       "word_count": 2734,
-      "last_updated_utc": "2026-10-23T16:45:04.902458+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.880864+00:00",
       "local_clean_path": "clean_sources/langgraph__event-streaming.md"
     },
     "langgraph::fault-tolerance": {
@@ -19523,9 +19523,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/fault-tolerance",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "786582a39d4d42d0da6392c8422deb2444365988a23fd0dcb06874a5c19e7fe3",
+      "content_sha256": "9c85a69fb709c5d23397470498121afbec7273f1428acc8e2799bc94e4248d44",
       "word_count": 3025,
-      "last_updated_utc": "2026-10-23T04:01:51.917655+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.006849+00:00",
       "local_clean_path": "clean_sources/langgraph__fault-tolerance.md"
     },
     "langgraph::frontend_custom-stream-channels": {
@@ -19534,9 +19534,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/frontend/custom-stream-channels",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "988e2104fcfc5114062dd885f9850f1a370a935a238da886aa6b9c882b8a911b",
+      "content_sha256": "77416d2272671fb5ccd864df01159a6344db66b08f8e4f63415f000e6bc8017d",
       "word_count": 1375,
-      "last_updated_utc": "2026-10-23T04:01:51.964714+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.912824+00:00",
       "local_clean_path": "clean_sources/langgraph__frontend_custom-stream-channels.md"
     },
     "langgraph::frontend_graph-execution": {
@@ -19545,9 +19545,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/frontend/graph-execution",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "442aa5532a8fe2b7cf5b43468123f08854abf7ba8cb4cd44d70fcae59235984b",
+      "content_sha256": "c15c634e2ea6fc3c598f56d5a18a38cf490ab17decef2d8d3afc091494501ce4",
       "word_count": 1720,
-      "last_updated_utc": "2026-10-23T04:01:51.988167+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.882771+00:00",
       "local_clean_path": "clean_sources/langgraph__frontend_graph-execution.md"
     },
     "langgraph::frontend_overview": {
@@ -19556,9 +19556,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/frontend/overview",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "fbda07f3980a95ee03e8307955bbee3873316113d01ecec16e4a87b29f4c1747",
+      "content_sha256": "01e7f040eb1d21558b84445727a8475712251530dca6df677f237e22e135ed2c",
       "word_count": 649,
-      "last_updated_utc": "2026-10-23T04:01:51.980798+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.886919+00:00",
       "local_clean_path": "clean_sources/langgraph__frontend_overview.md"
     },
     "langgraph::functional-api": {
@@ -19567,9 +19567,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/functional-api",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "e7b9a80879f0f575468e85dd4bbabc43e19ac9da8a46e215a68a6797a581b6a4",
+      "content_sha256": "9078f012db765853977a8495c23f0555430968576f856e1f90a2d12102b449a4",
       "word_count": 3507,
-      "last_updated_utc": "2026-10-23T04:01:51.980034+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.947061+00:00",
       "local_clean_path": "clean_sources/langgraph__functional-api.md"
     },
     "langgraph::graph-api": {
@@ -19578,9 +19578,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/graph-api",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "49167e0ad1a59d231ff3d86beff026b539795592335b0fcac72f723a537ee0e0",
+      "content_sha256": "26ba1ed7c64ebb745d1921ea95473ea21e22def54ba31468776cff53b80b3b66",
       "word_count": 7063,
-      "last_updated_utc": "2026-10-23T04:01:52.018324+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.005229+00:00",
       "local_clean_path": "clean_sources/langgraph__graph-api.md"
     },
     "langgraph::install": {
@@ -19589,9 +19589,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/install",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "2b1701d27a70eca905ddb57b8ce5990267a6ceaebb79fc2e339d397894e1e698",
+      "content_sha256": "f63fdc3f042f920831aac9e7b89e2d3b6ec7de9ec9c49b9dae6e872d6949ecf3",
       "word_count": 156,
-      "last_updated_utc": "2026-10-23T04:01:51.998824+00:00",
+      "last_updated_utc": "2026-10-24T03:56:04.954710+00:00",
       "local_clean_path": "clean_sources/langgraph__install.md"
     },
     "langgraph::interrupts": {
@@ -19600,9 +19600,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/interrupts",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "909d0534a2f35b3ad19f03b0f326abe9cd6dbf547b0ec50c41b5fb1abed10ec5",
+      "content_sha256": "8281a54d1a55d2a4a34faa049eb0e124b2ebd70aff04ac5247245b593c720aee",
       "word_count": 5308,
-      "last_updated_utc": "2026-10-23T04:01:52.047367+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.041285+00:00",
       "local_clean_path": "clean_sources/langgraph__interrupts.md"
     },
     "langgraph::local-server": {
@@ -19611,9 +19611,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/local-server",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "809c1500aaafb1677083e2bd374b503ab4e5348f09c8e628d8e0b22a01cc5cb7",
+      "content_sha256": "95a9e2d4b3563fe49b25ff849b61eff362249393c14f1b02cae1649b458dac54",
       "word_count": 748,
-      "last_updated_utc": "2026-10-23T04:01:52.020056+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.096810+00:00",
       "local_clean_path": "clean_sources/langgraph__local-server.md"
     },
     "langgraph::observability": {
@@ -19622,9 +19622,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/observability",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "7908f36b3fe964c0542d13c7e34b0b4ccbbede298f7f9f6d22d13394011c8376",
+      "content_sha256": "21572c553955872dc76f40ec5201127a50aa258239b404c41413a6192577e17d",
       "word_count": 571,
-      "last_updated_utc": "2026-10-23T04:01:52.095962+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.042736+00:00",
       "local_clean_path": "clean_sources/langgraph__observability.md"
     },
     "langgraph::overview": {
@@ -19633,9 +19633,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/overview",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "987b90e4b8d630ec97c8cd3d0a76640dc44b9c5102e9a1e20eaf0ee180bd01e7",
+      "content_sha256": "e397ea32277ca806a4d476155d453b03ba427d64c1c4024e1e0989ccbb8df7e7",
       "word_count": 841,
-      "last_updated_utc": "2026-10-23T04:01:52.107399+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.085562+00:00",
       "local_clean_path": "clean_sources/langgraph__overview.md"
     },
     "langgraph::persistence": {
@@ -19644,9 +19644,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/persistence",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "70aaea872d68bf47da931b65dca03abc0c274c31caebecd5f730d5b2b5d50cd8",
+      "content_sha256": "9985e697f3f56c9c703360f75d7e56c0d3040307d46ccff4b0a7d4964ab07932",
       "word_count": 594,
-      "last_updated_utc": "2026-10-23T04:01:52.111325+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.084768+00:00",
       "local_clean_path": "clean_sources/langgraph__persistence.md"
     },
     "langgraph::pregel": {
@@ -19655,9 +19655,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/pregel",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "ea2c84b510a51db8303866bf78078b010bc6f515de48c54e1da4f4dd09af2c37",
+      "content_sha256": "ed1e14eadd09a347c15995633961ce72e3a4188d2e5ed50f9387d89418ca05f8",
       "word_count": 2107,
-      "last_updated_utc": "2026-10-23T04:01:52.126636+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.083179+00:00",
       "local_clean_path": "clean_sources/langgraph__pregel.md"
     },
     "langgraph::quickstart": {
@@ -19666,9 +19666,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/quickstart",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "ba66389c645c7276ae0a9df292d1277781120db81d4b283d8ee501853ca91c2a",
+      "content_sha256": "f4d2aa269551c2fda735b331b5620bc80045698386b2f14c4d260fc08a73eaa5",
       "word_count": 2789,
-      "last_updated_utc": "2026-10-23T04:01:52.129586+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.164795+00:00",
       "local_clean_path": "clean_sources/langgraph__quickstart.md"
     },
     "langgraph::sql-agent": {
@@ -19677,9 +19677,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/sql-agent",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "859d9a0068fe39fe3c0dbcbfd2b0d8ba12cec27d10b060043d640b84f365e794",
+      "content_sha256": "3b5981f4b47e4bf0b2e4df7194695a1ab18842770252dae9a3784f7433edc68b",
       "word_count": 3180,
-      "last_updated_utc": "2026-10-23T04:01:52.145076+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.153105+00:00",
       "local_clean_path": "clean_sources/langgraph__sql-agent.md"
     },
     "langgraph::stores": {
@@ -19688,9 +19688,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/stores",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "6e1221452a0f634e27554ab84c923233bbe673465a3cc0d92e2eda780012e4ce",
+      "content_sha256": "9c2261dad1d2d3f1949add4e7eede7eb679a315be1718a5e12f7218fb19819b4",
       "word_count": 1979,
-      "last_updated_utc": "2026-10-23T04:01:52.124832+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.204877+00:00",
       "local_clean_path": "clean_sources/langgraph__stores.md"
     },
     "langgraph::streaming": {
@@ -19699,9 +19699,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/streaming",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "5dee8c0f720d27bb9d9521137441edc72c62cbd3d440f95f4cea85d988c84ab5",
+      "content_sha256": "2e937efa489ce155496075619cd2631531abd3950d53683bc7d6e7de38a3447f",
       "word_count": 5038,
-      "last_updated_utc": "2026-10-23T04:01:52.187598+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.183094+00:00",
       "local_clean_path": "clean_sources/langgraph__streaming.md"
     },
     "langgraph::studio": {
@@ -19710,9 +19710,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/studio",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "eaeb75f1e9678836297976db0a4fb6a49c49544cf21b2b3b70c3fa7834949657",
+      "content_sha256": "09107792f0f3914d08eedb9da2033805bc5c5ebee2171bc92b45de45c4a090ab",
       "word_count": 773,
-      "last_updated_utc": "2026-10-23T04:01:52.257612+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.302693+00:00",
       "local_clean_path": "clean_sources/langgraph__studio.md"
     },
     "langgraph::test": {
@@ -19721,9 +19721,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/test",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "604a9d619c6c653ddc3a9a7fe89b4954f21e332d54abe2987905223d704db53a",
+      "content_sha256": "f52f5a58fdcefa65873037aca4a09358fdac685c355d05832ad6055a2735990b",
       "word_count": 747,
-      "last_updated_utc": "2026-10-23T04:01:52.241100+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.496921+00:00",
       "local_clean_path": "clean_sources/langgraph__test.md"
     },
     "langgraph::thinking-in-langgraph": {
@@ -19732,9 +19732,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/thinking-in-langgraph",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "75ba8eb86eca59f2f596b4db5af263123414dfa27f759f6e891d28ccaab3a8c3",
+      "content_sha256": "18a9f7ee6cc7f8c89c8929ccfef982dd0a2d589350608c4e609a726f16417fe2",
       "word_count": 3800,
-      "last_updated_utc": "2026-10-23T04:01:52.240527+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.252940+00:00",
       "local_clean_path": "clean_sources/langgraph__thinking-in-langgraph.md"
     },
     "langgraph::ui": {
@@ -19743,9 +19743,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/ui",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "72f7edd69b73921974b710c1c038b7654967e681416fa17abde19c602b9b95b5",
+      "content_sha256": "6394406f841c99da2ed61ef39b1bb2170ee2081e5f85dcbf7f2f7ffaf49698ab",
       "word_count": 398,
-      "last_updated_utc": "2026-10-23T04:01:52.256761+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.275118+00:00",
       "local_clean_path": "clean_sources/langgraph__ui.md"
     },
     "langgraph::use-functional-api": {
@@ -19754,9 +19754,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/use-functional-api",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "0dbb478062f0f753e4e167c98679158370f3acb2473d99e3dbd01316748af66d",
+      "content_sha256": "3e023399260418729e0966c543781c2b0b6ce4b98a62b6dbe2710628a23ca8f2",
       "word_count": 3398,
-      "last_updated_utc": "2026-10-23T16:45:05.842656+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.291238+00:00",
       "local_clean_path": "clean_sources/langgraph__use-functional-api.md"
     },
     "langgraph::use-graph-api": {
@@ -19765,9 +19765,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/use-graph-api",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "ce56e43484368675461a42afd888e4c332faf8b59aa66b601f7d0640b4519e99",
+      "content_sha256": "f3ff42cfdb46b6e0ea9eba09e6281df096ecce3a5816019d57335e76e52bb46b",
       "word_count": 10529,
-      "last_updated_utc": "2026-10-23T04:01:52.256287+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.417586+00:00",
       "local_clean_path": "clean_sources/langgraph__use-graph-api.md"
     },
     "langgraph::use-subgraphs": {
@@ -19776,9 +19776,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/use-subgraphs",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "93d8c67dc95aead1f87503a591da0283aa67d740b7d83f9c18a1376f01728615",
+      "content_sha256": "6df9c717e3d9a71875a002ee6654fadc6c6981de4e6df9da7b8023f1673feed4",
       "word_count": 4038,
-      "last_updated_utc": "2026-10-23T04:01:52.263235+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.355011+00:00",
       "local_clean_path": "clean_sources/langgraph__use-subgraphs.md"
     },
     "langgraph::use-time-travel": {
@@ -19787,9 +19787,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/use-time-travel",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "a6f784dd4cae6176360b1547cfa8a9cccefbab2aefcbdf874366cac6f02ede52",
+      "content_sha256": "2be4640f2f4704a62cc3e4cfab575eb9320c524d0064cb5e0b7977a5d35c6458",
       "word_count": 1275,
-      "last_updated_utc": "2026-10-23T04:01:52.302668+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.390818+00:00",
       "local_clean_path": "clean_sources/langgraph__use-time-travel.md"
     },
     "langgraph::workflows-agents": {
@@ -19798,9 +19798,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/workflows-agents",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "cad2976de3dae3c542f2008e6540a978985dd16726414e79d9058a984aabd294",
+      "content_sha256": "89b7b4880dd4067a1c1397735e9120a25c6274637ff08da2bc487c85d94988ae",
       "word_count": 3913,
-      "last_updated_utc": "2026-10-23T04:01:52.369619+00:00",
+      "last_updated_utc": "2026-10-24T03:56:05.406635+00:00",
       "local_clean_path": "clean_sources/langgraph__workflows-agents.md"
     },
     "microsoft_vscode-docs::.github/skills/docs-product-alignment/SKILL.md": {
@@ -21294,9 +21294,9 @@
       "canonical_web_url": "https://github.blog/changelog/label/copilot/feed/",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
       "git_blob_sha": null,
-      "content_sha256": "dca844dfc219422b4719bd02afe74b8cc1ac0e559bd5e1e304ba4101dc5570fd",
-      "word_count": 682,
-      "last_updated_utc": "2026-10-23T04:01:50.687157+00:00",
+      "content_sha256": "fdab2a66951610a3d199a0a738e98e08f4e3c39255ab4c615a7a9ac10c28fba7",
+      "word_count": 690,
+      "last_updated_utc": "2026-10-24T03:56:03.527599+00:00",
       "local_clean_path": "clean_sources/web__github_changelog_copilot_rss.md"
     },
     "web::vscode_api_contribution_points": {

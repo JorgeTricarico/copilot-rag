@@ -4,18 +4,18 @@
 
 # LangSmith Observability
 
-Traces are a series of steps that your application takes to go from input to output. Each of these individual steps is represented by a run. You can use [LangSmith](https://smith.langchain.com?utm_source=docs\&utm_medium=cta\&utm_campaign=langsmith-signup\&utm_content=oss-langgraph-observability) to visualize these execution steps. To use it, [enable tracing for your application](/langsmith/trace-with-langgraph.md). This enables you to do the following:
+Traces are a series of steps that your application takes to go from input to output. Each of these individual steps is represented by a run. You can use [LangSmith](https://smith.langchain.com?utm_source=docs\&utm_medium=cta\&utm_campaign=langsmith-signup\&utm_content=oss-langgraph-observability) to visualize these execution steps. To use it, [enable tracing for your application](https://docs.langchain.com/langsmith/trace-with-langgraph.md). This enables you to do the following:
 
-* [Debug a locally running application](/langsmith/observability-studio.md#debug-langsmith-traces).
-* [Evaluate the application performance](/oss/python/langchain/test/evals.md).
-* [Monitor the application](/langsmith/dashboards.md).
+* [Debug a locally running application](https://docs.langchain.com/langsmith/observability-studio.md#debug-langsmith-traces).
+* [Evaluate the application performance](https://docs.langchain.com/oss/python/langchain/test/evals.md).
+* [Monitor the application](https://docs.langchain.com/langsmith/dashboards.md).
 
 ## Prerequisites
 
 Before you begin, ensure you have the following:
 
 * **A LangSmith account**: Sign up (for free) or log in at [smith.langchain.com](https://smith.langchain.com?utm_source=docs\&utm_medium=cta\&utm_campaign=langsmith-signup\&utm_content=oss-langgraph-observability).
-* **A LangSmith API key**: Follow the [Create an API key](/langsmith/create-account-api-key.md) guide.
+* **A LangSmith API key**: Follow the [Create an API key](https://docs.langchain.com/langsmith/create-account-api-key.md) guide.
 
 ## Enable tracing
 
@@ -28,7 +28,7 @@ export LANGSMITH_API_KEY=<your-api-key>
 
 By default, the trace will be logged to the project with the name `default`. To configure a custom project name, see [Log to a project](#log-to-a-project).
 
-For more information, see [Trace with LangGraph](/langsmith/trace-with-langgraph.md).
+For more information, see [Trace with LangGraph](https://docs.langchain.com/langsmith/trace-with-langgraph.md).
 
 ## Trace selectively
 
@@ -103,11 +103,11 @@ This custom metadata and tags will be attached to the trace in LangSmith.
 
 > [!TIP]
 >
-> To learn more about how to use traces to debug, evaluate, and monitor your agents, see the [LangSmith documentation](/langsmith/observability.md).
+> To learn more about how to use traces to debug, evaluate, and monitor your agents, see the [LangSmith documentation](https://docs.langchain.com/langsmith/observability.md).
 
 ## Use anonymizers to prevent logging of sensitive data in traces
 
-You may want to mask sensitive data to prevent it from being logged to LangSmith. You can create [anonymizers](/langsmith/mask-inputs-outputs.md#rule-based-masking-of-inputs-and-outputs) and apply them to
+You may want to mask sensitive data to prevent it from being logged to LangSmith. You can create [anonymizers](https://docs.langchain.com/langsmith/mask-inputs-outputs.md#rule-based-masking-of-inputs-and-outputs) and apply them to
 your graph using configuration. This example will redact anything matching the Social Security Number format XXX-XX-XXXX from traces sent to LangSmith.
 
 ```python Python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
@@ -134,6 +134,6 @@ graph = (
 
 ***
 
-[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
+[Connect these docs](https://docs.langchain.com/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/observability.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

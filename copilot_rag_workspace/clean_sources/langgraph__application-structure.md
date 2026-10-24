@@ -6,11 +6,11 @@
 
 A LangGraph application consists of one or more graphs, a configuration file (`langgraph.json`), a file that specifies dependencies, and an optional `.env` file that specifies environment variables.
 
-This guide shows a typical structure of an application and shows you how to provide the required configuration to deploy an application with [LangSmith Deployment](/langsmith/deployment.md).
+This guide shows a typical structure of an application and shows you how to provide the required configuration to deploy an application with [LangSmith Deployment](https://docs.langchain.com/langsmith/deployment.md).
 
 > [!NOTE]
 >
-> LangSmith Deployment is a managed hosting platform for deploying and scaling LangGraph agents. It handles the infrastructure, scaling, and operational concerns so you can deploy your stateful, long-running agents directly from your repository. Learn more in the [Deployment documentation](/langsmith/deployment.md).
+> LangSmith Deployment is a managed hosting platform for deploying and scaling LangGraph agents. It handles the infrastructure, scaling, and operational concerns so you can deploy your stateful, long-running agents directly from your repository. Learn more in the [Deployment documentation](https://docs.langchain.com/langsmith/deployment.md).
 
 ## Key concepts
 
@@ -67,11 +67,11 @@ my-app/
 
 The `langgraph.json` file is a JSON file that specifies the dependencies, graphs, environment variables, and other settings required to deploy a LangGraph application.
 
-See the [LangGraph configuration file reference](/langsmith/cli.md#configuration-file) for details on all supported keys in the JSON file.
+See the [LangGraph configuration file reference](https://docs.langchain.com/langsmith/cli.md#configuration-file) for details on all supported keys in the JSON file.
 
 > [!TIP]
 >
-> The [LangGraph CLI](/langsmith/cli.md) defaults to using the configuration file `langgraph.json` in the current directory.
+> The [LangGraph CLI](https://docs.langchain.com/langsmith/cli.md) defaults to using the configuration file `langgraph.json` in the current directory.
 
 ### Examples
 
@@ -115,6 +115,6 @@ For a production deployment, you will typically want to configure the environmen
 
 ***
 
-[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
+[Connect these docs](https://docs.langchain.com/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/application-structure.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

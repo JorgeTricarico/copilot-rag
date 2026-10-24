@@ -6,7 +6,7 @@
 
 After you've prototyped your LangGraph agent, a natural next step is to add tests. This guide covers some useful patterns you can use when writing unit tests.
 
-Note that this guide is LangGraph-specific and covers scenarios around graphs with custom structures - if you are just getting started, check out [Test](/oss/python/langchain/test.md) that uses LangChain's built-in [`create_agent`](https://reference.langchain.com/python/langchain/agents/factory/create_agent) instead.
+Note that this guide is LangGraph-specific and covers scenarios around graphs with custom structures - if you are just getting started, check out [Test](https://docs.langchain.com/oss/python/langchain/test.md) that uses LangChain's built-in [`create_agent`](https://reference.langchain.com/python/langchain/agents/factory/create_agent) instead.
 
 ## Prerequisites
 
@@ -89,12 +89,12 @@ def test_individual_node_execution() -> None:
 
 ## Partial execution
 
-For agents made up of larger graphs, you may wish to test partial execution paths within your agent rather than the entire flow end-to-end. In some cases, it may make semantic sense to [restructure these sections as subgraphs](/oss/python/langgraph/use-subgraphs.md), which you can invoke in isolation as normal.
+For agents made up of larger graphs, you may wish to test partial execution paths within your agent rather than the entire flow end-to-end. In some cases, it may make semantic sense to [restructure these sections as subgraphs](https://docs.langchain.com/oss/python/langgraph/use-subgraphs.md), which you can invoke in isolation as normal.
 
 However, if you do not wish to make changes to your agent graph's overall structure, you can use LangGraph's persistence mechanisms to simulate a state where your agent is paused right before the beginning of the desired section, and will pause again at the end of the desired section. The steps are as follows:
 
 1. Compile your agent with a checkpointer (the in-memory checkpointer [`InMemorySaver`](https://reference.langchain.com/python/langgraph/checkpoints/#langgraph.checkpoint.memory.InMemorySaver) will suffice for testing).
-2. Call your agent's [`update_state`](/oss/python/langgraph/use-time-travel) method with an [`as_node`](/oss/python/langgraph/use-time-travel#from-a-specific-node) parameter set to the name of the node *before* the one you want to start your test.
+2. Call your agent's [`update_state`](https://docs.langchain.com/oss/python/langgraph/use-time-travel) method with an [`as_node`](https://docs.langchain.com/oss/python/langgraph/use-time-travel#from-a-specific-node) parameter set to the name of the node *before* the one you want to start your test.
 3. Invoke your agent with the same `thread_id` you used to update the state and an `interrupt_after` parameter set to the name of the node you want to stop at.
 
 Here's an example that executes only the second and third nodes in a linear graph:
@@ -151,6 +151,6 @@ def test_partial_execution_from_node2_to_node3() -> None:
 
 ***
 
-[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
+[Connect these docs](https://docs.langchain.com/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/test.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

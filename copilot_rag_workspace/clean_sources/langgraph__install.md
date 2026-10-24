@@ -17,7 +17,7 @@ uv add langgraph
 To use LangGraph you will usually want to access LLMs and define tools.
 You can do this however you see fit.
 
-One way to do this (which we will use in the docs) is to use [LangChain](/oss/python/langchain/overview.md).
+One way to do this (which we will use in the docs) is to use [LangChain](https://docs.langchain.com/oss/python/langchain/overview.md).
 
 Install LangChain with:
 
@@ -33,10 +33,10 @@ uv add langchain
 
 To work with specific LLM provider packages, you will need install them separately.
 
-Refer to the [integrations](/oss/python/integrations/providers/overview.md) page for provider-specific installation instructions.
+Refer to the [integrations](https://docs.langchain.com/oss/python/integrations/providers/overview.md) page for provider-specific installation instructions.
 
 ***
 
-[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
+[Connect these docs](https://docs.langchain.com/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/install.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).

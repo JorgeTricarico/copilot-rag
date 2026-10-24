@@ -4,7 +4,7 @@
 
 # Agent Chat UI
 
-[Agent Chat UI](https://github.com/langchain-ai/agent-chat-ui) is a Next.js application that provides a conversational interface for interacting with any LangChain agent. It supports real-time chat, tool visualization, and advanced features like time-travel debugging and state forking. Agent Chat UI works seamlessly with agents created using [`create_agent`](https://reference.langchain.com/python/langchain/agents/factory/create_agent) and provides interactive experiences for your agents with minimal setup, whether you're running locally or in a deployed context (such as [LangSmith](/langsmith/observability.md)).
+[Agent Chat UI](https://github.com/langchain-ai/agent-chat-ui) is a Next.js application that provides a conversational interface for interacting with any LangChain agent. It supports real-time chat, tool visualization, and advanced features like time-travel debugging and state forking. Agent Chat UI works seamlessly with agents created using [`create_agent`](https://reference.langchain.com/python/langchain/agents/factory/create_agent) and provides interactive experiences for your agents with minimal setup, whether you're running locally or in a deployed context (such as [LangSmith](https://docs.langchain.com/langsmith/observability.md)).
 
 Agent Chat UI is open source and can be adapted to your application needs.
 
@@ -12,7 +12,7 @@ Agent Chat UI is open source and can be adapted to your application needs.
 
 > [!TIP]
 >
-> You can use generative UI in the Agent Chat UI. For more information, see [Implement generative user interfaces with LangGraph](/langsmith/generative-ui-react.md).
+> You can use generative UI in the Agent Chat UI. For more information, see [Implement generative user interfaces with LangGraph](https://docs.langchain.com/langsmith/generative-ui-react.md).
 
 ### Quick start
 
@@ -48,7 +48,7 @@ pnpm dev
 
 ### Connect to your agent
 
-Agent Chat UI can connect to both [local](/oss/python/langgraph/studio.md#set-up-local-agent-server) and [deployed agents](/oss/python/langgraph/deploy.md).
+Agent Chat UI can connect to both [local](https://docs.langchain.com/oss/python/langgraph/studio.md#set-up-local-agent-server) and [deployed agents](https://docs.langchain.com/oss/python/langgraph/deploy.md).
 
 After starting Agent Chat UI, you'll need to configure it to connect to your agent:
 
@@ -64,6 +64,6 @@ Once configured, Agent Chat UI will automatically fetch and display any interrup
 
 ***
 
-[Connect these docs](/use-these-docs.md) to your agent of choice via MCP for real-time answers.
+[Connect these docs](https://docs.langchain.com/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
 [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/ui.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).
