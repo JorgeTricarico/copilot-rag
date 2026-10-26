@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-10-24T03:56:06.265177+00:00
-- **Total Palabras**: 15,530 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-26T18:29:30.500874+00:00
+- **Total Palabras**: 16,399 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -346,15 +346,15 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_143.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_143
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_143.md
-- **SHA256_FINGERPRINT**: `d71684e764cfa540bd5656a71f8df1d4af8827a20c6a3bf410f803a3e784ad17`
-- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:44.290349+00:00
+- **SHA256_FINGERPRINT**: `5fde412cfe9148bf34b8f8ca45496feabf91b8990906f1295b841bcc73454408`
+- **LAST_VERIFIED_UTC**: 2026-10-26T18:29:23.900825+00:00
 ---
 
 **MetaDescription**: Learn what's new in Visual Studio Code 1.143
 
 # Visual Studio Code 1.143
 
-Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://go.microsoft.com/fwlink/?LinkID=533687), [Bluesky](https://bsky.app/profile/vscode.dev), [Instagram](https://www.instagram.com/vscode.ig)
+Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://go.microsoft.com/fwlink/?LinkID=533687), [Bluesky](https://bsky.app/profile/vscode.dev), [Instagram](https://www.instagram.com/vscode)
 
 ---
 
@@ -807,15 +807,15 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_144.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_144
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_144.md
-- **SHA256_FINGERPRINT**: `4cd73bae6f9374d13ef228d07b281c937e9986b138df5b5e52543b6383454df6`
-- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:24.968132+00:00
+- **SHA256_FINGERPRINT**: `82c1dfcc4ecf9fdb4401cb43247324253cd990c963098789222e0a91e68b2dc1`
+- **LAST_VERIFIED_UTC**: 2026-10-26T18:29:23.901813+00:00
 ---
 
 **MetaDescription**: Learn what is new in Visual Studio Code 1.144 (Insiders)
 
 # Visual Studio Code 1.144
 
-Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://go.microsoft.com/fwlink/?LinkID=533687), [Bluesky](https://bsky.app/profile/vscode.dev), [Instagram](https://www.instagram.com/vscode.ig)
+Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://go.microsoft.com/fwlink/?LinkID=533687), [Bluesky](https://bsky.app/profile/vscode.dev), [Instagram](https://www.instagram.com/vscode)
 
 ---
 
@@ -1168,6 +1168,120 @@ We really appreciate people trying our new features as soon as they are ready, s
   - [x] Push the tag: `git push origin <x.y.z>`
   - [x] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right `... > Create Release`. Use the correct title and description from our release notes. [Example](https://github.com/microsoft/vscode/releases/tag/1.81.1)
 - [x] Close the milestone on [GitHub](https://github.com/microsoft/vscode/milestones) **@hediet**
+
+
+---
+# DOCUMENT_SOURCE: vscode_insiders::endgame-plan_344219
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/344219
+- **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/344219
+- **SHA256_FINGERPRINT**: `e12345981a020e87ed434e2340a20184d82dbc85932030cf5b3bab70e99ed9ad`
+- **LAST_VERIFIED_UTC**: 2026-10-26T18:29:30.418869+00:00
+---
+
+# VS Code Insiders Roadmap: 1.144.0 Endgame
+- **Issue Number**: #344219
+- **Category**: `endgame-plan`
+- **State**: open
+- **Source Issue**: https://github.com/microsoft/vscode/issues/344219
+
+[Endgame guide](https://github.com/microsoft/vscode-internalbacklog/blob/main/guidelines/endgame-guide.md)
+
+# Before Monday 6AM Zurich time
+
+`@team`:
+- Update endgame availability
+- Test plan items created
+- Milestone only has TPIs. All other issues need to be closed
+- All closed issues in milestone labeled `on-testplan`, `bug`, or `verification-needed`
+- Verification steps added to `bug` and `verification-needed` issues
+
+# Monday morning  (Zurich)
+
+`@endgame-champ`:
+- [x] Unpin the previous endgame plan from the [VS Code issue tracker](https://github.com/microsoft/vscode/issues) — [#342482](https://github.com/microsoft/vscode/issues/342482) unpinned.
+- [x] Pin this endgame plan in the [VS Code issue tracker](https://github.com/microsoft/vscode/issues) — [#344219](https://github.com/microsoft/vscode/issues/344219) pinned.
+- [x] Assign TPIs
+  - All 12 open public TPIs assigned; internal [microsoft/vscode-internalbacklog#10404](https://github.com/microsoft/vscode-internalbacklog/issues/10404) and [microsoft/vscode-internalbacklog#10382](https://github.com/microsoft/vscode-internalbacklog/issues/10382) remain unassigned.
+  - [x] Create TPI's for all verification needed bugs. Visit `Testing and Verification` on tools site, and generate groupings, then create TPIs. The TPI section below  will update with all of the generated items.
+    - [37 verification TPIs](https://github.com/microsoft/vscode-internalbacklog/issues?q=is%3Aissue%20milestone%3A1.144.0%20%22Verification%20TPI%3A%22%20in%3Atitle) created and assigned.
+- [x] Pause automatic releases (this also ensures chat-pre-release isn't released) after 10am. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=383))
+  - [489137](https://dev.azure.com/monacotools/Monaco/_build/results?buildId=489137): Disable continuous release succeeded.
+- [x] Run the [Start Endgame](https://github.com/microsoft/vscode-engineering/actions/workflows/start-endgame.yml) workflow
+
+  - PRs opened with auto-merge enabled — ensure they get reviewed and merged Monday morning so Insiders picks up the next milestone version:
+    - [ ] Version bump (`microsoft/vscode`): https://github.com/microsoft/vscode/pull/344221
+    - [x] Endgame notebook milestone bump (`microsoft/vscode`): https://github.com/microsoft/vscode/pull/344220
+
+  - [Run 40289809619](https://github.com/microsoft/vscode-engineering/actions/runs/40289809619) succeeded; three release branches created.
+  - If you need to run these steps manually, see the [Branching guide](https://github.com/microsoft/vscode-internalbacklog/blob/main/guidelines/endgame-guide.md#branching).
+- [ ] Monday-morning addition: build Stable from `release/1.144`, validate it, and release internally to Microsoft.
+  - [x] Queue the Stable Product build (publish artifacts; do not release publicly).
+    - [489126](https://dev.azure.com/monacotools/Monaco/_build/results?buildId=489126): Stable running at `ff05b50`; release disabled; artifact sanity tests disabled.
+  - [ ] Verify Stable build and sanity results.
+  - [ ] Release the validated Stable build internally to Microsoft.
+- [ ] In absence of the tech writer, follow the steps in the [website endgame issue](https://github.com/microsoft/vscode-website/wiki#performing-a-weekly-release)
+
+# Monday morning (Redmond and Zurich)
+
+`@team`:
+- [Test plan items](https://github.com/issues?q=org%3Amicrosoft%20milestone%3A%221.144.0%22%20is%3Aissue%20is%3Aopen%20label%3Atestplan-item). All TPIs must be finished by noon. This includes verification TPIs.
+- Make sure your TPIs are being tested and ping folks if to confirm they will finish by noon.
+
+# Monday afternoon (Redmond and Zurich)
+
+`@team`:
+- Fix essential issues. Default to pushing to next iteration
+- Release notes
+
+# Monday EOD Redmond time
+
+`@team`:
+- All issues including late fixes, are verified ([query](https://github.com/issues?q=org%3Amicrosoft+milestone%3A%221.144.0%22+is%3Aissue+is%3Aclosed+reason%3Acompleted++label%3Abug+-label%3Averified+-label%3Aon-testplan+-label%3A*duplicate+-label%3Aduplicate+-label%3Ainvalid+-label%3A*as-designed+-label%3Aerror-telemetry+-label%3Averification-steps-needed+-label%3Az-author-verified+-label%3Aunreleased+-label%3A*not-reproducible+-label%3A*out-of-scope+sort%3Aupdated-asc))
+- Release notes written
+
+`@endgame-champ`:
+- [ ] Build and release Insiders from `release/<x.y>` branch so we can finish verification. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
+- [ ] Build stable from `release/<x.y>` branch (do not release) so that the Zurich team would have a build to release given no candidates. ([Pipline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
+
+# Tuesday by noon CET
+
+`@team`:
+- Fix essential issues. Default to pushing to next iteration
+- Release notes
+
+`@endgame-champ`:
+- [ ] Generate "Thank you" section of the release notes in the `vnext` branch of the `vscode-docs` repo.
+    - [ ] [Acknowledge third-party pull requests](https://tools.code.visualstudio.com/acknowledgement) in release notes.
+    - [ ] Acknowledge [issue trackers](https://github.com/microsoft/vscode-internalbacklog/wiki/Community-Triage---Credits#community-triage---role-based) from the community (do the copy-paste variant) -
+- [ ] If this is not Patch Tuesday only:
+  - [ ] Build and release insiders from release/<x.y> (if there have been newer changes since last release)
+  - [ ] Build stable from release/<x.y> and release to MSFT folks
+  - [ ] Reenable automatic releases
+    - A build is scheduled for 7:00 PM Zurich time (`19:00 GMT+2`); make sure automatic releases are reenabled before then so we get an Insiders build from `main` on Tuesday evening.
+
+# Tuesday afternoon/Wednesday morning
+
+- In extreme cases, accept candidate changes
+    - [ ] Build stable from `release/<x.y>`. Do *not* bump the VS Code version.
+    - [ ] Release stable to MSFT folks
+
+# Wednesday
+`@endgame-champ`:
+- [ ] Publish website so that in-product release notes are ready
+- [ ] Start Stable rollout to everyone (start percentage: `20%`, end time UTC: `6AM next Wednesday`)
+- [ ] Deploy vscode.dev
+  - [ ] Verify the [release candidate](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) `release/x.y` passed the sanity tests in the last step
+  - [ ] [Kick off deploy](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) (Branch `release/x.y`, Deployment Target `prod`, needs peer approval)
+- [ ] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `auto`; the release pipeline job requires two approvals)
+- [ ] Publish socials (ping Cynthia)
+- [ ] [Publish @types/vscode](https://github.com/microsoft/vscode/wiki/Publish-vscode-types) if you find type diffs after running the steps
+- [ ] Create an official release
+  - [ ] Create a tag (make sure you pull the release branch first): `git tag <x.y.z>`
+  - [ ] Push the tag: `git push origin <x.y.z>`
+  - [ ] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right ... > Create Release. Use the version as title <x.y.z> and use the release link `https://code.visualstudio.com/updates/v<x_y>` for the description
+- [ ] Close milestone (**do not** delete it): https://github.com/microsoft/vscode/milestones
+- [ ] Move all remaining issues to "On Deck"
+- [ ] Ensure that the latest Insiders release from main has succeeded
 
 
 ---

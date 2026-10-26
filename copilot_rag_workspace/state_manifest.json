@@ -1,7 +1,7 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-10-26T03:59:53.247304+00:00",
-  "total_documents": 1995,
+  "last_sync_utc": "2026-10-26T18:29:30.511235+00:00",
+  "total_documents": 1999,
   "documents": {
     "anthropics_skills::README.md": {
       "doc_id": "anthropics_skills::README.md",
@@ -13698,6 +13698,39 @@
       "last_updated_utc": "2026-10-21T03:45:35.187024+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_markdown-to-html_references_writing-mathematical-expressions.md"
     },
+    "github_awesome-copilot::skills/markdown-to-word-mermaid/SKILL.md": {
+      "doc_id": "github_awesome-copilot::skills/markdown-to-word-mermaid/SKILL.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/markdown-to-word-mermaid/SKILL.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/markdown-to-word-mermaid/SKILL.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "3b9633a8efa0481a0817e179640321e6040df3fd",
+      "content_sha256": "13ededc06350495cf3624fd5dfe9778f2a6e0c7c16bba4fd77c51062818cacfd",
+      "word_count": 1143,
+      "last_updated_utc": "2026-10-26T18:29:25.430869+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_markdown-to-word-mermaid_SKILL.md"
+    },
+    "github_awesome-copilot::skills/markdown-to-word-mermaid/assets/example.md": {
+      "doc_id": "github_awesome-copilot::skills/markdown-to-word-mermaid/assets/example.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/markdown-to-word-mermaid/assets/example.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/markdown-to-word-mermaid/assets/example.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "e6091f70b4775b1de99bd7b5bcee89e939cf8cbc",
+      "content_sha256": "222513194200e5f76a1c7e76d6dab388b81259315c0b2bd38620c765b4497a24",
+      "word_count": 169,
+      "last_updated_utc": "2026-10-26T18:29:25.432804+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_markdown-to-word-mermaid_assets_example.md"
+    },
+    "github_awesome-copilot::skills/markdown-to-word-mermaid/references/publication.md": {
+      "doc_id": "github_awesome-copilot::skills/markdown-to-word-mermaid/references/publication.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/markdown-to-word-mermaid/references/publication.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/markdown-to-word-mermaid/references/publication.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "58c53e15a145b975ec4fb38291bb84a1f4ecd035",
+      "content_sha256": "b807299f9d78d9f9a33478fb71b550ee49a689a01386d41e837912f4cd3b11eb",
+      "word_count": 352,
+      "last_updated_utc": "2026-10-26T18:29:25.444401+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_markdown-to-word-mermaid_references_publication.md"
+    },
     "github_awesome-copilot::skills/markstream-install/SKILL.md": {
       "doc_id": "github_awesome-copilot::skills/markstream-install/SKILL.md",
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/markstream-install/SKILL.md",
@@ -19974,9 +20007,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/add-memory",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "d6cbbb3f895a2b2f341395cc7072fc2d3caf703c2816ceb53f3a3ec4d1f4703b",
-      "word_count": 8007,
-      "last_updated_utc": "2026-10-24T03:56:04.523767+00:00",
+      "content_sha256": "4ad80f78c7567b3f8185315a29662e334de76cae23dabab6d7e291916c69bb09",
+      "word_count": 8071,
+      "last_updated_utc": "2026-10-26T18:29:27.975778+00:00",
       "local_clean_path": "clean_sources/langgraph__add-memory.md"
     },
     "langgraph::agentic-rag": {
@@ -20029,9 +20062,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "c0b9b18f99872b6e047b29570e1a562e9455bf36fe23a76e8176d9ca1c47a206",
+      "content_sha256": "84e7f93e668a535892cbdbd8fcc1a575ed42aed2ed9ea89b3cf6efbd93ec89c9",
       "word_count": 26546,
-      "last_updated_utc": "2026-10-26T03:59:51.609485+00:00",
+      "last_updated_utc": "2026-10-26T18:29:28.220787+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -20040,9 +20073,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "c6b4f5cfdc73a3adcea88a84e0f38acd3e1721fc89c5202e3c46911e0f1997e1",
+      "content_sha256": "b02a29dbef02a1a85cd4347ed33415e424ea640f63b04704f0c688d87501ec38",
       "word_count": 29768,
-      "last_updated_utc": "2026-10-26T03:59:51.679657+00:00",
+      "last_updated_utc": "2026-10-26T18:29:28.409540+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -21414,7 +21447,7 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_142.md",
       "canonical_web_url": "https://code.visualstudio.com/release-notes/v1_142",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
-      "git_blob_sha": "cbce1c1183d29863c714dced9e467bfb1ade8377",
+      "git_blob_sha": "9ffdeaf70963cab26e15800397e99ad6f0114eab",
       "content_sha256": "5978f7b095056c2c8a5b9b32a7caa43249e7d0521cf71a90a8f75950b54879cd",
       "word_count": 3007,
       "last_updated_utc": "2026-10-20T22:05:31.980751+00:00",
@@ -21425,10 +21458,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_143.md",
       "canonical_web_url": "https://code.visualstudio.com/updates/v1_143",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
-      "git_blob_sha": "2aebb6927ff73f7063c914a58a04126b01150bc2",
-      "content_sha256": "d71684e764cfa540bd5656a71f8df1d4af8827a20c6a3bf410f803a3e784ad17",
+      "git_blob_sha": "19f2f95445985be6d0c4c7691c0068da043efcc6",
+      "content_sha256": "5fde412cfe9148bf34b8f8ca45496feabf91b8990906f1295b841bcc73454408",
       "word_count": 4484,
-      "last_updated_utc": "2026-10-23T04:01:44.290349+00:00",
+      "last_updated_utc": "2026-10-26T18:29:23.900825+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__release-notes_v1_143.md"
     },
     "microsoft_vscode-docs::release-notes/v1_144.md": {
@@ -21436,10 +21469,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_144.md",
       "canonical_web_url": "https://code.visualstudio.com/updates/v1_144",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
-      "git_blob_sha": "050be9a926e88293d6d39cfc7971da46ff72426c",
-      "content_sha256": "4cd73bae6f9374d13ef228d07b281c937e9986b138df5b5e52543b6383454df6",
+      "git_blob_sha": "2e47b55297c3c9a7781d5f841737f2f883513433",
+      "content_sha256": "82c1dfcc4ecf9fdb4401cb43247324253cd990c963098789222e0a91e68b2dc1",
       "word_count": 329,
-      "last_updated_utc": "2026-10-22T03:58:24.968132+00:00",
+      "last_updated_utc": "2026-10-26T18:29:23.901813+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__release-notes_v1_144.md"
     },
     "microsoft_vscode::extensions/copilot/.agents/skills/github-copilot-upgrader/SKILL.md": {
@@ -21859,6 +21892,17 @@
       "word_count": 375,
       "last_updated_utc": "2026-10-23T04:01:53.027709+00:00",
       "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_343623.md"
+    },
+    "vscode_insiders::endgame-plan_344219": {
+      "doc_id": "vscode_insiders::endgame-plan_344219",
+      "source_url": "https://github.com/microsoft/vscode/issues/344219",
+      "canonical_web_url": "https://github.com/microsoft/vscode/issues/344219",
+      "bundle_name": "07_Release_Notes_And_Changelog_Radar",
+      "git_blob_sha": null,
+      "content_sha256": "e12345981a020e87ed434e2340a20184d82dbc85932030cf5b3bab70e99ed9ad",
+      "word_count": 834,
+      "last_updated_utc": "2026-10-26T18:29:30.418869+00:00",
+      "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_344219.md"
     },
     "vscode_insiders::iteration-plan_271045": {
       "doc_id": "vscode_insiders::iteration-plan_271045",
