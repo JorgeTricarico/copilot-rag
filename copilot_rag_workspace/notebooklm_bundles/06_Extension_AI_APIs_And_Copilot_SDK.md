@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
-- **Generado (UTC)**: 2026-10-22T03:58:31.502036+00:00
-- **Total Palabras**: 123,843 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-26T03:59:53.229538+00:00
+- **Total Palabras**: 123,938 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -19161,8 +19161,8 @@ declare module 'vscode' {
 # DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts
-- **SHA256_FINGERPRINT**: `6d08a1c4fc9e6b97fb61d1a80362cedb2a93245cfd35eb291299be32f22feed9`
-- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:25.583934+00:00
+- **SHA256_FINGERPRINT**: `5894997a640d80c3479f881e63892cc313ef4badeeb4179c46ff4dd3a2e84b9e`
+- **LAST_VERIFIED_UTC**: 2026-10-26T03:59:44.045997+00:00
 ---
 
 # VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts`
@@ -19240,6 +19240,13 @@ declare module 'vscode' {
 	export interface ChatArtifactIntegrationState {
 		readonly availability?: ChatArtifactAvailability;
 		readonly main?: ChatArtifactPresentation;
+		/**
+		 * How this artifact contributes to a group of several artifacts of this provider, which shows the icon
+		 * with the highest priority among them, for example a failing pull request's icon over an open one's.
+		 * Priorities are only compared among this provider's artifacts, and only when this provider presents
+		 * the artifact's main part.
+		 */
+		readonly group?: { readonly icon: ThemeIcon; readonly priority: number };
 		readonly sections?: readonly ChatArtifactSection[];
 		/** Independent state lists. Their optional icons remain available even without a corresponding pill section. */
 		readonly lists?: readonly { readonly id: string; readonly label: string; readonly icon?: ThemeIcon; readonly detailsId: string }[];
@@ -19410,6 +19417,8 @@ declare module 'vscode' {
 		readonly label: string;
 		/** Names the recorded resources this provider supports, such as "Experiment links on example.com", so agents know when to use it. One line of plain text, at most 300 characters. */
 		readonly description?: string;
+		/** Names several of this provider's artifacts when they are grouped, such as "Experiments". One line of plain text, at most 100 characters. */
+		readonly groupLabel?: string;
 		/** Stable for this registration's lifetime. Every referenced action must exist on each observation. Option and choice labels are one line of plain text, at most 100 characters. */
 		readonly automationOptions?: readonly ChatArtifactAutomationOption[];
 		/** Invalidates matching and existing resource observations, for example after an account change. */

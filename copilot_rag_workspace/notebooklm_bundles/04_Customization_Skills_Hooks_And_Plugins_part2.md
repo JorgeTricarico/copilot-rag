@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part2
-- **Generado (UTC)**: 2026-10-23T04:01:53.073362+00:00
-- **Total Palabras**: 449,965 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-26T03:59:53.125234+00:00
+- **Total Palabras**: 448,094 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -75959,6 +75959,147 @@ tasks.withType<JavaExec> {
 
 
 ---
+# DOCUMENT_SOURCE: github_awesome-copilot::instructions/sql-server-safe-tsql.instructions.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/instructions/sql-server-safe-tsql.instructions.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/sql-server-safe-tsql.instructions.md
+- **SHA256_FINGERPRINT**: `34ffd2401e774b600ceb54f76745baa7e9db59dedc7a5c4fafaa132906faacfb`
+- **LAST_VERIFIED_UTC**: 2026-10-26T03:59:45.195092+00:00
+---
+
+**description**: SQL Server-specific write-safety rules for T-SQL: XACT_ABORT with THROW, @@TRANCOUNT-aware transactions, fail-closed dry runs, batched OUTPUT...INTO archiving, autocommit-only admin statements, and read-only DMV diagnostics.
+
+# SQL Server Production-Safe T-SQL
+
+Apply these rules when writing or reviewing T-SQL, SQL Server Agent jobs, or PowerShell that runs against SQL Server. They complement general SQL style guidance by focusing on what keeps a script safe to run against production-adjacent systems.
+
+## Script header
+
+Start every script with a comment block that states:
+
+- Purpose (one line)
+- `COMPAT:` the minimum SQL Server version (for example `SQL Server 2016 SP1+` for `CREATE OR ALTER`) and whether it works on Azure SQL Managed Instance
+- `Perms:` the permissions required (for example `VIEW SERVER STATE`, or `VIEW SERVER PERFORMANCE STATE` on SQL Server 2022+)
+- Whether the script is read-only or writes data
+
+If you are not sure a syntax or DMV column exists in the target version, say so instead of guessing.
+
+## Required shape for any write (DML or DDL)
+
+- Begin with `SET NOCOUNT ON; SET XACT_ABORT ON;`.
+- Wrap transaction-compatible work in `BEGIN TRY ... BEGIN TRANSACTION ... COMMIT ... END TRY BEGIN CATCH ... END CATCH`.
+- Some administration statements cannot run inside a user transaction (for example `CREATE DATABASE`, `ALTER DATABASE`, `DROP DATABASE`, `BACKUP`, `RESTORE`, and `RECONFIGURE`). For these, use an autocommit path instead of the transaction wrapper: keep the same dry-run default and confirmation gate, run each statement on its own inside `TRY ... CATCH` with `THROW;`, check state before and after, and write the operation-specific recovery step (for example the backup to restore from, or the previous configuration value to set back).
+- In the `CATCH` block, roll back only if a transaction is open, then `THROW;` so the original error number and line reach the caller and Agent job history. Do not swallow errors.
+- In single-transaction procedures that may be called inside an outer transaction, check `@@TRANCOUNT` on entry, before any read, and only begin and commit a transaction when it is `0`. If it is `0` and `IMPLICIT_TRANSACTIONS` is ON (`@@OPTIONS & 2`), reject the call before `BEGIN TRANSACTION`, because `BEGIN TRANSACTION` then opens a second level and the single `COMMIT` leaves the write uncommitted with its locks held (for example `IF @@TRANCOUNT = 0 AND (@@OPTIONS & 2) = 2 THROW 50000, N'Run with IMPLICIT_TRANSACTIONS OFF; this procedure owns its transaction.', 1;`). Procedures that commit in batches must refuse to run inside a caller-owned transaction or with `IMPLICIT_TRANSACTIONS ON` (`@@OPTIONS & 2`), because either one keeps every batch's locks and log until an outer commit and lets a later rollback undo earlier batches.
+- Default to a dry run that fails closed. In T-SQL, use a `@DryRun bit = 1` parameter and treat anything other than an explicit `0`, including `NULL`, as a dry run (`IF @DryRun IS NULL OR @DryRun <> 0`). The parameter default only covers omitted arguments, so never test `IF @DryRun = 1` alone. The dry run prints or returns what would change (for example a row count) and changes nothing.
+- In PowerShell, `SupportsShouldProcess` and `-WhatIf` alone do not make dry run the default. Require an explicit `-Apply` switch that is off by default, and wrap every mutation in `if ($Apply -and $PSCmdlet.ShouldProcess($target, $action)) { ... }`. Without `-Apply`, report what would change and exit.
+- Make scripts idempotent: `CREATE OR ALTER`, `IF OBJECT_ID(...) IS NULL`, `IF NOT EXISTS`. Never silently overwrite an existing Agent job, linked server, alert, login, or user; detect it and stop or require an explicit flag.
+- Every `UPDATE` and `DELETE` has a selective `WHERE` clause. Batch large changes with a `TOP (N)` loop, one short transaction per batch, and an accumulated row count.
+- When moving rows (archive then delete), capture each batch's keys into a freshly cleared key set with `OUTPUT ... INTO`, and delete only the rows proven to be copied in that batch.
+- Validate parameters at the top of procedures and return a documented non-zero return code on invalid input.
+
+### Procedure template
+
+```sql
+CREATE OR ALTER PROCEDURE dbo.usp_ArchiveOrders
+    @OlderThanDays int,
+    @BatchSize     int = 1000,
+    @DryRun        bit = 1,
+    @RowsAffected  int = NULL OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET XACT_ABORT ON;
+
+    IF @OlderThanDays IS NULL OR @OlderThanDays < 1
+    BEGIN
+        RAISERROR(N'@OlderThanDays must be >= 1.', 16, 1);
+        RETURN 1;
+    END;
+
+    IF @BatchSize IS NULL OR @BatchSize NOT BETWEEN 1 AND 50000
+    BEGIN
+        RAISERROR(N'@BatchSize must be between 1 and 50000.', 16, 1);
+        RETURN 2;
+    END;
+
+    -- Batches commit independently, so a caller-owned transaction or
+    -- IMPLICIT_TRANSACTIONS ON is not allowed.
+    IF @@TRANCOUNT > 0 OR (@@OPTIONS & 2) = 2
+    BEGIN
+        RAISERROR(N'Run outside a caller transaction with IMPLICIT_TRANSACTIONS OFF; this procedure commits per batch.', 16, 1);
+        RETURN 3;
+    END;
+
+    DECLARE @Cutoff datetime2(0) = DATEADD(DAY, -@OlderThanDays, SYSDATETIME());
+    SET @RowsAffected = 0;
+
+    -- Fail closed: anything other than an explicit 0, including NULL, is a dry run.
+    IF @DryRun IS NULL OR @DryRun <> 0
+    BEGIN
+        SELECT @RowsAffected = COUNT(*) FROM dbo.Orders WHERE Status = 'Closed' AND CreatedAt < @Cutoff;
+        PRINT CONCAT(N'DRY RUN: would archive ', @RowsAffected, N' rows in batches of ', @BatchSize, N'.');
+        RETURN 0;
+    END;
+
+    DECLARE @moved TABLE (OrderId int PRIMARY KEY);
+    DECLARE @BatchRows int = 1;
+
+    BEGIN TRY
+        WHILE @BatchRows > 0
+        BEGIN
+            DELETE FROM @moved;  -- fresh key set for every batch
+
+            BEGIN TRANSACTION;
+
+            INSERT dbo.OrdersArchive (OrderId, Status, CreatedAt)
+            OUTPUT inserted.OrderId INTO @moved (OrderId)
+            SELECT TOP (@BatchSize) o.OrderId, o.Status, o.CreatedAt
+            FROM dbo.Orders o WITH (UPDLOCK)
+            WHERE o.Status = 'Closed' AND o.CreatedAt < @Cutoff
+            ORDER BY o.OrderId;
+
+            DELETE o FROM dbo.Orders o JOIN @moved m ON m.OrderId = o.OrderId;
+            SET @BatchRows = @@ROWCOUNT;
+
+            COMMIT TRANSACTION;
+            SET @RowsAffected += @BatchRows;
+        END;
+        RETURN 0;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;  -- rolls back only the failing batch
+        THROW;
+    END CATCH;
+END;
+```
+
+The default `@BatchSize` is 1000; tune larger values, because a batch that takes thousands of locks can escalate to a table lock that blocks other sessions.
+
+On failure, earlier batches stay committed and the error is rethrown. Because the error is rethrown, SQL Server does not copy `@RowsAffected` back to the caller, so treat it as reliable only on successful completion; to see partial progress, count the archive table or log each batch before rethrowing. A rerun picks up the remaining qualifying rows.
+
+## Ask before generating destructive or risky operations
+
+Stop and ask for explicit confirmation, stating the data-loss or availability impact, before producing any of:
+
+- `DROP`, `TRUNCATE`, `ALTER TABLE ... DROP COLUMN`, or column type narrowing
+- `UPDATE` or `DELETE` without a selective predicate
+- `KILL`, or `DBCC` repair options
+- Enabling `xp_cmdshell`, Ole Automation, or CLR
+- Server-level configuration changes (for example `max server memory`)
+- Disabling constraints or triggers
+
+Before any data-loss operation, state what should be backed up, where, and how to restore it. Include rollback steps for every change.
+
+## Diagnostics are read-only
+
+- Diagnostic queries against DMVs (blocking chains, wait statistics, expensive queries, orphaned users, linked server checks) must not change state. Label them `READ-ONLY` in the header.
+- For blocking, identify head blockers (sessions that block others but are not blocked themselves) and show the chain with `sys.dm_exec_sessions`, `sys.dm_exec_requests`, and `sys.dm_exec_sql_text`. Do not issue `KILL`; if the user decides to, tell them to record the session id and reason, and that `KILL` rolls back the open transaction.
+- For wait statistics, capture two snapshots of `sys.dm_os_wait_stats` and report the delta, excluding benign idle waits, rather than reporting cumulative values since startup.
+- For orphaned users, restrict detection to instance-authenticated SQL users (`type = 'S'` and `authentication_type = 1` in `sys.database_principals`) whose SID has no matching row in `sys.server_principals`. Exclude system principals (`dbo`, `guest`, `INFORMATION_SCHEMA`, `sys`). Users created `WITHOUT LOGIN`, contained database users, and Windows users intentionally have no matching SQL login and are not orphans.
+- Keep orphaned-user detection read-only. Any repair is a separate, dry-run-first script that requires a confirmed user-to-login mapping, uses `ALTER USER ... WITH LOGIN = ...`, never creates logins, and never drops users.
+
+
+---
 # DOCUMENT_SOURCE: github_awesome-copilot::instructions/sql-sp-generation.instructions.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/instructions/sql-sp-generation.instructions.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/sql-sp-generation.instructions.md
@@ -90769,506 +90910,3 @@ Upgrade ax (see above) or use the closest available alternative.
 ## Still failing
 
 Stop and ask the user for help.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/arize-dataset/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arize-dataset/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arize-dataset/SKILL.md
-- **SHA256_FINGERPRINT**: `104d4dd4335eba372611c567ea6437849d75622581c4e53593291db2ef7c68e3`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.732654+00:00
----
-
-**description**: Creates, manages, and queries Arize datasets and examples. Covers dataset CRUD, appending examples, exporting data, and file-based dataset creation using the ax CLI. Use when the user needs test data, evaluation examples, or mentions create dataset, list datasets, export dataset, append examples, dataset version, golden dataset, or test set.
-
-# Arize Dataset Skill
-
-> **`SPACE`** — All `--space` flags and the `ARIZE_SPACE` env var accept a space **name** (e.g., `my-workspace`) or a base64 space **ID** (e.g., `U3BhY2U6...`). Find yours with `ax spaces list`.
-
-## Concepts
-
-- **Dataset** = a versioned collection of examples used for evaluation and experimentation
-- **Dataset Version** = a snapshot of a dataset at a point in time; updates can be in-place or create a new version
-- **Example** = a single record in a dataset with arbitrary user-defined fields (e.g., `question`, `answer`, `context`)
-- **Space** = an organizational container; datasets belong to a space
-
-System-managed fields on examples (`id`, `created_at`, `updated_at`) are auto-generated by the server -- never include them in create or append payloads.
-
-## Prerequisites
-
-Proceed directly with the task — run the `ax` command you need. Do NOT check versions, env vars, or profiles upfront.
-
-If an `ax` command fails, troubleshoot based on the error:
-- `command not found` or version error → see references/ax-setup.md
-- `401 Unauthorized` / missing API key → run `ax profiles show` to inspect the current profile. If the profile is missing or the API key is wrong, follow references/ax-profiles.md to create/update it. If the user doesn't have their key, direct them to https://app.arize.com/admin > API Keys
-- Space unknown → run `ax spaces list` to pick by name, or ask the user
-- Project unclear → ask the user, or run `ax projects list -o json --limit 100` and present as selectable options
-- **Security:** Never read `.env` files or search the filesystem for credentials. Use `ax profiles` for Arize credentials and `ax ai-integrations` for LLM provider keys. If credentials are not available through these channels, ask the user.
-
-## List Datasets: `ax datasets list`
-
-Browse datasets in a space. Output goes to stdout.
-
-```bash
-ax datasets list
-ax datasets list --space SPACE --limit 20
-ax datasets list --cursor CURSOR_TOKEN
-ax datasets list -o json
-```
-
-### Flags
-
-| Flag | Type | Default | Description |
-|------|------|---------|-------------|
-| `--space` | string | from profile | Filter by space |
-| `--limit, -l` | int | 15 | Max results (1-100) |
-| `--cursor` | string | none | Pagination cursor from previous response |
-| `-o, --output` | string | table | Output format: table, json, csv, parquet, or file path |
-| `-p, --profile` | string | default | Configuration profile |
-
-## Get Dataset: `ax datasets get`
-
-Quick metadata lookup -- returns dataset name, space, timestamps, and version list.
-
-```bash
-ax datasets get NAME_OR_ID
-ax datasets get NAME_OR_ID -o json
-ax datasets get NAME_OR_ID --space SPACE   # required when using dataset name instead of ID
-```
-
-### Flags
-
-| Flag | Type | Default | Description |
-|------|------|---------|-------------|
-| `NAME_OR_ID` | string | required | Dataset name or ID (positional) |
-| `--space` | string | none | Space name or ID (required if using dataset name instead of ID) |
-| `-o, --output` | string | table | Output format |
-| `-p, --profile` | string | default | Configuration profile |
-
-### Response fields
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | string | Dataset ID |
-| `name` | string | Dataset name |
-| `space_id` | string | Space this dataset belongs to |
-| `created_at` | datetime | When the dataset was created |
-| `updated_at` | datetime | Last modification time |
-| `versions` | array | List of dataset versions (id, name, dataset_id, created_at, updated_at) |
-
-## Export Dataset: `ax datasets export`
-
-Download all examples to a file. Use `--all` for datasets larger than 500 examples (unlimited bulk export).
-
-```bash
-ax datasets export NAME_OR_ID
-# -> dataset_abc123_20260305_141500/examples.json
-
-ax datasets export NAME_OR_ID --all
-ax datasets export NAME_OR_ID --version-id VERSION_ID
-ax datasets export NAME_OR_ID --output-dir ./data
-ax datasets export NAME_OR_ID --stdout
-ax datasets export NAME_OR_ID --stdout | jq '.[0]'
-ax datasets export NAME_OR_ID --space SPACE   # required when using dataset name instead of ID
-```
-
-### Flags
-
-| Flag | Type | Default | Description |
-|------|------|---------|-------------|
-| `NAME_OR_ID` | string | required | Dataset name or ID (positional) |
-| `--space` | string | none | Space name or ID (required if using dataset name instead of ID) |
-| `--version-id` | string | latest | Export a specific dataset version |
-| `--all` | bool | false | Unlimited bulk export (use for datasets > 500 examples) |
-| `--output-dir` | string | `.` | Output directory |
-| `--stdout` | bool | false | Print JSON to stdout instead of file |
-| `-p, --profile` | string | default | Configuration profile |
-
-**Agent auto-escalation rule:** If an export returns exactly 500 examples, the result is likely truncated — re-run with `--all` to get the full dataset.
-
-**Export completeness verification:** After exporting, confirm the row count matches what the server reports:
-```bash
-# Get the server-reported count from dataset metadata
-ax datasets get DATASET_NAME --space SPACE -o json | jq '.versions[-1] | {version: .id, examples: .example_count}'
-
-# Compare to what was exported
-jq 'length' dataset_*/examples.json
-
-# If counts differ, re-export with --all
-```
-
-Output is a JSON array of example objects. Each example has system fields (`id`, `created_at`, `updated_at`) plus all user-defined fields:
-
-```json
-[
-  {
-    "id": "ex_001",
-    "created_at": "2026-01-15T10:00:00Z",
-    "updated_at": "2026-01-15T10:00:00Z",
-    "question": "What is 2+2?",
-    "answer": "4",
-    "topic": "math"
-  }
-]
-```
-
-## Create Dataset: `ax datasets create`
-
-Create a new dataset from a data file.
-
-```bash
-ax datasets create --name "My Dataset" --space SPACE --file data.csv
-ax datasets create --name "My Dataset" --space SPACE --file data.json
-ax datasets create --name "My Dataset" --space SPACE --file data.jsonl
-ax datasets create --name "My Dataset" --space SPACE --file data.parquet
-```
-
-### Flags
-
-| Flag | Type | Required | Description |
-|------|------|----------|-------------|
-| `--name, -n` | string | yes | Dataset name |
-| `--space` | string | yes | Space to create the dataset in |
-| `--file, -f` | path | yes | Data file: CSV, JSON, JSONL, or Parquet |
-| `-o, --output` | string | no | Output format for the returned dataset metadata |
-| `-p, --profile` | string | no | Configuration profile |
-
-### Passing data via stdin
-
-Use `--file -` to pipe data directly — no temp file needed:
-
-```bash
-echo '[{"question": "What is 2+2?", "answer": "4"}]' | ax datasets create --name "my-dataset" --space SPACE --file -
-
-# Or with a heredoc
-ax datasets create --name "my-dataset" --space SPACE --file - << 'EOF'
-[{"question": "What is 2+2?", "answer": "4"}]
-EOF
-```
-
-To add rows to an existing dataset, use `ax datasets append --json '[...]'` instead — no file needed.
-
-### Supported file formats
-
-| Format | Extension | Notes |
-|--------|-----------|-------|
-| CSV | `.csv` | Column headers become field names |
-| JSON | `.json` | Array of objects |
-| JSON Lines | `.jsonl` | One object per line (NOT a JSON array) |
-| Parquet | `.parquet` | Column names become field names; preserves types |
-
-**Format gotchas:**
-- **CSV**: Loses type information — dates become strings, `null` becomes empty string. Use JSON/Parquet to preserve types.
-- **JSONL**: Each line is a separate JSON object. A JSON array (`[{...}, {...}]`) in a `.jsonl` file will fail — use `.json` extension instead.
-- **Parquet**: Preserves column types. Requires `pandas`/`pyarrow` to read locally: `pd.read_parquet("examples.parquet")`.
-
-## Append Examples: `ax datasets append`
-
-Add examples to an existing dataset. Two input modes -- use whichever fits.
-
-### Inline JSON (agent-friendly)
-
-Generate the payload directly -- no temp files needed:
-
-```bash
-ax datasets append DATASET_NAME --space SPACE --json '[{"question": "What is 2+2?", "answer": "4"}]'
-
-ax datasets append DATASET_NAME --space SPACE --json '[
-  {"question": "What is gravity?", "answer": "A fundamental force..."},
-  {"question": "What is light?", "answer": "Electromagnetic radiation..."}
-]'
-```
-
-### From a file
-
-```bash
-ax datasets append DATASET_NAME --space SPACE --file new_examples.csv
-ax datasets append DATASET_NAME --space SPACE --file additions.json
-```
-
-### To a specific version
-
-```bash
-ax datasets append DATASET_NAME --space SPACE --json '[{"q": "..."}]' --version-id VERSION_ID
-```
-
-### Flags
-
-| Flag | Type | Required | Description |
-|------|------|----------|-------------|
-| `NAME_OR_ID` | string | yes | Dataset name or ID (positional); add `--space` when using name |
-| `--space` | string | no | Space name or ID (required if using dataset name instead of ID) |
-| `--json` | string | mutex | JSON array of example objects |
-| `--file, -f` | path | mutex | Data file (CSV, JSON, JSONL, Parquet) |
-| `--version-id` | string | no | Append to a specific version (default: latest) |
-| `-o, --output` | string | no | Output format for the returned dataset metadata |
-| `-p, --profile` | string | no | Configuration profile |
-
-Exactly one of `--json` or `--file` is required.
-
-### Validation
-
-- Each example must be a JSON object with at least one user-defined field
-- Maximum 100,000 examples per request
-
-**Schema validation before append:** If the dataset already has examples, inspect its schema before appending to avoid silent field mismatches:
-
-```bash
-# Check existing field names in the dataset
-ax datasets export DATASET_NAME --space SPACE --stdout | jq '.[0] | keys'
-
-# Verify your new data has matching field names
-echo '[{"question": "..."}]' | jq '.[0] | keys'
-
-# Both outputs should show the same user-defined fields
-```
-
-Fields are free-form: extra fields in new examples are added, and missing fields become null. However, typos in field names (e.g., `queston` vs `question`) create new columns silently -- verify spelling before appending.
-
-## Delete Dataset: `ax datasets delete`
-
-```bash
-ax datasets delete NAME_OR_ID
-ax datasets delete NAME_OR_ID --space SPACE   # required when using dataset name instead of ID
-ax datasets delete NAME_OR_ID --force   # skip confirmation prompt
-```
-
-### Flags
-
-| Flag | Type | Default | Description |
-|------|------|---------|-------------|
-| `NAME_OR_ID` | string | required | Dataset name or ID (positional) |
-| `--space` | string | none | Space name or ID (required if using dataset name instead of ID) |
-| `--force, -f` | bool | false | Skip confirmation prompt |
-| `-p, --profile` | string | default | Configuration profile |
-
-## Workflows
-
-### Find a dataset by name
-
-All dataset commands accept a name or ID directly. You can pass a dataset name as the positional argument (add `--space SPACE` when not using an ID):
-
-```bash
-# Use name directly
-ax datasets get "eval-set-v1" --space SPACE
-ax datasets export "eval-set-v1" --space SPACE
-
-# Or resolve name to ID via list if you need the base64 ID
-ax datasets list -o json | jq '.[] | select(.name == "eval-set-v1") | .id'
-```
-
-### Create a dataset from file for evaluation
-
-1. Prepare a CSV/JSON/Parquet file with your evaluation columns (e.g., `input`, `expected_output`)
-   - If generating data inline, pipe it via stdin using `--file -` (see the Create Dataset section)
-2. `ax datasets create --name "eval-set-v1" --space SPACE --file eval_data.csv`
-3. Verify: `ax datasets get DATASET_NAME --space SPACE`
-4. Use the dataset name to run experiments
-
-### Add examples to an existing dataset
-
-```bash
-# Find the dataset
-ax datasets list --space SPACE
-
-# Append inline or from a file using the dataset name (see Append Examples section for full syntax)
-ax datasets append DATASET_NAME --space SPACE --json '[{"question": "...", "answer": "..."}]'
-ax datasets append DATASET_NAME --space SPACE --file additional_examples.csv
-```
-
-### Download dataset for offline analysis
-
-1. `ax datasets list --space SPACE` -- find the dataset name
-2. `ax datasets export DATASET_NAME --space SPACE` -- download to file
-3. Parse the JSON: `jq '.[] | .question' dataset_*/examples.json`
-
-### Export a specific version
-
-```bash
-# List versions
-ax datasets get DATASET_NAME --space SPACE -o json | jq '.versions'
-
-# Export that version
-ax datasets export DATASET_NAME --space SPACE --version-id VERSION_ID
-```
-
-### Iterate on a dataset
-
-1. Export current version: `ax datasets export DATASET_NAME --space SPACE`
-2. Modify the examples locally
-3. Append new rows: `ax datasets append DATASET_NAME --space SPACE --file new_rows.csv`
-4. Or create a fresh version: `ax datasets create --name "eval-set-v2" --space SPACE --file updated_data.json`
-
-### Pipe export to other tools
-
-```bash
-# Count examples
-ax datasets export DATASET_NAME --space SPACE --stdout | jq 'length'
-
-# Extract a single field
-ax datasets export DATASET_NAME --space SPACE --stdout | jq '.[].question'
-
-# Convert to CSV with jq
-ax datasets export DATASET_NAME --space SPACE --stdout | jq -r '.[] | [.question, .answer] | @csv'
-```
-
-## Dataset Example Schema
-
-Examples are free-form JSON objects. There is no fixed schema -- columns are whatever fields you provide. System-managed fields are added by the server:
-
-| Field | Type | Managed by | Notes |
-|-------|------|-----------|-------|
-| `id` | string | server | Auto-generated UUID. Required on update, forbidden on create/append |
-| `created_at` | datetime | server | Immutable creation timestamp |
-| `updated_at` | datetime | server | Auto-updated on modification |
-| *(any user field)* | any JSON type | user | String, number, boolean, null, nested object, array |
-
-## Related Skills
-
-- **arize-trace**: Export production spans to understand what data to put in datasets → use `arize-trace`
-- **arize-experiment**: Run evaluations against this dataset → next step is `arize-experiment`
-- **arize-prompt-optimization**: Use dataset + experiment results to improve prompts → use `arize-prompt-optimization`
-
-## Troubleshooting
-
-| Problem | Solution |
-|---------|----------|
-| `ax: command not found` | See references/ax-setup.md |
-| `401 Unauthorized` | API key is wrong, expired, or doesn't have access to this space. Fix the profile using references/ax-profiles.md. |
-| `No profile found` | No profile is configured. See references/ax-profiles.md to create one. |
-| `Dataset not found` | Verify dataset ID with `ax datasets list` |
-| `File format error` | Supported: CSV, JSON, JSONL, Parquet. Use `--file -` to read from stdin. |
-| `platform-managed column` | Remove `id`, `created_at`, `updated_at` from create/append payloads |
-| `reserved column` | Remove `time`, `count`, or any `source_record_*` field |
-| `Provide either --json or --file` | Append requires exactly one input source |
-| `Examples array is empty` | Ensure your JSON array or file contains at least one example |
-| `not a JSON object` | Each element in the `--json` array must be a `{...}` object, not a string or number |
-
-## Save Credentials for Future Use
-
-See references/ax-profiles.md § Save Credentials for Future Use.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/arize-dataset/references/ax-profiles.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arize-dataset/references/ax-profiles.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arize-dataset/references/ax-profiles.md
-- **SHA256_FINGERPRINT**: `fb97528b0bffbe671d07c3d5935aae649b47f86a8f941e25ba6c15b3eb656294`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.780466+00:00
----
-
-# ax Profile Setup
-
-Consult this when authentication fails (401, missing profile, missing API key). Do NOT run these checks proactively.
-
-Use this when there is no profile, or a profile has incorrect settings (wrong API key, wrong region, etc.).
-
-## 1. Inspect the current state
-
-```bash
-ax profiles show
-```
-
-Look at the output to understand what's configured:
-- `API Key: (not set)` or missing → key needs to be created/updated
-- No profile output or "No profiles found" → no profile exists yet
-- Connected but getting `401 Unauthorized` → key is wrong or expired
-- Connected but wrong endpoint/region → region needs to be updated
-
-## 2. Fix a misconfigured profile
-
-If a profile exists but one or more settings are wrong, patch only what's broken.
-
-**Never pass a raw API key value as a flag.** Always reference it via the `ARIZE_API_KEY` environment variable. If the variable is not already set in the shell, instruct the user to set it first, then run the command:
-
-```bash
-# If ARIZE_API_KEY is already exported in the shell:
-ax profiles update --api-key $ARIZE_API_KEY
-
-# Fix the region (no secret involved — safe to run directly)
-ax profiles update --region us-east-1b
-
-# Fix both at once
-ax profiles update --api-key $ARIZE_API_KEY --region us-east-1b
-```
-
-`update` only changes the fields you specify — all other settings are preserved. If no profile name is given, the active profile is updated.
-
-## 3. Create a new profile
-
-If no profile exists, or if the existing profile needs to point to a completely different setup (different org, different region):
-
-**Always reference the key via `$ARIZE_API_KEY`, never inline a raw value.**
-
-```bash
-# Requires ARIZE_API_KEY to be exported in the shell first
-ax profiles create --api-key $ARIZE_API_KEY
-
-# Create with a region
-ax profiles create --api-key $ARIZE_API_KEY --region us-east-1b
-
-# Create a named profile
-ax profiles create work --api-key $ARIZE_API_KEY --region us-east-1b
-```
-
-To use a named profile with any `ax` command, add `-p NAME`:
-```bash
-ax spans export PROJECT -p work
-```
-
-## 4. Getting the API key
-
-**Never ask the user to paste their API key into the chat. Never log, echo, or display an API key value.**
-
-If `ARIZE_API_KEY` is not already set, instruct the user to export it in their shell:
-
-```bash
-export ARIZE_API_KEY="..."   # user pastes their key here in their own terminal
-```
-
-They can find their key at https://app.arize.com/admin > API Keys. Recommend they create a **scoped service key** (not a personal user key) — service keys are not tied to an individual account and are safer for programmatic use. Keys are space-scoped — make sure they copy the key for the correct space.
-
-Once the user confirms the variable is set, proceed with `ax profiles create --api-key $ARIZE_API_KEY` or `ax profiles update --api-key $ARIZE_API_KEY` as described above.
-
-## 5. Verify
-
-After any create or update:
-
-```bash
-ax profiles show
-```
-
-Confirm the API key and region are correct, then retry the original command.
-
-## Space
-
-There is no profile flag for space. Save it as an environment variable — accepts a space **name** (e.g., `my-workspace`) or a base64 space **ID** (e.g., `U3BhY2U6...`). Find yours with `ax spaces list -o json`.
-
-**macOS/Linux** — add to `~/.zshrc` or `~/.bashrc`:
-```bash
-export ARIZE_SPACE="my-workspace"    # name or base64 ID
-```
-Then `source ~/.zshrc` (or restart terminal).
-
-**Windows (PowerShell):**
-```powershell
-[System.Environment]::SetEnvironmentVariable('ARIZE_SPACE', 'my-workspace', 'User')
-```
-Restart terminal for it to take effect.
-
-## Save Credentials for Future Use
-
-At the **end of the session**, if the user manually provided any credentials during this conversation **and** those values were NOT already loaded from a saved profile or environment variable, offer to save them.
-
-**Skip this entirely if:**
-- The API key was already loaded from an existing profile or `ARIZE_API_KEY` env var
-- The space was already set via `ARIZE_SPACE` env var
-- The user only used base64 project IDs (no space was needed)
-
-**How to offer:** Use **AskQuestion**: *"Would you like to save your Arize credentials so you don't have to enter them next time?"* with options `"Yes, save them"` / `"No thanks"`.
-
-**If the user says yes:**
-
-1. **API key** — Run `ax profiles show` to check the current state. Then run `ax profiles create --api-key $ARIZE_API_KEY` or `ax profiles update --api-key $ARIZE_API_KEY` (the key must already be exported as an env var — never pass a raw key value).
-
-2. **Space** — See the Space section above to persist it as an environment variable.
