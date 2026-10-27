@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-10-23T16:45:06.592223+00:00
-- **Total Palabras**: 137,215 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-27T17:44:22.510102+00:00
+- **Total Palabras**: 138,231 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -273,8 +273,8 @@ For a complete list of slash commands for Copilot CLI, see [Cli Command Referenc
 # DOCUMENT_SOURCE: github_docs::content/copilot/reference/copilot-cli-reference/cli-command-reference.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-command-reference.md
-- **SHA256_FINGERPRINT**: `24f6bbf729109079fd38d4169ccbbb651be9c7206d104be2e89844b37e8682c4`
-- **LAST_VERIFIED_UTC**: 2026-10-23T16:44:59.522272+00:00
+- **SHA256_FINGERPRINT**: `229be5d0b12a25f469c7669ee2dfdcfc035f4092bc4978c7fd9efdf212c7c5cd`
+- **LAST_VERIFIED_UTC**: 2026-10-27T17:44:14.714694+00:00
 ---
 
 **title**: GitHub Copilot CLI command reference
@@ -808,7 +808,7 @@ These are the slash commands you can use from within an interactive CLI session.
 | `/agent`                                            | Browse and select from available agents (if any). See [Custom Agents](https://docs.github.com/en/copilot/concepts/customizations/custom-agents). |
 | `/app`                                              | Open the current session in the GitHub Copilot app (requires version 1.1.3 or later), or show the download URL if the app is not installed. |
 | `/ask [QUESTION]`, `/btw [QUESTION]`                    | Ask a quick side question without adding to the conversation history. The response renders as Markdown. In the answer dialog, press <kbd>Ctrl</kbd>+<kbd>E</kbd> to expand it and <kbd>Ctrl</kbd>+<kbd>Y</kbd> to copy the full answer. Enter the command without a question to reopen the last side question answer in the current session. See [Ask A Side Question](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/ask-a-side-question). |
-| `/allow-all [off\|auto\|show]`, `/yolo [off\|auto\|show]` | Enable all permissions (tools, paths, and URLs). This is an alias for `/permissions allow-all`; see the `/permissions` row for the canonical command and its subcommands. |
+| `/allow-all [on\|off\|show]`, `/yolo [on\|off\|show]` | Enable all permissions (tools, paths, and URLs). This is an alias for `/permissions allow-all`; see the `/permissions` row for the canonical command and its subcommands. |
 | `/autopilot [OBJECTIVE]`, `/goal [OBJECTIVE]` | Start or refocus autopilot mode, optionally with an explicit objective (for example, `/goal Refactor the auth module`). Without an objective, autopilot infers intent from context, and the status panel shows your last prompt as the inferred objective. You can cap AI-credit spend for the objective by using `--max-ai-credits N` (for example, `/goal Refactor the auth module --max-ai-credits 5`). When the cap is reached, autopilot pauses and opens a panel reporting credits used against the cap. Enter a new amount to resume with a fresh credit window, or dismiss the panel to stay paused. You can also resume a paused objective yourself, without the panel, by running the option on its own with no objective text—for example, `/goal --max-ai-credits 5`. This is the same action the panel performs: it opens a fresh window of the credits you specify (the full new cap, not an increment) and continues the objective. `/goal on` and `/goal off` toggle autopilot mode without setting an objective and don't accept `--max-ai-credits`. An active goal renders as a pinned panel above the prompt box, showing the objective, credits used, and todo progress. The panel auto-collapses to a single identity row on short terminals (below 30 rows) and expands above that threshold; press <kbd>Ctrl</kbd>+<kbd>X</kbd> then `g` to override the automatic sizing by hand. |
 | `/changelog [summarize] [VERSION\|last N\|since VERSION]`, `/release-notes [summarize] [VERSION\|last N\|since VERSION]` | Display the CLI changelog. Optionally specify a version, a count of recent releases, or a starting version. Add the keyword `summarize` for an AI-generated summary. |
 | `/chronicle <standup\|tips\|improve\|reindex\|skills create\|skills review\|skills status>` | Session history tools and insights. The `skills` subcommands draft, review, and track the status of repository skill proposals generated from observed usage. See [Chronicle](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/chronicle#using-the-chronicle-slash-command). |
@@ -844,7 +844,7 @@ These are the slash commands you can use from within an interactive CLI session.
 | `/lsp [show\|test\|reload\|logs\|help] [SERVER-NAME]` | Manage the language server configuration. The `logs` subcommand opens the live LSP services log panel. |
 | `/mcp [config\|list\|show\|add\|edit\|delete\|disable\|enable\|auth\|reload\|search] [SERVER-NAME]` | Manage the MCP server configuration. With no subcommand, or with `config`, the plugins dashboard opens pinned to the MCP server list; the add, edit, and authenticate forms open inside that dashboard too, so closing a form returns you to the server list. Use `show` or `show SERVER-NAME` to display all configured servers or open one server's details directly, including its available tools, and to enable or disable it. For a plugin-provided server, `show SERVER-NAME` also displays the source attribution (for example, `Source: Plugin my-plugin (1.2.0)`). `list` (alias `ls`) prints a plain-text list of configured servers with connection status and live state. Bare `/mcp`, `config`, `show`, and `list` (alias `ls`) are read-only or open the dashboard, so they can run while the agent is busy processing a turn. The mutating subcommands (`add`, `edit`, `delete`, `disable`, `enable`, `auth`, `reload`, and `search`) are blocked until the turn finishes. `edit <name>` rejects a workspace-sourced server (one defined in a repository's `.mcp.json`) instead of opening the user-tier wizard, since saving would silently create a same-name user entry that the workspace one still shadows. The error names the file to edit directly. `delete <name>` reports the same file when asked to remove a workspace-sourced server. Sandboxed local servers show a `connected (sandboxed)` status. See [Add Mcp Servers](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers#managing-mcp-servers). |
 | `/model [--session\|--global\|--repo\|--local] [MODEL\|auto TIER]`, `/models`      | Select the AI model you want to use, or choose **Auto**. Model IDs are case-insensitive, and the canonical ID is saved. By default (or with `--session`, alias `-s`), changes the model, reasoning effort, or context window for the current session only, without touching saved settings. `--repo`/`--local` pins the default model in repository settings instead; `--global` (or `/config model`) sets the default for future sessions. Press <kbd>Tab</kbd> on a model with a long-context variant to toggle its Context column between the default and long-context window. The picker groups models into sections—press <kbd>Shift</kbd>+<kbd>Tab</kbd> to cycle grouping between recommended (Recent, Recommended, New, and other models), vendor, and category. The picker marks your effective managed default model with the default badge when it is selectable. A model with vendor-specific data retention terms shows a data retention warning banner with a link to the vendor's policy. Usable mid-turn: a change requested while the agent is running is queued as a cancellable (<kbd>Ctrl</kbd>+<kbd>C</kbd>) command and applied once the current turn finishes, instead of switching the live model mid-request. Use `/model auto TIER` (`efficiency`, `balance`, or `intelligence`) to select a specific Auto routing tier directly, including from the "switch" action on an Auto tier recommendation hint. When Auto picks a model, the timeline shows the reason for that choice whenever the API provides one. See [Auto Model Selection](https://docs.github.com/en/copilot/concepts/models/auto-model-selection). |
-| `/permissions [default\|assisted\|allow-all\|show]`  | Switch between permission modes (`default`, `assisted`, `allow-all`), or show the current mode (`show`). This is the canonical command for permission mode changes; `/allow-all` and `/yolo` remain supported as aliases. |
+| `/permissions [default\|assisted\|allow-all\|show]`  | Switch between permission modes (`default`, `assisted`, `allow-all`), or show the current mode (`show`). This is the canonical command for permission mode changes; `/allow-all` and `/yolo` remain supported as aliases. For information about assisted permissions, see [Allowing Safe Commands](https://docs.github.com/en/copilot/concepts/customizations/allowing-safe-commands). |
 | `/permissions reset`                                | Reset all in-memory tool and path approvals for the current session (re-prompt on next use). |
 | `/plan [PROMPT]`                                    | Create an implementation plan before coding. |
 | `/plugin`                            | Open the plugins dashboard showing your installed plugins. Select a plugin and press <kbd>Enter</kbd> for its details and for actions such as enabling, disabling, updating, or uninstalling it. Use the <kbd>←</kbd> and <kbd>→</kbd> keys to switch between the **Installed**, **Online**, and **Marketplace** views. The dashboard shows only plugins—use `/mcp` for MCP servers and `/skills` for skills. See [About Plugins](https://docs.github.com/en/copilot/concepts/agents/about-plugins). |
@@ -862,7 +862,7 @@ These are the slash commands you can use from within an interactive CLI session.
 | `/remote [on\|off]`                                 | Show the remote control status (if no argument provided), enable remote steering (`on`), or end the remote connection (`off`). See [Steer Remotely](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/steer-remotely). |
 | `/rename [NAME]`                                    | Rename the current session (auto-generates a name if omitted; alias for `/session rename`). |
 | `/research TOPIC`                                   | Run a deep research investigation using GitHub search and web sources. See [Research With Copilot Cli](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/research-with-copilot-cli). |
-| `/reset-allowed-tools`                              | Reset the list of allowed tools. |
+| `/reset-allowed-tools`                              | Reset permissions for the current session. This clears session tool approvals, returns the permission mode to manual (turning off allow-all or [copilot.assisted_permissions] if either is on), and clears the approvals saved for the current location. Explicit startup rules, such as `--allow-tool`, `--deny-tool`, `--allow-url`, and `--deny-url`, remain part of the session's baseline. |
 | `/restart`                                          | Restart the CLI, restoring all of the current process's live sessions, not only the foreground one. If the target CLI version can't restore multiple sessions, you're prompted to continue with only the foreground session or cancel. |
 | `/resume [SESSION-ID]`, `/continue [SESSION-ID]`    | Switch to a different session by choosing from a list (optionally specify a session ID). |
 | `/review [PROMPT]`                                  | Run the code review agent to analyze changes. See [Agentic Code Review](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/agentic-code-review). |
@@ -936,11 +936,12 @@ Use `/collect-debug-logs [file|gist|share] [PATH]` to gather debug logs for trou
 | `--allow-all`                      | Enable all permissions (equivalent to `--allow-all-tools --allow-all-paths --allow-all-urls`). |
 | `--allow-all-mcp-server-instructions` | Include initialization instructions from all MCP servers in the system prompt. By default, only allowlisted server instructions are included up front; other servers' instructions are retrieved on demand. |
 | `--allow-all-paths`                | Disable file path verification and allow access to any path. |
-| `--allow-all-tools`                | Allow all tools to run automatically without confirmation. Required when using the CLI programmatically (env: `COPILOT_ALLOW_ALL`). |
+| `--allow-all-tools`                | Grant blanket tool permissions without a model safety review or individual approval prompts. Deny rules and enterprise restrictions still apply (env: `COPILOT_ALLOW_ALL`). |
 | `--allow-all-urls`                 | Allow access to all URLs without confirmation. |
 | `--allow-tool=TOOL ...`            | Tools the CLI has permission to use. Will not prompt for permission. For multiple tools, use a quoted, comma-separated list. See [Allowing Tools](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/allowing-tools#allowing-or-denying-permission-for-specific-tools). |
 | `--allow-url=URL ...`              | Allow access to specific URLs or domains. For multiple URLs, use a quoted, comma-separated list. |
 | `--acp`                            | Start as Agent Client Protocol server. |
+| `--assisted-approval`              | Turn on [copilot.assisted_permissions] for the run, so that a safety review can approve eligible permission requests. Only valid for non-interactive runs—that is, runs that use `-p` or `--prompt`, and runs in an environment with no terminal attached. When successfully enabled, takes precedence over `--allow-all-tools`, but does not affect `--allow-all-paths` or `--allow-all-urls` (env: `COPILOT_ASSISTED_APPROVAL`). See [Allowing Safe Commands](https://docs.github.com/en/copilot/concepts/customizations/allowing-safe-commands). |
 | `--attachment PATH`                | Attach a file to the initial prompt (can be used multiple times). Image files are accepted, but sending them successfully requires the selected model and organization policy to allow vision input. |
 | `--autopilot`                      | Enable autopilot continuation—the agent keeps working until `task_complete` is called, then returns to interactive mode. See [Use Autopilot Mode](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/use-autopilot-mode). |
 | `--available-tools=TOOL ...`       | Only these tools will be available to the model. For multiple tools, use a quoted, comma-separated list. See [Allowing Tools](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/allowing-tools). |
@@ -1011,9 +1012,9 @@ Use `/collect-debug-logs [file|gist|share] [PATH]` to gather debug logs for trou
 For a complete list of commands and options, run `copilot help`.
 
 > [!NOTE]
-> Remote session features require availability on your account. The legacy `--remote` flag is not an interactive-session control, and `--no-remote` is no longer supported.
-
-To enable remote control during an interactive session, use `/remote on`. To end the remote connection, use `/remote off`.
+> Remote session features require availability on your account. The legacy `--remote` option is not an interactive-session control, and `--no-remote` is no longer supported.
+>
+> To enable remote control during an interactive session, use `/remote on`. To end the remote connection, use `/remote off`.
 
 If a session was still open when its CLI process went away, for example due to a crash or a machine restart, the next time you start `copilot` you're offered the option to restore it. You can review the sessions available to restore or start a fresh session instead. A restored session whose agent was mid-turn automatically resumes that work.
 
@@ -1035,23 +1036,47 @@ The CLI also warns when a managed policy enables sandboxing in a session that yo
 
 If a device has a managed policy that could not be read, the CLI fails closed and enforces sandboxing at its most restrictive level. The notice explains that the policy couldn't be determined and tells you to wait for it to resolve. The startup warning for an unsupported host uses the same wording.
 
-### Restricting the --allow-all options
+### Restricting the allow-all options
 
 When `permissions.disableBypassPermissionsMode` is set to `"disable"`, all of the command line options that allow all permissions (`--allow-all-tools`, `--allow-all-paths`, `--allow-all-urls`, `--allow-all`, `--yolo`) are suppressed at startup and cannot be used to grant elevated permissions. The CLI shows a policy warning when it suppresses these options. The `/permissions allow-all` slash command, and its aliases `/allow-all` and `/yolo`, are also suppressed.
+This setting does not turn off [copilot.assisted_permissions], which are controlled separately.
 
-Set `permissions.disableBypassPermissionsMode` to `"allow-auto-only"` to block full allow-all permissions but permit `/permissions assisted` (LLM-assisted permission approval). Assisted approval still prompts for each request, but attaches an LLM safety recommendation so the CLI can auto-approve requests the model evaluates as acceptable.
+#### What `disable` turns off
 
-If `permissions.disableBypassPermissionsMode` is set to an unrecognized value, the CLI no longer rejects it outright. Instead, the CLI logs the issue and enforces `"disable"` as a fail-closed default, so a malformed managed policy still restricts the allow-all options instead of silently allowing them.
+When the value of `permissions.disableBypassPermissionsMode` is `disable`, the command line options that grant all permissions have no effect. These options are: `--allow-all-tools`, `--allow-all-paths`, `--allow-all-urls`, `--allow-all`, and `--yolo`.
 
-Three sources can set this restriction, in increasing order of permanence:
+The restriction also applies during an interactive session. Slash commands that would turn on the allow-all mode are still available but are refused with an explanatory message.
+
+| Command | Result with `disable` |
+|---------|------------------------|
+| `/permissions allow-all` | Refused |
+| `/allow-all` (and its alias `/yolo`) with no arguments, or `on` | Refused |
+| `/permissions assisted` | Allowed |
+| `/allow-all off`, `/allow-all show`, `/permissions default`, `/permissions show` | Allowed |
+
+When an allow-all command is refused, the message depends on where the restriction comes from. A restriction from your own settings reports "Bypass permissions mode has been disabled in your settings." A restriction from managed or MDM policy reports "Bypass permissions mode has been disabled by policy. Contact your administrator for more information."
+
+#### Unrecognized values
+
+If `permissions.disableBypassPermissionsMode` is set to a value this version does not recognize, the CLI does not reject it. Instead it logs the value and enforces `disable` as a safe default. A malformed policy still restricts the allow-all options rather than silently allowing them.
+
+#### Where the setting can come from
+
+Three sources can set `permissions.disableBypassPermissionsMode`. They are listed in increasing order of permanence.
 
 | Source | Scope | Cleared by account switch? |
 |--------|-------|---------------------------|
-| User settings (`~/.copilot/settings.json`) | Machine | No — applies to all accounts |
-| Managed settings (server-fetched per account) | Account | Yes — cleared when switching to a different account that does not disable the allow-all options |
-| MDM policy (plist/registry/file) | Device | Never — device-level policy that cannot be overridden by account switches |
+| User settings (`~/.copilot/settings.json`) | Machine | No. It applies to all accounts. |
+| Managed settings (server-fetched per account) | Account | Yes. The CLI loads the policy for the newly active account. |
+| MDM policy (plist/registry/file) | Device | Never. Device-level policy is not overridden by account switches. |
 
-For MDM configuration details, see [Cli Config Dir Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference#mdm-managed-settings).
+### How the restriction behaves when the policy cannot be confirmed
+
+A failed policy check does not necessarily leave the session unrestricted. The CLI distinguishes an unmanaged account or device from one whose applicable managed policy cannot be confirmed.
+
+* **Unconfirmed managed policy can restrict permissions.** While policy checks are pending, or when policy cannot be confirmed for a managed account or device, the CLI can block permission escalation and require explicit approval for actions. This can apply even if no earlier policy disabled the allow-all options.
+* **Server policy is account-specific.** If a refresh fails, previously retrieved policy for the same account can remain in effect. Switching accounts loads the new account's policy rather than carrying over the previous account's server policy.
+* **Device restrictions persist across accounts.** Switching accounts does not remove MDM restrictions or user settings that block permission modes. A server response that omits the setting does not override those restrictions.
 
 ## Supported models
 
@@ -1151,6 +1176,7 @@ copilot --deny-tool='write(secret.txt)'
 | Variable | Description |
 |----------|-------------|
 | `COPILOT_ALLOW_ALL` | Allow all permissions automatically (equivalent to `--allow-all`). Accepts `true`, `1`, `yes`, `on`, or `y` (case-insensitive, surrounding whitespace ignored) to turn it on; `false`, `0`, `no`, `off`, `n`, or an empty value to turn it off. Setting it to exactly `true` also trusts the working directory without prompting, loading that directory's skills, plugins, MCP servers, and hooks (including hooks that run shell commands). The other truthy spellings only auto-approve tools. |
+| `COPILOT_ASSISTED_APPROVAL` | Set to `true` to turn on [copilot.assisted_permissions] for a non-interactive run (equivalent to `--assisted-approval`). |
 | `COPILOT_AUTO_UPDATE` | Set to `false` to disable automatic updates of the CLI and first-party plugins. |
 | `COPILOT_CACHE_HOME` | Override the cache directory (used for marketplace caches, auto-update packages, and other ephemeral data). See [Cli Config Dir Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference#changing-the-location-of-the-configuration-directory) for platform defaults. |
 | `COPILOT_CHILD_OOM_SCORE_ADJ` | Linux only. Overrides the `oom_score_adj` bias applied to shell command process trees spawned by the CLI, so the kernel's out-of-memory (OOM) killer reclaims a runaway child process tree (for example, a build) before the CLI itself. Default: `300`. Range: `-1000`–`1000`. Set to `off` to disable the bias. |
@@ -1475,7 +1501,7 @@ MCP servers are loaded from multiple sources, each with a different trust level.
 | User config (`~/.copilot/mcp-config.json`) | User-defined | User responsibility |
 | Remote servers | Low | Always |
 
-All MCP tool invocations require explicit permission. This applies even to read-only operations on external services.
+MCP tool invocations are subject to the session's permission rules, including existing approvals and [copilot.assisted_permissions] when enabled. Even read-only operations on external services can require approval.
 
 ### MCP server loading priority
 
@@ -1871,7 +1897,7 @@ When the full dialog is shown, you can also choose from these options:
 
 The **This location** option appears when the CLI can determine a location key (Git root or current directory). It persists the approval to disk so the same permission is automatically granted the next time you work in that directory without prompting again.
 
-Use `/permissions reset` to clear in-memory approvals for the current session.
+Use `/reset-allowed-tools` to clear session approvals for the current session.
 
 ## Security
 
@@ -1896,7 +1922,7 @@ Shell commands are analyzed before execution to identify potentially dangerous p
 * Credential access (reading `.env`, SSH keys)
 * Inline environment variable assignments that override dangerous variables (for example, `PATH=...`, `LD_PRELOAD=...`)
 
-High-risk commands display additional warnings and require explicit confirmation.
+High-risk commands can trigger additional warnings and approval prompts. Whether a request needs your approval depends on the permissions in effect.
 
 When sandboxing is enabled and the **Allow sandbox bypass** setting is on (the default), a synchronous shell command that's blocked by the sandbox's filesystem or network policy prompts you to re-run it outside the sandbox—no model round-trip is required. Approving the prompt re-runs the command and returns its output. Declining keeps the sandboxed (blocked) result.
 
@@ -2224,8 +2250,8 @@ When content capture is enabled, the following attributes are populated.
 # DOCUMENT_SOURCE: github_docs::content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md
-- **SHA256_FINGERPRINT**: `6b4d403ef77390384b72b81767f1442ae9e09334f930aa4ce11eb70548806acc`
-- **LAST_VERIFIED_UTC**: 2026-10-23T16:44:59.397145+00:00
+- **SHA256_FINGERPRINT**: `2b6a542cde029efd89db4e815c3faf732d6cdc7e3f919e563ca37ca200fd59ba`
+- **LAST_VERIFIED_UTC**: 2026-10-27T17:44:14.670237+00:00
 ---
 
 **title**: GitHub Copilot CLI configuration directory
@@ -2680,6 +2706,8 @@ These settings apply across all your sessions and repositories. You can use the 
 | `continueOnAutoMode` | `boolean` | `false` | Automatically switch to auto mode when rate-limited. When `true`, eligible rate limit errors trigger an automatic switch to auto mode and retry. Does not apply to global rate limits or BYOK providers. |
 | `copyOnSelect` | `boolean` | `true` (macOS), `false` (other) | Automatically copy mouse-selected text to the system clipboard. |
 | `customAgents.defaultLocalOnly` | `boolean` | `false` | Only use local custom agents (no remote organization or enterprise agents). |
+| `defaultMode` | `"interactive"` \| `"plan"` \| `"autopilot"` | `"interactive"` | The agent mode that new interactive sessions start in. The `--mode`, `--autopilot`, and `--plan` options take precedence. Resumed sessions keep their own mode, and the setting is ignored for `-p`/`--prompt`, `--server`, and `--acp` runs. |
+| `defaultPermissionMode` | `"manual"` \| `"assisted"` \| `"allow-all"` | Varies | Your preferred permission mode for new interactive sessions. A managed `permissions.defaultMode` takes precedence over this preference. If neither default is set, sessions can start in manual or assisted mode. Set `"manual"` to prompt for requests that aren't already allowed, `"assisted"` to use model review for eligible requests, or `"allow-all"` to grant broad permissions equivalent to `--allow-all`. Deny rules and enterprise restrictions still apply. See [Allowing Safe Commands](https://docs.github.com/en/copilot/concepts/customizations/allowing-safe-commands). Resumed sessions keep their own mode. The setting does not apply to non-interactive runs, and `--allow-all` or `--yolo` takes precedence. An assisted startup default does not apply to remote sessions. If a configured mode is unavailable or blocked by enterprise policy, the CLI starts with manual approval and tells you why. Pair `"assisted"` or `"allow-all"` with `defaultMode: "autopilot"` to skip the autopilot permission confirmation when the configured permission mode can be applied. |
 | `deniedUrls` | `string[]` | `[]` | URLs or domains that are always denied. Denial rules take precedence over allow rules. |
 | `disableAllHooks` | `boolean` | `false` | Disable all hooks (both repository-level and user-level). |
 | `disabledMcpServers` | `string[]` | `[]` | MCP server names to disable. Listed servers are configured but not started. |
@@ -2703,7 +2731,7 @@ These settings apply across all your sessions and repositories. You can use the 
 | `mergeStrategy` | `"rebase"` \| `"merge"` | — | Conflict resolution strategy for `/pr fix conflicts`. When set to `"rebase"`, conflicts are resolved by rebasing onto the base branch. When set to `"merge"`, the base branch is merged into the feature branch. If not configured, a picker dialog is shown. |
 | `model` | `string` | varies | AI model to use. Set to `"auto"` to let Copilot pick the best available model automatically. Managed by the `/model` slash command. |
 | `mouse` | `boolean` | `true` | Enable mouse support. Can also be set with `--mouse` or `--no-mouse`. |
-| `permissions.disableBypassPermissionsMode` | `string` | — | Set to `"disable"` to suppress all allow-all flags (`--allow-all-tools`, `--allow-all-paths`, `--allow-all-urls`, `--allow-all`, `--yolo`) at startup so they cannot be used to grant elevated permissions. Set to `"allow-auto-only"` to keep blocking full allow-all while still permitting `/allow-all auto` (LLM-assisted auto-approval). See [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#restricting-the---allow-all-options). |
+| `permissions.disableBypassPermissionsMode` | `string` | — | Set to `"disable"` to block all allow-all options (`--allow-all-tools`, `--allow-all-paths`, `--allow-all-urls`, `--allow-all`, `--yolo`). This setting does not block [copilot.assisted_permissions], which are controlled separately. Other values are treated as an alias of `"disable"` and a warning is written to the log. See [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#restricting-the-allow-all-options). |
 | `pinnedPrompts` | `boolean` | `true` | Pin the current section's user prompt just below the top bar while scrolling the timeline, so it stays clear which request the visible output belongs to. CLI UI only—has no effect on prompts sent to the model. |
 | `powershellFlags` | `string[]` | `["-NoProfile", "-NoLogo"]` | Flags passed to PowerShell on startup. On Windows, the CLI prefers PowerShell 7+ (`pwsh`) and falls back to Windows PowerShell (`powershell.exe`) when `pwsh` is unavailable. Windows only. |
 | `proxyKerberosServicePrincipal` | `string` | unset | Service principal name (SPN) for Kerberos/Negotiate proxy authentication, overriding the derived `HTTP/<proxy-host>`. |
@@ -2901,7 +2929,7 @@ Only the following keys are supported in MDM managed settings.
 > [!NOTE]
 > * `policyHelper.path` accepts an absolute path, a home-relative path (`~/...`), or a bare program name resolved from `PATH`. Other relative forms are rejected. The registration is accepted and validated, but the runtime doesn't yet invoke the helper—helper execution ships in a future release.
 > * When `remoteControl.mode` is `"requireSSO"`, list the allowed organizations in `remoteControl.githubDotComOrganizations`. The client must be SSO-authorized for at least one listed GitHub.com organization—it no longer needs to be authorized for all of them.
-> * Set `permissions.disableBypassPermissionsMode` to `"disable"` in MDM managed settings to enforce the restriction at the device level. Account switches cannot override this policy. Set it to `"allow-auto-only"` to block full allow-all escalation while still permitting `/permissions assisted` (LLM-assisted permission approval). If an unrecognized value is set, the CLI logs the issue and enforces `"disable"` as a fail-closed default, so a malformed managed policy still restricts the allow-all options instead of silently allowing them. See [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#restricting-the---allow-all-options).
+> * Set `permissions.disableBypassPermissionsMode` to `"disable"` in MDM managed settings to block allow-all options at the device level. Account switches cannot override this policy. If an unrecognized value is set, the CLI logs the issue and enforces `"disable"` as a fail-closed default. See [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#restricting-the-allow-all-options).
 > * Most managed keys lock the entire row: a local edit is silently overridden by the managed value on the next load. `enabledPlugins` and `extraKnownMarketplaces` are the exception—the managed layer merges these maps with your own entries field-by-field instead of replacing them outright. This means the lock applies **per entry**, not to the whole key: a plugin or marketplace pinned by a managed policy can't be re-enabled, disabled, or repointed locally, but other entries in the same map remain fully user-controlled.
 > * `sandbox.learningMode` is Windows-only and can only be set through native MDM (for example, through Intune or the registry)—a `managed-settings.json` file value is ignored. On a host with denial capture, set it to `"allow"` to start sandboxed shell commands in record-and-allow mode instead of the default record-and-deny mode, recording each filesystem or process access and allowing it rather than refusing it (network policy is still enforced). This lets an administrator observe what a cohort's commands need before locking them down; it is not a containment mode. The status line shows `sandbox relaxed` and shell calls show `(sandbox relaxed)` while it applies. A `deny` value (the default), or removing the key, returns the cohort to the ordinary enforced sandbox, and `deny` from any managed channel always wins over `allow`. User settings and SDK hosts cannot set this key.
 
@@ -3429,19 +3457,19 @@ The following diagram illustrates the loading order and precedence rules.
 # DOCUMENT_SOURCE: github_docs::content/copilot/reference/copilot-cli-reference/cli-programmatic-reference.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-programmatic-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-programmatic-reference.md
-- **SHA256_FINGERPRINT**: `9181e6b7c07dfac31ecc260d9dcddeec3f4627cbbf8835d7795cc2640485bb0c`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:33.900331+00:00
+- **SHA256_FINGERPRINT**: `48c708324d145b8b4326b77f419e54f4aec05e42096522553b0fc9637bc408db`
+- **LAST_VERIFIED_UTC**: 2026-10-27T17:44:14.690326+00:00
 ---
 
 **title**: GitHub Copilot CLI programmatic reference
 **shortTitle**: CLI programmatic reference
 **intro**: Find options for running Copilot CLI programmatically.
 
-In addition to running Copilot CLI interactively, you can also pass a prompt directly to the CLI in a single command, without entering an interactive session. This allows you to use Copilot programmatically in scripts, CI/CD pipelines, and automation workflows. For more information, see [AUTOTITLE](/copilot/how-tos/copilot-cli/automate-copilot-cli/run-cli-programmatically).
+In addition to running Copilot CLI interactively, you can also pass a prompt directly to the CLI in a single command, without entering an interactive session. This allows you to use Copilot programmatically in scripts, CI/CD pipelines, and automation workflows. For more information, see [Run Cli Programmatically](https://docs.github.com/en/copilot/how-tos/copilot-cli/automate-copilot-cli/run-cli-programmatically).
 
 This article describes command-line options and environment variables that are particularly relevant when running Copilot CLI programmatically.
 
-To see a complete list of the available options, see [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference#command-line-options) or enter the following command in your terminal:
+To see a complete list of the available options, see [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#command-line-options) or enter the following command in your terminal:
 
 ```shell copy
 copilot help
@@ -3463,12 +3491,13 @@ There are a number of command-line options that are particularly useful when run
 | `--allow-all-urls`            | Allow access to all URLs without explicit permission for each URL. |
 | `--allow-tool=TOOL ...`       | Selectively grant permission for a specific tool. For multiple tools, use a quoted, comma-separated list. |
 | `--allow-url=URL ...`         | Allow the agent to fetch a specific URL or domain. Useful when a workflow needs web access to known endpoints. For multiple URLs, use a quoted, comma-separated list. |
+| `--assisted-approval`         | Turn on [copilot.assisted_permissions] for the run, so that a safety review can approve eligible permission requests. Only valid for non-interactive runs. See [Using [copilot.assisted_permissions]](#using-assisted-permissions) below. |
 | `--attachment=PATH ...`       | Attach a file (image or native document) to the initial prompt. Only valid in non-interactive mode. Can be used multiple times to attach multiple files. |
 | `--available-tools=TOOL ...`  | Restrict the model to only the tools you list; all other tools are unavailable. Useful for tightly scoping what the agent can do in an automated workflow. For multiple tools, use a quoted, comma-separated list. |
 | `--deny-tool=TOOL ...`        | Deny a specific tool. Useful for restricting what the agent can do in a locked-down workflow. For multiple tools, use a quoted, comma-separated list. |
 | `--deny-url=URL ...`          | Deny access to a specific URL or domain. Takes precedence over `--allow-url`. For multiple URLs, use a quoted, comma-separated list. |
 | `--excluded-tools=TOOL ...`   | Remove specific tools from those available to the model. For multiple tools, use a quoted, comma-separated list. |
-| `--fleet`                     | Run the prompt in fleet mode, so Copilot uses parallel subagents to work on separate parts of the task. Combine with `-p` for non-interactive automation, `-i` for an interactive session, or a piped prompt. Not supported in ACP server mode. See [AUTOTITLE](/copilot/how-tos/copilot-cli/use-copilot-cli/speed-up-task-completion). |
+| `--fleet`                     | Run the prompt in fleet mode, so Copilot uses parallel subagents to work on separate parts of the task. Combine with `-p` for non-interactive automation, `-i` for an interactive session, or a piped prompt. Not supported in ACP server mode. See [Speed Up Task Completion](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/speed-up-task-completion). |
 | `--model=MODEL`               | Choose the AI model (for example, `gpt-6-astra` or `claude-haiku-4.5`). Useful for pinning a model in reproducible workflows. See [Choosing a model](#choosing-a-model) below. |
 | `--no-ask-user`               | Prevent the agent from pausing to seek additional user input. |
 | `--output-format=FORMAT`      | Set the output format: `text` (the default) or `json`. With `json`, the CLI emits JSONL (one JSON object per line), which is convenient for parsing the agent's output in scripts. |
@@ -3479,7 +3508,7 @@ There are a number of command-line options that are particularly useful when run
 
 ## Running dynamic workflows
 
-Use `copilot workflow run WORKFLOW-NAME` to run a dynamic workflow from a script. To find out about dynamic workflows, see [AUTOTITLE](/copilot/concepts/agent-capabilities/agent-powered-workflows-and-operations/dynamic-workflows).
+Use `copilot workflow run WORKFLOW-NAME` to run a dynamic workflow from a script. To find out about dynamic workflows, see [Dynamic Workflows](https://docs.github.com/en/copilot/concepts/agent-capabilities/agent-powered-workflows-and-operations/dynamic-workflows).
 
 Use `--args` for inline JSON or an `@`-prefixed JSON file path. Arguments are not read from standard input.
 
@@ -3493,7 +3522,7 @@ Configure authentication and grant the required tool permissions before running 
 
 Project extensions are loaded only from trusted folders or with an explicit opt-in. In automation, `GITHUB_COPILOT_PROMPT_MODE_EXTENSIONS=true` permits loading project extensions for that invocation. Only enable this for repository code you trust. It does not grant tool permissions.
 
-For all workflow-specific options, see [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference#using-copilot-workflow-run).
+For all workflow-specific options, see [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#using-copilot-workflow-run).
 
 ### Workflow output
 
@@ -3534,8 +3563,8 @@ You can specify various kinds of tools with the `--allow-tool` option.
 | write  | Creating or modifying files. |
 | read   | Reading files or directories. |
 | url    | Fetching content from a URL. |
-| memory | Storing new facts to the agent's persistent memory. This does not affect using existing memories. See [AUTOTITLE](/copilot/concepts/prompting-and-context/copilot-memory). |
-| MCP-SERVER | Invoking tools from a specific MCP server. Use the server's configured name as the identifier—for example, `github`. See [AUTOTITLE](/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers). |
+| memory | Storing new facts to the agent's persistent memory. This does not affect using existing memories. See [Copilot Memory](https://docs.github.com/en/copilot/concepts/prompting-and-context/copilot-memory). |
+| MCP-SERVER | Invoking tools from a specific MCP server. Use the server's configured name as the identifier—for example, `github`. See [Add Mcp Servers](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers). |
 
 ### Tool filters
 
@@ -3563,6 +3592,7 @@ You can use environment variables to configure various aspects of the CLI's beha
 | Variable              | Description   |
 | --------------------- | ------------- |
 | `COPILOT_ALLOW_ALL`   | Set to `true` for full permissions |
+| `COPILOT_ASSISTED_APPROVAL` | Set to `true` to turn on [copilot.assisted_permissions] for a non-interactive run |
 | `COPILOT_MODEL`       | Set the model (for example, `gpt-6-astra`, `claude-haiku-4.5`) |
 | `COPILOT_HOME`        | Set the directory for the CLI configuration file (`~/.copilot` by default) |
 | `COPILOT_AUTO_UPDATE` | Set to `false` to disable automatic updates. Useful in CI and other automated environments where you want to pin the CLI version. |
@@ -3572,6 +3602,33 @@ You can use environment variables to configure various aspects of the CLI's beha
 | `GITHUB_COPILOT_PROMPT_MODE_EXTENSIONS` | Set to `true` to allow project extensions to load for a prompt or direct workflow run. Only use this for repository code you trust. This does not grant tool permissions. |
 
 For full details of environment variables for Copilot CLI, use the command `copilot help environment` in your terminal.
+
+## Using [copilot.assisted_permissions]
+
+In a non-interactive run there is nobody available to answer approval prompts. Without any permission options, requests that need approval are denied, and Copilot often can't finish the task. With `--allow-all-tools`, you grant blanket tool permissions without a model safety review.
+
+The `--assisted-approval` option is the middle ground. A safety review can assess eligible requests that aren't already resolved by existing permissions:
+
+* If the review judges the request to be safe, it's approved automatically and Copilot continues.
+* If the review requires your approval, the request is denied and the reason is passed back to Copilot, so that it can try a different approach to complete the task.
+
+Existing deny rules, mandatory approval requirements, and sandbox protections still apply. Requests that still require your approval are denied in non-interactive runs.
+
+For more information about how the safety review works, and which model is used, see [Allowing Safe Commands](https://docs.github.com/en/copilot/concepts/customizations/allowing-safe-commands).
+
+```shell copy
+copilot -p "Fix the failing tests" --assisted-approval
+```
+
+You can set the `COPILOT_ASSISTED_APPROVAL` environment variable to `true` instead of using the option. This is useful in automated environments where you can't easily change the command that's run.
+
+### Things to be aware of
+
+* **The option is only valid for non-interactive runs.** These are runs that use `-p` or `--prompt`, and runs in an environment with no terminal attached, such as a CI/CD workflow. If you use `--assisted-approval` when starting an interactive session, the CLI exits with an error.
+
+* **It overrides `--allow-all-tools` when successfully enabled.** Tool requests use [copilot.assisted_permissions] instead of blanket tool approval. However, `--allow-all-paths` and `--allow-all-urls`—including when they're set by `--allow-all` or `--yolo`—are unaffected, so file and URL access can still be unrestricted.
+
+* **Check for a warning if the run must not proceed without a safety review.** If [copilot.assisted_permissions] can't be turned on, because your enterprise settings block it for example, the CLI writes a warning to standard error and continues. It does not cancel a separate `--allow-all-tools` option that you supplied, so tool requests may still be approved without a safety review.
 
 ## Choosing a model
 
@@ -3594,7 +3651,7 @@ copilot -p "Fix the race condition in the worker pool" \
 ```
 
 > [!NOTE]
-> To see the model strings for all available models, run the `/model` command in an interactive Copilot CLI session. For the full list of models and the clients that support them, see [AUTOTITLE](/copilot/reference/ai-models/supported-models).
+> To see the model strings for all available models, run the `/model` command in an interactive Copilot CLI session. For the full list of models and the clients that support them, see [Supported Models](https://docs.github.com/en/copilot/reference/ai-models/supported-models).
 
 Alternatively, you can set the `COPILOT_MODEL` environment variable to specify a model for the duration of the shell session.
 
@@ -3622,7 +3679,7 @@ When determining which model to use for a given prompt, the CLI checks for model
 
 ## Using custom agents
 
-You can delegate work to a specialized agent by using the `--agent` option. For more information, see [AUTOTITLE](/copilot/how-tos/copilot-cli/customize-copilot/create-custom-agents-for-cli).
+You can delegate work to a specialized agent by using the `--agent` option. For more information, see [Create Custom Agents For Cli](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/create-custom-agents-for-cli).
 
 In this example, the `code-review` agent is used. This requires that a custom agent has been created with this name.
 
@@ -3634,9 +3691,9 @@ copilot -p "Review the latest commit" \
 
 ## Further reading
 
-* [AUTOTITLE](/copilot/how-tos/copilot-cli)
-* [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference)
-* [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-plugin-reference)
+* [Copilot Cli](https://docs.github.com/en/copilot/how-tos/copilot-cli)
+* [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference)
+* [Cli Plugin Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-plugin-reference)
 
 
 ---

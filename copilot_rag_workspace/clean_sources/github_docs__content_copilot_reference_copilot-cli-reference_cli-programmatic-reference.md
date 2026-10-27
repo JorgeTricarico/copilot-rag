@@ -2,11 +2,11 @@
 **shortTitle**: CLI programmatic reference
 **intro**: Find options for running Copilot CLI programmatically.
 
-In addition to running Copilot CLI interactively, you can also pass a prompt directly to the CLI in a single command, without entering an interactive session. This allows you to use Copilot programmatically in scripts, CI/CD pipelines, and automation workflows. For more information, see [AUTOTITLE](/copilot/how-tos/copilot-cli/automate-copilot-cli/run-cli-programmatically).
+In addition to running Copilot CLI interactively, you can also pass a prompt directly to the CLI in a single command, without entering an interactive session. This allows you to use Copilot programmatically in scripts, CI/CD pipelines, and automation workflows. For more information, see [Run Cli Programmatically](https://docs.github.com/en/copilot/how-tos/copilot-cli/automate-copilot-cli/run-cli-programmatically).
 
 This article describes command-line options and environment variables that are particularly relevant when running Copilot CLI programmatically.
 
-To see a complete list of the available options, see [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference#command-line-options) or enter the following command in your terminal:
+To see a complete list of the available options, see [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#command-line-options) or enter the following command in your terminal:
 
 ```shell copy
 copilot help
@@ -28,12 +28,13 @@ There are a number of command-line options that are particularly useful when run
 | `--allow-all-urls`            | Allow access to all URLs without explicit permission for each URL. |
 | `--allow-tool=TOOL ...`       | Selectively grant permission for a specific tool. For multiple tools, use a quoted, comma-separated list. |
 | `--allow-url=URL ...`         | Allow the agent to fetch a specific URL or domain. Useful when a workflow needs web access to known endpoints. For multiple URLs, use a quoted, comma-separated list. |
+| `--assisted-approval`         | Turn on [copilot.assisted_permissions] for the run, so that a safety review can approve eligible permission requests. Only valid for non-interactive runs. See [Using [copilot.assisted_permissions]](#using-assisted-permissions) below. |
 | `--attachment=PATH ...`       | Attach a file (image or native document) to the initial prompt. Only valid in non-interactive mode. Can be used multiple times to attach multiple files. |
 | `--available-tools=TOOL ...`  | Restrict the model to only the tools you list; all other tools are unavailable. Useful for tightly scoping what the agent can do in an automated workflow. For multiple tools, use a quoted, comma-separated list. |
 | `--deny-tool=TOOL ...`        | Deny a specific tool. Useful for restricting what the agent can do in a locked-down workflow. For multiple tools, use a quoted, comma-separated list. |
 | `--deny-url=URL ...`          | Deny access to a specific URL or domain. Takes precedence over `--allow-url`. For multiple URLs, use a quoted, comma-separated list. |
 | `--excluded-tools=TOOL ...`   | Remove specific tools from those available to the model. For multiple tools, use a quoted, comma-separated list. |
-| `--fleet`                     | Run the prompt in fleet mode, so Copilot uses parallel subagents to work on separate parts of the task. Combine with `-p` for non-interactive automation, `-i` for an interactive session, or a piped prompt. Not supported in ACP server mode. See [AUTOTITLE](/copilot/how-tos/copilot-cli/use-copilot-cli/speed-up-task-completion). |
+| `--fleet`                     | Run the prompt in fleet mode, so Copilot uses parallel subagents to work on separate parts of the task. Combine with `-p` for non-interactive automation, `-i` for an interactive session, or a piped prompt. Not supported in ACP server mode. See [Speed Up Task Completion](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/speed-up-task-completion). |
 | `--model=MODEL`               | Choose the AI model (for example, `gpt-6-astra` or `claude-haiku-4.5`). Useful for pinning a model in reproducible workflows. See [Choosing a model](#choosing-a-model) below. |
 | `--no-ask-user`               | Prevent the agent from pausing to seek additional user input. |
 | `--output-format=FORMAT`      | Set the output format: `text` (the default) or `json`. With `json`, the CLI emits JSONL (one JSON object per line), which is convenient for parsing the agent's output in scripts. |
@@ -44,7 +45,7 @@ There are a number of command-line options that are particularly useful when run
 
 ## Running dynamic workflows
 
-Use `copilot workflow run WORKFLOW-NAME` to run a dynamic workflow from a script. To find out about dynamic workflows, see [AUTOTITLE](/copilot/concepts/agent-capabilities/agent-powered-workflows-and-operations/dynamic-workflows).
+Use `copilot workflow run WORKFLOW-NAME` to run a dynamic workflow from a script. To find out about dynamic workflows, see [Dynamic Workflows](https://docs.github.com/en/copilot/concepts/agent-capabilities/agent-powered-workflows-and-operations/dynamic-workflows).
 
 Use `--args` for inline JSON or an `@`-prefixed JSON file path. Arguments are not read from standard input.
 
@@ -58,7 +59,7 @@ Configure authentication and grant the required tool permissions before running 
 
 Project extensions are loaded only from trusted folders or with an explicit opt-in. In automation, `GITHUB_COPILOT_PROMPT_MODE_EXTENSIONS=true` permits loading project extensions for that invocation. Only enable this for repository code you trust. It does not grant tool permissions.
 
-For all workflow-specific options, see [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference#using-copilot-workflow-run).
+For all workflow-specific options, see [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#using-copilot-workflow-run).
 
 ### Workflow output
 
@@ -99,8 +100,8 @@ You can specify various kinds of tools with the `--allow-tool` option.
 | write  | Creating or modifying files. |
 | read   | Reading files or directories. |
 | url    | Fetching content from a URL. |
-| memory | Storing new facts to the agent's persistent memory. This does not affect using existing memories. See [AUTOTITLE](/copilot/concepts/prompting-and-context/copilot-memory). |
-| MCP-SERVER | Invoking tools from a specific MCP server. Use the server's configured name as the identifier—for example, `github`. See [AUTOTITLE](/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers). |
+| memory | Storing new facts to the agent's persistent memory. This does not affect using existing memories. See [Copilot Memory](https://docs.github.com/en/copilot/concepts/prompting-and-context/copilot-memory). |
+| MCP-SERVER | Invoking tools from a specific MCP server. Use the server's configured name as the identifier—for example, `github`. See [Add Mcp Servers](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers). |
 
 ### Tool filters
 
@@ -128,6 +129,7 @@ You can use environment variables to configure various aspects of the CLI's beha
 | Variable              | Description   |
 | --------------------- | ------------- |
 | `COPILOT_ALLOW_ALL`   | Set to `true` for full permissions |
+| `COPILOT_ASSISTED_APPROVAL` | Set to `true` to turn on [copilot.assisted_permissions] for a non-interactive run |
 | `COPILOT_MODEL`       | Set the model (for example, `gpt-6-astra`, `claude-haiku-4.5`) |
 | `COPILOT_HOME`        | Set the directory for the CLI configuration file (`~/.copilot` by default) |
 | `COPILOT_AUTO_UPDATE` | Set to `false` to disable automatic updates. Useful in CI and other automated environments where you want to pin the CLI version. |
@@ -137,6 +139,33 @@ You can use environment variables to configure various aspects of the CLI's beha
 | `GITHUB_COPILOT_PROMPT_MODE_EXTENSIONS` | Set to `true` to allow project extensions to load for a prompt or direct workflow run. Only use this for repository code you trust. This does not grant tool permissions. |
 
 For full details of environment variables for Copilot CLI, use the command `copilot help environment` in your terminal.
+
+## Using [copilot.assisted_permissions]
+
+In a non-interactive run there is nobody available to answer approval prompts. Without any permission options, requests that need approval are denied, and Copilot often can't finish the task. With `--allow-all-tools`, you grant blanket tool permissions without a model safety review.
+
+The `--assisted-approval` option is the middle ground. A safety review can assess eligible requests that aren't already resolved by existing permissions:
+
+* If the review judges the request to be safe, it's approved automatically and Copilot continues.
+* If the review requires your approval, the request is denied and the reason is passed back to Copilot, so that it can try a different approach to complete the task.
+
+Existing deny rules, mandatory approval requirements, and sandbox protections still apply. Requests that still require your approval are denied in non-interactive runs.
+
+For more information about how the safety review works, and which model is used, see [Allowing Safe Commands](https://docs.github.com/en/copilot/concepts/customizations/allowing-safe-commands).
+
+```shell copy
+copilot -p "Fix the failing tests" --assisted-approval
+```
+
+You can set the `COPILOT_ASSISTED_APPROVAL` environment variable to `true` instead of using the option. This is useful in automated environments where you can't easily change the command that's run.
+
+### Things to be aware of
+
+* **The option is only valid for non-interactive runs.** These are runs that use `-p` or `--prompt`, and runs in an environment with no terminal attached, such as a CI/CD workflow. If you use `--assisted-approval` when starting an interactive session, the CLI exits with an error.
+
+* **It overrides `--allow-all-tools` when successfully enabled.** Tool requests use [copilot.assisted_permissions] instead of blanket tool approval. However, `--allow-all-paths` and `--allow-all-urls`—including when they're set by `--allow-all` or `--yolo`—are unaffected, so file and URL access can still be unrestricted.
+
+* **Check for a warning if the run must not proceed without a safety review.** If [copilot.assisted_permissions] can't be turned on, because your enterprise settings block it for example, the CLI writes a warning to standard error and continues. It does not cancel a separate `--allow-all-tools` option that you supplied, so tool requests may still be approved without a safety review.
 
 ## Choosing a model
 
@@ -159,7 +188,7 @@ copilot -p "Fix the race condition in the worker pool" \
 ```
 
 > [!NOTE]
-> To see the model strings for all available models, run the `/model` command in an interactive Copilot CLI session. For the full list of models and the clients that support them, see [AUTOTITLE](/copilot/reference/ai-models/supported-models).
+> To see the model strings for all available models, run the `/model` command in an interactive Copilot CLI session. For the full list of models and the clients that support them, see [Supported Models](https://docs.github.com/en/copilot/reference/ai-models/supported-models).
 
 Alternatively, you can set the `COPILOT_MODEL` environment variable to specify a model for the duration of the shell session.
 
@@ -187,7 +216,7 @@ When determining which model to use for a given prompt, the CLI checks for model
 
 ## Using custom agents
 
-You can delegate work to a specialized agent by using the `--agent` option. For more information, see [AUTOTITLE](/copilot/how-tos/copilot-cli/customize-copilot/create-custom-agents-for-cli).
+You can delegate work to a specialized agent by using the `--agent` option. For more information, see [Create Custom Agents For Cli](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/create-custom-agents-for-cli).
 
 In this example, the `code-review` agent is used. This requires that a custom agent has been created with this name.
 
@@ -199,6 +228,6 @@ copilot -p "Review the latest commit" \
 
 ## Further reading
 
-* [AUTOTITLE](/copilot/how-tos/copilot-cli)
-* [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference)
-* [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-plugin-reference)
+* [Copilot Cli](https://docs.github.com/en/copilot/how-tos/copilot-cli)
+* [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference)
+* [Cli Plugin Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-plugin-reference)
