@@ -16,7 +16,7 @@ Before you begin, ensure you have the following:
 
 * **A LangSmith account**: Sign up (for free) or log in at [smith.langchain.com](https://smith.langchain.com?utm_source=docs\&utm_medium=cta\&utm_campaign=langsmith-signup\&utm_content=oss-langgraph-studio).
 * **A LangSmith API key**: Follow the [Create an API key](https://docs.langchain.com/langsmith/create-account-api-key.md) guide.
-* If you don't want data [traced](https://docs.langchain.com/langsmith/observability-concepts.md#traces) to LangSmith, set `LANGSMITH_TRACING=false` in your application's `.env` file. With tracing disabled, no data leaves your local server.
+* If you don't want data [traced](https://docs.langchain.com/langsmith/observability-concepts.md#traces) to LangSmith, set `LANGSMITH_TRACING=false` in your agent's `.env` file. With tracing disabled, no data leaves your local server.
 
 ## Set up local Agent server
 
@@ -56,6 +56,10 @@ agent = create_agent(
 
 ### 3. Environment variables
 
+> [!NOTE]
+>
+> In an [agent-based workspace](https://docs.langchain.com/langsmith/agents.md), [create an agent](https://docs.langchain.com/langsmith/create-an-agent.md) once before sending traces. Use [agent addressing](https://docs.langchain.com/langsmith/log-traces-to-agent.md) to select its identifier and environment. If an integration requires `project_name`, use the selected environment's [`tracer_session_name`](https://docs.langchain.com/langsmith/create-an-agent#use-an-environment-project) as a compatibility value.
+
 Studio requires a LangSmith API key to connect your local agent. Create a `.env` file in the root of your project and add your API key from [LangSmith](https://smith.langchain.com/settings).
 
 > [!WARNING]
@@ -64,6 +68,8 @@ Studio requires a LangSmith API key to connect your local agent. Create a `.env`
 
 ```bash .env theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 LANGSMITH_API_KEY=lsv2...
+LANGSMITH_AGENT_ID="<your-agent-id>"
+LANGSMITH_AGENT_ENVIRONMENT="production"
 ```
 
 ### 4. Create a LangGraph config file
@@ -130,7 +136,7 @@ The development server supports hot-reloading—make changes to prompts or tool 
 
 For more information on how to run Studio, refer to the following guides in the [LangSmith docs](https://docs.langchain.com/langsmith/observability.md):
 
-* [Run application](https://docs.langchain.com/langsmith/use-studio.md#run-application)
+* [Run agent](https://docs.langchain.com/langsmith/use-studio.md#run-application)
 * [Manage assistants](https://docs.langchain.com/langsmith/use-studio.md#manage-assistants)
 * [Manage threads](https://docs.langchain.com/langsmith/use-studio.md#manage-threads)
 * [Iterate on prompts](https://docs.langchain.com/langsmith/observability-studio.md)

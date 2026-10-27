@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-10-26T18:29:30.500874+00:00
-- **Total Palabras**: 16,399 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-27T04:20:56.014294+00:00
+- **Total Palabras**: 16,381 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1916,11 +1916,25 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `fdab2a66951610a3d199a0a738e98e08f4e3c39255ab4c615a7a9ac10c28fba7`
-- **LAST_VERIFIED_UTC**: 2026-10-24T03:56:03.527599+00:00
+- **SHA256_FINGERPRINT**: `92848f03ff083a1f63b4b7fc8d59f13d52bd412fc44036fe51384c0b7804598d`
+- **LAST_VERIFIED_UTC**: 2026-10-27T04:20:52.756820+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
+
+## GitHub Copilot assisted permissions generally available
+- **Date**: Mon, 26 Oct 2026 22:31:30 +0000
+- **URL**: https://github.blog/changelog/2026-10-26-github-copilot-assisted-permissions-generally-available
+
+Assisted permissions are now generally available in GitHub Copilot CLI, GitHub Copilot app, and Visual Studio Code. When Copilot requests permission to run a command, access a file system path,...
+The post GitHub Copilot assisted permissions generally available appeared first on The GitHub Blog .
+
+## GPT-6.1 Terra in GitHub Copilot
+- **Date**: Mon, 26 Oct 2026 19:15:53 +0000
+- **URL**: https://github.blog/changelog/2026-10-26-gpt-6-1-terra-in-github-copilot
+
+GPT-6.1 Terra, OpenAI’s newest model, is now generally available in GitHub Copilot. It is designed for everyday agentic coding and terminal work at a lower cost than GPT-6.1 Sol. In...
+The post GPT-6.1 Terra in GitHub Copilot appeared first on The GitHub Blog .
 
 ## Usage metrics API adds usage from tools like OpenCode
 - **Date**: Fri, 23 Oct 2026 23:42:03 +0000
@@ -1977,17 +1991,3 @@ The post Copilot model policy API for enterprise, orgs, and teams appeared first
 
 As of today, October 19, 2026, we have deprecated the following models across most GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions). These...
 The post GitHub Copilot models deprecated on October 19, 2026 appeared first on The GitHub Blog .
-
-## Multi-repository support and other improvements for GitHub in Slack and Teams
-- **Date**: Fri, 16 Oct 2026 02:16:35 +0000
-- **URL**: https://github.blog/changelog/2026-10-15-copilot-in-slack-and-teams-adds-model-and-repository-updates
-
-@GitHub in Slack and Teams now supports working across multiple repositories in a single conversation. Whether you’re creating issues, opening pull requests, or investigating bugs, you can work across repositories...
-The post Multi-repository support and other improvements for GitHub in Slack and Teams appeared first on The GitHub Blog .
-
-## Upcoming deprecation of selected GitHub Copilot models in mid-November
-- **Date**: Thu, 15 Oct 2026 19:35:13 +0000
-- **URL**: https://github.blog/changelog/2026-10-15-upcoming-deprecation-of-selected-github-copilot-models-in-mid-november
-
-We will deprecate the following models across all GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions) on November 16th, 2026: Model Deprecation date...
-The post Upcoming deprecation of selected GitHub Copilot models in mid-November appeared first on The GitHub Blog .
