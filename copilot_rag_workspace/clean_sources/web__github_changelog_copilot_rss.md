@@ -1,5 +1,12 @@
 # GitHub Copilot Official Changelog Feed
 
+## GitHub Copilot supports server-to-server authentication
+- **Date**: Tue, 27 Oct 2026 21:36:55 +0000
+- **URL**: https://github.blog/changelog/2026-10-27-github-copilot-supports-server-to-server-authentication
+
+GitHub Copilot now supports server-to-server authentication for GitHub Apps installed on organizations, available in public preview. Services and agents built with the GitHub Copilot SDK can now make requests on...
+The post GitHub Copilot supports server-to-server authentication appeared first on The GitHub Blog .
+
 ## GitHub Copilot assisted permissions generally available
 - **Date**: Mon, 26 Oct 2026 22:31:30 +0000
 - **URL**: https://github.blog/changelog/2026-10-26-github-copilot-assisted-permissions-generally-available
@@ -62,10 +69,3 @@ The post Industry comparisons in the Copilot impact dashboard appeared first on 
 
 You can now use the REST API to retrieve and update Copilot model policies for enterprises, enterprise teams, agent apps, and organizations. What’s new GET and PATCH endpoints are now...
 The post Copilot model policy API for enterprise, orgs, and teams appeared first on The GitHub Blog .
-
-## GitHub Copilot models deprecated on October 19, 2026
-- **Date**: Mon, 19 Oct 2026 21:27:10 +0000
-- **URL**: https://github.blog/changelog/2026-10-19-github-copilot-models-deprecated-on-october-19-2026
-
-As of today, October 19, 2026, we have deprecated the following models across most GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions). These...
-The post GitHub Copilot models deprecated on October 19, 2026 appeared first on The GitHub Blog .

@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-10-27T17:44:22.515752+00:00
-- **Total Palabras**: 16,408 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-28T04:51:38.301071+00:00
+- **Total Palabras**: 16,409 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1174,8 +1174,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_344219
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/344219
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/344219
-- **SHA256_FINGERPRINT**: `578217163f604325c095347efe5c78bda3d2a4050130abf3a68a943db857edc0`
-- **LAST_VERIFIED_UTC**: 2026-10-27T17:44:22.506356+00:00
+- **SHA256_FINGERPRINT**: `dc375ad93798c2eb4264aa6fafb5aa2e5f49c2c1a18df870bfb5719225648f05`
+- **LAST_VERIFIED_UTC**: 2026-10-28T04:51:38.299695+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.144.0 Endgame
@@ -1254,9 +1254,10 @@ We really appreciate people trying our new features as soon as they are ready, s
 - Release notes
 
 `@endgame-champ`:
-- [ ] Generate "Thank you" section of the release notes in the `vnext` branch of the `vscode-docs` repo.
-    - [ ] [Acknowledge third-party pull requests](https://tools.code.visualstudio.com/acknowledgement) in release notes.
-    - [ ] Acknowledge [issue trackers](https://github.com/microsoft/vscode-internalbacklog/wiki/Community-Triage---Credits#community-triage---role-based) from the community (do the copy-paste variant) -
+- [x] Generate "Thank you" section of the release notes in the `vnext` branch of the private `vscode-docs-pr` repo.
+    - [01f066493](https://github.com/microsoft/vscode-docs-pr/commit/01f0664939c85ba3c954e46cbaa7c3ace04b4c77): 4 issue-tracking credits, 10 contributors, 11 PRs.
+    - [x] [Acknowledge third-party pull requests](https://tools.code.visualstudio.com/acknowledgement) in release notes.
+    - [x] Acknowledge [issue trackers](https://github.com/microsoft/vscode-internalbacklog/wiki/Community-Triage---Credits#community-triage---role-based) from the community (do the copy-paste variant) -
 - [ ] If this is not Patch Tuesday only:
   - [x] Build and release insiders from release/<x.y> (if there have been newer changes since last release)
   - [x] Build stable from release/<x.y> and release to MSFT folks
@@ -1920,11 +1921,18 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `92848f03ff083a1f63b4b7fc8d59f13d52bd412fc44036fe51384c0b7804598d`
-- **LAST_VERIFIED_UTC**: 2026-10-27T04:20:52.756820+00:00
+- **SHA256_FINGERPRINT**: `b78178b58699c5634116897bdcbf886ba0ec4e1d5ae93e8b8ab6c0523b3f1562`
+- **LAST_VERIFIED_UTC**: 2026-10-28T04:51:32.317049+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
+
+## GitHub Copilot supports server-to-server authentication
+- **Date**: Tue, 27 Oct 2026 21:36:55 +0000
+- **URL**: https://github.blog/changelog/2026-10-27-github-copilot-supports-server-to-server-authentication
+
+GitHub Copilot now supports server-to-server authentication for GitHub Apps installed on organizations, available in public preview. Services and agents built with the GitHub Copilot SDK can now make requests on...
+The post GitHub Copilot supports server-to-server authentication appeared first on The GitHub Blog .
 
 ## GitHub Copilot assisted permissions generally available
 - **Date**: Mon, 26 Oct 2026 22:31:30 +0000
@@ -1988,10 +1996,3 @@ The post Industry comparisons in the Copilot impact dashboard appeared first on 
 
 You can now use the REST API to retrieve and update Copilot model policies for enterprises, enterprise teams, agent apps, and organizations. What’s new GET and PATCH endpoints are now...
 The post Copilot model policy API for enterprise, orgs, and teams appeared first on The GitHub Blog .
-
-## GitHub Copilot models deprecated on October 19, 2026
-- **Date**: Mon, 19 Oct 2026 21:27:10 +0000
-- **URL**: https://github.blog/changelog/2026-10-19-github-copilot-models-deprecated-on-october-19-2026
-
-As of today, October 19, 2026, we have deprecated the following models across most GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions). These...
-The post GitHub Copilot models deprecated on October 19, 2026 appeared first on The GitHub Blog .

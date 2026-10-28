@@ -74,9 +74,10 @@
 - Release notes
 
 `@endgame-champ`:
-- [ ] Generate "Thank you" section of the release notes in the `vnext` branch of the `vscode-docs` repo.
-    - [ ] [Acknowledge third-party pull requests](https://tools.code.visualstudio.com/acknowledgement) in release notes.
-    - [ ] Acknowledge [issue trackers](https://github.com/microsoft/vscode-internalbacklog/wiki/Community-Triage---Credits#community-triage---role-based) from the community (do the copy-paste variant) -
+- [x] Generate "Thank you" section of the release notes in the `vnext` branch of the private `vscode-docs-pr` repo.
+    - [01f066493](https://github.com/microsoft/vscode-docs-pr/commit/01f0664939c85ba3c954e46cbaa7c3ace04b4c77): 4 issue-tracking credits, 10 contributors, 11 PRs.
+    - [x] [Acknowledge third-party pull requests](https://tools.code.visualstudio.com/acknowledgement) in release notes.
+    - [x] Acknowledge [issue trackers](https://github.com/microsoft/vscode-internalbacklog/wiki/Community-Triage---Credits#community-triage---role-based) from the community (do the copy-paste variant) -
 - [ ] If this is not Patch Tuesday only:
   - [x] Build and release insiders from release/<x.y> (if there have been newer changes since last release)
   - [x] Build stable from release/<x.y> and release to MSFT folks
