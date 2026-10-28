@@ -1,345 +1,7 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-10-28T04:51:38.301071+00:00
-- **Total Palabras**: 16,409 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-28T18:07:46.909859+00:00
+- **Total Palabras**: 19,434 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
-
-
----
-# DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_142.md
-- **CANONICAL_URL**: https://code.visualstudio.com/release-notes/v1_142
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_142.md
-- **SHA256_FINGERPRINT**: `5978f7b095056c2c8a5b9b32a7caa43249e7d0521cf71a90a8f75950b54879cd`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.980751+00:00
----
-
-**MetaDescription**: Learn what's new in Visual Studio Code 1.142
-
-# Visual Studio Code 1.142
-
-## Release highlights
-
-This release adds shared canvases for agent workflows, lets you move chats without losing context, expands the Markdown editor, and gives administrators more control over agent permissions.
-
-* [Canvases (Preview)](#canvases-preview): Collaborate with agents beyond chat using visual and interactive canvases.
-
-* [Move chats](#move-chats-between-folders-and-worktrees): Continue a chat in another folder or a new Git worktree without losing conversation history.
-
-* [Markdown editor](#markdown-editor): Work on Markdown files more efficiently with features like pasting images, renaming file links, or breadcrumb navigation.
-
-* [Enterprise management](#enterprise): Enforce agent sandboxing and permission policies while controlling which permission modes developers can use.
-
-* [Redesigned model picker](#redesigned-model-picker): Quickly switch between Copilot and BYOK contributed models, and manage effort levels and context windows more intuitively.
-
-## Agents
-
-### Copilot harness
-
-The Copilot harness is powered by the Copilot SDK, a shared foundation that helps align behavior, capabilities, and improvements across Copilot products. In VS Code, the Copilot harness runs sessions through the [Agent Host](https://code.visualstudio.com/docs/agents/concepts/agent-host), which lets sessions continue in the background and be accessed from both the VS Code editor window and the Agents window.
-
-The Copilot harness has been available from the harness picker in the chat input. Based on overwhelmingly positive and valuable feedback, we're progressively rolling it out as the default harness for new sessions in VS Code. When you start a new session, **Copilot** in the harness picker indicates that the session will use the Copilot harness.
-
-![Screenshot showing the harness picker with hover descriptions for the Local and Copilot harnesses.](images/1_142/harness-hover.webp)
-
-Thank you to everyone who has shared feedback. We're actively using it to shape the experience. One example is reintroducing **Ask** as a built-in agent in the Copilot harness. Your feedback showed that a dedicated read-only experience remains valuable. Select **Ask** from the agent picker to use it.
-
-Learn how to [work with the Copilot harness](https://code.visualstudio.com/docs/agents/run/agent-harnesses#use-the-copilot-harness), or explore the architecture and workflows in the [agent host blog post](https://code.visualstudio.com/blogs/2026/08/26/agent-host-architecture). If you have feedback or requests, [please file an issue](https://github.com/microsoft/vscode/issues).
-
-### Canvases (Preview)
-
-**Setting**: ``chat.canvases.enabled``
-
-Canvases are interactive interfaces to collaborate with an agent. A canvas opens beside the chat, where you and the agent can inspect and update the same artifact instead of coordinating solely through prompts.
-
-For example, use a Kanban canvas to plan and track implementation work. You can create and move cards directly, while the agent can break a feature into tasks, update their status, or add newly discovered work. Canvases work in both the VS Code editor window and the Agents window, and canvas extensions are also supported in the [GitHub Copilot app](https://docs.github.com/en/copilot/how-tos/github-copilot-app/working-with-canvas-extensions).
-
-![Screenshot of a kanban canvas showing tasks and columns in the editor.](images/1_142/kanban-canvas.webp)
-
-Canvases are available in Preview in the VS Code desktop app for local sessions that use the Copilot harness. Enable ``chat.canvases.enabled``, and then start a new session with the Copilot harness.
-
-Every canvas is provided by a canvas extension. To get started, you have two options:
-
-* **Create a canvas extension**: Enter `/create-canvas` in the chat input and describe the user interface you want for your project. The skill then creates a canvas extension in your workspace and opens its canvas.
-
-* **Install a chat plugin**: For now, install a [chat plugin that includes a canvas extension](https://docs.github.com/en/copilot/how-tos/github-copilot-app/working-with-canvas-extensions) through the GitHub Copilot app. Then switch to VS Code and ask the agent to list the available canvases and have it open one.
-
-After you install a canvas extension, you can also open an available canvas in the Agents window from **Add Tab (+)** > **Canvas**.
-
-Explore and install [sample canvas extensions from the community](https://awesome-copilot.github.com/extensions/).
-
-Learn more about [canvas support](https://code.visualstudio.com/docs/agents/run/agent-harnesses#_use-canvases-with-the-copilot-harness) in the VS Code documentation.
-
-<video src="images/1_142/canvases.mp4" title="Video showing a canvas being used in VS Code." autoplay loop controls muted></video>
-
-### Move chats between folders and worktrees
-
-Previously, if you started investigating a task in one folder and then wanted to implement it in a Git worktree, or continue in a different repository, you had to start a new chat and rebuild the context.
-
-In the [Agents window](https://code.visualstudio.com/docs/agents/run/agents-window), you can now ask the agent to move the current chat to another folder or into a new Git worktree, and it keeps the conversation history intact. Changing the workspace also works for chats that already have a workspace, and the agent can isolate work in a new worktree.
-
-Ask the agent with a natural-language prompt, for example:
-
-```prompt
-Continue this task in a new Git worktree of the current repository before implementing it.
-```
-
-The agent finishes the current turn, moves the chat, and shows a notice when the workspace changes. Then it continues the task automatically in the new location. Edits and commands run in the new location while your original checkout stays unchanged.
-
-<video src="images/1_142/move-chat-worktree.mp4" title="Video showing a chat started in the VS Code repository moving to a new Git worktree, continuing with edits, and showing the worktree in the Files explorer." autoplay loop controls muted></video>
-
-The move is available for agent sessions that use the Codex harness or Codex in Interactive mode, and that contain one chat and one local folder. For prerequisites and details about which files are available in the new location, see [Move a chat to another folder or worktree](https://code.visualstudio.com/docs/agents/run/sessions/manage-sessions#move-a-chat-to-another-folder-or-worktree).
-
-### Session-scoped layout in the Agents window (Experimental)
-
-**Setting**: ``sessions.experimental.layoutScope`` (Agents window only)
-
-Previously, when you switched between sessions in the Agents window, VS Code shared layout settings such as editor visibility, details, and panel visibility across sessions. If you're used to VS Code remembering the layout for each workspace, sharing the layout across sessions can be disruptive.
-
-With the new experimental ``sessions.experimental.layoutScope`` setting, you can choose how much of the layout each session remembers. Reload the window after you change the setting. It supports the following values:
-
-* `session-shared` (default): The current behavior. A session and its nested sessions share the same editors and selected panel views. Editor, details, and bottom panel visibility are shared across existing workspace sessions.
-
-* `chat-shared`: A session and each of its nested sessions keep their own editors and selected panel views, while editor, details, and bottom panel visibility stay shared across existing workspace sessions.
-
-* `chat`: A session and each of its nested sessions also keep their own editor and details composition and bottom panel visibility.
-
-Window geometry, pane sizes, and the sidebar currently remain shared across the window.
-
-### Customize the Agents window panel layout
-
-You can now choose how the bottom panel is aligned in the Agents window. Right-click a panel tab, select **Align Panel**, and choose one of the following layouts:
-
-* `Center` aligns the panel beneath the chat area, leaving more room for the side pane.
-
-* `Justify` extends the panel across the full width of the window.
-
-Your selection is saved per profile and preserved when maximizing or restoring the panel.
-
-<video src="images/1_142/agents-window-bottom-panel-layout.mp4" title="Video showing the bottom panel alignment options in the Agents window." autoplay loop controls muted></video>
-
-## Chat
-
-### Quickly identify the active harness
-
-Chat titles show the active harness name, such as **Copilot** or **Codex**, so you can identify it without opening the harness picker or hovering over the session list.
-
-![Screenshot showing two chat sessions in editor windows, with the Codex and Copilot harness names displayed before each chat title.](images/1_142/harness-title.webp)
-
-### Stop background shells
-
-In [Copilot harness](#copilot-harness) sessions, the [background shells pill](https://code.visualstudio.com/updates/v1_141#_keep-track-of-background-shells) above the chat input lists the commands that the agent is still running in the background. When one of those commands is no longer useful, for example a test run that you want to restart or a command that runs longer than expected, you can stop it instead of waiting for it to finish.
-
-Select the **Background Shells** pill, select a shell to open its details, and then select **Stop Shell** next to its command. Only that command ends, and the shell leaves the list. You can reach **Stop Shell** with the keyboard, and screen readers announce when the shell stops.
-
-<video src="images/1_142/background-shell-stop.mp4" title="Video showing a background shell's output streaming in its details, then selecting Stop Shell, which removes the shell from the Background Shells list." autoplay loop controls muted></video>
-
-Stopping a shell is only available for **attached shells**, which the agent runs as part of its current request. Detached shells run independently of the agent and can't be stopped from this interface.
-
-Shell details also show each shell's full description above its command, even when the list truncates it. Long output is no longer cut off, and you can scroll back through earlier output, both in the shell's details and in the terminal output in the chat response.
-
-### Stateful responses for BYOK custom endpoints
-
-If your bring-your-own-key (BYOK) model uses a stateless Responses API, set `"statefulResponses": false` on its model entry in `chatLanguageModels.json` to send full conversation history with each request.
-
-See [Custom Endpoint configuration](https://code.visualstudio.com/docs/agent-customization/language-models#stateful-responses-api-endpoints) for details.
-
-### Windows sandboxing for Local harness is no longer supported
-
-Windows sandboxing for terminal commands in Local agent sessions has been deprecated. For sandboxed command execution on Windows, use an Agent Host session. See the [Agent Host sandboxing documentation](https://code.visualstudio.com/docs/agents/run/agent-sandboxing) for details.
-
-### Redesigned model picker
-
-Copilot and bring-your-own-key (BYOK) providers offer many models, each with strengths for different tasks. The redesigned model picker makes it easier to choose and switch models as your work changes.
-
-The model picker uses a tabbed interface to separate Copilot and BYOK models.
-
-![Screenshot showing the redesigned model picker with the Copilot tab selected and a list of models, where the selected model shows its thinking level and context size.](images/1_142/model-picker-list.webp)
-
-When you hover over a model in the list, you can further configure its thinking level and context window size.
-
-![Screenshot showing the model details view in the model picker, with options to select the thinking level and context size.](images/1_142/model-picker-reasoning-effort.webp)
-
-## Markdown editor
-
-### Editing mode closer to the Markdown source
-
-When you edit Markdown, each source line appears on a separate visual line, making the document structure easier to follow. Read-only mode continues to render Markdown as before.
-
-### Paste images
-
-To add an image, for example a screenshot, to your Markdown document, simply paste it directly into the Markdown editor, like you could already do in the text editor. This makes it easier to include visual content without having to save and insert files manually.
-
-<video src="images/1_142/markdown-pasting-images.mp4" title="Video showing an image pasted from the clipboard into the Markdown editor." autoplay loop controls muted></video>
-
-### Rename file links
-
-The Markdown editor now supports **Rename Symbol** (``Shortcut: editor.action.rename``), so you can rename file links in place and have the changes reflected throughout your document.
-
-<video src="images/1_142/markdown-rename.mp4" title="Video showing a file link renamed in the Markdown editor." autoplay loop controls muted></video>
-
-### Outline and breadcrumbs
-
-The Markdown editor integrates with the Outline view and breadcrumbs, making it easier to inspect the heading structure and jump to a section.
-
-<video src="images/1_142/markdown-outline-breadcrumbs.mp4" title="Video showing navigation through a Markdown document with the Outline view and breadcrumbs." autoplay loop controls muted></video>
-
-### Copy code blocks
-
-Like the Markdown preview, code blocks in the Markdown editor display a copy button on hover. This makes it easy to copy multiline code fragments without accidentally editing the content.
-
-<video src="images/1_142/markdown-copy.mp4" title="Video showing the Copy button copying code from a Markdown code block." autoplay loop controls muted></video>
-
-## Editor experience
-
-### Merging document highlights from different providers
-
-**Setting**: ``editor.occurrencesHighlightFromAllProviders``
-
-Enable ``editor.occurrencesHighlightFromAllProviders`` to merge document highlights from all providers. By default, VS Code uses highlights only from the highest-priority provider.
-
-## Languages
-
-### Python
-
-This release includes fixes for environment discovery, interpreter selection, and terminal activation in the Python Environments Extension.
-
-* **Environment discovery:** Python installations managed by `uv` now appear under **Global**. Selecting an interpreter by path adds its virtual environment to the environment list, and deleting a virtual environment outside VS Code updates the selection.
-
-* **Project-specific environments:** Automatic selection now prefers a project's own virtual environment over nested environments. Conda environment selection and Poetry package operations respect project scope, and background refreshes no longer overwrite newer interpreter selections.
-
-* **Interpreter configuration:** Fixed resolution of `${workspaceFolder}`, relative paths, and commands such as `python3` in `python.defaultInterpreterPath`. The project-view environment selector now includes **Enter Interpreter Path**.
-
-* **Terminal activation:** Shell-startup activation now updates when the global interpreter changes and is preserved when environment files change. Environment-file notifications include **Enable for Workspace** or **Enable for Folder** actions.
-
-* **Python installation:** When `uv` is required but missing, setup offers to install it and continues to Python version selection without requiring a PATH refresh.
-
-## Enterprise
-
-### Automatically move policy-managed chats to Copilot Agent Host
-
-Enterprise managed settings let administrators govern agent permissions and sandboxing. When your organization configures a nonempty `permissions` object or sets `sandbox.enabled` to `true`, VS Code now requires the [Copilot harness](https://code.visualstudio.com/docs/agents/run/agent-harnesses) in Agent Host for full chat sessions, to be able to enforce these policies.
-
-Opening an existing, unarchived **Local** chat automatically moves it to **Copilot**, preserving the transcript and unsent draft, including attachments. Nothing is sent automatically. The new chat uses its normal model and permission defaults under current organization policy.
-
-VS Code archives the original chat only after the new chat opens successfully. If you switch away while the move is in progress, the original stays unchanged and the unopened destination is removed.
-
-While these policies apply, Claude, Codex, and terminal chat are unavailable. Editor inline chat remains available for limited read and edit tasks. An empty `permissions` object or legacy policy alone does not trigger this migration. Administrators can [temporarily opt out of automatic migration](#temporarily-keep-the-local-harness).
-
-### Temporarily keep the Local harness
-
-Administrators who need more time to transition to Copilot Agent Host can set `vscode.temporaryDefaultToLocalHarness` to `true` in their [unified managed settings](https://docs.github.com/en/copilot/how-tos/administer-copilot/manage-for-enterprise/use-managed-settings/get-started):
-
-```json
-{
-    "vscode": {
-        "temporaryDefaultToLocalHarness": true
-    }
-}
-```
-
-This keeps the **Local** harness available and stops automatic switching to **Copilot**, while preserving explicit, remembered, and current harness choices. Set the managed value to `false` or remove it to restore normal routing.
-
-> **Note:** This temporary opt-out also overrides routing required by managed sandbox and permission settings. Local does not enforce those runtime-only rules. Enforcement in Copilot Agent Host sessions is unchanged.
-
-### Manage Copilot permission modes independently
-
-Administrators can permit **Assisted** while blocking **Allow All**, giving developers assisted approvals without bypassing permission checks. The Copilot permission picker reflects the modes permitted by your organization's managed settings.
-
-For example, merge this configuration into your [unified managed settings](https://docs.github.com/en/copilot/how-tos/administer-copilot/manage-for-enterprise/use-managed-settings/get-started):
-
-```json
-{
-    "permissions": {
-        "disableBypassPermissionsMode": "disable",
-        "disableAssistedPermissionsMode": false
-    }
-}
-```
-
-![Screenshot showing the Copilot permission picker with Manual and Assisted permissions available and Allow All absent.](images/1_142/managed-permission-modes.webp)
-
-Use `permissions.disableAssistedPermissionsMode` to restrict **Assisted** independently. `permissions.defaultMode` supplies a starting default, not a restriction on the modes users can select.
-
-The legacy `ChatToolsAutoApprove: false` policy still blocks both **Allow All** and **Assisted** unless you configure explicit managed mode restrictions. Setting only `permissions.defaultMode` does not replace that legacy restriction.
-
-> **Note:** Assisted Permissions is not currently compatible with `permissions.{allow,ask,deny}`.
-> If you are using any of `permissions.allow`, `permissions.ask`, `permissions.deny`, please set `"disableAssistedPermissionsMode": true`.
-> In the next release, both will be supported alongside one another.
-
-### Windows numeric policies support DWORD values
-
-On Windows, policies that accept numeric values support DWORDs and QWORDs.
-
-## Contributions to extensions
-
-### GitHub Pull Requests
-
-There has been more progress on the [GitHub Pull Requests](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github) extension, which enables you to work on, create, and manage pull requests and issues. New features include:
-
-* Stacked pull request support is enabled by default.
-
-    ![Screenshot showing a stacked pull request.](images/1_142/pull-request-stack.webp)
-
-* Conflict-free, locally checked-out pull requests can be updated.
-
-Review the [changelog for the 0.170.0](https://github.com/microsoft/vscode-pull-request-github/blob/main/CHANGELOG.md#01700) release of the extension to learn about everything in the release.
-
-## Deprecated features and settings
-
-### New deprecations in this release
-
-* [Windows sandboxing for Local harness is no longer supported](#windows-sandboxing-for-local-harness-is-no-longer-supported)
-
-## Thank you
-
-Contributions to `vscode`:
-
-* [@bluerose73 (Shengjie Ma)](https://github.com/bluerose73): Copilot NES: add ExP toggle to omit max_tokens [PR #340327](https://github.com/microsoft/vscode/pull/340327)
-* [@codelovingcat (Ürem Sancaktutan)](https://github.com/codelovingcat): Fix/issue 337524 multidiff order [PR #337565](https://github.com/microsoft/vscode/pull/337565)
-* [@denizguney (Deniz Güney Yıldırım)](https://github.com/denizguney): Fix duration calculation for agent stop command [PR #338278](https://github.com/microsoft/vscode/pull/338278)
-* [@na2co3-ftw (na2co3)](https://github.com/na2co3-ftw): Modern UI: Prevent vertical scrolling when dragging connected tabs (revised) [PR #338180](https://github.com/microsoft/vscode/pull/338180)
-* [@rksharma-owg (RKS)](https://github.com/rksharma-owg): Preserve newer debugger stop details during continued cleanup [PR #339530](https://github.com/microsoft/vscode/pull/339530)
-* [@sgent-epic](https://github.com/sgent-epic): agentHost: preserve BYOK state through tool continuations [PR #331749](https://github.com/microsoft/vscode/pull/331749)
-* [@SimonSiefke (Simon Siefke)](https://github.com/SimonSiefke)
-  * fix: memory leak in document paste edits [PR #338233](https://github.com/microsoft/vscode/pull/338233)
-  * fix: memory leak in native context menu dismissal [PR #338214](https://github.com/microsoft/vscode/pull/338214)
-  * fix: memory leak in output channel disposal listeners [PR #338240](https://github.com/microsoft/vscode/pull/338240)
-  * fix: memory leak in debug adapter descriptor factory [PR #334103](https://github.com/microsoft/vscode/pull/334103)
-  * fix: release terminal command history when clearing the normal buffer [PR #326931](https://github.com/microsoft/vscode/pull/326931)
-  * perf: reduce number of strings by 1200 [PR #327689](https://github.com/microsoft/vscode/pull/327689)
-  * fix: memory leak in MainThreadDebugService [PR #334102](https://github.com/microsoft/vscode/pull/334102)
-  * fix: memory leak in extHostTimeline [PR #334098](https://github.com/microsoft/vscode/pull/334098)
-  * fix: memory leak in debug visualization registrations [PR #340046](https://github.com/microsoft/vscode/pull/340046)
-  * fix: memory leak in hidden status bar command arguments [PR #338238](https://github.com/microsoft/vscode/pull/338238)
-  * fix: memory leak in extension host language model providers [PR #340579](https://github.com/microsoft/vscode/pull/340579)
-  * fix: memory leak in terminal disposal subscriptions [PR #340037](https://github.com/microsoft/vscode/pull/340037)
-* [@Tabisharaza (TABISH AYUB RAZA)](https://github.com/Tabisharaza): mcp: read migrated local servers from workspace configuration [PR #340034](https://github.com/microsoft/vscode/pull/340034)
-* [@tuanvtdeptre199](https://github.com/tuanvtdeptre199): Disable Step Out action when the active thread has only one stack frame [PR #336125](https://github.com/microsoft/vscode/pull/336125)
-* [@tyrielv (Tyrie Vella)](https://github.com/tyrielv): Avoid unnecessary --numstat diff for incoming changes decorations [PR #339008](https://github.com/microsoft/vscode/pull/339008)
-* [@yuezhang030](https://github.com/yuezhang030): Update VSC model F prompt [PR #340187](https://github.com/microsoft/vscode/pull/340187)
-
-Contributions to `vscode-pull-request-github`:
-
-* [@L4XB (Lukas )](https://github.com/L4XB): Don't open two browser tabs when clicking the pull request number [PR #8962](https://github.com/microsoft/vscode-pull-request-github/pull/8962)
-* [@strawberry-little-bear](https://github.com/strawberry-little-bear): Fix malformed issue links in overview HTML [PR #9025](https://github.com/microsoft/vscode-pull-request-github/pull/9025)
-* [@vsharha (Viktor Sharha)](https://github.com/vsharha): Fix mergeability polling in pull request overview [PR #8954](https://github.com/microsoft/vscode-pull-request-github/pull/8954)
-
-### Issue tracking
-
-Contributions to our issue tracking:
-
-* [@gjsjohnmurray (John Murray)](https://github.com/gjsjohnmurray)
-* [@RedCMD (RedCMD)](https://github.com/RedCMD)
-* [@IllusionMH (Andrii Dieiev)](https://github.com/IllusionMH)
-* [@albertosantini (Alberto Santini)](https://github.com/albertosantini)
-
----
-
-We really appreciate people trying our new features as soon as they are ready, so check back here often and learn what's new.
-
-> If you'd like to read release notes for previous VS Code versions, go to [Updates](https://code.visualstudio.com/updates) on [code.visualstudio.com](https://code.visualstudio.com).
-
-<a id="scroll-to-top" role="button" title="Scroll to top" aria-label="scroll to top" href="#"><span class="icon"></span></a>
-<link rel="stylesheet" type="text/css" href="css/inproduct_releasenotes.css"/>
 
 
 ---
@@ -807,49 +469,622 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_144.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_144
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_144.md
-- **SHA256_FINGERPRINT**: `82c1dfcc4ecf9fdb4401cb43247324253cd990c963098789222e0a91e68b2dc1`
-- **LAST_VERIFIED_UTC**: 2026-10-26T18:29:23.901813+00:00
+- **SHA256_FINGERPRINT**: `bc09923fe097ce1745ab20ff60974a15abdeb1e114eac0608ed25f9010c9fd93`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:38.440161+00:00
 ---
 
-**MetaDescription**: Learn what is new in Visual Studio Code 1.144 (Insiders)
+**MetaDescription**: Learn what's new in Visual Studio Code 1.144
 
 # Visual Studio Code 1.144
+
+## Release recap
+
+The road to GitHub Universe ([join us virtually!](https://githubuniverse.com/)) is paved with lots of pull requests! So, let's take a step back and look at what we've shipped recently.
+
+* Remember when agent sessions would stop as soon as you closed your client? We built the [Agent Host](https://code.visualstudio.com/docs/agents/concepts/agent-host), a separate process that keeps your agents running, on your local machine or remotely.
+
+* With language servers in mind, we designed the [Agent Host Protocol (AHP)](https://microsoft.github.io/agent-host-protocol/) to allow any client to interact with agent sessions. All of sudden, session continuity across VS Code, Copilot CLI, GitHub Copilot App, and github.com lets you pick up right where you left off.
+
+* The Agents window lets you manage your agents across workspaces and environments from a single interface, whether you kick off things yourself or use [automations](https://code.visualstudio.com/docs/agents/run/automations) to handle repetitive tasks.
+
+* By default, agents are now powered by the [Copilot harness](https://code.visualstudio.com/docs/agents/run/agent-harnesses), the same harness used in Copilot Code Review, the Copilot CLI, the Copilot App, and Copilot Cloud sessions. Write agent customizations once and use them consistently across all these experiences.
+
+* If you prefer [Anthropic's Claude Code harness or the one from OpenAI Codex](https://code.visualstudio.com/docs/agents/run/agent-harnesses?id=requirements-and-setup), just use those instead with your Copilot subscription and enjoy the familiar VS Code developer experience.
+
+* As we continue to offer new models from different providers, how do you decide which one is best suited for your task? With [model comparisons](https://code.visualstudio.com/docs/agents/run/compare-models) (aka Agent Bake-Off), run the same prompt against multiple models and harnesses to see which performs best. Prefer a hands-off approach? Use [Copilot Fusion](https://code.visualstudio.com/docs/agents/concepts/language-models#_copilot-fusion) to choose the best model and orchestrate multiple models to work together for your task.
+
+* We've had vision capabilities for a while, but you kept asking for more. The wait is over, and now you can also prompt the agent to [generate images](https://code.visualstudio.com/docs/chat/chat-overview#_generate-and-edit-images-experimental) directly in chat.
+
+* Chat is not always the best interface for every task. With [canvas support](https://code.visualstudio.com/docs/agents/run/canvases), you can create rich, interactive UI to interact with your agents and visualize their outputs.
+
+* Coding with agents can be more than just writing code. Let agents interact with the browser to validate their results, or let them [drive apps on your computer](https://code.visualstudio.com/docs/agents/run/tools#_control-desktop-applications-experimental) for automation and task execution.
+
+* If you need it, build it! So, we created a beautiful new [Markdown editor](https://code.visualstudio.com/docs/languages/markdown#_markdown-editor). Instead of editing the raw Markdown, you can edit the rendered Markdown directly. And, of course, you can still edit the source if you prefer.
+
+* And if you didn't notice, we also [refreshed the overall look and feel of VS Code](https://code.visualstudio.com/blogs/2026/10/15/modern-ui), so it looks fresh and beautiful in light and dark themes.
+
+Read all about this, and more, in our [VS Code Wrapped blog post](https://code.visualstudio.com/blogs/2026/10/28/vscode-wrapped).
+
+## Release highlights
+
+This release helps you keep agent work moving across environments, find the right models for each task, and stay in control of changes and tool calls.
+
+* [Session continuity](#session-continuity): Manage remotes in one place and keep sessions and automations running even when your computer is off.
+
+* [Copilot Fusion and model comparisons](#models): Let Copilot choose and orchestrate models, or compare models side by side.
+
+* [Image generation (Preview)](#image-generation-in-copilot-preview): Create and edit images directly in chat.
+
+* [Computer use (Experimental)](#let-agents-use-desktop-apps-with-computer-use): Let agents use desktop apps on your computer.
+
+* [Working set (Experimental)](#review-copilot-file-edits-with-the-working-set-experimental): Keep or undo agent file edits in the editor.
+
+* [Assisted permissions](#assisted-permissions-are-generally-available): Reduce interruptions with automatic approval for tool calls that pass a risk check.
+
+* [Customization marketplace](#discover-marketplace-customizations-preview) and [Copilot connectors](#connect-services-with-copilot-connectors-preview) (Preview): Discover skills and plugins for your workflow, and bring context from Slack, Notion, and other services into your agent sessions.
+
+## Session continuity
+
+### Run and continue Copilot tasks in the cloud
+
+Cloud sessions let you run Copilot tasks from VS Code without keeping your development machine online. Your repository and tools run in a managed environment on GitHub's infrastructure.
+
+From the **Chat view** in the editor window or the **Agents window**, you can:
+
+* Select **Cloud** and choose a GitHub repository to start a task.
+* Send follow-up instructions, respond to approval requests, and review the agent's changes.
+* Reopen an existing cloud session from the sessions list to continue the same conversation.
+
+Your cloud sessions are also accessible from other Copilot clients. For example, you can check progress on GitHub.com or in the **GitHub Mobile app**, then return to VS Code to continue working.
+
+<video src="images/1_144/cloud-continuity.mp4" title="Video showing cloud continuity in Copilot tasks." autoplay loop controls muted></video>
+
+Cloud sessions use a separate workspace. Local uncommitted changes aren't automatically copied. The new cloud experience requires a paid Copilot plan and is subject to organization policies.
+
+### Manage remote environments
+
+VS Code lets you run agents and perform development tasks across different (remote) environments. To make it easier to manage these environments, we're introducing the **Remote Environments** dialog, which brings your GitHub Environments, Dev Tunnels, WSL distributions, and SSH hosts together in one place.
+
+Select **Manage Remote Environments** at the bottom of the Environment picker to see the status of each remote, connect or disconnect, and choose which remotes should be visible in the pickers.
+
+![Screenshot showing the Remote Environments dialog with GitHub Environments, Dev Tunnels, WSL, and SSH groups, each remote's status, and inline actions for a connected tunnel.](images/1_144/remote-environments.webp)
+
+Learn more about [remote agent sessions](https://code.visualstudio.com/docs/agents/run/remote-agent-sessions).
+
+### Cloud Automations (Preview)
+
+**Setting:** ``chat.automations.cloud.enabled``
+
+Create and manage Copilot cloud automations directly in the Agents window. Enabled by default, they run on GitHub infrastructure on a schedule or in response to repository events, even when your computer is off.
+
+To create a cloud automation, you can ask an agent to set one up for you, or use the **Create Automation** button in the Automations view in the Agents window.
+
+With cloud automations, you can:
+
+* **Set up automations that run in response to issue or pull request events**: Act automatically when activity happens in your repository. For example, automatically triaging issues as they get assigned to you.
+* **Build shared workflows in the cloud with your team**: Create automations that are visible to everyone with access to the repository and act as Copilot.
+* **Control exactly when your agent runs and what it can do**: Limit allowed tools and add filters for precise control over your automations. For example, trigger an automation when you are assigned an issue with a specific label.
+
+![Screenshot showing the create cloud automation interface.](images/1_144/cloud-automations.webp)
+
+To learn more, see [Create and manage agent automations](https://code.visualstudio.com/docs/agents/run/automations) in the Visual Studio Code docs.
+
+### Agent Host Protocol v1.0
+
+We've published the first version of the [Agent Host Protocol](https://microsoft.github.io/agent-host-protocol/), the protocol that VS Code uses to communicate with its agents locally and on remote machines, including for [cloud automations](#cloud-automations-preview). It's an open, extensible protocol designed to be an easy way to build custom UI's for your agents, or build agent platforms that plug into any UI that speaks it.
+
+You can add a websocket-based agent host to your VS Code instance via the command **Agents: Add Remote Agent Host...** in the Agents window, and run `code agent endpoints` to get the endpoints for your editor's running agent host. We publish libraries in six languages and have found agents are good at making clients and hosts using them.
+
+You can read more about the protocol and find additional resources on the [Agent Host Protocol website](https://microsoft.github.io/agent-host-protocol/).
+
+## Models
+
+### Route and orchestrate models with GitHub Copilot Fusion
+
+Instead of picking a model for each task, select **Copilot Fusion** in the model picker and let Copilot intelligently route requests and orchestrate models for you. Copilot Fusion brings together [Project HydraFusion](https://github.blog/ai-and-ml/github-copilot/project-hydrafusion-frontier-quality-via-multi-model-orchestration/)'s multi-model orchestration and [Copilot auto model selection](https://docs.github.com/copilot/concepts/models/auto-model-selection)'s task-aware model selection to balance performance and cost efficiency.
+
+For each request, Copilot Fusion chooses the models, reasoning effort, and execution pattern for your task. For example, one model completes a simple task, while for harder tasks one model drafts a solution and other models review or critique it. Hover over the effort level below a response to see which models were used.
+
+Choose an effort level to balance quality and cost: **Standard** for everyday coding work, **High** for more demanding tasks, and **Max** for the most complex tasks.
+
+<video src="images/1_144/copilot-fusion.mp4" title="Video showing the model picker in Copilot Chat." autoplay loop controls muted></video>
+
+You're billed for each model that Copilot Fusion uses at its standard rate. Through November 30, 2026, paid Copilot plans receive a 30% discount when using Copilot Fusion.
+
+GitHub Copilot Fusion is now generally available, with Copilot Fusion High and Max offered on Copilot Pro+, Max, Business, and Enterprise plans. To learn more, see our documentation on [GitHub Copilot Fusion](https://aka.ms/vscode-copilot-fusion).
+
+### Compare models and harnesses by default and in more projects
+
+**Setting**: ``sessions.chat.compareAgents.enabled``
+
+[Model comparisons](https://code.visualstudio.com/docs/agents/run/compare-models) run the same prompt across models for side-by-side review. They are enabled by default for eligible new sessions in the Agents window, unless overridden by user settings or experiments.
+
+![Screenshot showing the Compare Models picker with four models selected and Done and Configure Judge buttons.](images/1_144/compare-models-picker.webp)
+
+In this release, we expanded model comparison to more scenarios:
+
+* **Explore ideas without a project:** Run independent attempts from a folderless **Chat**, without a Git repository, judge, or synthesizer.
+* **Start with a local or empty repository:** A Git remote and an initial commit are no longer required. For repositories without commits, each isolated attempt starts from a snapshot of non-ignored working files without changing your source branch or index.
+
+To open comparison setup from the keyboard, press ``Shortcut: sessions.compareModels`` from an eligible chat input or model picker.
+
+Within setup, navigation buttons name their destination, such as **Configure Judge**, **Configure Attempts**, and **Configure Synthesis**, instead of using generic next and previous labels.
+
+> **Note**: Model comparisons are not supported in Dev Containers.
+
+### Image generation in Copilot (Preview)
+
+**Setting:** ``chat.copilot.imageGeneration.model``, ``chat.copilot.imageGeneration.watermark``.
+
+Agents can generate images from your prompts with GPT Image 2.5 Flare. Ask the agent to create an image for your website, a chat background, a new icon, or a website wireframe. You can also add an existing image as chat context and ask the agent to modify it or generate variations.
+
+The default image model is GPT Image 2.5 Flare. To disable image generation, set ``chat.copilot.imageGeneration.model`` to `off`. Image generation requires access to the selected model and uses AI credits in addition to those used by the conversation model.
+
+Additionally, set ``chat.copilot.imageGeneration.watermark`` to `true` to add a perceptible `Made with AI` watermark to your image.
+
+<video src="images/1_144/image-gen.mp4" title="Video showing an image of a cat in a cafe being generated in the Agents Window." autoplay loop controls muted></video>
+
+## Agent integration
+
+### Let agents use desktop apps with computer use
+
+**Setting**: ``chat.agentHost.computerUse.enabled``
+
+Some tasks happen in desktop apps rather than in your code or the terminal. With Computer Use, the agent can see and control apps on your computer. Computer Use works in [Copilot harness](https://code.visualstudio.com/docs/agents/run/agent-harnesses) sessions that run on your own macOS or Windows machine.
+
+When a task needs Computer Use, the agent asks you to allow turning it on, or you can run `/computer on`. Computer Use stays on for Copilot until you run `/computer off`.
+
+Learn more about [Computer Use](https://code.visualstudio.com/docs/agents/run/tools#_control-desktop-applications-experimental) in the documentation.
+
+### Canvases (Preview)
+
+**Setting**: ``chat.canvases.enabled``
+
+Previously introduced in VS Code 1.142, [Canvases](https://code.visualstudio.com/docs/agents/run/agent-harnesses#_use-canvases-with-the-copilot-harness) are shared, interactive surfaces where you and the agent can inspect and update the same artifact. This release makes canvases easier to find, manage, and open.
+
+#### Manage canvases in the Agent Customizations editor
+
+The Agent Customizations editor's **Canvases** section lists the canvases available to the active Copilot session and groups their contributing canvas extensions by source. To see it, open a Copilot session with at least one message in it, and open the Agent Customizations editor from there.
+
+![Screenshot showing canvases from two workspace extensions in the Agent Customizations editor.](images/1_144/agent-customizations-canvases.webp)
+
+Under the **Browse** section, select **Canvases** to find plugins whose metadata indicates that they provide canvases. Some canvas-capable plugins might not have that metadata and would appear under **Plugins** instead. Learn how to [manage canvas extensions](https://code.visualstudio.com/docs/agent-customization/overview#_manage-canvas-extensions).
+
+![Screenshot showing the Agent Customizations Browse page filtered by @type:canvas, with canvas plugins available to install.](images/1_144/canvas-marketplace-filter.webp)
+
+#### Open canvases from the Add Context menu
+
+In chats in the editor or Agents window, select **Add Context (+)** > **Canvas...** to open or refocus an available canvas.
+
+![Screenshot showing Canvas selected in the chat's Add Context menu.](images/1_144/canvas-add-context-menu.webp)
+
+This adds another entry point alongside **New Chat (+)** > **Canvas** in the editor window and **Add Tab (+)** > **Canvas** in the Agents window.
+
+## Agents
+
+### Assisted permissions are generally available
+
+Agents can make many tool calls to accomplish a task. Approving every tool call ensures that each action is explicitly authorized, but it can become cumbersome for frequent or low-risk calls. Giving the agent full autonomy might be risky and result in unintended actions or security issues.
+
+With assisted permissions (now generally available for Copilot sessions), the agent performs an LLM-based risk assessment for each tool call and automatically approves low-risk calls. When a call is deemed higher risk or if the risk cannot be determined, the tool call still requires explicit user approval. This approach gives you a balance between convenience and security.
+
+Select **Assisted permissions** in the permissions picker to have an LLM assess tool-call risk. Calls it approves run without prompting, while other calls still require your confirmation. Assisted permissions require Folder isolation and might be restricted by your organization. Read the [GitHub announcement of assisted permissions general availability](https://github.blog/changelog/2026-10-26-github-copilot-assisted-permissions-generally-available/).
+
+### Session composer controls (Experimental)
+
+Starting a new agent session is something you do often, so we've grouped the key settings at the top and added shortcuts for quick access.
+
+#### Choose the environment first
+
+With session continuity, where you run an agent session and where you access it from is completely up to you. So, when you create a new session in the Agents window, selecting the environment where the session runs is likely the first thing you do. Use the environment picker to choose from **This Computer**, **Cloud**, an eligible remote host, or a supported Dev Container.
+
+The other configuration options will change based on the selected environment. For example, creating a session locally will let you specify the branch and worktree code isolation options.
+
+To hide the Environment picker, disable ``sessions.chat.experimental.environmentPicker``.
+
+![Screenshot showing the Environment picker in the new-session composer with This Computer, Cloud, GitHub Environments, Dev Tunnels, and SSH options.](images/1_144/session-composer-environment-picker.webp)
+
+#### Chat without a project
+
+**Setting**: ``sessions.chat.experimental.workspaceOptOut``
+
+Sometimes you just want to start an agent conversation that is not associated with a specific workspace or folder (workspace-less chat). Rather than scrolling through the workspace picker, you can dismiss the current selection by hovering over (or on keyboard focus) the picker and selecting `X`.
+
+Enable ``sessions.chat.experimental.workspaceOptOut`` to enable dismissing the selected workspace.
+
+If you dismiss the selected workspace for an ongoing session, your prompt and attachments are preserved. The action is available only for harnesses and environments that support workspace-less chat.
+
+<video src="images/1_144/new-session-composer.mp4" title="Video showing how to remove the workspace folder from the new-session composer to start a chat without a project." autoplay loop controls muted></video>
+
+#### Reduce clutter
+
+To reduce visual clutter, you can reduce each of the key configuration options to only show their icon. Right-click the UI control and select **Collapse to Icon**. Each picker retains its tooltip and accessible name, and your choices persist across reloads and Settings Sync.
+
+#### Use the keyboard
+
+From the focused new-session chat input, use ``Shortcut: sessions.focusNewSessionEnvironmentPicker``, ``Shortcut: sessions.focusNewSessionBranchPicker``, ``Shortcut: sessions.focusNewSessionWorktreePicker``, or ``Shortcut: sessions.focusSessionSyncAction`` to reach available controls. Collapsed session options expand as needed. The Sync shortcut only moves focus. Press Enter to synchronize.
+
+### Copilot harness as the default
+
+The Copilot harness continues to be the default for new sessions in VS Code. It's our latest harness, built on the Copilot SDK, a shared foundation that helps align behavior, capabilities, and improvements across Copilot products.
+
+When you start a new session, **Copilot** in the harness picker indicates that the session uses the Copilot harness:
+
+![Screenshot showing Copilot selected in the harness picker with a hover description of its Copilot SDK and Agent Host integration.](images/1_143/harness-copilot-description.webp)
+
+In VS Code, you can keep Copilot harness sessions running in the background and access them from both the VS Code editor window and the Agents window. These sessions run through the [Agent Host](https://code.visualstudio.com/docs/agents/concepts/agent-host).
+
+#### Review Copilot file edits with the working set (Experimental)
+
+**Setting:** ``chat.editor.workingSet.enabled``
+
+The Copilot harness records edits made through agent tools in a working set, so you can review and decide which changes to keep or undo, just like in the Local harness. Use the inline **Keep** and **Undo** controls in the editor for individual changes, or manage files and all pending changes from the working set above the chat input.
+
+Keep and undo are enabled by default in the editor window and remain experimental. Set ``chat.editor.workingSet.enabled`` to `false` to show the Changes pill instead. Changes made through terminal commands do not appear in the working set. In the Agents window, use the **Changes** view to discard files.
+
+Thank you so much to everyone who has shared valuable feedback. This release includes more improvements shaped directly by your feedback. Please continue [filing issues](https://github.com/microsoft/vscode/issues) to let us know how the Copilot harness is working for you. Your feedback is a huge help and directly shapes the harness experience.
+
+Learn how to [work with the Copilot harness](https://code.visualstudio.com/docs/agents/run/agent-harnesses), or explore the architecture and workflows in the [agent host blog post](https://code.visualstudio.com/blogs/2026/08/26/agent-host-architecture).
+
+### Copilot Memory in the Copilot harness
+
+Copilot harness sessions can now use [Copilot Memory](https://docs.github.com/copilot/concepts/agents/copilot-memory), the same cloud memory service that other Copilot surfaces like Copilot CLI, Copilot cloud agent, and Copilot code review also use.
+
+Agents recall relevant repository facts and your preferences when a session starts, and store new learnings as you work, so you don't have to repeat the same context in every new conversation.
+
+Memories are stored as repository facts, which are shared with others who have access to the repository, or as user preferences, which apply across your repositories. Ask the agent to remember a convention or preference, and state the scope when it matters:
+
+```prompt
+Across all my repositories, remember that I prefer concise commit message subjects.
+```
+
+Copilot Memory is enabled by default and respects your [Copilot Memory settings on GitHub](https://github.com/settings/copilot/memory) and your organization's policies. You can review and delete your memories on GitHub at any time.
+
+Learn more about [using memory with agents](https://code.visualstudio.com/docs/agents/run/memory).
+
+### Manage worktree storage (Experimental)
+
+**Setting**: ``chat.agentSessions.sessionStorageCleanupSuggestion.enabled``
+
+Last release, we introduced worktree storage cleanup for agent sessions to help you reclaim disk space used by worktrees. This release adds more ways to find the worktrees you want to remove:
+
+* **See all past worktrees**: The **Any time** option is selected by default, to let you review recent worktrees as well as older ones.
+* **Find worktrees by workspace**: Each row shows its workspace, and a workspace filter narrows the results. Changing the workspace filter clears the selection.
+
+![Screenshot showing the workspace filter in Worktree Cleanup, with All workspaces selected and workspace names in each row.](images/1_144/worktree-cleanup-workspace-filter.webp)
+
+When cleanup suggestions are enabled and a local worktree's disk has less than 5 GB available, the Agents window provides a suggestion below the sessions list to run worktree cleanup, regardless of worktree age or count. The suggestion opens cleanup with **Any time** selected.
+
+![Screenshot showing the disk-almost-full notification with Open Worktree Cleanup and Don't Show Again actions.](images/1_144/diskspace-full.webp)
+
+### Enable extensions in agents window
+
+Extensions can run and be enabled or disabled directly from the Agents window. This requires ``extensions.experimental.agentsWindowManagement`` to be set to `true`.
+
+![Extensions in Agents window](images/1_144/extensions-in-agents-window.webp)
+
+## Agent customizations
+
+### Connect services with Copilot connectors (Preview)
+
+Bring the Slack discussion behind a change, project context from Notion, or API documentation from Microsoft Learn into your agent sessions. [Copilot connectors](https://code.visualstudio.com/docs/agent-customization/copilot-connectors) are GitHub-managed MCP servers that connect your agent to these services without local server setup or MCP configuration.
+
+[Open Browse](vscode://chat-customizations/open?page=discover), choose **Copilot Connectors** in the source menu, and select **Connect** on a service. Authorize access in your browser. Connect once and reuse the connection across supported Copilot clients signed in with the same account.
+
+![Screenshot showing the Copilot Connectors source in Browse, listing Port, Postman, Sentry, Slack, Statsig, and Work IQ with Connect and Disconnect buttons.](images/1_144/copilot-connectors.webp)
+
+Connectors are enabled by default on all Copilot plans and work only with the Copilot harness. For Business and Enterprise, an administrator must enable **Editor preview features**. Your organization's MCP restrictions apply, and some services require administrator approval.
+
+### Discover marketplace customizations (Preview)
+
+Add skills, tools, and entire workflows to your agent without building them from scratch. [**Browse**](https://code.visualstudio.com/docs/agent-customization/overview#_discover-marketplace-customizations-preview), the new home page for Customizations, brings together **GitHub Feed** and plugins from [marketplaces configured by you or your enterprise](https://code.visualstudio.com/docs/agent-customization/agent-plugins#_configure-plugin-marketplaces).
+
+Explore **Editor's picks**, **Plan, build, and ship**, and **Connect your work**, or search and filter by source or type. [Open Browse](vscode://chat-customizations/open?page=discover) or run **Chat: Open Customizations** to start.
+
+![Screenshot showing the Browse page in Customizations with Editor's picks and Plan, build, and ship sections, and the source menu open to list GitHub Feed, Copilot Connectors, and plugin marketplaces.](images/1_144/customization-marketplace.webp)
+
+Link to Browse from a README or team guide, optionally with a search. For example, [Browse filtered to MCP servers](vscode://chat-customizations/open?page=discover&search=%40type%3Amcp).
+
+GitHub Feed requires a supported harness and isn't available in Local sessions. For Copilot Business and Enterprise, an administrator must enable **Editor preview features**.
+
+### Richer editing for GitHub Copilot custom agents
+
+When you customize agents for the GitHub Copilot harness, completions, hovers, and validation help you choose available models, tools, and skills and catch configuration errors before you run the agent.
+
+* **Models**: The `model` attribute offers Copilot model IDs as a single value or an ordered list of preferences.
+* **Tools**: The `tools` attribute offers Copilot tool aliases, such as `read`, `edit`, and `execute`, alongside qualified client and extension tools.
+* **Skills**: The `skills` attribute offers available skills, with descriptions and source information in completions and hovers.
+* **Configuration validation**: Copilot-specific attributes and nested structures, including hooks and agent-scoped MCP servers, have completions, hovers, and validation. Unknown models, tools, and skills are only flagged after discovery has finished, so valid values aren't marked as errors while inventories are still loading.
+* **Body features**: In GitHub Copilot agent files, placeholders such as `{{cwd}}` and `{{shellToolName}}` are recognized and show hovers. Unknown placeholders and Local-only `#tool:` and `#file:` references are flagged.
+
+<video src="images/1_144/copilot-agent-editing.mp4" title="Video showing model, tool, and skill completions in a GitHub Copilot custom agent file, followed by an unavailable-model diagnostic and hover." autoplay loop controls muted></video>
+
+### Harness-aware defaults for custom agent editing
+
+When your `.agent.md` file has no `target` attribute, the editor now uses the active customization harness to provide matching completions, hovers, and diagnostics. Switching harnesses refreshes this guidance without reopening the file. An explicit `target: vscode` or `target: github-copilot` continues to override the default.
+
+### Share links to plugins and customizations
+
+You can share deep links in a README or team guide to help others add an [agent plugin marketplace](https://code.visualstudio.com/docs/agent-customization/agent-plugins), install a specific plugin, or open a page in the customization dialog.
+
+| Action | Example link |
+|--------|--------------|
+| Add a marketplace | `vscode://chat-plugin/add-marketplace?ref=owner/repo` |
+| Add a marketplace and install a named plugin | `vscode://chat-plugin/install?source=owner/repo&plugin=plugin-name` |
+| Open the Plugins page with a search filter | `vscode://chat-customizations/open?page=plugins&search=github` |
+
+Replace `owner/repo` with the marketplace's GitHub repository and `plugin-name` with the plugin's name in that marketplace. VS Code asks for confirmation before adding a marketplace or installing a plugin. These actions use a Copilot harness session; if none is available, VS Code asks before creating one. Only proceed if you trust the source, because plugins can run code on your machine.
+
+Use these links for **Install in VS Code** buttons in your plugin's README, as shown in the [Session timeline plugin's getting started section](https://github.com/microsoft/vscode-team-kit/tree/main/session-timeline#getting-started).
+
+Customization links also support pages such as `agents`, `skills`, `instructions`, `hooks`, `mcp-servers`, `tools`, and `migrations`. Omit `search` to open the page without a filter. Use `vscode-insiders://` instead of `vscode://` to open VS Code Insiders.
+
+### Manage Copilot customizations with slash commands
+
+You can manage plugins, MCP servers, and skills without leaving the Chat view in a Copilot harness session. Type `/plugin`, `/mcp`, or `/skills` followed by a space to see the available subcommands.
+
+* **Plugins**: List, install, update, enable, disable, or uninstall [agent plugins](https://code.visualstudio.com/docs/agent-customization/agent-plugins). Use `/plugin marketplace` to manage marketplaces, or `/plugin install` to choose a plugin to install.
+* **MCP servers**: Use `/mcp show`, `/mcp enable`, or `/mcp disable` with a server name to inspect or manage your [MCP servers](https://code.visualstudio.com/docs/agent-customization/mcp-servers).
+* **Skills**: Use `/skills info` with a skill name to inspect an available [agent skill](https://code.visualstudio.com/docs/agent-customization/agent-skills).
+
+Completions suggest supported subcommands and relevant plugin, marketplace, server, or skill names. Available commands depend on the Copilot runtime, and results appear directly in chat.
+
+The following video shows browsing the `vscode-team-kit` marketplace and installing the Session timeline plugin with `/plugin install`.
+
+<video src="images/1_144/copilot-plugin-install.mp4" title="Video showing browsing a plugin marketplace and installing Session timeline with slash commands in Copilot Chat." autoplay loop controls muted></video>
+
+## Session management
+
+### Move chats between sessions (Preview)
+
+**Setting**: ``chat.agentHost.moveChats.enabled``
+
+The [Agents window](https://code.visualstudio.com/docs/agents/run/agents-window) lets you organize related conversations into sessions. Rearrange those conversations as your work evolves without starting over or losing their history.
+
+* Drag a nested chat into another session, or drop it between that session's nested chats to choose its position.
+* Right-click a nested chat and select **Promote to Session** to give it its own session. You can also drag it onto empty space in the sessions list.
+* Drag a single-chat session onto another session to nest it there.
+* Reorder nested chats by dragging them, or use **Move Up** and **Move Down** from their context menu. With focus in the sessions list, use ``Shortcut: sessionsViewPane.moveChatUp`` and ``Shortcut: sessionsViewPane.moveChatDown``.
+
+Moves preserve the chat's working folder, including an existing worktree or a temporary folder for a chat without a workspace. A shared worktree remains available while another session still uses it. Moves between sessions require the same agent and provider, and a destination that supports multiple chats. Subagent conversations move with their parent chat rather than independently.
+
+The sessions list shows move progress and provides **Undo** after a move. Enable the setting to try this feature in Stable; it is on by default in Insiders.
+
+Learn more about [organizing sessions in the Agents window](https://code.visualstudio.com/docs/agents/run/sessions/manage-sessions#_organize-sessions).
+
+### Choose a workspace for nested sessions
+
+Previously, nested sessions inherited the workspace of their parent session. Now, you can choose a separate workspace for each nested session. This lets you work across repositories while keeping related conversations together in one session. For example, a frontend chat and a backend chat can work in different folders without splitting the task across separate sessions.
+
+Select **New Nested Session** in the Agents window to open a composer with a folder picker that defaults to the parent session's folder. Choose a recent folder, browse to another folder, or select **No Workspace** for a chat with its own temporary folder.
+
+For a Git repository, choose **New Worktree** and a branch to isolate the nested chat's file changes. The nested chat uses its parent session's agent and host. Agents that do not support multiple working directories offer only the parent session's folder.
+
+### Nested sessions in quick chats
+
+Follow up on a quick chat without mixing separate questions into one conversation or losing track of related discussions. For example, explore two approaches in separate nested sessions under the same quick chat, without opening a project folder.
+
+Quick chats in the Agents window support nested sessions: select **+** on a quick chat or use **New Nested Session** from its context menu.
+
+Each nested session starts with **No Workspace** selected and gets its own temporary folder, separate from the parent quick chat. The quick chat stays in the **Chats** section, keeping its related conversations together.
+
+### Custom icons and colors for session groups
+
+Make workspace groups, environment groups (including remote hosts), and custom groups easier to recognize with custom icons and theme-aware colors. In the Agents window, open a group's context menu and select **Change Icon...** or **Change Color...**. Your choices persist across reloads and host reconnections, and **Reset to default** restores the icon or color independently. _[#343576](https://github.com/microsoft/vscode/pull/343576)_
+
+<video src="images/1_144/session-group-appearance.mp4" title="Video showing a group context menu, searchable icon picker, and color picker used to customize a session group." autoplay loop controls muted></video>
+
+## Chat
+
+### Voice conversations with session context (Experimental)
+
+[Voice Mode](https://code.visualstudio.com/docs/configure/accessibility/voice) (``agents.voice.enabled``) lets you discuss tasks aloud while the coding agent works. Use an OpenAI live model with your own API key (``agents.voice.useBYOKVoiceModel``) to ask questions such as 'Where were we?' or 'Which session needs input?' without starting a coding request.
+
+![Screenshot showing the blue Voice Mode indicator and its hover identifying OpenAI GPT Live as the real-time voice provider.](images/1_144/voice-mode-connection-hover.webp)
+
+The enabled-by-default ``agents.voice.sessionAwareness`` shares a bounded briefing of tracked sessions and recent active-chat context with OpenAI BYOK Voice Mode. It includes session titles, response summaries, pending prompt details, the selected model, and attachment names, but not attachment contents.
+
+Voice Mode's animation uses a single color for a more conversational feel: you can jump in and speak at any time.
+
+<video src="images/1_144/voice-mode-session-awareness.mp4" title="Video showing a user asking where they left off in the current chat and receiving a summary from Voice Mode." autoplay loop controls muted></video>
+
+GPT Live conversations also handle follow-ups and ongoing work more predictably:
+
+* Ask questions while the agent works and hear the answers, with other updates queued and read aloud afterward.
+* Single-question forms read the full question, and multi-question forms collect one numbered answer at a time.
+* New spoken coding instructions during ongoing work are sent as steering rather than queued until the task finishes. Steering applies at the next opportunity supported by the provider and does not guarantee immediate interruption. Voice-only exchanges during ongoing work are not retained for later requests.
+
+### Localized voice approvals and clearer connection status (Experimental)
+
+Approve or reject GPT Live tool requests in your selected voice language (``agents.voice.language``), with support for 25 languages and English as a fallback. Answer questions with displayed choice labels, numbers, or free text where allowed. Ambiguous approvals still require an explicit answer or chat controls.
+
+The voice language setting does not translate agent-provided questions or choices. Commands such as 'skip' and 'other' remain English-only.
+
+## Editor Experience
+
+### Issue Reporter
+
+**Settings**: ``issueReporter.wizard.enabled``, ``issueReporter.wizard.openLocation``, ``issueReporter.additionalRepositories``
+
+Issues with clear steps, screenshots, and logs are faster for us to reproduce and fix. The [new issue reporter](https://code.visualstudio.com/updates/v1_122#_improved-issue-reporting-flow), which you turn on with ``issueReporter.wizard.enabled``, makes it easier for you to create high quality issues. You can capture screenshots and screen recordings without leaving VS Code, from the capture bar or with `Shortcut: workbench.action.issueReporter.captureScreenshot` and `Shortcut: workbench.action.issueReporter.toggleRecording`.
+
+This release makes these changes to the new issue reporter:
+
+* The form fits on a single page instead of three steps.
+* Attach other files that help us debug your issue, such as log files or zip archives. You can also paste or drop images and videos into the form.
+* The reporter opens in its own window. To open it in an editor tab instead, set ``issueReporter.wizard.openLocation`` to `editor`.
+* To file issues in other GitHub repositories, for example your team's own tracker, add them to ``issueReporter.additionalRepositories`` in `owner/repo` format. Then pick the repository in the form.
+
+<video src="images/1_144/issue-reporter-update.mp4" title="Video showing the issue reporter opening in its own window, capturing a screenshot and a screen recording, attaching a file, and previewing the report on GitHub." autoplay loop controls muted></video>
+
+## Terminal
+
+### Dialogs from terminal commands open in front of VS Code on Windows
+
+**Setting**: ``terminal.integrated.windowsReparentConsoleWindow``
+
+On Windows, some command-line tools open dialogs that could appear behind VS Code when run from the terminal. For example, the Azure PowerShell `Connect-AzAccount` sign-in picker opened behind the VS Code window, so the command looked stuck until you moved or minimized VS Code.
+
+VS Code now makes the window that shows each local terminal the owner of that terminal's hidden console window, as Windows Terminal does. Dialogs that tools attach to their console window now open in front of the VS Code window the terminal is in.
+
+This requires ``terminal.integrated.windowsUseConptyDll``, which is enabled by default. To turn off this behavior, set ``terminal.integrated.windowsReparentConsoleWindow`` to `false`.
+
+## Enterprise
+
+### Clearer permission restrictions
+
+Assisted and Allow All remain visible but disabled when restricted by your organization, with an explanation instead of disappearing.
+
+Example Copilot managed settings:
+
+```json
+{
+  "permissions": {
+    "disableAssistedPermissionsMode": true,
+    "disableBypassPermissionsMode": "disable"
+  }
+}
+```
+
+![Screenshot showing Assisted permissions and Allow All disabled by organization policy.](images/1_144/managed-permission-modes.webp)
+
+### Organization-managed session defaults
+
+New chats in the Editor and Agents windows respect your organization's default model, [Copilot Fusion](#route-and-orchestrate-models-with-github-copilot-fusion) tier, and permission level, taking precedence over remembered selections. You can change these defaults within a session where policy allows; unavailable permission modes fall back to Manual.
+
+Example Copilot managed settings, for organizations with Fusion Max available:
+
+```json
+{
+  "model": "fusion",
+  "fusionTier": "max",
+  "permissions": {
+    "defaultMode": "assisted"
+  }
+}
+```
+
+![Screenshot showing chat configured with Copilot Fusion Max and Assisted permissions.](images/1_144/managed-session-defaults.webp)
+
+### Managed settings loading progress
+
+When organization settings load slowly, progress appears inline in the waiting chat instead of stacking notification toasts. Background loading no longer interrupts you.
+
+![Screenshot showing organization-managed settings loading progress in chat.](images/1_144/managed-settings-loading.webp)
+
+## Contributions to extensions
+
+### GitHub Pull Requests
+
+There has been more progress on the [GitHub Pull Requests](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github) extension, which enables you to work on, create, and manage pull requests and issues. New features include:
+
+- The "Update stack" action now uses the GitHub API to update a stacked pull request when possible, so you no longer need to have a pull request from the stack checked out.
+- The pull request overview shows a banner offering to create a stack when the pull request's branches line up with other open pull requests that aren't stacked yet.
+![PR can be stacked](./images/1_144/pull-can-stack-banner.webp)
+
+Review the [changelog for the 0.174.0](https://github.com/microsoft/vscode-pull-request-github/blob/main/CHANGELOG.md#01740) release of the extension to learn about everything in the release.
+
+## Extension Authoring
+
+### Publish extensions with OIDC and Trusted Publishing
+
+You can now publish extensions to the Visual Studio Marketplace from GitHub Actions without storing a Personal Access Token (PAT) as a repository secret. The `vsce publish --oidc` command requests a short-lived OpenID Connect (OIDC) token from GitHub Actions and exchanges it for a temporary Marketplace credential that is valid for up to 15 minutes. If the token exchange fails, `vsce` doesn't fall back to a PAT.
+
+To get started, create a Trusted Publishing policy for your repository and workflow in the Visual Studio Marketplace publisher management page, grant the publishing job the `id-token: write` permission, and run `vsce publish --oidc` in your workflow. Use a version of `@vscode/vsce` that supports OIDC, such as `4.0.2` or later.
+
+Trusted Publishing is currently supported for GitHub Actions only. For Azure Pipelines, continue to use Microsoft Entra ID with a service connection. As global PATs in Azure DevOps are retired on December 1, 2026, we recommend that you move your extension publishing to one of these secure methods.
+
+Learn more about [publishing extensions with vsce](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#publish-with-github-actions-and-trusted-publishing).
+
+Learn more about [Trusted Publishing in the Visual Studio Marketplace blog post](https://aka.ms/vsm/trustedpublishing/blogpost).
+
+## Deprecated features and settings
+
+None
+
+## Thank you
+
+### Issue tracking
+
+Contributions to our issue tracking:
+
+* [@gjsjohnmurray (John Murray)](https://github.com/gjsjohnmurray)
+* [@RedCMD (RedCMD)](https://github.com/RedCMD)
+* [@IllusionMH (Andrii Dieiev)](https://github.com/IllusionMH)
+* [@albertosantini (Alberto Santini)](https://github.com/albertosantini)
+
+### Pull requests
+
+Contributions to `vscode`:
+
+* [@aguashui (Noah Webber)](https://github.com/aguashui): Kitchen sink changes [PR #334932](https://github.com/microsoft/vscode/pull/334932)
+* [@bluerose73 (Shengjie Ma)](https://github.com/bluerose73): Add configurable xtab reasoning effort and completion token limits [PR #342204](https://github.com/microsoft/vscode/pull/342204)
+* [@cipheraxat (Akshat Anand)](https://github.com/cipheraxat): fix: keep paused debug location range valid in chat [PR #342379](https://github.com/microsoft/vscode/pull/342379)
+* [@dhairyajangir (dhairya)](https://github.com/dhairyajangir): Fix UTF-8 encoding of MCP resource URI template values [PR #339846](https://github.com/microsoft/vscode/pull/339846)
+* [@HectorHZZZ](https://github.com/HectorHZZZ): NES: add applied-then-undone rejected-edit memory mode [PR #341436](https://github.com/microsoft/vscode/pull/341436)
+* [@mcumming (Michael Cummings (MSFT))](https://github.com/mcumming): Authenticate Entra ID marketplace API requests via RFC 9728 PRM negotiation [PR #325804](https://github.com/microsoft/vscode/pull/325804)
+* [@r3na7 (renat)](https://github.com/r3na7): Preserve Explorer rename input when the window loses focus [PR #338126](https://github.com/microsoft/vscode/pull/338126)
+* [@rfeltis (Ralph Feltis)](https://github.com/rfeltis): Chat: onboarding spotlight tour for the Copilot harness chat input [PR #337814](https://github.com/microsoft/vscode/pull/337814)
+* [@SahinurDEV (Sahinur)](https://github.com/SahinurDEV): Debug Extension Host: enable inspector on running extension host instead of requiring restart [PR #343437](https://github.com/microsoft/vscode/pull/343437)
+* [@timrogers (Tim Rogers)](https://github.com/timrogers)
+  * Default new cloud automations to no allowed tools [PR #342481](https://github.com/microsoft/vscode/pull/342481)
+  * Align `require_actor_write_permission` cloud automation option naming with GitHub.com and ensure compliance with repository policies [PR #344444](https://github.com/microsoft/vscode/pull/344444)
+
+---
+
+We really appreciate people trying our new features as soon as they are ready, so check back here often and learn what's new.
+
+>If you'd like to read release notes for previous VS Code versions, go to [Updates](https://code.visualstudio.com/updates) on [code.visualstudio.com](https://code.visualstudio.com).
+
+<a id="scroll-to-top" role="button" title="Scroll to top" aria-label="scroll to top" href="#"><span class="icon"></span></a>
+<link rel="stylesheet" type="text/css" href="css/inproduct_releasenotes.css"/>
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_145.md
+- **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_145
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_145.md
+- **SHA256_FINGERPRINT**: `779bcb031dac085f1bdc07445bdcc33e738348b34ceb2f86daebec0857240a25`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:38.397223+00:00
+---
+
+**MetaDescription**: Learn what is new in Visual Studio Code 1.145 (Insiders).
+
+# Visual Studio Code 1.145
 
 Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://go.microsoft.com/fwlink/?LinkID=533687), [Bluesky](https://bsky.app/profile/vscode.dev), [Instagram](https://www.instagram.com/vscode)
 
 ---
 
-_Last updated: October 21, 2026_
+_Last updated: October 28, 2026_
 
-Welcome to the 1.144  release of Visual Studio Code.
+Welcome to the 1.145  release of Visual Studio Code.
 
 Happy Coding!
 
 ---
 
-## October 21, 2026
+## October 28, 2026
 
-* UI updates for Voice Mode. _[#343323: Simplify Voice Mode connection visuals and show GPT Live usage](https://github.com/microsoft/vscode/issues/343323)_
+* Track bulk worktree cleanup progress, keep completed results visible, and retry failed cleanups in the Agents window. _[microsoft/vscode#344588: Improve bulk worktree cleanup progress and recovery](https://github.com/microsoft/vscode/issues/344588)_
 
-* When session storage cleanup suggestions are enabled, the Agents window warns when a local worktree's disk has less than 5 GB available and offers cleanup of recent worktrees. _[#343230: add workspace almost full notification](https://github.com/microsoft/vscode/issues/343230)_
+## October 27, 2026
 
-* UI updates for embedded editors in the rich Markdown editor. _[#343191: Update rich Markdown editor package to 0.0.2-136](https://github.com/microsoft/vscode/issues/343191)_
+* Preview web apps running on remote agent hosts in the Agents window's integrated browser (Experimental). _[microsoft/vscode#331926: Integrated browser remote proxy should support remote AHP hosts in Agents window](https://github.com/microsoft/vscode/issues/331926)_
 
-* In Voice Mode, the microphone button reflects its muted or active state. _[#337053: Reverse the mute and unmute microphone icons in voice mode](https://github.com/microsoft/vscode/issues/337053)_
+* Fix keyboard access to MCP authentication prompts in screen reader mode. _[microsoft/vscode#343890: MCP authentication inline hint is not keyboard accessible in screen reader mode](https://github.com/microsoft/vscode/issues/343890)_
 
-* When you paste a web link into Quick Open, choose from its available handlers, with the default listed first, or open the target to the side. _[#342544: Show available link handlers in a Quick Pick](https://github.com/microsoft/vscode/issues/342544)_
+* Move the default **Agent** picker into **Add Context** in editor-window chat with the experimental ``sessions.chat.experimental.agentsPickerInAttachContextMenu`` setting. _[microsoft/vscode#344606: Apply the Agent picker Add Context setting to editor-window chat](https://github.com/microsoft/vscode/issues/344606)_
 
-## October 20, 2026
+* Add support for breadcrumbs in unsaved files when the language provides symbols. _[microsoft/vscode#84746: Enable breadcrumbs for unsaved files](https://github.com/microsoft/vscode/issues/84746)_
 
-* In the experimental new session composer, clear the selected workspace to start without a project or choose another workspace. _[#342930: Agents window: clear the selected workspace from the new session composer](https://github.com/microsoft/vscode/issues/342930)_
+* Run saved automations with **Chat: Run Automation...** in the Agents window **Command Palette**. _[microsoft/vscode#344445: Add a "Chat: Run Automation..." action](https://github.com/microsoft/vscode/issues/344445)_
 
-* Resize Mermaid diagrams, expand them to the editor width, or open them in full view in the rich Markdown editor. _[#342880: Support presentation controls for Mermaid in the rich Markdown editor](https://github.com/microsoft/vscode/issues/342880)_
+## October 26, 2026
 
-* Keep OAuth tokens separate for each MCP server. _[#293533: MCP: Cannot authenticate to multiple Atlassian sites simultaneously - OAuth credentials shared across MCP server configurations](https://github.com/microsoft/vscode/issues/293533)_
+* Open sessions in an editor instead of the **Chat** view by enabling the experimental ``chat.agentSessions.openInEditor`` setting. _[microsoft/vscode#336136: Allow configuring the default click action for Chat Sessions](https://github.com/microsoft/vscode/issues/336136)_
 
-## October 19, 2026
-
-* Add experimental support for comparing multiple models without opening a folder. _[#342578: Bake off feedback](https://github.com/microsoft/vscode/issues/342578)_
+* Show size estimates faster for unchanged idle sessions when reopening or refreshing **Worktree Cleanup** in the Agents window. _[microsoft/vscode#344370: Persist session worktree sizes for Worktree Cleanup](https://github.com/microsoft/vscode/issues/344370)_
 
 ---
 
@@ -1921,78 +2156,78 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `b78178b58699c5634116897bdcbf886ba0ec4e1d5ae93e8b8ab6c0523b3f1562`
-- **LAST_VERIFIED_UTC**: 2026-10-28T04:51:32.317049+00:00
+- **SHA256_FINGERPRINT**: `0c7861c29e3432e39469a91c116e984c04812468b1f6f4d79faa1d7d89da9844`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:42.512376+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
 
-## GitHub Copilot supports server-to-server authentication
-- **Date**: Tue, 27 Oct 2026 21:36:55 +0000
-- **URL**: https://github.blog/changelog/2026-10-27-github-copilot-supports-server-to-server-authentication
+## Route and orchestrate models with GitHub Copilot Fusion
+- **Date**: Wed, 28 Oct 2026 16:00:00 +0000
+- **URL**: https://github.blog/changelog/2026-10-28-route-and-orchestrate-models-with-github-copilot-fusion
 
-GitHub Copilot now supports server-to-server authentication for GitHub Apps installed on organizations, available in public preview. Services and agents built with the GitHub Copilot SDK can now make requests on...
-The post GitHub Copilot supports server-to-server authentication appeared first on The GitHub Blog .
+GitHub Copilot Fusion is generally available. Instead of picking a model for each task, choose Copilot Fusion and let Copilot intelligently route and orchestrate which models it uses for you....
+The post Route and orchestrate models with GitHub Copilot Fusion appeared first on The GitHub Blog .
 
-## GitHub Copilot assisted permissions generally available
-- **Date**: Mon, 26 Oct 2026 22:31:30 +0000
-- **URL**: https://github.blog/changelog/2026-10-26-github-copilot-assisted-permissions-generally-available
+## GitHub Copilot app, Universe releases
+- **Date**: Wed, 28 Oct 2026 15:55:00 +0000
+- **URL**: https://github.blog/changelog/2026-10-28-github-copilot-app-universe-releases
 
-Assisted permissions are now generally available in GitHub Copilot CLI, GitHub Copilot app, and Visual Studio Code. When Copilot requests permission to run a command, access a file system path,...
-The post GitHub Copilot assisted permissions generally available appeared first on The GitHub Blog .
+Work doesn’t always fit in a single repository or session. A feature can span several repositories. A launch plan can pull in specs, designs, and assets without touching a repository...
+The post GitHub Copilot app, Universe releases appeared first on The GitHub Blog .
 
-## GPT-6.1 Terra in GitHub Copilot
-- **Date**: Mon, 26 Oct 2026 19:15:53 +0000
-- **URL**: https://github.blog/changelog/2026-10-26-gpt-6-1-terra-in-github-copilot
+## GitHub Enterprise now includes access to GitHub Copilot
+- **Date**: Wed, 28 Oct 2026 15:50:00 +0000
+- **URL**: https://github.blog/changelog/2026-10-28-github-enterprise-now-includes-access-to-github-copilot
 
-GPT-6.1 Terra, OpenAI’s newest model, is now generally available in GitHub Copilot. It is designed for everyday agentic coding and terminal work at a lower cost than GPT-6.1 Sol. In...
-The post GPT-6.1 Terra in GitHub Copilot appeared first on The GitHub Blog .
+Enterprises working with a GitHub or Microsoft account team can now get Copilot included with GitHub Enterprise for every licensed user. Previously, you had to manage two things: how many...
+The post GitHub Enterprise now includes access to GitHub Copilot appeared first on The GitHub Blog .
 
-## Usage metrics API adds usage from tools like OpenCode
-- **Date**: Fri, 23 Oct 2026 23:42:03 +0000
-- **URL**: https://github.blog/changelog/2026-10-23-usage-metrics-api-adds-usage-from-tools-like-opencode
+## Security extension for the GitHub Copilot app
+- **Date**: Wed, 28 Oct 2026 15:45:00 +0000
+- **URL**: https://github.blog/changelog/2026-10-28-security-extension-for-the-github-copilot-app
 
-The Copilot usage metrics API now reports model usage from more of the tools your developers use with Copilot, including tools like OpenCode that weren’t previously captured in your reports....
-The post Usage metrics API adds usage from tools like OpenCode appeared first on The GitHub Blog .
+You can now work through your repository’s GitHub code scanning alerts without leaving the GitHub Copilot app. The new GitHub security extension, now in public preview, lets you find the...
+The post Security extension for the GitHub Copilot app appeared first on The GitHub Blog .
 
-## Turn notifications into code with GitHub Copilot in Teams
-- **Date**: Fri, 23 Oct 2026 21:29:58 +0000
-- **URL**: https://github.blog/changelog/2026-10-23-turn-notifications-into-code-with-github-copilot-in-teams
+## GitHub intelligence puts your code, context, and history to work
+- **Date**: Wed, 28 Oct 2026 15:40:00 +0000
+- **URL**: https://github.blog/changelog/2026-10-28-github-intelligence-puts-your-code-context-and-history-to-work
 
-The new GitHub app in Teams brings notifications and Copilot together, helping teams turn issues into fixes and ship code faster without leaving the conversation. Get notified in channels, group...
-The post Turn notifications into code with GitHub Copilot in Teams appeared first on The GitHub Blog .
+Agents should understand more than your codebase—they should understand how your team works. Your preferences, repository conventions, skills, and custom instructions guide how changes should be made, while code in...
+The post GitHub intelligence puts your code, context, and history to work appeared first on The GitHub Blog .
 
-## GitHub Copilot in Visual Studio — September update
-- **Date**: Fri, 23 Oct 2026 00:17:51 +0000
-- **URL**: https://github.blog/changelog/2026-10-22-github-copilot-in-visual-studio-september-update-2
+## Build shared workflows for your team with Copilot Automations
+- **Date**: Wed, 28 Oct 2026 15:35:00 +0000
+- **URL**: https://github.blog/changelog/2026-10-28-build-shared-workflows-for-your-team-with-copilot-automations
 
-September 2026 brought deeper visibility into your work: explore pull requests without leaving chat, bring the AI model your team trusts, and fix vulnerable packages the moment Visual Studio flags...
-The post GitHub Copilot in Visual Studio — September update appeared first on The GitHub Blog .
+Shared Copilot Automations are rolling out, enabling teams to build and maintain AI-powered workflows together. With Copilot Automations, you can combine prompts, triggers, and tools to design workflows around the...
+The post Build shared workflows for your team with Copilot Automations appeared first on The GitHub Blog .
 
-## Custom skills, agents, and MCP servers in usage metrics API
-- **Date**: Thu, 22 Oct 2026 22:19:17 +0000
-- **URL**: https://github.blog/changelog/2026-10-22-custom-skills-agents-and-mcp-servers-in-usage-metrics-api
+## Generate and edit images directly in Copilot
+- **Date**: Wed, 28 Oct 2026 15:30:55 +0000
+- **URL**: https://github.blog/changelog/2026-10-28-generate-and-edit-images-directly-in-copilot
 
-Copilot usage metrics now show the names of the skills, custom agents, Model Context Protocol (MCP) servers, slash commands, and plugins that your organization creates, instead of grouping them under...
-The post Custom skills, agents, and MCP servers in usage metrics API appeared first on The GitHub Blog .
+You can now generate and edit images using natural language in GitHub Copilot. When you ask for an image, your selected reasoning model calls a dedicated image-generation tool powered by...
+The post Generate and edit images directly in Copilot appeared first on The GitHub Blog .
 
-## Global default for Copilot features generally available
-- **Date**: Thu, 22 Oct 2026 20:44:28 +0000
-- **URL**: https://github.blog/changelog/2026-10-22-global-default-for-copilot-features-generally-available
+## GitHub Copilot Fusion now supports selection of local models
+- **Date**: Wed, 28 Oct 2026 15:30:42 +0000
+- **URL**: https://github.blog/changelog/2026-10-28-github-copilot-fusion-now-supports-selection-of-local-models
 
-In September, we announced a global default policy for generally available GitHub Copilot features and supported client capabilities on Copilot Business and Copilot Enterprise plans. Starting today, we’re gradually rolling...
-The post Global default for Copilot features generally available appeared first on The GitHub Blog .
+Today we are shipping intelligent routing for local models into experimental preview. GitHub Copilot Fusion can now choose between supported on-device models and cloud models, enabling intelligent local model routing...
+The post GitHub Copilot Fusion now supports selection of local models appeared first on The GitHub Blog .
 
-## Industry comparisons in the Copilot impact dashboard
-- **Date**: Thu, 22 Oct 2026 16:28:24 +0000
-- **URL**: https://github.blog/changelog/2026-10-22-industry-comparisons-in-the-copilot-impact-dashboard
+## GitHub Agentic Workflows generally available
+- **Date**: Wed, 28 Oct 2026 15:30:15 +0000
+- **URL**: https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available
 
-The Copilot impact dashboard now includes an “Industry comparison” section. Enterprises, and organizations that aren’t owned by an enterprise, can compare their Copilot agentic adoption and leverage with aggregated benchmarks...
-The post Industry comparisons in the Copilot impact dashboard appeared first on The GitHub Blog .
+GitHub Agentic Workflows, an open source project from GitHub Next, is now generally available. With agentic workflows, you can automate reasoning-based tasks like issue triage, CI failure analysis, documentation updates,...
+The post GitHub Agentic Workflows generally available appeared first on The GitHub Blog .
 
-## Copilot model policy API for enterprise, orgs, and teams
-- **Date**: Mon, 19 Oct 2026 21:32:18 +0000
-- **URL**: https://github.blog/changelog/2026-10-19-copilot-model-policy-api-for-enterprise-orgs-and-teams
+## GitHub Copilot in JetBrains Universe releases
+- **Date**: Wed, 28 Oct 2026 15:30:00 +0000
+- **URL**: https://github.blog/changelog/2026-10-28-github-copilot-in-jetbrains-universe-releases
 
-You can now use the REST API to retrieve and update Copilot model policies for enterprises, enterprise teams, agent apps, and organizations. What’s new GET and PATCH endpoints are now...
-The post Copilot model policy API for enterprise, orgs, and teams appeared first on The GitHub Blog .
+Today, we’re making GitHub Copilot in JetBrains more capable, secure, and seamless. From GitHub Copilot Fusion’s smarter model orchestration to local sandboxes and next edit suggestions (NES), this update brings...
+The post GitHub Copilot in JetBrains Universe releases appeared first on The GitHub Blog .

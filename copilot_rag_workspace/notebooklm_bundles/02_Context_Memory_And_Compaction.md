@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 02_Context_Memory_And_Compaction
-- **Generado (UTC)**: 2026-10-22T16:53:38.326315+00:00
-- **Total Palabras**: 5,865 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-28T18:07:46.698960+00:00
+- **Total Palabras**: 6,407 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -154,8 +154,8 @@ Most workspaces are indexed automatically, but if the index isn't available yet 
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/chat/chat-overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/chat/chat-overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/chat/chat-overview.md
-- **SHA256_FINGERPRINT**: `315201ce9f6409e860dfb9e27423dd82cc3a60e162e20ca8da4e8ac0bcf24d20`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.824223+00:00
+- **SHA256_FINGERPRINT**: `7612d501f5251748f95e38589f1f6bf5ba66478ae8bfdbfdc645717e973349ce`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:38.216886+00:00
 ---
 
 **MetaDescription**: Use chat in VS Code to ask about code, send requests, add context, and review AI-generated changes.
@@ -164,7 +164,7 @@ Most workspaces are indexed automatically, but if the index isn't available yet 
 
 Chat in Visual Studio Code lets you use natural language for interacting with AI agents. Ask questions about your code, get help understanding complex logic, generate new features, fix bugs, and more, all through a conversational interface.
 
-This article describes interaction mechanics shared by chat surfaces in VS Code, including how to send and steer requests, add context, navigate a conversation, and personalize the chat display. For an introduction to AI workflows, agents, and the available interfaces, see [Build with AI in VS Code](/docs/agents/overview.md).
+This article describes interaction mechanics shared by chat surfaces in VS Code, including how to send and steer requests, add context, generate and edit images, navigate a conversation, and personalize the chat display. For an introduction to AI workflows, agents, and the available interfaces, see [Build with AI in VS Code](/docs/agents/overview.md).
 
 <div class="docs-action" data-show-in-doc="false" data-show-in-sidebar="true" title="Get started with agents">
 Follow a hands-on tutorial to build an app with AI agents in VS Code.
@@ -175,7 +175,7 @@ Follow a hands-on tutorial to build an app with AI agents in VS Code.
 
 ## Choose where to chat
 
-The interaction mechanics in this article apply to the Chat view, chat editor tabs, and the Agents window. Both the Chat view and the Agents window run agents. To choose between collaborating over code in your current workspace and coordinating work across projects, see [Run agents](/docs/agents/run/overview.md#choose-an-interface).
+The interaction mechanics in this article apply to the Chat view, chat editor tabs, and the Agents window. Both the Chat view and the Agents window run agents. To choose between collaborating over code in your current workspace and coordinating work across projects, see [Choose how you work](/docs/agents/overview.md#choose-how-you-work).
 
 For lightweight interactions, use [inline chat](/docs/chat/inline-chat.md) to edit code or get terminal suggestions in place, or open [Quick Chat](/docs/chat/inline-chat.md#use-quick-chat) for a temporary conversation.
 
@@ -251,6 +251,34 @@ Providing the right context helps the AI generate more relevant and accurate res
 
 Learn more about [managing context for AI](/docs/chat/copilot-chat-context.md).
 
+## Generate and edit images (Experimental)
+
+Generate illustrations, UI mockups, or other image assets directly in chat. In a [Copilot harness](/docs/agents/run/agent-harnesses.md) session, the agent uses a dedicated image-generation model, separate from the language model selected for the conversation.
+
+1. Verify that ``chat.copilot.imageGeneration.model`` is set to an image-generation model.
+
+1. Ask the agent to generate an image. Describe the subject, style, and intended use. For example:
+
+    ```prompt
+    Generate a wide mountain landscape illustration for my app's welcome screen. Use muted colors and leave space for a heading on the left.
+    ```
+
+1. Review the result and send a follow-up request to edit it:
+
+    ```prompt
+    Make it nighttime and add a few stars, keeping the space for the heading.
+    ```
+
+1. Select **Save** next to the image in chat to download it to your device.
+
+To edit an existing image, [attach the image as context](/docs/chat/copilot-chat-context.md#vision) and describe the changes. You can also ask for multiple images, such as three variations of an illustration with different color palettes.
+
+Image generation requires access to the image model and follows [tool permission controls](/docs/agents/run/approvals.md). Prompts and selected reference images are sent to the image model. Generation and editing use [AI credits](/docs/agents/concepts/language-models.md#ai-credits-and-model-costs) in addition to those used by the conversation model. Check the model setting for current rates, and expand an image-generation tool call to review its AI-credit usage, duration, and input and output usage.
+
+To request a visible 'Made with AI' label on generated or edited images, turn on ``chat.copilot.imageGeneration.watermark``. This setting defaults to `false` and applies to new and existing Copilot sessions without turning image generation on. The image model generates the label, so it isn't guaranteed. Turning the setting off doesn't remove existing labels from reference images.
+
+To turn off image generation, set ``chat.copilot.imageGeneration.model`` to **Off**. This prevents future image-generation tool calls, but doesn't prevent the agent from creating SVGs or other graphics by writing code.
+
 ## Image carousel
 
 You can select images or videos in chat responses to open a dedicated carousel view. Media files from tool results (such as the integrated browser, Playwright, or other MCP servers) and inlined in assistant messages are all accessible from the carousel.
@@ -261,11 +289,13 @@ To disable the image carousel, set ``imageCarousel.chat.enabled`` to `false`.
 
 ## Review and manage changes
 
-After the AI changes files, review and validate the result before you commit or integrate it. In the Chat view, select a changed file in the response to open its diff. In the Agents window, use the **Changes** panel.
+After the AI changes files, review and validate the result before you commit or integrate it. In a Copilot harness session in the editor window, expand the working set `feature(editor-working-set)` above the chat input to review tracked edits and use **Keep** or **Undo**. This works without Git, but doesn't list edits made through terminal commands. **Keep** clears pending review for edits that are already saved.
+
+You can also select a changed file in a response to open its diff. In the Agents window, use the **Changes** panel instead of the editor working set. Review controls depend on the harness and interface.
 
 For keyboard and screen reader access to a diff, use the [Accessible Diff Viewer](/docs/configure/accessibility/accessibility.md#diff-editor-accessibility).
 
-For instructions about requesting revisions, restoring checkpoints, and integrating folder or worktree changes, see [Review AI-generated code edits](/docs/agents/run/review-code-edits.md).
+For harness-specific review controls, requesting revisions, restoring checkpoints, and integrating folder or worktree changes, see [Review AI-generated code edits](/docs/agents/run/review-code-edits.md).
 
 ## Get notified about chat responses
 
@@ -346,6 +376,21 @@ For an image background, run **Chat: Change Background Layout...** to repeat, st
 
 Backgrounds are hidden in high contrast themes to preserve chat readability. The background commands are also unavailable while a high contrast theme is active.
 
+#### Generate a chat background (Experimental)
+
+Generate a background from a text description instead of finding an image yourself. [Configure image generation](#generate-and-edit-images-experimental) and keep ``chat.agentSessions.appearanceTools.enabled`` turned on.
+
+In a [Copilot harness](/docs/agents/run/agent-harnesses.md) session in the Agents window, ask the agent to generate an image and apply it as your chat background. For example:
+
+```prompt
+Generate a subtle mountain landscape and set it as my chat background.
+```
+
+If you don't specify colors, the agent uses your current theme as guidance and aims to keep chat messages readable. Explicit colors and design preferences in your prompt take precedence over the theme.
+
+> [!NOTE]
+> Image generation requires access to the selected model and uses [AI credits](/docs/agents/concepts/language-models.md#ai-credits-and-model-costs) in addition to those used by the conversation model. This workflow isn't available in the browser version of the Agents window.
+
 ## Get better responses
 
 Chat provides several ways to improve the quality and relevance of AI responses:
@@ -381,8 +426,8 @@ To learn more about Copilot's security, privacy, compliance, and transparency, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/chat/copilot-chat-context.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/chat/copilot-chat-context
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/chat/copilot-chat-context.md
-- **SHA256_FINGERPRINT**: `af2ccf4472eb7266daf20629721e7f9f97273136eabb00f0cd7b939af72b3da2`
-- **LAST_VERIFIED_UTC**: 2026-10-22T16:53:31.696637+00:00
+- **SHA256_FINGERPRINT**: `76c52f8584efe7e61089622f2023ac4a808de8aecf2a0649ef12c0bee7b44039`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:38.093081+00:00
 ---
 
 **MetaDescription**: Add files, symbols, images, browser content, and other context to AI prompts in Visual Studio Code for more relevant responses.
@@ -459,6 +504,8 @@ Ask Copilot directly about your code, terminal output, or editor settings and at
 ## Vision
 
 Chat supports vision capabilities, which means you can attach an image as context to your chat prompt and ask questions about it. For example, attach a screenshot of a block of code and ask to explain it, or attach a sketch of a UI and ask the agent to implement it.
+
+Vision analyzes image input and doesn't generate image output. To create an image or edit an existing one, use [image generation](/docs/chat/chat-overview.md#generate-and-edit-images-experimental) in a Copilot harness session.
 
 > [!TIP]
 > You can drag and drop an image from a web browser onto the Chat view to add it as context.

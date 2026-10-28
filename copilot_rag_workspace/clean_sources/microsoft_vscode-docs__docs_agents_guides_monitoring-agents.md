@@ -151,7 +151,7 @@ Extension-specific metrics:
 | `copilot_chat.session.count` | Counter | Chat sessions started |
 | `copilot_chat.time_to_first_token` | Histogram | Time to first SSE token (seconds) |
 
-Agent activity and outcome metrics track agentic code changes across all surfaces (inline chat, local agents, Copilot agents, Claude agents, and Copilot cloud agents):
+Agent activity and outcome metrics track agentic code changes across supported surfaces, including inline chat and agent sessions:
 
 | Metric | Type | Description |
 |---|---|---|

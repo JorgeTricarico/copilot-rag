@@ -6,7 +6,7 @@ Adding tests to an existing project involves more than generating test code. You
 
 This guide shows you how to use an agent in Visual Studio Code to add tests for existing code, run them, investigate failures, and review the result. Start with one function or module, then expand coverage after you validate the first set of tests.
 
-The walkthrough uses the Copilot harness in the Chat view to collaborate over code in the current workspace. To compare this approach with assigning higher-level tasks in the Agents window, see [Run agents](/docs/agents/run/overview.md).
+The walkthrough uses the Copilot harness in the Chat view to collaborate over code in the current workspace. To compare this approach with assigning higher-level tasks in the Agents window, see [Choose how you work](/docs/agents/overview.md#choose-how-you-work).
 
 ## Prerequisites
 

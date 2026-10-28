@@ -11,7 +11,7 @@ Use prompt files to:
 * Simplify prompting for common tasks, such as scaffolding a new component, running and fixing tests, or preparing a pull request
 * Override default behavior of a custom agent, such as creating a minimal implementation plan or generating mockups for API calls
 
-With **Local** selected, use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) (Preview) to discover, create, and manage prompt files. Run **Chat: Open Customizations** from the Command Palette.
+With **Local** selected, use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) to discover, create, and manage prompt files. Run **Chat: Open Customizations** from the Command Palette.
 
 > [!IMPORTANT]
 > Prompt files run only in **Local** harness sessions in the Chat view. For reusable workflows in other harnesses, create an [agent skill](/docs/agent-customization/agent-skills.md) or [convert an existing prompt file to a skill](/docs/agent-customization/migrate-customizations.md#convert-prompt-files-to-skills).
@@ -127,7 +127,7 @@ To create a prompt file:
 
 1. Select **New Prompt** (plus icon) next to the **Workspace** or **User** group, depending on where you want to store the prompt file.
 
-    ![Screenshot of the Agent Customizations editor, showing the Prompts tab and the dropdown to create a new prompt file.](images/customization/create-prompt-file.png)
+    ![Screenshot of the Agent Customizations editor, showing the Prompts tab and the options to create a new prompt file.](images/customization/create-prompt-file-2.png)
 
     Alternatively, use the **Chat: New Prompt File** or **Chat: New Untitled Prompt File** command from the Command Palette (``Shortcut: workbench.action.showCommands``).
 

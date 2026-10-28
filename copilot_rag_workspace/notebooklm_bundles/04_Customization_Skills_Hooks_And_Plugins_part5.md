@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-10-27T04:20:56.005949+00:00
-- **Total Palabras**: 367,885 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-28T18:07:46.872871+00:00
+- **Total Palabras**: 370,488 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -52051,19 +52051,19 @@ Xquik is an independent third-party service. Not affiliated with X Corp. "Twitte
 # DOCUMENT_SOURCE: github_docs::content/copilot/reference/hooks-reference.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/hooks-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/hooks-reference.md
-- **SHA256_FINGERPRINT**: `3b9649c93476f2b7870f06579c4745dcdfb33adaefaa3e5e02bb395d03c6b8e7`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:34.113299+00:00
+- **SHA256_FINGERPRINT**: `0c4d63b1bca72306cdf94472b84a77f0963132f19cebbfabccd221067fd57fff`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:38.967275+00:00
 ---
 
 **title**: GitHub Copilot hooks reference
 **shortTitle**: Hooks reference
-**intro**: Find hook events, configuration formats, and input payloads for hooks in Copilot CLI and Copilot cloud agent.
+**intro**: Find hook events, configuration formats, and input payloads for hooks in Copilot CLI and [copilot.copilot_in_the_cloud_short].
 
 ## Introduction
 
 Hooks are external commands that execute at specific lifecycle points during a session, enabling custom automation, security controls, and integrations.
 
-Hooks are supported in two Copilot surfaces: Copilot CLI and Copilot cloud agent. Most of the configuration format and event payloads are identical, but the execution environment and the set of events that can fire differ.
+Hooks are supported in two Copilot surfaces: Copilot CLI and [copilot.copilot_in_the_cloud_short]. Most of the configuration format and event payloads are identical, but the execution environment and the set of events that can fire differ.
 
 Throughout this article, behavior that differs between the two surfaces is called out in "CLI only" and "Cloud agent only" notes. Anything not marked applies to both.
 
@@ -52082,14 +52082,14 @@ The locations where hooks run, and where you can store hook configuration files,
   * **Inline `hooks` block in user-level config** — the `hooks` field at the top level of `~/.copilot/settings.json`. The CLI no longer reads `~/.copilot/config.json` for hooks.
   * **Hooks contributed by installed plugins** — declared by each plugin in its own `hooks.json` (or under `hooks/hooks.json`) inside the plugin's installation directory.
 
-* **Copilot cloud agent** — hooks run inside the ephemeral Linux sandbox that cloud agent provisions for each job. The sandbox is non-interactive, has a constrained network, and is destroyed when the job ends. A subset of events fires, and only `bash` (or `command`) entries are honored.
+* **[copilot.copilot_in_the_cloud_short]** — hooks run inside the ephemeral Linux sandbox that cloud agent provisions for each job. The sandbox is non-interactive, has a constrained network, and is destroyed when the job ends. A subset of events fires, and only `bash` (or `command`) entries are honored.
 
   Hook configuration is loaded from `.github/hooks/*.json` files in the cloned repository.
 
 ### Policy hooks
 
 > [!NOTE]
-> **Copilot CLI only.** Policy hooks are not supported under Copilot cloud agent.
+> **Copilot CLI only.** Policy hooks are not supported under [copilot.copilot_in_the_cloud_short].
 
 Policy hooks are machine-wide hooks loaded by administrators. They load before all other hooks and cannot be disabled by `disableAllHooks`.
 
@@ -52134,14 +52134,14 @@ Format the files you change.
 
 ## Cloud agent execution environment
 
-This section applies to **Copilot cloud agent only**. It describes constraints that affect how you write hook scripts and configure hook entries for cloud agent jobs.
+This section applies to **[copilot.copilot_in_the_cloud_short] only**. It describes constraints that affect how you write hook scripts and configure hook entries for cloud agent jobs.
 
 | Property | Value |
 |----------|-------|
 | Operating system | Linux. Only the `bash` field on command hooks is honored; `powershell` entries are ignored. The cross-platform `command` field is honored as a fallback. |
 | Working directory | `/workspace` when a repository is cloned, otherwise `/root`. Use this path when setting `cwd` on a hook entry or when referencing files from a script. |
 | Filesystem | Ephemeral. Files written by hooks (logs, CSVs, transcripts) are discarded when the job ends. To retain hook output, send it via an `http` hook entry. |
-| Outbound network | Restricted by the cloud agent firewall. By default only GitHub and Copilot hostnames are reachable; reaching any other host (for example `https://hooks.example.com`) requires an admin-configured firewall allow rule. |
+| Outbound network | Restricted by the cloud agent firewall. By default only GitHub and Copilot hostnames are reachable; reaching any other host (for example `https://hooks.example.com`) requires an admin-configured firewall allow rule. The cloud agent firewall applies only to [copilot.copilot_in_the_cloud_short] jobs. |
 | Available environment variables | `GITHUB_COPILOT_API_TOKEN` and `GITHUB_COPILOT_GIT_TOKEN` are set in the sandbox. `COPILOT_AGENT_PROMPT` holds the prompt the job was invoked with. `HOME` is set to `/root`, so any hook script that resolves `~/...` paths writes into the ephemeral sandbox. `GITHUB_TOKEN` is not set. |
 | Interactivity | Fully non-interactive. The agent runs with all tool permissions pre-granted, so no permission dialogs are shown and no notifications are surfaced to a user. |
 | Configuration discovery | In a cloud agent job, the only hook configuration that exists by default is `.github/hooks/*.json` inside the cloned repository. The sandbox does not ship with user-level hook files, `settings.json`, `config.json`, or installed plugins. |
@@ -52250,7 +52250,7 @@ Progress messages are display-only and do not affect hook output or decision log
 
 When the session sandbox is enabled, command hooks from the repository, your user settings, and plugins run inside it, with the same access as the agent's shell commands. A hook can also read the directory it was loaded from, so a plugin can run the scripts it ships, and a plugin hook can write to its data directory (`$COPILOT_PLUGIN_DATA`).
 
-A hook's `cwd` and `env` fields don't widen that access: a `cwd` outside the session's grants gives the hook no access there, and variables such as `TMPDIR` or `PATH` set in the hook's `env` grant nothing. When a hook fails in the sandbox, Copilot shows a warning once per hook and session. To give a hook more access, add the required paths to `sandbox.userPolicy` in your settings. See [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-config-dir-reference#user-settings-copilotsettingsjson).
+A hook's `cwd` and `env` fields don't widen that access: a `cwd` outside the session's grants gives the hook no access there, and variables such as `TMPDIR` or `PATH` set in the hook's `env` grant nothing. When a hook fails in the sandbox, Copilot shows a warning once per hook and session. To give a hook more access, add the required paths to `sandbox.userPolicy` in your settings. See [Cli Config Dir Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference#user-settings-copilotsettingsjson).
 
 Policy hooks always run on the host, outside the sandbox, even when the session sandbox is enabled. A policy hook should not run scripts from the workspace.
 
@@ -52456,7 +52456,7 @@ When multiple `sessionStart` hooks run, successful hooks that return a non-empty
 Return `{}` or empty to leave the prompt unchanged.
 
 > [!NOTE]
-> * `modifiedPrompt` is only honored by SDK programmatic hooks. Command and HTTP config-file `userPromptSubmitted` hooks have their output dropped, including `modifiedPrompt`. The lighter hooks-processing runtime used by hosted or steering Copilot cloud agent sessions also ignores it. This is the same runtime split as `preToolUse`.
+> * `modifiedPrompt` is only honored by SDK programmatic hooks. Command and HTTP config-file `userPromptSubmitted` hooks have their output dropped, including `modifiedPrompt`. The lighter hooks-processing runtime used by hosted or steering [copilot.copilot_in_the_cloud_short] sessions also ignores it. This is the same runtime split as `preToolUse`.
 > * A non-string `modifiedPrompt`, `modifiedTransformedPrompt`, or a handled `responseContent` value is ignored rather than corrupting the session—a type warning naming the field is logged and emitted as a `session.warning` event. An empty-string override is rejected instead of blanking the model-facing content. A `null` `additionalContext` value is treated as absent instead of being injected as the literal text `null`. Hook output (stdout for command hooks, the response body for HTTP hooks) is bounded at 10 MiB per invocation—a larger response is truncated rather than exhausting memory.
 
 ### `userPromptTransformed`
@@ -52840,7 +52840,7 @@ Return `{}` or empty output to keep the original successful result.
 ## `permissionRequest` decision control
 
 > [!NOTE]
-> **Copilot CLI only.** The `permissionRequest` hook does not apply under Copilot cloud agent—tool calls there are pre-approved (see the **Interactivity** row in the Cloud agent execution environment table). Use `preToolUse` to make permission decisions in cloud agent.
+> **Copilot CLI only.** The `permissionRequest` hook does not apply under [copilot.copilot_in_the_cloud_short]—tool calls there are pre-approved (see the **Interactivity** row in the Cloud agent execution environment table). Use `preToolUse` to make permission decisions in cloud agent.
 
 The `permissionRequest` hook fires before the permission service runs—before rule checks, session approvals, auto-allow/auto-deny, and user prompting. If hooks return `behavior: "allow"` or `"deny"`, that decision short-circuits the normal permission flow. Returning nothing falls through to normal permission handling. Use it to approve or deny tool calls programmatically—especially useful in CLI pipe mode (`-p`) and other CLI CI usages where no interactive prompt is available. It does not apply to cloud agent.
 
@@ -52866,7 +52866,7 @@ Return empty output or `{}` to fall through to the normal permission flow. For c
 ## `notification` hook
 
 > [!NOTE]
-> **Copilot CLI only.** The `notification` hook does not fire under Copilot cloud agent.
+> **Copilot CLI only.** The `notification` hook does not fire under [copilot.copilot_in_the_cloud_short].
 
 The `notification` hook fires asynchronously when the CLI emits a system notification. These hooks are fire-and-forget: they never block the session, and any errors are logged and skipped.
 
@@ -52971,32 +52971,32 @@ Set `disableAllHooks` to `true` at the top level to skip every hook in the file 
 
 Behavior depends on where you set the flag:
 
-* **Inside a single `.github/hooks/*.json` file** — only the hooks declared in that file are skipped. Honored by both Copilot CLI and Copilot cloud agent.
+* **Inside a single `.github/hooks/*.json` file** — only the hooks declared in that file are skipped. Honored by both Copilot CLI and [copilot.copilot_in_the_cloud_short].
 * **At the top level of repository `settings.json`** — **Copilot CLI only.** Every hook from every source (repository files, user files, plugins, and inline hook blocks) is skipped for sessions in that repository. Policy hooks are not affected and continue to run. Cloud agent does not load `settings.json`.
 
 ## Further reading
 
-* [AUTOTITLE](/copilot/how-tos/copilot-cli/customize-copilot/use-hooks)
-* [AUTOTITLE](/copilot/reference/hooks-reference)
-* [AUTOTITLE](/copilot/reference/copilot-cli-reference/cli-command-reference)
-* [AUTOTITLE](/copilot/concepts/copilot-surfaces/copilot-on-github)
+* [Use Hooks](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/use-hooks)
+* [Hooks Reference](https://docs.github.com/en/copilot/reference/hooks-reference)
+* [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference)
+* [Copilot On Github](https://docs.github.com/en/copilot/concepts/copilot-surfaces/copilot-on-github)
 
 
 ---
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/agent-plugins.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/agent-plugins
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-plugins.md
-- **SHA256_FINGERPRINT**: `9780c2fae3fb77611a653d74672dbb394471ae496d847fbd65d5e21e90fea830`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.707312+00:00
+- **SHA256_FINGERPRINT**: `fe99b2bdab4b53b86c8a6813928550e699e0e9facdde3d4008a3bbac76d83628`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:35.578097+00:00
 ---
 
-**MetaDescription**: Discover, install, configure, and troubleshoot agent plugins in VS Code.
+**MetaDescription**: Install and manage agent plugins in VS Code.
 
 # Agent plugins in VS Code
 
-Agent plugins bundle related customizations into one installable setup. Use a plugin to adopt a shared workflow instead of assembling its skills, agents, and tool integrations individually. For example, a testing plugin can package a test-running skill, review agent, and reporting integration that are intended to work together.
+Agent plugins package related customizations, such as skills, agents, and tool integrations, so you can install them together. For example, a testing plugin can include a test-running skill, review agent, and reporting integration that are intended to work together.
 
-This article shows you how to discover, install, configure, update, and troubleshoot plugins. To create or package a plugin, see the [agent plugin authoring reference](/docs/agents/reference/agent-plugin-reference.md).
+This article shows you how to discover, install, and manage plugins with the Agent Customizations editor, and how to troubleshoot common issues. To create or package a plugin, see the [agent plugin authoring reference](/docs/agents/reference/agent-plugin-reference.md).
 
 If you only need a project rule or a single skill, start with an [individual customization](/docs/agents/concepts/customization.md#customization-options-at-a-glance). Choose a bundle when its components support a workflow you want to adopt together.
 
@@ -53011,6 +53011,7 @@ Plugins can provide the following customizations. The selected harness and plugi
 |------------|---------|
 | [Skills](/docs/agent-customization/agent-skills.md) | Instructions, scripts, and resources for specialized workflows |
 | [MCP servers](/docs/agent-customization/mcp-servers.md) | Tools for interacting with external systems |
+| [Canvases](/docs/agents/run/canvases.md) `feature(canvases)` | Interactive visual surfaces shared by you and the agent in supported Copilot sessions |
 | [Custom agents](/docs/agent-customization/custom-agents.md) | Specialized roles and tool configurations |
 | [Hooks](/docs/agent-customization/hooks.md) | Commands that run at agent lifecycle points |
 | [Automation templates](/docs/agents/run/automations.md#start-from-a-template) | Starting prompts and schedules to review before creating an automation |
@@ -53025,53 +53026,18 @@ Check the plugin's supported clients and components before installing. See [Cros
 
 ## Discover and install plugins
 
-You can browse and install plugins from marketplaces or directly from a Git repository.
-
-### Manage plugins with slash commands
-
-In a Copilot harness session, enter `/plugin ` in the chat input to view completions for plugin and marketplace operations.
-
-| Command | Purpose |
-|---------|---------|
-| `/plugin list` | List installed plugins and their status. |
-| `/plugin install <source>` | Install a plugin from a marketplace or Git repository. |
-| `/plugin update <plugin>` | Update an installed plugin. |
-| `/plugin enable <plugin>` | Enable an installed marketplace plugin. |
-| `/plugin disable <plugin>` | Disable an installed marketplace plugin. |
-| `/plugin uninstall <plugin>` | Remove an installed plugin. |
-| `/plugin marketplace list` | List included and registered marketplaces. |
-| `/plugin marketplace browse <name>` | Browse the plugins in a marketplace. |
-| `/plugin marketplace add <source>` | Add a marketplace from a Git repository. |
-| `/plugin marketplace update [name]` | Update one marketplace or all registered marketplaces. |
-| `/plugin marketplace remove <name> [--force]` | Remove a registered marketplace. Use `--force` if plugins from the marketplace are installed. |
-
-Marketplace plugins use the qualified identity `<plugin>@<marketplace>`. Use this identity when plugins in multiple marketplaces have the same name. Command completion suggests valid marketplace and plugin identities for each operation.
-
-Plugins installed directly from a Git repository can be updated or uninstalled, but they can't be enabled or disabled. To stop using a directly installed plugin, uninstall it. Included and centrally managed marketplaces can't be removed.
-
-> [!NOTE]
-> The `/plugin` commands and the Agent Customizations editor currently use separate plugin inventories. Manage a plugin from the interface where you installed it.
+Use the Agent Customizations editor to browse marketplaces and install plugins. You can also install a plugin directly from a Git repository or local folder. Available plugins and actions depend on the selected [agent harness](/docs/agents/concepts/agent-harnesses.md) and organization policy.
 
 ### Install a plugin from a marketplace
 
-1. Open the Extensions view (``Shortcut: workbench.view.extensions``) and enter `@agentPlugins` in the search field.
+1. Open the Agent Customizations editor by running **Chat: Open Customizations** from the Command Palette, selecting **Open Customizations** in the Chat view title bar, or selecting **Customizations** in the Agents window sidebar.
 
-    Alternatively, select the **More Actions** (three dots) icon in the Extensions sidebar and choose **Views** > **Agent Plugins**.
+1. Browse available plugins from your [configured marketplaces](#configure-plugin-marketplaces).  Available sources depend on the selected harness and organization policy.
 
-1. Browse the list of available plugins from your [configured marketplaces](#configure-plugin-marketplaces).
+    * Select the **Browse** tab and search for a plugin.
+    * Select the **Plugins** tab and then select **Browse** to find available plugins.
 
-    ![Screenshot of browsing agent plugins in the Extensions sidebar.](images/agent-plugins/extensions-view.png)
-
-1. Select **Install** to install a plugin.
-
-    The first time you install a plugin from a new marketplace, VS Code shows a trust prompt. Review the marketplace source before confirming.
-
-1. Open the Agent Customizations editor by running **Chat: Open Customizations** from the Command Palette, selecting **Open Customizations** in the Chat view title bar, or selecting **Plugins** in the Agents window.
-
-1. Browse available plugins from your [configured marketplaces](#configure-plugin-marketplaces):
-
-    * To use the unified **Discover** experience (Experimental), enable ``chat.customizations.marketplace.enabled`` and select **Discover**.
-    * Otherwise, select the **Plugins** tab and then select **Browse Marketplace**.
+1. Select a plugin to review its publisher, included customizations, and **Plugin README**, when provided.
 
 1. Select **Install** to install a plugin.
 
@@ -53079,45 +53045,77 @@ Plugins installed directly from a Git repository can be updated or uninstalled, 
 
 ### Install a plugin from source
 
-You can install a plugin directly from a Git repository URL without adding a full marketplace first.
+You can install a plugin directly from a Git repository or local folder without adding a full marketplace first. For a repository URL, VS Code clones and installs the plugin.
 
-* Run **Chat: Install Plugin From Source** from the Command Palette.
+1. In the Agent Customizations editor, select **Plugins**, then select the add (`+`) button next to **User** or **Workspace**, depending on where you want to install the plugin.
 
-* Alternatively, select **Install Plugin from Source** on the **Plugins** page of the Agent Customizations editor.
+1. Enter a Git repository URL (for example, `https://github.com/rwoll/markdown-review`) or a local folder path.
 
-Enter a Git repository URL (for example, `https://github.com/rwoll/markdown-review`) and VS Code clones and installs the plugin.
+Alternatively, run **Chat: Install Plugin from Source** from the Command Palette.
 
 ### Plugins installed by GitHub Copilot CLI
 
-VS Code automatically discovers plugins that you install with the [GitHub Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/plugins-finding-installing) to enable you to use them also in VS Code. Plugins from `~/.copilot/installed-plugins/` appear in the **Agent Plugins - Installed** view alongside plugins you installed from a marketplace or from source.
+VS Code automatically discovers plugins that you install with the [GitHub Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/plugins-finding-installing) to enable you to use them also in VS Code. Discovered plugins from `~/.copilot/installed-plugins/` appear on the **Plugins** page of the Agent Customizations editor.
 
 The CLI stores plugins under `~/.copilot/installed-plugins/<marketplace>/<plugin>/`. Plugins installed directly from a Git URL (rather than from a marketplace) live under the `_direct` bucket, for example `~/.copilot/installed-plugins/_direct/github--moda-linter--copilot-plugin/`.
 
 ### View installed plugins
 
-The **Agent Plugins - Installed** view in the Extensions view shows the plugins you have installed. From this view, you can enable, disable, or uninstall plugins.
+In the Agent Customizations editor, select **Plugins** to view the plugins available to the selected harness. From this page, you can inspect, enable, disable, or uninstall plugins.
 
-![Screenshot of the Agent Plugins - Installed view in the Extensions view.](images/agent-plugins/installed-plugins.png)
+Select an installed plugin to open its details. Review its **Plugin README** and included customizations. Under **Skills**, select a skill to open its instructions.
 
-You can also manage installed plugins from the Chat view by selecting **Open Customizations** in the title bar, and then selecting **Plugins**.
+### Verify a plugin after installation
+
+Installing a plugin makes its supported components available; it doesn't guarantee that an agent uses them for every task.
+
+1. In the Agent Customizations editor, select **Plugins** and confirm that the plugin is listed and enabled for the intended harness and workspace.
+
+1. Review the publisher's setup instructions and complete any required configuration. For bundled MCP servers, check [server controls and connection requirements](/docs/agents/run/manage-mcp-servers.md#open-the-server-controls).
+
+1. Start a fresh session with the intended harness and workspace. Confirm that the components you need are available. For example, [run one of the plugin's skills](/docs/agent-customization/agent-skills.md#use-skills-as-slash-commands) if it appears in the `/` menu.
+
+1. Try a small task you expect the plugin to help with, then review the agent's actions and result.
+
+If you only need a skill, consider [using or adapting an existing skill](/docs/agent-customization/agent-skills.md#use-an-existing-skill) instead of installing a plugin. To change and maintain a plugin, follow the [plugin authoring reference](/docs/agents/reference/agent-plugin-reference.md).
 
 ### Enable or disable plugins
 
-You can enable or disable a plugin globally or for a specific workspace:
+You can enable or disable a plugin for the current profile or a specific workspace:
 
-* Use the context menu on a plugin in the **Agent Plugins - Installed** section of the Extensions view.
-
-* Use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) to toggle a plugin's enabled state.
+1. In the Agent Customizations editor, select **Plugins** and open the plugin's details.
+1. Use **Enable** or **Disable** to change its state for the current profile, or **Enable (Workspace)** or **Disable (Workspace)** for the current workspace. Use the button's dropdown menu to choose the scope.
 
 The enable/disable state is stored separately from the plugin configuration, so it does not affect shared workspace settings.
 
-When a plugin is disabled, its skills, agents, hooks, MCP servers, slash commands, and automation templates are no longer available. For example, skills from a disabled plugin do not appear in **Chat: Configure Skills**, and automation templates do not appear in **Templates from Plugins**. Disabled plugins appear with a dimmed style in the Agent Customizations editor and Extensions view.
+Policy-managed plugins are identified as managed by policy, and their toggles are locked.
+
+When a plugin is disabled, its skills, agents, hooks, MCP servers, slash commands, and automation templates are no longer available. For example, skills from a disabled plugin do not appear in **Chat: Configure Skills**, and automation templates do not appear in **Templates from Plugins**. Disabled plugins appear with a dimmed style in the Agent Customizations editor.
 
 ### Uninstall plugins
 
-To remove a plugin, right-click it in the **Agent Plugins - Installed** view and select **Uninstall**. Plugins installed from an external source (such as npm, PyPI, or an external Git repository) are removed from disk. Plugins that are inlined in a marketplace repository remain on disk but are no longer active.
+In the Agent Customizations editor, select **Plugins**, open the plugin's details, and select **Uninstall**.
+
+Plugins installed from an external source (such as npm, PyPI, or an external Git repository) are removed from disk. Plugins that are inlined in a marketplace repository remain on disk but are no longer active.
 
 ## Configure plugin marketplaces
+
+Add and manage plugin marketplaces in the Agent Customizations editor or configure their sources in Settings.
+
+Adding a marketplace makes its plugins available to browse. It does not install or enable them.
+
+### Manage marketplaces in the Customizations editor (Preview)
+
+1. Open the Agent Customizations editor and select **Browse**.
+1. Open the source menu and select **Configure Marketplaces**.
+1. Select **Add Marketplace** and enter a GitHub repository, Git repository URL, or local repository URI. Only add marketplaces you trust.
+1. Return to **Browse** and select the added marketplace from the source menu to browse its plugins.
+
+To manage an existing marketplace, select it in **Configure Marketplaces**. Available actions depend on the selected harness and include **Browse**, **Refresh Marketplace**, **Open Folder**, and **Remove Marketplace**. Use **Back** to return to the marketplace list.
+
+Organization-managed marketplaces can't be removed, and some harnesses also protect built-in marketplaces. If prompted to **Remove Marketplace and Plugins**, review which plugins will be uninstalled before confirming.
+
+### Configure marketplaces in Settings
 
 You can discover plugins from marketplaces such as [copilot-plugins](https://github.com/github/copilot-plugins) and [awesome-copilot](https://github.com/github/awesome-copilot/). To configure additional marketplaces, use ``chat.plugins.marketplaces`` (Experimental).
 
@@ -53130,7 +53128,7 @@ Marketplaces are Git repositories that contain plugin definitions. You can refer
 
 For reproducible installations, use a full 40-character commit SHA, such as `owner/repo#<commit-sha>`. VS Code installs plugins from that exact revision. Branch and tag references use the revision they resolve to when the marketplace is fetched.
 
-Private repositories are also supported. If a public lookup fails, VS Code falls back to cloning the repository directly.
+Private repositories are also supported. Sign in to GitHub and make sure you have read access to the marketplace repository. Organization membership alone does not grant repository access. If a public lookup fails, VS Code falls back to cloning the repository directly.
 
 When a marketplace index declares a plugin at a relative path, VS Code verifies the repository, resolved revision, and path before installation. Sources with a missing revision, an invalid path, or an ambiguous path match are rejected.
 
@@ -53148,7 +53146,9 @@ Marketplace plugins can also reference external package sources such as npm or P
 
 ## Use local plugins
 
-If you manually clone or download a plugin, you can register it with ``chat.pluginLocations`` (Experimental). This setting maps local plugin directory paths to an enabled or disabled state. Set the value to `true` to enable the plugin, or `false` to keep it registered but disabled.
+To install a plugin from a local folder, use [Install a plugin from source](#install-a-plugin-from-source) in the Agent Customizations editor.
+
+If you manually clone or download a plugin and need to register its directory without installing it, use ``chat.pluginLocations`` (Experimental). This setting maps local plugin directory paths to an enabled or disabled state. Set the value to `true` to enable the plugin, or `false` to keep it registered but disabled.
 
 ```json
 // settings.json
@@ -53160,21 +53160,23 @@ If you manually clone or download a plugin, you can register it with ``chat.plug
 
 ## Update plugins
 
-VS Code checks for plugin updates when you run **Extensions: Check for Extension Updates** from the Command Palette, or automatically every 24 hours when ``extensions.autoUpdate`` is enabled.
+In the Agent Customizations editor, select **Plugins**, then select **Check for and Apply Updates** (the refresh icon) next to an installed-plugin group. Alternatively, run **Chat: Update Plugins** from the Command Palette.
 
 Updating pulls down changes from cloned marketplace repositories and checks for new versions of externally sourced plugins.
 
-Plugins sourced from npm or PyPI never update automatically. Instead, they show an **Update** button in the Extensions view. Selecting the button prompts you to confirm before running the install command. If an update is found during a background check, no action is taken until you explicitly select **Update**.
+Plugins can also update automatically when ``extensions.autoUpdate`` is enabled. Plugins sourced from npm or PyPI never update automatically. Use the update action in the Agent Customizations editor and review the confirmation prompt before the install command runs.
 
 ## Workspace plugin recommendations
 
 Projects can recommend plugins for team members by configuring plugin settings in the workspace settings (`.claude/settings.json` or `.github/copilot/settings.json`).
 
-VS Code shows a notification the first time a chat message is sent. You can view the recommended plugins by opening the Extensions view and filtering by `@agentPlugins @recommended`.
+In the Local harness, VS Code shows a notification the first time a chat message is sent. To browse and install plugins from the project's marketplaces, open the Agent Customizations editor and select **Browse**, or select **Plugins** > **Browse Marketplace** if the unified Browse experience is unavailable.
+
+In the Copilot harness, `.github/copilot/settings.json` supplies repository plugin and marketplace defaults. You can turn off optional plugins in **Plugins** in the Agent Customizations editor without changing the shared defaults. Enterprise-managed settings take precedence over repository defaults and your choices.
 
 Specify the following fields in the settings file to configure workspace plugin recommendations:
 
-* **`extraKnownMarketplaces`**: registers additional marketplaces for the project. These marketplaces appear when you search `@agentPlugins` in the Extensions view.
+* **`extraKnownMarketplaces`**: registers additional marketplaces for the project. These marketplaces appear among the available sources in the Agent Customizations editor.
 
 * **`enabledPlugins`**: lists plugins that should be enabled by default.
 
@@ -53193,6 +53195,33 @@ Specify the following fields in the settings file to configure workspace plugin 
     }
 }
 ```
+
+The marketplace key, `company-tools` in this example, must match the `name` in the marketplace's `marketplace.json`. Plugin identifiers use `<plugin>@<marketplace>`, not the marketplace repository name. Keep marketplace names stable so shared settings continue to refer to the same plugins.
+
+## Manage plugins with slash commands
+
+As an alternative to the Agent Customizations editor, you can manage plugins with slash commands in a Copilot harness session. Enter `/plugin ` in the chat input to view completions for plugin and marketplace operations.
+
+> [!NOTE]
+> The `/plugin` commands and the Agent Customizations editor currently use separate plugin inventories. Manage a plugin from the interface where you installed it.
+
+| Command | Purpose |
+|---------|---------|
+| `/plugin list` | List installed plugins and their status. |
+| `/plugin install <source>` | Install a plugin from a marketplace or Git repository. |
+| `/plugin update <plugin>` | Update an installed plugin. |
+| `/plugin enable <plugin>` | Enable an installed marketplace plugin. |
+| `/plugin disable <plugin>` | Disable an installed marketplace plugin. |
+| `/plugin uninstall <plugin>` | Remove an installed plugin. |
+| `/plugin marketplace list` | List included and registered marketplaces. |
+| `/plugin marketplace browse <name>` | Browse the plugins in a marketplace. |
+| `/plugin marketplace add <source>` | Add a marketplace from a Git repository. |
+| `/plugin marketplace update [name]` | Update one marketplace or all registered marketplaces. |
+| `/plugin marketplace remove <name> [--force]` | Remove a registered marketplace. Use `--force` if plugins from the marketplace are installed. |
+
+Marketplace plugins use the qualified identity `<plugin>@<marketplace>`. Use this identity when plugins in multiple marketplaces have the same name. Command completion suggests valid marketplace and plugin identities for each operation.
+
+Plugins installed directly from a Git repository can be updated or uninstalled, but they can't be enabled or disabled. To stop using a directly installed plugin, uninstall it. Included and centrally managed marketplaces can't be removed.
 
 ## Cross-tool compatibility
 
@@ -53215,7 +53244,7 @@ VS Code also supports existing Copilot, Claude, and legacy OpenPlugin formats. S
 
 ### Plugin version does not update
 
-* Run **Extensions: Check for Extension Updates** from the Command Palette to trigger an update check.
+* In the Agent Customizations editor, select **Plugins**, then select **Check for and Apply Updates** (the refresh icon).
 * If you maintain the plugin, review its [versioning and update requirements](/docs/agents/reference/agent-plugin-reference.md#test-and-distribute-a-plugin).
 
 ### Plugin installation fails after retry
@@ -53246,15 +53275,15 @@ Use the [agent plugin authoring reference](/docs/agents/reference/agent-plugin-r
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/agent-skills.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/agent-skills
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-skills.md
-- **SHA256_FINGERPRINT**: `693ab21084252b195b2d1b4d824906b76a3199a9ece1201c60eceeddd9851f79`
-- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:44.200100+00:00
+- **SHA256_FINGERPRINT**: `38f9231d62a246f74110382c3dc7e8532bd560328c4325263782d72e8e8411b3`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:35.580075+00:00
 ---
 
-**MetaDescription**: Create portable Agent Skills in VS Code for specialized AI workflows across supported coding agents.
+**MetaDescription**: Find, adapt, and create Agent Skills in VS Code for reusable workflows with supported agents.
 
 # Use Agent Skills in VS Code
 
-Agent Skills are folders of instructions, scripts, and resources that AI agents can load when relevant to perform specialized tasks. Agent Skills is an [open standard](https://agentskills.io) that works across multiple AI agents, including GitHub Copilot in VS Code, GitHub Copilot CLI, the GitHub Copilot app, Copilot cloud agent, and the [experimental [product.prodname_openai_codex] integration](/docs/agents/run/agent-harnesses.md#codex).
+Agent Skills are folders of instructions, scripts, and resources that AI agents can load when relevant to perform specialized tasks. Agent Skills is an [open standard](https://agentskills.io) that works across multiple AI agents, including GitHub Copilot in VS Code, GitHub Copilot CLI, the GitHub Copilot app, and the [experimental [product.prodname_openai_codex] integration](/docs/agents/run/agent-harnesses.md#codex).
 
 Unlike [custom instructions](/docs/agent-customization/custom-instructions.md) that primarily define coding guidelines, skills enable specialized capabilities and workflows that can include scripts, examples, and other resources. Skills you create are portable across skills-compatible agents, but supported locations and optional features vary by agent. Unless otherwise noted, the configuration options and controls on this page apply to Copilot.
 
@@ -53268,7 +53297,7 @@ Key benefits of Agent Skills:
 * **Efficient loading**: Only relevant content loads into context when needed
 
 > [!TIP]
-> Use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) (Preview) to discover, create, and manage all your agent customizations in one place. Run **Chat: Open Customizations** from the Command Palette.
+> Use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) to discover, create, and manage all your agent customizations in one place. Run **Chat: Open Customizations** from the Command Palette.
 
 ## Agent Skills vs custom instructions
 
@@ -53297,6 +53326,41 @@ Use custom instructions when you want to:
 * Set language or framework conventions
 * Specify code review or commit message guidelines
 * Apply rules based on file types using glob patterns
+
+## Use an existing skill
+
+Start with an existing skill when it provides the workflow you need. You can install a skill from a supported marketplace source, use one bundled in an [agent plugin](/docs/agent-customization/agent-plugins.md), or copy and adapt one for your project. Check [harness compatibility](/docs/agent-customization/overview.md#check-harness-compatibility) before choosing a source and location.
+
+A skill includes its full directory, not only the `SKILL.md` file: scripts, templates, examples, and other resources can be part of the workflow.
+
+### Install a skill from the Customization Marketplace (Preview)
+
+Use the Customization Marketplace to find and install skills from configured sources. Marketplace discovery is enabled by default. GitHub Feed requires a harness that provides marketplace search; Local sessions don't provide this source, and organization policy can restrict access.
+
+1. Open the Agent Customizations editor and select **Browse**.
+1. From the source menu, select **GitHub Feed**, and then search for a skill by name or add `@type:skill` to your search.
+1. Select a skill and review its publisher, source, and included files.
+1. Select **Install**, and choose a supported user or workspace destination when prompted.
+1. [Verify the installed skill](#verify-a-skill) in a session with the intended harness.
+
+VS Code doesn't overwrite an existing skill at the selected destination. If another supported location contains a skill with the same name, both skills appear on the **Skills** page. The source or publisher image identifies the Marketplace installation, and **Copy Relative Path** shows its exact location.
+
+VS Code tracks the directory of each skill installed from the Marketplace. Deleting that skill from the **Skills** page doesn't remove a local skill with the same name in another location.
+
+If files from a Marketplace-installed skill are missing, **Browse** shows **Missing files**. Select **Repair** to restore only the missing packaged files. Files that you changed or added remain unchanged.
+
+For more information about browsing sources and installation states, see [Discover marketplace customizations](/docs/agent-customization/overview.md#discover-marketplace-customizations-preview).
+
+### Copy and adapt an existing skill
+
+1. Review the skill's instructions, scripts, and other resources before adding it to your workspace.
+1. Copy the entire skill directory to a [supported project or personal location](#skill-locations) for your harness.
+1. Adapt the `SKILL.md` file to your needs. Check commands, file paths, dependencies, and assumptions about the project.
+1. Update any supporting scripts, templates, or examples that the adapted instructions use.
+1. [Verify the adapted skill](#verify-a-skill) before sharing it.
+
+> [!TIP]
+> Only reuse skills you trust. Skills can include scripts that run tools or interact with external systems. Review [security considerations](/docs/agents/run/security.md#approvals-and-review) before using them.
 
 ## Create a skill
 
@@ -53327,63 +53391,93 @@ To create a skill:
 
 1. In the Chat view, select **Open Customizations** in the title bar to open the Agent Customizations editor, and then select **Skills**.
 
-1. Select **New Skill** (plus icon) next to the **Workspace** or **User** group, depending on where you want to store the skill.
+1. Select **New Skill** (plus icon) next to **Workspace** to store the skill in your project, or next to **User** to use it across your workspaces.
 
-    ![Screenshot of the Agent Customizations editor, showing the Skills tab and the dropdown to create a new skill.](images/customization/create-skill-v2.png)
+    ![Screenshot of the Agent Customizations editor, showing the Skills tab and the dropdown to create a new skill.](images/customization/create-skill.png)
 
-1. Select the location and enter a name for the skill.
+1. Choose a location if prompted, and enter a skill name, such as `test-changes`. The editor offers locations for the selected harness. See [Skill locations](#skill-locations) for details.
 
-1. Complete the `SKILL.md` file by filling in the YAML frontmatter and adding instructions in the body of the file.
+1. In the generated `SKILL.md` file, describe what the skill does, when to use it, and the instructions to follow. For example:
 
     ```markdown
     ---
-    name: skill-name
-    description: Description of what the skill does and when to use it
+    name: test-changes
+    description: Run relevant project tests and report the results. Use when validating a code change.
     ---
 
-    # Skill Instructions
+    # Test changes
 
-    Your detailed instructions, guidelines, and examples go here...
+    1. Identify the tests that cover the changed code.
+    1. Run them using the test commands documented in this repository.
+    1. Report what passed, what failed, and any checks you couldn't run.
     ```
 
-1. Optionally, add scripts, examples, or other resources to your skill's directory.
+    Keep `name` consistent with the skill directory name. For additional fields, see the [file format reference](#skillmd-file-format).
 
-    For example, a skill for testing web applications might include:
+1. If the skill needs scripts, templates, or examples, add them to its directory and reference them from `SKILL.md`.
 
-    * `SKILL.md` - Instructions for running tests
-    * `test-template.js` - A template test file
-    * `examples/` - Example test scenarios
+    Use Markdown links or `#file:` references with paths relative to `SKILL.md`, such as `[test template](./test-template.js)` or `#file:./test-template.js`.
 
-    > [!NOTE]
-    > Make sure to reference any additional files in your `SKILL.md` for them to be picked up by the agent. Use Markdown links or `#file:` references with paths relative to the `SKILL.md` file, such as `[test template](./test-template.js)` or `#file:./test-template.js`.
+1. Save the files and [verify the skill](#verify-a-skill).
 
 ### Generate a skill with AI
 
-You can use AI to generate a skill based on a description of the capability. In chat, ask the agent to create a skill and describe the capability you want (for example, "create a skill for running and debugging integration tests"). This works for every harness, including **Copilot**. The agent asks clarifying questions and generates a `SKILL.md` file with the directory structure, instructions, and frontmatter.
+Instead of writing the file yourself, ask the agent to create a skill in a chat with your intended harness. Describe the task, when the skill should apply, and where to store it. For example:
 
-With **Local** selected, you can also type `/create-skill` in chat followed by the description. The `/create-skill` command isn't available for other harnesses.
+```prompt
+Create a project skill named test-changes in a location supported by this harness. It should identify and run the relevant tests for a code change using this repository's documented commands, then report what passed, failed, or wasn't run. Include a description of when to use the skill.
+```
 
-You can also extract a reusable skill from an ongoing conversation. For example, after a multi-turn session where you debugged a complex issue, ask "create a skill from how we just debugged that" to capture the multi-step procedure as a reusable skill.
+You can also ask the agent to turn a process from the current conversation into a skill, such as "create a skill from how we just debugged that." Review the generated instructions, file locations, and supporting resources, then [verify the skill](#verify-a-skill).
 
-With **Local** selected in the Chat view, you can also generate a skill from the Agent Customizations editor by selecting **Generate with AI** next to the **Workspace** group in the **Skills** section.
+### Local harness shortcuts
 
-### Install a skill from the Customization Marketplace (Experimental)
+With **Local** selected in the Chat view, you can also:
 
-Use the Customization Marketplace to find and install complete skill packages from configured sources:
+* Enter `/skills` to open the **Configure Skills** menu.
+* Enter `/create-skill` followed by a description to generate a skill.
+* Select **Generate with AI** in the **Skills** section of the Agent Customizations editor.
 
-1. Turn on the ``chat.customizations.marketplace.enabled`` setting.
-1. Open the Agent Customizations editor and select **Discover**.
-1. From the source menu, select **GitHub Feed**, and then search for a skill by name or add `@type:skill` to your search.
-1. Select a skill and review its publisher, source, and included files.
-1. Select **Install**, and then choose the user or workspace skills directory where you want to store the skill.
+For other harnesses, use **Open Customizations** or describe the skill directly in chat.
 
-VS Code doesn't overwrite an existing skill at the selected destination. If another supported location contains a skill with the same name, both skills appear on the **Skills** page. The source or publisher image identifies the Marketplace installation, and **Copy Relative Path** shows its exact location.
+## Verify a skill
 
-Marketplace ownership applies to the exact installed skill directory. Deleting a Marketplace-installed skill from the **Skills** page uninstalls only that skill and doesn't remove a same-name local skill in another location.
+Use these checks after installing, copying, creating, or editing a skill.
 
-If files from a Marketplace-installed skill are missing, **Discover** shows **Missing files**. Select **Repair** to restore only the missing packaged files. Files that you changed or added remain unchanged.
+Start a fresh chat with the intended harness and workspace. If the skill appears in the `/` menu, [run the skill yourself](#use-skills-as-slash-commands) and give it a small task you expect it to handle. Review the tool activity and result to confirm that it uses the expected instructions and resources.
 
-For more information about browsing sources and installation states, see [Discover marketplace customizations](/docs/agent-customization/overview.md#discover-marketplace-customizations-experimental).
+If you want the agent to select the skill automatically, test that separately with a request that matches its description. Discovery and installation make a skill available; they don't guarantee that the agent selects it for every relevant request.
+
+## Skill locations
+
+Store project skills in the repository when you want to share them with contributors. Store personal skills in your home directory to use them across workspaces. Each skill has its own directory containing `SKILL.md`.
+
+The following table gives a supported project and personal location for each harness, not every directory it recognizes. The Agent Customizations editor offers creation locations for the selected harness.
+
+| Harness | Skill directories |
+|---------|-------------------|
+| Copilot | Project: `.github/skills/`<br>Personal: `~/.copilot/skills/` |
+| [product.prodname_anthropic_claude] | Project: `.claude/skills/`<br>Personal: `~/.claude/skills/` |
+| [product.prodname_openai_codex] | Project: `.agents/skills/`<br>Personal: `~/.agents/skills/` |
+| Local | Project: `.github/skills/`<br>Personal: `~/.copilot/skills/` |
+
+### Codex
+
+To reuse repository skills with [product.prodname_openai_codex], [configure the experimental Codex integration](/docs/agents/run/agent-harnesses.md#codex). In addition to native `.agents/skills/` discovery, this integration discovers workspace skills in `.github/skills/` before your first prompt, without additional skill-location configuration.
+
+If skills in `.github/skills/` have duplicate names across workspace roots, the primary root takes precedence.
+
+The Codex harness is disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
+
+### Local
+
+Local sessions also read project skills from `.claude/skills/` and `.agents/skills/`, and personal skills from `~/.claude/skills/` and `~/.agents/skills/`.
+
+The ``chat.agentSkillsLocations`` setting adds other skill locations for Local sessions. This setting is deprecated and isn't read by Copilot harness sessions. To reuse those skills with the Copilot harness, [move them to supported locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations).
+
+### Monorepos
+
+If you open a subfolder of a monorepo, check the [parent repository discovery requirements](/docs/agent-customization/overview.md#use-customizations-in-a-monorepo) before storing skills above the open workspace folder.
 
 ## SKILL.md file format
 
@@ -53554,22 +53648,6 @@ This three-level loading system means you can install many skills without consum
 
 Skills that opt in to a [forked context](#run-a-skill-in-a-forked-context) follow the same discovery step, but their instructions and any files they read are loaded into a separate subagent. Only the skill's final result is returned to the parent agent.
 
-## Use shared skills
-
-You can use skills created by others to enhance Copilot's capabilities. The [github/awesome-copilot](https://github.com/github/awesome-copilot) repository contains a growing community collection of skills, custom agents, instructions, and prompts. The [anthropics/skills](https://github.com/anthropics/skills) repository contains additional reference skills.
-
-You can also discover and install skills that are bundled in [agent plugins](/docs/agent-customization/agent-plugins.md). Skills from installed plugins appear alongside your locally defined skills in the **Configure Skills** menu.
-
-To use a shared skill:
-
-1. Browse the available skills in the repository
-1. Copy the skill directory to your `.github/skills/` folder
-1. Review and customize the `SKILL.md` file for your needs
-1. Optionally, modify or add resources as needed
-
-> [!TIP]
-> Always review shared skills before using them to ensure they meet your requirements and security standards. VS Code's [terminal tool](/docs/agents/run/tools.md#run-terminal-commands) provides controls for script execution, including [auto-approve options](/docs/agents/run/approvals.md#automatically-approve-terminal-commands) with configurable allow-lists and tight controls over which code runs. Learn more about [security considerations](/docs/agents/run/security.md#approvals-and-review) for auto-approval features.
-
 ## Contribute skills from extensions
 
 Extensions can contribute skills using the `chatSkills` contribution point in their `package.json`. The path must point to a directory that contains a `SKILL.md` file, following the [Agent Skills specification](https://agentskills.io/specification).
@@ -53624,7 +53702,6 @@ Agent Skills is an open standard that enables portability across different AI ag
 * **GitHub Copilot in VS Code**: Available in chat and agent mode
 * **GitHub Copilot CLI**: Accessible when working in the terminal
 * **GitHub Copilot app**: Available in the dedicated desktop experience.
-* **Copilot cloud agent**: Used during automated coding tasks
 * **[product.prodname_openai_codex] integration (Experimental)**: Discovers workspace skills in `.github/skills/` after you [set up the integration](/docs/agents/run/agent-harnesses.md#codex).
 
 Learn more about the Agent Skills standard at [agentskills.io](https://agentskills.io).
@@ -53641,11 +53718,93 @@ Learn more about the Agent Skills standard at [agentskills.io](https://agentskil
 
 
 ---
+# DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/copilot-connectors.md
+- **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/copilot-connectors
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/copilot-connectors.md
+- **SHA256_FINGERPRINT**: `7b8948a1cb2c598e88d1da97617d5effa2b707df6b81d3ee835b96ad653510da`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:35.585598+00:00
+---
+
+**MetaDescription**: Connect external services to Copilot without server setup, use their tools, and manage connections.
+
+# Connect services with Copilot connectors in VS Code
+
+Bring context from services such as Slack, Notion, and Microsoft Learn into your agent sessions with Copilot connectors, also called [product.prodname_github]-managed MCP servers. Connect a supported service without installing a local server, writing MCP configuration, or managing credentials.
+
+Connect a service once and reuse the connection across supported Copilot clients signed in with the same account. [product.prodname_github] manages the connection and keeps you signed in.
+
+If the service you need isn't available as a connector, [add an MCP server](/docs/agent-customization/mcp-servers.md) using the publisher's URL or launch command instead.
+
+## Before you start
+
+* Sign in to VS Code with your GitHub.com account. Connectors are available on all GitHub Copilot plans.
+* Select **Copilot** in the **Session Target** dropdown. Connectors provide tools to the [Copilot harness](/docs/agents/run/agent-harnesses.md#copilot), not Local harness sessions.
+
+Marketplace discovery and connectors are enabled by default with ``chat.customizations.marketplace.enabled`` and ``chat.customizations.copilotConnectors.enabled``.
+
+For Business and Enterprise plans, an administrator must turn on the **Editor preview features** policy. When that policy is off, both settings are forced off. Some services also require approval from a service administrator, such as allowing Slack MCP access. Your organization's MCP access restrictions also apply. See [administration guidance for connectors](https://docs.github.com/enterprise-cloud@latest/copilot/how-tos/administer-copilot/manage-mcp-usage/configure-enterprise-allowlist#allowing-copilot-connectors).
+
+## Connect a service
+
+1. Run **Chat: Open Customizations** from the Command Palette (``Shortcut: workbench.action.showCommands``) and select **Browse**.
+
+1. Choose **Copilot Connectors** in the source menu, or search for a service by name.
+
+1. Open the connector's details and select **Connect**.
+
+1. Review the requested permissions and complete authorization in your browser, including service sign-in when required.
+
+1. Wait for the status to show **Connected**.
+
+While authorization is pending, select **Cancel** to stop connecting. You can select **Connect** again to retry.
+
+## Use a connected service
+
+Return to your Copilot session and ask a question that needs information from the service. Copilot uses connected services' tools when they're relevant to your request.
+
+For example, after connecting **Microsoft Learn Docs**, enter:
+
+```prompt
+Use the Microsoft Learn Docs connector to find the official documentation for the Kusto Query Language where operator. Summarize its syntax and link to the documentation.
+```
+
+Review tool approval requests before accepting them. Expand the tool call in the conversation to check that the agent used the connected service and received a result. A plausible answer alone doesn't confirm that the connector was used.
+
+## Disconnect a service
+
+Connected services appear in **MCP Servers** with a **Connector: &lt;name&gt;** label. Their connections are managed by [product.prodname_github], not by a local MCP configuration file.
+
+1. With the **Copilot** harness selected, run **Chat: Open Customizations** and select **MCP Servers**.
+
+1. Find the connector's row and open its ellipsis (**...**) menu.
+
+1. Select **Disconnect** and wait for the operation to complete.
+
+The connector's row disappears, and its tools are no longer available to the Copilot session. Use **Disconnect**, not **Uninstall** or a configuration-file edit, to remove a connector.
+
+To use the service again, [connect it from the Agent Customizations editor](#connect-a-service).
+
+## Troubleshoot a connection
+
+| What you observe | Next step |
+|------------------|-----------|
+| Connectors don't appear in **Browse** | Check that the **Copilot** harness is selected, both discovery settings are on, and your account and administrator policies permit access. |
+| The status stays at **Connecting** | Select **Cancel**, then select **Connect** and complete authorization in the browser. |
+| Service sign-in fails or access is denied | Review the requested permissions and check whether a service administrator needs to approve MCP access before retrying. |
+| The connector is connected, but no tool is called | Check that the session uses the **Copilot** harness, name the service explicitly in your prompt, and inspect the tool call. See [tool availability and invocation](/docs/agents/agent-troubleshooting/chat-debug-view.md#an-mcp-tool-is-not-being-invoked). |
+
+## Related resources
+
+* [Browse available connectors](https://github.com/copilot/customize).
+* [[product.prodname_github]-managed MCP servers](https://docs.github.com/copilot/concepts/customizations/copilot-connectors).
+
+
+---
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/custom-agents.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/custom-agents
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/custom-agents.md
-- **SHA256_FINGERPRINT**: `580be412915c85f3332ff72f018910c15a92b4e1eb626a5ba171d78b36d499b4`
-- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:44.193504+00:00
+- **SHA256_FINGERPRINT**: `b1e39eee19b7c3ad07c8acee03d40d7b3864af0d7d8c878d6d6aa56198661987`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:35.621539+00:00
 ---
 
 **MetaDescription**: Create and manage custom agents in VS Code for specialized development roles, tools, and workflows.
@@ -53674,11 +53833,11 @@ When you select a custom agent, it applies to your requests until you switch age
 
 ## Create a custom agent
 
-Use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) (Preview) to create an agent in your workspace or at the user level.
+Use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) to create an agent in your workspace or at the user level.
 
 Use the **Session Target** UI control to [select the agent harness](/docs/agents/run/agent-harnesses.md#select-a-harness) you intend to use, then open the editor from either surface:
 
-* **Agents window**: Select **Agents** in the **Customizations** panel in the left sidebar.
+* **Agents window**: Select **Customizations** in the left sidebar to open the Agent Customizations editor. Then select **Agents**.
 
 * **Chat view**: Select **Open Customizations** in the Chat view title bar, or run **Chat: Open Customizations** from the Command Palette (``Shortcut: workbench.action.showCommands``). Then select **Agents**.
 
@@ -53730,6 +53889,16 @@ To try it, select **Planner** and describe a change you want to plan. Review its
 
 For more examples, see the community-contributed [Awesome Copilot agents](https://github.com/github/awesome-copilot/blob/main/docs/README.agents.md).
 
+### Edit a custom agent file
+
+Use completions and hover details in an `.agent.md` file to choose values for the intended harness. By default, editing follows the selected harness. An explicit `target` overrides how the editor interprets the file, but doesn't switch your session's harness. See [Harness compatibility](/docs/agents/reference/custom-agent-file-reference.md#harness-compatibility).
+
+For Copilot-assisted editing, set `target` explicitly when you need target-specific guidance. Without an explicit target, the file context supplied to Copilot describes only shared attributes and doesn't suggest target-specific model or tool values. This differs from normal editor completions, which follow the selected harness.
+
+Hover a value to inspect its details or availability. The editor refreshes validation as harness inventories change. Unknown-value hints depend on discovery completing, so the absence of a hint while discovery is pending doesn't confirm that a value is available.
+
+Select the intended harness before editing, then try the agent in that harness to verify its behavior. Editor feedback doesn't replace checking which tools and skills the running agent can use.
+
 ## Use a custom agent
 
 Select the intended harness from the **Session Target** UI control, then choose your custom agent from the **Agent** dropdown in chat. Enter a prompt for its role and review the response and tool calls. The custom agent remains selected until you switch agents.
@@ -53777,7 +53946,7 @@ Prefer native harness folders, such as `.github/agents` and `~/.copilot/agents`,
 
 Custom locations are not recommended for Copilot workflows because GitHub Copilot CLI and the GitHub Copilot app do not inherit editor location settings. To use agents across Copilot clients, [move them to native harness locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations).
 
-If an agent has `hooks` in its frontmatter, review the [agent-scoped hook conversion limitation](/docs/agent-customization/hooks.md#agent-scoped-hooks). Plugin-provided agents can appear and run without their scoped hooks because conversion currently omits the `hooks` field. Retain the scoped definition and leave the affected hook migration incomplete; do not broaden it to repository-wide or plugin-wide execution as a workaround.
+If an agent has `hooks` in its frontmatter, review the [agent-scoped hook contract](/docs/agent-customization/hooks.md#agent-scoped-hooks). VS Code preserves those hooks when converting agents for Copilot, including plugin-provided agents. Keep agent-specific automation scoped to the agent and verify that its hooks run before completing a migration.
 
 ## Handoffs
 
@@ -53872,8 +54041,8 @@ Custom agents can restrict which tools are available, which gives you control ov
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/custom-instructions.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/custom-instructions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/custom-instructions.md
-- **SHA256_FINGERPRINT**: `2a5063a689e507791f5a1e796a6069181936ce02635af2876e5809db40af5850`
-- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:44.177656+00:00
+- **SHA256_FINGERPRINT**: `52aa0889780fb77eeb5db4c790890d0d7c46f4ab42719f07c5c4ae50825b3b2e`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:35.736374+00:00
 ---
 
 **MetaDescription**: Create custom instructions in VS Code that align AI responses with project standards and development practices.
@@ -54067,7 +54236,7 @@ To create an instructions file:
 
 You can also run **Chat: New Instructions File** from the Command Palette (``Shortcut: workbench.action.showCommands``).
 
-![Screenshot showing the Instructions section and the menu for creating an instructions file in the Agent Customizations editor.](images/customization/create-instructions-file.png)
+![Screenshot showing the Instructions section and the options for creating an instructions file in the Agent Customizations editor.](images/customization/create-instructions-file-2.png)
 
 ### Generate an instructions file with AI
 
@@ -54243,8 +54412,8 @@ If the instruction is missing, run **Developer: Open Agent Debug Logs** to inspe
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/hooks.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/hooks
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/hooks.md
-- **SHA256_FINGERPRINT**: `3e1b6ea3c537de279c642db3f7dfeba18817f97f7d51420fd9af10c74fd80c7f`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.591378+00:00
+- **SHA256_FINGERPRINT**: `44b2765ca535c41e780ea254c3e276169d64b92bbc2a064e62629519cb84d84a`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:35.921441+00:00
 ---
 
 **MetaDescription**: Configure Copilot hooks for personal and shared workflows in VS Code.
@@ -54273,7 +54442,8 @@ Other session targets use their own hook implementations:
 |--------------------------|-----------------------------------|
 | **Claude** | [Claude hooks reference](https://code.claude.com/docs/en/hooks) |
 | **Codex** | [Codex hooks documentation](https://developers.openai.com/codex/hooks/) |
-| **Cloud** | The selected cloud provider's documentation. For Copilot cloud agent, use the cloud-agent sections of the GitHub reference for its execution environment and event coverage. |
+
+[Cloud sessions](/docs/agents/run/cloud-sandbox-sessions.md) `feature(cloud-sessions)` use the Copilot harness in a managed environment. Local hook files aren't automatically copied to that environment. Check the configuration available in the cloud workspace rather than assuming that hooks on your machine apply there.
 
 The older Local harness has a separate [Local hooks reference](/docs/agents/reference/hooks-reference.md). Use it to interpret existing hooks during migration, not as the schema for a new Copilot hook.
 
@@ -54291,7 +54461,7 @@ Select the harness before opening the hooks interface so the editor shows the re
 1. Select **Copilot** from the **Session Target** UI control.
 1. Open the Agent Customizations editor:
    * In the Chat view, select **Open Customizations** in the title bar, and then **Hooks**.
-   * In the Agents window, select **Hooks** in the **Customizations** panel.
+   * In the Agents window, select **Customizations** in the sidebar, and then **Hooks** in the editor.
    * In the Chat view, enter `/hooks` in the chat input.
 1. Review the sources and select a hook to open its configuration.
 
@@ -54307,7 +54477,7 @@ Choose the scope that matches the workflow:
 | Automation shared with a repository | `.github/hooks/*.json` at the repository root |
 | Hooks alongside other personal or repository settings | An inline `hooks` map in a supported Copilot settings file |
 | A reusable setup with scripts and other customizations | [Agent plugins](/docs/agents/reference/agent-plugin-reference.md#hooks-in-plugins) |
-| Automation active only for one custom agent | [Agent-scoped hooks](#agent-scoped-hooks), with a current limitation for converted plugin agents |
+| Automation active only for one custom agent | [Agent-scoped hooks](#agent-scoped-hooks) |
 | Organization-managed validation | [Enterprise hook controls](/docs/enterprise/manage-ai-settings.md#enable-or-disable-hooks) |
 
 The Copilot harness reads inline hook settings in `.github/copilot/settings.json`, `.github/copilot/settings.local.json`, and `~/.copilot/settings.json`. It also reads repository `.claude/settings.json` and `.claude/settings.local.json`. User `config.json` is not the hook settings file. For all supported sources, precedence, and policy directories, see [Copilot hook locations](https://docs.github.com/en/copilot/reference/hooks-reference#hooks-locations).
@@ -54407,10 +54577,11 @@ An agent-scoped hook is declared in a custom agent's `hooks` frontmatter and app
 
 The [Copilot agent-scoped hooks reference](https://docs.github.com/en/copilot/reference/hooks-reference#agent-scoped-hooks) describes supported command fields, trust requirements, subagent behavior, and exclusions for remote or organization-hosted definitions.
 
-> [!IMPORTANT]
-> VS Code currently omits the `hooks` field when it converts plugin-provided custom agents for the Copilot harness. An agent can appear and run without its scoped hooks. This [tracked conversion limitation](https://github.com/microsoft/vscode/issues/341681) is not a lack of agent-scoped hook support in the shared harness.
+VS Code preserves the `hooks` field when converting custom agents for Copilot, including plugin-provided agents. Hook mappings remain scoped to their individual agents.
 
-For affected agents, retain the original hook definition and leave its migration incomplete until the conversion preserves the hooks and you verify that they run. Do not move the command to a repository-wide or plugin-wide event as a workaround: that changes which agents trigger it and is not an equivalent conversion.
+The [custom-agent editor](/docs/agents/reference/custom-agent-file-reference.md#copilot-specific-configuration) validates hook structure, but selecting an agent or seeing no validation hints doesn't prove that its hooks execute. Verify the expected event and any tool-denial behavior in a trusted session before relying on a hook.
+
+Keep agent-specific automation in the agent's frontmatter. Moving a command to a repository-wide or plugin-wide event changes which agents trigger it and is not an equivalent configuration.
 
 ## Existing Local hooks
 
@@ -54457,8 +54628,8 @@ For an old Local setup, **Chat: Configure Hooks** lists its files, and the **Git
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/language-models.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/language-models
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/language-models.md
-- **SHA256_FINGERPRINT**: `637898a658de9d984fc2363830e86c1ed5ff34d8997a9d6323d6ebbd4593057f`
-- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:25.012177+00:00
+- **SHA256_FINGERPRINT**: `c4059bff76c183033a0ea7325a2a4af017dee81625c8b7837d0c6ece7b3c9404`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:35.777188+00:00
 ---
 
 **MetaDescription**: Configure chat, inline, and voice models in VS Code. Use your own API key or run models on your device.
@@ -54469,15 +54640,26 @@ Visual Studio Code gives you access to multiple built-in language models, each o
 
 For background on how language models work, their characteristics, and how to choose the right model, see [Language models concepts](/docs/agents/concepts/language-models.md).
 
+## Choose how to access models
+
+Start with the account, credentials, or model you already have:
+
+* **GitHub Copilot access**: [Set up Copilot](/docs/setup/copilot.md), then [choose a model](#change-the-model-for-chat) from the providers available through your plan.
+* **A provider account or harness-specific credentials**: Follow the [[product.prodname_anthropic_claude]](/docs/agents/run/agent-harnesses.md#claude) or [[product.prodname_openai_codex]](/docs/agents/run/agent-harnesses.md#codex) requirements for that harness. Supported accounts and authentication methods depend on the integration.
+* **An API key or custom endpoint**: [Add a model provider](#bring-your-own-language-model-key) in the Language Models editor. This configures model access, not a different harness.
+* **A locally running model**: Add a [model provider extension](#add-a-model-provider-extension), such as Ollama. Alternatively, check the hardware and sign-in requirements for [Copilot-managed on-device models](#on-device-model-requirements).
+
+The model provides reasoning, the harness coordinates tools and workflow, and the access provider determines authentication and billing. These choices are related, but aren't interchangeable. Compare [harness-specific access options](/docs/agents/run/agent-harnesses.md#requirements-and-setup) before reusing an account or key.
+
 ## Change the model for chat
 
 Different models have different strengths. Use a fast model for quick edits and simple questions, and a reasoning model for complex refactoring, architectural decisions, or multi-step tasks. Depending on the [harness](/docs/agents/concepts/agent-harnesses.md) you are using, the list of available models might differ.
 
 Use the language model picker in the chat input field to change the model for chat conversations and code editing.
 
-![Screenshot that shows the model picker in the Chat view.](images/language-models/model-dropdown-change-model-v2.png)
+![Screenshot that shows the model picker in the Chat view.](images/language-models/model-dropdown-change-model.png)
 
-If the language model picker only shows **Auto**, verify that the workspace is trusted. Learn more about [workspace trust and restricted mode](/docs/editing/workspaces/workspace-trust.md#restricted-mode).
+If the model picker shows **Models** instead of a model name, open it to check whether workspace trust or sign-in is required. Learn more about [workspace trust and Restricted Mode](/docs/editing/workspaces/workspace-trust.md#restricted-mode).
 
 You can further extend the list of available models by [using your own language model API key](#bring-your-own-language-model-key).
 
@@ -54486,29 +54668,37 @@ You can further extend the list of available models by [using your own language 
 
 To compare solutions to the same coding task, use [model comparison (Preview)](/docs/agents/run/compare-models.md) in the Agents window. Run one prompt with multiple models or harnesses, then review the results side by side.
 
-## Configure thinking effort
+### Organization-managed model defaults
 
-Some models support configurable thinking effort, which controls how much reasoning the model applies to each request. For background on thinking and reasoning, see [Thinking and reasoning](/docs/agents/concepts/language-models.md#thinking-and-reasoning).
+Your organization can set the starting model for new conversations in both the editor and the Agents window. The model picker marks the organization's choice as **Org default**, and the Settings editor shows an indicator for ``chat.defaultModel`` with a **Managed by organization** explanation.
 
-By default, VS Code sets recommended effort levels and has adaptive reasoning enabled, where the model dynamically determines how much to think based on the complexity of each request. For most use cases, the defaults work well.
+The managed default takes precedence over your saved model preference for new conversations, but you can still select another available model for the current conversation. Existing conversations keep their model. Your saved preference is preserved and applies to new conversations again when the managed default is removed.
+
+For administrator configuration, see [Set managed model defaults](/docs/enterprise/manage-ai-settings.md#set-managed-model-defaults).
+
+## Configure thinking effort and context size
+
+Some models support configurable thinking effort, context size, and other parameters.These control how much reasoning the model applies to each request, and how much context the model can consider at once. For background on thinking and reasoning, see [Thinking and reasoning](/docs/agents/concepts/language-models.md#thinking-and-reasoning).
+
+By default, VS Code sets recommended effort levels and has adaptive reasoning enabled, where the model dynamically determines how much to think based on the complexity of each request. For most use cases, the default configuration works well.
 
 > [!TIP]
 > Higher thinking effort produces more thinking tokens, which increases [AI credit](/docs/agents/concepts/language-models.md#ai-credits-and-model-costs) consumption. Only increase thinking effort for genuinely complex tasks. Learn more about [optimizing AI credit usage](/docs/agents/guides/optimize-usage.md).
 
-To configure the thinking effort:
+To configure model parameters:
 
 1. Open the model picker in the chat input field and select a reasoning model.
 
-1. Select the **>** arrow that appears next to the model name to open the **Thinking Effort** submenu.
+1. Select the **>** arrow that appears next to the model name to open the model configuration submenu.
 
     > [!NOTE]
-    > Non-reasoning models, such as GPT-4.1 and GPT-4o, do not show the thinking effort submenu.
+    > Non-reasoning models, such as GPT-4.1 and GPT-4o, do not show the thinking effort option in the model configuration submenu.
 
 1. Select an effort level.
 
-    ![Screenshot showing the Thinking Effort submenu in the model picker, with different effort levels such as None, Low, Medium, and High.](images/language-models/thinking-effort-submenu.png)
+    ![Screenshot showing the the model configuration submenu, with different effort levels and context size options.](images/language-models/thinking-effort-submenu.png)
 
-The model picker label updates to show the selected effort level, for example "Claude Sonnet 4.6 · High". The effort level is remembered per session, so revisiting an earlier session keeps the effort level it was using. New conversations start from the effort level you last set for that model.
+The model configuration is remembered per session, so revisiting an earlier session keeps the same effort level and context size it was using. New conversations start from the effort level and context size you last set for that model.
 
 > [!NOTE]
 > The ``github.copilot.chat.anthropic.thinking.effort`` and ``github.copilot.chat.responsesApiReasoningEffort`` settings are deprecated. Configure thinking effort directly from the language model picker.
@@ -54517,7 +54707,11 @@ The model picker label updates to show the selected effort level, for example "C
 
 With auto model selection, VS Code evaluates task complexity and real-time model availability to route each request to the optimal model. For background on how auto model selection works, see [Auto model selection](/docs/agents/concepts/language-models.md#auto-model-selection).
 
-To use auto model selection, select **Auto** from the model picker in chat. Then use **Optimize for** to choose the tier that matches your priorities:
+To use auto model selection, select **Auto** from the model picker in chat.
+
+In [Copilot harness sessions](/docs/agents/run/agent-harnesses.md#copilot), **Copilot Fusion** replaces **Auto** when dynamic Auto tiers are enabled and the service offers a Fusion tier your account can run. If the picker shows **Copilot Fusion**, follow the [Fusion instructions](#use-copilot-fusion) instead.
+
+Use **Optimize for**, when available, to choose a tier that matches your priorities. The offered tiers depend on the service and can include:
 
 * **Efficiency** favors lower AI credit consumption.
 * **Balance** balances capability and credit consumption.
@@ -54528,6 +54722,22 @@ Your organization can set a starting tier for new chats. The managed tier appear
 You can see which model is used for generating a response by hovering over the chat response.
 
 ![Screenshot of a chat response, showing the selected model on hover.](images/language-models/chat-response-selected-model.png)
+
+## Use Copilot Fusion
+
+Copilot Fusion chooses models and a workflow to complete your task, so you don't need to select a model for each step. For background on how Fusion differs from Auto and when to use it, see [Copilot Fusion concepts](/docs/agents/concepts/language-models.md#copilot-fusion).
+
+For details about orchestration, tiers, availability, and AI credit usage, see [Copilot model orchestration](https://docs.github.com/en/early-access/copilot/hydrafusion) in the GitHub documentation.
+
+To use Copilot Fusion:
+
+1. Verify that ``chat.copilot.dynamicAutoTiers.enabled`` is enabled in the Settings editor. Changing it restarts the Copilot runtime after active requests finish.
+
+1. Start a new chat with the [Copilot harness](/docs/agents/run/agent-harnesses.md#copilot).
+
+1. In the model picker, select **Copilot Fusion**, then choose an available tier: **Standard**, **High**, or **Max**.
+
+Enabling the setting doesn't grant access to Fusion tiers. If the service doesn't offer a Fusion tier that your account can run, the picker continues to show **Auto** instead.
 
 ## Use on-device models
 
@@ -54677,10 +54887,12 @@ To pin or unpin a model:
 
 Bring Your Own Key (BYOK) lets you connect to any compatible model provider while still using the VS Code chat experience and tools. You can use BYOK to access models from other providers, to run models locally, or to use models that are not yet available as built-in options in VS Code.
 
-BYOK models work without signing into a GitHub account and without a Copilot plan. This enables you to use AI chat features entirely with your own models, including fully offline scenarios with local models such as Ollama.
+In [Local harness sessions](/docs/agents/run/agent-harnesses.md#local), BYOK models work without signing into a GitHub account and without a Copilot plan. This lets you use AI chat features with your own models, including offline scenarios with local models such as Ollama.
 
 > [!NOTE]
-> To use supported BYOK models in Copilot harness sessions in the Chat view or [Agents window](/docs/agents/run/agents-window.md), enable ``chat.agentHost.byokModels.enabled`` `feature(agent-host-byok-models)`.
+> To use supported BYOK models in Copilot harness sessions in the Chat view or [Agents window](/docs/agents/run/agents-window.md), enable ``chat.agentHost.byokModels.enabled`` `feature(agent-host-byok-models)`. Using the desktop Agents window without GitHub sign-in also requires the separate experimental [signed-out access option](/docs/agents/run/agents-window-configuration.md#manage-ai-providers-and-accounts).
+
+To use provider credentials with the [product.prodname_anthropic_claude] or [product.prodname_openai_codex] harness instead, follow that [harness's setup requirements](/docs/agents/run/agent-harnesses.md#requirements-and-setup). Adding a model here does not configure authentication for every harness.
 
 You can also use these models to [override the models used for utility tasks in VS Code](#configure-models-for-other-features) (such as title generation and intent detection).
 
@@ -55020,7 +55232,7 @@ You have two options to use locally hosted models in chat:
 
 * **BYOK local models**: Use [bring your own model key](#bring-your-own-language-model-key) (BYOK) with a model provider that supports connecting to a local model. You can use a built-in model provider that supports local models or install an extension from the [[product.prodname_vs_marketplace]](https://marketplace.visualstudio.com/search?term=tag%3Alanguage-models&target=VSCode&category=All%20categories&sortBy=Relevance), such as [AI Toolkit for VS Code with Foundry Local](https://aka.ms/AIToolkit). BYOK local models work without a GitHub account, a Copilot plan, or an internet connection.
 
-* **On-device models (Experimental)**: Use a [Copilot-managed model](#use-on-device-models-experimental) that runs on supported NVIDIA hardware. On-device models require GitHub sign-in.
+* **On-device models (Experimental)**: Use a [Copilot-managed model](#use-on-device-models) that runs on supported NVIDIA hardware. On-device models require GitHub sign-in.
 
 To get the full set of utility features with a BYOK local model, such as title generation and commit messages, configure ``chat.utilityModel`` and ``chat.utilitySmallModel`` to point to the local model.
 
@@ -55049,8 +55261,8 @@ Yes, you can use BYOK models, including local models, without a Copilot plan and
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/migrate-customizations.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/migrate-customizations
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/migrate-customizations.md
-- **SHA256_FINGERPRINT**: `f43768f3f0b4ec31c01290ed0e5da186b64a9fcf683dd9fd33808318923b2060`
-- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:44.207434+00:00
+- **SHA256_FINGERPRINT**: `aa341e1a0f4eaadfdd25d1fa9b88860617a47066c64d1bc3590b9e7637b06139`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:35.967480+00:00
 ---
 
 **MetaDescription**: Migrate agent customizations and resolve harness compatibility gaps in VS Code.
@@ -55223,7 +55435,7 @@ Environment variables are not a secret store. This migration does not meet a req
 Copilot harness sessions use [agent skills](/docs/agent-customization/agent-skills.md) for reusable workflows and do not load `*.prompt.md` files. Convert workspace and user prompt files to skills to use those workflows with the Copilot harness. Prompt files remain supported in Local harness sessions.
 
 > [!IMPORTANT]
-> Converting a workspace prompt to a project skill changes how the Copilot harness can use it. A prompt file runs only when someone invokes it. The Copilot harness can select a committed skill automatically in VS Code, GitHub Copilot CLI, the GitHub Copilot app, Copilot cloud agent, and Copilot code review. Review the skill's description and instructions with the repository maintainer before you commit it. Convert a personal workflow to a user skill instead.
+> Converting a workspace prompt to a project skill changes how the Copilot harness can use it. A prompt file runs only when someone invokes it. The Copilot harness can select a committed skill automatically in VS Code, GitHub Copilot CLI, the GitHub Copilot app, and Copilot code review. Review the skill's description and instructions with the repository maintainer before you commit it. Convert a personal workflow to a user skill instead.
 
 To convert prompt files:
 
@@ -55328,13 +55540,13 @@ Inventory each configuration and the scripts it invokes before changing anything
 | Additional Local locations | `chat.hookFilesLocations` does not configure Copilot discovery. Move the configuration and its dependencies to a supported source, or package shared hooks in a plugin. |
 | Repository settings | The Copilot harness reads an inline `hooks` map from `.github/copilot/settings.json` and `.github/copilot/settings.local.json`. It also reads repository `.claude/settings.json` and `.claude/settings.local.json`. Preserve other settings; do not replace a settings file with a standalone hook-file envelope. |
 | User settings | Copilot reads inline hooks from `~/.copilot/settings.json`, not `~/.copilot/config.json`. Do not assume a Local hook in `~/.claude/settings.json` is discovered by Copilot. Move it to a documented Copilot user source. |
-| Custom agent frontmatter | Review the agent's `hooks` map and the [agent-scoped hook contract](https://docs.github.com/en/copilot/reference/hooks-reference#agent-scoped-hooks). VS Code currently drops this field when converting plugin-provided agents. For those agents, keep the hook definition but leave its migration incomplete; see the [conversion limitation](/docs/agent-customization/hooks.md#agent-scoped-hooks). Copilot also excludes scoped hooks from remote or organization-hosted agent definitions. |
+| Custom agent frontmatter | Preserve the agent's `hooks` map and review the [agent-scoped hook contract](https://docs.github.com/en/copilot/reference/hooks-reference#agent-scoped-hooks). VS Code forwards scoped hooks for converted agents, including plugin-provided agents. Verify execution and expected decisions before completing the migration. Copilot excludes scoped hooks from remote or organization-hosted agent definitions. |
 | Installed plugins | Update the plugin's source package or obtain an updated version from its publisher. Do not patch an installation cache. Keep scripts with the plugin and review its path variables, events, and payloads. See [hooks in plugins](/docs/agents/reference/agent-plugin-reference.md#hooks-in-plugins). |
 | Administrator-managed hooks | Coordinate changes with the administrator. Policy hooks and managed plugin hooks have different discovery and trust rules from personal files. See [enterprise hook controls](/docs/enterprise/manage-ai-settings.md#enable-or-disable-hooks). |
 
 The Copilot harness combines applicable hooks from multiple sources; adding a repository copy does not replace a user or plugin copy. Avoid running both the original and migrated hook. For a shared setup used across repositories, consider distributing the converted hooks and scripts in a plugin rather than copying them into each repository.
 
-Plugin-wide hooks and hooks in a plugin-provided agent's frontmatter are separate configurations. Packaging an agent does not work around the conversion limitation for its scoped hooks. Do not broaden a scoped hook to plugin-wide or repository-wide execution merely to make it run.
+Plugin-wide hooks and hooks in a plugin-provided agent's frontmatter are separate configurations. Keep an agent's scoped hooks in its frontmatter when packaging it. Moving them to plugin-wide or repository-wide execution broadens which agents trigger them and is not an equivalent migration.
 
 ### Compare configuration and script contracts
 
@@ -55736,11 +55948,13 @@ Review both the coordinator's Markdown instructions and its `tools` list. Prefer
 
 ### Why does an agent fail with a tool-discovery capability error?
 
-Finding an agent file does not mean that its tool list is compatible with the selected harness. References such as `vscode/toolSearch`, Local tool IDs, and user-defined tool sets are not a portable Copilot tool configuration.
+Finding an agent file does not mean that its tool list is compatible with the selected harness. Local delegation references such as `agent/runSubagent` and user-defined tool sets aren't portable Copilot tool configurations. Qualified client-tool references, including `vscode/<tool>`, can be valid when those tools are provided to the Copilot session.
 
-Review each entry in `tools` against the capabilities available in the Copilot session. Check the [Tools tab](/docs/agents/run/tools.md#manage-tool-availability-for-the-copilot-harness), the [custom agent tool reference](/docs/agents/reference/custom-agent-file-reference.md#tools), and [tool-set migration guidance](#replace-tool-sets). Keep required capabilities explicitly configured. Removing the entire tool restriction is not an equivalent migration.
+Review each entry in `tools` against the capabilities available in the Copilot session. Select Copilot before [editing the agent file](/docs/agent-customization/custom-agents.md#edit-a-custom-agent-file) and use its completions to preserve canonical tool references. Check the [Tools tab](/docs/agents/run/tools.md#manage-tool-availability-for-the-copilot-harness), the [custom agent tool reference](/docs/agents/reference/custom-agent-file-reference.md#tools), and [tool-set migration guidance](#replace-tool-sets). Keep required capabilities explicitly configured. Removing the entire tool restriction is not an equivalent migration.
 
-Do not assume that removing a prefix or replacing a tool name fixes every discovery error. Harness-aware editing and tool validation are tracked in [microsoft/vscode#342854](https://github.com/microsoft/vscode/issues/342854) and [microsoft/vscode#342881](https://github.com/microsoft/vscode/issues/342881). A separate open report, [microsoft/vscode#342961](https://github.com/microsoft/vscode/issues/342961), describes tool search returning no results even when MCP tools are callable. If compatible tools still cannot be discovered, report the exact error, selected model, agent tool list, and environment rather than treating every discovery failure as an authentication problem.
+Do not assume that removing a prefix or replacing a tool name fixes every discovery error. These editor hints aren't proof of a runtime tool-discovery failure.
+
+A separate report, [microsoft/vscode#342961](https://github.com/microsoft/vscode/issues/342961), describes tool search returning no results even when MCP tools are callable. If compatible tools still cannot be discovered, report the exact error, selected model, agent tool list, and environment rather than treating every discovery failure as an authentication problem.
 
 ## Related resources
 
@@ -55753,15 +55967,15 @@ Do not assume that removing a prefix or replacing a tool name fixes every discov
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/overview.md
-- **SHA256_FINGERPRINT**: `fcd57957b5e494d32b5746bb81c3e9365d2be03894831a528a213217b1ce302b`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.781870+00:00
+- **SHA256_FINGERPRINT**: `bd05133ecc0fd8e45caf5702b1d42f5ba7c32887f21af37ab8c29fc58b4c1ccb`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:35.778160+00:00
 ---
 
-**MetaDescription**: Create, manage, migrate, and troubleshoot agent customizations in VS Code across profiles and workspaces.
+**MetaDescription**: Install, adapt, and create agent customizations in VS Code for your coding workflows.
 
-# Create and manage agent customizations
+# Customize agents for your workflow
 
-Agent customizations adapt agents to your coding standards, workflows, and development systems. This article explains how to create, manage, evaluate, and troubleshoot customizations in Visual Studio Code. To compare the customization types and understand how they work together, see [Agent customization concepts](/docs/agents/concepts/customization.md).
+Agent customizations adapt agents to your coding standards, workflows, and development systems. You can install an agent plugin, use or adapt an existing skill, or create customizations for your project. This guide helps you choose a starting point, manage customizations in Visual Studio Code, and verify that they work with your agent harness. To compare customization types, see [Agent customization concepts](/docs/agents/concepts/customization.md).
 
 <div class="docs-action" data-show-in-doc="false" data-show-in-sidebar="true" title="Core concepts">
 Learn about the different customization types and when to use each one.
@@ -55777,11 +55991,33 @@ Follow a hands-on walkthrough to customize AI for your project.
 
 </div>
 
+## Choose how to customize
+
+Start with a recurring task or an observed problem. You don't need to create every customization yourself, or add one when the agent already meets your needs.
+
+### Install or reuse
+
+Use an existing customization when it provides the workflow or capability you need:
+
+* **[Install an agent plugin](/docs/agent-customization/agent-plugins.md#discover-and-install-plugins)**: Add related skills, agents, and tool integrations together.
+* **[Use an existing skill](/docs/agent-customization/agent-skills.md#use-an-existing-skill)**: Reuse its instructions, scripts, and resources for your task.
+* **Connect an external system**: [Use a Copilot connector](/docs/agent-customization/copilot-connectors.md) `feature(copilot-connectors)` without server setup, or [add an MCP server](/docs/agent-customization/mcp-servers.md#connect-a-server) using a URL or launch command.
+
+For supported marketplace sources, you can also [browse customizations in the editor](#discover-marketplace-customizations-preview) (Preview). Review the publisher, included files, and setup requirements before installing or running a customization.
+
+### Create or adapt
+
+Adapt existing instructions or a skill when they nearly match your needs. Create a new customization when you need project-specific guidance or a workflow that isn't already available.
+
+Follow [Configure AI for your codebase](/docs/agents/guides/customize-copilot-guide.md) to add a customization and compare the agent's results before and after the change. To create an individual customization with AI or manually, use the [creation steps below](#create-a-customization).
+
+You can combine these approaches: install a plugin, then add project instructions for your codebase.
+
 ## Check harness compatibility
 
-Select the [agent harness](/docs/agents/run/agent-harnesses.md#select-a-harness) you intend to use before choosing a customization type or creating a file. The harness determines which formats, locations, and capabilities are supported. Changing the language model doesn't change those requirements.
+Select the [agent harness](/docs/agents/run/agent-harnesses.md#select-a-harness) you intend to use before installing, copying, or creating a customization. The harness determines which formats, locations, and capabilities are supported. Changing the language model doesn't change those requirements.
 
-| Customization | Check before creating it |
+| Customization | Check before using it |
 |---------------|--------------------------|
 | [Instructions](/docs/agent-customization/custom-instructions.md) and [skills](/docs/agent-customization/agent-skills.md) | Use a format and file location that the selected harness reads. Check its activation rules and supported user, workspace, or organization scope. |
 | [Custom agents](/docs/agent-customization/custom-agents.md), [hooks](/docs/agent-customization/hooks.md), and [MCP servers](/docs/agent-customization/mcp-servers.md) | Follow the configuration for your harness. Tool names, supported fields, lifecycle events, and connection locations can differ. |
@@ -55796,35 +56032,39 @@ The Agent Customizations editor provides a central place to discover, create, an
 
 When you open the Customizations editor, the customizations are scoped to the selected [agent harness](/docs/agents/concepts/agent-harnesses.md). Select the harness from the dropdown in the chat input before you open the editor to ensure the customizations apply to the correct context.
 
-![Screenshot showing the Agent Customizations editor with Copilot CLI custom agents and customization categories.](images/customization/agents-customizations.png)
-
 Follow these steps to open the Agent Customizations editor:
 
-In the left sidebar, select a customization type in the **Customizations** panel.
+In the left sidebar, select **Customizations** to open the Agent Customizations editor. Then select the customization type in the editor.
 
-![Screenshot showing the Agent Customizations panel in the Agents window, with the list of available customizations visible.](images/customization/agents-window-customizations.png)
+![Screenshot showing the Customizations sidebar action and the Agent Customizations editor.](images/customization/agents-window-customizations.png)
+
+The experimental **Extensions** section also lets you [choose which installed extensions run in the Agents window](/docs/agents/run/agents-window-configuration.md#manage-extensions-experimental).
 
 In the Chat view, select **Open Customizations** in the title bar, or run **Chat: Open Customizations** from the Command Palette (``Shortcut: workbench.action.showCommands``).
 
-![Screenshot showing the Agent Customizations editor with customization categories in the sidebar and custom agents in the main view.](images/customization/chat-customizations-editor.png)
+![Screenshot showing the Agent Customizations editor with customization categories in the sidebar and custom agents in the main view.](images/customization/chat-customizations-editor-2.png)
 
-### Discover marketplace customizations (Experimental)
+### Discover marketplace customizations (Preview)
 
-The Customization Marketplace provides a unified **Discover** page for finding skills, MCP servers, plugins, and other agent customizations from configured sources. To use the marketplace, turn on the ``chat.customizations.marketplace.enabled`` setting.
+The Customization Marketplace provides a unified **Browse** page for finding skills, MCP servers, plugins, and other agent customizations from configured sources. It is enabled by default with ``chat.customizations.marketplace.enabled``. The **Browse** page appears when a marketplace source is available. Available sources and installation actions depend on the selected harness and organization policy.
 
-The GitHub Feed source is available by default when the marketplace is enabled. Use the ``chat.customizations.marketplace.sources.publicFeed.enabled`` setting to show or hide this source.
+If **Browse** isn't available, check that the setting is enabled and your organization permits **Editor preview features**. Disabling that policy forces the unified **Browse** experience and Copilot connectors off. See [organization and enterprise settings](/docs/enterprise/manage-ai-settings.md#use-github-organization-and-enterprise-settings).
+
+The GitHub Feed source is enabled by default for harnesses that provide marketplace search. Local sessions don't provide this source, and organization policy can restrict access. Use the ``chat.customizations.marketplace.sources.publicFeed.enabled`` setting to show or hide this source.
 
 To find and install a customization:
 
-1. Open the Agent Customizations editor and select **Discover**.
-1. Use the source menu to browse all sources or select a specific source, such as **GitHub Feed**.
+1. Open the Agent Customizations editor and select **Browse**.
+1. Use the source menu to browse all sources or select a specific available source, such as **GitHub Feed** or an individual plugin marketplace.
 1. Search by name or use a type filter, such as `@type:skill` or `@type:mcp`.
 1. Select an item and review its publisher, source, installation details, and any setup requirements.
-1. Select **Install** and choose a destination when prompted.
+1. Select **Install** and choose a destination when prompted. For Copilot connectors `feature(copilot-connectors)`, select **Connect** and complete authorization instead.
 
 Some items are available for discovery but don't support automatic installation. Follow the publisher's setup instructions when they are provided.
 
-Marketplace items show a source or publisher image in **Discover** and, when available, on the installed item and its details page. Use this information together with the item details to verify the source before installation.
+To [add or manage plugin marketplaces](/docs/agent-customization/agent-plugins.md#configure-plugin-marketplaces), select **Configure Marketplaces** from the source menu.
+
+Marketplace items show a source or publisher image in **Browse** and, when available, on the installed item and its details page. Use this information together with the item details to verify the source before installation.
 
 VS Code associates marketplace state with the exact installed target, not only its display name. A local customization and a Marketplace-installed customization with the same name remain separate:
 
@@ -55856,6 +56096,8 @@ You can create customization files with AI or create them manually. Creating a f
 1. Answer any questions the agent asks about missing details.
 1. Review the generated customization, correct any inaccurate information, and save the file.
 
+You can also describe the customization directly in chat with the intended harness.
+
 For example, to create a code reviewer skill, you can enter the following prompt:
 
 ```prompt
@@ -55873,8 +56115,6 @@ Create a workspace code reviewer skill for Python and JavaScript files. Check th
 You can also run the **Chat: New \<customization-type\>** command from the Command Palette (``Shortcut: workbench.action.showCommands``). The command creates the corresponding file in a supported location for that customization type.
 
 To add an MCP server manually, select **MCP Servers**, select **Add Server** (**+**) in the **User** or **Workspace** group, and follow the guided flow. For detailed steps, see [Add MCP servers](/docs/agent-customization/mcp-servers.md#connect-a-server). To update an existing connection, see [Edit an MCP server configuration](/docs/agents/run/manage-mcp-servers.md#edit-an-mcp-server-configuration).
-
-For Agent Skills, MCP servers, and agent plugins, use [Discover](#discover-marketplace-customizations-experimental) to browse marketplace sources and install an item. Manage the installation from the corresponding section.
 
 See the guides for [custom instructions](/docs/agent-customization/custom-instructions.md), [agent skills](/docs/agent-customization/agent-skills.md), [prompt files](/docs/agent-customization/prompt-files.md), [custom agents](/docs/agent-customization/custom-agents.md), [MCP servers](/docs/agent-customization/mcp-servers.md), [hooks](/docs/agent-customization/hooks.md), and [agent plugins](/docs/agent-customization/agent-plugins.md) for their file formats and configuration options.
 
@@ -55894,9 +56134,15 @@ The available actions depend on the customization type and its source. Use the i
 > [!IMPORTANT]
 > If the Agent Customizations editor shows **Migrations**, Copilot cannot use one or more customizations in their current location or format. Select **Migrations** to review the required work, and follow [Migrate Copilot customizations in VS Code](/docs/agent-customization/migrate-customizations.md) for detailed steps.
 
+### Manage canvas extensions
+
+`feature(canvases)`
+
+The **Canvases** section lists canvas extensions available to the active local Copilot session and groups them by source. For prerequisites, opening canvases, and managing extension enablement, see [Use canvases with agents](/docs/agents/run/canvases.md).
+
 ## Verify a customization
 
-Test a new or updated customization in a fresh chat with the intended harness and workspace. Use a representative task and confirm that the harness discovers the file before assessing its behavior. This separates the saved customization from instructions in the conversation that created it.
+Test a newly installed, copied, or edited customization in a fresh chat with the intended harness and workspace. Use a representative task and confirm that the harness discovers the customization before assessing its behavior. This separates the saved customization from instructions in the conversation that created or adapted it.
 
 Check that the agent follows the expected instructions, workflow, tool configuration, or lifecycle action. For instructions and skills, use the response's **References** section, where available, to check which customizations were included.
 
@@ -55985,8 +56231,8 @@ For skill files, the extension integrates with the [Waza](https://github.com/mic
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/prompt-files.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/prompt-files
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/prompt-files.md
-- **SHA256_FINGERPRINT**: `a22a7cb350124830f9018a80e62a458c88ba396885df705ab5b3ebf97a53691d`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.938396+00:00
+- **SHA256_FINGERPRINT**: `115a3a232480257c47155a0ff4af9a0e255d2cd8db63b107381622b8abe316b1`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:35.809931+00:00
 ---
 
 **MetaDescription**: Use prompt files in VS Code for reusable Local harness workflows, or migrate them to agent skills.
@@ -56002,7 +56248,7 @@ Use prompt files to:
 * Simplify prompting for common tasks, such as scaffolding a new component, running and fixing tests, or preparing a pull request
 * Override default behavior of a custom agent, such as creating a minimal implementation plan or generating mockups for API calls
 
-With **Local** selected, use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) (Preview) to discover, create, and manage prompt files. Run **Chat: Open Customizations** from the Command Palette.
+With **Local** selected, use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) to discover, create, and manage prompt files. Run **Chat: Open Customizations** from the Command Palette.
 
 > [!IMPORTANT]
 > Prompt files run only in **Local** harness sessions in the Chat view. For reusable workflows in other harnesses, create an [agent skill](/docs/agent-customization/agent-skills.md) or [convert an existing prompt file to a skill](/docs/agent-customization/migrate-customizations.md#convert-prompt-files-to-skills).
@@ -56118,7 +56364,7 @@ To create a prompt file:
 
 1. Select **New Prompt** (plus icon) next to the **Workspace** or **User** group, depending on where you want to store the prompt file.
 
-    ![Screenshot of the Agent Customizations editor, showing the Prompts tab and the dropdown to create a new prompt file.](images/customization/create-prompt-file.png)
+    ![Screenshot of the Agent Customizations editor, showing the Prompts tab and the options to create a new prompt file.](images/customization/create-prompt-file-2.png)
 
     Alternatively, use the **Chat: New Prompt File** or **Chat: New Untitled Prompt File** command from the Command Palette (``Shortcut: workbench.action.showCommands``).
 

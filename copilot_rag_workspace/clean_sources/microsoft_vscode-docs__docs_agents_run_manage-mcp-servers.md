@@ -4,7 +4,7 @@
 
 Change, stop, share, or troubleshoot an existing MCP server in Visual Studio Code. For first-time setup, see [Add MCP servers](/docs/agent-customization/mcp-servers.md). For formats and properties, see the [MCP configuration reference](/docs/agents/reference/mcp-configuration.md).
 
-Use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) (Preview) to edit connections, start or stop servers, change their enabled state, and view output. The editor is scoped to the selected agent harness. The configuration form steps below use the Copilot harness. For differences in server support and configuration, see [Agent harnesses](/docs/agents/run/agent-harnesses.md).
+Use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) to edit connections, start or stop servers, change their enabled state, and view output. The editor is scoped to the selected agent harness. The configuration form steps below use the Copilot harness. For differences in server support and configuration, see [Agent harnesses](/docs/agents/run/agent-harnesses.md).
 
 ## Open the server controls
 
@@ -51,6 +51,8 @@ Starting can require trust or authentication. If the server fails to start, [vie
 **Disabling is different from stopping.** A disabled server doesn't start, and its tools, resources, prompts, and MCP apps are unavailable. Use the toggle beside the server, or select an enablement action from its menu to choose a scope. Depending on the server and harness, global, workspace, or session scope is available. The enabled state is separate from shared configuration, so disabling a server doesn't change your teammates' configuration.
 
 **Removal depends on the configuration source.** If **Uninstall** isn't available for a manually configured server, remove only its entry from the source configuration, not the whole file. If automatic discovery restores it, review its [discovery source](/docs/agents/reference/mcp-configuration.md#automatic-mcp-server-discovery). You can also uninstall an installed server from the **MCP SERVERS - INSTALLED** section of the Extensions view.
+
+For [product.prodname_github]-managed MCP servers, [disconnect the Copilot connector](/docs/agent-customization/copilot-connectors.md#disconnect-a-service) instead of uninstalling a server or editing a local configuration file.
 
 ## Automatically start MCP servers
 

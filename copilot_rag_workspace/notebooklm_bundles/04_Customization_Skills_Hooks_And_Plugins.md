@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins
-- **Generado (UTC)**: 2026-10-27T04:20:55.918838+00:00
-- **Total Palabras**: 449,607 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-28T18:07:46.711308+00:00
+- **Total Palabras**: 449,617 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -31717,8 +31717,8 @@ lone edited cell mid-row is the commonest silent error · guard denominators tha
 # DOCUMENT_SOURCE: github_awesome-copilot::README.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/README.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/README.md
-- **SHA256_FINGERPRINT**: `7e99ecc072313ce40bf9506d0d0f608fd6309cca511f5ffaca850c2c12d6d623`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:58.842071+00:00
+- **SHA256_FINGERPRINT**: `e67d6381af5314d07e298d755518890698c83e66896969677714ff739c028043`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:41.145051+00:00
 ---
 
 # 🤖 Awesome GitHub Copilot
@@ -32274,6 +32274,7 @@ Thanks goes to these wonderful people ([emoji key](./CONTRIBUTING.md#contributor
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/vsinghal13"><img src="https://avatars.githubusercontent.com/u/56007827?v=4" width="100px;" alt=""/><br /><sub><b>Vijit Singhal</b></sub></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/sudhirp25"><img src="https://avatars.githubusercontent.com/u/311668331?v=4" width="100px;" alt=""/><br /><sub><b>sudhirp25</b></sub></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/sunilsattiraju/"><img src="https://avatars.githubusercontent.com/u/2416507?v=4" width="100px;" alt=""/><br /><sub><b>Sunil Sattiraju</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.markstudios.com"><img src="https://avatars.githubusercontent.com/u/24554186?v=4" width="100px;" alt=""/><br /><sub><b>Mark Santos</b></sub></a></td>
     </tr>
   </tbody>
 </table>

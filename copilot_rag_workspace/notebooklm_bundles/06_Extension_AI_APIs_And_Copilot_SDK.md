@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
-- **Generado (UTC)**: 2026-10-26T03:59:53.229538+00:00
-- **Total Palabras**: 123,938 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-28T18:07:46.906303+00:00
+- **Total Palabras**: 124,068 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -12230,6 +12230,18 @@ The replacement is persisted as the user message content, so resumed sessions re
 
 
 ---
+# DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/index.md
+- **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/index.md
+- **SHA256_FINGERPRINT**: `3bdba251c4893191a23fda3101554132590182b84f2dae1e8e17dd58a3bb4862`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:39.202944+00:00
+---
+
+**title**: Copilot SDK
+**intro**: Welcome to the Copilot SDK docs. Whether you're building your first Copilot-powered app or deploying to production, you'll find what you need here.
+
+
+---
 # DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/integrations/microsoft-agent-framework.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/integrations/microsoft-agent-framework
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/integrations/microsoft-agent-framework.md
@@ -15704,8 +15716,8 @@ volumes:
 # DOCUMENT_SOURCE: github_docs::content/copilot/how-tos/copilot-sdk/troubleshooting/compatibility.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/how-tos/copilot-sdk/troubleshooting/compatibility
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/how-tos/copilot-sdk/troubleshooting/compatibility.md
-- **SHA256_FINGERPRINT**: `9c5d9ac69d9ac368422395f19c406368bfb1e6f4f08c6c8470bc7cf9d1b5abcd`
-- **LAST_VERIFIED_UTC**: 2026-10-21T19:54:39.218665+00:00
+- **SHA256_FINGERPRINT**: `498c445bed57c2b294f0dad16c8f31eeef81ff397272ac0f2adbb2c9c573c794`
+- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:38.996682+00:00
 ---
 
 **title**: SDK and CLI compatibility
@@ -15796,6 +15808,7 @@ The Copilot SDK communicates with the CLI via JSON-RPC protocol. Features must b
 | Client name | `clientName` config | Identify app in User-Agent |
 | Working directory | `workingDirectory` config | Set session cwd |
 | Additional directories | `additionalDirectories` config | Grant session access beyond the working directory; re-supply on resume |
+| Copilot Memory | `memory: { enabled: true }` | Enable persistent memory when creating or resuming a session. The runtime retrieves memories and requests permission for memory writes. The SDK does not provide direct memory management APIs. |
 | **Experimental** | | |
 | Agent management | `session.rpc.agent.*` | List, select, deselect, get current agent |
 | Fleet mode | `session.rpc.fleet.start()` | Parallel sub-agent execution; see [Fleet Mode](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/fleet-mode) |
@@ -15803,6 +15816,8 @@ The Copilot SDK communicates with the CLI via JSON-RPC protocol. Features must b
 | Context clearing | `session.rpc.history.clearContext()` | Replace conversation context from a terminal tool |
 | History truncation | `session.rpc.history.truncate()` | Remove events from a point onward |
 | Session forking | `server.rpc.sessions.fork()` | Fork a session at a point in history |
+
+For predictable [copilot.copilot_memory] behavior, set `memory.enabled` explicitly. If you omit the setting in `copilot-cli` mode, the runtime default applies. If you omit it in `empty` mode, [copilot.copilot_memory] is disabled.
 
 ### ❌ Not available in SDK (CLI-only)
 

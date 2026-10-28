@@ -25,8 +25,18 @@ Each call gives the agent new information or changes the development environment
 VS Code supports three types of tools:
 
 * **Built-in tools**: tools that ship with VS Code for common development tasks, like reading and writing files, running terminal commands, searching your codebase, and navigating the editor. These are available immediately without any setup.
-* **MCP tools**: tools provided by [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) servers, an open standard for connecting AI models to external tools and data sources. MCP servers can run locally on your machine or be hosted remotely. Use MCP tools to connect to databases, APIs, and other external services.
+* **MCP tools**: tools provided by [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) servers, an open standard for connecting AI models to external tools and data sources. MCP tools can come from servers you [configure directly](/docs/agent-customization/mcp-servers.md), managed [Copilot connectors](/docs/agent-customization/copilot-connectors.md) `feature(copilot-connectors)`, or servers bundled in [agent plugins](/docs/agent-customization/agent-plugins.md). MCP servers can run locally on your machine or be hosted remotely. Use MCP tools to connect to databases, APIs, and other external services.
 * **Extension tools**: tools contributed by VS Code extensions through the Language Model Tools API. Extension tools integrate deeply with the editor and are available when you install the extension.
+
+### Connect external services
+
+[Copilot connectors](/docs/agent-customization/copilot-connectors.md) `feature(copilot-connectors)` are [product.prodname_github]-managed connections that add MCP tools to your agent. For example, connect Microsoft Learn Docs so the agent can retrieve official documentation while working on a task.
+
+Use a connector for a supported service when you want a managed connection without local server setup or manual MCP configuration. If the service isn't available as a connector or you need a custom integration, [add an MCP server](/docs/agent-customization/mcp-servers.md).
+
+Connectors are available in Copilot harness sessions, not Local sessions. [Connect a service from the Agent Customizations editor](/docs/agent-customization/copilot-connectors.md#connect-a-service).
+
+[Agent plugins](/docs/agent-customization/agent-plugins.md) can bundle MCP servers with skills, custom agents, and other customizations. Use a plugin when you want those tools as part of a packaged workflow.
 
 ## How agents choose tools
 
@@ -36,7 +46,7 @@ To direct the agent to a specific tool or group of tools, add a `#` reference to
 
 ## Control which tools are available
 
-An available tool comes from VS Code, an MCP server, or an installed extension. An enabled tool is one that the agent is permitted to choose for a request.
+An available tool comes from VS Code, an installed extension, or an MCP server. To add MCP tools, configure a server, connect a Copilot connector, or install an agent plugin that bundles a server. An enabled tool is one that the agent is permitted to choose for a request.
 
 Limit enabled tools to the capabilities that are relevant to your task. A focused set helps the agent choose appropriate tools, reduces the chance of unnecessary actions, and limits the tool output added to the [context window](/docs/agents/concepts/language-models.md#context-window).
 
