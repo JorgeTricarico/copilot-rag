@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-10-29T05:00:59.719223+00:00",
+  "last_sync_utc": "2026-10-29T18:15:13.541834+00:00",
   "total_documents": 2005,
   "documents": {
     "anthropics_skills::README.md": {
@@ -20040,9 +20040,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/add-memory",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "4ad80f78c7567b3f8185315a29662e334de76cae23dabab6d7e291916c69bb09",
+      "content_sha256": "ab861efc3f580281938af2a88906b726a83eb9593772202134084ad0551f9670",
       "word_count": 8071,
-      "last_updated_utc": "2026-10-26T18:29:27.975778+00:00",
+      "last_updated_utc": "2026-10-29T18:15:12.090800+00:00",
       "local_clean_path": "clean_sources/langgraph__add-memory.md"
     },
     "langgraph::agentic-rag": {
@@ -20095,9 +20095,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "40e2d297a56c2a9336232326c779ac00fac7a0a5981a3bea043e2aeeb0b06097",
+      "content_sha256": "bc82bb7f98970de68ad0f25e68a3bc7282e7fe15c3f114b9efb603d0ab6ed291",
       "word_count": 24972,
-      "last_updated_utc": "2026-10-29T05:00:58.666464+00:00",
+      "last_updated_utc": "2026-10-29T18:15:12.250644+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -20106,9 +20106,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "40e2d297a56c2a9336232326c779ac00fac7a0a5981a3bea043e2aeeb0b06097",
+      "content_sha256": "bc82bb7f98970de68ad0f25e68a3bc7282e7fe15c3f114b9efb603d0ab6ed291",
       "word_count": 24972,
-      "last_updated_utc": "2026-10-29T05:00:58.611784+00:00",
+      "last_updated_utc": "2026-10-29T18:15:12.292519+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -21194,10 +21194,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/mcp-configuration.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/reference/mcp-configuration",
       "bundle_name": "03_MCP_Servers_And_Tools_Execution",
-      "git_blob_sha": "e03d1347b8ca64545bf005f7b04d00e9e5b5994a",
-      "content_sha256": "7971e85606fac8c04a56f18fca98b8200a2d448721e312b42ccc62f5d06019d0",
-      "word_count": 3264,
-      "last_updated_utc": "2026-10-23T04:01:44.209667+00:00",
+      "git_blob_sha": "682e7f5df775aa8f7bebafa5a58b7b55f3449c6c",
+      "content_sha256": "8446203561672f765dbfd0133fc1de0e19c42bcb73d9002ba3f1c5c6afed2487",
+      "word_count": 3311,
+      "last_updated_utc": "2026-10-29T18:15:01.698121+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_reference_mcp-configuration.md"
     },
     "microsoft_vscode-docs::docs/agents/reference/tools-reference.md": {
@@ -21634,10 +21634,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts",
       "canonical_web_url": "https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts",
       "bundle_name": "06_Extension_AI_APIs_And_Copilot_SDK",
-      "git_blob_sha": "a43094edc94ef38c7120d73d3ef20df632dcbd7e",
-      "content_sha256": "5894997a640d80c3479f881e63892cc313ef4badeeb4179c46ff4dd3a2e84b9e",
-      "word_count": 1605,
-      "last_updated_utc": "2026-10-26T03:59:44.045997+00:00",
+      "git_blob_sha": "6ffb11ab8caaf0a45fa8eb288bd3fd1cbb1333cd",
+      "content_sha256": "acc442a165daf709ecae8ffb7626bb553848bd52362f690877bef6868e02a7cb",
+      "word_count": 1825,
+      "last_updated_utc": "2026-10-29T18:15:02.460154+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode__src_vscode-dts_vscode.proposed.chatArtifactIntegrations.d.ts.md"
     },
     "microsoft_vscode::src/vscode-dts/vscode.proposed.chatContextProvider.d.ts": {
@@ -21965,9 +21965,9 @@
       "canonical_web_url": "https://github.com/microsoft/vscode/issues/344219",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
       "git_blob_sha": null,
-      "content_sha256": "62e7e4778317cd876fdd0f20ea1f00ad01b6346fb9e86730860ae998ac471d2a",
-      "word_count": 856,
-      "last_updated_utc": "2026-10-29T05:00:59.509065+00:00",
+      "content_sha256": "ccdcd5790e5f58965f428005589e78773fe2fdd5f9c5ca68e61d139fab2d7a17",
+      "word_count": 855,
+      "last_updated_utc": "2026-10-29T18:15:13.508000+00:00",
       "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_344219.md"
     },
     "vscode_insiders::iteration-plan_271045": {

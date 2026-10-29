@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-10-29T05:00:59.699127+00:00
-- **Total Palabras**: 19,424 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-29T18:15:13.521434+00:00
+- **Total Palabras**: 19,423 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1409,8 +1409,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_344219
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/344219
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/344219
-- **SHA256_FINGERPRINT**: `62e7e4778317cd876fdd0f20ea1f00ad01b6346fb9e86730860ae998ac471d2a`
-- **LAST_VERIFIED_UTC**: 2026-10-29T05:00:59.509065+00:00
+- **SHA256_FINGERPRINT**: `ccdcd5790e5f58965f428005589e78773fe2fdd5f9c5ca68e61d139fab2d7a17`
+- **LAST_VERIFIED_UTC**: 2026-10-29T18:15:13.508000+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.144.0 Endgame
@@ -1512,7 +1512,7 @@ We really appreciate people trying our new features as soon as they are ready, s
 - [x] Deploy vscode.dev
   - [x] Verify the [release candidate](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) `release/x.y` passed the sanity tests in the last step
   - [x] [Kick off deploy](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) (Branch `release/x.y`, Deployment Target `prod`, needs peer approval)
-- [ ] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `auto`; the release pipeline job requires two approvals)
+- [x] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `auto`; the release pipeline job requires two approvals)
     - https://dev.azure.com/monacotools/Monaco/_build/results?buildId=490463&view=results
 - [x] Publish socials (ping Cynthia)
 - [x] [Publish @types/vscode](https://github.com/microsoft/vscode/wiki/Publish-vscode-types) if you find type diffs after running the steps

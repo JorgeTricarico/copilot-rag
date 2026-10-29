@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 03_MCP_Servers_And_Tools_Execution
-- **Generado (UTC)**: 2026-10-28T18:07:46.699424+00:00
-- **Total Palabras**: 8,385 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-29T18:15:13.509277+00:00
+- **Total Palabras**: 8,432 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -195,8 +195,8 @@ For specific tasks, see [MCP sandboxing](/docs/agents/run/manage-mcp-servers.md#
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/mcp-configuration.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/mcp-configuration
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/mcp-configuration.md
-- **SHA256_FINGERPRINT**: `7971e85606fac8c04a56f18fca98b8200a2d448721e312b42ccc62f5d06019d0`
-- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:44.209667+00:00
+- **SHA256_FINGERPRINT**: `8446203561672f765dbfd0133fc1de0e19c42bcb73d9002ba3f1c5c6afed2487`
+- **LAST_VERIFIED_UTC**: 2026-10-29T18:15:01.698121+00:00
 ---
 
 **MetaDescription**: Configure MCP servers in Visual Studio Code with reference details for file formats, commands, settings, and sandboxing.
@@ -398,6 +398,9 @@ The `oauth` object supports the following properties:
 
 > [!NOTE]
 > When `oauth` is configured, VS Code handles the OAuth flow automatically. A browser window opens for authorization on the first connection to the server.
+
+> [!NOTE]
+> A client secret is not part of `mcp.json`. If the server's OAuth client is confidential, select the **Set Client Secret** CodeLens that appears above `oauth.clientId` in `mcp.json`. VS Code keeps the secret in its secret storage. To change it later, select **Replace Client Secret**.
 
 **Example remote server configuration**
 

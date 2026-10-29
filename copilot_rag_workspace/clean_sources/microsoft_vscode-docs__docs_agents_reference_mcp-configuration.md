@@ -198,6 +198,9 @@ The `oauth` object supports the following properties:
 > [!NOTE]
 > When `oauth` is configured, VS Code handles the OAuth flow automatically. A browser window opens for authorization on the first connection to the server.
 
+> [!NOTE]
+> A client secret is not part of `mcp.json`. If the server's OAuth client is confidential, select the **Set Client Secret** CodeLens that appears above `oauth.clientId` in `mcp.json`. VS Code keeps the secret in its secret storage. To change it later, select **Replace Client Secret**.
+
 **Example remote server configuration**
 
 This example specifies a remote MCP endpoint. Follow the publisher's authentication instructions before using it:

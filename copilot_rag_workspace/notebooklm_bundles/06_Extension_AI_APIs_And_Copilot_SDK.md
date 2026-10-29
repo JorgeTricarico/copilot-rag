@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
-- **Generado (UTC)**: 2026-10-28T18:07:46.906303+00:00
-- **Total Palabras**: 124,068 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-29T18:15:13.513391+00:00
+- **Total Palabras**: 124,288 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -19176,8 +19176,8 @@ declare module 'vscode' {
 # DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts
-- **SHA256_FINGERPRINT**: `5894997a640d80c3479f881e63892cc313ef4badeeb4179c46ff4dd3a2e84b9e`
-- **LAST_VERIFIED_UTC**: 2026-10-26T03:59:44.045997+00:00
+- **SHA256_FINGERPRINT**: `acc442a165daf709ecae8ffb7626bb553848bd52362f690877bef6868e02a7cb`
+- **LAST_VERIFIED_UTC**: 2026-10-29T18:15:02.460154+00:00
 ---
 
 # VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts`
@@ -19222,6 +19222,21 @@ declare module 'vscode' {
 		readonly enablement?: { readonly enabled: boolean; readonly disabledReason?: string };
 	}
 
+	/** An action on individual details items, such as rerunning a failed check or fixing an issue. */
+	export interface ChatArtifactItemAction {
+		readonly id: string;
+		readonly label: string;
+		readonly icon: ThemeIcon;
+		/**
+		 * Runs the integration's registered action with this ID for the item, with `{ detailsId, itemId }` as the context `input`,
+		 * so the item gets that action's confirmation, run tracking and, for a prompt action, the artifact's chat. The registered
+		 * action must currently be offered in the state's actions and is only enabled while that action is. Being offered, it also
+		 * appears on its own and can run without `input`, for example to apply to all items.
+		 * Without it, choosing the action calls {@link ChatArtifactDetailsModel.runItemAction}.
+		 */
+		readonly actionId?: string;
+	}
+
 	/** Surface-neutral details. Resource links never execute commands. */
 	export interface ChatArtifactDetails {
 		/** Main details supply the full resource title, rather than its compact pill label. */
@@ -19234,12 +19249,16 @@ declare module 'vscode' {
 		readonly facts?: readonly { readonly id: string; readonly label: string; readonly value: string }[];
 		readonly actions?: readonly string[];
 		readonly automations?: readonly string[];
+		/** Actions that items reference by ID. */
+		readonly itemActions?: readonly ChatArtifactItemAction[];
 		readonly items?: readonly {
 			readonly id: string;
 			readonly icon: ThemeIcon;
 			readonly label: string;
 			readonly description?: string;
 			readonly resource: Uri;
+			/** IDs of the details' {@link ChatArtifactDetails.itemActions itemActions} that currently apply to this item. */
+			readonly actions?: readonly string[];
 		}[];
 		readonly completeness?: 'complete' | 'partial';
 	}
@@ -19249,6 +19268,12 @@ declare module 'vscode' {
 		readonly onDidChange: Event<void>;
 		/** Present while a partial details model can fetch another page. */
 		loadMore?(token: CancellationToken): ProviderResult<void>;
+		/**
+		 * Runs an item action that has no {@link ChatArtifactItemAction.actionId actionId}, directly and without run tracking or
+		 * activity history. Use it only for effects that are safe to repeat, such as copying a link. Revalidate that the action still
+		 * applies to the item and throw an error with a user-facing message otherwise.
+		 */
+		runItemAction?(itemId: string, actionId: string, token: CancellationToken): ProviderResult<void>;
 	}
 
 	/** A complete presentation snapshot; replacing it and firing onDidChange updates every observing surface. */
