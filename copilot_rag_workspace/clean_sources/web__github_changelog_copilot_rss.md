@@ -42,6 +42,13 @@ The post GitHub intelligence puts your code, context, and history to work appear
 Shared Copilot Automations are rolling out, enabling teams to build and maintain AI-powered workflows together. With Copilot Automations, you can combine prompts, triggers, and tools to design workflows around the...
 The post Build shared workflows for your team with Copilot Automations appeared first on The GitHub Blog .
 
+## GitHub Copilot in VS Code, Universe releases
+- **Date**: Wed, 28 Oct 2026 15:33:00 +0000
+- **URL**: https://github.blog/changelog/2026-10-28-github-copilot-in-vs-code-universe-releases
+
+This year, we focused on giving you more choice in how you work with GitHub Copilot in Visual Studio Code: which models you use, where your agents run, and how...
+The post GitHub Copilot in VS Code, Universe releases appeared first on The GitHub Blog .
+
 ## Generate and edit images directly in Copilot
 - **Date**: Wed, 28 Oct 2026 15:30:55 +0000
 - **URL**: https://github.blog/changelog/2026-10-28-generate-and-edit-images-directly-in-copilot
@@ -62,10 +69,3 @@ The post GitHub Copilot Fusion now supports selection of local models appeared f
 
 GitHub Agentic Workflows, an open source project from GitHub Next, is now generally available. With agentic workflows, you can automate reasoning-based tasks like issue triage, CI failure analysis, documentation updates,...
 The post GitHub Agentic Workflows generally available appeared first on The GitHub Blog .
-
-## GitHub Copilot in JetBrains Universe releases
-- **Date**: Wed, 28 Oct 2026 15:30:00 +0000
-- **URL**: https://github.blog/changelog/2026-10-28-github-copilot-in-jetbrains-universe-releases
-
-Today, we’re making GitHub Copilot in JetBrains more capable, secure, and seamless. From GitHub Copilot Fusion’s smarter model orchestration to local sandboxes and next edit suggestions (NES), this update brings...
-The post GitHub Copilot in JetBrains Universe releases appeared first on The GitHub Blog .

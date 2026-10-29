@@ -1,7 +1,531 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part3
-- **Generado (UTC)**: 2026-10-28T18:07:46.795292+00:00
-- **Total Palabras**: 446,682 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-29T05:00:59.602507+00:00
+- **Total Palabras**: 449,402 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/arize-ai-provider-integration/references/ax-setup.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arize-ai-provider-integration/references/ax-setup.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arize-ai-provider-integration/references/ax-setup.md
+- **SHA256_FINGERPRINT**: `f25bbbfb9e86a3e0c0238c1b797d7fd96b60d1384c3a1539647d2dd52f6299be`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.700453+00:00
+---
+
+# ax CLI — Troubleshooting
+
+Consult this only when an `ax` command fails. Do NOT run these checks proactively.
+
+## Check version first
+
+If `ax` is installed (not `command not found`), always run `ax --version` before investigating further. The version must be `0.14.0` or higher — many errors are caused by an outdated install. If the version is too old, see **Version too old** below.
+
+## `ax: command not found`
+
+**macOS/Linux:**
+1. Check common locations: `~/.local/bin/ax`, `~/Library/Python/*/bin/ax`
+2. Install: `uv tool install arize-ax-cli` (preferred), `pipx install arize-ax-cli`, or `pip install arize-ax-cli`
+3. Add to PATH if needed: `export PATH="$HOME/.local/bin:$PATH"`
+
+**Windows (PowerShell):**
+1. Check: `Get-Command ax` or `where.exe ax`
+2. Common locations: `%APPDATA%\Python\Scripts\ax.exe`, `%LOCALAPPDATA%\Programs\Python\Python*\Scripts\ax.exe`
+3. Install: `pip install arize-ax-cli`
+4. Add to PATH: `$env:PATH = "$env:APPDATA\Python\Scripts;$env:PATH"`
+
+## Version too old (below 0.14.0)
+
+Upgrade: `uv tool install --force --reinstall arize-ax-cli`, `pipx upgrade arize-ax-cli`, or `pip install --upgrade arize-ax-cli`
+
+## SSL/certificate error
+
+- macOS: `export SSL_CERT_FILE=/etc/ssl/cert.pem`
+- Linux: `export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt`
+- Fallback: `export SSL_CERT_FILE=$(python -c "import certifi; print(certifi.where())")`
+
+## Subcommand not recognized
+
+Upgrade ax (see above) or use the closest available alternative.
+
+## Still failing
+
+Stop and ask the user for help.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/arize-annotation/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arize-annotation/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arize-annotation/SKILL.md
+- **SHA256_FINGERPRINT**: `c7c94d4c53440e5e98e9fb8f3f161a2ab7e3fefaedae65d85f461feb2b62c3fa`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.593483+00:00
+---
+
+**description**: Creates and manages annotation configs (categorical, continuous, freeform label schemas) and annotation queues (human review workflows) on Arize. Applies human annotations to project spans via the Python SDK. Use when the user mentions annotation config, annotation queue, label schema, human feedback, bulk annotate spans, update_annotations, labeling queue, annotate record, or human review.
+
+# Arize Annotation Skill
+
+> **`SPACE`** — All `--space` flags and the `ARIZE_SPACE` env var accept a space **name** (e.g., `my-workspace`) or a base64 space **ID** (e.g., `U3BhY2U6...`). Find yours with `ax spaces list`.
+
+This skill covers **annotation configs** (the label schema) and **annotation queues** (human review workflows), as well as programmatically annotating project spans via the Python SDK.
+
+**Direction:** Human labeling in Arize attaches values defined by configs to **spans**, **dataset examples**, **experiment-related records**, and **queue items** in the product UI. This skill covers: `ax annotation-configs`, `ax annotation-queues`, and bulk span updates with `ArizeClient.spans.update_annotations`.
+
+---
+
+## Prerequisites
+
+Proceed directly with the task — run the `ax` command you need. Do NOT check versions, env vars, or profiles upfront.
+
+If an `ax` command fails, troubleshoot based on the error:
+- `command not found` or version error → see references/ax-setup.md
+- `401 Unauthorized` / missing API key → run `ax profiles show` to inspect the current profile. If the profile is missing or the API key is wrong, follow references/ax-profiles.md to create/update it. If the user doesn't have their key, direct them to https://app.arize.com/admin > API Keys
+- Space unknown → run `ax spaces list` to pick by name, or ask the user
+- **Security:** Never read `.env` files or search the filesystem for credentials. Use `ax profiles` for Arize credentials and `ax ai-integrations` for LLM provider keys. If credentials are not available through these channels, ask the user.
+
+---
+
+## Concepts
+
+### What is an Annotation Config?
+
+An **annotation config** defines the schema for a single type of human feedback label. Before anyone can annotate a span, dataset record, experiment output, or queue item, a config must exist for that label in the space.
+
+| Field | Description |
+|-------|-------------|
+| **Name** | Descriptive identifier (e.g. `Correctness`, `Helpfulness`). Must be unique within the space. |
+| **Type** | `categorical` (pick from a list), `continuous` (numeric range), or `freeform` (free text). |
+| **Values** | For categorical: array of `{"label": str, "score": number}` pairs. |
+| **Min/Max Score** | For continuous: numeric bounds. |
+| **Optimization Direction** | Whether higher scores are better (`maximize`) or worse (`minimize`). Used to render trends in the UI. |
+
+### Where labels get applied (surfaces)
+
+| Surface | Typical path |
+|---------|----------------|
+| **Project spans** | Python SDK `spans.update_annotations` (below) and/or the Arize UI |
+| **Dataset examples** | Arize UI (human labeling flows); configs must exist in the space |
+| **Experiment outputs** | Often reviewed alongside datasets or traces in the UI — see arize-experiment, arize-dataset |
+| **Annotation queue items** | `ax annotation-queues` CLI (below) and/or the Arize UI; configs must exist |
+
+Always ensure the relevant **annotation config** exists in the space before expecting labels to persist.
+
+---
+
+## Basic CRUD: Annotation Configs
+
+### List
+
+```bash
+ax annotation-configs list --space SPACE
+ax annotation-configs list --space SPACE -o json
+ax annotation-configs list --space SPACE --limit 20
+```
+
+### Create — Categorical
+
+Categorical configs present a fixed set of labels for reviewers to choose from.
+
+```bash
+ax annotation-configs create \
+  --name "Correctness" \
+  --space SPACE \
+  --type categorical \
+  --value correct \
+  --value incorrect \
+  --optimization-direction maximize
+```
+
+Common binary label pairs:
+- `correct` / `incorrect`
+- `helpful` / `unhelpful`
+- `safe` / `unsafe`
+- `relevant` / `irrelevant`
+- `pass` / `fail`
+
+### Create — Continuous
+
+Continuous configs let reviewers enter a numeric score within a defined range.
+
+```bash
+ax annotation-configs create \
+  --name "Quality Score" \
+  --space SPACE \
+  --type continuous \
+  --min-score 0 \
+  --max-score 10 \
+  --optimization-direction maximize
+```
+
+### Create — Freeform
+
+Freeform configs collect open-ended text feedback. No additional flags needed beyond name, space, and type.
+
+```bash
+ax annotation-configs create \
+  --name "Reviewer Notes" \
+  --space SPACE \
+  --type freeform
+```
+
+### Get
+
+```bash
+ax annotation-configs get NAME_OR_ID
+ax annotation-configs get NAME_OR_ID -o json
+ax annotation-configs get NAME_OR_ID --space SPACE   # required when using name instead of ID
+```
+
+### Delete
+
+```bash
+ax annotation-configs delete NAME_OR_ID
+ax annotation-configs delete NAME_OR_ID --space SPACE   # required when using name instead of ID
+ax annotation-configs delete NAME_OR_ID --force   # skip confirmation
+```
+
+**Note:** Deletion is irreversible. Any annotation queue associations to this config are also removed in the product (queues may remain; fix associations in the Arize UI if needed).
+
+---
+
+## Annotation Queues: `ax annotation-queues`
+
+Annotation queues route records (spans, dataset examples, experiment runs) to human reviewers. Each queue is linked to one or more annotation configs that define what labels reviewers can apply.
+
+### List / Get
+
+```bash
+ax annotation-queues list --space SPACE
+ax annotation-queues list --space SPACE -o json
+
+ax annotation-queues get NAME_OR_ID --space SPACE
+ax annotation-queues get NAME_OR_ID --space SPACE -o json
+```
+
+### Create
+
+At least one `--annotation-config-id` is required.
+
+```bash
+ax annotation-queues create \
+  --name "Correctness Review" \
+  --space SPACE \
+  --annotation-config-id CONFIG_ID \
+  --annotator-email reviewer@example.com \
+  --instructions "Label each response as correct or incorrect." \
+  --assignment-method all   # or: random
+```
+
+Repeat `--annotation-config-id` and `--annotator-email` to attach multiple configs or reviewers.
+
+### Update
+
+List flags (`--annotation-config-id`, `--annotator-email`) **fully replace** existing values when provided — pass all desired values, not just the new ones.
+
+```bash
+ax annotation-queues update NAME_OR_ID --space SPACE --name "New Name"
+ax annotation-queues update NAME_OR_ID --space SPACE --instructions "Updated instructions"
+ax annotation-queues update NAME_OR_ID --space SPACE \
+  --annotation-config-id CONFIG_ID_A \
+  --annotation-config-id CONFIG_ID_B
+```
+
+### Delete
+
+```bash
+ax annotation-queues delete NAME_OR_ID --space SPACE
+ax annotation-queues delete NAME_OR_ID --space SPACE --force   # skip confirmation
+```
+
+### List Records
+
+```bash
+ax annotation-queues list-records NAME_OR_ID --space SPACE
+ax annotation-queues list-records NAME_OR_ID --space SPACE --limit 50 -o json
+```
+
+### Submit an Annotation for a Record
+
+Annotations are upserted by config name — call once per annotation config. Supply at least one of `--score`, `--label`, or `--text`.
+
+```bash
+ax annotation-queues annotate-record NAME_OR_ID RECORD_ID \
+  --annotation-name "Correctness" \
+  --label "correct" \
+  --space SPACE
+
+ax annotation-queues annotate-record NAME_OR_ID RECORD_ID \
+  --annotation-name "Quality Score" \
+  --score 8.5 \
+  --text "Response was accurate but slightly verbose." \
+  --space SPACE
+```
+
+### Assign a Record
+
+Assign users to review a specific record:
+
+```bash
+ax annotation-queues assign-record NAME_OR_ID RECORD_ID --space SPACE
+```
+
+### Delete Records
+
+```bash
+ax annotation-queues delete-records NAME_OR_ID --space SPACE
+```
+
+---
+
+## Applying Annotations to Spans (Python SDK)
+
+Use the Python SDK to bulk-apply annotations to **project spans** when you already have labels (e.g., from a review export or an external labeling tool).
+
+```python
+import pandas as pd
+from arize import ArizeClient
+
+import os
+
+client = ArizeClient(api_key=os.environ["ARIZE_API_KEY"])
+
+# Build a DataFrame with annotation columns
+# Required: context.span_id + at least one annotation.<name>.label or annotation.<name>.score
+annotations_df = pd.DataFrame([
+    {
+        "context.span_id": "span_001",
+        "annotation.Correctness.label": "correct",
+        "annotation.Correctness.updated_by": "reviewer@example.com",
+    },
+    {
+        "context.span_id": "span_002",
+        "annotation.Correctness.label": "incorrect",
+        "annotation.Correctness.updated_by": "reviewer@example.com",
+    },
+])
+
+response = client.spans.update_annotations(
+    space_id=os.environ["ARIZE_SPACE"],
+    project_name="your-project",
+    dataframe=annotations_df,
+    validate=True,
+)
+```
+
+**DataFrame column schema:**
+
+| Column | Required | Description |
+|--------|----------|-------------|
+| `context.span_id` | yes | The span to annotate |
+| `annotation.<name>.label` | one of | Categorical or freeform label |
+| `annotation.<name>.score` | one of | Numeric score |
+| `annotation.<name>.updated_by` | no | Annotator identifier (email or name) |
+| `annotation.<name>.updated_at` | no | Timestamp in milliseconds since epoch |
+| `annotation.notes` | no | Freeform notes on the span |
+
+**Limitation:** Annotations apply only to spans within 31 days prior to submission.
+
+---
+
+## Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| `ax: command not found` | See references/ax-setup.md |
+| `401 Unauthorized` | API key may not have access to this space. Verify at https://app.arize.com/admin > API Keys |
+| `Annotation config not found` | `ax annotation-configs list --space SPACE` (or use `ax annotation-configs get NAME_OR_ID --space SPACE`) |
+| `409 Conflict on create` | Name already exists in the space. Use a different name or get the existing config ID. |
+| Queue not found | `ax annotation-queues list --space SPACE`; verify the queue name or ID |
+| Record not appearing in queue | Ensure the annotation config linked to the queue exists; check `ax annotation-configs list --space SPACE` |
+| Span SDK errors or missing spans | Confirm `project_name`, `space_id`, and span IDs; use arize-trace to export spans |
+
+---
+
+## Related Skills
+
+- **arize-trace**: Export spans to find span IDs and time ranges
+- **arize-dataset**: Find dataset IDs and example IDs
+- **arize-evaluator**: Automated LLM-as-judge alongside human annotation
+- **arize-experiment**: Experiments tied to datasets and evaluation workflows
+- **arize-link**: Deep links to annotation configs and queues in the Arize UI
+
+---
+
+## Save Credentials for Future Use
+
+See references/ax-profiles.md § Save Credentials for Future Use.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/arize-annotation/references/ax-profiles.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arize-annotation/references/ax-profiles.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arize-annotation/references/ax-profiles.md
+- **SHA256_FINGERPRINT**: `fb97528b0bffbe671d07c3d5935aae649b47f86a8f941e25ba6c15b3eb656294`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.776933+00:00
+---
+
+# ax Profile Setup
+
+Consult this when authentication fails (401, missing profile, missing API key). Do NOT run these checks proactively.
+
+Use this when there is no profile, or a profile has incorrect settings (wrong API key, wrong region, etc.).
+
+## 1. Inspect the current state
+
+```bash
+ax profiles show
+```
+
+Look at the output to understand what's configured:
+- `API Key: (not set)` or missing → key needs to be created/updated
+- No profile output or "No profiles found" → no profile exists yet
+- Connected but getting `401 Unauthorized` → key is wrong or expired
+- Connected but wrong endpoint/region → region needs to be updated
+
+## 2. Fix a misconfigured profile
+
+If a profile exists but one or more settings are wrong, patch only what's broken.
+
+**Never pass a raw API key value as a flag.** Always reference it via the `ARIZE_API_KEY` environment variable. If the variable is not already set in the shell, instruct the user to set it first, then run the command:
+
+```bash
+# If ARIZE_API_KEY is already exported in the shell:
+ax profiles update --api-key $ARIZE_API_KEY
+
+# Fix the region (no secret involved — safe to run directly)
+ax profiles update --region us-east-1b
+
+# Fix both at once
+ax profiles update --api-key $ARIZE_API_KEY --region us-east-1b
+```
+
+`update` only changes the fields you specify — all other settings are preserved. If no profile name is given, the active profile is updated.
+
+## 3. Create a new profile
+
+If no profile exists, or if the existing profile needs to point to a completely different setup (different org, different region):
+
+**Always reference the key via `$ARIZE_API_KEY`, never inline a raw value.**
+
+```bash
+# Requires ARIZE_API_KEY to be exported in the shell first
+ax profiles create --api-key $ARIZE_API_KEY
+
+# Create with a region
+ax profiles create --api-key $ARIZE_API_KEY --region us-east-1b
+
+# Create a named profile
+ax profiles create work --api-key $ARIZE_API_KEY --region us-east-1b
+```
+
+To use a named profile with any `ax` command, add `-p NAME`:
+```bash
+ax spans export PROJECT -p work
+```
+
+## 4. Getting the API key
+
+**Never ask the user to paste their API key into the chat. Never log, echo, or display an API key value.**
+
+If `ARIZE_API_KEY` is not already set, instruct the user to export it in their shell:
+
+```bash
+export ARIZE_API_KEY="..."   # user pastes their key here in their own terminal
+```
+
+They can find their key at https://app.arize.com/admin > API Keys. Recommend they create a **scoped service key** (not a personal user key) — service keys are not tied to an individual account and are safer for programmatic use. Keys are space-scoped — make sure they copy the key for the correct space.
+
+Once the user confirms the variable is set, proceed with `ax profiles create --api-key $ARIZE_API_KEY` or `ax profiles update --api-key $ARIZE_API_KEY` as described above.
+
+## 5. Verify
+
+After any create or update:
+
+```bash
+ax profiles show
+```
+
+Confirm the API key and region are correct, then retry the original command.
+
+## Space
+
+There is no profile flag for space. Save it as an environment variable — accepts a space **name** (e.g., `my-workspace`) or a base64 space **ID** (e.g., `U3BhY2U6...`). Find yours with `ax spaces list -o json`.
+
+**macOS/Linux** — add to `~/.zshrc` or `~/.bashrc`:
+```bash
+export ARIZE_SPACE="my-workspace"    # name or base64 ID
+```
+Then `source ~/.zshrc` (or restart terminal).
+
+**Windows (PowerShell):**
+```powershell
+[System.Environment]::SetEnvironmentVariable('ARIZE_SPACE', 'my-workspace', 'User')
+```
+Restart terminal for it to take effect.
+
+## Save Credentials for Future Use
+
+At the **end of the session**, if the user manually provided any credentials during this conversation **and** those values were NOT already loaded from a saved profile or environment variable, offer to save them.
+
+**Skip this entirely if:**
+- The API key was already loaded from an existing profile or `ARIZE_API_KEY` env var
+- The space was already set via `ARIZE_SPACE` env var
+- The user only used base64 project IDs (no space was needed)
+
+**How to offer:** Use **AskQuestion**: *"Would you like to save your Arize credentials so you don't have to enter them next time?"* with options `"Yes, save them"` / `"No thanks"`.
+
+**If the user says yes:**
+
+1. **API key** — Run `ax profiles show` to check the current state. Then run `ax profiles create --api-key $ARIZE_API_KEY` or `ax profiles update --api-key $ARIZE_API_KEY` (the key must already be exported as an env var — never pass a raw key value).
+
+2. **Space** — See the Space section above to persist it as an environment variable.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/arize-annotation/references/ax-setup.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arize-annotation/references/ax-setup.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arize-annotation/references/ax-setup.md
+- **SHA256_FINGERPRINT**: `f25bbbfb9e86a3e0c0238c1b797d7fd96b60d1384c3a1539647d2dd52f6299be`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.830206+00:00
+---
+
+# ax CLI — Troubleshooting
+
+Consult this only when an `ax` command fails. Do NOT run these checks proactively.
+
+## Check version first
+
+If `ax` is installed (not `command not found`), always run `ax --version` before investigating further. The version must be `0.14.0` or higher — many errors are caused by an outdated install. If the version is too old, see **Version too old** below.
+
+## `ax: command not found`
+
+**macOS/Linux:**
+1. Check common locations: `~/.local/bin/ax`, `~/Library/Python/*/bin/ax`
+2. Install: `uv tool install arize-ax-cli` (preferred), `pipx install arize-ax-cli`, or `pip install arize-ax-cli`
+3. Add to PATH if needed: `export PATH="$HOME/.local/bin:$PATH"`
+
+**Windows (PowerShell):**
+1. Check: `Get-Command ax` or `where.exe ax`
+2. Common locations: `%APPDATA%\Python\Scripts\ax.exe`, `%LOCALAPPDATA%\Programs\Python\Python*\Scripts\ax.exe`
+3. Install: `pip install arize-ax-cli`
+4. Add to PATH: `$env:PATH = "$env:APPDATA\Python\Scripts;$env:PATH"`
+
+## Version too old (below 0.14.0)
+
+Upgrade: `uv tool install --force --reinstall arize-ax-cli`, `pipx upgrade arize-ax-cli`, or `pip install --upgrade arize-ax-cli`
+
+## SSL/certificate error
+
+- macOS: `export SSL_CERT_FILE=/etc/ssl/cert.pem`
+- Linux: `export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt`
+- Fallback: `export SSL_CERT_FILE=$(python -c "import certifi; print(certifi.where())")`
+
+## Subcommand not recognized
+
+Upgrade ax (see above) or use the closest available alternative.
+
+## Still failing
+
+Stop and ask the user for help.
 
 
 ---

@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-10-28T18:07:46.909859+00:00
-- **Total Palabras**: 19,434 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-29T05:00:59.699127+00:00
+- **Total Palabras**: 19,424 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1409,8 +1409,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_344219
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/344219
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/344219
-- **SHA256_FINGERPRINT**: `dc375ad93798c2eb4264aa6fafb5aa2e5f49c2c1a18df870bfb5719225648f05`
-- **LAST_VERIFIED_UTC**: 2026-10-28T04:51:38.299695+00:00
+- **SHA256_FINGERPRINT**: `62e7e4778317cd876fdd0f20ea1f00ad01b6346fb9e86730860ae998ac471d2a`
+- **LAST_VERIFIED_UTC**: 2026-10-29T05:00:59.509065+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.144.0 Endgame
@@ -1507,21 +1507,22 @@ We really appreciate people trying our new features as soon as they are ready, s
 
 # Wednesday
 `@endgame-champ`:
-- [ ] Publish website so that in-product release notes are ready
-- [ ] Start Stable rollout to everyone (start percentage: `20%`, end time UTC: `6AM next Wednesday`)
-- [ ] Deploy vscode.dev
-  - [ ] Verify the [release candidate](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) `release/x.y` passed the sanity tests in the last step
-  - [ ] [Kick off deploy](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) (Branch `release/x.y`, Deployment Target `prod`, needs peer approval)
+- [x] Publish website so that in-product release notes are ready
+- [x] Start Stable rollout to everyone (start percentage: `20%`, end time UTC: `6AM next Wednesday`)
+- [x] Deploy vscode.dev
+  - [x] Verify the [release candidate](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) `release/x.y` passed the sanity tests in the last step
+  - [x] [Kick off deploy](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) (Branch `release/x.y`, Deployment Target `prod`, needs peer approval)
 - [ ] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `auto`; the release pipeline job requires two approvals)
-- [ ] Publish socials (ping Cynthia)
-- [ ] [Publish @types/vscode](https://github.com/microsoft/vscode/wiki/Publish-vscode-types) if you find type diffs after running the steps
-- [ ] Create an official release
-  - [ ] Create a tag (make sure you pull the release branch first): `git tag <x.y.z>`
-  - [ ] Push the tag: `git push origin <x.y.z>`
-  - [ ] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right ... > Create Release. Use the version as title <x.y.z> and use the release link `https://code.visualstudio.com/updates/v<x_y>` for the description
-- [ ] Close milestone (**do not** delete it): https://github.com/microsoft/vscode/milestones
-- [ ] Move all remaining issues to "On Deck"
-- [ ] Ensure that the latest Insiders release from main has succeeded
+    - https://dev.azure.com/monacotools/Monaco/_build/results?buildId=490463&view=results
+- [x] Publish socials (ping Cynthia)
+- [x] [Publish @types/vscode](https://github.com/microsoft/vscode/wiki/Publish-vscode-types) if you find type diffs after running the steps
+- [x] Create an official release
+  - [x] Create a tag (make sure you pull the release branch first): `git tag <x.y.z>`
+  - [x] Push the tag: `git push origin <x.y.z>`
+  - [x] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right ... > Create Release. Use the version as title <x.y.z> and use the release link `https://code.visualstudio.com/updates/v<x_y>` for the description
+- [x] Close milestone (**do not** delete it): https://github.com/microsoft/vscode/milestones
+- [x] Move all remaining issues to "On Deck"
+- [x] Ensure that the latest Insiders release from main has succeeded
 
 
 ---
@@ -2156,8 +2157,8 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `0c7861c29e3432e39469a91c116e984c04812468b1f6f4d79faa1d7d89da9844`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:42.512376+00:00
+- **SHA256_FINGERPRINT**: `3e6345707becbb6fd42eafe9c6f0fb4e0dad79c0cc24db3eb941683469595c53`
+- **LAST_VERIFIED_UTC**: 2026-10-29T05:00:57.653947+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
@@ -2204,6 +2205,13 @@ The post GitHub intelligence puts your code, context, and history to work appear
 Shared Copilot Automations are rolling out, enabling teams to build and maintain AI-powered workflows together. With Copilot Automations, you can combine prompts, triggers, and tools to design workflows around the...
 The post Build shared workflows for your team with Copilot Automations appeared first on The GitHub Blog .
 
+## GitHub Copilot in VS Code, Universe releases
+- **Date**: Wed, 28 Oct 2026 15:33:00 +0000
+- **URL**: https://github.blog/changelog/2026-10-28-github-copilot-in-vs-code-universe-releases
+
+This year, we focused on giving you more choice in how you work with GitHub Copilot in Visual Studio Code: which models you use, where your agents run, and how...
+The post GitHub Copilot in VS Code, Universe releases appeared first on The GitHub Blog .
+
 ## Generate and edit images directly in Copilot
 - **Date**: Wed, 28 Oct 2026 15:30:55 +0000
 - **URL**: https://github.blog/changelog/2026-10-28-generate-and-edit-images-directly-in-copilot
@@ -2224,10 +2232,3 @@ The post GitHub Copilot Fusion now supports selection of local models appeared f
 
 GitHub Agentic Workflows, an open source project from GitHub Next, is now generally available. With agentic workflows, you can automate reasoning-based tasks like issue triage, CI failure analysis, documentation updates,...
 The post GitHub Agentic Workflows generally available appeared first on The GitHub Blog .
-
-## GitHub Copilot in JetBrains Universe releases
-- **Date**: Wed, 28 Oct 2026 15:30:00 +0000
-- **URL**: https://github.blog/changelog/2026-10-28-github-copilot-in-jetbrains-universe-releases
-
-Today, we’re making GitHub Copilot in JetBrains more capable, secure, and seamless. From GitHub Copilot Fusion’s smarter model orchestration to local sandboxes and next edit suggestions (NES), this update brings...
-The post GitHub Copilot in JetBrains Universe releases appeared first on The GitHub Blog .

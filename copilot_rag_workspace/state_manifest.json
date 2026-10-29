@@ -1,7 +1,7 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-10-28T18:07:46.923670+00:00",
-  "total_documents": 2003,
+  "last_sync_utc": "2026-10-29T05:00:59.719223+00:00",
+  "total_documents": 2005,
   "documents": {
     "anthropics_skills::README.md": {
       "doc_id": "anthropics_skills::README.md",
@@ -1163,10 +1163,10 @@
       "source_url": "https://raw.githubusercontent.com/anthropics/skills/main/skills/mcp-builder/SKILL.md",
       "canonical_web_url": "https://github.com/anthropics/skills/blob/main/skills/mcp-builder/SKILL.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "8a1a77a47d141967b246adb4da4f91037578ff7d",
-      "content_sha256": "059e7043ab5dfefa8bf6a8f695ad7038b696796202a351f313a2c81edb458e0c",
-      "word_count": 1130,
-      "last_updated_utc": "2026-10-21T03:45:57.851766+00:00",
+      "git_blob_sha": "d61a9056202a0f8b2d064c896e62f415c45b1bf1",
+      "content_sha256": "0dd837d749b9a27511b4124d171cf1b9723733d572e74f97ccdd56efa092f5db",
+      "word_count": 1371,
+      "last_updated_utc": "2026-10-29T05:00:56.625551+00:00",
       "local_clean_path": "clean_sources/anthropics_skills__skills_mcp-builder_SKILL.md"
     },
     "anthropics_skills::skills/mcp-builder/reference/evaluation.md": {
@@ -1196,11 +1196,22 @@
       "source_url": "https://raw.githubusercontent.com/anthropics/skills/main/skills/mcp-builder/reference/node_mcp_server.md",
       "canonical_web_url": "https://github.com/anthropics/skills/blob/main/skills/mcp-builder/reference/node_mcp_server.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "f6e5df982adc0848bf261c47ab8d65a1e0469391",
-      "content_sha256": "b6521f4810d509440a5885f463f9e16b16632145a59f90db74858b57fb0780d4",
-      "word_count": 3406,
-      "last_updated_utc": "2026-10-21T03:45:57.894135+00:00",
+      "git_blob_sha": "738ec1fb8b1a41661b0bb5d32a26234a14c4e3f0",
+      "content_sha256": "f0e943c0753153f526d9e92e26b18a8f72ba6da30fbaf136b2023380e6833f40",
+      "word_count": 3433,
+      "last_updated_utc": "2026-10-29T05:00:56.658297+00:00",
       "local_clean_path": "clean_sources/anthropics_skills__skills_mcp-builder_reference_node_mcp_server.md"
+    },
+    "anthropics_skills::skills/mcp-builder/reference/node_mcp_server_v2.md": {
+      "doc_id": "anthropics_skills::skills/mcp-builder/reference/node_mcp_server_v2.md",
+      "source_url": "https://raw.githubusercontent.com/anthropics/skills/main/skills/mcp-builder/reference/node_mcp_server_v2.md",
+      "canonical_web_url": "https://github.com/anthropics/skills/blob/main/skills/mcp-builder/reference/node_mcp_server_v2.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "5d61f896d9707c8797c33ac8ac03c5aebf9b163f",
+      "content_sha256": "49b2fe48f33910b743ae3a56353fffa5d5f252f531053f24f2da4e5914c0d3aa",
+      "word_count": 4300,
+      "last_updated_utc": "2026-10-29T05:00:56.661196+00:00",
+      "local_clean_path": "clean_sources/anthropics_skills__skills_mcp-builder_reference_node_mcp_server_v2.md"
     },
     "anthropics_skills::skills/mcp-builder/reference/python_mcp_server.md": {
       "doc_id": "anthropics_skills::skills/mcp-builder/reference/python_mcp_server.md",
@@ -15887,6 +15898,17 @@
       "last_updated_utc": "2026-10-22T16:53:33.986667+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_pr-address-feedback_SKILL.md"
     },
+    "github_awesome-copilot::skills/pr-artifact-explorer/SKILL.md": {
+      "doc_id": "github_awesome-copilot::skills/pr-artifact-explorer/SKILL.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/pr-artifact-explorer/SKILL.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/pr-artifact-explorer/SKILL.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "c04a7208276899dced63c626836a360dccc638ee",
+      "content_sha256": "8b88f8e2e4baba3da2cccabdd45318764d938547ef5dc9638735c35fa2ffdf25",
+      "word_count": 976,
+      "last_updated_utc": "2026-10-29T05:00:56.352505+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_pr-artifact-explorer_SKILL.md"
+    },
     "github_awesome-copilot::skills/pr-dashboard/SKILL.md": {
       "doc_id": "github_awesome-copilot::skills/pr-dashboard/SKILL.md",
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/pr-dashboard/SKILL.md",
@@ -20073,9 +20095,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "055d5e6c254bf601a914eb071d57df4749237512e321b16774286f2928f473ea",
-      "word_count": 24965,
-      "last_updated_utc": "2026-10-28T18:07:44.326634+00:00",
+      "content_sha256": "40e2d297a56c2a9336232326c779ac00fac7a0a5981a3bea043e2aeeb0b06097",
+      "word_count": 24972,
+      "last_updated_utc": "2026-10-29T05:00:58.666464+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -20084,9 +20106,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "055d5e6c254bf601a914eb071d57df4749237512e321b16774286f2928f473ea",
-      "word_count": 24965,
-      "last_updated_utc": "2026-10-28T18:07:43.960942+00:00",
+      "content_sha256": "40e2d297a56c2a9336232326c779ac00fac7a0a5981a3bea043e2aeeb0b06097",
+      "word_count": 24972,
+      "last_updated_utc": "2026-10-29T05:00:58.611784+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -21943,9 +21965,9 @@
       "canonical_web_url": "https://github.com/microsoft/vscode/issues/344219",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
       "git_blob_sha": null,
-      "content_sha256": "dc375ad93798c2eb4264aa6fafb5aa2e5f49c2c1a18df870bfb5719225648f05",
-      "word_count": 868,
-      "last_updated_utc": "2026-10-28T04:51:38.299695+00:00",
+      "content_sha256": "62e7e4778317cd876fdd0f20ea1f00ad01b6346fb9e86730860ae998ac471d2a",
+      "word_count": 856,
+      "last_updated_utc": "2026-10-29T05:00:59.509065+00:00",
       "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_344219.md"
     },
     "vscode_insiders::iteration-plan_271045": {
@@ -22020,9 +22042,9 @@
       "canonical_web_url": "https://github.blog/changelog/label/copilot/feed/",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
       "git_blob_sha": null,
-      "content_sha256": "0c7861c29e3432e39469a91c116e984c04812468b1f6f4d79faa1d7d89da9844",
-      "word_count": 664,
-      "last_updated_utc": "2026-10-28T18:07:42.512376+00:00",
+      "content_sha256": "3e6345707becbb6fd42eafe9c6f0fb4e0dad79c0cc24db3eb941683469595c53",
+      "word_count": 666,
+      "last_updated_utc": "2026-10-29T05:00:57.653947+00:00",
       "local_clean_path": "clean_sources/web__github_changelog_copilot_rss.md"
     },
     "web::vscode_api_contribution_points": {
