@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins
-- **Generado (UTC)**: 2026-10-29T05:00:59.521347+00:00
-- **Total Palabras**: 449,720 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-30T05:00:19.916806+00:00
+- **Total Palabras**: 447,438 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -32492,8 +32492,8 @@ lone edited cell mid-row is the commonest silent error · guard denominators tha
 # DOCUMENT_SOURCE: github_awesome-copilot::README.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/README.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/README.md
-- **SHA256_FINGERPRINT**: `e67d6381af5314d07e298d755518890698c83e66896969677714ff739c028043`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:41.145051+00:00
+- **SHA256_FINGERPRINT**: `2307f29f4041c35fbc6e59526907f4f15d2d5f1ba1ea12af491c668074bd0022`
+- **LAST_VERIFIED_UTC**: 2026-10-30T05:00:17.046673+00:00
 ---
 
 # 🤖 Awesome GitHub Copilot
@@ -33050,6 +33050,154 @@ Thanks goes to these wonderful people ([emoji key](./CONTRIBUTING.md#contributor
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/sudhirp25"><img src="https://avatars.githubusercontent.com/u/311668331?v=4" width="100px;" alt=""/><br /><sub><b>sudhirp25</b></sub></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/sunilsattiraju/"><img src="https://avatars.githubusercontent.com/u/2416507?v=4" width="100px;" alt=""/><br /><sub><b>Sunil Sattiraju</b></sub></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://www.markstudios.com"><img src="https://avatars.githubusercontent.com/u/24554186?v=4" width="100px;" alt=""/><br /><sub><b>Mark Santos</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://pt.linkedin.com/in/vieira"><img src="https://avatars.githubusercontent.com/u/5114210?v=4" width="100px;" alt=""/><br /><sub><b>Alex Vieira</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ayangupt"><img src="https://avatars.githubusercontent.com/u/74832088?v=4" width="100px;" alt=""/><br /><sub><b>Ayan Gupta</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://davidpine.dev/"><img src="https://avatars.githubusercontent.com/u/7679720?v=4" width="100px;" alt=""/><br /><sub><b>David Pine</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/qinezh"><img src="https://avatars.githubusercontent.com/u/15644078?v=4" width="100px;" alt=""/><br /><sub><b>qinezh</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/burakkaygusuz"><img src="https://avatars.githubusercontent.com/u/17873574?v=4" width="100px;" alt=""/><br /><sub><b>Burak Kaygusuz</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/stefanbroenner/"><img src="https://avatars.githubusercontent.com/u/3026464?v=4" width="100px;" alt=""/><br /><sub><b>Stefan Broenner</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/AugP"><img src="https://avatars.githubusercontent.com/u/7683645?v=4" width="100px;" alt=""/><br /><sub><b>Augustin Popa</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://blog.technopathy.club/series/ai-assisted-development"><img src="https://avatars.githubusercontent.com/u/272844933?v=4" width="100px;" alt=""/><br /><sub><b>Oliver Zehentleitner AIgent</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://jonastuechler.at/"><img src="https://avatars.githubusercontent.com/u/43107091?v=4" width="100px;" alt=""/><br /><sub><b>Jonas Tüchler</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/furukawa658"><img src="https://avatars.githubusercontent.com/u/108503788?v=4" width="100px;" alt=""/><br /><sub><b>furukawa658</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://linktr.ee/continuousgeek"><img src="https://avatars.githubusercontent.com/u/4140343?v=4" width="100px;" alt=""/><br /><sub><b>Ari LiVigni  ContinuousG33k</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/liztom"><img src="https://avatars.githubusercontent.com/u/6172579?v=4" width="100px;" alt=""/><br /><sub><b>Liz Tom</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://iancanderson.com/"><img src="https://avatars.githubusercontent.com/u/180798?v=4" width="100px;" alt=""/><br /><sub><b>Ian C. Anderson</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/astandrik"><img src="https://avatars.githubusercontent.com/u/8037318?v=4" width="100px;" alt=""/><br /><sub><b>Anton Standrik</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://blog.nerdbank.net/"><img src="https://avatars.githubusercontent.com/u/3548?v=4" width="100px;" alt=""/><br /><sub><b>Andrew Arnott</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/alevizio"><img src="https://avatars.githubusercontent.com/u/3001854?v=4" width="100px;" alt=""/><br /><sub><b>Alejandro</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ContinuousCaffeniation"><img src="https://avatars.githubusercontent.com/u/58143312?v=4" width="100px;" alt=""/><br /><sub><b>Vivian</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://flovogt.github.io/"><img src="https://avatars.githubusercontent.com/u/34711402?v=4" width="100px;" alt=""/><br /><sub><b>Florian Vogt</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/sophio-japharidze-sonarsource"><img src="https://avatars.githubusercontent.com/u/104207951?v=4" width="100px;" alt=""/><br /><sub><b>Sophio Japharidze</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Simon-He95"><img src="https://avatars.githubusercontent.com/u/57086651?v=4" width="100px;" alt=""/><br /><sub><b>Simon He</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/pierceboggan"><img src="https://avatars.githubusercontent.com/u/1091304?v=4" width="100px;" alt=""/><br /><sub><b>Pierce Boggan</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://raibledesigns.com/"><img src="https://avatars.githubusercontent.com/u/17892?v=4" width="100px;" alt=""/><br /><sub><b>Matt Raible</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://dariusz.porowski.dev/"><img src="https://avatars.githubusercontent.com/u/3431813?v=4" width="100px;" alt=""/><br /><sub><b>Dariusz Porowski</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/lMysticl"><img src="https://avatars.githubusercontent.com/u/19691583?v=4" width="100px;" alt=""/><br /><sub><b>Pavlo (Pavel) Putrenkov</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://mike.recachinas.dev/"><img src="https://avatars.githubusercontent.com/u/924243?v=4" width="100px;" alt=""/><br /><sub><b>Michael Recachinas</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.komalvardhan.com/"><img src="https://avatars.githubusercontent.com/u/67476199?v=4" width="100px;" alt=""/><br /><sub><b>Komal Vardhan Lolugu</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/kapilsamant"><img src="https://avatars.githubusercontent.com/u/61803834?v=4" width="100px;" alt=""/><br /><sub><b>Kaps</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://notetoself.tech/"><img src="https://avatars.githubusercontent.com/u/13143907?v=4" width="100px;" alt=""/><br /><sub><b>Wagner Silveira</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Swethakumar1"><img src="https://avatars.githubusercontent.com/u/16600902?v=4" width="100px;" alt=""/><br /><sub><b>Swetha Kumar</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.sepurisaikrishna.com/"><img src="https://avatars.githubusercontent.com/u/206394534?v=4" width="100px;" alt=""/><br /><sub><b>Sepuri Sai Krishna</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ProfTrader"><img src="https://avatars.githubusercontent.com/u/169579479?v=4" width="100px;" alt=""/><br /><sub><b>Peter</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://jonny.io/"><img src="https://avatars.githubusercontent.com/u/1629785?v=4" width="100px;" alt=""/><br /><sub><b>Jonny Burger</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://jfree.github.io/"><img src="https://avatars.githubusercontent.com/u/1835893?v=4" width="100px;" alt=""/><br /><sub><b>David Gilbert</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/zhoufenqin"><img src="https://avatars.githubusercontent.com/u/8765864?v=4" width="100px;" alt=""/><br /><sub><b>zhoufenqin</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/tomshafir-sonarsource"><img src="https://avatars.githubusercontent.com/u/274245499?v=4" width="100px;" alt=""/><br /><sub><b>tomshafir-sonarsource</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/shenxianpeng"><img src="https://avatars.githubusercontent.com/u/3353385?v=4" width="100px;" alt=""/><br /><sub><b>Xianpeng Shen</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/gjethwani-figma"><img src="https://avatars.githubusercontent.com/u/300630462?v=4" width="100px;" alt=""/><br /><sub><b>Gautam Jethwani</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://bunnybox.info/"><img src="https://avatars.githubusercontent.com/u/743743?v=4" width="100px;" alt=""/><br /><sub><b>Daniel Coelho</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/chcaru"><img src="https://avatars.githubusercontent.com/u/10172123?v=4" width="100px;" alt=""/><br /><sub><b>Chris</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/CahidArda"><img src="https://avatars.githubusercontent.com/u/57228345?v=4" width="100px;" alt=""/><br /><sub><b>Cahid Arda</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/TyomaVader"><img src="https://avatars.githubusercontent.com/u/67346255?v=4" width="100px;" alt=""/><br /><sub><b>Artsiom Chmutau</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/alexyaang"><img src="https://avatars.githubusercontent.com/u/59073590?v=4" width="100px;" alt=""/><br /><sub><b>Alex Yang [MSFT]</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Mnilax"><img src="https://avatars.githubusercontent.com/u/78908921?v=4" width="100px;" alt=""/><br /><sub><b>Mnimiy</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/massimobonanni"><img src="https://avatars.githubusercontent.com/u/9560142?v=4" width="100px;" alt=""/><br /><sub><b>Massimo Bonanni</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://haozhangms.github.io/"><img src="https://avatars.githubusercontent.com/u/23452564?v=4" width="100px;" alt=""/><br /><sub><b>HaoZhang</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://lavkesh.com/"><img src="https://avatars.githubusercontent.com/u/9712103?v=4" width="100px;" alt=""/><br /><sub><b>Lavkesh Dwivedi</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/MarkAlex1234"><img src="https://avatars.githubusercontent.com/u/62267414?v=4" width="100px;" alt=""/><br /><sub><b>Markus</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/marconsilva"><img src="https://avatars.githubusercontent.com/u/15378254?v=4" width="100px;" alt=""/><br /><sub><b>Marco Antonio Silva</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://mmalabugin.ru/"><img src="https://avatars.githubusercontent.com/u/137305666?v=4" width="100px;" alt=""/><br /><sub><b>Mikhail Alabugin</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/immuhammadfurqan"><img src="https://avatars.githubusercontent.com/u/183514196?v=4" width="100px;" alt=""/><br /><sub><b>Muhammad Furqan</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/m2moiz"><img src="https://avatars.githubusercontent.com/u/5123355?v=4" width="100px;" alt=""/><br /><sub><b>Muhammad Moiz</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/muhammadumer-waheed"><img src="https://avatars.githubusercontent.com/u/273130505?v=4" width="100px;" alt=""/><br /><sub><b>Muhammad Umer Waheed</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/neilchen2000-pixel"><img src="https://avatars.githubusercontent.com/u/283394672?v=4" width="100px;" alt=""/><br /><sub><b>NeilChen</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://juliawakiru.dev/"><img src="https://avatars.githubusercontent.com/u/40116776?v=4" width="100px;" alt=""/><br /><sub><b>Julia Muiruri</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/kachawla"><img src="https://avatars.githubusercontent.com/u/74574173?v=4" width="100px;" alt=""/><br /><sub><b>Karishma Chawla</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://zenn.dev/okazuki"><img src="https://avatars.githubusercontent.com/u/79868?v=4" width="100px;" alt=""/><br /><sub><b>Kazuki Ota</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/koko3tallah"><img src="https://avatars.githubusercontent.com/u/20953839?v=4" width="100px;" alt=""/><br /><sub><b>Kerolos Atallah</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/LakshmiStoltz"><img src="https://avatars.githubusercontent.com/u/67345378?v=4" width="100px;" alt=""/><br /><sub><b>LakshmiStoltz</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/2023Anita"><img src="https://avatars.githubusercontent.com/u/126993554?v=4" width="100px;" alt=""/><br /><sub><b>Lixin2026</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://beyonderp.cloud/"><img src="https://avatars.githubusercontent.com/u/282592006?v=4" width="100px;" alt=""/><br /><sub><b>Mamdouh Ibrahim</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://mammonbaloch.space/"><img src="https://avatars.githubusercontent.com/u/154027819?v=4" width="100px;" alt=""/><br /><sub><b>Mammon Baloch</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ravikiran-dasari"><img src="https://avatars.githubusercontent.com/u/75874983?v=4" width="100px;" alt=""/><br /><sub><b>Ravikiran Dasari</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/rezrah"><img src="https://avatars.githubusercontent.com/u/13340707?v=4" width="100px;" alt=""/><br /><sub><b>Rez</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/gambadio"><img src="https://avatars.githubusercontent.com/u/106869358?v=4" width="100px;" alt=""/><br /><sub><b>Ricky</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/sairamvarmabudharaju"><img src="https://avatars.githubusercontent.com/u/318394223?v=4" width="100px;" alt=""/><br /><sub><b>Sai Ram Varma Budharaju</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/compnerd"><img src="https://avatars.githubusercontent.com/u/63311?v=4" width="100px;" alt=""/><br /><sub><b>Saleem Abdulrasool</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/samuelcprowe"><img src="https://avatars.githubusercontent.com/u/14168597?v=4" width="100px;" alt=""/><br /><sub><b>Sam Rowe</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/SandraAhlgrimm"><img src="https://avatars.githubusercontent.com/u/5214683?v=4" width="100px;" alt=""/><br /><sub><b>Sandra Ahlgrimm</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/SanyamSavla"><img src="https://avatars.githubusercontent.com/u/61912569?v=4" width="100px;" alt=""/><br /><sub><b>Sanyam</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://ivy.app/"><img src="https://avatars.githubusercontent.com/u/4034492?v=4" width="100px;" alt=""/><br /><sub><b>Niels Bosma</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://devantler.tech/"><img src="https://avatars.githubusercontent.com/u/26203420?v=4" width="100px;" alt=""/><br /><sub><b>Nikolai Emil Damm</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.npmjs.com/~padmaraj.nidagundi"><img src="https://avatars.githubusercontent.com/u/8341941?v=4" width="100px;" alt=""/><br /><sub><b>Padmaraj Nidagundi</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://parthsangani.substack.com/"><img src="https://avatars.githubusercontent.com/u/196415745?v=4" width="100px;" alt=""/><br /><sub><b>Parth Sangani</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://twitter.com/paulyuki99"><img src="https://avatars.githubusercontent.com/u/1968137?v=4" width="100px;" alt=""/><br /><sub><b>Paul Yuknewicz</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/0101"><img src="https://avatars.githubusercontent.com/u/217092?v=4" width="100px;" alt=""/><br /><sub><b>Petr Pokorny</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ppreyas"><img src="https://avatars.githubusercontent.com/u/29959576?v=4" width="100px;" alt=""/><br /><sub><b>Preyas Prakasan</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/VrtxOmega"><img src="https://avatars.githubusercontent.com/u/272921586?v=4" width="100px;" alt=""/><br /><sub><b>RJ</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/AzureMike"><img src="https://avatars.githubusercontent.com/u/127820851?v=4" width="100px;" alt=""/><br /><sub><b>AzureMike</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://baiqinglyu.engineer/"><img src="https://avatars.githubusercontent.com/u/15002448?v=4" width="100px;" alt=""/><br /><sub><b>Baiqing Lyu</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Bruce-Moe"><img src="https://avatars.githubusercontent.com/u/39887198?v=4" width="100px;" alt=""/><br /><sub><b>Bruce Moe</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/charendt"><img src="https://avatars.githubusercontent.com/u/74682065?v=4" width="100px;" alt=""/><br /><sub><b>Chris Arendt</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Crabbb"><img src="https://avatars.githubusercontent.com/u/9808014?v=4" width="100px;" alt=""/><br /><sub><b>Crabbb</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/deepchoudhery"><img src="https://avatars.githubusercontent.com/u/54324771?v=4" width="100px;" alt=""/><br /><sub><b>Deep Choudhery</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/sys-ops-node"><img src="https://avatars.githubusercontent.com/u/216344975?v=4" width="100px;" alt=""/><br /><sub><b>DevNode-09</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/adamd9"><img src="https://avatars.githubusercontent.com/u/4033496?v=4" width="100px;" alt=""/><br /><sub><b>Adam</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/alexvago"><img src="https://avatars.githubusercontent.com/u/9078657?v=4" width="100px;" alt=""/><br /><sub><b>Alessandro Vago</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/alisonmaclellancreates"><img src="https://avatars.githubusercontent.com/u/261723655?v=4" width="100px;" alt=""/><br /><sub><b>AlisonMacLellanCreates</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://honardoust.me/"><img src="https://avatars.githubusercontent.com/u/88084572?v=4" width="100px;" alt=""/><br /><sub><b>Amir</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/awlx"><img src="https://avatars.githubusercontent.com/u/6527744?v=4" width="100px;" alt=""/><br /><sub><b>Annika Wickert</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://www.arafattehsin.com/"><img src="https://avatars.githubusercontent.com/u/16351038?v=4" width="100px;" alt=""/><br /><sub><b>Arafat Tehsin</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/drognanar"><img src="https://avatars.githubusercontent.com/u/3418274?v=4" width="100px;" alt=""/><br /><sub><b>Artur Spychaj</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/AshleyGrant"><img src="https://avatars.githubusercontent.com/u/9885322?v=4" width="100px;" alt=""/><br /><sub><b>Ashley Grant</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ather-techie"><img src="https://avatars.githubusercontent.com/u/232263248?v=4" width="100px;" alt=""/><br /><sub><b>Ather</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/autonnel"><img src="https://avatars.githubusercontent.com/u/283055447?v=4" width="100px;" alt=""/><br /><sub><b>Autonnel</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://liguiyu.com/"><img src="https://avatars.githubusercontent.com/u/114961940?v=4" width="100px;" alt=""/><br /><sub><b>Guiyu Li</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/hagould"><img src="https://avatars.githubusercontent.com/u/44214179?v=4" width="100px;" alt=""/><br /><sub><b>Hannah Gould</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/tmt823"><img src="https://avatars.githubusercontent.com/u/55045182?v=4" width="100px;" alt=""/><br /><sub><b>Hatsumi Kikuchi</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/himanshub42"><img src="https://avatars.githubusercontent.com/u/154719909?v=4" width="100px;" alt=""/><br /><sub><b>Himanshu bamoria</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://jasoncolapietro.com/"><img src="https://avatars.githubusercontent.com/u/55137770?v=4" width="100px;" alt=""/><br /><sub><b>Jason Colapietro</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/jaylynbarbee/"><img src="https://avatars.githubusercontent.com/u/51131738?v=4" width="100px;" alt=""/><br /><sub><b>Jaylyn Barbee</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/jimmystridh"><img src="https://avatars.githubusercontent.com/u/61634?v=4" width="100px;" alt=""/><br /><sub><b>Jimmy Stridh</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ComputelessComputer"><img src="https://avatars.githubusercontent.com/u/63365510?v=4" width="100px;" alt=""/><br /><sub><b>John Jeong</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/JonathanXDR"><img src="https://avatars.githubusercontent.com/u/73559516?v=4" width="100px;" alt=""/><br /><sub><b>Jonathan Russ</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/JordanSOA"><img src="https://avatars.githubusercontent.com/u/48123323?v=4" width="100px;" alt=""/><br /><sub><b>JordanSOA</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/davidkaya"><img src="https://avatars.githubusercontent.com/u/3832960?v=4" width="100px;" alt=""/><br /><sub><b>Dávid Kaya</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://orynval.com/"><img src="https://avatars.githubusercontent.com/u/182494385?v=4" width="100px;" alt=""/><br /><sub><b>ELIAS TOM</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://ridingthecrest.com/"><img src="https://avatars.githubusercontent.com/u/75821?v=4" width="100px;" alt=""/><br /><sub><b>Ed Burns</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/danemil"><img src="https://avatars.githubusercontent.com/u/11719108?v=4" width="100px;" alt=""/><br /><sub><b>Emil Dan</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/brainit-consulting"><img src="https://avatars.githubusercontent.com/u/178829346?v=4" width="100px;" alt=""/><br /><sub><b>Emile du Toit</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/esvyridov"><img src="https://avatars.githubusercontent.com/u/46542370?v=4" width="100px;" alt=""/><br /><sub><b>Eugene Sviridov</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/fabriziolussana"><img src="https://avatars.githubusercontent.com/u/10045947?v=4" width="100px;" alt=""/><br /><sub><b>Fabrizio Lussana</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/finnagin"><img src="https://avatars.githubusercontent.com/u/20198864?v=4" width="100px;" alt=""/><br /><sub><b>Finn Womack</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/gsemet"><img src="https://avatars.githubusercontent.com/u/133498?v=4" width="100px;" alt=""/><br /><sub><b>Gaetan Semet</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://idontlikeai.dev/"><img src="https://avatars.githubusercontent.com/u/26114636?v=4" width="100px;" alt=""/><br /><sub><b>Gijs Reijn</b></sub></a></td>
     </tr>
   </tbody>
 </table>
@@ -53866,573 +54014,3 @@ Before submitting any content, verify:
 Remember: The goal isn't perfect documentation on the first try - it's continuous improvement and helping others learn. Every expert contributor started exactly where you are now!
 
 _"Great documentation doesn't just inform - it empowers. When you contribute to Microsoft Learn, you're not just adding content; you're creating pathways for others to succeed. Every clear explanation, every well-structured guide, and every thoughtful improvement makes technology more accessible to everyone. Thank you for being part of this mission to democratize learning!"_
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::agents/modernization.agent.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/agents/modernization.agent.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/agents/modernization.agent.md
-- **SHA256_FINGERPRINT**: `aa7f32f91dd85f6d77ab9e49262150ac331166c6ed59c957f1ffe5ee1ff7a125`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:02.879840+00:00
----
-
-**description**: Human-in-the-loop modernization assistant for analyzing, documenting, and planning complete project modernization with architectural recommendations.
-
-This agent runs directly in VS Code with read/write access to your workspace. It guides you through complete project modernization with a structured, stack-agnostic workflow.
-
-# Modernization Agent
-
-## IMPORTANT: When to Execute Workflow
-
- **Ideal Inputs**
-- Repository with an existing project (any tech stack)
-## What This Agent Does
-
-**CRITICAL ANALYSIS APPROACH:**
-This agent performs **exhaustive, deep-dive analysis** before any modernization planning. It:
-- **Reads EVERY business logic file** (services, repositories, domain models, controllers, etc.)
-- **Generates per-feature analysis** in separate Markdown files
-- **Re-reads all generated feature docs** to synthesize a comprehensive README
-- **Forces understanding** through line-by-line code examination
-- **Never skips files** - completeness is mandatory
-
-**Analysis Phase (Steps 1-7):**
-- Analyzes project type and architecture
-- Reads ALL service files, repositories, domain models individually
-- Creates detailed per-feature documentation (one MD file per feature/domain)
-- Re-reads generated feature docs to create master README
-- Frontend business logic: routing, auth flows, role-based/UI-level authorization, form handling & validation, state management (server/cache/local), error/loading UX, i18n/l10n, accessibility considerations
-- Cross-cutting concerns: error handling, localization, auditing, security, data integrity
-
-**Planning Phase (Step 8):**
-- **Recommends** modern tech stacks and architectural patterns with expert-level reasoning
-
-**Implementation Phase (Step 9):**
-- **Creates `/modernizedone/` folder** for new project structure
-- **Starts with cross-cuttings and project structure** before feature migration
-- **Generates** actionable, step-by-step implementation plans for developers or Copilot agents
-
-This agent **does not**:
-- Skip files or take shortcuts
-- Bypass validation checkpoints
-- Begin modernization without complete understanding
-
-## Inputs & Outputs
-
-**Inputs:** Repository with existing project (any stack: .NET, Java, Python, Node.js, Go, PHP, Ruby, etc.)
-
-**Outputs:**
-- Architectural analysis (patterns, structure, dependencies)
-- Per-feature docs in `/docs/features/`
-- Master `/docs/README.md` synthesized from feature docs
-- `/SUMMARY.md` entrypoint
-- Frontend/cross-cuttings analysis (if applicable)
-- `/modernizedone/` folder with implementation plan
-
-### Documentation Requirements
-- **PER-FEATURE ANALYSIS:** Create individual MD files for each business domain/feature (e.g., `docs/features/car-model.md`, `docs/features/driver-management.md`)
-- **EXHAUSTIVE FILE READING:** Read and analyze EVERY service, repository, domain model, controller file - no shortcuts
-- **FEATURE SUMMARIES:** Each feature MD must include: purpose, business rules, workflows, code references (files/classes/methods), dependencies, integrations
-- **COMPREHENSIVE README:** After creating all feature MDs, RE-READ all generated feature docs to synthesize a master README that references them
-- **Code references:** Link to specific files, classes, methods with line numbers where possible
-- **Core workflows:** Document step-by-step flows for each feature, aligned to code symbols
-- **Cross-cutting concerns:** Dedicated analysis of error semantics, localization strategy, auditing/observability
-- **Frontend analysis:** Separate doc covering routing, auth/roles, forms/validation, state/data fetching, error/loading UX, i18n/a11y, UI dependencies
-- **Application purpose:** Clear statement of why the app exists, who uses it, primary business goals
-
-## Progress Reporting
-
-The agent will:
-- Use manage_todo_list to track workflow stages (9 major steps + sub-tasks)
-- **Report progress periodically during analysis** (e.g., "Completed: 5/12 features analyzed") WITHOUT stopping for user input
-- **Show file count** for each feature (e.g., "CarModel feature: analyzed 3 services, 2 repositories, 1 domain model")
-- **Continue autonomously through ALL features** until complete analysis is ready
-- Present findings ONLY at designated checkpoints (step 7 and step 8)
-- Explicitly ask "Is this correct?" ONLY at validation checkpoints (after completing ALL analysis)
-- If validation fails: expand analysis scope, re-read files, generate additional docs
-- **Never claim completion** until all files are read and all features documented
-- **Never stop mid-analysis** to ask if user wants to continue
-
-## How to Request Help
-
-The agent will ONLY ask for user input at designated checkpoints:
-- **Step 7 (after ALL analysis complete):** "Is the above analysis correct and comprehensive? Are there any missing parts?"
-- **Step 8 (tech stack selection):** "Do you want to specify a new tech stack/architecture OR do you want expert suggestions?"
-- **Step 8 (after recommendations):** "Are these suggestions acceptable?"
-
-**During analysis (steps 1-6), the agent will:**
-- Work autonomously without asking permission to continue
-- Report progress updates while continuing work
-- Never ask "Do you want me to continue?" or "Should I keep going?"
-
-When the user requests to start the modernization process, immediately begin executing the 9-step workflow below. Use the todo tool to track progress through all steps. Begin by analyzing the repository structure to identify the technology stack.
-
----
-
-## 🚨 CRITICAL REQUIREMENT: DEEP UNDERSTANDING MANDATORY
-
-**Before ANY modernization planning or recommendations:**
-- ✅ MUST read EVERY business logic file (services, repositories, domain models, controllers)
-- ✅ MUST create per-feature documentation (separate MD files for each feature/domain)
-- ✅ MUST re-read all generated feature docs to synthesize master README
-- ✅ MUST achieve 100% file coverage (files_analyzed / total_files = 1.0)
-- ❌ CANNOT skip files, summarize without reading, or take shortcuts
-- ❌ CANNOT move to step 8 (recommendations) without completing step 7 validation
-- ❌ CANNOT create `/modernizedone/` until implementation plan is approved
-
-**If analysis is incomplete:**
-1. Acknowledge the gap
-2. List missing files
-3. Read all missing files
-4. Generate/update per-feature documentation
-5. Re-synthesize README
-6. Re-submit for validation
-
----
-
-## Agent Workflow (9 Steps)
-
-### 1. Technology Stack Identification
-**Action:** Analyze repository to identify languages, frameworks, platforms, tools
-**Steps:**
-- Use file_search to find project files (.csproj, .sln, package.json, requirements.txt, etc.)
-- Use grep_search to identify framework versions and dependencies
-- Use list_dir to understand project structure
-- Summarize findings in a clear format
-
-**Output:** Tech stack summary
-**User Checkpoint:** None (informational)
-
-### 2. Project Detection & Architectural Analysis
-**Action:** Analyze the project type and architecture based on detected ecosystem:
-- Project structure (roots, packages/modules, inter-project references)
-- Architectural patterns (MVC/MVVM, Clean Architecture, DDD, layered, hexagonal, microservices, serverless)
-- Dependencies (package managers, external services, SDKs)
-- Configuration and entrypoints (build files, startup scripts, runtime configs)
-
-**Steps:**
-- Read project/manifest files based on stack: `.sln`/`.csproj`, `package.json`, `pom.xml`/`build.gradle`, `go.mod`, `requirements.txt`/`pyproject.toml`, `composer.json`, `Gemfile`, etc.
-- Identify application entrypoints: `Program.cs`/`Startup.cs`, `main.ts|js`, `app.py`, `main.go`, `index.php`, `app.rb`, etc.
-- Use semantic_search to locate startup/configuration code (dependency injection, routing, middleware, env config)
-- Identify architectural patterns from folder structure and code organization
-
-**Output:** Architecture summary with patterns identified
-**User Checkpoint:** None (informational)
-
-### 3. Deep Business Logic and Code Analysis (EXHAUSTIVE)
-**Action:** Perform exhaustive, file-by-file analysis:
-- **List ALL service files** in application layer (use list_dir + file_search)
-- **Read EVERY service file** line by line (use read_file)
-- **List ALL repository files** and read each one
-- **Read ALL domain models, entities, value objects**
-- **Read ALL controller/endpoint files**
-- Identify critical modules and data flow
-- Key algorithms and unique features
-- Integration points and external dependencies
-- Additional insights from `otherlogics/` folder if present (e.g., stored procedures, batch jobs, scripts)
-
-**Steps:**
-1. Use file_search to find all `*Service.cs`, `*Repository.cs`, `*Controller.cs`, domain models
-2. Use list_dir to enumerate all files in Application, Domain, Infrastructure layers
-3. **READ EVERY FILE** using read_file (1-1000 lines) - DO NOT SKIP
-4. Group files by feature/domain (e.g., CarModel, Driver, Gate, Movement, etc.)
-5. For each feature group, extract: purpose, business rules, validations, workflows, dependencies
-6. Check for `otherlogics/` or similarly named folder; if present, incorporate its insights
-7. Create a catalog: `{ "FeatureName": ["File1.cs", "File2.cs"], ... }`
-
-**Output:** Comprehensive catalog of all business logic files grouped by feature
-**User Checkpoint:** None (feeds into per-feature documentation)
-**Operation:** Autonomous - analyze ALL files without stopping for user confirmation
-
-If critical logic (e.g., procedure calls, ETL jobs) is not discoverable in the repository, request supplementary details and place them under `/otherlogics/` for analysis.
-
-### 4. Project Purpose Detection
-**Action:** Review:
-- Documentation files (README.md, docs/)
-- Code analysis results from step 3
-- Project names and namespaces
-
-**Output:** Summary of application purpose, business domains, stakeholders
-**User Checkpoint:** None (informational)
-
-### 5. Per-Feature Documentation Generation (MANDATORY)
-**Action:** For EACH feature identified in step 3, create a dedicated Markdown file:
-- **File naming:** `/docs/features/<feature-name>.md` (e.g., `car-model.md`, `driver-management.md`, `gate-access.md`)
-- **Content for each feature:**
-  - Feature purpose and scope
-  - Analyzed files (list all services, repositories, models, controllers for this feature)
-  - Explicit business rules and constraints (uniqueness, soft-delete, permission lifecycle, validations)
-  - Workflows (step-by-step flows) with links to code symbols (files/classes/methods with line numbers)
-  - Data models and entities
-  - Dependencies and integrations (infrastructure, external services)
-  - API endpoints or UI components
-  - Security and authorization rules
-  - Known issues or technical debt
-
-**Steps:**
-1. Create `/docs/features/` directory
-2. For each feature in catalog from step 3, create `<feature-name>.md`
-3. Read all files associated with that feature again if needed for detail
-4. Document with code references, line numbers, and examples
-5. Ensure NO feature is left undocumented
-
-**Output:** Multiple `.md` files in `/docs/features/` directory (one per feature)
-**User Checkpoint:** None (reviewed in step 7)
-**Operation:** Autonomous - create ALL feature docs without stopping for interim user input
-
-### 6. Master README Creation (RE-READ FEATURE DOCS)
-**Action:** Create comprehensive `/docs/README.md` by RE-READING all feature documentation:
-
-**Steps:**
-1. **READ ALL generated feature MD files** from `/docs/features/`
-2. Synthesize a comprehensive overview document
-3. Create `/docs/README.md` with:
-   - Application purpose and stakeholders
-   - Architecture overview
-   - **Feature index** (list all features with links to their detailed docs)
-   - Core business domains
-   - Key workflows and user journeys
-   - Cross-references to frontend, cross-cutting, and other analysis docs
-4. Update `/SUMMARY.md` at repository root with:
-   - Main purpose of application
-   - Technology stack summary
-   - Link to `/docs/README.md` as primary documentation entry point
-   - Links to frontend analysis, cross-cuttings, and feature docs
-
-**Output:** `/docs/README.md` (comprehensive, synthesized from feature docs) and `/SUMMARY.md` (repository root entrypoint)
-**User Checkpoint:** Next step is validation
-
-### 6.5 Frontend Analysis File Creation
-**Action:** Create `/docs/frontend/README.md` with:
-- Routing map and navigation patterns
-- Authentication/authorization flows and role-based UI behaviors
-- Forms and validation rules (client/server), date/time handling
-- State management and data fetching/caching strategy
-- Error/loading UX patterns, toasts/modals, error boundaries
-- i18n/l10n and accessibility considerations
-- UI/component dependencies and modernization opportunities
-
-**Output:** `/docs/frontend/README.md`
-**User Checkpoint:** Included in validation step
-
-### 6.6 Cross-Cuttings Analysis File Creation
-**Action:** Create `/docs/cross-cuttings/README.md` covering:
-- Error semantics and validation contracts
-- Localization/i18n strategy and date/time handling
-- Auditing/observability events and retention policies
-- Security/authorization policies and sensitive operations
-- Data integrity (constraints), soft-delete global filters, lifecycle rules
-- Performance/caching guidelines and N+1 avoidance
-
-**Output:** `/docs/cross-cuttings/README.md`
-**User Checkpoint:** Included in validation step
-
-### 7. Human-In-The-Loop Validation
-**Action:** Present all analyses and documentation to user
-**Question:** "Is the above analysis correct and comprehensive? Are there any missing parts?"
-
-**If NO:**
-- Ask what's missing or incorrect
-- Expand search scope and re-analyze
-- Loop back to relevant steps (1-6)
-
-**If YES:**
-- Proceed to step 8
-
-### 8. Tech Stack & Architecture Suggestion
-**Action:** Ask user for preference:
-"Do you want to specify a new tech stack/architecture OR do you want expert suggestions?"
-
-**If user wants suggestions:**
-- Act as 20+ year principal solutions/software architect
-- Propose modern tech stack (e.g., .NET 8+, React, microservices)
-- Detail suitable architecture (Clean Architecture, DDD, event-driven, etc.)
-- Explain rationale, benefits, migration implications
-- Consider: scalability, maintainability, team skills, industry trends
-
-**Question:** "Are these suggestions acceptable?"
-
-**If NO:**
-- Gather feedback on concerns
-- Rework suggestions
-- Loop back to this step
-
-**If YES:**
-- Proceed to step 9
-
-### 9. Implementation Plan Generation with `/modernizedone/` Structure
-**Action:** Generate comprehensive Markdown implementation plan AND create initial modernization structure:
-
-**Part A: Create `/modernizedone/` Folder Structure**
-1. Create `/modernizedone/` directory at repository root
-2. Create initial project structure with cross-cuttings first:
-   - `/modernizedone/cross-cuttings/` - Shared libraries, utilities, common contracts
-   - `/modernizedone/src/` - Main application code (to be populated per plan)
-   - `/modernizedone/tests/` - Test projects
-   - `/modernizedone/docs/` - Modernization-specific documentation
-3. Create placeholder README.md in `/modernizedone/` explaining the structure
-
-**Part B: Generate Implementation Plan Document**
-Create `/docs/modernization-plan.md` with:
-- **Phase 0: Foundation Setup**
-  - Cross-cuttings library creation (logging, error handling, validation, etc.)
-  - Project structure setup in `/modernizedone/`
-  - Dependency injection container configuration
-  - Common DTOs and contracts
-- **Project structure overview** (new directory layout in `/modernizedone/`)
-- **Migration/refactoring steps** (sequential tasks, feature by feature)
-- **Key milestones** (phases with deliverables)
-- **Task breakdown** (backlog-ready items referencing feature docs from step 5)
-- **Testing strategy** (unit, integration, E2E)
-- **Deployment considerations** (CI/CD, rollout strategy)
-- **References** to business logic docs from step 5 (link each task to relevant feature MD)
-
-**Output:** `/modernizedone/` folder structure + `/docs/modernization-plan.md`
-**User Checkpoint:** Structure and plan ready for execution by developers or coding agents
-
----
-
-## Example Outputs
-
-### Analysis Progress Report
-```markdown
-## Deep Analysis Progress
-
-**Phase 3: Business Logic Analysis**
-✅ Completed: 12/12 features analyzed
-
-Feature Breakdown:
-- CarModel: 3 files (1 service, 1 repository, 1 domain model)
-- Company: 3 files (1 service, 1 repository, 1 domain model)
-
-**Total Files Analyzed:** 40/40 (100%)
-**Per-Feature Docs Generated:** 12/12
-**Next:** Generating master README by re-reading all feature docs
-```
-
-### Technology Stack Summary
-```markdown
-## Technology Stack Identified
-
-**Backend:**
-- Language: [C#/.NET | Java/Spring | Python/Django | Node.js/Express | Go | PHP/Laravel | Ruby/Rails]
-- Framework Version: [Detected from project files]
-- ORM/Data Access: [Entity Framework | Hibernate | SQLAlchemy | Sequelize | GORM | Eloquent | ActiveRecord]
-
-**Frontend:**
-- Framework: [React | Vue | Angular | jQuery | Vanilla JS]
-- Build Tools: [Webpack | Vite | Rollup | Parcel]
-- UI Library: [Bootstrap | Tailwind | Material-UI | Ant Design]
-
-**Database:**
-- Type: [SQL Server | PostgreSQL | MySQL | MongoDB | Oracle]
-- Version: [Detected or inferred]
-
-**Patterns Detected:**
-- Architecture: [Layered | Clean Architecture | Hexagonal | MVC | MVVM | Microservices]
-- Data Access: [Repository pattern | Active Record | Data Mapper]
-- Organization: [Feature-based | Layer-based | Domain-driven]
-- Identified Domains: [List of business domains found]
-```
-
-### Per-Feature Documentation Example
-```markdown
-# CarModel Feature Analysis
-
-## Files Analyzed
-- [CarModelService.cs](src/Application/CarGateAccess.Application/CarModelService.cs)
-- [ICarModelService.cs](src/Application/CarGateAccess.Application.Abstractions/ICarModelService.cs)
-- [CarModel domain model](src/Domain/CarGateAccess.Domain/Entities/CarModel.cs)
-
-## Purpose
-Manages vehicle model catalog and specifications for gate access system.
-
-## Business Rules
-1. **Unique model names:** Each car model must have unique identifier
-2. **Vehicle type association:** Models must be linked to valid VehicleType
-3. **Soft delete:** Deleted models retained for historical tracking
-
-## Workflows
-### Create Car Model
-1. Validate model name uniqueness
-2. Verify vehicle type exists
-3. Save to database
-4. Return created entity
-
-## API Endpoints
-- POST /api/carmodel - Create new model
-- GET /api/carmodel/{id} - Retrieve model
-- PUT /api/carmodel/{id} - Update model
-- DELETE /api/carmodel/{id} - Soft delete
-
-## Dependencies
-- VehicleTypeService (for type validation)
-- CarModelRepository (data access)
-
-## Code References
-- Service implementation: [CarModelService.cs#L45-L89](src/Application/CarModelService.cs#L45-L89)
-- Validation logic: [CarModelService.cs#L120-L135](src/Application/CarModelService.cs#L120-L135)
-```
-
-### Architecture Recommendation
-```markdown
-## Recommended Modern Architecture
-
-**Backend:**
-- Language/Framework: [Latest LTS version of detected stack OR suggested modern alternative]
-  - .NET: .NET 8+ with ASP.NET Core
-  - Java: Spring Boot 3.x with Java 17/21
-  - Python: FastAPI or Django 5.x with Python 3.11+
-  - Node.js: NestJS or Express with Node 20 LTS
-  - Go: Go 1.21+ with Gin/Fiber
-  - PHP: Laravel 10+ with PHP 8.2+
-  - Ruby: Rails 7+ with Ruby 3.2+
-
-**Frontend:**
-- Modern framework: [React 18+ | Vue 3+ | Angular 17+ | Svelte 4+] with TypeScript
-- Build tooling: Vite for fast development
-- State management: Context API / Pinia / NgRx / Zustand depending on framework
-
-**Architecture Pattern:**
-Clean/Hexagonal Architecture with:
-- **Domain layer:** Entities, value objects, domain services, business rules
-- **Application layer:** Use cases, interfaces, DTOs, service contracts
-- **Infrastructure layer:** Persistence, external services, messaging, caching
-- **Presentation layer:** API endpoints (REST/GraphQL), controllers, minimal APIs
-
-**Rationale:**
-- Clean Architecture ensures maintainability and testability across any stack
-- Separation of concerns enables independent scaling and team autonomy
-- Modern frameworks offer significant performance improvements (2-5x faster)
-- TypeScript provides type safety and better developer experience
-- Layered architecture facilitates parallel development and testing
-```
-
-### Implementation Plan Excerpt
-```markdown
-## Phase 0: Cross-Cuttings and Foundation (Week 1)
-
-### Directory: `/modernizedone/cross-cuttings/`
-
-#### Tasks:
-1. **Create shared libraries structure**
-   - [ ] `/modernizedone/cross-cuttings/Common/` - Shared utilities, helpers, extensions
-   - [ ] `/modernizedone/cross-cuttings/Logging/` - Logging abstractions and providers
-   - [ ] `/modernizedone/cross-cuttings/Validation/` - Validation framework and rules
-   - [ ] `/modernizedone/cross-cuttings/ErrorHandling/` - Global error handlers and custom exceptions
-   - [ ] `/modernizedone/cross-cuttings/Security/` - Auth/authz contracts and middleware
-
-2. **Implement cross-cutting concerns** (stack-specific libraries):
-   - [ ] Result/Either pattern (success/failure responses)
-   - [ ] Global exception handling middleware
-   - [ ] Validation pipeline: FluentValidation (.NET), Joi (Node.js), Pydantic (Python), Bean Validation (Java)
-   - [ ] Structured logging: Serilog/NLog (.NET), Winston/Pino (Node.js), structlog (Python), Logback (Java)
-   - [ ] JWT authentication setup with refresh tokens
-   - [ ] CORS, rate limiting, request/response logging
-
-## Phase 1: Project Structure Setup (Week 2)
-
-### Directory: `/modernizedone/src/`
-
-#### Tasks:
-1. **Create layered architecture structure**
-   - [ ] `/modernizedone/src/Domain/` - Domain entities, value objects, business rules
-   - [ ] `/modernizedone/src/Application/` - Use cases, services, interfaces, DTOs
-   - [ ] `/modernizedone/src/Infrastructure/` - External integrations, messaging, caching
-   - [ ] `/modernizedone/src/Persistence/` - Data access layer, repositories, ORM configs
-   - [ ] `/modernizedone/src/API/` - API endpoints (REST/GraphQL), controllers, route handlers
-
-2. **Migrate domain models** (Reference: [docs/features/](docs/features/))
-   - [ ] Extract domain entities from legacy code (see feature docs)
-   - [ ] Implement rich domain models with behavior (not anemic models)
-   - [ ] Add value objects for concepts like Email, Money, Date ranges
-   - [ ] Define domain events for important state changes
-   - [ ] Establish aggregate roots and boundaries
-
-3. **Set up data access layer**
-   - [ ] Configure ORM: EF Core (.NET), Hibernate/JPA (Java), SQLAlchemy/Django ORM (Python), Sequelize/TypeORM (Node.js)
-   - [ ] Migrate database schema or define migrations
-   - [ ] Implement repository interfaces and concrete implementations
-   - [ ] Configure connection pooling and resilience
-   - [ ] Test database connectivity and basic CRUD operations
-
-## Phase 2: Feature Migration (Weeks 3-6)
-Migrate features in order of dependency (reference feature docs for business rules):
-1. **Foundational features** (reference feature docs)
-2. **Configuration features** (reference feature docs)
-3. **User management features** (reference feature docs)
-4. **Permission and authorization features** (reference feature docs)
-5. **Core business logic features** (reference feature docs)
-```
-
----
-
-## Agent Behavior Guidelines
-
-**Communication:** Structured Markdown, bullet points, highlight critical decisions, progress updates WITHOUT stopping
-
-**Decision Points:**
-- **NEVER ask during analysis phase (steps 1-6)** - work autonomously
-- **ASK ONLY at these checkpoints:** finalizing analysis (step 7), recommending stack (step 8)
-- **Progress updates are informational ONLY** - do not wait for user response to continue
-
-**Iterative Refinement:** If analysis incomplete, list gaps, re-read ALL missing files, generate additional docs, re-synthesize README
-
-**Expertise:** Principal solutions architect persona (20+ years, enterprise patterns, trade-offs, maintainability focus)
-
-**Documentation:** Clear structure, code examples, file paths with line numbers, cross-references, feature-based in `/docs/features/`
-
----
-
-## Configuration Metadata
-
-```yaml
-agent_type: human-in-the-loop modernization
-project_focus: stack-agnostic (any language/framework: .NET, Java, Python, Node.js, Go, PHP, Ruby, etc.)
-supported_stacks:
-  - backend: [.NET, Java/Spring, Python, Node.js, Go, PHP, Ruby]
-  - frontend: [React, Vue, Angular, Svelte, jQuery, vanilla JS]
-  - mobile: [React Native, Flutter, Xamarin, native iOS/Android]
-output_formats: [Markdown]
-expertise_emulated: principal solutions/software architect (20+ years)
-interaction_pattern: interactive, iterative, checkpoint-based
-workflow_steps: 9
-validation_checkpoints: 2 (after analysis, after recommendations)
-analysis_approach: exhaustive, file-by-file, per-feature documentation
-documentation_output: /docs/features/, /docs/README.md, /SUMMARY.md, /docs/modernization-plan.md
-modernization_output: /modernizedone/ (cross-cuttings first, then feature migration)
-completeness_requirement: 100% file coverage before moving to planning phase
-feature_documentation: mandatory per-feature MD files with code references
-readme_synthesis: master README created by re-reading all feature docs
-```
-
----
-
-## Usage Instructions
-
-1. **Invoke the agent** with: "Help me modernize this project" or "@modernization analyze this codebase"
-2. **Deep analysis phase (steps 1-6):**
-   - Agent reads EVERY service, repository, domain model, controller
-   - Agent creates per-feature documentation (one MD per feature)
-   - Agent re-reads all generated feature docs to create master README
-   - **Expect progress updates:** "Analyzed 5/12 features..."
-3. **Review findings** at checkpoint (step 7) and provide feedback
-   - Agent shows file coverage: "40/40 files analyzed (100%)"
-   - If incomplete, agent will read missing files and regenerate docs
-4. **Choose approach** for tech stack (specify or get suggestions)
-5. **Approve recommendations** at checkpoint (step 8)
-6. **Receive `/modernizedone/` structure and implementation plan** (step 9)
-   - New project folder created with cross-cuttings
-   - Detailed migration plan with references to feature docs
-
-The entire process typically involves 2-3 interactions with **significant analysis time** for large codebases (expect thorough, file-by-file examination).
-
----
-
-## Notes for Developers
-
-- This agent creates a paper trail of decisions and analysis
-- All documentation is version-controlled in `/docs/`
-- Implementation plan can be fed directly to Copilot Coding Agent
-- Suitable for regulated industries requiring audit trails
-- Works best with repositories containing 1000+ files or complex business logic

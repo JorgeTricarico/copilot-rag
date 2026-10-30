@@ -1,7 +1,667 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part3
-- **Generado (UTC)**: 2026-10-29T05:00:59.602507+00:00
-- **Total Palabras**: 449,402 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-30T05:00:20.063209+00:00
+- **Total Palabras**: 449,641 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/arduino-azure-iot-edge-integration/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arduino-azure-iot-edge-integration/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arduino-azure-iot-edge-integration/SKILL.md
+- **SHA256_FINGERPRINT**: `64d57cb8f9d2c57fe1be0d83d38cd21b0790772851780b420995c851f6847d95`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.479343+00:00
+---
+
+**description**: Design and implement Arduino integration with Azure IoT Hub and IoT Edge, including secure provisioning, resilient telemetry, command handling, and production guardrails.
+
+# Arduino Azure IoT Edge Integration
+
+Use this skill when the user needs to connect Arduino-class devices to Azure IoT, especially in edge-heavy scenarios (gateways, intermittent networks, offline buffering, and local actuation).
+
+## When to use it
+
+Use this skill for requests such as:
+
+- "I want to connect Arduino sensors to Azure"
+- "How do I send MQTT telemetry to IoT Hub?"
+- "I need an edge gateway for field devices"
+- "I want cloud-to-device commands and OTA configuration updates"
+
+## Mandatory documentation review
+
+Before recommending an IoT Edge topology or runtime behavior, review:
+
+- https://learn.microsoft.com/azure/iot-edge/
+
+If documentation cannot be consulted, proceed with explicit assumptions and highlight them in a dedicated section.
+
+## Official Arduino references and best practices (required)
+
+Before proposing firmware, wiring, or communication implementation details, consult official Arduino sources first:
+
+- https://www.arduino.cc/en/Guide
+- https://docs.arduino.cc/
+- https://docs.arduino.cc/language-reference/
+- references/arduino-official-best-practices.md
+
+When choosing between implementation alternatives, prioritize official Arduino guidance over community snippets unless there is a clear technical reason to deviate.
+
+## Objectives
+
+- Produce a secure end-to-end reference path from the Arduino device to cloud insights.
+- Handle unstable links (store-and-forward, retries, idempotency).
+- Define an actionable device and cloud backlog.
+
+## Integration patterns
+
+### Pattern A: Arduino direct to IoT Hub
+
+Use when connectivity is stable and cloud latency is acceptable.
+
+- Protocol: MQTT over TLS.
+- Identity: per-device credentials (SAS or X.509).
+- Telemetry payload: compact JSON with timestamp, device ID, metrics, and optional quality flags.
+
+### Pattern B: Arduino to local gateway, then IoT Edge
+
+Use when links are constrained, local control is required, or batching improves cost/reliability.
+
+- Arduino communicates with a local gateway (serial, BLE, local MQTT, RS-485, Modbus bridge).
+- The gateway publishes upstream through the IoT Edge runtime and routes data to IoT Hub.
+- Local modules can filter, aggregate, and trigger actions even during cloud outages.
+
+## Design flow
+
+### 1) Device contract
+
+Define:
+
+- Sensor catalog and units.
+- Sampling frequency and expected throughput.
+- Message schema versioning strategy.
+- Desired/reported device twin properties to control runtime behavior.
+
+### 2) Security baseline
+
+Require:
+
+- Unique identity per device.
+- No hardcoded secrets in source code or firmware artifacts.
+- Credential rotation strategy.
+- Signed firmware and a controlled update process when possible.
+
+### 3) Reliability and offline behavior
+
+Plan and document:
+
+- Backoff with jitter.
+- Local queue/buffer strategy with bounded size.
+- Duplicate suppression or downstream idempotent processing.
+- Fallback to last-known-good configuration.
+
+### 4) Cloud and edge routing
+
+Define routes for:
+
+- Raw telemetry to cold storage.
+- Curated telemetry to hot analytics.
+- Alerts to operations channels.
+- Commands and configuration back to edge/device.
+
+### 5) Observability
+
+Specify minimum operations telemetry:
+
+- Device heartbeat and firmware version.
+- Connectivity state transitions.
+- Message send success/error counters.
+- Gateway module health and restart reasons.
+
+## Reuse other skills
+
+When relevant, combine with:
+
+- `azure-smart-city-iot-solution-builder` for city-wide architecture and phased rollout.
+- `azure-resource-visualizer` for relationship diagrams.
+- `appinsights-instrumentation` for app and service telemetry patterns.
+
+Also use `references/arduino-official-best-practices.md` as a quality baseline for firmware and hardware recommendations, and `references/arduino-iot-checklist.md` before finalizing architecture or implementation guidance.
+
+## Required output
+
+Always provide:
+
+1. Chosen connectivity pattern and rationale.
+2. Message contract (fields, units, sample payload).
+3. Security checklist for identity/credentials/updates.
+4. Reliability plan (retry, buffering, dedupe).
+5. Implementation backlog (firmware, gateway, cloud).
+
+## Output template
+
+1. Scenario and assumptions
+2. Recommended architecture
+3. Device and gateway contract
+4. Security and reliability controls
+5. Deployment plan and validation tests
+
+## Guidelines
+
+- Do not propose production deployments with shared credentials across devices.
+- Do not assume always-on connectivity in field deployments.
+- Do not omit command authorization and auditing in actuator scenarios.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/arduino-azure-iot-edge-integration/references/arduino-iot-checklist.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arduino-azure-iot-edge-integration/references/arduino-iot-checklist.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arduino-azure-iot-edge-integration/references/arduino-iot-checklist.md
+- **SHA256_FINGERPRINT**: `e5073d99f72681cfa707d4a5c4829cf9b19c47a998a16fb6bfbf59a218cd7793`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.526593+00:00
+---
+
+# Arduino Azure IoT Checklist
+
+Use this checklist before finalizing architecture or implementation guidance.
+
+## 0) Official Arduino Baseline
+
+- Official references reviewed from <https://www.arduino.cc/en/Guide> and <https://docs.arduino.cc/>.
+- Language/API calls validated against <https://docs.arduino.cc/language-reference/>.
+- Best practices reviewed from `references/arduino-official-best-practices.md`.
+
+## 1) Device Profile
+
+- MCU model and memory constraints documented.
+- Sensor list and sampling strategy defined.
+- Power model documented (mains, battery, sleep cycles).
+
+## 2) Connectivity
+
+- Selected transport documented (MQTT over TLS preferred).
+- Network failure behavior defined.
+- Local timestamp strategy defined if device lacks RTC sync.
+
+## 3) Security
+
+- Unique identity per device.
+- No secrets in source control.
+- Credential rotation plan documented.
+- Firmware update and rollback plan documented.
+
+## 4) Edge and Cloud Flow
+
+- Routing from edge to IoT Hub documented.
+- Offline buffering limits defined.
+- Duplicate handling strategy documented.
+- Alerting thresholds and destinations defined.
+
+## 5) Validation
+
+- Connectivity soak test scenario.
+- Packet loss and reconnection test.
+- Command authorization test.
+- Firmware version and health reporting verification.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/arduino-azure-iot-edge-integration/references/arduino-official-best-practices.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arduino-azure-iot-edge-integration/references/arduino-official-best-practices.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arduino-azure-iot-edge-integration/references/arduino-official-best-practices.md
+- **SHA256_FINGERPRINT**: `10cb10a1a461752e20fc9923f15d429a4683dedbefbdcaa48b7138eedef5ec5d`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.503825+00:00
+---
+
+# Arduino Official References and Best Practices
+
+Use these official Arduino resources before finalizing firmware or hardware guidance.
+
+## Official References
+
+- Arduino main guide: <https://www.arduino.cc/en/Guide>
+- Arduino docs home: <https://docs.arduino.cc/>
+- Getting started path: <https://docs.arduino.cc/learn/starting-guide/getting-started-arduino/>
+- Arduino IDE usage: <https://docs.arduino.cc/learn/starting-guide/the-arduino-software-ide/>
+- Arduino language reference: <https://docs.arduino.cc/language-reference/>
+- Arduino programming reference overview: <https://docs.arduino.cc/learn/programming/reference/>
+- Arduino memory guide: <https://docs.arduino.cc/learn/programming/memory-guide/>
+- Arduino debugging fundamentals: <https://docs.arduino.cc/learn/microcontrollers/debugging/>
+- Arduino low-power design guide: <https://docs.arduino.cc/learn/electronics/low-power/>
+- Arduino communication protocols index: <https://docs.arduino.cc/learn/communication/>
+- Arduino style guide for libraries: <https://docs.arduino.cc/learn/contributions/arduino-library-style-guide/>
+
+## Firmware Best Practices
+
+- Keep the `loop()` non-blocking; avoid long `delay()` usage in production logic.
+- Use `millis()`-based scheduling for periodic tasks.
+- Budget SRAM explicitly and avoid dynamic allocation in hot paths.
+- Validate sensor ranges and provide safe defaults for invalid readings.
+- Add startup self-checks and periodic health heartbeat messages.
+- Version the payload schema and firmware version in every telemetry stream.
+- Implement retry with exponential backoff and jitter for network operations.
+- Store credentials outside source code and rotate them according to policy.
+
+## Hardware and Power Best Practices
+
+- Document voltage levels, pin mapping, and current limits per peripheral.
+- Design for brownout and power fluctuation scenarios.
+- Use watchdog and safe recovery behavior where available.
+- Plan low-power modes for battery deployments and validate wake cycles.
+
+## Integration Best Practices for Azure IoT
+
+- Prefer secure transports (MQTT over TLS) and per-device identity.
+- Define idempotent upstream processing for duplicate message scenarios.
+- Include device health metrics (uptime, reset reason, RSSI where applicable).
+- Validate offline buffering bounds to avoid uncontrolled memory growth.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/arize-ai-provider-integration/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arize-ai-provider-integration/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arize-ai-provider-integration/SKILL.md
+- **SHA256_FINGERPRINT**: `00ec8e86c4c371e85fea26a4481f7295752785b2d63b84d738b9f0bad0c7c521`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.673453+00:00
+---
+
+**description**: Creates, reads, updates, and deletes Arize AI integrations that store LLM provider credentials used by evaluators and other Arize features. Supports any LLM provider (e.g. OpenAI, Anthropic, Azure OpenAI, AWS Bedrock, Vertex AI, Gemini, NVIDIA NIM). Use when the user mentions AI integration, LLM provider credentials, create integration, list integrations, update credentials, delete integration, or connecting an LLM provider to Arize.
+
+# Arize AI Integration Skill
+
+> **`SPACE`** — Most `--space` flags and the `ARIZE_SPACE` env var accept a space **name** (e.g., `my-workspace`) or a base64 space **ID** (e.g., `U3BhY2U6...`). Find yours with `ax spaces list`.
+> **Note:** `ai-integrations create` does **not** accept `--space` — AI integrations are account-scoped. Use `--space` only with `list`, `get`, `update`, and `delete`.
+
+## Concepts
+
+- **AI Integration** = stored LLM provider credentials registered in Arize; used by evaluators to call a judge model and by other Arize features that need to invoke an LLM on your behalf
+- **Provider** = the LLM service backing the integration (e.g., `openAI`, `anthropic`, `awsBedrock`)
+- **Integration ID** = a base64-encoded global identifier for an integration (e.g., `TGxtSW50ZWdyYXRpb246MTI6YUJjRA==`); required for evaluator creation and other downstream operations
+- **Scoping** = visibility rules controlling which spaces or users can use an integration
+- **Auth type** = how Arize authenticates with the provider: `default` (provider API key), `proxy_with_headers` (proxy via custom headers), or `bearer_token` (bearer token auth)
+
+## Prerequisites
+
+Proceed directly with the task — run the `ax` command you need. Do NOT check versions, env vars, or profiles upfront.
+
+If an `ax` command fails, troubleshoot based on the error:
+- `command not found` or version error → see references/ax-setup.md
+- `401 Unauthorized` / missing API key → run `ax profiles show` to inspect the current profile. If the profile is missing or the API key is wrong, follow references/ax-profiles.md to create/update it. If the user doesn't have their key, direct them to https://app.arize.com/admin > API Keys
+- Space unknown → run `ax spaces list` to pick by name, or ask the user
+- LLM provider call fails (missing OPENAI_API_KEY / ANTHROPIC_API_KEY) → run `ax ai-integrations list --space SPACE` to check for platform-managed credentials. If none exist, ask the user to provide the key or create an integration via the **arize-ai-provider-integration** skill
+- **Security:** Never read `.env` files or search the filesystem for credentials. Use `ax profiles` for Arize credentials and `ax ai-integrations` for LLM provider keys. If credentials are not available through these channels, ask the user.
+
+---
+
+## List AI Integrations
+
+List all integrations accessible in a space:
+
+```bash
+ax ai-integrations list --space SPACE
+```
+
+Filter by name (case-insensitive substring match):
+
+```bash
+ax ai-integrations list --space SPACE --name "openai"
+```
+
+Paginate large result sets:
+
+```bash
+# Get first page
+ax ai-integrations list --space SPACE --limit 20 -o json
+
+# Get next page using cursor from previous response
+ax ai-integrations list --space SPACE --limit 20 --cursor CURSOR_TOKEN -o json
+```
+
+**Key flags:**
+
+| Flag | Description |
+|------|-------------|
+| `--space` | Space name or ID to filter integrations |
+| `--name` | Case-insensitive substring filter on integration name |
+| `--limit` | Max results (1–100, default 15) |
+| `--cursor` | Pagination token from a previous response |
+| `-o, --output` | Output format: `table` (default) or `json` |
+
+**Response fields:**
+
+| Field | Description |
+|-------|-------------|
+| `id` | Base64 integration ID — copy this for downstream commands |
+| `name` | Human-readable name |
+| `provider` | LLM provider enum (see Supported Providers below) |
+| `has_api_key` | `true` if credentials are stored |
+| `model_names` | Allowed model list, or `null` if all models are enabled |
+| `enable_default_models` | Whether default models for this provider are allowed |
+| `function_calling_enabled` | Whether tool/function calling is enabled |
+| `auth_type` | Authentication method: `default`, `proxy_with_headers`, or `bearer_token` |
+
+---
+
+## Get a Specific Integration
+
+```bash
+ax ai-integrations get NAME_OR_ID
+ax ai-integrations get NAME_OR_ID -o json
+ax ai-integrations get NAME_OR_ID --space SPACE   # required when using name instead of ID
+```
+
+Use this to inspect an integration's full configuration or to confirm its ID after creation.
+
+---
+
+## Create an AI Integration
+
+Before creating, always list integrations first — the user may already have a suitable one:
+
+```bash
+ax ai-integrations list --space SPACE
+```
+
+If no suitable integration exists, create one. The required flags depend on the provider.
+
+### OpenAI
+
+```bash
+ax ai-integrations create \
+  --name "My OpenAI Integration" \
+  --provider openAI \
+  --api-key $OPENAI_API_KEY
+```
+
+### Anthropic
+
+```bash
+ax ai-integrations create \
+  --name "My Anthropic Integration" \
+  --provider anthropic \
+  --api-key $ANTHROPIC_API_KEY
+```
+
+### Azure OpenAI
+
+```bash
+ax ai-integrations create \
+  --name "My Azure OpenAI Integration" \
+  --provider azureOpenAI \
+  --api-key $AZURE_OPENAI_API_KEY \
+  --base-url "https://my-resource.openai.azure.com/"
+```
+
+### AWS Bedrock
+
+AWS Bedrock uses IAM role-based auth. Provide the ARN of the role Arize should assume via `--provider-metadata`:
+
+```bash
+ax ai-integrations create \
+  --name "My Bedrock Integration" \
+  --provider awsBedrock \
+  --provider-metadata '{"role_arn": "arn:aws:iam::123456789012:role/ArizeBedrockRole"}'
+```
+
+### Vertex AI
+
+Vertex AI uses GCP service account credentials. Provide the GCP project and region via `--provider-metadata`:
+
+```bash
+ax ai-integrations create \
+  --name "My Vertex AI Integration" \
+  --provider vertexAI \
+  --provider-metadata '{"project_id": "my-gcp-project", "location": "us-central1"}'
+```
+
+### Gemini
+
+```bash
+ax ai-integrations create \
+  --name "My Gemini Integration" \
+  --provider gemini \
+  --api-key $GEMINI_API_KEY
+```
+
+### NVIDIA NIM
+
+```bash
+ax ai-integrations create \
+  --name "My NVIDIA NIM Integration" \
+  --provider nvidiaNim \
+  --api-key $NVIDIA_API_KEY \
+  --base-url "https://integrate.api.nvidia.com/v1"
+```
+
+### Custom (OpenAI-compatible endpoint)
+
+```bash
+ax ai-integrations create \
+  --name "My Custom Integration" \
+  --provider custom \
+  --base-url "https://my-llm-proxy.example.com/v1" \
+  --api-key $CUSTOM_LLM_API_KEY
+```
+
+### Supported Providers
+
+| Provider | Required extra flags |
+|----------|---------------------|
+| `openAI` | `--api-key <key>` |
+| `anthropic` | `--api-key <key>` |
+| `azureOpenAI` | `--api-key <key>`, `--base-url <azure-endpoint>` |
+| `awsBedrock` | `--provider-metadata '{"role_arn": "<arn>"}'` |
+| `vertexAI` | `--provider-metadata '{"project_id": "<gcp-project>", "location": "<region>"}'` |
+| `gemini` | `--api-key <key>` |
+| `nvidiaNim` | `--api-key <key>`, `--base-url <nim-endpoint>` |
+| `custom` | `--base-url <endpoint>` |
+
+### Optional flags for any provider
+
+| Flag | Description |
+|------|-------------|
+| `--model-name` | Allowed model name (repeat for multiple, e.g. `--model-name gpt-4o --model-name gpt-4o-mini`); omit to allow all models |
+| `--enable-default-models` | Enable the provider's default model list |
+| `--function-calling-enabled` | Enable tool/function calling support |
+| `--auth-type` | Authentication type: `default`, `proxy_with_headers`, or `bearer_token` |
+| `--headers` | Custom headers as JSON object or file path (for proxy auth) |
+| `--provider-metadata` | Provider-specific metadata as JSON object or file path |
+
+### After creation
+
+Capture the returned integration ID (e.g., `TGxtSW50ZWdyYXRpb246MTI6YUJjRA==`) — it is needed for evaluator creation and other downstream commands. If you missed it, retrieve it:
+
+```bash
+ax ai-integrations list --space SPACE -o json
+# or by name/ID directly:
+ax ai-integrations get NAME_OR_ID
+```
+
+---
+
+## Update an AI Integration
+
+`update` is a partial update — only the flags you provide are changed. Omitted fields stay as-is.
+
+```bash
+# Rename
+ax ai-integrations update NAME_OR_ID --name "New Name"
+
+# Rotate the API key
+ax ai-integrations update NAME_OR_ID --api-key $OPENAI_API_KEY
+
+# Change the model list (replaces all existing model names)
+ax ai-integrations update NAME_OR_ID --model-name gpt-4o --model-name gpt-4o-mini
+
+# Update base URL (for Azure, custom, or NIM)
+ax ai-integrations update NAME_OR_ID --base-url "https://new-endpoint.example.com/v1"
+```
+
+Add `--space SPACE` when using a name instead of ID. Any flag accepted by `create` can be passed to `update`.
+
+---
+
+## Delete an AI Integration
+
+**Warning:** Deletion is permanent. Evaluators that reference this integration will no longer be able to run.
+
+```bash
+ax ai-integrations delete NAME_OR_ID --force
+ax ai-integrations delete NAME_OR_ID --space SPACE --force   # required when using name instead of ID
+```
+
+Omit `--force` to get a confirmation prompt instead of deleting immediately.
+
+---
+
+## Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| `ax: command not found` | See references/ax-setup.md |
+| `401 Unauthorized` | API key may not have access to this space. Verify key and space ID at https://app.arize.com/admin > API Keys |
+| `No profile found` | Run `ax profiles show --expand`; set `ARIZE_API_KEY` env var or write `~/.arize/config.toml` |
+| `Integration not found` | Verify with `ax ai-integrations list --space SPACE` |
+| `has_api_key: false` after create | Credentials were not saved — re-run `update` with the correct `--api-key` or `--provider-metadata` |
+| Evaluator runs fail with LLM errors | Check integration credentials with `ax ai-integrations get INT_ID`; rotate the API key if needed |
+| `provider` mismatch | Cannot change provider after creation — delete and recreate with the correct provider |
+
+---
+
+## Related Skills
+
+- **arize-evaluator**: Create LLM-as-judge evaluators that use an AI integration → use `arize-evaluator`
+- **arize-experiment**: Run experiments that use evaluators backed by an AI integration → use `arize-experiment`
+
+---
+
+## Save Credentials for Future Use
+
+See references/ax-profiles.md § Save Credentials for Future Use.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/arize-ai-provider-integration/references/ax-profiles.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arize-ai-provider-integration/references/ax-profiles.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arize-ai-provider-integration/references/ax-profiles.md
+- **SHA256_FINGERPRINT**: `fb97528b0bffbe671d07c3d5935aae649b47f86a8f941e25ba6c15b3eb656294`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.605360+00:00
+---
+
+# ax Profile Setup
+
+Consult this when authentication fails (401, missing profile, missing API key). Do NOT run these checks proactively.
+
+Use this when there is no profile, or a profile has incorrect settings (wrong API key, wrong region, etc.).
+
+## 1. Inspect the current state
+
+```bash
+ax profiles show
+```
+
+Look at the output to understand what's configured:
+- `API Key: (not set)` or missing → key needs to be created/updated
+- No profile output or "No profiles found" → no profile exists yet
+- Connected but getting `401 Unauthorized` → key is wrong or expired
+- Connected but wrong endpoint/region → region needs to be updated
+
+## 2. Fix a misconfigured profile
+
+If a profile exists but one or more settings are wrong, patch only what's broken.
+
+**Never pass a raw API key value as a flag.** Always reference it via the `ARIZE_API_KEY` environment variable. If the variable is not already set in the shell, instruct the user to set it first, then run the command:
+
+```bash
+# If ARIZE_API_KEY is already exported in the shell:
+ax profiles update --api-key $ARIZE_API_KEY
+
+# Fix the region (no secret involved — safe to run directly)
+ax profiles update --region us-east-1b
+
+# Fix both at once
+ax profiles update --api-key $ARIZE_API_KEY --region us-east-1b
+```
+
+`update` only changes the fields you specify — all other settings are preserved. If no profile name is given, the active profile is updated.
+
+## 3. Create a new profile
+
+If no profile exists, or if the existing profile needs to point to a completely different setup (different org, different region):
+
+**Always reference the key via `$ARIZE_API_KEY`, never inline a raw value.**
+
+```bash
+# Requires ARIZE_API_KEY to be exported in the shell first
+ax profiles create --api-key $ARIZE_API_KEY
+
+# Create with a region
+ax profiles create --api-key $ARIZE_API_KEY --region us-east-1b
+
+# Create a named profile
+ax profiles create work --api-key $ARIZE_API_KEY --region us-east-1b
+```
+
+To use a named profile with any `ax` command, add `-p NAME`:
+```bash
+ax spans export PROJECT -p work
+```
+
+## 4. Getting the API key
+
+**Never ask the user to paste their API key into the chat. Never log, echo, or display an API key value.**
+
+If `ARIZE_API_KEY` is not already set, instruct the user to export it in their shell:
+
+```bash
+export ARIZE_API_KEY="..."   # user pastes their key here in their own terminal
+```
+
+They can find their key at https://app.arize.com/admin > API Keys. Recommend they create a **scoped service key** (not a personal user key) — service keys are not tied to an individual account and are safer for programmatic use. Keys are space-scoped — make sure they copy the key for the correct space.
+
+Once the user confirms the variable is set, proceed with `ax profiles create --api-key $ARIZE_API_KEY` or `ax profiles update --api-key $ARIZE_API_KEY` as described above.
+
+## 5. Verify
+
+After any create or update:
+
+```bash
+ax profiles show
+```
+
+Confirm the API key and region are correct, then retry the original command.
+
+## Space
+
+There is no profile flag for space. Save it as an environment variable — accepts a space **name** (e.g., `my-workspace`) or a base64 space **ID** (e.g., `U3BhY2U6...`). Find yours with `ax spaces list -o json`.
+
+**macOS/Linux** — add to `~/.zshrc` or `~/.bashrc`:
+```bash
+export ARIZE_SPACE="my-workspace"    # name or base64 ID
+```
+Then `source ~/.zshrc` (or restart terminal).
+
+**Windows (PowerShell):**
+```powershell
+[System.Environment]::SetEnvironmentVariable('ARIZE_SPACE', 'my-workspace', 'User')
+```
+Restart terminal for it to take effect.
+
+## Save Credentials for Future Use
+
+At the **end of the session**, if the user manually provided any credentials during this conversation **and** those values were NOT already loaded from a saved profile or environment variable, offer to save them.
+
+**Skip this entirely if:**
+- The API key was already loaded from an existing profile or `ARIZE_API_KEY` env var
+- The space was already set via `ARIZE_SPACE` env var
+- The user only used base64 project IDs (no space was needed)
+
+**How to offer:** Use **AskQuestion**: *"Would you like to save your Arize credentials so you don't have to enter them next time?"* with options `"Yes, save them"` / `"No thanks"`.
+
+**If the user says yes:**
+
+1. **API key** — Run `ax profiles show` to check the current state. Then run `ax profiles create --api-key $ARIZE_API_KEY` or `ax profiles update --api-key $ARIZE_API_KEY` (the key must already be exported as an env var — never pass a raw key value).
+
+2. **Space** — See the Space section above to persist it as an environment variable.
 
 
 ---
@@ -81818,766 +82478,3 @@ postUpdate():
 | Ratio-based velocity | Resolution-independent movement |
 | Friction multiplier | Tunable feel per surface type |
 | Cell overflow while-loops | Handles multi-cell movement safely |
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/game-engine/references/3d-web-games.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/game-engine/references/3d-web-games.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/game-engine/references/3d-web-games.md
-- **SHA256_FINGERPRINT**: `aab3cc512b14912677dd7d58bedb03544af6ac47918bb43eb11af61ca18293e9`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:29.011726+00:00
----
-
-# 3D Web Games
-
-A comprehensive reference for building 3D games on the web, covering foundational theory, major frameworks, shader programming, collision detection, and immersive WebXR experiences.
-
-Sources: [MDN Web Docs -- Games Techniques: 3D on the web](https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web)
-
----
-
-## 3D Theory and Fundamentals
-
-Understanding the core concepts behind 3D rendering is essential before working with any framework.
-
-### Coordinate System
-
-WebGL uses the **right-hand coordinate system**:
-
-- **X-axis** -- points to the right
-- **Y-axis** -- points up
-- **Z-axis** -- points out of the screen toward the viewer
-
-All 3D objects are positioned relative to this coordinate system.
-
-### Vertices, Edges, Faces, and Meshes
-
-- **Vertex** -- a point in 3D space defined by `(x, y, z)` with additional attributes: color (RGBA, values 0.0-1.0), normal (direction the vertex faces, used for lighting), and texture coordinates.
-- **Edge** -- a line connecting two vertices.
-- **Face** -- a flat surface bounded by edges (e.g., a triangle connecting three vertices).
-- **Geometry** -- the structural shape built from vertices, edges, and faces.
-- **Material** -- the surface appearance, combining color, texture, roughness, metalness, etc.
-- **Mesh** -- geometry combined with a material to produce a renderable 3D object.
-
-### The Rendering Pipeline
-
-The pipeline transforms 3D objects into 2D pixels on screen, in four major stages:
-
-**1. Vertex Processing**
-
-Combines individual vertex data into primitives (triangles, lines, points) and applies transformations:
-
-- **Model transformation** -- positions and orients objects in world space.
-- **View transformation** -- positions and orients the virtual camera.
-- **Projection transformation** -- defines the camera's field of view (FOV), aspect ratio, near plane, and far plane.
-- **Viewport transformation** -- maps the result to the screen viewport.
-
-**2. Rasterization**
-
-Converts 3D primitives into 2D fragments aligned to the pixel grid.
-
-**3. Fragment Processing**
-
-Determines the final color of each fragment using textures and lighting:
-
-- **Textures**: 2D images mapped onto 3D surfaces. Individual texture elements are called *texels*. Texture wrapping repeats images around geometry; texture filtering handles minification and magnification when displayed resolution differs from texture resolution.
-- **Lighting (Phong model)**: Four types of light interaction -- **diffuse** (distant directional light like the sun), **specular** (point source highlights like a flashlight), **ambient** (constant global illumination), and **emissive** (light emitted by the object itself).
-
-**4. Output Merging**
-
-Converts 3D fragments into the final 2D pixel grid. Off-screen and occluded objects are culled for efficiency.
-
-### Camera
-
-The camera defines what is visible:
-
-- **Position** -- location in 3D space.
-- **Direction** -- where the camera points.
-- **Orientation** -- rotation around the viewing axis.
-
-### Practical Tips
-
-- Size and position values in WebGL are unitless; you decide whether they represent millimeters, meters, feet, or anything else.
-- Understand the pipeline conceptually before diving into code; the vertex and fragment processing stages are programmable via shaders.
-- Every framework (Three.js, Babylon.js, A-Frame, PlayCanvas) abstracts this pipeline, but the fundamentals remain the same.
-
----
-
-## Frameworks
-
-### Three.js
-
-Three.js is one of the most popular 3D engines for the web. It provides a high-level API over WebGL with a large ecosystem of plugins, examples, and community support.
-
-#### Setup
-
-```html
-<!doctype html>
-<html lang="en-GB">
-  <head>
-    <meta charset="utf-8" />
-    <title>Three.js Demo</title>
-    <style>
-      html, body, canvas {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        font-size: 0;
-      }
-    </style>
-  </head>
-  <body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
-    <script>
-      const WIDTH = window.innerWidth;
-      const HEIGHT = window.innerHeight;
-      /* all code goes here */
-    </script>
-  </body>
-</html>
-```
-
-Or install via npm:
-
-```bash
-npm install --save three
-npm install --save-dev vite
-npx vite
-```
-
-#### Core Components
-
-**Renderer** -- displays the scene in the browser:
-
-```javascript
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(WIDTH, HEIGHT);
-renderer.setClearColor(0xdddddd, 1);
-document.body.appendChild(renderer.domElement);
-```
-
-**Scene** -- container for all 3D objects, lights, and the camera:
-
-```javascript
-const scene = new THREE.Scene();
-```
-
-**Camera** -- defines the viewpoint (PerspectiveCamera is most common):
-
-```javascript
-const camera = new THREE.PerspectiveCamera(70, WIDTH / HEIGHT);
-camera.position.z = 50;
-scene.add(camera);
-```
-
-Parameters: field of view (degrees), aspect ratio. Other camera types include Orthographic and Cube.
-
-#### Geometry, Material, and Mesh
-
-```javascript
-// Geometry defines the shape
-const boxGeometry = new THREE.BoxGeometry(10, 10, 10);
-const torusGeometry = new THREE.TorusGeometry(7, 1, 16, 32);
-const dodecahedronGeometry = new THREE.DodecahedronGeometry(7);
-
-// Material defines the surface appearance
-const basicMaterial = new THREE.MeshBasicMaterial({ color: 0x0095dd });   // No lighting
-const phongMaterial = new THREE.MeshPhongMaterial({ color: 0xff9500 });   // Glossy
-const lambertMaterial = new THREE.MeshLambertMaterial({ color: 0xeaeff2 }); // Matte
-
-// Mesh combines geometry + material
-const cube = new THREE.Mesh(boxGeometry, basicMaterial);
-cube.position.set(-25, 0, 0);
-cube.rotation.set(0.4, 0.2, 0);
-scene.add(cube);
-```
-
-#### Lighting
-
-```javascript
-const light = new THREE.PointLight(0xffffff);
-light.position.set(-10, 15, 50);
-scene.add(light);
-```
-
-Other light types: Ambient, Directional, Hemisphere, Spot.
-
-Note: `MeshBasicMaterial` does not respond to lighting. Use `MeshPhongMaterial` or `MeshLambertMaterial` for lit surfaces.
-
-#### Animation Loop
-
-```javascript
-let t = 0;
-function render() {
-  t += 0.01;
-  requestAnimationFrame(render);
-
-  cube.rotation.y += 0.01;                          // continuous rotation
-  torus.scale.y = Math.abs(Math.sin(t));             // pulsing scale
-  dodecahedron.position.y = -7 * Math.sin(t * 2);   // bobbing position
-
-  renderer.render(scene, camera);
-}
-render();
-```
-
-#### Practical Tips
-
-- Use `Math.abs()` when animating scale with `Math.sin()` to avoid negative scale values.
-- The render loop uses `requestAnimationFrame` for smooth, browser-optimized frame updates.
-- Consult [Three.js documentation](https://threejs.org/docs/) for the full API.
-
----
-
-### Babylon.js
-
-Babylon.js is a full-featured 3D engine with a built-in math library, physics support, and extensive documentation.
-
-#### Setup
-
-```html
-<script src="https://cdn.babylonjs.com/v7.34.1/babylon.js"></script>
-<canvas id="render-canvas"></canvas>
-```
-
-#### Engine, Scene, and Render Loop
-
-```javascript
-const canvas = document.getElementById("render-canvas");
-const engine = new BABYLON.Engine(canvas);
-
-const scene = new BABYLON.Scene(engine);
-scene.clearColor = new BABYLON.Color3(0.8, 0.8, 0.8);
-
-function renderLoop() {
-  scene.render();
-}
-engine.runRenderLoop(renderLoop);
-```
-
-#### Camera and Lighting
-
-```javascript
-const camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0, 0, -10), scene);
-const light = new BABYLON.PointLight("light", new BABYLON.Vector3(10, 10, 0), scene);
-```
-
-#### Creating Meshes
-
-```javascript
-const box = BABYLON.Mesh.CreateBox("box", 2, scene);       // name, size, scene
-const torus = BABYLON.Mesh.CreateTorus("torus", 2, 0.5, 15, scene); // name, diameter, thickness, tessellation, scene
-const cylinder = BABYLON.Mesh.CreateCylinder("cylinder", 2, 2, 2, 12, 1, scene);
-// name, height, topDiameter, bottomDiameter, tessellation, heightSubdivisions, scene
-```
-
-#### Materials
-
-```javascript
-const boxMaterial = new BABYLON.StandardMaterial("material", scene);
-boxMaterial.emissiveColor = new BABYLON.Color3(0, 0.58, 0.86);
-box.material = boxMaterial;
-```
-
-#### Transforms and Animation
-
-```javascript
-box.position.x = 5;
-box.rotation.x = -0.2;
-box.scaling.x = 1.5;
-
-// Animation inside render loop
-let t = 0;
-function renderLoop() {
-  scene.render();
-  t -= 0.01;
-  box.rotation.y = t * 2;
-  torus.scaling.z = Math.abs(Math.sin(t * 2)) + 0.5;
-  cylinder.position.y = Math.sin(t * 3);
-}
-engine.runRenderLoop(renderLoop);
-```
-
-#### Practical Tips
-
-- The `BABYLON` global object contains all framework functions.
-- `BABYLON.Vector3` and `BABYLON.Color3` are used extensively for positioning and coloring.
-- Babylon.js includes a built-in math library for vectors, colors, and matrices.
-- Consult [Babylon.js documentation](https://doc.babylonjs.com/) for advanced features like physics, particles, and post-processing.
-
----
-
-### A-Frame
-
-A-Frame is Mozilla's declarative, HTML-based framework for building VR/AR experiences on the web. It uses an entity-component system and runs on WebGL under the hood.
-
-#### Setup
-
-```html
-<!doctype html>
-<html lang="en-US">
-  <head>
-    <meta charset="utf-8" />
-    <title>A-Frame Demo</title>
-    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    <style>
-      body { margin: 0; padding: 0; width: 100%; height: 100%; font-size: 0; }
-    </style>
-  </head>
-  <body>
-    <a-scene>
-
-    </a-scene>
-  </body>
-</html>
-```
-
-The `<a-scene>` element is the root container. A-Frame auto-includes a default camera, lighting, and input controls.
-
-#### Primitives and Entities
-
-```html
-
-<a-box position="0 1 -3" rotation="0 10 0" color="#4CC3D9"></a-box>
-<a-sky color="#DDDDDD"></a-sky>
-
-<a-entity
-  geometry="primitive: torus; radius: 1; radiusTubular: 0.1; segmentsTubular: 12;"
-  material="color: #EAEFF2; roughness: 0.1; metalness: 0.5;"
-  rotation="10 0 0"
-  position="-3 1 0">
-</a-entity>
-```
-
-#### Creating Entities with JavaScript
-
-```javascript
-const scene = document.querySelector("a-scene");
-const cylinder = document.createElement("a-cylinder");
-cylinder.setAttribute("color", "#FF9500");
-cylinder.setAttribute("height", "2");
-cylinder.setAttribute("radius", "0.75");
-cylinder.setAttribute("position", "3 1 0");
-scene.appendChild(cylinder);
-```
-
-#### Camera and Lighting
-
-```html
-<a-camera position="0 1 4" cursor-visible="true" cursor-color="#0095DD" cursor-opacity="0.5">
-</a-camera>
-
-<a-light type="directional" color="white" intensity="0.5" position="-1 1 2"></a-light>
-<a-light type="ambient" color="white"></a-light>
-```
-
-Default controls: WASD keys for movement, mouse for looking around. A VR mode button appears in the bottom-right corner.
-
-#### Animation
-
-Declarative animation via HTML attributes:
-
-```html
-<a-box
-  color="#0095DD"
-  rotation="20 40 0"
-  position="0 1 0"
-  animation="property: rotation; from: 20 0 0; to: 20 360 0;
-    dir: alternate; loop: true; dur: 4000; easing: easeInOutQuad;">
-</a-box>
-```
-
-Animation properties: `property` (attribute to animate), `from`/`to` (start/end values), `dir` (alternate or normal), `loop` (boolean), `dur` (milliseconds), `easing` (easing function).
-
-Dynamic animation via JavaScript:
-
-```javascript
-let t = 0;
-function render() {
-  t += 0.01;
-  requestAnimationFrame(render);
-  cylinder.setAttribute("position", `3 ${Math.sin(t * 2) + 1} 0`);
-}
-render();
-```
-
-#### Practical Tips
-
-- A-Frame is ideal for rapid VR/AR prototyping using familiar HTML syntax.
-- The entity-component architecture makes it extensible; community plugins add physics, gamepad controls, and more.
-- Use `<a-sky>` for background colors or 360-degree images.
-- A-Frame supports desktop, mobile (iOS/Android), and VR headsets (Meta Quest, HTC Vive).
-
----
-
-### PlayCanvas
-
-PlayCanvas is a WebGL game engine with two workflow options:
-
-1. **Engine approach** -- include the PlayCanvas JavaScript library directly in HTML and code from scratch.
-2. **Editor approach** -- use the online drag-and-drop visual editor for scene composition.
-
-#### Key Features
-
-- Entity-component system architecture
-- Built-in physics engine powered by [ammo.js](https://github.com/kripken/ammo.js/)
-- Collision detection
-- Audio support
-- Input handling (keyboard, mouse, touch, gamepads)
-- Resource/asset management
-
-#### Practical Tips
-
-- PlayCanvas excels for team-based game development thanks to its online editor with real-time collaboration.
-- The engine-only approach is lightweight and can be embedded in any web page.
-- Consult the [PlayCanvas developer documentation](https://developer.playcanvas.com/) for tutorials on entities, components, cameras, lights, materials, and animations.
-
----
-
-## GLSL Shaders
-
-GLSL (OpenGL Shading Language) is a C-like language that runs directly on the GPU, enabling custom control over the rendering pipeline's vertex and fragment processing stages.
-
-### What Shaders Are
-
-Shaders are small programs that execute on the GPU instead of the CPU. They are strongly typed and rely heavily on vector and matrix mathematics. There are two types relevant to WebGL:
-
-- **Vertex shader** -- runs once per vertex, transforms 3D positions into screen coordinates.
-- **Fragment shader** (pixel shader) -- runs once per pixel, determines the final RGBA color.
-
-### Vertex Shader
-
-The vertex shader's job is to set `gl_Position`, a built-in GLSL variable storing the vertex's transformed position:
-
-```glsl
-void main() {
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x, position.y, position.z, 1.0);
-}
-```
-
-- `projectionMatrix` -- handles perspective or orthographic projection (provided by Three.js).
-- `modelViewMatrix` -- combines model and view transformations (provided by Three.js).
-- `vec4(x, y, z, w)` -- a 4-component vector; `w` defaults to 1.0 for positional vertices.
-
-You can manipulate vertices directly:
-
-```glsl
-void main() {
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x + 10.0, position.y, position.z + 5.0, 1.0);
-}
-```
-
-### Fragment Shader
-
-The fragment shader's job is to set `gl_FragColor`, a built-in GLSL variable holding the RGBA color:
-
-```glsl
-void main() {
-  gl_FragColor = vec4(0.0, 0.58, 0.86, 1.0);
-}
-```
-
-RGBA components are floats from 0.0 to 1.0. Alpha 0.0 is fully transparent; 1.0 is fully opaque.
-
-### Using Shaders in HTML and Three.js
-
-Embed shader source in script tags with custom type attributes:
-
-```html
-<script id="vertexShader" type="x-shader/x-vertex">
-  void main() {
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  }
-</script>
-
-<script id="fragmentShader" type="x-shader/x-fragment">
-  void main() {
-    gl_FragColor = vec4(0.0, 0.58, 0.86, 1.0);
-  }
-</script>
-```
-
-Apply them with `ShaderMaterial`:
-
-```javascript
-const shaderMaterial = new THREE.ShaderMaterial({
-  vertexShader: document.getElementById("vertexShader").textContent,
-  fragmentShader: document.getElementById("fragmentShader").textContent,
-});
-
-const cube = new THREE.Mesh(boxGeometry, shaderMaterial);
-```
-
-### The Shader Pipeline
-
-1. **Vertex shader** processes each vertex and outputs `gl_Position`.
-2. **Rasterization** maps 3D coordinates to 2D screen pixels.
-3. **Fragment shader** processes each pixel and outputs `gl_FragColor`.
-
-### Key Concepts
-
-- **Uniforms** -- values passed from JavaScript to the shader, constant across all vertices/fragments in a single draw call (e.g., light position, time).
-- **Attributes** -- per-vertex data passed to the vertex shader (e.g., position, normal, UV coordinates).
-- **Varyings** -- values passed from the vertex shader to the fragment shader, interpolated across the surface.
-
-### Practical Tips
-
-- Shaders run on the GPU and offload computation from the CPU, which is critical for real-time performance.
-- Three.js, Babylon.js, and other frameworks abstract much of the shader setup; pure WebGL requires significantly more boilerplate.
-- [ShaderToy](https://www.shadertoy.com/) is an excellent resource for shader examples and inspiration.
-- GLSL requires explicit type declarations; always use `1.0` instead of `1` for floats.
-
----
-
-## Collision Detection
-
-Collision detection determines when 3D objects intersect, which is fundamental for game physics, interaction, and gameplay logic.
-
-### Axis-Aligned Bounding Boxes (AABB)
-
-An AABB wraps an object in a non-rotated rectangular box aligned to the coordinate axes. It is the fastest common collision test because it uses only logical comparisons (no trigonometry).
-
-**Limitation**: AABBs do not rotate with the object. For rotating entities, either resize the bounding box each frame or use bounding spheres instead.
-
-#### Point vs. AABB
-
-Check whether a point lies inside a box by testing all three axes:
-
-```javascript
-function isPointInsideAABB(point, box) {
-  return (
-    point.x >= box.minX &&
-    point.x <= box.maxX &&
-    point.y >= box.minY &&
-    point.y <= box.maxY &&
-    point.z >= box.minZ &&
-    point.z <= box.maxZ
-  );
-}
-```
-
-#### AABB vs. AABB
-
-Check whether two boxes overlap on all three axes:
-
-```javascript
-function intersect(a, b) {
-  return (
-    a.minX <= b.maxX &&
-    a.maxX >= b.minX &&
-    a.minY <= b.maxY &&
-    a.maxY >= b.minY &&
-    a.minZ <= b.maxZ &&
-    a.maxZ >= b.minZ
-  );
-}
-```
-
-### Bounding Spheres
-
-Bounding spheres are invariant to rotation (the sphere stays the same regardless of how the object spins), which makes them ideal for rotating entities. However, they fit poorly on non-spherical shapes and cause more false positives.
-
-#### Point vs. Sphere
-
-Check whether the distance from the point to the sphere center is less than the radius:
-
-```javascript
-function isPointInsideSphere(point, sphere) {
-  const distance = Math.sqrt(
-    (point.x - sphere.x) ** 2 +
-    (point.y - sphere.y) ** 2 +
-    (point.z - sphere.z) ** 2
-  );
-  return distance < sphere.radius;
-}
-```
-
-**Performance optimization**: avoid the square root by comparing squared distances:
-
-```javascript
-const distanceSqr =
-  (point.x - sphere.x) ** 2 +
-  (point.y - sphere.y) ** 2 +
-  (point.z - sphere.z) ** 2;
-return distanceSqr < sphere.radius * sphere.radius;
-```
-
-#### Sphere vs. Sphere
-
-Check whether the distance between centers is less than the sum of radii:
-
-```javascript
-function intersect(sphere, other) {
-  const distance = Math.sqrt(
-    (sphere.x - other.x) ** 2 +
-    (sphere.y - other.y) ** 2 +
-    (sphere.z - other.z) ** 2
-  );
-  return distance < sphere.radius + other.radius;
-}
-```
-
-#### Sphere vs. AABB
-
-Find the point on the AABB closest to the sphere center by clamping, then check the distance:
-
-```javascript
-function intersect(sphere, box) {
-  const x = Math.max(box.minX, Math.min(sphere.x, box.maxX));
-  const y = Math.max(box.minY, Math.min(sphere.y, box.maxY));
-  const z = Math.max(box.minZ, Math.min(sphere.z, box.maxZ));
-
-  const distance = Math.sqrt(
-    (x - sphere.x) ** 2 +
-    (y - sphere.y) ** 2 +
-    (z - sphere.z) ** 2
-  );
-
-  return distance < sphere.radius;
-}
-```
-
-### Collision Detection with Three.js
-
-Three.js provides built-in `Box3` and `Sphere` objects plus visual helpers for bounding volume collision detection.
-
-#### Creating Bounding Volumes
-
-```javascript
-// Box3 from an object (recommended -- accounts for transforms and children)
-const knotBBox = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3());
-knotBBox.setFromObject(knot);
-
-// Sphere from geometry
-const knotBSphere = new THREE.Sphere(
-  knot.position,
-  knot.geometry.boundingSphere.radius
-);
-```
-
-**Important**: `setFromObject()` accounts for position, rotation, scale, and child meshes. The geometry's `boundingBox` property does not.
-
-#### Intersection Tests
-
-```javascript
-// Point inside box or sphere
-knotBBox.containsPoint(point);
-knotBSphere.containsPoint(point);
-
-// Box vs. box
-knotBBox.intersectsBox(otherBox);
-
-// Sphere vs. sphere
-knotBSphere.intersectsSphere(otherSphere);
-```
-
-Note: `containsBox()` checks if one box fully encloses another, which is different from `intersectsBox()`.
-
-#### Sphere vs. Box3 (Custom Patch)
-
-Three.js does not natively provide sphere-vs-box testing. Add it manually:
-
-```javascript
-THREE.Sphere.__closest = new THREE.Vector3();
-THREE.Sphere.prototype.intersectsBox = function (box) {
-  THREE.Sphere.__closest.set(this.center.x, this.center.y, this.center.z);
-  THREE.Sphere.__closest.clamp(box.min, box.max);
-  const distance = this.center.distanceToSquared(THREE.Sphere.__closest);
-  return distance < this.radius * this.radius;
-};
-```
-
-#### BoxHelper for Visual Debugging
-
-`BoxHelper` creates a visible wireframe bounding box around any mesh and simplifies updates:
-
-```javascript
-const knotBoxHelper = new THREE.BoxHelper(knot, 0x00ff00);
-scene.add(knotBoxHelper);
-
-// After moving or rotating the mesh, update the helper
-knot.position.set(-3, 2, 1);
-knot.rotation.x = -Math.PI / 4;
-knotBoxHelper.update();
-
-// Convert to Box3 for intersection tests
-const box3 = new THREE.Box3();
-box3.setFromObject(knotBoxHelper);
-box3.intersectsBox(otherBox3);
-```
-
-Advantages of BoxHelper: auto-resizes with `update()`, includes child meshes, provides visual debugging. Limitation: box volumes only (no sphere helpers).
-
-### Physics Engines
-
-For more sophisticated collision detection and response, use a physics engine:
-
-- **Cannon.js** -- open-source 3D physics engine for JavaScript.
-- **ammo.js** -- JavaScript port of the Bullet physics library (used by PlayCanvas).
-
-Physics engines create a *physical body* attached to the visual mesh, with properties like velocity, position, rotation, and torque. A *physical shape* (box, sphere, convex hull) is used for collision calculations.
-
-### Practical Tips
-
-- Use AABBs for axis-aligned, non-rotating objects -- they are the fastest option.
-- Use bounding spheres for rotating objects -- the sphere is invariant to rotation.
-- For complex shapes, consider compound bounding volumes (multiple primitives combined).
-- Avoid `Math.sqrt()` in tight loops; compare squared distances instead.
-- For production games, integrate a physics engine rather than writing collision detection from scratch.
-
----
-
-## WebXR
-
-WebXR is the modern web API for building virtual reality (VR) and augmented reality (AR) experiences in the browser. It replaces the deprecated WebVR API.
-
-### What WebXR Is
-
-The WebXR Device API provides access to XR hardware (headsets, controllers) and enables stereoscopic rendering. It captures real-time data including:
-
-- Headset position and orientation
-- Controller position, orientation, velocity, and acceleration
-- Input events from XR controllers
-
-### Supported Devices
-
-- Meta Quest
-- Valve Index
-- PlayStation VR (PSVR2)
-- Any device with a WebXR-compatible browser
-
-### Core Concepts
-
-Every WebXR experience requires two things:
-
-1. **Real-time positional data** -- the application continuously receives headset and controller positions in 3D space.
-2. **Real-time stereoscopic rendering** -- the application renders two slightly offset views (one for each eye) to the headset's display.
-
-### Framework Support
-
-All major 3D web frameworks support WebXR:
-
-- **A-Frame** -- built-in VR mode button; declarative HTML-based scenes automatically work in VR.
-- **Three.js** -- provides WebXR integration via `renderer.xr`. See [Three.js VR documentation](https://threejs.org/docs/#manual/en/introduction/How-to-create-VR-content).
-- **Babylon.js** -- built-in WebXR support via the XR Experience Helper.
-
-### Related APIs
-
-- **Gamepad API** -- for non-XR controller inputs (gamepads, joysticks).
-- **Device Orientation API** -- for detecting device rotation on mobile devices.
-
-### Design Principles
-
-- Prioritize **immersion** over raw graphics quality or gameplay complexity.
-- Users must feel like they are *part of the experience*.
-- Basic shapes rendered at high, stable frame rates can be more compelling in VR than detailed graphics at unstable frame rates.
-- Experimentation is essential; test frequently on actual hardware.
-
-### Practical Tips
-
-- Start with A-Frame for rapid VR prototyping -- its declarative HTML approach gets you to a working VR scene in minutes.
-- Use Three.js or Babylon.js when you need more control over rendering and performance.
-- Always test on real headsets; the experience is vastly different from desktop preview.
-- Maintain a stable, high frame rate (72-90+ FPS) to prevent motion sickness.
-- Consult [MDN WebXR Device API](https://developer.mozilla.org/en-US/docs/Web/API/WebXR_Device_API) for the full API reference.

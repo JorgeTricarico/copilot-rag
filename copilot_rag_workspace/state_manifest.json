@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-10-29T18:15:13.541834+00:00",
+  "last_sync_utc": "2026-10-30T05:00:20.165289+00:00",
   "total_documents": 2005,
   "documents": {
     "anthropics_skills::README.md": {
@@ -1504,10 +1504,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/README.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/README.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "92cea71720f7fbb5a76ca1c81786190338b7adc0",
-      "content_sha256": "e67d6381af5314d07e298d755518890698c83e66896969677714ff739c028043",
-      "word_count": 4388,
-      "last_updated_utc": "2026-10-28T18:07:41.145051+00:00",
+      "git_blob_sha": "42eb735a4e168d135a90f7f8618c6847f681ec4d",
+      "content_sha256": "2307f29f4041c35fbc6e59526907f4f15d2d5f1ba1ea12af491c668074bd0022",
+      "word_count": 5547,
+      "last_updated_utc": "2026-10-30T05:00:17.046673+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__README.md"
     },
     "github_awesome-copilot::agents/CSharpExpert.agent.md": {
@@ -20095,9 +20095,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "bc82bb7f98970de68ad0f25e68a3bc7282e7fe15c3f114b9efb603d0ab6ed291",
-      "word_count": 24972,
-      "last_updated_utc": "2026-10-29T18:15:12.250644+00:00",
+      "content_sha256": "2a1b828c8dd1102a20dacbbb0f2d2c0e80ad869c41307bad1710d04bcce963cb",
+      "word_count": 25014,
+      "last_updated_utc": "2026-10-30T05:00:19.060677+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -20106,9 +20106,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "bc82bb7f98970de68ad0f25e68a3bc7282e7fe15c3f114b9efb603d0ab6ed291",
-      "word_count": 24972,
-      "last_updated_utc": "2026-10-29T18:15:12.292519+00:00",
+      "content_sha256": "2a1b828c8dd1102a20dacbbb0f2d2c0e80ad869c41307bad1710d04bcce963cb",
+      "word_count": 25014,
+      "last_updated_utc": "2026-10-30T05:00:19.031688+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -20370,9 +20370,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/quickstart",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "f4d2aa269551c2fda735b331b5620bc80045698386b2f14c4d260fc08a73eaa5",
-      "word_count": 2789,
-      "last_updated_utc": "2026-10-24T03:56:05.164795+00:00",
+      "content_sha256": "fa52d3638e6264bcc50456bc2b0544e52af637a70ab6097c71cec03212b3bc16",
+      "word_count": 2791,
+      "last_updated_utc": "2026-10-30T05:00:19.210765+00:00",
       "local_clean_path": "clean_sources/langgraph__quickstart.md"
     },
     "langgraph::sql-agent": {
@@ -21954,9 +21954,9 @@
       "canonical_web_url": "https://github.com/microsoft/vscode/issues/343623",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
       "git_blob_sha": null,
-      "content_sha256": "0db38d2f8adffce4c1154c147c4435581b3c5a8c2f5ae81113980c08c71a0971",
+      "content_sha256": "18426cbb8b6205a79d6152b929b14ae7359f837df212c27a17d405b8c5051841",
       "word_count": 375,
-      "last_updated_utc": "2026-10-23T04:01:53.027709+00:00",
+      "last_updated_utc": "2026-10-30T05:00:19.910662+00:00",
       "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_343623.md"
     },
     "vscode_insiders::endgame-plan_344219": {
@@ -22042,9 +22042,9 @@
       "canonical_web_url": "https://github.blog/changelog/label/copilot/feed/",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
       "git_blob_sha": null,
-      "content_sha256": "3e6345707becbb6fd42eafe9c6f0fb4e0dad79c0cc24db3eb941683469595c53",
-      "word_count": 666,
-      "last_updated_utc": "2026-10-29T05:00:57.653947+00:00",
+      "content_sha256": "df6d9f56a665b864d8e6c2c707489f36d99441f5aa9068952d3026d5fd2bedb1",
+      "word_count": 674,
+      "last_updated_utc": "2026-10-30T05:00:18.385311+00:00",
       "local_clean_path": "clean_sources/web__github_changelog_copilot_rss.md"
     },
     "web::vscode_api_contribution_points": {

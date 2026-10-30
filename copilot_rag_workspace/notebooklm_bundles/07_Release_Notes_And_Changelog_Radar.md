@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-10-29T18:15:13.521434+00:00
-- **Total Palabras**: 19,423 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-30T05:00:20.134914+00:00
+- **Total Palabras**: 19,431 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1368,14 +1368,14 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_343623
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/343623
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/343623
-- **SHA256_FINGERPRINT**: `0db38d2f8adffce4c1154c147c4435581b3c5a8c2f5ae81113980c08c71a0971`
-- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:53.027709+00:00
+- **SHA256_FINGERPRINT**: `18426cbb8b6205a79d6152b929b14ae7359f837df212c27a17d405b8c5051841`
+- **LAST_VERIFIED_UTC**: 2026-10-30T05:00:19.910662+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.143.1 Endgame
 - **Issue Number**: #343623
 - **Category**: `endgame-plan`
-- **State**: open
+- **State**: closed
 - **Source Issue**: https://github.com/microsoft/vscode/issues/343623
 
 - [x] Create a milestone `1.143.1` **@hediet**
@@ -2157,8 +2157,8 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `3e6345707becbb6fd42eafe9c6f0fb4e0dad79c0cc24db3eb941683469595c53`
-- **LAST_VERIFIED_UTC**: 2026-10-29T05:00:57.653947+00:00
+- **SHA256_FINGERPRINT**: `df6d9f56a665b864d8e6c2c707489f36d99441f5aa9068952d3026d5fd2bedb1`
+- **LAST_VERIFIED_UTC**: 2026-10-30T05:00:18.385311+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
@@ -2212,6 +2212,13 @@ The post Build shared workflows for your team with Copilot Automations appeared 
 This year, we focused on giving you more choice in how you work with GitHub Copilot in Visual Studio Code: which models you use, where your agents run, and how...
 The post GitHub Copilot in VS Code, Universe releases appeared first on The GitHub Blog .
 
+## Repository plugin defaults and enterprise plugin controls generally available
+- **Date**: Wed, 28 Oct 2026 15:33:00 +0000
+- **URL**: https://github.blog/changelog/2026-10-28-repository-plugin-defaults-and-enterprise-plugin-controls-generally-available
+
+Repository plugin defaults and enterprise-managed plugin controls are now generally available in VS Code, Copilot CLI, and the GitHub Copilot app. Trusted repositories can install and enable default plugins for...
+The post Repository plugin defaults and enterprise plugin controls generally available appeared first on The GitHub Blog .
+
 ## Generate and edit images directly in Copilot
 - **Date**: Wed, 28 Oct 2026 15:30:55 +0000
 - **URL**: https://github.blog/changelog/2026-10-28-generate-and-edit-images-directly-in-copilot
@@ -2225,10 +2232,3 @@ The post Generate and edit images directly in Copilot appeared first on The GitH
 
 Today we are shipping intelligent routing for local models into experimental preview. GitHub Copilot Fusion can now choose between supported on-device models and cloud models, enabling intelligent local model routing...
 The post GitHub Copilot Fusion now supports selection of local models appeared first on The GitHub Blog .
-
-## GitHub Agentic Workflows generally available
-- **Date**: Wed, 28 Oct 2026 15:30:15 +0000
-- **URL**: https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available
-
-GitHub Agentic Workflows, an open source project from GitHub Next, is now generally available. With agentic workflows, you can automate reasoning-based tasks like issue triage, CI failure analysis, documentation updates,...
-The post GitHub Agentic Workflows generally available appeared first on The GitHub Blog .

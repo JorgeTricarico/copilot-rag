@@ -49,6 +49,13 @@ The post Build shared workflows for your team with Copilot Automations appeared 
 This year, we focused on giving you more choice in how you work with GitHub Copilot in Visual Studio Code: which models you use, where your agents run, and how...
 The post GitHub Copilot in VS Code, Universe releases appeared first on The GitHub Blog .
 
+## Repository plugin defaults and enterprise plugin controls generally available
+- **Date**: Wed, 28 Oct 2026 15:33:00 +0000
+- **URL**: https://github.blog/changelog/2026-10-28-repository-plugin-defaults-and-enterprise-plugin-controls-generally-available
+
+Repository plugin defaults and enterprise-managed plugin controls are now generally available in VS Code, Copilot CLI, and the GitHub Copilot app. Trusted repositories can install and enable default plugins for...
+The post Repository plugin defaults and enterprise plugin controls generally available appeared first on The GitHub Blog .
+
 ## Generate and edit images directly in Copilot
 - **Date**: Wed, 28 Oct 2026 15:30:55 +0000
 - **URL**: https://github.blog/changelog/2026-10-28-generate-and-edit-images-directly-in-copilot
@@ -62,10 +69,3 @@ The post Generate and edit images directly in Copilot appeared first on The GitH
 
 Today we are shipping intelligent routing for local models into experimental preview. GitHub Copilot Fusion can now choose between supported on-device models and cloud models, enabling intelligent local model routing...
 The post GitHub Copilot Fusion now supports selection of local models appeared first on The GitHub Blog .
-
-## GitHub Agentic Workflows generally available
-- **Date**: Wed, 28 Oct 2026 15:30:15 +0000
-- **URL**: https://github.blog/changelog/2026-10-28-github-agentic-workflows-generally-available
-
-GitHub Agentic Workflows, an open source project from GitHub Next, is now generally available. With agentic workflows, you can automate reasoning-based tasks like issue triage, CI failure analysis, documentation updates,...
-The post GitHub Agentic Workflows generally available appeared first on The GitHub Blog .

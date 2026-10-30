@@ -1,7 +1,7 @@
 # VS Code Insiders Roadmap: 1.143.1 Endgame
 - **Issue Number**: #343623
 - **Category**: `endgame-plan`
-- **State**: open
+- **State**: closed
 - **Source Issue**: https://github.com/microsoft/vscode/issues/343623
 
 - [x] Create a milestone `1.143.1` **@hediet**
