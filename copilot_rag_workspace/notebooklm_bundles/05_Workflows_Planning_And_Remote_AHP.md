@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-10-28T18:07:46.895341+00:00
-- **Total Palabras**: 149,189 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-30T17:51:52.916966+00:00
+- **Total Palabras**: 151,205 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -4091,8 +4091,8 @@ Some request components are assembled by VS Code, extensions, or the model provi
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/agent-troubleshooting/chat-debug-view.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/agent-troubleshooting/chat-debug-view
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/agent-troubleshooting/chat-debug-view.md
-- **SHA256_FINGERPRINT**: `2944f0c22ecde0620b2d42d7796ae8cc639a01144c892c3dc19a13c90ff63e85`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.064783+00:00
+- **SHA256_FINGERPRINT**: `146dfb7df9fff9c3c80f13ea17a98f0710b0c3b5a531b69aff4dc2617363e300`
+- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:44.790639+00:00
 ---
 
 **MetaDescription**: Diagnose agent behavior in Visual Studio Code by inspecting requests, context, tool calls, token usage, and agent flows.
@@ -4164,14 +4164,14 @@ If a response stops early or omits part of the task:
 
 ### Instructions or a prompt file are not applied
 
-Custom instructions and prompt files enter a request in different ways:
+Custom instructions and prompt files enter a request in different ways. [Prepare logging](#before-you-start) before reproducing the issue, then distinguish discovery, inclusion, and adherence:
 
-1. Open the [chat customization diagnostics view](/docs/agents/agent-troubleshooting/troubleshooting.md#check-customization-diagnostics) to check whether an instructions file was discovered and whether it has errors.
-1. For a `*.instructions.md` file, verify that its `applyTo` pattern matches the file you are working on.
+1. [Check customization discovery](/docs/agents/agent-troubleshooting/troubleshooting.md#check-customization-diagnostics) for the affected harness and repository. Confirm that the file is listed and has no errors.
+1. Check [instruction activation](/docs/agents/reference/custom-instructions-reference.md#discovery-and-activation). For pattern-based guidance, verify `applyTo` or Claude's `paths`. For Local task-based discovery, check the `description`. If you attached the file manually, confirm that it was attached to the request you are inspecting.
 1. For a prompt file, verify that the session uses the Local harness and that you invoked the file manually. Prompt files are supported only in Local harness sessions. For a workflow that you want to reuse with a skills-compatible agent, create an [agent skill](/docs/agent-customization/agent-skills.md). For details, see [Use prompt files](/docs/agent-customization/prompt-files.md).
 1. Check **Discovery** events in the Agent Debug Logs to see whether a customization was loaded, skipped, or rejected.
-1. In the Chat Debug view, inspect the **System prompt** for custom instructions and the **User prompt** for an invoked prompt file.
-1. Correct the discovery or applicability issue, repeat the request, and verify the corresponding prompt content again.
+1. Where request details are available, inspect the Chat Debug view for the instruction content or file-read results. For Local sessions, check the **System prompt** for custom instructions and the **User prompt** for an invoked prompt file. The response's **References** section, where available, is another inclusion check.
+1. If the content reached the model but the result doesn't follow it, check for conflicting or unclear guidance. Correct the relevant issue, repeat the task in a new chat, and compare the actual changes and tool activity.
 
 ## Agent Debug Logs panel
 
@@ -4535,8 +4535,8 @@ See [Report an unresolved issue](/docs/agents/agent-troubleshooting/troubleshoot
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/agent-troubleshooting/troubleshooting.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/agent-troubleshooting/troubleshooting
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/agent-troubleshooting/troubleshooting.md
-- **SHA256_FINGERPRINT**: `e1ec1f9702d5aeed49ca5fb49f17358589cbe3b6577f03106b136a88bc0c0eec`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:35.968494+00:00
+- **SHA256_FINGERPRINT**: `e69859deb9dd91fb9b6092737f52500bc965ac4d11dfa54263ac2de9b27871e7`
+- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:44.844368+00:00
 ---
 
 **MetaDescription**: Diagnose GitHub Copilot and agent issues in Visual Studio Code with targeted checks, logs, and network diagnostics.
@@ -4573,20 +4573,21 @@ Before you collect detailed logs:
 
 ## Check customization diagnostics
 
-Use the chat customization diagnostics view when an instructions file does not appear to apply.
+Check discovery before investigating whether the model follows an instruction:
 
-1. Open the Chat view.
-1. In the Chat view, open the context menu and select **Diagnostics**.
-1. Review the discovered instruction files and any reported errors.
+1. Select the harness and repository used by the affected session.
+1. Run **Chat: Open Customizations** from the Command Palette (``Shortcut: workbench.action.showCommands``) and select **Instructions**.
+1. Find the instructions file and check its source, location, and any reported errors.
 
 Use the result to choose the next action:
 
-* **The file is missing**: Verify its file name, location, and the settings that control instruction discovery.
-* **The file has an error**: Fix the reported frontmatter or content error, and then reopen the diagnostics view.
-* **The file is loaded but not applied**: For a `*.instructions.md` file, verify that its `applyTo` pattern matches the file you are working on. Also check the **References** section of the chat response to see which instructions were used.
+* **The file is missing**: Verify the harness, file name, and supported location. Confirm that the session uses the folder containing your changes, especially if you created a new worktree.
+* **The file has an error**: Fix the reported frontmatter or content error, then check discovery again.
+* **The file is discovered but not included**: Check its activation rules. For pattern-based instructions, test a file that matches `applyTo` or Claude's `paths`. For Local task-based discovery, check the `description`. Alternatively, attach the instructions manually. Check **References**, where available, or inspect the request in the debug logs.
+* **The file is included but not followed**: Resolve contradictory guidance or clarify a vague rule. Repeat a representative task in a new chat and review the changes and tool activity. Inclusion alone doesn't establish compliance.
 * **A prompt file is missing from the request**: Prompt files are supported only in Local harness sessions. Invoke the prompt file manually in chat because prompt files do not use `applyTo`. For a reusable workflow with a skills-compatible agent, create an [agent skill](/docs/agent-customization/agent-skills.md).
 
-For file locations, applicability rules, and settings, see [Use custom instructions](/docs/agent-customization/custom-instructions.md). To verify the exact instructions sent to the model, use the [Chat Debug view](/docs/agents/agent-troubleshooting/chat-debug-view.md#chat-debug-view).
+For file locations, activation rules, and settings, see the [Custom instructions reference](/docs/agents/reference/custom-instructions-reference.md). For a complete test procedure, see [Verify your instructions](/docs/agent-customization/custom-instructions.md#verify-your-instructions). To inspect request content and loading activity, [prepare logging](#inspect-chat-interactions) and reproduce the issue.
 
 ## Inspect chat interactions
 
@@ -5364,8 +5365,8 @@ Now that you understand how browser tools work, try these scenarios to explore d
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/context-engineering-guide.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/context-engineering-guide
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/context-engineering-guide.md
-- **SHA256_FINGERPRINT**: `d79e89f62de218b9fc03d565f0f7bc631b0f505f599d05116775ec2f8fe4f0f5`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.587579+00:00
+- **SHA256_FINGERPRINT**: `d8be677cd3301e6684e247c2ccd084a2a396d71298f790b4f387c01072c35964`
+- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:44.837047+00:00
 ---
 
 **MetaDescription**: Learn how to implement context engineering using VS Code's built-in AI features.
@@ -5405,23 +5406,23 @@ The following diagram illustrates a context engineering workflow in VS Code:
 
 ## Step 1: Curate project-wide context
 
-To ground the AI agent in the specifics of the project, collect key project information like product vision, architecture, and other relevant documentation and add it as chat context via custom instructions. By using custom instructions, you ensure that the agent consistently has access to this context and doesn't have to re-learn it for each chat interaction
+Start with concise project instructions that address a repeated problem, such as using the wrong test command or missing an architectural constraint. Reuse existing project documentation for supporting detail instead of copying it all into the instructions file.
 
 **Why this helps:** The agent could find this information in the codebase, but it might be buried in comments or scattered across multiple files. By providing a concise summary of the most important information, you help the agent to always have critical context available for decision-making.
 
-1. Describe relevant project documentation in Markdown files in the repository, for example create `PRODUCT.md`, `ARCHITECTURE.md`, and `CONTRIBUTING.md` files.
+1. Identify existing documentation relevant to the problem, such as `ARCHITECTURE.md` or `CONTRIBUTING.md`. Create a supporting document only when the necessary information is missing.
 
     > [!TIP]
-    > If you have an existing codebase, you can use AI to generate these project documentation files. Make sure to review and refine the generated documentation files to ensure accuracy and completeness.
+    > If relevant documentation is missing, use AI to draft it, then review the result for accuracy. Choose only the document your task needs:
     > * `Generate an ARCHITECTURE.md (max 2 page) file that describes the overall architecture of the project.`
     > * `Generate a PRODUCT.md (max 2 page) file that describes the product functionality of the project.`
     > * `Generate a CONTRIBUTING.md (max 1 page) file that describes developer guidelines and best practices for contributing to the project.`
 
-1. Create a `.github/copilot-instructions.md` [instructions file](/docs/agent-customization/custom-instructions.md#use-a-githubcopilot-instructionsmd-file) at the root of your repository.
+1. Create a `.github/copilot-instructions.md` [instructions file](/docs/agent-customization/custom-instructions.md#create-project-instructions) at the root of your repository.
 
-    The instructions in this file are automatically included in all chat interactions as context for the AI agent.
+    For the Local workflow in this guide, this file is included when ``github.copilot.chat.codeGeneration.useInstructionFiles`` is on, which is the default.
 
-1. Provide a high-level overview for the agent with the project context and guidelines. Reference relevant supporting documentation files by using Markdown links.
+1. Put essential rules directly in the instructions file and link to supporting documentation for detail. Adapt the following example to documents that exist in your repository.
 
     The following example `.github/copilot-instructions.md` file provides a starting point:
 
@@ -5437,6 +5438,8 @@ To ground the AI agent in the specifics of the project, collect key project info
 
 > [!TIP]
 > Start small, keeping the initial project-wide context concise and focused on the most critical information. If uncertain, focus on high-level architecture and only add new rules to address errors or incorrect behavior the agent makes repeatedly (for example, using the wrong shell command, ignoring certain files).
+
+Markdown links don't guarantee that linked content reaches the model. Local's ``chat.includeReferencedInstructions`` setting is off by default. For a task that needs a supporting document, attach it or ask the agent to read it, then [verify inclusion and behavior](/docs/agent-customization/custom-instructions.md#verify-your-instructions).
 
 ## Step 2: Create implementation plan
 
@@ -5666,8 +5669,8 @@ Learn more about customizing AI in VS Code:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/customize-copilot-guide.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/customize-copilot-guide
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/customize-copilot-guide.md
-- **SHA256_FINGERPRINT**: `229d45226267c87d552c21fcf709a1ddcd3ba7b51cf9756e3a7372d2f971877d`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:54.456681+00:00
+- **SHA256_FINGERPRINT**: `885e27859670807cbc6e633cef8bcd1ea5d3926afa68c5e5ff3e6f6b92a1447d`
+- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:44.840928+00:00
 ---
 
 **MetaDescription**: Configure project instructions, skills, and custom agents for multiple harnesses in VS Code.
@@ -5714,6 +5717,8 @@ If the result already meets your success criterion, stop. You don't need a custo
 
 Start with a project instructions file for information that applies across your codebase. Focus the initial change on the observed problem and decisions the agent can't reliably infer from the repository. Each harness has its own discovery rules, so use its expected file name and location.
 
+In the prompts below, replace `<observed problem>` with the behavior you want to improve. For example, describe that the agent places HTTP handlers outside `src/api/routes` or uses a test command that doesn't work in your repository.
+
 1. Open the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) for the selected harness. In the Chat view, run **Chat: Open Customizations** from the Command Palette (``Shortcut: workbench.action.showCommands``).
 
 1. In the **Overview** section, enter the prompt for your harness below and press ``Enter`` to submit it.
@@ -5725,19 +5730,19 @@ Start with a project instructions file for information that applies across your 
 Use `.github/copilot-instructions.md` at the repository root for project-wide instructions.
 
 ```prompt
-Analyze this codebase and create or update .github/copilot-instructions.md with project-wide instructions. Cover architecture, important directories, build and test commands, coding conventions, and requirements for completing a change. Preserve useful existing guidance, avoid duplication, and ask about anything you cannot determine from the repository.
+Create or update .github/copilot-instructions.md to address this repeated problem: <observed problem>. Inspect relevant code and commands, then add only the project-specific guidance needed to avoid the problem. Preserve useful existing guidance, avoid duplication, and ask about anything you cannot verify. Do not change application code.
 ```
 
 Use `CLAUDE.md` at the repository root for project-wide instructions.
 
 ```prompt
-Analyze this codebase and create or update CLAUDE.md at the repository root with project-wide instructions. Cover architecture, important directories, build and test commands, coding conventions, and requirements for completing a change. Preserve useful existing guidance, avoid duplication, and ask about anything you cannot determine from the repository.
+Create or update CLAUDE.md at the repository root to address this repeated problem: <observed problem>. Inspect relevant code and commands, then add only the project-specific guidance needed to avoid the problem. Preserve useful existing guidance, avoid duplication, and ask about anything you cannot verify. Do not change application code.
 ```
 
 Use `AGENTS.md` at the repository root for project-wide instructions.
 
 ```prompt
-Analyze this codebase and create or update AGENTS.md at the repository root with project-wide instructions. Cover architecture, important directories, build and test commands, coding conventions, and requirements for completing a change. Preserve useful existing guidance, avoid duplication, and ask about anything you cannot determine from the repository.
+Create or update AGENTS.md at the repository root to address this repeated problem: <observed problem>. Inspect relevant code and commands, then add only the project-specific guidance needed to avoid the problem. Preserve useful existing guidance, avoid duplication, and ask about anything you cannot verify. Do not change application code.
 ```
 
 > [!TIP]
@@ -5745,7 +5750,7 @@ Analyze this codebase and create or update AGENTS.md at the repository root with
 
 ## Step 2: Review the generated instructions
 
-Treat generated instructions as a starting point. Check that they contain accurate, project-specific information:
+Treat generated instructions as a starting point. Check the categories relevant to your observed problem, rather than adding every category to the file:
 
 * **Observed problem**: include only the guidance needed to improve the baseline behavior.
 * **Architecture**: describe important directories, component boundaries, and where to add different types of code.
@@ -5780,9 +5785,19 @@ Confirm that the instructions apply, and then repeat the representative task fro
 
 1. In the Agent Customizations editor, select **Instructions** for your harness and confirm that the project instructions file is listed. This checks discovery, not whether the agent follows every instruction.
 1. Start a new chat with the same harness and repository so the comparison doesn't rely on guidance from the creation conversation.
-1. Expand **References** in the response and confirm that the expected instructions were included.
-1. Repeat the representative task with the same success criterion.
+1. Repeat the representative task with the same success criterion, without restating the saved instructions in the prompt.
+1. Check **References** in the response, where available, for the expected instructions. If inclusion is unclear, [inspect the request or instruction-loading activity](/docs/agents/agent-troubleshooting/chat-debug-view.md#instructions-or-a-prompt-file-are-not-applied).
 1. Compare the result with the baseline. Review file placement, project patterns, libraries, tool activity, commands, tests, and errors rather than relying on the agent's summary.
+
+For an API task, record the observed results against criteria such as these:
+
+| Criterion | Baseline observation | Successful result after adding instructions |
+|-----------|----------------------|---------------------------------------------|
+| Handler location | The agent creates a new top-level route directory. | The handler uses the existing `src/api/routes` directory. |
+| Data access | The handler contains database queries. | The handler uses the existing repository layer. |
+| Validation | The agent skips tests or runs the wrong command. | Tool activity shows the relevant tests and their results. |
+
+These are example criteria, not guaranteed model outputs. Compare equivalent tasks from the same starting code, using the same model and available tools.
 
 If the file is missing, invalid, or included but not followed, use the [agent customization troubleshooting guide](/docs/agents/agent-troubleshooting/troubleshooting.md) to identify the failure before adding more instructions.
 
@@ -5816,7 +5831,7 @@ applyTo: "**/*.tsx"
 
 The pattern matches `.tsx` files throughout the repository. Review the pattern and test the instructions by asking the agent to make a small change to a specific matching file.
 
-Learn more about [file-based instructions](/docs/agent-customization/custom-instructions.md#use-instructionsmd-files).
+Learn more about [targeted instructions](/docs/agent-customization/custom-instructions.md#apply-instructions-to-specific-files-or-tasks) and [pattern syntax](/docs/agents/reference/custom-instructions-reference.md#file-patterns).
 
 Create `.claude/rules/frontend.md`. Claude uses `paths` rather than `applyTo` for path-scoped rules:
 
@@ -9353,8 +9368,8 @@ Chat participants are not supported in the Copilot harness. Ask the agent direct
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/ai-settings.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/ai-settings
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/ai-settings.md
-- **SHA256_FINGERPRINT**: `2acdcfe1d4475da7f9c41cdb4a792917014529c442e9ab66d48ab33a0e15a165`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:37.098312+00:00
+- **SHA256_FINGERPRINT**: `6456925002e4f5dba7515483cdb9dd419ba41eee69a4a65274686cfc67b431bd`
+- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:44.904183+00:00
 ---
 
 **MetaDescription**: Configure AI features and agents in Visual Studio Code, including chat, agent sessions, dictation, and accessibility settings.
@@ -9702,18 +9717,18 @@ Learn how to [migrate agent customizations](/docs/agent-customization/migrate-cu
 | Setting and Description | Default |
 |------------------------|---------------|
 | ``chat.instructionsFilesLocations``<br/>Additional instruction locations discovered by the editor and forwarded to Agent Host harnesses. Supported, but not recommended for Copilot workflows because other clients do not inherit this setting. Prefer [native harness locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations). | `{ ".github/instructions": true, ".claude/rules": true, "~/.copilot/instructions": true, "~/.claude/rules": true }` |
-| ``chat.includeApplyingInstructions``<br/>Automatically add instruction files with a matching `applyTo` pattern to chat requests. | `true` |
-| ``chat.includeReferencedInstructions``<br/>Automatically add instruction files referenced via Markdown links to chat requests. | `false` |
-| ``github.copilot.chat.codeGeneration.useInstructionFiles``<br/>Automatically add custom instructions from `.github/copilot-instructions.md` to chat requests. | `true` |
+| ``chat.includeApplyingInstructions``<br/>Automatically add instruction files with a matching `applyTo` pattern to Local chat requests. | `true` |
+| ``chat.includeReferencedInstructions``<br/>Automatically add instruction files referenced via Markdown links to Local chat requests. | `false` |
+| ``github.copilot.chat.codeGeneration.useInstructionFiles``<br/>Automatically add custom instructions from `.github/copilot-instructions.md` to Local chat requests. | `true` |
 | ``github.copilot.chat.commitMessageGeneration.instructions`` _(Experimental)_<br/>Custom instructions for generating commit messages with AI. | `[]` |
 | ``github.copilot.chat.pullRequestDescriptionGeneration.instructions`` _(Experimental)_<br/>Custom instructions for generating pull request titles and descriptions with AI. | `[]` |
-| ``github.copilot.chat.organizationInstructions.enabled``<br/>Enable discovery of custom instructions defined at the GitHub organization level. | `true` |
-| ``chat.useCustomizationsInParentRepositories``<br/>Enable discovery of agent customizations (instructions, prompts, agents, skills, hooks) in [parent repository folders](/docs/agent-customization/overview.md#use-customizations-in-a-monorepo). Useful for monorepo setups where you open a subfolder rather than the repository root. | `false` |
+| ``github.copilot.chat.organizationInstructions.enabled``<br/>Control the Local organization instruction provider. See [organization instruction availability](/docs/agents/reference/custom-instructions-reference.md#organization-instructions). | `true` |
+| ``chat.useCustomizationsInParentRepositories``<br/>Enable discovery of agent customizations (instructions, prompts, agents, skills, hooks) in [parent repository folders](/docs/agent-customization/overview.md#use-customizations-in-a-monorepo) for Local sessions. Useful for monorepo setups where you open a subfolder rather than the repository root. | `false` |
 | ``chat.useHooks`` _(Preview)_ <br/>Enable [hooks for the Local harness](/docs/agent-customization/hooks.md#configure-hooks-for-the-local-harness). This setting does not configure Copilot, Claude, or Codex hook execution. | `true` |
 | ``chat.hookFilesLocations`` _(Preview)_ <br/>Configure additional Local hook file locations. Specify folders containing `*.json` files or individual `.json` files, using relative or tilde paths. For Copilot, [migrate to a supported hook source](/docs/agent-customization/migrate-customizations.md#find-every-hook-source) instead. | `{}` |
 | ``chat.useClaudeHooks`` _(Preview)_ <br/>Enable the Local harness to parse hooks from Claude configuration files. The Local harness ignores Claude matcher values. | `false` |
-| ``chat.useAgentsMdFile`` <br/>Automatically attach instructions from workspace-root `AGENTS.md` files to chat requests in Local harness sessions only. Does not control [Copilot instruction discovery](/docs/agent-customization/custom-instructions.md#use-an-agentsmd-file) or discovery in other harnesses. | `true` |
-| ``chat.useClaudeMdFile``<br/>Enable or disable using `CLAUDE.md` files as always-on custom instructions. | `true` |
+| ``chat.useAgentsMdFile`` <br/>Automatically attach instructions from workspace-root `AGENTS.md` files to chat requests in Local harness sessions only. Does not control [Copilot instruction discovery](/docs/agents/reference/custom-instructions-reference.md#nested-project-instructions) or discovery in other harnesses. | `true` |
+| ``chat.useClaudeMdFile``<br/>Enable or disable using `CLAUDE.md` files as always-on custom instructions in Local sessions. | `true` |
 | ``chat.useNestedAgentsMdFiles`` `feature(nested-agents-md-files)`<br/>List `AGENTS.md` files in workspace subfolders for on-demand loading in Local harness sessions. Requires ``chat.useAgentsMdFile`` to be enabled. Does not affect other harnesses. | `false` |
 
 ## Reusable prompt files settings
@@ -10154,6 +10169,205 @@ The Claude harness implements these fields according to its provider documentati
 * [Use subagents](/docs/agents/run/subagents.md)
 * [Configure agent hooks](/docs/agent-customization/hooks.md)
 * [Compare agent harnesses](/docs/agents/run/agent-harnesses.md)
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/custom-instructions-reference.md
+- **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/custom-instructions-reference
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/custom-instructions-reference.md
+- **SHA256_FINGERPRINT**: `90743a6981467be37cbb5ed4fb011cd07cabb64eb03e1ae39a5bea418db69927`
+- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:44.908629+00:00
+---
+
+**MetaDescription**: Look up custom instruction formats, locations, activation rules, and settings in VS Code.
+
+# Custom instructions reference
+
+Use this reference to look up instruction file formats, locations, activation rules, and settings for your agent harness. For a first setup, examples, and verification steps, see [Use custom instructions](/docs/agent-customization/custom-instructions.md).
+
+## Supported formats and locations
+
+The selected [agent harness](/docs/agents/run/agent-harnesses.md#select-a-harness), not the language model, determines instruction support. The following table lists common project formats. Paths are relative to the repository root unless noted.
+
+| Harness | Project instructions | Targeted instructions |
+|---------|----------------------|-----------------------|
+| Copilot | `.github/copilot-instructions.md` or `AGENTS.md` | `.github/instructions/**/*.instructions.md` or nested `AGENTS.md` files |
+| [product.prodname_anthropic_claude] | `CLAUDE.md` or `.claude/CLAUDE.md` | Markdown files in `.claude/rules` |
+| [product.prodname_openai_codex] | `AGENTS.md` | `AGENTS.md` files along the path to the session's working directory |
+| Local | `.github/copilot-instructions.md`, `AGENTS.md`, or `CLAUDE.md` | `.github/instructions/**/*.instructions.md` or Markdown files in `.claude/rules` |
+
+`AGENTS.md` is a cross-agent instruction format. It is not a custom agent definition, and its discovery rules differ by harness. If your team uses multiple harnesses, choose a shared supported format where possible and keep any separate copies consistent.
+
+Some harnesses support additional native formats. See the [Copilot instruction locations](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-custom-instructions), [Claude instruction locations](https://code.claude.com/docs/en/memory), and [Codex instruction discovery](https://developers.openai.com/codex/guides/agents-md) for their runtime-specific rules.
+
+### User instructions
+
+User instructions contain personal guidance across projects. `~` refers to the home directory on the machine where the agent runs.
+
+| Harness | Personal project-independent guidance |
+|---------|---------------------------------------|
+| Copilot | `~/.copilot/copilot-instructions.md` for general guidance; `~/.copilot/instructions/**/*.instructions.md` for modular instructions |
+| [product.prodname_anthropic_claude] | `~/.claude/CLAUDE.md` for general guidance; `~/.claude/rules` for modular rules |
+| [product.prodname_openai_codex] | `AGENTS.md` in the Codex home directory, which defaults to `~/.codex` |
+| Local | Instructions in the VS Code user profile, created through the Agent Customizations editor |
+
+Harness user folders are separate from VS Code profile storage and don't roam through Settings Sync. To move existing profile instructions, see [user customization migration](/docs/agent-customization/migrate-customizations.md#move-user-agents-and-instructions).
+
+To sync Local profile instructions across devices, turn on [Settings Sync](/docs/configure/settings-sync.md), run **Settings Sync: Configure** from the Command Palette (``Shortcut: workbench.action.showCommands``), and select **Prompts and Instructions**.
+
+### Additional search locations
+
+The editor searches instruction directories recursively, so `.github/instructions` can contain subfolders for languages, teams, or modules.
+
+The ``chat.instructionsFilesLocations`` setting adds search locations. It remains supported, and the editor forwards instructions from additional configured locations to Agent Host harnesses. Prefer native harness folders for portability: GitHub Copilot CLI and the GitHub Copilot app don't inherit editor settings. See [migrate configured locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations).
+
+For Local sessions that open a subfolder of a repository, ``chat.useCustomizationsInParentRepositories`` enables discovery from the parent repository. This setting doesn't control other harnesses. See [monorepo discovery](/docs/agent-customization/overview.md#use-customizations-in-a-monorepo).
+
+## File syntax
+
+Project files such as `.github/copilot-instructions.md`, `AGENTS.md`, and `CLAUDE.md` contain Markdown instructions and don't require YAML frontmatter.
+
+### Instructions file fields
+
+An `*.instructions.md` file contains an optional YAML header between `---` delimiters, followed by Markdown instructions:
+
+```markdown
+---
+name: 'Python tests'
+description: 'Use when creating or updating Python tests.'
+applyTo: 'tests/**/*.py'
+---
+Reuse fixtures from `tests/conftest.py`.
+Run `python -m pytest <test-file>` after changing a test.
+```
+
+These fields describe the instruction format recognized by the editor. Activation depends on the [harness](#discovery-and-activation).
+
+| Field | Type | Required | Meaning |
+|-------|------|----------|---------|
+| `name` | String | No | Display name in the UI. Defaults to the file name. |
+| `description` | String | No | Describes the relevant task. In Local sessions, the agent can use it to decide whether to load the file on demand. |
+| `applyTo` | String | No | One or more comma-separated glob patterns for matching files. Use `**` for all files. There is no default pattern. |
+
+For Local sessions, omitting both `description` and `applyTo` leaves the file available for manual attachment rather than automatic activation. A description is not an additional condition that must match before `applyTo` takes effect.
+
+Files shared with other Copilot features can also use feature-specific fields such as `excludeAgent`. Check [GitHub's instruction support reference](https://docs.github.com/en/copilot/reference/custom-instructions-support) and [repository instruction configuration](https://docs.github.com/en/copilot/how-tos/copilot-in-your-ide/customize-copilot/configure-custom-instructions/add-repository-instructions-in-your-ide) rather than assuming these fields switch the VS Code harness.
+
+### Claude rules fields
+
+Markdown rules in `.claude/rules` use `paths` instead of `applyTo`:
+
+```markdown
+---
+paths:
+  - 'tests/**/*.py'
+---
+Reuse fixtures from `tests/conftest.py`.
+```
+
+`paths` is an array of glob patterns. Omitting it makes the rule apply generally rather than restricting it to particular paths. Local also reads this format. See [Claude rules](https://code.claude.com/docs/en/memory) for native harness behavior.
+
+## Discovery and activation
+
+Discovery means a harness or the editor finds an instructions file. Inclusion means its contents become part of a request. Neither guarantees that the model follows every rule.
+
+### File patterns
+
+For repository instruction files, patterns are relative to the workspace or project root, not the directory containing the instructions file. Use `/` path separators across operating systems.
+
+| Pattern | Matches | Does not match |
+|---------|---------|----------------|
+| `*.py` | `app.py` at the root | `src/app.py` |
+| `src/*.py` | `src/app.py` | `src/api/routes.py` |
+| `src/**/*.py` | `src/app.py`, `src/api/routes.py` | `tests/test_app.py` |
+| `tests/**/*.py` | `tests/test_app.py`, `tests/unit/test_app.py` | `src/app.py` |
+| `**/*.ts, **/*.tsx` | TypeScript and TSX files at any depth | JavaScript files |
+| `**` | All files | No files excluded by the pattern |
+
+In Copilot sessions, `applyTo` targets files the agent works with. In Local, matching file context can attach instructions automatically when ``chat.includeApplyingInstructions`` is on. Local can also offer instructions for on-demand loading based on their description. Don't use a description as a substitute for a pattern when you need file-scoped guidance.
+
+### Nested project instructions
+
+| Harness | Nested-file behavior |
+|---------|----------------------|
+| Copilot | Discovers `AGENTS.md` at the repository root, working directory, intermediate directories, and along paths to files it works with. Applicable instructions are combined. |
+| [product.prodname_openai_codex] | Builds an instruction chain from the project root to the session's working directory. To use instructions in a subfolder, start the session with that subfolder as its working directory. |
+| Local | Workspace-root `AGENTS.md` is included when ``chat.useAgentsMdFile`` is on. Nested files require both that setting and ``chat.useNestedAgentsMdFiles``. |
+
+`feature(nested-agents-md-files)`
+
+Local nested-file discovery is experimental and off by default. When enabled, it lists nested files and their folder locations so the agent can load relevant instructions on demand. These Local settings don't change Copilot or Codex discovery.
+
+For Claude's directory-based loading, see [Claude instruction discovery](https://code.claude.com/docs/en/memory#how-claude-md-files-load).
+
+### Reference other files
+
+Markdown links let instructions point to supporting files and URLs. Relative file links resolve from the instructions file. Linking to a document is not a guarantee that its contents are included in every request.
+
+In Local, ``chat.includeReferencedInstructions`` controls automatic inclusion of referenced instructions and is off by default. Other harnesses use their native inclusion mechanisms. See [Copilot file references](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-custom-instructions#referencing-other-files) and [Claude instructions](https://code.claude.com/docs/en/memory).
+
+Keep essential rules in the instructions themselves. For a task that depends on a supporting document, attach that document or explicitly ask the agent to read it, and verify the resulting request or tool activity.
+
+### Manual attachment
+
+Sessions that support instruction attachments offer **Add Context** > **Instructions** in the chat input. If that option isn't available, attach the Markdown file as ordinary file context and ask the agent to follow it for the current task. See [attach instructions to one request](/docs/agent-customization/custom-instructions.md#attach-instructions-to-one-request).
+
+## Combine instruction sources
+
+There is no precedence rule that applies across all harnesses.
+
+* Copilot combines applicable user and repository instructions without a general precedence order between instruction files.
+* Local can include multiple applicable instruction files. Avoid contradictory rules rather than relying on their order.
+* Codex combines project instructions from the root toward the working directory, with more specific guidance later in the chain. Its native configuration also supports override files.
+* Claude uses its own loading rules for user, project, and directory guidance.
+
+For details, use the native documentation linked in [supported formats](#supported-formats-and-locations). To resolve conflicting rules, change their sources and [repeat a representative task](/docs/agent-customization/custom-instructions.md#resolve-conflicting-instructions).
+
+## Organization instructions
+
+Organization instructions are managed on GitHub rather than in a repository file. Their availability depends on the client and feature, so don't assume that signing in makes them available to every harness.
+
+Local has an organization instruction provider controlled by ``github.copilot.chat.organizationInstructions.enabled``, which is on by default. Verify discovery for your account and session in the Agent Customizations editor.
+
+For organization configuration and supported GitHub experiences, see [organization custom instructions](https://docs.github.com/en/copilot/concepts/prompting-and-context/custom-instructions#about-organization-custom-instructions). Keep applicable organization and project guidance consistent.
+
+## Settings
+
+### Local harness settings
+
+These settings control Local discovery and activation, not the native discovery rules of other harnesses:
+
+| Purpose | Setting |
+|---------|---------|
+| Include `.github/copilot-instructions.md` | ``github.copilot.chat.codeGeneration.useInstructionFiles`` |
+| Include matching `.instructions.md` files | ``chat.includeApplyingInstructions`` |
+| Include linked instructions | ``chat.includeReferencedInstructions`` |
+| Include workspace-root `AGENTS.md` | ``chat.useAgentsMdFile`` |
+| Discover nested `AGENTS.md` | ``chat.useNestedAgentsMdFiles`` |
+| Include Claude instruction files | ``chat.useClaudeMdFile`` |
+| Discover customizations in parent repositories | ``chat.useCustomizationsInParentRepositories`` |
+
+For Claude instruction files, Local checks the workspace-root `CLAUDE.md`, `.claude/CLAUDE.md`, `~/.claude/CLAUDE.md`, and `CLAUDE.local.md`. Add personal project files such as `CLAUDE.local.md` to `.gitignore` if they shouldn't be shared.
+
+For defaults and additional configuration, see [custom instruction settings](/docs/agents/reference/ai-settings.md#custom-instructions-settings). The additional-location setting is described separately under [search locations](#additional-search-locations).
+
+### Generated-content settings
+
+Code review, commit message generation, and pull request description generation have separate settings. Each accepts an array of objects with either a `text` property for an inline rule or a `file` property for a Markdown file path.
+
+| Scenario | Setting |
+|----------|---------|
+| Review selected code | ``github.copilot.chat.reviewSelection.instructions`` |
+| Generate commit messages (Experimental) | ``github.copilot.chat.commitMessageGeneration.instructions`` |
+| Generate pull request descriptions (Experimental) | ``github.copilot.chat.pullRequestDescriptionGeneration.instructions`` |
+
+Settings-based code generation and test generation instructions are deprecated. Use instruction files for those scenarios instead.
+
+## Related resources
+
+* [Use custom instructions](/docs/agent-customization/custom-instructions.md) to create and test project guidance.
+* [Migrate customizations](/docs/agent-customization/migrate-customizations.md) when changing harnesses or storage locations.
+* [Debug instruction inclusion](/docs/agents/agent-troubleshooting/chat-debug-view.md#instructions-or-a-prompt-file-are-not-applied) to inspect what reached the model.
 
 
 ---

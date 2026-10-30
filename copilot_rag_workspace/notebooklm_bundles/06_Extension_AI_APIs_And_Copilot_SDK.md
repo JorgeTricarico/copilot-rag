@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
-- **Generado (UTC)**: 2026-10-29T18:15:13.513391+00:00
-- **Total Palabras**: 124,288 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-30T17:51:52.927512+00:00
+- **Total Palabras**: 124,358 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -19176,8 +19176,8 @@ declare module 'vscode' {
 # DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts
-- **SHA256_FINGERPRINT**: `acc442a165daf709ecae8ffb7626bb553848bd52362f690877bef6868e02a7cb`
-- **LAST_VERIFIED_UTC**: 2026-10-29T18:15:02.460154+00:00
+- **SHA256_FINGERPRINT**: `20e760338936f4514b11a1a33ebe28990d9893be5fc3bfbd1b0ccb0afe3cc0d1`
+- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:45.635573+00:00
 ---
 
 # VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts`
@@ -19281,9 +19281,16 @@ declare module 'vscode' {
 		readonly availability?: ChatArtifactAvailability;
 		readonly main?: ChatArtifactPresentation;
 		/**
-		 * How this artifact contributes to a group of several artifacts of this provider, which shows the icon
+		 * Gives this artifact a pill of its own, shared with every other artifact assigned the same ID, including those of
+		 * other providers, and named by {@link ChatArtifactIntegrationProvider.groupLabel}. Without one, the artifact is listed
+		 * in the pill for its kind, such as Artifacts, with the other artifacts. Only consulted when this provider presents
+		 * the artifact's main part.
+		 */
+		readonly groupId?: string;
+		/**
+		 * How this artifact contributes to a group of several artifacts sharing its {@link groupId}, which shows the icon
 		 * with the highest priority among them, for example a failing pull request's icon over an open one's.
-		 * Priorities are only compared among this provider's artifacts, and only when this provider presents
+		 * Priorities are only compared among the group's artifacts, and only when this provider presents
 		 * the artifact's main part.
 		 */
 		readonly group?: { readonly icon: ThemeIcon; readonly priority: number };
@@ -19457,7 +19464,7 @@ declare module 'vscode' {
 		readonly label: string;
 		/** Names the recorded resources this provider supports, such as "Experiment links on example.com", so agents know when to use it. One line of plain text, at most 300 characters. */
 		readonly description?: string;
-		/** Names several of this provider's artifacts when they are grouped, such as "Experiments". One line of plain text, at most 100 characters. */
+		/** Names several of this provider's artifacts when they share a group ID, such as "Experiments". One line of plain text, at most 100 characters. */
 		readonly groupLabel?: string;
 		/** Stable for this registration's lifetime. Every referenced action must exist on each observation. Option and choice labels are one line of plain text, at most 100 characters. */
 		readonly automationOptions?: readonly ChatArtifactAutomationOption[];
@@ -20517,8 +20524,8 @@ declare module 'vscode' {
 # DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatHooks.d.ts
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatHooks.d.ts
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatHooks.d.ts
-- **SHA256_FINGERPRINT**: `d0a1df0fbeedabc2d3ea54f8b33595b595905a16080b5ed634d096ff5a901505`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.284130+00:00
+- **SHA256_FINGERPRINT**: `382554c4d529c823ff0fce861d134e8bf00a2200dd09dc9b6c6d2e61b06d5fe5`
+- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:45.640383+00:00
 ---
 
 # VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatHooks.d.ts`
@@ -20534,7 +20541,7 @@ declare module 'vscode' {
 	/**
 	 * The type of hook to execute.
 	 */
-	export type ChatHookType = 'SessionStart' | 'SessionEnd' | 'UserPromptSubmit' | 'PreToolUse' | 'PostToolUse' | 'PreCompact' | 'SubagentStart' | 'SubagentStop' | 'Stop' | 'ErrorOccurred';
+	export type ChatHookType = 'SessionStart' | 'SessionEnd' | 'UserPromptSubmit' | 'UserPromptTransformed' | 'PreToolUse' | 'PostToolUse' | 'PreCompact' | 'SubagentStart' | 'SubagentStop' | 'Stop' | 'ErrorOccurred';
 
 	/**
 	 * A resolved hook command ready for execution.
