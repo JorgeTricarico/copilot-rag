@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 03_MCP_Servers_And_Tools_Execution
-- **Generado (UTC)**: 2026-10-29T18:15:13.509277+00:00
-- **Total Palabras**: 8,432 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-31T04:48:47.913129+00:00
+- **Total Palabras**: 8,506 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -8,8 +8,8 @@
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/mcp-servers.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/mcp-servers
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/mcp-servers.md
-- **SHA256_FINGERPRINT**: `cb3dc951ab53cb574b97fc353a09e3379a8707df7cbf150a725a7cf34fbe1909`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:35.733877+00:00
+- **SHA256_FINGERPRINT**: `3e50b90a51c4013459153a857c3257bc1e8061824f6846fed92b5a5b9fdcca4c`
+- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:43.956658+00:00
 ---
 
 **MetaDescription**: Connect MCP servers in VS Code to give agents external tools, then verify the first tool call.
@@ -25,7 +25,7 @@ This article takes you from adding a server to verifying its first tool call. Ch
 * **Connect a supported service without server setup:** [Use a Copilot connector](/docs/agent-customization/copilot-connectors.md) `feature(copilot-connectors)`.
 * **Use tools from a packaged workflow:** [Install an agent plugin](/docs/agent-customization/agent-plugins.md#discover-and-install-plugins) that bundles MCP servers.
 * **I have a server URL or command:** [Connect a server](#connect-a-server).
-* **Help me find a server:** [Choose a server to try](#choose-a-server-to-try).
+* **Help me find a server:** [Choose a server to try](#choose-a-server-to-try) or [browse the Customization Marketplace](#discover-servers-in-the-customization-marketplace-preview).
 * **My server is configured but isn't working:** [Check the connection](#if-the-server-does-not-work).
 
 ## Before you start
@@ -110,19 +110,27 @@ To control available tools in a Copilot session, open **Chat: Open Customization
 
 ## Find another server
 
-Use the MCP server gallery (Preview) to browse publishers and capabilities:
+### Discover servers in the Customization Marketplace (Preview)
 
-1. Open the Extensions view (``Shortcut: workbench.view.extensions``) and search for `@mcp`.
+Use the [Customization Marketplace](/docs/agent-customization/overview.md#discover-and-install-existing-customizations-preview) to find existing server integrations alongside skills and plugins.
 
-1. Select a server and review its publisher, capabilities, and installation requirements.
+1. For a Copilot session, run **Chat: Open Customizations** and select **Browse**.
+1. Select **GitHub Feed** from the source menu and search by name or with `@type:mcp`.
+1. Review the publisher, server capabilities, and setup requirements, then select **Install** when available.
+1. Complete the publisher's setup and [verify a tool call](#verify-the-first-tool-call).
 
-1. Select **Install** for a personal installation, or right-click and select **Install in Workspace** to share its configuration with the project.
+The experimental GitHub Feed requires a harness that provides marketplace search. Local sessions don't provide this source. Availability also depends on organization policy. If automatic installation isn't supported, follow the publisher's instructions or [add its URL or command](#connect-a-server).
 
-1. Complete the publisher's setup, and then [verify a tool call](#verify-the-first-tool-call).
+You can also select a plugin marketplace and [install a plugin that bundles MCP servers](/docs/agent-customization/agent-plugins.md#install-a-plugin-from-a-marketplace). Adding the marketplace alone doesn't install its servers.
 
-If the gallery isn't available, use a publisher-provided URL or command with [MCP: Add Server](#connect-a-server). Your organization can restrict which servers are available.
+> [!NOTE]
+> Searching for `@mcp` in the Extensions view or running **MCP: Browse MCP Servers** opens **Find MCP Servers in Customizations**, not a list of gallery results, when ``chat.customizations.marketplace.enabled`` is on (the default). Select **Browse MCP Servers** to continue in the Agent Customizations editor. When the setting is off, the legacy Extensions gallery can still appear.
 
-You can also open the gallery with **MCP: Add Server** > **Browse MCP Servers...**. Choose **Add from another application...** in the same picker to [discover existing server configurations](/docs/agents/reference/mcp-configuration.md#automatic-mcp-server-discovery).
+### Add a server from another source
+
+If marketplace discovery isn't available for your harness or organization, use a publisher-provided URL or command with [MCP: Add Server](#connect-a-server).
+
+To reuse a configuration from another application, run **MCP: Add Server** and choose **Add from another application...**. See [automatic MCP server discovery](/docs/agents/reference/mcp-configuration.md#automatic-mcp-server-discovery) for supported sources.
 
 **Add from a package or Docker image (model-assisted)**
 
@@ -135,12 +143,6 @@ If you have a package or image name instead of a launch command, use model assis
 1. [Verify a tool call](#verify-the-first-tool-call) from the added server.
 
 These options appear only when model-assisted setup is supported in your current configuration. If they aren't available, use the publisher's launch command with **Command (stdio)**. Runtime prerequisites still apply: generating a configuration doesn't replace installing the required runtime.
-
-**Discover servers in the Customization Marketplace (Preview)**
-
-For a Copilot session, open **Chat: Open Customizations** and select **Browse**. Select **GitHub Feed** from the source menu and search by name or with `@type:mcp`. Review the server and select **Install**.
-
-Marketplace discovery is enabled by default. Availability depends on the harness and your organization's preview-feature and marketplace policies. If automatic installation isn't supported, follow the publisher's instructions. Learn about [marketplace discovery](/docs/agent-customization/overview.md#discover-marketplace-customizations-preview).
 
 ## Choose a configuration destination
 
@@ -195,8 +197,8 @@ For specific tasks, see [MCP sandboxing](/docs/agents/run/manage-mcp-servers.md#
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/mcp-configuration.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/mcp-configuration
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/mcp-configuration.md
-- **SHA256_FINGERPRINT**: `8446203561672f765dbfd0133fc1de0e19c42bcb73d9002ba3f1c5c6afed2487`
-- **LAST_VERIFIED_UTC**: 2026-10-29T18:15:01.698121+00:00
+- **SHA256_FINGERPRINT**: `9ef6003068251b091fa48faa232168359bec88c0c19ace8204277d60045aae2b`
+- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:44.076763+00:00
 ---
 
 **MetaDescription**: Configure MCP servers in Visual Studio Code with reference details for file formats, commands, settings, and sandboxing.
@@ -570,7 +572,7 @@ The following table lists the MCP-related commands available in the Command Pale
 | Command | Description |
 |---------|-------------|
 | **MCP: Add Server** | Add a new MCP server to your workspace or user profile. |
-| **MCP: Browse MCP Servers** | Open the MCP server gallery in the Extensions view. |
+| **MCP: Browse MCP Servers** | Open [MCP discovery](/docs/agent-customization/mcp-servers.md#find-another-server) in the Extensions view. With marketplace discovery enabled, select **Browse MCP Servers** to continue in the Agent Customizations editor. |
 | **MCP: Browse Resources** | Browse resources provided by MCP servers. |
 | **MCP: Install Server from Manifest** | Install an MCP server from an MCP manifest file. |
 | **MCP: List Servers** | List all configured MCP servers and perform actions like start, stop, restart, or show output. |

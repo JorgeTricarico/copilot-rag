@@ -79,15 +79,15 @@ LangGraph provides low-level supporting infrastructure for *any* long-running, s
 
 While LangGraph can be used standalone, it also integrates seamlessly with any LangChain product, giving developers a full suite of tools for building agents. To improve your LLM application development, pair LangGraph with:
 
-> **[LangSmith Observability](https://docs.langchain.com/langsmith/observability.md)**
+> [card] [LangSmith Observability](https://docs.langchain.com/langsmith/observability.md)
 >
 > Trace requests, evaluate outputs, and monitor deployments in one place. Prototype locally with LangGraph, then move to production with integrated observability and evaluation to build more reliable agent systems.
 
-> **[LangSmith Deployment](https://docs.langchain.com/langsmith/deployment.md)**
+> [card] [LangSmith Deployment](https://docs.langchain.com/langsmith/deployment.md)
 >
 > Deploy and scale agents effortlessly with a purpose-built deployment platform for long running, stateful workflows. Discover, reuse, configure, and share agents across teams — and iterate quickly with visual prototyping in Studio.
 
-> **[LangChain](https://docs.langchain.com/oss/python/langchain/overview.md)**
+> [card] [LangChain](https://docs.langchain.com/oss/python/langchain/overview.md)
 >
 > Provides integrations and composable components to streamline LLM application development. Contains agent abstractions built on top of LangGraph.
 

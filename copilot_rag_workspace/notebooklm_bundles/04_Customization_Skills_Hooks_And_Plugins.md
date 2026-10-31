@@ -1,5 +1,5 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins
-- **Generado (UTC)**: 2026-10-30T17:51:52.739803+00:00
+- **Generado (UTC)**: 2026-10-31T04:48:47.924602+00:00
 - **Total Palabras**: 447,438 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 

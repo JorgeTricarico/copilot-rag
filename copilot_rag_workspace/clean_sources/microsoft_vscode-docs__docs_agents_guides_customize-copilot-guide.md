@@ -8,6 +8,8 @@ This guide helps you configure the GitHub Copilot, [product.prodname_anthropic_c
 
 To understand how the customization types differ and work together, see [Agent customization](/docs/agents/concepts/customization.md).
 
+For ready-made workflows and integrations, [browse customization marketplaces](/docs/agent-customization/overview.md#discover-and-install-existing-customizations-preview) before authoring your own. You can reuse an existing skill or plugin and still follow this guide to add repository-specific instructions.
+
 ## Prerequisites
 
 > [!NOTE]
@@ -241,7 +243,7 @@ After generating the agent:
 1. Ask it to research how a feature works. Check that it identifies relevant files, supports findings with evidence, and follows its configured role.
 1. Review any changes and tool activity rather than assuming the agent's name or instructions make it read-only.
 
-Learn more about [custom agents](/docs/agent-customization/custom-agents.md).
+For a complete test procedure and guidance on refining the agent's role, see [Verify your custom agent](/docs/agent-customization/custom-agents.md#verify-your-custom-agent).
 
 ## What you configured
 
@@ -296,4 +298,4 @@ Review and share any optional customization files through the same process as th
 
 * [Create and manage customizations](/docs/agent-customization/overview.md) from the Agent Customizations editor.
 * Add [MCP servers](/docs/agent-customization/mcp-servers.md) to connect the agent to external tools and services.
-* Set up [hooks](/docs/agent-customization/hooks.md) when an action must run at a specific agent lifecycle event.
+* Set up [hooks](/docs/agent-customization/hooks.md) when an action must run at a specific point in the agent's workflow, such as before a tool runs.

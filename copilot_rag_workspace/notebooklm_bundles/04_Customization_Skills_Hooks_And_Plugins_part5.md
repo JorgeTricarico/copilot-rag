@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-10-30T17:51:52.893327+00:00
-- **Total Palabras**: 369,451 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-31T04:48:48.083159+00:00
+- **Total Palabras**: 369,214 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -52986,11 +52986,11 @@ Behavior depends on where you set the flag:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/agent-plugins.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/agent-plugins
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-plugins.md
-- **SHA256_FINGERPRINT**: `fe99b2bdab4b53b86c8a6813928550e699e0e9facdde3d4008a3bbac76d83628`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:35.578097+00:00
+- **SHA256_FINGERPRINT**: `426298cd0e77e72345166d6094f777a9d300ce175b201043bf18232bc46c1633`
+- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:43.900702+00:00
 ---
 
-**MetaDescription**: Install and manage agent plugins in VS Code.
+**MetaDescription**: Find, install, and manage agent plugins from marketplaces in VS Code.
 
 # Agent plugins in VS Code
 
@@ -53013,7 +53013,9 @@ Plugins can provide the following customizations. The selected harness and plugi
 | [MCP servers](/docs/agent-customization/mcp-servers.md) | Tools for interacting with external systems |
 | [Canvases](/docs/agents/run/canvases.md) `feature(canvases)` | Interactive visual surfaces shared by you and the agent in supported Copilot sessions |
 | [Custom agents](/docs/agent-customization/custom-agents.md) | Specialized roles and tool configurations |
-| [Hooks](/docs/agent-customization/hooks.md) | Commands that run at agent lifecycle points |
+| [Custom instructions](/docs/agent-customization/custom-instructions.md) | Reusable guidance supplied as plugin rules |
+| [Hooks](/docs/agent-customization/hooks.md) | Commands that run at specific points in the agent's workflow |
+
 | [Automation templates](/docs/agents/run/automations.md#start-from-a-template) | Starting prompts and schedules to review before creating an automation |
 | Slash commands | Commands you can invoke with `/` in chat |
 
@@ -53028,14 +53030,16 @@ Check the plugin's supported clients and components before installing. See [Cros
 
 Use the Agent Customizations editor to browse marketplaces and install plugins. You can also install a plugin directly from a Git repository or local folder. Available plugins and actions depend on the selected [agent harness](/docs/agents/concepts/agent-harnesses.md) and organization policy.
 
+Plugin marketplaces let you reuse workflows published by the community or your organization. If you don't need a bundle, the [Customization Marketplace](/docs/agent-customization/overview.md#discover-and-install-existing-customizations-preview) also provides discovery for individual skills and MCP servers from supported sources.
+
 ### Install a plugin from a marketplace
 
 1. Open the Agent Customizations editor by running **Chat: Open Customizations** from the Command Palette, selecting **Open Customizations** in the Chat view title bar, or selecting **Customizations** in the Agents window sidebar.
 
 1. Browse available plugins from your [configured marketplaces](#configure-plugin-marketplaces).  Available sources depend on the selected harness and organization policy.
 
-    * Select the **Browse** tab and search for a plugin.
-    * Select the **Plugins** tab and then select **Browse** to find available plugins.
+    * In the unified Customization Marketplace (Preview), select **Browse** and use the source menu to choose a plugin marketplace, or search across available sources.
+    * If the unified **Browse** page isn't available, select **Plugins** and then **Browse Marketplace** to find available plugins.
 
 1. Select a plugin to review its publisher, included customizations, and **Plugin README**, when provided.
 
@@ -53100,7 +53104,7 @@ Plugins installed from an external source (such as npm, PyPI, or an external Git
 
 ## Configure plugin marketplaces
 
-Add and manage plugin marketplaces in the Agent Customizations editor or configure their sources in Settings.
+A plugin marketplace is a Git repository containing a catalog of plugin definitions. Add community or organization marketplaces in the Agent Customizations editor, or configure their sources in Settings.
 
 Adding a marketplace makes its plugins available to browse. It does not install or enable them.
 
@@ -53119,7 +53123,7 @@ Organization-managed marketplaces can't be removed, and some harnesses also prot
 
 You can discover plugins from marketplaces such as [copilot-plugins](https://github.com/github/copilot-plugins) and [awesome-copilot](https://github.com/github/awesome-copilot/). To configure additional marketplaces, use ``chat.plugins.marketplaces`` (Experimental).
 
-Marketplaces are Git repositories that contain plugin definitions. You can reference them in several formats:
+You can reference marketplace repositories in several formats:
 
 * **Shorthand**: `owner/repo` for public GitHub repositories. For example, `anthropics/claude-code`. Append `#<ref>` to select a branch, tag, or full 40-character commit SHA.
 * **HTTPS git remote**: a full URL ending in `.git`. For example, `https://github.com/anthropics/claude-code.git`.
@@ -53275,8 +53279,8 @@ Use the [agent plugin authoring reference](/docs/agents/reference/agent-plugin-r
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/agent-skills.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/agent-skills
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-skills.md
-- **SHA256_FINGERPRINT**: `b324f1f712276a5de59769c6d2b70707b4a14fe03ae18172d9d945a6af6eb169`
-- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:44.841991+00:00
+- **SHA256_FINGERPRINT**: `dcb305f9432542fa4df5c2f7440a41888ee89bcb854edccd57adfa7d34d5af26`
+- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:43.910878+00:00
 ---
 
 **MetaDescription**: Find, adapt, and create Agent Skills in VS Code for reusable workflows with supported agents.
@@ -53329,13 +53333,13 @@ Use custom instructions when you want to:
 
 ## Use an existing skill
 
-Start with an existing skill when it provides the workflow you need. You can install a skill from a supported marketplace source, use one bundled in an [agent plugin](/docs/agent-customization/agent-plugins.md), or copy and adapt one for your project. Check [harness compatibility](/docs/agent-customization/overview.md#check-harness-compatibility) before choosing a source and location.
+Start with an existing skill when it provides the workflow you need. [Browse customization marketplaces](/docs/agent-customization/overview.md#discover-and-install-existing-customizations-preview) to install an individual skill or find one bundled in an [agent plugin](/docs/agent-customization/agent-plugins.md). You can also copy and adapt a skill for your project. Check [harness compatibility](/docs/agent-customization/overview.md#check-harness-compatibility) before choosing a source and location.
 
 A skill includes its full directory, not only the `SKILL.md` file: scripts, templates, examples, and other resources can be part of the workflow.
 
 ### Install a skill from the Customization Marketplace (Preview)
 
-Use the Customization Marketplace to find and install skills from configured sources. Marketplace discovery is enabled by default. GitHub Feed requires a harness that provides marketplace search; Local sessions don't provide this source, and organization policy can restrict access.
+Use the Customization Marketplace to find and install skills from configured sources. Marketplace discovery is enabled by default. The experimental GitHub Feed requires a harness that provides marketplace search. Local sessions don't provide this source, and organization policy can restrict access.
 
 1. Open the Agent Customizations editor and select **Browse**.
 1. From the source menu, select **GitHub Feed**, and then search for a skill by name or add `@type:skill` to your search.
@@ -53343,13 +53347,15 @@ Use the Customization Marketplace to find and install skills from configured sou
 1. Select **Install**, and choose a supported user or workspace destination when prompted.
 1. [Verify the installed skill](#verify-a-skill) in a session with the intended harness.
 
+To reuse skills bundled in a plugin, select a plugin marketplace from the source menu and [install the plugin](/docs/agent-customization/agent-plugins.md#install-a-plugin-from-a-marketplace). If your team's marketplace isn't listed, [add it through Configure Marketplaces](/docs/agent-customization/agent-plugins.md#configure-plugin-marketplaces).
+
 VS Code doesn't overwrite an existing skill at the selected destination. If another supported location contains a skill with the same name, both skills appear on the **Skills** page. The source or publisher image identifies the Marketplace installation, and **Copy Relative Path** shows its exact location.
 
 VS Code tracks the directory of each skill installed from the Marketplace. Deleting that skill from the **Skills** page doesn't remove a local skill with the same name in another location.
 
 If files from a Marketplace-installed skill are missing, **Browse** shows **Missing files**. Select **Repair** to restore only the missing packaged files. Files that you changed or added remain unchanged.
 
-For more information about browsing sources and installation states, see [Discover marketplace customizations](/docs/agent-customization/overview.md#discover-marketplace-customizations-preview).
+For source availability and setup, see [Discover and install existing customizations](/docs/agent-customization/overview.md#discover-and-install-existing-customizations-preview).
 
 ### Copy and adapt an existing skill
 
@@ -53721,8 +53727,8 @@ Learn more about the Agent Skills standard at [agentskills.io](https://agentskil
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/copilot-connectors.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/copilot-connectors
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/copilot-connectors.md
-- **SHA256_FINGERPRINT**: `7b8948a1cb2c598e88d1da97617d5effa2b707df6b81d3ee835b96ad653510da`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:35.585598+00:00
+- **SHA256_FINGERPRINT**: `02bd64589a73def39197a262f05f53407b69439b74929916d9adc8e2c87a7710`
+- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:43.966008+00:00
 ---
 
 **MetaDescription**: Connect external services to Copilot without server setup, use their tools, and manage connections.
@@ -53745,6 +53751,8 @@ Marketplace discovery and connectors are enabled by default with ``chat.customiz
 For Business and Enterprise plans, an administrator must turn on the **Editor preview features** policy. When that policy is off, both settings are forced off. Some services also require approval from a service administrator, such as allowing Slack MCP access. Your organization's MCP access restrictions also apply. See [administration guidance for connectors](https://docs.github.com/enterprise-cloud@latest/copilot/how-tos/administer-copilot/manage-mcp-usage/configure-enterprise-allowlist#allowing-copilot-connectors).
 
 ## Connect a service
+
+Connectors are a source in the [Customization Marketplace](/docs/agent-customization/overview.md#discover-and-install-existing-customizations-preview). Unlike installing a skill or plugin, connecting a service authorizes access to its tools rather than installing customization files.
 
 1. Run **Chat: Open Customizations** from the Command Palette (``Shortcut: workbench.action.showCommands``) and select **Browse**.
 
@@ -53803,109 +53811,137 @@ To use the service again, [connect it from the Agent Customizations editor](#con
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/custom-agents.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/custom-agents
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/custom-agents.md
-- **SHA256_FINGERPRINT**: `b1e39eee19b7c3ad07c8acee03d40d7b3864af0d7d8c878d6d6aa56198661987`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:35.621539+00:00
+- **SHA256_FINGERPRINT**: `43f89947e17e7256eca2a467bbc36983c814ae26504f41e43671b572ea743276`
+- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:43.936301+00:00
 ---
 
-**MetaDescription**: Create and manage custom agents in VS Code for specialized development roles, tools, and workflows.
+**MetaDescription**: Reuse, create, and manage custom agents in VS Code for specialized development roles and workflows.
 
 # Custom agents in VS Code
 
 Custom agents combine instructions, tools, and an optional language model into a reusable configuration for a specific role, such as planning or code review. Switch to a custom agent instead of repeating the same instructions and selecting tools for every conversation.
 
-This article shows you how to create, use, and manage custom agents in VS Code, configure their files, and connect them with handoffs.
-
-> [!TIP]
-> **Not sure which customization to use?** See the [decision matrix](/docs/agents/concepts/customization.md#customization-options-at-a-glance) to compare custom agents with prompt files, agent skills, and the other options.
+Start with one recurring task where the default agent needs more specific guidance. This article walks through creating a code review agent, checking its results, and refining it before sharing it with your team. For file locations, syntax, and harness-specific options, see the [Custom agent file reference](/docs/agents/reference/custom-agent-file-reference.md).
 
 ## When to use a custom agent
 
-Create a custom agent when a recurring task needs its own instructions, tools, or model. For example:
+Create a custom agent when a recurring role needs its own instructions, tools, or output format. For example:
 
-* Restrict a code review agent to read-only tools and give it your team's review criteria.
-* Give a planning agent your team's plan template and hand off to an implementation agent.
-* Run a focused research agent as a [subagent](/docs/agents/run/subagents.md#run-a-custom-agent-as-a-subagent) to keep its work out of the main conversation's context.
-* Share the same workflow with your repository or organization.
+* Review code against your team's criteria with reading and search tools.
+* Investigate how a feature works and return findings with file references.
+* Produce implementation plans that follow your team's required structure.
 
-Custom agents appear in the agent picker alongside the [built-in agents](/docs/agents/run/agent-harnesses.md#choose-a-built-in-agent). The tools and controls available to a custom agent depend on the selected [agent harness](/docs/agents/run/agent-harnesses.md).
+You don't need a custom agent for every task. Use the [built-in planning workflow](/docs/agents/run/planning.md) if it already meets your needs. Put project-wide conventions in [custom instructions](/docs/agent-customization/custom-instructions.md), and put one-time requirements in your prompt. For reusable workflows with supporting scripts or resources, consider an [agent skill](/docs/agent-customization/agent-skills.md).
 
-When you select a custom agent, it applies to your requests until you switch agents. In the Copilot harness, the agent's instructions are added to your [custom instructions](/docs/agent-customization/custom-instructions.md) and take precedence if they conflict. If the agent specifies a `tools` list, only those tools are available. Another agent can also run a custom agent as a subagent, or a [handoff](#handoffs) can switch the conversation to it.
+See the [customization comparison](/docs/agents/concepts/customization.md#customization-options-at-a-glance) if you're unsure which option fits.
+
+## Reuse an agent from a plugin
+
+Before creating a custom agent, [browse customization marketplaces](/docs/agent-customization/overview.md#discover-and-install-existing-customizations-preview) for a plugin that includes the role you need.
+
+1. Select a plugin and review its included agents, instructions, tools, and setup requirements. Confirm that it supports your intended harness.
+1. [Install the plugin](/docs/agent-customization/agent-plugins.md#install-a-plugin-from-a-marketplace) and complete its setup.
+1. [Select the agent in chat](#use-a-custom-agent) if it supports user invocation, or use it as a [subagent](/docs/agents/run/subagents.md#run-a-custom-agent-as-a-subagent) as intended by the publisher.
+1. Try a representative task and review the agent's response and tool calls before relying on it.
+
+Manage the installation through the [Plugins section](/docs/agent-customization/agent-plugins.md#view-installed-plugins). Create your own agent when you need a role or configuration that the available plugins don't provide.
 
 ## Create a custom agent
 
-Use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) to create an agent in your workspace or at the user level.
+> [!TIP]
+> Before creating an agent, check whether a plugin already provides one for your task. [Browse and install plugins from a marketplace](/docs/agent-customization/agent-plugins.md#install-a-plugin-from-a-marketplace). Review the plugin's included agents and harness compatibility before installing it.
 
-Use the **Session Target** UI control to [select the agent harness](/docs/agents/run/agent-harnesses.md#select-a-harness) you intend to use, then open the editor from either surface:
+The following steps use the **Copilot** harness and create a workspace agent that you can share through source control. Other harnesses have different file formats and tool rules. See [harness compatibility](/docs/agents/reference/custom-agent-file-reference.md#harness-compatibility) before reusing the file with another harness.
 
-* **Agents window**: Select **Customizations** in the left sidebar to open the Agent Customizations editor. Then select **Agents**.
+1. Open your project folder and select the **Copilot** harness in chat.
 
-* **Chat view**: Select **Open Customizations** in the Chat view title bar, or run **Chat: Open Customizations** from the Command Palette (``Shortcut: workbench.action.showCommands``). Then select **Agents**.
+1. Run **Chat: Open Customizations** from the Command Palette (``Shortcut: workbench.action.showCommands``) to open the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) and then select the **Agents** tab.
 
-The editor shows customizations for the selected harness. Follow these steps to create an agent file:
-
-1. Select **New Agent** (plus icon) next to the **Workspace** or **User** group, depending on where you want to store the agent file.
+1. Select **New Agent** (plus icon) next to **Workspace**.
 
     ![Screenshot showing the Agent Customizations editor and the dropdown to create a new custom agent.](images/customization/create-custom-agent-2.png)
 
-    Alternatively, run the **Chat: New Custom Agent** command from the Command Palette (``Shortcut: workbench.action.showCommands``).
+1. Choose the workspace location and enter `reviewer` as the file name.
 
-1. Select the location and enter a file name for the custom agent. This is the default name that appears in the agents dropdown.
+1. Replace the generated file contents with the following example. Adapt the review criteria to problems your team repeatedly encounters.
 
-1. Provide the details in the newly created `.agent.md` file, and then save it.
+    ```markdown
+    ---
+    name: Reviewer
+    description: Review code for incorrect behavior and missing tests without editing files
+    tools: ['read', 'search']
+    ---
+    Review the code supplied in the request. Read related code and tests
+    when needed to check the behavior.
 
-    * Fill in the YAML frontmatter to configure the agent's name, description, tools, and other options.
-    * Add instructions for the agent in the body of the file. Use the [planning agent example](#custom-agent-file-structure) as a starting point.
+    Focus on:
+    * Incorrect behavior and unhandled errors.
+    * Missing tests for important behavior and error cases.
 
-1. [Select your custom agent in chat](#use-a-custom-agent) and try a prompt to check that it follows your instructions.
+    Report only actionable findings. For each finding, include the file
+    and line, the problem, its impact, and a suggested fix or test.
+    If you find no issues, say so and note anything you couldn't verify.
 
-You can modify existing custom agents by opening them in the Agent Customizations editor.
+    Do not edit files or run terminal commands.
+    ```
 
-> [!TIP]
-> You can let an agent generate a custom agent for you based on a description. For example, enter a prompt like "Create a workspace custom agent for code reviews."
+1. Save the file, then [verify the agent](#verify-your-custom-agent) before adding more configuration.
 
-### Custom agent file structure
+The YAML header names the agent and selects reading and search tools. The Markdown body defines the review criteria and expected output. No model preference, handoff, or subagent configuration is needed for this example.
 
-A custom agent file combines an optional FrontMatter header with Markdown instructions. The header configures the agent's name, description, tools, and other options. The Markdown body describes what the agent should do and what it should return.
+If you prefer to create the file directly, save it as `.github/agents/reviewer.agent.md`, creating the folders if needed. You can also run **Chat: New Custom Agent** or ask an agent to generate a starter file. Review generated instructions and tool choices before using them.
 
-For all supported fields and defaults, see the [Custom agent file reference](/docs/agents/reference/custom-agent-file-reference.md).
+## Verify your custom agent
 
-For example, save this planning agent as `.github/agents/planner.agent.md`. It uses read-only tools to research a task and return a plan:
+Check both whether the agent is available and whether it produces the result you need:
 
-```markdown
----
-name: Planner
-description: Generate an implementation plan without changing code
-tools: ['read', 'search']
----
-Research the requested feature or refactoring task.
-Do not edit files. Return a Markdown plan with these sections:
-* Overview
-* Requirements
-* Implementation steps
-* Tests to add or update
-```
+1. Open **Agents** in the Agent Customizations editor and confirm that **Reviewer** is listed without file errors.
+1. Start a new chat with the same harness and repository folder. Select **Reviewer** from the **Agent** dropdown.
+1. Use **Add Context** to attach a small source file and its tests. Choose code you understand so you can check the findings. Send a request without repeating the agent's instructions:
 
-To try it, select **Planner** and describe a change you want to plan. Review its plan before starting implementation. You can later [add a handoff](#handoffs) to continue with an implementation agent in Local.
+    ```prompt-reviewer
+    Review these files.
+    ```
 
-For more examples, see the community-contributed [Awesome Copilot agents](https://github.com/github/awesome-copilot/blob/main/docs/README.agents.md).
+1. Check that the response focuses on behavior and missing tests, cites relevant file locations, and explains each finding's impact. Verify the findings against the code, not just the requested output format.
+1. Review the tool activity and workspace changes. For this reviewer, expect reading and search activity, not file edits or terminal commands. It should not claim to have run tests.
 
-### Edit a custom agent file
+If the result isn't useful, clarify one instruction and repeat the same task in a new chat. Keep the harness, model, input files, and available tools consistent when comparing results. See [Troubleshoot custom agents](#troubleshoot-custom-agents) if the agent is missing or uses unexpected capabilities.
 
-Use completions and hover details in an `.agent.md` file to choose values for the intended harness. By default, editing follows the selected harness. An explicit `target` overrides how the editor interprets the file, but doesn't switch your session's harness. See [Harness compatibility](/docs/agents/reference/custom-agent-file-reference.md#harness-compatibility).
+## Write effective agent instructions
 
-For Copilot-assisted editing, set `target` explicitly when you need target-specific guidance. Without an explicit target, the file context supplied to Copilot describes only shared attributes and doesn't suggest target-specific model or tool values. This differs from normal editor completions, which follow the selected harness.
+Give the agent concrete decisions to make and a useful result to return, rather than only naming a persona.
 
-Hover a value to inspect its details or availability. The editor refreshes validation as harness inventories change. Unknown-value hints depend on discovery completing, so the absence of a hint while discovery is pending doesn't confirm that a value is available.
+* **Keep the role focused.** Define the task, the input it needs, and when it should stop. For example, replace 'Be an expert reviewer' with 'Review the supplied code for error-handling defects and missing tests. Report findings without editing files.'
+* **Specify the output.** Ask for actionable findings with file and line references, not general feedback. For a planning agent, request implementation steps, affected files, tests to update, and decisions that need confirmation before coding.
+* **Keep shared rules in project instructions.** Don't duplicate your repository's coding conventions in every agent. Use the agent body for role-specific guidance.
+* **Match tools to the task.** A reviewer that only reads code doesn't need editing, terminal, or delegation tools. Use [editor completions](/docs/agents/reference/custom-agent-file-reference.md#edit-a-custom-agent-file) to select tools supported by your harness.
+* **Refine from observed results.** Add a rule when it addresses a recurring failure, then repeat a representative task to check its effect.
 
-Select the intended harness before editing, then try the agent in that harness to verify its behavior. Editor feedback doesn't replace checking which tools and skills the running agent can use.
+Instructions guide the model. They don't guarantee compliance. A 'do not edit' instruction alone is not a permission boundary. Configure the tools the role needs and check their actual use. Tool restrictions differ by harness, so review [harness compatibility](/docs/agents/reference/custom-agent-file-reference.md#harness-compatibility) before sharing an agent across harnesses.
+
+For more examples to adapt and verify, see the community-contributed [Awesome Copilot agents](https://github.com/github/awesome-copilot/blob/main/docs/README.agents.md).
 
 ## Use a custom agent
 
-Select the intended harness from the **Session Target** UI control, then choose your custom agent from the **Agent** dropdown in chat. Enter a prompt for its role and review the response and tool calls. The custom agent remains selected until you switch agents.
+Select the intended harness from the **Session Target** control, then choose your custom agent from the **Agent** dropdown. Enter a request for its role and review the response and tool calls. The custom agent remains selected until you switch agents. Switch back to a general-purpose agent when you're ready for a different task, such as implementing a review finding.
 
-If the agent doesn't appear, check that its file is in a [supported location](#custom-agent-file-locations) for the selected harness and that its [visibility configuration](#customize-the-agents-dropdown-list) permits user invocation.
+In the Copilot harness, the agent's instructions are added to your custom instructions and take precedence if they conflict. Keep the guidance consistent rather than relying on conflicting rules. For details, see the [agent file reference](/docs/agents/reference/custom-agent-file-reference.md#body).
 
-## Customize the agents dropdown list
+Another agent can also invoke a custom agent as a [subagent](/docs/agents/run/subagents.md#run-a-custom-agent-as-a-subagent). Delegation is optional. You don't need it to use the reviewer yourself.
+
+## Manage and share custom agents
+
+Use the Agent Customizations editor to find and edit your agents. You can open it with **Chat: Open Customizations**, from **Customizations** in the Agents window, or from **Configure Custom Agents** in the agent dropdown. Hover over an agent to check its source location.
+
+* **Share with your repository.** Review and commit the workspace agent file after verifying its behavior. Teammates who use a compatible harness can select it from the agent dropdown.
+* **Reuse across your projects.** Select **New Agent** next to **User** in the editor. Store the file in a [user location supported by your harness](/docs/agents/reference/custom-agent-file-reference.md#custom-agent-file-locations).
+* **Share across an organization.** Use [organization-level custom agents](/docs/agents/reference/custom-agent-file-reference.md#organization-level-agents) for supported experiences.
+* **Distribute a bundle.** Package agents with related skills, instructions, or tools in an [agent plugin](/docs/agent-customization/agent-plugins.md#what-plugins-provide). Supported components depend on the selected harness and plugin format.
+
+To remove an agent you maintain, delete its file or hover over it in the editor and select the trash icon. Deleting a shared workspace file removes it for teammates when they receive the repository change. You can't delete extension-provided agents in this editor. Disable or uninstall the contributing extension instead, which also affects its other features.
+
+### Customize the agents dropdown list
 
 To keep a custom agent available as a [subagent](/docs/agents/run/subagents.md) without listing it in the **Agent** dropdown, set `user-invocable: false` in its YAML frontmatter:
 
@@ -53917,40 +53953,12 @@ This property controls picker visibility in both **Local** and **Copilot**. To s
 
 Editing this property changes the agent definition, not a personal visibility preference. If you share the file in a repository, the change applies to everyone who uses that definition. It doesn't delete the agent file.
 
-> [!NOTE]
-> The Agent Customizations editor doesn't provide an eye-icon show or hide control for custom agents in either **Local** or **Copilot**. For agents contributed by an extension, manage the contributing extension instead. See [How do I remove a custom agent?](#how-do-i-remove-a-custom-agent).
-
-## Custom agent file locations
-
-You can define custom agents for a specific workspace or at the user level, where they are available across all your workspaces. Select the intended harness before you create an agent so the Agent Customizations editor stores it in a supported location.
-
-| Scope | Default file location | File format |
-|-------|-----------------------|-------------|
-| Workspace | `.github/agents` folder | `.agent.md` or `.md` files |
-| Workspace (Claude format) | `.claude/agents` folder | `.md` files in the [Claude agent format](/docs/agents/reference/custom-agent-file-reference.md#claude-agent-format) |
-| User (Copilot) | `~/.copilot/agents` folder | `.agent.md` or `.md` files |
-| User ([product.prodname_anthropic_claude]) | `~/.claude/agents` folder | `.md` files in the [Claude agent format](/docs/agents/reference/custom-agent-file-reference.md#claude-agent-format) |
-
-To create a user-level custom agent, use the Agent Customizations editor or the **Chat: New Custom Agent** command. Store the file in a supported folder on the machine where the selected harness runs.
-
-For Claude-specific fields and compatibility with Local, see the [Claude agent format reference](/docs/agents/reference/custom-agent-file-reference.md#claude-agent-format).
-
-> [!TIP]
-> In a monorepo, enable ``chat.useCustomizationsInParentRepositories`` to discover custom agents from the parent repository root. Learn more about [parent repository discovery](/docs/agent-customization/overview.md#use-customizations-in-a-monorepo).
-
-### Local harness locations and migration
-
-The **Local** harness stores user-level custom agents in VS Code profile storage, separate from harness user folders such as `~/.copilot/agents` and `~/.claude/agents`. To reuse profile-based agents with another harness, [move them to that harness's user folder](/docs/agent-customization/migrate-customizations.md#move-user-agents-and-instructions).
-
-Prefer native harness folders, such as `.github/agents` and `~/.copilot/agents`, over custom search locations. The ``chat.agentFilesLocations`` setting remains supported and is not deprecated. The editor forwards agents from additional configured locations to Agent Host harnesses, including Copilot, for compatibility with existing editor workflows. The older `chat.modeFilesLocations` setting is deprecated.
-
-Custom locations are not recommended for Copilot workflows because GitHub Copilot CLI and the GitHub Copilot app do not inherit editor location settings. To use agents across Copilot clients, [move them to native harness locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations).
-
-If an agent has `hooks` in its frontmatter, review the [agent-scoped hook contract](/docs/agent-customization/hooks.md#agent-scoped-hooks). VS Code preserves those hooks when converting agents for Copilot, including plugin-provided agents. Keep agent-specific automation scoped to the agent and verify that its hooks run before completing a migration.
-
 ## Handoffs
 
-In the **Local** harness, handoffs connect agents into a workflow with suggested next steps. After a chat response completes, handoff buttons let you switch to another agent with the conversation context and a pre-filled prompt.
+> [!NOTE]
+> Custom-agent `handoffs` are supported only in the **Local** harness. A Local handoff can still offer **Continue in** options for other supported session targets.
+
+Handoffs connect agents into a workflow with suggested next steps. After a chat response completes, handoff buttons let you switch to another agent with the conversation context and a pre-filled prompt.
 
 Use handoffs to review one stage of a task before starting the next. For example:
 
@@ -53958,17 +53966,28 @@ Use handoffs to review one stage of a task before starting the next. For example
 * **Implementation to review**: Complete implementation, then switch to a code review agent.
 * **Failing tests to passing tests**: Review generated tests, then hand off to an agent that implements the changes needed to pass them.
 
-For example, extend the [Planner agent](#custom-agent-file-structure) with a transition to the built-in **Agent** for implementation:
+For an optional planning-to-implementation workflow, create `.github/agents/planner.agent.md` with the following content:
 
-1. Add this `handoffs` entry to the Planner file's existing YAML header, before its closing `---` delimiter:
+```markdown
+---
+name: Planner
+description: Generate an implementation plan without changing code
+tools: ['read', 'search']
+handoffs:
+  - label: Implement Plan
+    agent: agent
+    prompt: Implement the plan outlined above.
+    send: false
+---
+Research the requested feature or refactoring task.
+Do not edit files. Return a Markdown plan with these sections:
+* Overview
+* Requirements
+* Implementation steps
+* Tests to add or update
+```
 
-    ```yaml
-    handoffs:
-      - label: Implement Plan
-        agent: agent
-        prompt: Implement the plan outlined above.
-        send: false
-    ```
+Save the file, then try the handoff:
 
 1. In a Local harness session, select **Planner** and ask it to plan a change.
 1. Review the completed plan, then select **Implement Plan**.
@@ -53978,71 +53997,32 @@ Set `send: true` to submit the handoff prompt automatically. For all properties,
 
 Handoffs switch the active agent in your conversation. To delegate work without switching the main agent, use [subagents](/docs/agents/run/subagents.md#delegate-implementation-to-a-worker).
 
-## Tool list priority
+## Troubleshoot custom agents
 
-For how Local resolves tool lists from a custom agent and a prompt file, see [Tool list priority in the file reference](/docs/agents/reference/custom-agent-file-reference.md#tool-list-priority).
+Identify whether the problem is discovery, configuration, or the result before changing the agent's instructions.
 
-## Share custom agents across teams
+| What you observe | What to check |
+|------------------|---------------|
+| The file isn't listed in the Agent Customizations editor. | Confirm the selected harness, [file name and location](/docs/agents/reference/custom-agent-file-reference.md#custom-agent-file-locations), and repository folder. A new worktree might not contain your uncommitted agent file. |
+| The file is listed, but the agent isn't in the dropdown. | Check frontmatter errors and whether `user-invocable` is `false`. See [picker visibility](#customize-the-agents-dropdown-list). |
+| The agent has unexpected tools or can't use a required tool. | Check the tool names supported by the selected harness and review actual tool activity. Editor completions don't prove runtime availability. For Local, also check whether a [prompt file overrides the tool list](/docs/agents/reference/custom-agent-file-reference.md#tool-list-priority). |
+| The agent is selected, but the result doesn't follow its role. | Check for vague or conflicting instructions. Clarify one rule and [repeat the task in a new chat](#verify-your-custom-agent). Don't add more tools unless the task needs them. |
 
-To share custom agents across your team, you can create a workspace-level custom agent (`.github/agents` folder). If you want to share custom agents across multiple workspaces within your organization, you can define them at the GitHub organization level.
-
-VS Code automatically detects custom agents defined at the organization level to which your account has access. These agents appear in the Agents dropdown in chat alongside the built-in agents, and your personal and workspace custom agents.
-
-Discovery of organization-level custom agents is enabled by default. To stop showing organization-level custom agents in chat, set ``github.copilot.chat.organizationCustomAgents.enabled`` to `false`.
-
-Learn how you can [create custom agents for your organization](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/create-custom-agents) in the GitHub documentation.
-
-## Frequently asked questions
-
-### Are custom agents different from chat modes?
-
-Custom agents were previously known as custom chat modes. The functionality remains the same, but the terminology has been updated to better reflect their purpose in customizing AI behavior for specific tasks.
-
-If you have existing `.chatmode.md` files, rename them to `.agent.md` and place them in one of the [supported custom agent locations](#custom-agent-file-locations).
-
-### How do I remove a custom agent?
-
-To remove a custom agent you maintain, use either of these methods:
-
-* Delete its file from the workspace or [user-level location](#custom-agent-file-locations).
-* Select **Configure Custom Agents** from the agents dropdown to open the Agent Customizations editor, hover over the custom agent, and select the trash icon.
-
-Deleting a shared workspace agent also removes it for others when they receive the repository change. To keep the definition but remove it from the picker, see [Customize the agents dropdown list](#customize-the-agents-dropdown-list).
-
-You can't delete extension-provided agents from the Agent Customizations editor. Disable or uninstall the contributing extension to remove its agents. This also affects the extension's other features.
-
-### How do I know where a custom agent comes from?
-
-The agents dropdown includes built-in agents and custom agents from user-level files, your workspace, organizations, extensions, and plugins.
-
-To identify the source of a custom agent:
-
-1. Select **Configure Custom Agents** from the agents dropdown.
-1. Hover over the custom agent in the list. The source location is displayed in a tooltip.
-
-> [!TIP]
-> Use the chat customization diagnostics view to see all loaded custom agents, prompt files, instruction files, and skills along with any errors. Right-click in the Chat view and select **Diagnostics**. Learn more about [troubleshooting AI in VS Code](/docs/agents/agent-troubleshooting/troubleshooting.md).
-
-## Security considerations
-
-Custom agents can restrict which tools are available, which gives you control over what the AI can do. For security-sensitive workflows, create agents with read-only tools to prevent unintended modifications. When sharing agents in a repository, review the tool list and instructions to ensure they follow the principle of least privilege.
+For unresolved problems, [inspect chat interactions](/docs/agents/agent-troubleshooting/troubleshooting.md#inspect-chat-interactions) to compare the request, instructions, and tool activity. File discovery alone doesn't establish that the agent follows the intended guidance.
 
 ## Related resources
 
 * [Custom agent file reference](/docs/agents/reference/custom-agent-file-reference.md)
+* [Configure AI for your codebase](/docs/agents/guides/customize-copilot-guide.md)
 * [Coordinate research and implementation with subagents](/docs/agents/run/subagents.md#delegate-implementation-to-a-worker)
-* [Add agent-scoped hooks](/docs/agent-customization/hooks.md#agent-scoped-hooks-for-the-local-harness)
-* [Planning with agents](/docs/agents/run/planning.md)
-* [Customize AI with custom instructions](/docs/agent-customization/custom-instructions.md)
-* [Use tools with agents](/docs/agents/run/tools.md)
 
 
 ---
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/custom-instructions.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/custom-instructions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/custom-instructions.md
-- **SHA256_FINGERPRINT**: `e9d91112b7c7a64d848d4b0550f1526489ff0fa5ca7c5a9712e670ff8b550be6`
-- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:44.819110+00:00
+- **SHA256_FINGERPRINT**: `f8882ff38dc507bd55659cc845331296057989a77a2a3a52144dd6d51cdd992f`
+- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:43.938604+00:00
 ---
 
 **MetaDescription**: Create and test custom instructions in VS Code to guide agents with project conventions.
@@ -54127,7 +54107,7 @@ Start with project instructions for rules that apply broadly. Use targeted instr
 | Task relevance | In Local sessions, a `description` lets the agent decide whether to read an instructions file for the task. This is separate from pattern matching. |
 | Manual | Attach guidance for a particular request when automatic discovery or activation isn't appropriate. |
 
-An instruction file such as `AGENTS.md` provides guidance to an existing agent. It doesn't define a [custom agent](/docs/agent-customization/custom-agents.md). For a reusable multi-step workflow rather than coding conventions or project context, consider an [agent skill](/docs/agent-customization/agent-skills.md).
+An instruction file such as `AGENTS.md` provides guidance to an existing agent. It doesn't define a [custom agent](/docs/agent-customization/custom-agents.md). For a reusable multi-step workflow rather than coding conventions or project context, consider an [agent skill](/docs/agent-customization/agent-skills.md). [Look for an existing skill in the Customization Marketplace](/docs/agent-customization/agent-skills.md#install-a-skill-from-the-customization-marketplace-preview) before writing the workflow yourself. Keep repository-specific commands and conventions in your project instructions.
 
 ## Apply instructions to specific files or tasks
 
@@ -54228,6 +54208,8 @@ Return to **Instructions** in the Agent Customizations editor to find and edit e
 
 Use user scope for personal preferences across projects. Don't put your individual response preferences in a shared project file unless your team wants them too. For locations and synchronization limits, see [user instructions](/docs/agents/reference/custom-instructions-reference.md#user-instructions).
 
+You can also distribute instructions as rule components in an [agent plugin](/docs/agent-customization/agent-plugins.md#what-plugins-provide), alongside related agents, skills, or tools. Support depends on the selected harness and plugin format. Check [plugin compatibility](/docs/agent-customization/agent-plugins.md#cross-tool-compatibility) before sharing the bundle across clients.
+
 ## Instruction formats and settings
 
 Use the [Custom instructions reference](/docs/agents/reference/custom-instructions-reference.md) to look up:
@@ -54261,15 +54243,15 @@ The response's **References** section, where available, helps check inclusion, n
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/hooks.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/hooks
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/hooks.md
-- **SHA256_FINGERPRINT**: `44b2765ca535c41e780ea254c3e276169d64b92bbc2a064e62629519cb84d84a`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:35.921441+00:00
+- **SHA256_FINGERPRINT**: `df34c5e63f4725fbc245d12c313084ee02309c5a1b9ac9ee4b72092b59baa230`
+- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:43.978157+00:00
 ---
 
-**MetaDescription**: Configure Copilot hooks for personal and shared workflows in VS Code.
+**MetaDescription**: Reuse and configure agent hooks for personal and shared workflows in VS Code.
 
 # Configure agent hooks in Visual Studio Code (Preview)
 
-Hooks run custom actions at specific points in an agent's lifecycle. Use them to add context, validate a tool call, run a formatter, or record an event without relying on the model to request the action.
+Hooks run custom actions at specific points in the agent's workflow, such as before or after a tool runs. Use them to add context, validate a tool call, run a formatter, or record an event without relying on the model to request the action.
 
 This article helps you configure hooks for the shared Copilot runtime, choose a personal or shared source, and verify the result. If you already have hooks, start with [Migrate hooks](/docs/agent-customization/migrate-customizations.md#migrate-hooks). Migration includes user folders, settings, custom agents, and plugins, not only repository files.
 
@@ -54301,6 +54283,14 @@ The older Local harness has a separate [Local hooks reference](/docs/agents/refe
 Sharing a hook file location does not establish runtime compatibility. Event naming can select a different payload, tool names and arguments can change, and output or error behavior can differ.
 
 Follow the [hook migration procedure and compatibility matrix](/docs/agent-customization/migrate-customizations.md#migrate-hooks) before reusing a hook. Select the destination harness and start a test session; changing only the language model does not test migration.
+
+## Reuse hooks from a plugin
+
+For an existing automation workflow, [browse customization marketplaces](/docs/agent-customization/overview.md#discover-and-install-existing-customizations-preview) for a plugin that includes hooks and their supporting scripts.
+
+Before installing, review the scripts, required executables, and supported harness. Hooks can run when their configured events occur without the model requesting them. A marketplace listing doesn't establish that a hook's event format or commands are compatible with your session.
+
+Follow the [plugin installation steps](/docs/agent-customization/agent-plugins.md#install-a-plugin-from-a-marketplace), complete the publisher's setup, and verify the hook's execution in the intended environment. Check for [duplicate hook sources](#choose-a-hook-source) before also adding a standalone copy. If execution differs from your expectations, follow [hook troubleshooting](#troubleshoot-hooks).
 
 ## Create and manage hooks
 
@@ -55110,8 +55100,8 @@ Yes, you can use BYOK models, including local models, without a Copilot plan and
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/migrate-customizations.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/migrate-customizations
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/migrate-customizations.md
-- **SHA256_FINGERPRINT**: `2ebd526043cd3c407dbf9e121aa0a0a6fd6c3e7c0e254953af4c73681a912612`
-- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:44.887226+00:00
+- **SHA256_FINGERPRINT**: `f3239078bef74823a634597386d5f6223b53775f0486aff78cb59e86d4a68655`
+- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:44.015481+00:00
 ---
 
 **MetaDescription**: Migrate agent customizations and resolve harness compatibility gaps in VS Code.
@@ -55310,7 +55300,7 @@ To move user customizations:
 
 The migrated files are not included in [Settings Sync](/docs/configure/settings-sync.md).
 
-After migration, start a Copilot harness session and verify that the agents and instructions are available. See [custom agent locations](/docs/agent-customization/custom-agents.md#custom-agent-file-locations) and [instruction file locations](/docs/agents/reference/custom-instructions-reference.md#user-instructions) for the supported destinations.
+After migration, start a Copilot harness session and verify that the agents and instructions are available. See [custom agent locations](/docs/agents/reference/custom-agent-file-reference.md#custom-agent-file-locations) and [instruction file locations](/docs/agents/reference/custom-instructions-reference.md#user-instructions) for the supported destinations.
 
 ## Move customizations from configured locations
 
@@ -55420,7 +55410,7 @@ For complete output and failure rules, see [Copilot decision control](https://do
 
 ### Review event timing
 
-Use this table to find the corresponding lifecycle point, not as a mechanical rename list. Changing a configured event from PascalCase to camelCase also changes its stdin payload.
+Use this table to find the event that corresponds to the same point in the agent's workflow, not as a mechanical rename list. Changing a configured event from PascalCase to camelCase also changes its stdin payload.
 
 | Local event | Copilot event | Behavior to verify |
 |-------------|---------------|--------------------|
@@ -55439,7 +55429,7 @@ Do not carry these assumptions into a migrated script:
 
 * **Common Local outputs:** `continue`, `stopReason`, and `systemMessage` are not a documented cross-event Copilot command-hook contract. Choose the destination's event-specific output. Do not treat denying one tool as stopping the whole session.
 * **Nested output envelopes:** accepting a PascalCase input alias does not establish support for every Local `hookSpecificOutput` field. Emit the documented Copilot output.
-* **Transcripts and tool IDs:** do not require `transcript_path` or `tool_use_id` on every event. Copilot documents transcript paths on particular lifecycle events, not all tool events. A transcript filename or substring is not proof that the agent read or followed an instruction.
+* **Transcripts and tool IDs:** do not require `transcript_path` or `tool_use_id` on every event. Copilot documents transcript paths for particular events in the agent's workflow, not all tool events. A transcript filename or substring is not proof that the agent read or followed an instruction.
 * **Matcher behavior:** Local ignores matcher values. Copilot applies documented matcher rules, including different semantics for compatible `PreToolUse` names. Recheck every filter, including invalid patterns and tools it should not match.
 * **SDK callback types:** programmatic callbacks are not JSON-file command hooks. A field in SDK source, such as a callback-only prompt override, is not evidence that a shell hook can use it.
 * **Enforcement:** `ask` depends on an interactive approval flow; do not assume it pauses an unattended session. GitHub also documents fail-open timeouts, including for policy hooks. Neither instructions nor a migrated hook alone establishes a security boundary.
@@ -55636,7 +55626,7 @@ These fixtures check the script's input and output handling. They do not establi
 1. Disable the original hook without deleting its backup. Activate only the converted configuration you intend to use. For the standalone example, rename `review-copilot.json.disabled` to `review-copilot.json`; for settings, merge the validated hook entries into the existing `hooks` map.
 1. Select **Copilot** as the **Session Target** and start a new disposable session. Confirm the intended source is discovered and the hook actually fires. A visible file alone is not proof of execution.
 1. Test allow, deny, and approval paths as applicable. Separately test a command error and a timeout; they do not necessarily have the same result.
-1. Test the relevant lifecycle transitions, including resume or subagent completion when used. Check that each hook runs once, not once per duplicate source.
+1. Test the relevant events in the agent's workflow, including resuming a session or completing a subagent when used. Check that each hook runs once, not once per duplicate source.
 1. Repeat in the target operating system, remote host, container, or worktree. Verify `cwd`, script dependencies, user folders, and sandbox access without logging credentials or full prompts.
 1. Only then retire the old configuration. Publish shared changes through the repository or plugin's normal review process.
 
@@ -55799,7 +55789,7 @@ Review both the coordinator's Markdown instructions and its `tools` list. Prefer
 
 Finding an agent file does not mean that its tool list is compatible with the selected harness. Local delegation references such as `agent/runSubagent` and user-defined tool sets aren't portable Copilot tool configurations. Qualified client-tool references, including `vscode/<tool>`, can be valid when those tools are provided to the Copilot session.
 
-Review each entry in `tools` against the capabilities available in the Copilot session. Select Copilot before [editing the agent file](/docs/agent-customization/custom-agents.md#edit-a-custom-agent-file) and use its completions to preserve canonical tool references. Check the [Tools tab](/docs/agents/run/tools.md#manage-tool-availability-for-the-copilot-harness), the [custom agent tool reference](/docs/agents/reference/custom-agent-file-reference.md#tools), and [tool-set migration guidance](#replace-tool-sets). Keep required capabilities explicitly configured. Removing the entire tool restriction is not an equivalent migration.
+Review each entry in `tools` against the capabilities available in the Copilot session. Select Copilot before [editing the agent file](/docs/agents/reference/custom-agent-file-reference.md#edit-a-custom-agent-file) and use its completions to preserve canonical tool references. Check the [Tools tab](/docs/agents/run/tools.md#manage-tool-availability-for-the-copilot-harness), the [custom agent tool reference](/docs/agents/reference/custom-agent-file-reference.md#tools), and [tool-set migration guidance](#replace-tool-sets). Keep required capabilities explicitly configured. Removing the entire tool restriction is not an equivalent migration.
 
 Do not assume that removing a prefix or replacing a tool name fixes every discovery error. These editor hints aren't proof of a runtime tool-discovery failure.
 
@@ -55816,15 +55806,15 @@ A separate report, [microsoft/vscode#342961](https://github.com/microsoft/vscode
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/overview.md
-- **SHA256_FINGERPRINT**: `bfacf09da6c6ac40de2cfad2213e88bb84f9d62baae92df689ce14673a0b781b`
-- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:44.858429+00:00
+- **SHA256_FINGERPRINT**: `5f390abc7a2e40baba3a80ee133cd13439bf834881cdd406678fcd3d6ab5e394`
+- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:43.990498+00:00
 ---
 
-**MetaDescription**: Install, adapt, and create agent customizations in VS Code for your coding workflows.
+**MetaDescription**: Find and reuse agent customizations from marketplaces in VS Code, or create project guidance.
 
 # Customize agents for your workflow
 
-Agent customizations adapt agents to your coding standards, workflows, and development systems. You can install an agent plugin, use or adapt an existing skill, or create customizations for your project. This guide helps you choose a starting point, manage customizations in Visual Studio Code, and verify that they work with your agent harness. To compare customization types, see [Agent customization concepts](/docs/agents/concepts/customization.md).
+Agent customizations adapt agents to your coding standards, workflows, and development systems. Start by looking for an existing skill, plugin, or integration in a customization marketplace before creating your own. This guide helps you find, install, and verify customizations in Visual Studio Code, or create project-specific guidance. To understand how customization types differ and work together, see [Agent customization concepts](/docs/agents/concepts/customization.md).
 
 <div class="docs-action" data-show-in-doc="false" data-show-in-sidebar="true" title="Core concepts">
 Learn about the different customization types and when to use each one.
@@ -55842,46 +55832,51 @@ Follow a hands-on walkthrough to customize AI for your project.
 
 ## Choose how to customize
 
-Start with a recurring task or an observed problem. You don't need to create every customization yourself, or add one when the agent already meets your needs.
+Start with a recurring task or an observed problem, such as the agent using the wrong test command. Choose a representative task and define the result you expect. If the agent already meets your needs, don't add a customization. Put one-time requirements in the current request instead.
 
-### Install or reuse
+| If you want to | Start with |
+|----------------|------------|
+| Adopt an existing workflow or packaged setup | [Browse customization marketplaces](#discover-and-install-existing-customizations-preview) for skills, plugins, and integrations |
+| Stop repeating project commands and conventions | [Create or refine project instructions](/docs/agent-customization/custom-instructions.md#get-started-with-project-instructions) |
+| Reuse a multi-step process specific to your team | [Create or adapt an agent skill](/docs/agent-customization/agent-skills.md#create-a-skill) |
+| Give a recurring role focused guidance and tools | [Create a custom agent](/docs/agent-customization/custom-agents.md) |
+| Connect an external service | [Use a Copilot connector](/docs/agent-customization/copilot-connectors.md) `feature(copilot-connectors)` or [add an MCP server](/docs/agent-customization/mcp-servers.md#connect-a-server) |
+| Run an action at specific events of the agent's workflow | [Configure a hook](/docs/agent-customization/hooks.md) |
 
-Use an existing customization when it provides the workflow or capability you need:
+Reuse or adapt an existing customization before creating one from scratch. You can combine approaches, such as installing a plugin and adding project instructions. For saved prompts and a comparison of all the options, see [customization types and activation](/docs/agents/concepts/customization.md#customization-options-at-a-glance).
 
-* **[Install an agent plugin](/docs/agent-customization/agent-plugins.md#discover-and-install-plugins)**: Add related skills, agents, and tool integrations together.
-* **[Use an existing skill](/docs/agent-customization/agent-skills.md#use-an-existing-skill)**: Reuse its instructions, scripts, and resources for your task.
-* **Connect an external system**: [Use a Copilot connector](/docs/agent-customization/copilot-connectors.md) `feature(copilot-connectors)` without server setup, or [add an MCP server](/docs/agent-customization/mcp-servers.md#connect-a-server) using a URL or launch command.
-
-For supported marketplace sources, you can also [browse customizations in the editor](#discover-marketplace-customizations-preview) (Preview). Review the publisher, included files, and setup requirements before installing or running a customization.
-
-### Create or adapt
-
-Adapt existing instructions or a skill when they nearly match your needs. Create a new customization when you need project-specific guidance or a workflow that isn't already available.
-
-To make the agent follow your project's conventions, [create and test project instructions](/docs/agent-customization/custom-instructions.md#get-started-with-project-instructions). Start with one repeated problem, such as using the wrong test command or placing code in the wrong directory.
-
-Follow [Configure AI for your codebase](/docs/agents/guides/customize-copilot-guide.md) to add a customization and compare the agent's results before and after the change. To create an individual customization with AI or manually, use the [creation steps below](#create-a-customization).
-
-You can combine these approaches: install a plugin, then add project instructions for your codebase.
+For a complete project walkthrough, follow [Configure AI for your codebase](/docs/agents/guides/customize-copilot-guide.md).
 
 ## Check harness compatibility
 
-Select the [agent harness](/docs/agents/run/agent-harnesses.md#select-a-harness) you intend to use before installing, copying, or creating a customization. The harness determines which formats, locations, and capabilities are supported. Changing the language model doesn't change those requirements.
+An agent harness coordinates the model, tools, and customizations for a session. It determines which customization formats and locations are supported. Choosing a different language model doesn't change those requirements.
 
-| Customization | Check before using it |
-|---------------|--------------------------|
-| [Instructions](/docs/agent-customization/custom-instructions.md) and [skills](/docs/agent-customization/agent-skills.md) | Use a format and file location that the selected harness reads. Check its activation rules and supported user, workspace, or organization scope. |
-| [Custom agents](/docs/agent-customization/custom-agents.md), [hooks](/docs/agent-customization/hooks.md), and [MCP servers](/docs/agent-customization/mcp-servers.md) | Follow the configuration for your harness. Tool names, supported fields, lifecycle events, and connection locations can differ. |
-| [Prompt files](/docs/agent-customization/prompt-files.md) and [tool sets](/docs/agent-customization/tool-sets.md) | Use a **Local** harness session in the Chat view. For reusable workflows in other skills-compatible harnesses, create a skill instead of a prompt file. |
-| [Plugins](/docs/agent-customization/agent-plugins.md) | Check that the selected harness supports the plugin and its bundled customization types. |
+Before installing, copying, or creating a customization:
 
-The Chat view and Agents window both run agents, but the available harnesses differ. Local sessions are editor-only. Select the intended harness before opening the Customizations editor so you see its supported types and destinations.
+1. [Select the intended harness](/docs/agents/run/agent-harnesses.md#select-a-harness) from the **Session Target** control in a new chat.
+
+1. Open the Agent Customizations editor for that harness, as described below.
+
+1. Follow the guide for your customization type for the harness-specific file location, fields, and activation rules.
+
+> [!NOTE]
+> [Prompt files](/docs/agent-customization/prompt-files.md) and [tool sets](/docs/agent-customization/tool-sets.md) require a **Local** harness session in the Chat view. Local sessions aren't available in the Agents window. For reusable workflows in other skills-compatible harnesses, use a skill instead of a prompt file.
+
+### Choose a customization scope
+
+Store a customization at the narrowest scope that matches how you want to use and share it:
+
+* **User**: use the customization across your workspaces without committing it to the project.
+
+* **Workspace**: share project guidance and workflows with contributors through source control.
+
+* **Organization**: centrally manage supported customization types across repositories. Configure these through GitHub rather than the Agent Customizations editor.
+
+Not every customization type supports every scope. User files must be stored in a location supported by the harness on the machine where the agent runs, and aren't shared automatically between machines. Follow the individual customization guide for supported locations.
 
 ## Agent Customizations editor
 
-The Agent Customizations editor provides a central place to discover, create, and manage customizations. It organizes customization types into separate sections. Depending on the customization type and source, it provides a configuration form, an inline file editor with syntax highlighting and validation, or a read-only details view.
-
-When you open the Customizations editor, the customizations are scoped to the selected [agent harness](/docs/agents/concepts/agent-harnesses.md). Select the harness from the dropdown in the chat input before you open the editor to ensure the customizations apply to the correct context.
+The Agent Customizations editor provides a central place to discover, create, and manage customizations for the selected harness. It organizes customization types into separate sections, with configuration forms, inline file editors, or read-only details depending on the type and source.
 
 Follow these steps to open the Agent Customizations editor:
 
@@ -55895,13 +55890,11 @@ In the Chat view, select **Open Customizations** in the title bar, or run **Chat
 
 ![Screenshot showing the Agent Customizations editor with customization categories in the sidebar and custom agents in the main view.](images/customization/chat-customizations-editor-2.png)
 
-### Discover marketplace customizations (Preview)
+## Discover and install existing customizations (Preview)
 
-The Customization Marketplace provides a unified **Browse** page for finding skills, MCP servers, plugins, and other agent customizations from configured sources. It is enabled by default with ``chat.customizations.marketplace.enabled``. The **Browse** page appears when a marketplace source is available. Available sources and installation actions depend on the selected harness and organization policy.
+Use the Customization Marketplace to find a workflow or integration you can reuse instead of building it from scratch. The unified **Browse** page brings together available sources, including plugin marketplaces, GitHub Feed, and Copilot connectors `feature(copilot-connectors)`. Available sources and installation actions depend on the selected harness and organization policy.
 
-If **Browse** isn't available, check that the setting is enabled and your organization permits **Editor preview features**. Disabling that policy forces the unified **Browse** experience and Copilot connectors off. See [organization and enterprise settings](/docs/enterprise/manage-ai-settings.md#use-github-organization-and-enterprise-settings).
-
-The GitHub Feed source is enabled by default for harnesses that provide marketplace search. Local sessions don't provide this source, and organization policy can restrict access. Use the ``chat.customizations.marketplace.sources.publicFeed.enabled`` setting to show or hide this source.
+You can install an individual skill or a plugin that bundles related customizations, such as skills, custom agents, hooks, and MCP servers. For a service integration, find an MCP server or connect a supported service without server setup.
 
 To find and install a customization:
 
@@ -55913,52 +55906,24 @@ To find and install a customization:
 
 Some items are available for discovery but don't support automatic installation. Follow the publisher's setup instructions when they are provided.
 
-To [add or manage plugin marketplaces](/docs/agent-customization/agent-plugins.md#configure-plugin-marketplaces), select **Configure Marketplaces** from the source menu.
+If your team shares plugins through another marketplace, select **Configure Marketplaces** from the source menu to [add or manage plugin marketplaces](/docs/agent-customization/agent-plugins.md#configure-plugin-marketplaces). Adding a marketplace makes its plugins available to browse. It doesn't install them.
 
-Marketplace items show a source or publisher image in **Browse** and, when available, on the installed item and its details page. Use this information together with the item details to verify the source before installation.
+After installation, complete any publisher setup and [verify the customization](#verify-a-customization) with a representative task. For type-specific guidance, see [install a skill](/docs/agent-customization/agent-skills.md#install-a-skill-from-the-customization-marketplace-preview), [install a plugin](/docs/agent-customization/agent-plugins.md#install-a-plugin-from-a-marketplace), or [find an MCP server](/docs/agent-customization/mcp-servers.md#find-another-server).
 
-VS Code associates marketplace state with the exact installed target, not only its display name. A local customization and a Marketplace-installed customization with the same name remain separate:
+### Marketplace availability
 
-* **Installed** indicates that the recorded target is available.
-* **Missing files** indicates that files from a Marketplace-installed skill are no longer present. Select **Repair** to restore only the missing files. Repair preserves files that you edited or added.
-* Deleting a Marketplace-installed customization removes its exact installation. It doesn't remove an unrelated local customization with the same name.
+The **Browse** page appears when a marketplace source is available. Marketplace discovery is enabled by default with ``chat.customizations.marketplace.enabled``.
 
-## Choose a customization scope
+If **Browse** isn't available, check that the setting is enabled and your organization permits **Editor preview features**. Disabling that policy forces the unified **Browse** experience and Copilot connectors off. See [organization and enterprise settings](/docs/enterprise/manage-ai-settings.md#use-github-organization-and-enterprise-settings).
 
-Store a customization at the narrowest scope that matches how you want to use and share it:
-
-* **User**: use the customization across your workspaces. User customizations are specific to you and are not committed to the project.
-* **Workspace**: share the customization with project contributors through source control.
-* **Organization**: centrally manage supported customization types and share them across repositories. Organization customizations are configured through GitHub rather than created in the Agent Customizations editor.
-
-Scope determines where a customization is available and who can share it. Not every customization type supports every scope. The selected agent harness also determines which customization types and locations it supports. See the guide for each customization type for its supported locations.
-
-> [!NOTE]
-> Store user-level customizations in a folder that the selected harness supports on the machine where the agent runs. For example, Copilot reads customizations from `~/.copilot`, and [product.prodname_anthropic_claude] reads them from `~/.claude`. These folders are separate from your VS Code profile user data and aren't shared automatically between machines. See [instructions](/docs/agents/reference/custom-instructions-reference.md#user-instructions), [custom agents](/docs/agent-customization/custom-agents.md), and [prompt files](/docs/agent-customization/prompt-files.md#prompt-file-locations) for supported user-level locations.
+The experimental GitHub Feed source is enabled by default for harnesses that provide marketplace search. Local sessions don't provide this source, and organization policy can restrict access. Use the ``chat.customizations.marketplace.sources.publicFeed.enabled`` setting to show or hide this source. For plugin discovery without the unified **Browse** page, follow the [plugin installation guide](/docs/agent-customization/agent-plugins.md#install-a-plugin-from-a-marketplace).
 
 ## Create a customization
 
-You can create customization files with AI or create them manually. Creating a file doesn't mean the selected harness can load or run it. Specify the target harness and user or workspace scope, save the file in a supported location, and verify it in a session that uses that harness.
-
-### Create a customization with AI
-
-1. Open the Agent Customizations editor.
-1. In the **Overview** section, enter a prompt that describes what you want to create.
-1. Answer any questions the agent asks about missing details.
-1. Review the generated customization, correct any inaccurate information, and save the file.
-
-You can also describe the customization directly in chat with the intended harness.
-
-For example, to create a code reviewer skill, you can enter the following prompt:
-
-```prompt
-Create a workspace code reviewer skill for Python and JavaScript files. Check the code against the conventions in this repository, identify correctness and maintainability issues, and report findings with file locations and suggested fixes.
-```
-
-### Create a customization manually
+For file-based customizations, use the editor to create a file in the chosen scope:
 
 1. Open the Agent Customizations editor and select a customization type.
-1. From the **New** dropdown, choose a user or workspace customization.
+1. Select the `+` button next to **Workspace** to share the customization with your project, or next to **User** to use it across your workspaces.
 1. Enter a name and choose a storage location when prompted.
 1. Edit the customization in the inline editor, which provides syntax highlighting and validation.
 1. Review and save the customization.
@@ -55967,7 +55932,19 @@ You can also run the **Chat: New \<customization-type\>** command from the Comma
 
 To add an MCP server manually, select **MCP Servers**, select **Add Server** (**+**) in the **User** or **Workspace** group, and follow the guided flow. For detailed steps, see [Add MCP servers](/docs/agent-customization/mcp-servers.md#connect-a-server). To update an existing connection, see [Edit an MCP server configuration](/docs/agents/run/manage-mcp-servers.md#edit-an-mcp-server-configuration).
 
-See the guides for [custom instructions](/docs/agent-customization/custom-instructions.md), [agent skills](/docs/agent-customization/agent-skills.md), [prompt files](/docs/agent-customization/prompt-files.md), [custom agents](/docs/agent-customization/custom-agents.md), [MCP servers](/docs/agent-customization/mcp-servers.md), [hooks](/docs/agent-customization/hooks.md), and [agent plugins](/docs/agent-customization/agent-plugins.md) for their file formats and configuration options.
+Creating or saving a file doesn't establish that the agent uses it. Verify the customization before relying on it or sharing it with your team.
+
+## Verify a customization
+
+Repeat your representative task in a fresh chat with the intended harness and workspace. Don't repeat the customization's rules in the test prompt. Check these three stages separately:
+
+1. **Discovery**: open the Agent Customizations editor and confirm that the customization is listed without validation errors.
+1. **Inclusion or invocation**: check whether the request uses the customization. For instructions and skills, inspect the response's **References** section, where available, or [Agent Debug Logs](/docs/agents/agent-troubleshooting/chat-debug-view.md#instructions-or-a-prompt-file-are-not-applied). For tools and hooks, inspect the corresponding tool activity or execution logs.
+1. **Effectiveness**: review the changes, commands, and results against the outcome you defined. Inclusion doesn't guarantee that the agent follows the guidance.
+
+For example, if project instructions specify the correct test command, ask the agent to make a small code change without restating that command. Confirm that it runs the expected tests and reports their results.
+
+If a stage fails, [troubleshoot that stage](#troubleshoot-customization-issues) before adding more guidance. Once the customization meets your goal, review it before sharing it. For a complete before-and-after workflow, see [Configure AI for your codebase](/docs/agents/guides/customize-copilot-guide.md).
 
 ## Manage existing customizations
 
@@ -55985,36 +55962,38 @@ The available actions depend on the customization type and its source. Use the i
 > [!IMPORTANT]
 > If the Agent Customizations editor shows **Migrations**, Copilot cannot use one or more customizations in their current location or format. Select **Migrations** to review the required work, and follow [Migrate Copilot customizations in VS Code](/docs/agent-customization/migrate-customizations.md) for detailed steps.
 
+## Troubleshoot customization issues
+
+Use the verification result to choose your next action:
+
+| Symptom | What to check |
+|---------|---------------|
+| The customization isn't listed | Confirm the harness, file name, and supported location. Ensure the session uses the folder containing your changes. |
+| The customization has validation errors | Correct the reported file or configuration errors. |
+| It's discovered but isn't included or invoked | Check activation conditions against the current file or task. Invoke an on-demand customization explicitly when supported. |
+| It's included but doesn't improve the result | Resolve conflicting guidance, make vague rules more specific, and repeat the task in a fresh chat. |
+
+For hooks, also verify the script's event inputs and outputs. Hooks in user folders, settings, repositories, custom agents, and plugins can require [manual migration to the shared Copilot runtime](/docs/agent-customization/migrate-customizations.md#migrate-hooks), even when the file is discovered.
+
+If the issue continues, follow [customization diagnostics and agent troubleshooting](/docs/agents/agent-troubleshooting/troubleshooting.md#check-customization-diagnostics).
+
+## Advanced scenarios
+
+### Repair marketplace installations
+
+If a Marketplace-installed skill shows **Missing files**, select **Repair** to restore only the missing files. Repair preserves files that you edited or added. **Installed** indicates that the recorded target is available.
+
+A Marketplace-installed customization and a local customization with the same name remain separate. Deleting the Marketplace installation doesn't remove the unrelated local customization.
+
 ### Manage canvas extensions
 
 `feature(canvases)`
 
 The **Canvases** section lists canvas extensions available to the active local Copilot session and groups them by source. For prerequisites, opening canvases, and managing extension enablement, see [Use canvases with agents](/docs/agents/run/canvases.md).
 
-## Verify a customization
+### Use customizations in a monorepo
 
-Test a newly installed, copied, or edited customization in a fresh chat with the intended harness and workspace. Use a representative task and confirm that the harness discovers the customization before assessing its behavior. This separates the saved customization from instructions in the conversation that created or adapted it.
-
-Check that the agent follows the expected instructions, workflow, tool configuration, or lifecycle action. For instructions and skills, use the response's **References** section, where available, to check which customizations were included.
-
-If the result doesn't match your intent, make the customization more specific, resolve conflicting guidance, and repeat the task. For a complete project workflow, including how to review and share generated instructions, see [Configure AI for your codebase](/docs/agents/guides/customize-copilot-guide.md).
-
-## Troubleshoot customization issues
-
-If a customization isn't applied or causes unexpected behavior, check the following:
-
-* The intended agent harness is selected.
-* The customization is stored in a location that the harness supports.
-* Any activation conditions match the current file or task.
-* The customization file has no validation errors.
-
-For hooks, also verify the script's event inputs and outputs. Hooks in user folders, settings, repositories, custom agents, and plugins can require [manual migration to the shared Copilot runtime](/docs/agent-customization/migrate-customizations.md#migrate-hooks), even when the file is discovered.
-
-If the issue continues, open the **Agent Debug Logs** view to [troubleshoot agent issues](/docs/agents/agent-troubleshooting/troubleshooting.md). Run **Developer: Open Agent Debug Logs** from the Command Palette (``Shortcut: workbench.action.showCommands``), or in the Chat view select the ellipsis (**...**) menu and select **Show Agent Debug Logs**.
-
-## Use customizations in a monorepo
-
-In monorepo setups, you might open a subfolder of a repository in VS Code rather than the repo root. By default, VS Code only discovers customization files within your open workspace folder(s). Enable the ``chat.useCustomizationsInParentRepositories`` setting to also discover customizations from the parent repository.
+In monorepo setups, you might open a subfolder of a repository rather than the repo root. For Local harness discovery, enable ``chat.useCustomizationsInParentRepositories`` to also discover customizations from the parent repository. Other harnesses use their own discovery rules. See [nested project instructions](/docs/agents/reference/custom-instructions-reference.md#nested-project-instructions).
 
 When this setting is enabled, VS Code walks up the folder hierarchy from each workspace folder until it finds a `.git` folder. If found, it collects customizations from all folders between the workspace folder and the repository root (inclusive). This applies to all customization types: always-on instructions (`copilot-instructions.md`, `AGENTS.md`, `CLAUDE.md`), file-based instructions, prompt files, custom agents, agent skills, and hooks.
 
@@ -56046,44 +56025,26 @@ Conditions for parent repository discovery:
 > [!NOTE]
 > The ``chat.useCustomizationsInParentRepositories`` setting is disabled by default.
 
-## Evaluate and improve customization files (Preview)
+### Evaluate and improve customization files (Preview)
 
-As your collection of customization files grows, it can be hard to tell whether they actually guide the AI the way you intend. Vague wording, contradictory rules, or overly complex instructions can degrade results. The [Chat Customizations Evaluations](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-chat-customizations-evaluations) extension helps you catch these problems before you rely on a customization, by analyzing your files and suggesting concrete improvements.
+For larger customization collections, the separately published [Chat Customizations Evaluations extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-chat-customizations-evaluations) analyzes skills, custom agents, instructions, and prompt files for ambiguity, contradictions, and overly complex rules.
 
-> [!NOTE]
-> The Chat Customizations Evaluations extension is published separately from VS Code. Install it from the [[product.prodname_vs_marketplace]](https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-chat-customizations-evaluations).
+After installing the extension, open a customization file and run **Chat Customizations Evaluations: Analyze** from the Command Palette (``Shortcut: workbench.action.showCommands``). Review the diagnostics in the **Problems** panel (``Shortcut: workbench.actions.view.problems``) before selecting **Implement Suggestions**.
 
-The extension works with skill files (`SKILL.md`), custom agent files (`*.agent.md`), instructions files (`*.instructions.md`), and prompt files (`*.prompt.md`).
-
-Open a customization file and run the **Chat Customizations Evaluations: Analyze** command from the Command Palette (``Shortcut: workbench.action.showCommands``).
-The extension uses GitHub Copilot to detect issues such as:
-
-* Logical, behavioral, and format contradictions
-* Ambiguous wording, with suggested rewrites
-* Conflicting persona traits and tone drift
-* Excessive cognitive load from deeply nested conditions
-* Gaps in intent handling and missing error paths
-* Conflicts between a file and other customization files it links to
-
-Diagnostics appear in the **Problems** panel (``Shortcut: workbench.actions.view.problems``) with line and column locations. After the analysis completes, select **Implement Suggestions** to apply the suggested improvements.
-
-> [!TIP]
-> You can also start an analysis from chat with the `/analyze-prompt` slash command, which summarizes the diagnostics for the active customization file directly in the Chat view.
-
-For skill files, the extension integrates with the [Waza](https://github.com/microsoft/waza) evaluation framework to measure how well a skill performs against a set of test cases. Run **Chat Customizations Evaluations: Download Waza Binary** to install Waza, **Chat Customizations Evaluations: Create Waza Eval Scaffold** to generate evaluation files for the active skill, and **Chat Customizations Evaluations: Run Waza Evaluation** to run the suite. For step-by-step guidance, run **Chat Customizations Evaluations: Open Analysis and Fix User Guide**.
+For analysis guidance and skill evaluations with [Waza](https://github.com/microsoft/waza), run **Chat Customizations Evaluations: Open Analysis and Fix User Guide**. File analysis complements, but doesn't replace, testing the customization on a representative task.
 
 ## Related resources
 
 * [Customization concepts](/docs/agents/concepts/customization.md)
-* [Customize AI for your project guide](/docs/agents/guides/customize-copilot-guide.md)
+* [Configure AI for your codebase](/docs/agents/guides/customize-copilot-guide.md)
 
 
 ---
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/prompt-files.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/prompt-files
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/prompt-files.md
-- **SHA256_FINGERPRINT**: `115a3a232480257c47155a0ff4af9a0e255d2cd8db63b107381622b8abe316b1`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:35.809931+00:00
+- **SHA256_FINGERPRINT**: `9741e9c18acdc1b9450222f1327821c2cb3f2970b28c2c59a2ce6e8b368f12a2`
+- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:44.000073+00:00
 ---
 
 **MetaDescription**: Use prompt files in VS Code for reusable Local harness workflows, or migrate them to agent skills.
@@ -56103,6 +56064,8 @@ With **Local** selected, use the [Agent Customizations editor](/docs/agent-custo
 
 > [!IMPORTANT]
 > Prompt files run only in **Local** harness sessions in the Chat view. For reusable workflows in other harnesses, create an [agent skill](/docs/agent-customization/agent-skills.md) or [convert an existing prompt file to a skill](/docs/agent-customization/migrate-customizations.md#convert-prompt-files-to-skills).
+
+Before writing a prompt file, consider [reusing a skill from the Customization Marketplace](/docs/agent-customization/agent-skills.md#install-a-skill-from-the-customization-marketplace-preview) for the same task. This installs a skill, not a Local prompt file. Follow the skill's harness requirements and invocation instructions.
 
 ## Prompt file locations
 

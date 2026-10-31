@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-10-30T17:51:52.916966+00:00
-- **Total Palabras**: 151,205 / 500,000 máx.
+- **Generado (UTC)**: 2026-10-31T04:48:48.105362+00:00
+- **Total Palabras**: 151,869 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -5669,8 +5669,8 @@ Learn more about customizing AI in VS Code:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/customize-copilot-guide.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/customize-copilot-guide
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/customize-copilot-guide.md
-- **SHA256_FINGERPRINT**: `885e27859670807cbc6e633cef8bcd1ea5d3926afa68c5e5ff3e6f6b92a1447d`
-- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:44.840928+00:00
+- **SHA256_FINGERPRINT**: `333621b14fe083c69b50e735d9e9957af32fd4231af140694f7862af3a1faf84`
+- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:44.062477+00:00
 ---
 
 **MetaDescription**: Configure project instructions, skills, and custom agents for multiple harnesses in VS Code.
@@ -5682,6 +5682,8 @@ AI agents can produce better results when they understand how your codebase is s
 This guide helps you configure the GitHub Copilot, [product.prodname_anthropic_claude], or [product.prodname_openai_codex] harness in Visual Studio Code. Start with an observed project problem and a representative task. Make the smallest useful customization, confirm that it applies, repeat the task, and compare the results before you share the configuration. The workflow is shared, with tabs for harness-specific formats and behavior.
 
 To understand how the customization types differ and work together, see [Agent customization](/docs/agents/concepts/customization.md).
+
+For ready-made workflows and integrations, [browse customization marketplaces](/docs/agent-customization/overview.md#discover-and-install-existing-customizations-preview) before authoring your own. You can reuse an existing skill or plugin and still follow this guide to add repository-specific instructions.
 
 ## Prerequisites
 
@@ -5916,7 +5918,7 @@ After generating the agent:
 1. Ask it to research how a feature works. Check that it identifies relevant files, supports findings with evidence, and follows its configured role.
 1. Review any changes and tool activity rather than assuming the agent's name or instructions make it read-only.
 
-Learn more about [custom agents](/docs/agent-customization/custom-agents.md).
+For a complete test procedure and guidance on refining the agent's role, see [Verify your custom agent](/docs/agent-customization/custom-agents.md#verify-your-custom-agent).
 
 ## What you configured
 
@@ -5971,7 +5973,7 @@ Review and share any optional customization files through the same process as th
 
 * [Create and manage customizations](/docs/agent-customization/overview.md) from the Agent Customizations editor.
 * Add [MCP servers](/docs/agent-customization/mcp-servers.md) to connect the agent to external tools and services.
-* Set up [hooks](/docs/agent-customization/hooks.md) when an action must run at a specific agent lifecycle event.
+* Set up [hooks](/docs/agent-customization/hooks.md) when an action must run at a specific point in the agent's workflow, such as before a tool runs.
 
 
 ---
@@ -8783,8 +8785,8 @@ When you no longer need the app, run these steps to clean up your local resource
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/agent-plugin-reference.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/agent-plugin-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/agent-plugin-reference.md
-- **SHA256_FINGERPRINT**: `e4c6ac1a7b6b465d996f278bf8716bc1f528a24a9a68857183bde9020f5601f0`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:36.894811+00:00
+- **SHA256_FINGERPRINT**: `eb9f192ab3d869912daa99c2d498373c695c3876f59db6554d24f02a2aa6d90a`
+- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:44.053772+00:00
 ---
 
 **MetaDescription**: Package skills, agents, MCP servers, hooks, and automation templates with agent plugins in VS Code.
@@ -8804,7 +8806,7 @@ Agent Plugins 1.0 defines skills and MCP servers as portable component types. Ot
 | [MCP servers](/docs/agent-customization/mcp-servers.md) | External tool integrations | | ✓ |
 | [Skills](/docs/agent-customization/agent-skills.md) | Instructions, scripts, and resources that load on-demand | | ✓ |
 | [Agents](/docs/agent-customization/custom-agents.md) | Specialized personas and tool configurations | ✓ | |
-| [Hooks](/docs/agent-customization/hooks.md) | Shell commands that execute at agent lifecycle points | ✓ | |
+| [Hooks](/docs/agent-customization/hooks.md) | Shell commands that run at specific points in the agent's workflow | ✓ | |
 | [Automation templates](#automations-in-plugins) | Reusable prompts and schedules for agent tasks | ✓ | |
 | Slash commands | Commands you can invoke with `/` in chat | ✓ | |
 
@@ -9068,7 +9070,7 @@ Disabling a plugin stops its MCP servers. Tools provided by the stopped servers 
 
 ## Hooks in plugins
 
-Plugins can include [hooks](/docs/agent-customization/hooks.md) that run shell commands at agent lifecycle points. Plugin-wide hooks work alongside your workspace and user-level hooks. When a plugin is enabled, these hooks fire in addition to any other hooks configured for the same event.
+Plugins can include [hooks](/docs/agent-customization/hooks.md) that run shell commands at specific points in the agent's workflow. Plugin-wide hooks work alongside your workspace and user-level hooks. When a plugin is enabled, these hooks fire in addition to any other hooks configured for the same event.
 
 > [!NOTE]
 > Hooks are client-specific and are not a portable Agent Plugins 1.0 component type. In an Agent Plugins package, they come from the `com.github.copilot` namespace.
@@ -9194,8 +9196,8 @@ For marketplace schemas and distribution details, see the [Agent Plugins specifi
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/ai-features-cheat-sheet.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/ai-features-cheat-sheet
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/ai-features-cheat-sheet.md
-- **SHA256_FINGERPRINT**: `18928c8ec864dec10374185b56344cab2413baa43f039f1d0d682d66780cb402`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:36.890549+00:00
+- **SHA256_FINGERPRINT**: `f13dd28588b05dabb04a9198866dc02ed48018f09b70b80a07b7cbc955691f12`
+- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:44.052797+00:00
 ---
 
 **MetaDescription**: Choose AI features in VS Code for coding, planning, testing, and reviewing changes.
@@ -9283,7 +9285,7 @@ To organize larger tasks:
 | Run a saved prompt on demand | [Prompt files](/docs/agent-customization/prompt-files.md), invoked as slash commands. |
 | Define a specialized role and tool selection | [Custom agents](/docs/agent-customization/custom-agents.md), such as a read-only reviewer. |
 | Connect a database, issue tracker, or other external system | [MCP servers](/docs/agent-customization/mcp-servers.md) that provide tools. |
-| Run a command at a specific agent lifecycle event | [Hooks](/docs/agent-customization/hooks.md), rather than relying on the model to follow an instruction. |
+| Run a command at a specific point in the agent's workflow | [Hooks](/docs/agent-customization/hooks.md), rather than relying on the model to follow an instruction. |
 | Install a packaged set of customizations | [Agent plugins](/docs/agent-customization/agent-plugins.md). |
 
 Use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) to create and manage these options for your selected harness.
@@ -9368,8 +9370,8 @@ Chat participants are not supported in the Copilot harness. Ask the agent direct
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/ai-settings.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/ai-settings
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/ai-settings.md
-- **SHA256_FINGERPRINT**: `6456925002e4f5dba7515483cdb9dd419ba41eee69a4a65274686cfc67b431bd`
-- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:44.904183+00:00
+- **SHA256_FINGERPRINT**: `84f940d7a92c74db32c8e69d441d6fd67e7441b0c4cde2e654a38d479f4a7f8c`
+- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:44.088108+00:00
 ---
 
 **MetaDescription**: Configure AI features and agents in Visual Studio Code, including chat, agent sessions, dictation, and accessibility settings.
@@ -9769,7 +9771,7 @@ Learn how to [migrate agent customizations](/docs/agent-customization/migrate-cu
 
 | Setting and Description | Default |
 |------------------------|---------------|
-| ``chat.customizations.marketplace.enabled`` _(Preview)_<br/>Show the unified [**Browse** page](/docs/agent-customization/overview.md#discover-marketplace-customizations-preview) when a marketplace source is available. When disabled, discovery remains in the existing customization management pages. | `true` |
+| ``chat.customizations.marketplace.enabled`` _(Preview)_<br/>Show the unified [**Browse** page](/docs/agent-customization/overview.md#discover-and-install-existing-customizations-preview) when a marketplace source is available. When disabled, discovery remains in the existing customization management pages. | `true` |
 | ``chat.customizations.copilotConnectors.enabled`` `feature(copilot-connectors)`<br/>Control [Copilot connectors](/docs/agent-customization/copilot-connectors.md) in the unified marketplace and the availability of connected connector MCP servers in Copilot agent sessions. | `true` |
 
 Organization policy forces both settings off when **Editor preview features** is disabled. See [organization and enterprise settings](/docs/enterprise/manage-ai-settings.md#use-github-organization-and-enterprise-settings).
@@ -9936,15 +9938,15 @@ Open the pet's context menu to access these actions:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/custom-agent-file-reference.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/custom-agent-file-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/custom-agent-file-reference.md
-- **SHA256_FINGERPRINT**: `155dcaba88ef3b5c0e112e56e71ec92bb47e653c6130dd649471cc27aee6b546`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:37.192233+00:00
+- **SHA256_FINGERPRINT**: `959c28d8c516c106a9fe610cf059346f0f72f84037a7eb2c160c5d1398c04b3f`
+- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:44.071665+00:00
 ---
 
-**MetaDescription**: Look up custom agent file syntax, frontmatter fields, defaults, and harness-specific configuration in VS Code.
+**MetaDescription**: Look up custom agent file locations, syntax, fields, and harness compatibility in VS Code.
 
 # Custom agent file reference
 
-This article describes custom agent file syntax, frontmatter fields, and harness-specific configuration in VS Code. For creation steps, file locations, and a complete starter example, see [Create and manage custom agents](/docs/agent-customization/custom-agents.md).
+This article describes custom agent file locations, syntax, frontmatter fields, and harness-specific configuration in VS Code. For a step-by-step creation and verification workflow, see [Create and use custom agents](/docs/agent-customization/custom-agents.md).
 
 ## File structure
 
@@ -9962,6 +9964,43 @@ Report actionable findings with file references. Do not edit files.
 
 The fields below describe the VS Code format. Files in `.claude/agents` use the [Claude agent format](#claude-agent-format).
 
+## Custom agent file locations
+
+You can define custom agents for a specific workspace or at the user level, where they are available across your workspaces. Select the intended harness before you create an agent so the Agent Customizations editor stores it in a supported location.
+
+| Scope | Default file location | File format |
+|-------|-----------------------|-------------|
+| Workspace | `.github/agents` folder | `.agent.md` or `.md` files |
+| Workspace (Claude format) | `.claude/agents` folder | `.md` files in the [Claude agent format](#claude-agent-format) |
+| User (Copilot) | `~/.copilot/agents` folder | `.agent.md` or `.md` files |
+| User ([product.prodname_anthropic_claude]) | `~/.claude/agents` folder | `.md` files in the [Claude agent format](#claude-agent-format) |
+
+To create a user-level custom agent, use the Agent Customizations editor or the **Chat: New Custom Agent** command. Store the file in a supported folder on the machine where the selected harness runs.
+
+In a monorepo, enable ``chat.useCustomizationsInParentRepositories`` to discover custom agents from the parent repository root. Learn more about [parent repository discovery](/docs/agent-customization/overview.md#use-customizations-in-a-monorepo).
+
+### Local harness locations and migration
+
+The **Local** harness stores user-level custom agents in VS Code profile storage, separate from harness user folders such as `~/.copilot/agents` and `~/.claude/agents`. To reuse profile-based agents with another harness, [move them to that harness's user folder](/docs/agent-customization/migrate-customizations.md#move-user-agents-and-instructions).
+
+Prefer native harness folders, such as `.github/agents` and `~/.copilot/agents`, over custom search locations. The ``chat.agentFilesLocations`` setting remains supported and is not deprecated. The editor forwards agents from additional configured locations to Agent Host harnesses, including Copilot, for compatibility with existing editor workflows. The older `chat.modeFilesLocations` setting is deprecated.
+
+Custom locations are not recommended for Copilot workflows because GitHub Copilot CLI and the GitHub Copilot app do not inherit editor location settings. To use agents across Copilot clients, [move them to native harness locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations).
+
+Custom agents were previously known as custom chat modes. If you have `.chatmode.md` files, rename them to `.agent.md` and place them in a supported custom agent location.
+
+If an agent has `hooks` in its frontmatter, review the [agent-scoped hook contract](/docs/agent-customization/hooks.md#agent-scoped-hooks). VS Code preserves those hooks when converting agents for Copilot, including plugin-provided agents. Keep agent-specific automation scoped to the agent and verify that its hooks run before completing a migration.
+
+### Organization-level agents
+
+To share custom agents across multiple workspaces within your organization, you can define them at the GitHub organization level.
+
+VS Code automatically detects organization-level custom agents to which your account has access. These agents appear in the agents dropdown alongside built-in, personal, and workspace agents.
+
+Discovery of organization-level custom agents is enabled by default. To stop showing them in chat, set ``github.copilot.chat.organizationCustomAgents.enabled`` to `false`.
+
+Learn how to [create custom agents for your organization](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/create-custom-agents) in the GitHub documentation.
+
 ## Harness compatibility
 
 The selected [agent harness](/docs/agents/run/agent-harnesses.md) determines which fields and tool names take effect. A shared file location does not imply identical behavior across harnesses.
@@ -9974,6 +10013,16 @@ The selected [agent harness](/docs/agents/run/agent-harnesses.md) determines whi
 By default, the selected harness determines the editor's completions, hovers, and validation. Set `target: github-copilot` to interpret the file with the Copilot schema, or `target: vscode` to use the Local schema. The `target` field overrides file interpretation, not the harness that runs your session.
 
 The editor identifies attributes that aren't supported by the effective target. For example, Local doesn't accept `skills` or `mcp-servers`, and Copilot doesn't accept `handoffs`, `agents`, `argument-hint`, or `advancedOptions`.
+
+### Edit a custom agent file
+
+Use completions and hover details in an `.agent.md` file to choose values for the intended harness. An explicit `target` overrides how the editor interprets the file, but doesn't switch your session's harness.
+
+For Copilot-assisted editing, set `target` explicitly when you need target-specific guidance. Without an explicit target, the file context supplied to Copilot describes only shared attributes and doesn't suggest target-specific model or tool values. This differs from normal editor completions, which follow the selected harness.
+
+Hover a value to inspect its details or availability. The editor refreshes validation as harness inventories change. Unknown-value hints depend on discovery completing, so the absence of a hint while discovery is pending doesn't confirm that a value is available.
+
+Select the intended harness before editing, then try the agent in that harness to verify its behavior. Editor feedback doesn't replace checking which tools and skills the running agent can use. See [Verify your custom agent](/docs/agent-customization/custom-agents.md#verify-your-custom-agent).
 
 ## Header fields
 
@@ -10158,7 +10207,7 @@ Agent files in `.claude/agents` use plain `.md` files and the [Claude subagents 
 | `permissionMode` | `default`, `acceptEdits`, `dontAsk`, `bypassPermissions`, or `plan`. |
 | `skills` | Skills to load into the agent's context at startup. |
 | `mcpServers` | MCP servers available to the agent. |
-| `hooks` | Lifecycle hooks scoped to the agent. |
+| `hooks` | Hooks that run at configured points in this agent's workflow. |
 | `memory` | Persistent memory scope: `user`, `project`, or `local`. |
 
 The Claude harness implements these fields according to its provider documentation. When Local loads a Claude-format agent, it maps supported Claude tool and model names to their VS Code equivalents. This compatibility does not make all Claude runtime features available in Local.
@@ -14367,8 +14416,8 @@ For Local harness sessions, use ``chat.editing.autoAcceptDelay`` to automaticall
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/security.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/security
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/security.md
-- **SHA256_FINGERPRINT**: `fdd3452c6bb1e449187674f4bd02d99b7e16d44a1d4918d9daf332e558f258fe`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:38.040956+00:00
+- **SHA256_FINGERPRINT**: `1c12322af31028353f214dd11702ffca2438d44c24f622b578c1853fb4519b28`
+- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:44.090159+00:00
 ---
 
 **MetaDescription**: Protect development environments when using AI agents and MCP servers in VS Code with approvals and sandboxing.
@@ -14576,7 +14625,7 @@ VS Code addresses these risks through [URL two-step approval](#approvals-and-rev
 
 ## Hooks
 
-[Agent hooks](/docs/agent-customization/hooks.md) run commands at runtime lifecycle points rather than relying on the model to request them. For Copilot sessions, use the shared runtime's event and output contract.
+[Agent hooks](/docs/agent-customization/hooks.md) run commands at specific points in the agent's workflow, such as before a tool runs, rather than relying on the model to request them. For Copilot sessions, use the shared runtime's event and output contract.
 
 * **Validate tool calls**: A `preToolUse` hook can inspect a supported tool's arguments and return a denial. A filter that misses a tool or argument shape does not validate that operation.
 * **Control approvals**: Hooks can return `allow`, `deny`, or `ask`. Approval prompts depend on the session mode; do not assume `ask` pauses an unattended session.

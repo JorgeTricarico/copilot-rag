@@ -119,11 +119,11 @@ chat panel to a full workflow debugger without changing the backend protocol.
 
 ## Patterns
 
-> **[Graph execution](https://docs.langchain.com/oss/python/langgraph/frontend/graph-execution.md)**
+> [card] [Graph execution](https://docs.langchain.com/oss/python/langgraph/frontend/graph-execution.md)
 >
 > Visualize multi-step graph pipelines with per-node status and streaming content.
 
-> **[Custom stream channels](https://docs.langchain.com/oss/python/langgraph/frontend/custom-stream-channels.md)**
+> [card] [Custom stream channels](https://docs.langchain.com/oss/python/langgraph/frontend/custom-stream-channels.md)
 >
 > Stream custom server-side data to the frontend and read it with `useExtension` and `useChannel`.
 

@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-10-30T17:51:52.945230+00:00",
+  "last_sync_utc": "2026-10-31T04:48:48.125579+00:00",
   "total_documents": 2007,
   "documents": {
     "anthropics_skills::README.md": {
@@ -20040,9 +20040,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/add-memory",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "c3790373aad7701e228038672c8822a7f3b6932c628cffd89900d630a8589a9a",
-      "word_count": 8085,
-      "last_updated_utc": "2026-10-30T17:51:51.238286+00:00",
+      "content_sha256": "4490d0c46a26d937196c27663eaee1acdd3a8e45a27b0fd2be3666ebf536f015",
+      "word_count": 9378,
+      "last_updated_utc": "2026-10-31T04:48:47.053307+00:00",
       "local_clean_path": "clean_sources/langgraph__add-memory.md"
     },
     "langgraph::agentic-rag": {
@@ -20062,9 +20062,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/application-structure",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "3cc05b06ec8c4297fe2cb81d4d240396cc042750e6e28a1263ac3bd822ba54bc",
-      "word_count": 715,
-      "last_updated_utc": "2026-10-24T03:56:04.412870+00:00",
+      "content_sha256": "43a833472d92b6fb97db79bca418ebb06a570511b4810781b0ff140b7825a86f",
+      "word_count": 749,
+      "last_updated_utc": "2026-10-31T04:48:47.075153+00:00",
       "local_clean_path": "clean_sources/langgraph__application-structure.md"
     },
     "langgraph::backward-compatibility": {
@@ -20095,9 +20095,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "6ed05b8b6d5d94570e07c74851005a2fd324fdea57fbab6ec1ca092a376e36a9",
-      "word_count": 25014,
-      "last_updated_utc": "2026-10-30T17:51:51.391052+00:00",
+      "content_sha256": "dedda4945814e8acadb822bb3b634547236eb1b7c974cec5c0166d555ae14555",
+      "word_count": 25036,
+      "last_updated_utc": "2026-10-31T04:48:47.204240+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -20106,9 +20106,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "6ed05b8b6d5d94570e07c74851005a2fd324fdea57fbab6ec1ca092a376e36a9",
-      "word_count": 25014,
-      "last_updated_utc": "2026-10-30T17:51:51.332148+00:00",
+      "content_sha256": "dedda4945814e8acadb822bb3b634547236eb1b7c974cec5c0166d555ae14555",
+      "word_count": 25036,
+      "last_updated_utc": "2026-10-31T04:48:47.154877+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -20139,9 +20139,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/deploy",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "cc807665512d8b83b1d1844e4cf27ddefffd40c4c8a4987e0c53a1ed32013197",
-      "word_count": 546,
-      "last_updated_utc": "2026-10-24T03:56:04.652705+00:00",
+      "content_sha256": "af06c80763be785e6af7fdf67a88b452094eea0583e774360b1b2ae5f5d9bdc9",
+      "word_count": 598,
+      "last_updated_utc": "2026-10-31T04:48:47.091859+00:00",
       "local_clean_path": "clean_sources/langgraph__deploy.md"
     },
     "langgraph::errors_GRAPH_RECURSION_LIMIT": {
@@ -20260,9 +20260,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/frontend/overview",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "01e7f040eb1d21558b84445727a8475712251530dca6df677f237e22e135ed2c",
-      "word_count": 649,
-      "last_updated_utc": "2026-10-24T03:56:04.886919+00:00",
+      "content_sha256": "ce69ba407681db64b8fe42ea5eeb1ac7a0202eb1d6f8e1e403818f4a72a5f0fd",
+      "word_count": 651,
+      "last_updated_utc": "2026-10-31T04:48:47.218664+00:00",
       "local_clean_path": "clean_sources/langgraph__frontend_overview.md"
     },
     "langgraph::functional-api": {
@@ -20271,9 +20271,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/functional-api",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "9078f012db765853977a8495c23f0555430968576f856e1f90a2d12102b449a4",
-      "word_count": 3507,
-      "last_updated_utc": "2026-10-24T03:56:04.947061+00:00",
+      "content_sha256": "df14ce645bc1f65b9b35bbcfa77faf81464e1bcf113a4aa1bab68778f0270dfc",
+      "word_count": 3819,
+      "last_updated_utc": "2026-10-31T04:48:47.224448+00:00",
       "local_clean_path": "clean_sources/langgraph__functional-api.md"
     },
     "langgraph::graph-api": {
@@ -20282,9 +20282,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/graph-api",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "4a8f23b83a2e28a2051616add8229ef4d7fc4c51272eebac50e6d80cfa29e23b",
-      "word_count": 7060,
-      "last_updated_utc": "2026-10-30T17:51:51.401361+00:00",
+      "content_sha256": "538e6f616b8dd642cb62851cc21bcd1b1424f46f09bb7d07a05af7e06db26c5c",
+      "word_count": 7155,
+      "last_updated_utc": "2026-10-31T04:48:47.228148+00:00",
       "local_clean_path": "clean_sources/langgraph__graph-api.md"
     },
     "langgraph::install": {
@@ -20304,9 +20304,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/interrupts",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "5029efe7a8f285e62da5be924c360ce5994e6860728b49c8897cad2b0393655b",
-      "word_count": 5351,
-      "last_updated_utc": "2026-10-30T17:51:51.394719+00:00",
+      "content_sha256": "88a3115aa99ee0c21d2476fb7e31e1cfcb09d6935143f27531478d5048762bfe",
+      "word_count": 5417,
+      "last_updated_utc": "2026-10-31T04:48:47.221592+00:00",
       "local_clean_path": "clean_sources/langgraph__interrupts.md"
     },
     "langgraph::local-server": {
@@ -20315,9 +20315,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/local-server",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "3c4b84915aace8334342a5b871f918df3c2e9b52b3f14d79f502667720703ad7",
-      "word_count": 787,
-      "last_updated_utc": "2026-10-27T04:20:54.366669+00:00",
+      "content_sha256": "d793b57506f4911da2a37a1a6077cdebc2020ba764eef4f2f336a37feb97c455",
+      "word_count": 867,
+      "last_updated_utc": "2026-10-31T04:48:47.217875+00:00",
       "local_clean_path": "clean_sources/langgraph__local-server.md"
     },
     "langgraph::observability": {
@@ -20326,9 +20326,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/observability",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "b1d8f987752242a30330672c6cf69bad926f04184cb68b1289018d0e49f11a99",
-      "word_count": 585,
-      "last_updated_utc": "2026-10-27T04:20:54.338644+00:00",
+      "content_sha256": "fba619ae440eb732caf7c21ff314414a2d6f428a110c2405501023e490aef435",
+      "word_count": 586,
+      "last_updated_utc": "2026-10-31T04:48:47.229427+00:00",
       "local_clean_path": "clean_sources/langgraph__observability.md"
     },
     "langgraph::overview": {
@@ -20337,9 +20337,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/overview",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "f3edc85c23bf3107978de97993bf1d22777ffd406b45ab211e50360fb1cb5f0d",
-      "word_count": 921,
-      "last_updated_utc": "2026-10-27T17:44:20.792381+00:00",
+      "content_sha256": "708d741ce78dde2c4fa9e767b675996bf5d01851bd31d46704772b76e9403b11",
+      "word_count": 924,
+      "last_updated_utc": "2026-10-31T04:48:47.238317+00:00",
       "local_clean_path": "clean_sources/langgraph__overview.md"
     },
     "langgraph::persistence": {
@@ -20359,9 +20359,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/pregel",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "ed1e14eadd09a347c15995633961ce72e3a4188d2e5ed50f9387d89418ca05f8",
-      "word_count": 2107,
-      "last_updated_utc": "2026-10-24T03:56:05.083179+00:00",
+      "content_sha256": "02b5686596e2e0f8fa9bf02333a83945db5b867a822be6df8f576ab7f2578626",
+      "word_count": 2395,
+      "last_updated_utc": "2026-10-31T04:48:47.247527+00:00",
       "local_clean_path": "clean_sources/langgraph__pregel.md"
     },
     "langgraph::quickstart": {
@@ -20370,9 +20370,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/quickstart",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "fa52d3638e6264bcc50456bc2b0544e52af637a70ab6097c71cec03212b3bc16",
-      "word_count": 2791,
-      "last_updated_utc": "2026-10-30T05:00:19.210765+00:00",
+      "content_sha256": "6595a22968246e150d0faf2114857ec03f709e0f0ed5447c9dacc550f765b490",
+      "word_count": 3402,
+      "last_updated_utc": "2026-10-31T04:48:47.231223+00:00",
       "local_clean_path": "clean_sources/langgraph__quickstart.md"
     },
     "langgraph::sql-agent": {
@@ -20381,9 +20381,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/sql-agent",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "3b5981f4b47e4bf0b2e4df7194695a1ab18842770252dae9a3784f7433edc68b",
-      "word_count": 3180,
-      "last_updated_utc": "2026-10-24T03:56:05.153105+00:00",
+      "content_sha256": "8e1837044bf8390f957664db584440c37343b6c9af308fd2eb367e51efe7d345",
+      "word_count": 3413,
+      "last_updated_utc": "2026-10-31T04:48:47.249809+00:00",
       "local_clean_path": "clean_sources/langgraph__sql-agent.md"
     },
     "langgraph::stores": {
@@ -20403,9 +20403,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/streaming",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "8aa855f8dcd01a1fd1ce308643c2548ccb85f6272d283a8541578deb36069859",
-      "word_count": 5038,
-      "last_updated_utc": "2026-10-30T17:51:51.447569+00:00",
+      "content_sha256": "dd2fd8bcd165d0bd32abe50c629c01b89e95467c01ef6f86230cd8e7eab8f65c",
+      "word_count": 5195,
+      "last_updated_utc": "2026-10-31T04:48:47.258787+00:00",
       "local_clean_path": "clean_sources/langgraph__streaming.md"
     },
     "langgraph::studio": {
@@ -20414,9 +20414,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/studio",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "632d57c4dabbc83d8ddbd15f32fb655f54b15c6863d64e7a28764fae264579f3",
+      "content_sha256": "ae2df1389e872da9547b8ed06bc36557a8e568ba522f68bdeec2f9fb21627cf5",
       "word_count": 813,
-      "last_updated_utc": "2026-10-27T04:20:54.621453+00:00",
+      "last_updated_utc": "2026-10-31T04:48:47.251683+00:00",
       "local_clean_path": "clean_sources/langgraph__studio.md"
     },
     "langgraph::test": {
@@ -20436,9 +20436,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/thinking-in-langgraph",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "25a927062b963bb5a3ac2c5868f4940f261d8d7c1f61f810c62c827dd94cabc6",
-      "word_count": 3800,
-      "last_updated_utc": "2026-10-30T17:51:51.445342+00:00",
+      "content_sha256": "13cba66a151734222b2e45f8787291634ce42ce0599560e1904611595d8bb65b",
+      "word_count": 3935,
+      "last_updated_utc": "2026-10-31T04:48:47.265130+00:00",
       "local_clean_path": "clean_sources/langgraph__thinking-in-langgraph.md"
     },
     "langgraph::ui": {
@@ -20458,9 +20458,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/use-functional-api",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "3f45d231bb9319cd6216d0df74d8b0d448d2533f2625c72513c4d792cfde4388",
-      "word_count": 3398,
-      "last_updated_utc": "2026-10-30T17:51:51.452604+00:00",
+      "content_sha256": "f72fb096e776aae078196c424cc687fb49cc065c39394ce41c4d820220c9640a",
+      "word_count": 3404,
+      "last_updated_utc": "2026-10-31T04:48:47.268087+00:00",
       "local_clean_path": "clean_sources/langgraph__use-functional-api.md"
     },
     "langgraph::use-graph-api": {
@@ -20469,9 +20469,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/use-graph-api",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "f3ff42cfdb46b6e0ea9eba09e6281df096ecce3a5816019d57335e76e52bb46b",
-      "word_count": 10529,
-      "last_updated_utc": "2026-10-24T03:56:05.417586+00:00",
+      "content_sha256": "a78ab4405fc5d3ea980f48bcd9fcc7c26c65d85660ce8dc031f92e8f20af23b8",
+      "word_count": 10772,
+      "last_updated_utc": "2026-10-31T04:48:47.284651+00:00",
       "local_clean_path": "clean_sources/langgraph__use-graph-api.md"
     },
     "langgraph::use-subgraphs": {
@@ -20480,9 +20480,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/use-subgraphs",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "e21768463c558d696b871521593a33be12ff5f4334d7a11facedfd4a85079131",
-      "word_count": 4038,
-      "last_updated_utc": "2026-10-30T17:51:51.508491+00:00",
+      "content_sha256": "7a94316af89d3ccb11b03685c05098db45119c1bec78b97c90873d208ca4b2e9",
+      "word_count": 4295,
+      "last_updated_utc": "2026-10-31T04:48:47.286888+00:00",
       "local_clean_path": "clean_sources/langgraph__use-subgraphs.md"
     },
     "langgraph::use-time-travel": {
@@ -20491,9 +20491,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/use-time-travel",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "2be4640f2f4704a62cc3e4cfab575eb9320c524d0064cb5e0b7977a5d35c6458",
-      "word_count": 1275,
-      "last_updated_utc": "2026-10-24T03:56:05.390818+00:00",
+      "content_sha256": "bbde1d5956d8a775d410e5274ee0ccea7388a61f461eac0a8aa6ca5c223edd53",
+      "word_count": 1358,
+      "last_updated_utc": "2026-10-31T04:48:47.268907+00:00",
       "local_clean_path": "clean_sources/langgraph__use-time-travel.md"
     },
     "langgraph::workflows-agents": {
@@ -20502,9 +20502,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/workflows-agents",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "42b456826b4210c46e168d6c9fb5a33d28a74741dbfa612879333f54fb66a196",
-      "word_count": 3913,
-      "last_updated_utc": "2026-10-30T17:51:51.493633+00:00",
+      "content_sha256": "f15712197fbbf633c0f9f8d775a6ecf9512b37448748e021bf956b0d9452d0a4",
+      "word_count": 3914,
+      "last_updated_utc": "2026-10-31T04:48:47.290036+00:00",
       "local_clean_path": "clean_sources/langgraph__workflows-agents.md"
     },
     "microsoft_vscode-docs::.github/skills/docs-product-alignment/SKILL.md": {
@@ -20622,10 +20622,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-plugins.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/agent-plugins",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "df8a881c89850b5467a81a243e4309a57ada0f3f",
-      "content_sha256": "fe99b2bdab4b53b86c8a6813928550e699e0e9facdde3d4008a3bbac76d83628",
-      "word_count": 2565,
-      "last_updated_utc": "2026-10-28T18:07:35.578097+00:00",
+      "git_blob_sha": "69437cfd256563e4a45f5a67121912bb112d1bfe",
+      "content_sha256": "426298cd0e77e72345166d6094f777a9d300ce175b201043bf18232bc46c1633",
+      "word_count": 2641,
+      "last_updated_utc": "2026-10-31T04:48:43.900702+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_agent-plugins.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/agent-skills.md": {
@@ -20633,10 +20633,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-skills.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/agent-skills",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "1f5449718c03cbce415e65ebc7b5cbf0c5ee3db8",
-      "content_sha256": "b324f1f712276a5de59769c6d2b70707b4a14fe03ae18172d9d945a6af6eb169",
-      "word_count": 3594,
-      "last_updated_utc": "2026-10-30T17:51:44.841991+00:00",
+      "git_blob_sha": "18ee4740f5b70008e9b25955e9e7e8755dc5890e",
+      "content_sha256": "dcb305f9432542fa4df5c2f7440a41888ee89bcb854edccd57adfa7d34d5af26",
+      "word_count": 3626,
+      "last_updated_utc": "2026-10-31T04:48:43.910878+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_agent-skills.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/copilot-connectors.md": {
@@ -20644,10 +20644,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/copilot-connectors.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/copilot-connectors",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "bf96b82bf75f5dfd9b856e566b15de036e9e220d",
-      "content_sha256": "7b8948a1cb2c598e88d1da97617d5effa2b707df6b81d3ee835b96ad653510da",
-      "word_count": 639,
-      "last_updated_utc": "2026-10-28T18:07:35.585598+00:00",
+      "git_blob_sha": "7cffc1a216cd52d552b5be8671701b4b1b273494",
+      "content_sha256": "02bd64589a73def39197a262f05f53407b69439b74929916d9adc8e2c87a7710",
+      "word_count": 666,
+      "last_updated_utc": "2026-10-31T04:48:43.966008+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_copilot-connectors.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/custom-agents.md": {
@@ -20655,10 +20655,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/custom-agents.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/custom-agents",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "06a82d01e1f3e7f117eb58ec6246934e5a9fe15a",
-      "content_sha256": "b1e39eee19b7c3ad07c8acee03d40d7b3864af0d7d8c878d6d6aa56198661987",
-      "word_count": 2223,
-      "last_updated_utc": "2026-10-28T18:07:35.621539+00:00",
+      "git_blob_sha": "232044195da62eca6d1d90ed4cfbc4c26a26e9b8",
+      "content_sha256": "43f89947e17e7256eca2a467bbc36983c814ae26504f41e43671b572ea743276",
+      "word_count": 2054,
+      "last_updated_utc": "2026-10-31T04:48:43.936301+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_custom-agents.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/custom-instructions.md": {
@@ -20666,10 +20666,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/custom-instructions.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/custom-instructions",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "a559abbe6a1b5d50e6ba12d603339e52d5ba1e10",
-      "content_sha256": "e9d91112b7c7a64d848d4b0550f1526489ff0fa5ca7c5a9712e670ff8b550be6",
-      "word_count": 1946,
-      "last_updated_utc": "2026-10-30T17:51:44.819110+00:00",
+      "git_blob_sha": "84668c135bbed03cc92715ef0ee063ae0fed9230",
+      "content_sha256": "f8882ff38dc507bd55659cc845331296057989a77a2a3a52144dd6d51cdd992f",
+      "word_count": 2005,
+      "last_updated_utc": "2026-10-31T04:48:43.938604+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_custom-instructions.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/hooks.md": {
@@ -20677,10 +20677,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/hooks.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/hooks",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "e7596f29990daf52a50c6c5475f783f2fee08fdb",
-      "content_sha256": "44b2765ca535c41e780ea254c3e276169d64b92bbc2a064e62629519cb84d84a",
-      "word_count": 1913,
-      "last_updated_utc": "2026-10-28T18:07:35.921441+00:00",
+      "git_blob_sha": "aae77acb1208ec0ddc6d3820b819b40a0bc06600",
+      "content_sha256": "df34c5e63f4725fbc245d12c313084ee02309c5a1b9ac9ee4b72092b59baa230",
+      "word_count": 2025,
+      "last_updated_utc": "2026-10-31T04:48:43.978157+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_hooks.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/language-models.md": {
@@ -20699,10 +20699,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/mcp-servers.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/mcp-servers",
       "bundle_name": "03_MCP_Servers_And_Tools_Execution",
-      "git_blob_sha": "7dbfc184fc227cecef5d91e31d1581deac5a1849",
-      "content_sha256": "cb3dc951ab53cb574b97fc353a09e3379a8707df7cbf150a725a7cf34fbe1909",
-      "word_count": 1616,
-      "last_updated_utc": "2026-10-28T18:07:35.733877+00:00",
+      "git_blob_sha": "42e5d891a054b6ace76894ce2a56f132f4d010c6",
+      "content_sha256": "3e50b90a51c4013459153a857c3257bc1e8061824f6846fed92b5a5b9fdcca4c",
+      "word_count": 1677,
+      "last_updated_utc": "2026-10-31T04:48:43.956658+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_mcp-servers.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/migrate-customizations.md": {
@@ -20710,10 +20710,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/migrate-customizations.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/migrate-customizations",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "d79b5a0c2c790235b32223b4423402aa11d05916",
-      "content_sha256": "2ebd526043cd3c407dbf9e121aa0a0a6fd6c3e7c0e254953af4c73681a912612",
-      "word_count": 7890,
-      "last_updated_utc": "2026-10-30T17:51:44.887226+00:00",
+      "git_blob_sha": "9d8282bef357c64b55d3bafed0a6a0f3436582be",
+      "content_sha256": "f3239078bef74823a634597386d5f6223b53775f0486aff78cb59e86d4a68655",
+      "word_count": 7907,
+      "last_updated_utc": "2026-10-31T04:48:44.015481+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_migrate-customizations.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/overview.md": {
@@ -20721,10 +20721,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/overview.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/overview",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "ba8fe8a175106454ee7273b70d71198fc1f03f33",
-      "content_sha256": "bfacf09da6c6ac40de2cfad2213e88bb84f9d62baae92df689ce14673a0b781b",
-      "word_count": 2629,
-      "last_updated_utc": "2026-10-30T17:51:44.858429+00:00",
+      "git_blob_sha": "4685ee1c827ed72b5723f5f6c823a49eb49331ae",
+      "content_sha256": "5f390abc7a2e40baba3a80ee133cd13439bf834881cdd406678fcd3d6ab5e394",
+      "word_count": 2204,
+      "last_updated_utc": "2026-10-31T04:48:43.990498+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_overview.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/prompt-files.md": {
@@ -20732,10 +20732,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/prompt-files.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/prompt-files",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "82f7ba6b9ade9a7207d65f8811d6f1849e657888",
-      "content_sha256": "115a3a232480257c47155a0ff4af9a0e255d2cd8db63b107381622b8abe316b1",
-      "word_count": 1957,
-      "last_updated_utc": "2026-10-28T18:07:35.809931+00:00",
+      "git_blob_sha": "c02b08a025d1631a21130ebe50a69f8146b229cf",
+      "content_sha256": "9741e9c18acdc1b9450222f1327821c2cb3f2970b28c2c59a2ce6e8b368f12a2",
+      "word_count": 1991,
+      "last_updated_utc": "2026-10-31T04:48:44.000073+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_prompt-files.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/tool-sets.md": {
@@ -20853,10 +20853,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/agents.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/concepts/agents",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "a1e53d6dd86c3da166ff03fc3c12fb2b6d6937df",
-      "content_sha256": "069e88cfe9979c92ff177505522efc5b7729b1eb59cec599598c08564b6cd1ef",
-      "word_count": 1301,
-      "last_updated_utc": "2026-10-28T18:07:36.173659+00:00",
+      "git_blob_sha": "cfbdb6344b4bb6ec53eee3e8228dfd348108168c",
+      "content_sha256": "caa76052aef4a21f387e0194bc1ad4930a0097553d26ecb0a0c971897f90ad88",
+      "word_count": 1309,
+      "last_updated_utc": "2026-10-31T04:48:44.017339+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_concepts_agents.md"
     },
     "microsoft_vscode-docs::docs/agents/concepts/context.md": {
@@ -20875,10 +20875,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/customization.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/concepts/customization",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "673354d459140b8d6ba8babbca49377b620891af",
-      "content_sha256": "5f99e7bf16bab06d4d4b10910bdfc3204f0d43f4889bd34cdd2a53d9d6cae322",
-      "word_count": 1567,
-      "last_updated_utc": "2026-10-28T18:07:36.178480+00:00",
+      "git_blob_sha": "ce437dbf7423195639bf3a46a7ca0a291856d1a4",
+      "content_sha256": "86adefca89422cd995fe2fd3502cd482fb5fd5a1e7865eb1f9c404fcebe57dee",
+      "word_count": 1527,
+      "last_updated_utc": "2026-10-31T04:48:44.031797+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_concepts_customization.md"
     },
     "microsoft_vscode-docs::docs/agents/concepts/language-models.md": {
@@ -20963,10 +20963,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/customize-copilot-guide.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/customize-copilot-guide",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "b6c1abb392e5c2754eacd9445b0081fefe698823",
-      "content_sha256": "885e27859670807cbc6e633cef8bcd1ea5d3926afa68c5e5ff3e6f6b92a1447d",
-      "word_count": 2745,
-      "last_updated_utc": "2026-10-30T17:51:44.840928+00:00",
+      "git_blob_sha": "9f96013e1a0796f3dcc29d7889ccd42ed5539c36",
+      "content_sha256": "333621b14fe083c69b50e735d9e9957af32fd4231af140694f7862af3a1faf84",
+      "word_count": 2794,
+      "last_updated_utc": "2026-10-31T04:48:44.062477+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_customize-copilot-guide.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/delegate-two-tasks.md": {
@@ -21128,10 +21128,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/agent-plugin-reference.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/reference/agent-plugin-reference",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "c11b85d9d429ed7851aa89f101d1fbcad0912d19",
-      "content_sha256": "e4c6ac1a7b6b465d996f278bf8716bc1f528a24a9a68857183bde9020f5601f0",
-      "word_count": 2714,
-      "last_updated_utc": "2026-10-28T18:07:36.894811+00:00",
+      "git_blob_sha": "455c11fc7f28dd411b53ac9635d73a28485f1ace",
+      "content_sha256": "eb9f192ab3d869912daa99c2d498373c695c3876f59db6554d24f02a2aa6d90a",
+      "word_count": 2720,
+      "last_updated_utc": "2026-10-31T04:48:44.053772+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_reference_agent-plugin-reference.md"
     },
     "microsoft_vscode-docs::docs/agents/reference/ai-features-cheat-sheet.md": {
@@ -21139,10 +21139,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/ai-features-cheat-sheet.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/reference/ai-features-cheat-sheet",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "4e95cc5888ec144ccf2dc2944071fcf755a00ce1",
-      "content_sha256": "18928c8ec864dec10374185b56344cab2413baa43f039f1d0d682d66780cb402",
-      "word_count": 1860,
-      "last_updated_utc": "2026-10-28T18:07:36.890549+00:00",
+      "git_blob_sha": "c27617b3a34486daf345182b5a6efe3f58006f25",
+      "content_sha256": "f13dd28588b05dabb04a9198866dc02ed48018f09b70b80a07b7cbc955691f12",
+      "word_count": 1862,
+      "last_updated_utc": "2026-10-31T04:48:44.052797+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_reference_ai-features-cheat-sheet.md"
     },
     "microsoft_vscode-docs::docs/agents/reference/ai-settings.md": {
@@ -21150,10 +21150,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/ai-settings.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/reference/ai-settings",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "db0109ffc6383693a31655a2ee69d699a84382ab",
-      "content_sha256": "6456925002e4f5dba7515483cdb9dd419ba41eee69a4a65274686cfc67b431bd",
+      "git_blob_sha": "666a05bcb2e2d344bc343d8ec66a168e05b6e617",
+      "content_sha256": "84f940d7a92c74db32c8e69d441d6fd67e7441b0c4cde2e654a38d479f4a7f8c",
       "word_count": 7541,
-      "last_updated_utc": "2026-10-30T17:51:44.904183+00:00",
+      "last_updated_utc": "2026-10-31T04:48:44.088108+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_reference_ai-settings.md"
     },
     "microsoft_vscode-docs::docs/agents/reference/chat-pet.md": {
@@ -21172,10 +21172,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/custom-agent-file-reference.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/reference/custom-agent-file-reference",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "fea14457ebc044c40c44accfb1aab92526b7ab24",
-      "content_sha256": "155dcaba88ef3b5c0e112e56e71ec92bb47e653c6130dd649471cc27aee6b546",
-      "word_count": 2231,
-      "last_updated_utc": "2026-10-28T18:07:37.192233+00:00",
+      "git_blob_sha": "3bbb317256eb323202bdd9d2664a7fdecf79d36f",
+      "content_sha256": "959c28d8c516c106a9fe610cf059346f0f72f84037a7eb2c160c5d1398c04b3f",
+      "word_count": 2829,
+      "last_updated_utc": "2026-10-31T04:48:44.071665+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_reference_custom-agent-file-reference.md"
     },
     "microsoft_vscode-docs::docs/agents/reference/custom-instructions-reference.md": {
@@ -21205,10 +21205,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/mcp-configuration.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/reference/mcp-configuration",
       "bundle_name": "03_MCP_Servers_And_Tools_Execution",
-      "git_blob_sha": "682e7f5df775aa8f7bebafa5a58b7b55f3449c6c",
-      "content_sha256": "8446203561672f765dbfd0133fc1de0e19c42bcb73d9002ba3f1c5c6afed2487",
-      "word_count": 3311,
-      "last_updated_utc": "2026-10-29T18:15:01.698121+00:00",
+      "git_blob_sha": "0be9eb962f66ddf126761a4f837521d6ab73094c",
+      "content_sha256": "9ef6003068251b091fa48faa232168359bec88c0c19ace8204277d60045aae2b",
+      "word_count": 3324,
+      "last_updated_utc": "2026-10-31T04:48:44.076763+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_reference_mcp-configuration.md"
     },
     "microsoft_vscode-docs::docs/agents/reference/tools-reference.md": {
@@ -21425,10 +21425,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/security.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/run/security",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "5bdcc0be37aaea6dd79c41631a716ee44326fc39",
-      "content_sha256": "fdd3452c6bb1e449187674f4bd02d99b7e16d44a1d4918d9daf332e558f258fe",
-      "word_count": 3247,
-      "last_updated_utc": "2026-10-28T18:07:38.040956+00:00",
+      "git_blob_sha": "d4556dc3a4bbb70685a2930765eebe6fb25fb761",
+      "content_sha256": "1c12322af31028353f214dd11702ffca2438d44c24f622b578c1853fb4519b28",
+      "word_count": 3256,
+      "last_updated_utc": "2026-10-31T04:48:44.090159+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_run_security.md"
     },
     "microsoft_vscode-docs::docs/agents/run/sessions/manage-sessions.md": {

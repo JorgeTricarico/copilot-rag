@@ -80,7 +80,7 @@ Start with project instructions for rules that apply broadly. Use targeted instr
 | Task relevance | In Local sessions, a `description` lets the agent decide whether to read an instructions file for the task. This is separate from pattern matching. |
 | Manual | Attach guidance for a particular request when automatic discovery or activation isn't appropriate. |
 
-An instruction file such as `AGENTS.md` provides guidance to an existing agent. It doesn't define a [custom agent](/docs/agent-customization/custom-agents.md). For a reusable multi-step workflow rather than coding conventions or project context, consider an [agent skill](/docs/agent-customization/agent-skills.md).
+An instruction file such as `AGENTS.md` provides guidance to an existing agent. It doesn't define a [custom agent](/docs/agent-customization/custom-agents.md). For a reusable multi-step workflow rather than coding conventions or project context, consider an [agent skill](/docs/agent-customization/agent-skills.md). [Look for an existing skill in the Customization Marketplace](/docs/agent-customization/agent-skills.md#install-a-skill-from-the-customization-marketplace-preview) before writing the workflow yourself. Keep repository-specific commands and conventions in your project instructions.
 
 ## Apply instructions to specific files or tasks
 
@@ -180,6 +180,8 @@ If a personal instruction requests one library and the repository requires anoth
 Return to **Instructions** in the Agent Customizations editor to find and edit existing instructions. To add personal instructions, select `+` next to **User**. Follow the prompts for a name and storage location supported by your harness, save the file, and verify it in a new chat with that harness.
 
 Use user scope for personal preferences across projects. Don't put your individual response preferences in a shared project file unless your team wants them too. For locations and synchronization limits, see [user instructions](/docs/agents/reference/custom-instructions-reference.md#user-instructions).
+
+You can also distribute instructions as rule components in an [agent plugin](/docs/agent-customization/agent-plugins.md#what-plugins-provide), alongside related agents, skills, or tools. Support depends on the selected harness and plugin format. Check [plugin compatibility](/docs/agent-customization/agent-plugins.md#cross-tool-compatibility) before sharing the bundle across clients.
 
 ## Instruction formats and settings
 

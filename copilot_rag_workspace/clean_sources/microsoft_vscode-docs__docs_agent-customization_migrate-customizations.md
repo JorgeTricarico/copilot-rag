@@ -194,7 +194,7 @@ To move user customizations:
 
 The migrated files are not included in [Settings Sync](/docs/configure/settings-sync.md).
 
-After migration, start a Copilot harness session and verify that the agents and instructions are available. See [custom agent locations](/docs/agent-customization/custom-agents.md#custom-agent-file-locations) and [instruction file locations](/docs/agents/reference/custom-instructions-reference.md#user-instructions) for the supported destinations.
+After migration, start a Copilot harness session and verify that the agents and instructions are available. See [custom agent locations](/docs/agents/reference/custom-agent-file-reference.md#custom-agent-file-locations) and [instruction file locations](/docs/agents/reference/custom-instructions-reference.md#user-instructions) for the supported destinations.
 
 ## Move customizations from configured locations
 
@@ -304,7 +304,7 @@ For complete output and failure rules, see [Copilot decision control](https://do
 
 ### Review event timing
 
-Use this table to find the corresponding lifecycle point, not as a mechanical rename list. Changing a configured event from PascalCase to camelCase also changes its stdin payload.
+Use this table to find the event that corresponds to the same point in the agent's workflow, not as a mechanical rename list. Changing a configured event from PascalCase to camelCase also changes its stdin payload.
 
 | Local event | Copilot event | Behavior to verify |
 |-------------|---------------|--------------------|
@@ -323,7 +323,7 @@ Do not carry these assumptions into a migrated script:
 
 * **Common Local outputs:** `continue`, `stopReason`, and `systemMessage` are not a documented cross-event Copilot command-hook contract. Choose the destination's event-specific output. Do not treat denying one tool as stopping the whole session.
 * **Nested output envelopes:** accepting a PascalCase input alias does not establish support for every Local `hookSpecificOutput` field. Emit the documented Copilot output.
-* **Transcripts and tool IDs:** do not require `transcript_path` or `tool_use_id` on every event. Copilot documents transcript paths on particular lifecycle events, not all tool events. A transcript filename or substring is not proof that the agent read or followed an instruction.
+* **Transcripts and tool IDs:** do not require `transcript_path` or `tool_use_id` on every event. Copilot documents transcript paths for particular events in the agent's workflow, not all tool events. A transcript filename or substring is not proof that the agent read or followed an instruction.
 * **Matcher behavior:** Local ignores matcher values. Copilot applies documented matcher rules, including different semantics for compatible `PreToolUse` names. Recheck every filter, including invalid patterns and tools it should not match.
 * **SDK callback types:** programmatic callbacks are not JSON-file command hooks. A field in SDK source, such as a callback-only prompt override, is not evidence that a shell hook can use it.
 * **Enforcement:** `ask` depends on an interactive approval flow; do not assume it pauses an unattended session. GitHub also documents fail-open timeouts, including for policy hooks. Neither instructions nor a migrated hook alone establishes a security boundary.
@@ -520,7 +520,7 @@ These fixtures check the script's input and output handling. They do not establi
 1. Disable the original hook without deleting its backup. Activate only the converted configuration you intend to use. For the standalone example, rename `review-copilot.json.disabled` to `review-copilot.json`; for settings, merge the validated hook entries into the existing `hooks` map.
 1. Select **Copilot** as the **Session Target** and start a new disposable session. Confirm the intended source is discovered and the hook actually fires. A visible file alone is not proof of execution.
 1. Test allow, deny, and approval paths as applicable. Separately test a command error and a timeout; they do not necessarily have the same result.
-1. Test the relevant lifecycle transitions, including resume or subagent completion when used. Check that each hook runs once, not once per duplicate source.
+1. Test the relevant events in the agent's workflow, including resuming a session or completing a subagent when used. Check that each hook runs once, not once per duplicate source.
 1. Repeat in the target operating system, remote host, container, or worktree. Verify `cwd`, script dependencies, user folders, and sandbox access without logging credentials or full prompts.
 1. Only then retire the old configuration. Publish shared changes through the repository or plugin's normal review process.
 
@@ -683,7 +683,7 @@ Review both the coordinator's Markdown instructions and its `tools` list. Prefer
 
 Finding an agent file does not mean that its tool list is compatible with the selected harness. Local delegation references such as `agent/runSubagent` and user-defined tool sets aren't portable Copilot tool configurations. Qualified client-tool references, including `vscode/<tool>`, can be valid when those tools are provided to the Copilot session.
 
-Review each entry in `tools` against the capabilities available in the Copilot session. Select Copilot before [editing the agent file](/docs/agent-customization/custom-agents.md#edit-a-custom-agent-file) and use its completions to preserve canonical tool references. Check the [Tools tab](/docs/agents/run/tools.md#manage-tool-availability-for-the-copilot-harness), the [custom agent tool reference](/docs/agents/reference/custom-agent-file-reference.md#tools), and [tool-set migration guidance](#replace-tool-sets). Keep required capabilities explicitly configured. Removing the entire tool restriction is not an equivalent migration.
+Review each entry in `tools` against the capabilities available in the Copilot session. Select Copilot before [editing the agent file](/docs/agents/reference/custom-agent-file-reference.md#edit-a-custom-agent-file) and use its completions to preserve canonical tool references. Check the [Tools tab](/docs/agents/run/tools.md#manage-tool-availability-for-the-copilot-harness), the [custom agent tool reference](/docs/agents/reference/custom-agent-file-reference.md#tools), and [tool-set migration guidance](#replace-tool-sets). Keep required capabilities explicitly configured. Removing the entire tool restriction is not an equivalent migration.
 
 Do not assume that removing a prefix or replacing a tool name fixes every discovery error. These editor hints aren't proof of a runtime tool-discovery failure.
 
