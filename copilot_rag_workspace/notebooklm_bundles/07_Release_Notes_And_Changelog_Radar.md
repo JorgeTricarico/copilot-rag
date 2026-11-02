@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-02T05:12:42.942337+00:00
-- **Total Palabras**: 20,199 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-02T21:33:01.625294+00:00
+- **Total Palabras**: 20,729 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -469,8 +469,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_144.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_144
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_144.md
-- **SHA256_FINGERPRINT**: `2b356746612510de49fa54833aabc5d26838626fcaeeaa25f3c5fb34337f8e2d`
-- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:44.933547+00:00
+- **SHA256_FINGERPRINT**: `0880f151659ff6f9537bcce30513e98f9d0ff381497f7c171a69a1e8af1217ef`
+- **LAST_VERIFIED_UTC**: 2026-11-02T21:32:53.405474+00:00
 ---
 
 **MetaDescription**: Learn what's new in Visual Studio Code 1.144
@@ -763,6 +763,17 @@ Extensions can run and be enabled or disabled directly from the Agents window. T
 
 ![Extensions in Agents window](images/1_144/extensions-in-agents-window.webp)
 
+### GitHub Environments
+There is a new option for sharing your local agents with your other devices. The radio tower button in the upper right corner of the agents window previously shared your local agents over dev tunnels, but now you have the option to share with GitHub Environments as well.
+
+![The dropdown to enable remote sharing from the VS Code Agents Window](images/1_144/remote-share-picker.png)
+
+What's the difference? Your GitHub Environment can be accessed from all GitHub Copilot apps, so you can start a session on your computer and continue it on the GitHub iOS app, or the Copilot desktop app, or https://github.com/copilot, even the Copilot CLI. You can also access it in VS Code from another device, by selecting the GitHub Environments option in the Agents Window picker.
+
+![The environments picker, showing GitHub Environments](images/1_144/environments.png)
+
+You can also register a GitHub Environment from the code CLI with a command like this: `code agent host --github-environment`.
+
 ## Agent customizations
 
 ### Connect services with Copilot connectors (Preview)
@@ -1044,8 +1055,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_145.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_145
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_145.md
-- **SHA256_FINGERPRINT**: `779bcb031dac085f1bdc07445bdcc33e738348b34ceb2f86daebec0857240a25`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:38.397223+00:00
+- **SHA256_FINGERPRINT**: `8cfae382c803d4064a017bcca4910b39dd7c16b1d7fb650374137f71d5822502`
+- **LAST_VERIFIED_UTC**: 2026-11-02T21:32:53.236942+00:00
 ---
 
 **MetaDescription**: Learn what is new in Visual Studio Code 1.145 (Insiders).
@@ -1056,7 +1067,7 @@ Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://
 
 ---
 
-_Last updated: October 28, 2026_
+_Last updated: November 2, 2026_
 
 Welcome to the 1.145  release of Visual Studio Code.
 
@@ -1064,19 +1075,51 @@ Happy Coding!
 
 ---
 
+## November 2, 2026
+
+* Add support for nesting Claude and Codex chats under a Copilot session in the Agents window. _[microsoft/vscode#343910: Why can't I nest a Claude/Codex session under a Copilot session?](https://github.com/microsoft/vscode/issues/343910)_
+
+## October 31, 2026
+
+* Keep sessions visible in the Agents window's **Worktree Cleanup** list after opening them for review with the default **Any time** filter. _[microsoft/vscode#342637: [Worktree Cleanup] Clicking on a session removed it from the list](https://github.com/microsoft/vscode/issues/342637)_
+
+## October 30, 2026
+
+* Add stable API support for extensions to contribute file, folder, and workspace history to the **Timeline** view. _[microsoft/vscode#84297: API support for Timeline view](https://github.com/microsoft/vscode/issues/84297)_
+
+* Add support for `!`-prefixed exception patterns in ``files.exclude`` and ``search.exclude`` to restore excluded files and folders in the **Explorer** and built-in search. _[microsoft/vscode#869: Exclude all files except for...](https://github.com/microsoft/vscode/issues/869)_
+
+* Round keyboard focus outlines on the **Dictation** and **Voice Mode** buttons (Experimental) in editor chat and the Agents window. _[microsoft/vscode#330524: Add corner rounding to dictation and voice mode buttons focus outline](https://github.com/microsoft/vscode/issues/330524)_
+
+* Use Agents window without GitHub sign-in or an opt-in setting. Individual agents and models can still require credentials or setup. _[microsoft/vscode#345254: Agents window is usable without GitHub sign-in by default](https://github.com/microsoft/vscode/issues/345254)_
+
+## October 29, 2026
+
+* Add support for disabling Copilot's `Co-authored-by` commit trailer in new or resumed agent-host sessions with ``chat.agentHost.copilot.includeCoAuthoredBy`` set to `false`. _[microsoft/vscode#342213: Allow disabling Copilot's Co-authored-by trailer in agent-host sessions](https://github.com/microsoft/vscode/issues/342213)_
+
 ## October 28, 2026
 
-* Track bulk worktree cleanup progress, keep completed results visible, and retry failed cleanups in the Agents window. _[microsoft/vscode#344588: Improve bulk worktree cleanup progress and recovery](https://github.com/microsoft/vscode/issues/344588)_
+* Track bulk worktree cleanup progress, keep completed results visible until the editor closes, and retry eligible failed cleanups in the Agents window. _[microsoft/vscode#344588: Improve bulk worktree cleanup progress and recovery](https://github.com/microsoft/vscode/issues/344588)_
+
+* Hide space and tab indicators by default in the rich Markdown editor (``markdown.editor.renderWhitespace``). _[microsoft/vscode#344703: Markdown editor: hide whitespace indicators by default (markdown.editor.renderWhitespace)](https://github.com/microsoft/vscode/issues/344703)_
+
+* Add support for calling tools provided by MCP Apps in Copilot agent-host sessions in the editor and Agents windows. _[microsoft/vscode#338336: MCP Apps: App-provided tools registered via App.registerTool() are not exposed to Copilot agent](https://github.com/microsoft/vscode/issues/338336)_
+
+* Add setting to show breadcrumbs in untitled files. _[microsoft/vscode#344755: Add a setting to show breadcrumbs for untitled files, off by default](https://github.com/microsoft/vscode/issues/344755)_
+
+* Add support for recording WebM demos of web pages with the experimental `/record-video` skill in Copilot CLI sessions. _[microsoft/vscode#344781: Add a built-in skill to record demo videos of web pages](https://github.com/microsoft/vscode/issues/344781)_
+
+* Add support for cleaning up managed worktrees without a listed session in the Agents window's **Worktree Cleanup** editor. _[microsoft/vscode#344779: Allow Worktree Cleanup to manage worktrees without a listed session](https://github.com/microsoft/vscode/issues/344779)_
 
 ## October 27, 2026
 
 * Preview web apps running on remote agent hosts in the Agents window's integrated browser (Experimental). _[microsoft/vscode#331926: Integrated browser remote proxy should support remote AHP hosts in Agents window](https://github.com/microsoft/vscode/issues/331926)_
 
-* Fix keyboard access to MCP authentication prompts in screen reader mode. _[microsoft/vscode#343890: MCP authentication inline hint is not keyboard accessible in screen reader mode](https://github.com/microsoft/vscode/issues/343890)_
+* Fix keyboard access to MCP authentication prompts in agent-host sessions when screen reader mode is enabled. _[microsoft/vscode#343890: MCP authentication inline hint is not keyboard accessible in screen reader mode](https://github.com/microsoft/vscode/issues/343890)_
 
 * Move the default **Agent** picker into **Add Context** in editor-window chat with the experimental ``sessions.chat.experimental.agentsPickerInAttachContextMenu`` setting. _[microsoft/vscode#344606: Apply the Agent picker Add Context setting to editor-window chat](https://github.com/microsoft/vscode/issues/344606)_
 
-* Add support for breadcrumbs in unsaved files when the language provides symbols. _[microsoft/vscode#84746: Enable breadcrumbs for unsaved files](https://github.com/microsoft/vscode/issues/84746)_
+* Add support for breadcrumbs in untitled files when ``breadcrumbs.showInUntitledFiles`` is enabled and the language provides symbols. _[microsoft/vscode#84746: Enable breadcrumbs for unsaved files](https://github.com/microsoft/vscode/issues/84746)_
 
 * Run saved automations with **Chat: Run Automation...** in the Agents window **Command Palette**. _[microsoft/vscode#344445: Add a "Chat: Run Automation..." action](https://github.com/microsoft/vscode/issues/344445)_
 
@@ -1529,8 +1572,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_345227
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/345227
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/345227
-- **SHA256_FINGERPRINT**: `843e7825077e9c1deb3dbddb742f8ab961755261b4a3f65adb9aff4c555aab20`
-- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:42.741320+00:00
+- **SHA256_FINGERPRINT**: `d0d692b9ff5ca7d2c007806f058e911cd156ee20806c14abddc365b610080b2b`
+- **LAST_VERIFIED_UTC**: 2026-11-02T21:33:01.421759+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.145.0 Endgame
@@ -1557,7 +1600,7 @@ We really appreciate people trying our new features as soon as they are ready, s
 - [x] Pin this endgame plan in the [VS Code issue tracker](https://github.com/microsoft/vscode/issues)
 - [x] Assign TPIs
   - [x] Create TPI's for all verification needed bugs. Visit `Testing and Verification` on tools site, and generate groupings, then create TPIs. The TPI section below  will update with all of the generated items.
-- [ ] Pause automatic releases (this also ensures chat-pre-release isn't released) after 10am. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=383))
+- [x] Pause automatic releases (this also ensures chat-pre-release isn't released) after 10am. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=383))
 - [x] Run the [Start Endgame](https://github.com/microsoft/vscode-engineering/actions/workflows/start-endgame.yml) workflow
 
   - PRs opened with auto-merge enabled — ensure they get reviewed and merged Monday morning so Insiders picks up the next milestone version:

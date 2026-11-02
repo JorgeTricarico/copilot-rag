@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-10-31T04:48:48.105362+00:00
-- **Total Palabras**: 151,869 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-02T21:33:01.617048+00:00
+- **Total Palabras**: 152,584 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -8785,15 +8785,15 @@ When you no longer need the app, run these steps to clean up your local resource
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/agent-plugin-reference.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/agent-plugin-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/agent-plugin-reference.md
-- **SHA256_FINGERPRINT**: `eb9f192ab3d869912daa99c2d498373c695c3876f59db6554d24f02a2aa6d90a`
-- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:44.053772+00:00
+- **SHA256_FINGERPRINT**: `4ab0a93ef10f3ff21cfcf7e6add07130c545e774102be877d23de002273db3dc`
+- **LAST_VERIFIED_UTC**: 2026-11-02T21:32:53.255951+00:00
 ---
 
 **MetaDescription**: Package skills, agents, MCP servers, hooks, and automation templates with agent plugins in VS Code.
 
 # Agent plugin authoring reference
 
-Package related customizations as a plugin that developers can install together. This reference covers manifests, directory layouts, component configuration, and compatibility across plugin formats and agent harnesses.
+Package related customizations as a plugin that developers can install together. This reference covers manifests, directory layouts, component and marketplace configuration, management commands, and compatibility across plugin formats and agent harnesses.
 
 Use it when creating a plugin or inspecting how its components are configured. To find, install, update, or remove an existing plugin, see [Use agent plugins](/docs/agent-customization/agent-plugins.md).
 
@@ -9173,11 +9173,109 @@ VS Code continues to support existing Copilot, Claude, and legacy OpenPlugin for
 
 For details about the portable format, see the [Agent Plugins specification](https://github.com/agentplugins/agent-plugins-spec/blob/main/spec/1.0.0.md). For other formats, see the [GitHub Copilot CLI plugin reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-plugin-reference) and the [Claude Code plugin marketplace documentation](https://code.claude.com/docs/en/plugin-marketplaces).
 
+## Marketplace source formats
+
+Use ``chat.plugins.marketplaces`` (Experimental) to configure additional marketplace repositories in Settings. Supported source formats include:
+
+* **Shorthand**: `owner/repo` for public GitHub repositories. For example, `anthropics/claude-code`. Append `#<ref>` to select a branch, tag, or full 40-character commit SHA.
+* **HTTPS git remote**: a full URL ending in `.git`. For example, `https://github.com/anthropics/claude-code.git`.
+* **SCP-style git remote**: SSH-style references. For example, `git@github.com:anthropics/claude-code.git`.
+* **File URI**: a `file:///` path to a marketplace repository already cloned on disk.
+
+For example, add this property to `settings.json`, preserving other settings:
+
+```json
+{
+    "chat.plugins.marketplaces": [
+        "anthropics/claude-code"
+    ]
+}
+```
+
+For reproducible installations, use a full 40-character commit SHA, such as `owner/repo#<commit-sha>`. VS Code installs plugins from that exact revision. Branch and tag references use the revision they resolve to when the marketplace is fetched.
+
+Private repositories are also supported. Sign in to GitHub and make sure you have read access to the marketplace repository. Organization membership alone doesn't grant repository access. If a public lookup fails, VS Code falls back to cloning the repository directly.
+
+When a marketplace index declares a plugin at a relative path, VS Code verifies the repository, resolved revision, and path before installation. Sources with a missing revision, an invalid path, or an ambiguous path match are rejected.
+
+Marketplace plugins can also reference external package sources such as npm or PyPI packages. For the full marketplace plugin schema, see the [Claude Code plugin marketplace documentation](https://code.claude.com/docs/en/plugin-marketplaces). Enterprise admins can [manage plugin and marketplace availability](/docs/enterprise/manage-ai-settings.md#manage-agent-plugins-and-marketplaces).
+
+## Local plugin registration
+
+To register an existing development directory without installing it, use ``chat.pluginLocations`` (Experimental). This setting maps local plugin directory paths to an enabled or disabled state. Set a value to `true` to enable the plugin, or `false` to keep it registered but disabled.
+
+For example, merge this property into `settings.json`, replacing the paths with directories on your machine:
+
+```json
+{
+    "chat.pluginLocations": {
+        "/path/to/my-plugin": true,
+        "/path/to/another-plugin": false
+    }
+}
+```
+
+To install a plugin from a local folder instead, follow [Install a plugin from source](/docs/agent-customization/agent-plugins.md#install-a-plugin-from-source).
+
+## Workspace plugin settings
+
+Projects can configure plugin recommendations in `.claude/settings.json` or repository defaults in `.github/copilot/settings.json`:
+
+* **`extraKnownMarketplaces`**: registers additional marketplaces for the project. These marketplaces appear among the available sources in the Agent Customizations editor.
+* **`enabledPlugins`**: lists plugins that should be enabled by default.
+
+For example:
+
+```json
+{
+    "extraKnownMarketplaces": {
+        "company-tools": {
+            "source": {
+                "source": "github",
+                "repo": "your-org/plugin-marketplace"
+            }
+        }
+    },
+    "enabledPlugins": {
+        "code-formatter@company-tools": true
+    }
+}
+```
+
+The marketplace key, `company-tools` in this example, must match the `name` in the marketplace's `marketplace.json`. Plugin identifiers use `<plugin>@<marketplace>`, not the marketplace repository name. Keep marketplace names stable so shared settings continue to refer to the same plugins.
+
+For the differences between Local recommendations, Copilot repository defaults, and enterprise policy, see [workspace plugin recommendations](/docs/agent-customization/agent-plugins.md#workspace-plugin-recommendations).
+
+## Plugin management commands
+
+In a Copilot harness session, enter `/plugin ` to view completions for plugin and marketplace operations.
+
+> [!NOTE]
+> The `/plugin` commands and the Agent Customizations editor currently use separate plugin inventories. Manage a plugin from the interface where you installed it.
+
+| Command | Purpose |
+|---------|---------|
+| `/plugin list` | List installed plugins and their status. |
+| `/plugin install <source>` | Install a plugin from a marketplace or Git repository. |
+| `/plugin update <plugin>` | Update an installed plugin. |
+| `/plugin enable <plugin>` | Enable an installed marketplace plugin. |
+| `/plugin disable <plugin>` | Disable an installed marketplace plugin. |
+| `/plugin uninstall <plugin>` | Remove an installed plugin. |
+| `/plugin marketplace list` | List included and registered marketplaces. |
+| `/plugin marketplace browse <name>` | Browse the plugins in a marketplace. |
+| `/plugin marketplace add <source>` | Add a marketplace from a Git repository. |
+| `/plugin marketplace update [name]` | Update one marketplace or all registered marketplaces. |
+| `/plugin marketplace remove <name> [--force]` | Remove a registered marketplace. Use `--force` if plugins from the marketplace are installed. |
+
+Marketplace plugins use the qualified identity `<plugin>@<marketplace>`. Use this identity when plugins in multiple marketplaces have the same name. Command completion suggests valid marketplace and plugin identities for each operation.
+
+Plugins installed directly from a Git repository can be updated or uninstalled, but they can't be enabled or disabled through these commands. To stop using a directly installed plugin, uninstall it. Included and centrally managed marketplaces can't be removed.
+
 ## Test and distribute a plugin
 
 Before distributing a plugin, verify its behavior with each harness and client you intend to support:
 
-1. Register your development copy as a [local plugin](/docs/agent-customization/agent-plugins.md#use-local-plugins). This configuration is Experimental.
+1. Register your development copy as a [local plugin](#local-plugin-registration). This configuration is Experimental.
 1. Check that its supported components appear, then run a representative task to verify the skills, agents, hooks, and tools that the plugin provides. Review any code that a hook or MCP server runs before testing.
 1. If the plugin includes automation templates, confirm that they appear in **Templates from Plugins** and review their configuration before creating an automation.
 1. Before publishing an update, bump the `version` field in `plugin.json` and in the `marketplace.json` plugin entry, if applicable. Follow the marketplace schema for your plugin format.
@@ -9370,8 +9468,8 @@ Chat participants are not supported in the Copilot harness. Ask the agent direct
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/ai-settings.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/ai-settings
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/ai-settings.md
-- **SHA256_FINGERPRINT**: `84f940d7a92c74db32c8e69d441d6fd67e7441b0c4cde2e654a38d479f4a7f8c`
-- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:44.088108+00:00
+- **SHA256_FINGERPRINT**: `a98e21ebd645bddb15283c7d8bcd111d28863caf92617c43e25f03f1c0bc085b`
+- **LAST_VERIFIED_UTC**: 2026-11-02T21:32:55.006790+00:00
 ---
 
 **MetaDescription**: Configure AI features and agents in Visual Studio Code, including chat, agent sessions, dictation, and accessibility settings.
@@ -9753,7 +9851,7 @@ Learn how to [migrate agent customizations](/docs/agent-customization/migrate-cu
 | Setting and Description | Default |
 |------------------------|---------------|
 | ``chat.useAgentSkills`` <br/>Enable support for [agent skills](/docs/agent-customization/agent-skills.md) in VS Code. | `true` |
-| ``chat.agentSkillsLocations``<br/>Additional skill locations discovered by the editor and forwarded to Agent Host harnesses. Supported, but not recommended for Copilot workflows because other clients do not inherit this setting. Prefer [native harness locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations). | `{ ".agents/skills": true, ".github/skills": true, ".claude/skills": true, "~/.agents/skills": true, "~/.copilot/skills": true, "~/.claude/skills": true }` |
+| ``chat.agentSkillsLocations``<br/>Deprecated. Additional skill locations discovered by the editor and forwarded to Agent Host harnesses. Other clients do not inherit this setting. Move existing skills to [native harness locations](/docs/agent-customization/migrate-customizations.md#move-customizations-from-configured-locations). | `{ ".agents/skills": true, ".github/skills": true, ".claude/skills": true, "~/.agents/skills": true, "~/.copilot/skills": true, "~/.claude/skills": true }` |
 | ``github.copilot.chat.skillTool.enabled`` _(Experimental)_<br/>Enable the dedicated skill tool for invoking [agent skills](/docs/agent-customization/agent-skills.md). Required to run skills with [`context: fork`](/docs/agent-customization/agent-skills.md#run-a-skill-in-a-forked-context) in a separate subagent context. | `false` |
 
 ## Observability settings

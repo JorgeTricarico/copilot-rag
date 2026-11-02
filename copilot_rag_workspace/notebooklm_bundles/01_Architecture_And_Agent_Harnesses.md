@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-10-31T04:48:47.912389+00:00
-- **Total Palabras**: 25,833 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-02T21:33:01.423565+00:00
+- **Total Palabras**: 25,983 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1903,8 +1903,8 @@ To disable AI features for a specific workspace, configure the ``chat.disableAIF
 # DOCUMENT_SOURCE: microsoft_vscode::src/vs/workbench/contrib/chat/chatCodeOrganization.md
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/chat/chatCodeOrganization.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/workbench/contrib/chat/chatCodeOrganization.md
-- **SHA256_FINGERPRINT**: `a7af6dd9bf2bfe05046742c18f0a3f7968a7aad50214bf2173c37a8ce13997a2`
-- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:45.358168+00:00
+- **SHA256_FINGERPRINT**: `62c9544c1ab9efc75dc4dc3afd6c5ba6ad3c73d5816a1e1be9265e1169513cea`
+- **LAST_VERIFIED_UTC**: 2026-11-02T21:32:56.178495+00:00
 ---
 
 # workbench/contrib/chat Code Organization
@@ -1950,6 +1950,14 @@ The experimental setting `chat.titleBar.openInAgentsWindow.richHover` (`experime
 ## Rejected Agent Host requests
 
 `AgentHostSessionHandler` listens for a local `chat/turnStarted` rejection before dispatch, including while subscription updates are buffered, and reports the reason through the normal failed-request UI. The prompt and error remain in the live transcript, including across history refreshes, without restoring text over a newer composer draft. Rejected requests are not added to the host's accepted turn history.
+
+## Subagent file references
+
+`RunSubagentTool` forwards file references as standalone `codeblockUri` response parts, with their subagent invocation ID, rather than opening a shared Markdown fence. The annotation pass keeps this metadata on an independent render part; the Markdown and list renderers use it to create file pills and route each to its owning subagent. Standalone references do not interrupt parent Markdown. Inline code-block annotations remain boundaries when merging streamed Markdown.
+
+Undo stops remain model boundaries. Rendering merges parent Markdown across nested tool calls and edit groups without changing undo slices; copy/accessibility text places nested tool descriptions and standalone references after parent Markdown so they cannot interrupt code fences.
+
+Older histories can contain fence-only scaffolding adjacent to structured subagent metadata. The model and annotation pass share its detection for copy/accessibility text and rendering. Nonempty Markdown and literal request examples are retained; request code blocks never interpret file annotation strings as metadata.
 
 ## Markdown file images
 
