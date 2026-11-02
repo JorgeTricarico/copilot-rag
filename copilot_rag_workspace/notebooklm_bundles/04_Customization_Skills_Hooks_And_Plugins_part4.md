@@ -1,7 +1,2062 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part4
-- **Generado (UTC)**: 2026-10-31T04:48:48.048378+00:00
-- **Total Palabras**: 422,415 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-02T05:12:42.879280+00:00
+- **Total Palabras**: 449,835 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/game-engine/assets/paddle-game-template.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/game-engine/assets/paddle-game-template.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/game-engine/assets/paddle-game-template.md
+- **SHA256_FINGERPRINT**: `9076244e563a291fa3782c9fd6fd439359a7f3f9355945519537878363e81d9d`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:29.109957+00:00
+---
+
+# Paddle Game Template (2D Breakout)
+
+A complete step-by-step guide for building a 2D Breakout game with pure JavaScript and the HTML5 Canvas API. This template walks through every stage of development, from setting up the canvas to implementing a lives system and polished game loop.
+
+**What you will build:** A classic breakout/paddle game where the player controls a paddle to bounce a ball and destroy a field of bricks, with score tracking, win/lose conditions, keyboard and mouse controls, and a lives system.
+
+**Prerequisites:** Basic to intermediate JavaScript knowledge and familiarity with HTML.
+
+**Source:** Based on the [MDN 2D Breakout Game Tutorial](https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript).
+
+---
+
+## Step 1: Create the Canvas and Draw on It
+
+The first step is setting up the HTML document with a `<canvas>` element and learning to draw basic shapes using the 2D rendering context.
+
+### HTML Structure
+
+Create your base HTML file with an embedded canvas element:
+
+```html
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      canvas {
+        background: #eeeeee;
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="480" height="320"></canvas>
+
+    <script>
+      // JavaScript code goes here
+    </script>
+  </body>
+</html>
+```
+
+### Getting the Canvas Reference and 2D Context
+
+The canvas element provides a drawing surface. You access it through a 2D rendering context:
+
+```javascript
+const canvas = document.getElementById("myCanvas");
+const ctx = canvas.getContext("2d");
+```
+
+- `canvas` is a reference to the HTML `<canvas>` element.
+- `ctx` is the 2D rendering context object, which provides all drawing methods.
+
+### Drawing a Filled Rectangle
+
+Use `rect()` to define a rectangle and `fill()` to render it:
+
+```javascript
+ctx.beginPath();
+ctx.rect(20, 40, 50, 50);
+ctx.fillStyle = "red";
+ctx.fill();
+ctx.closePath();
+```
+
+- The first two parameters (`20, 40`) set the top-left corner coordinates.
+- The second two parameters (`50, 50`) set the width and height.
+- `fillStyle` sets the fill color.
+- `fill()` renders the shape as a solid fill.
+
+### Drawing a Circle
+
+Use `arc()` to define a circle:
+
+```javascript
+ctx.beginPath();
+ctx.arc(240, 160, 20, 0, Math.PI * 2, false);
+ctx.fillStyle = "green";
+ctx.fill();
+ctx.closePath();
+```
+
+- `240, 160` -- center x, y coordinates.
+- `20` -- radius.
+- `0` -- start angle (radians).
+- `Math.PI * 2` -- end angle (full circle).
+- `false` -- draw clockwise.
+
+### Drawing a Stroked Rectangle (Outline Only)
+
+Use `stroke()` instead of `fill()` for outlines, and `strokeStyle` for outline color:
+
+```javascript
+ctx.beginPath();
+ctx.rect(160, 10, 100, 40);
+ctx.strokeStyle = "rgb(0 0 255 / 50%)";
+ctx.stroke();
+ctx.closePath();
+```
+
+- Uses an RGB color with 50% alpha transparency.
+- `stroke()` draws only the outline, not a solid fill.
+
+### Key Methods Reference
+
+| Method | Purpose |
+|--------|---------|
+| `beginPath()` | Start a new drawing path |
+| `closePath()` | Close the current path |
+| `rect(x, y, width, height)` | Define a rectangle |
+| `arc(x, y, radius, startAngle, endAngle, counterclockwise)` | Define a circle or arc |
+| `fillStyle` | Set the fill color |
+| `fill()` | Fill the shape with the fill color |
+| `strokeStyle` | Set the stroke (outline) color |
+| `stroke()` | Draw an outline of the shape |
+
+### Complete Code for Step 1
+
+```html
+<canvas id="myCanvas" width="480" height="320"></canvas>
+
+<style>
+  * { padding: 0; margin: 0; }
+  canvas { background: #eeeeee; display: block; margin: 0 auto; }
+</style>
+
+<script>
+  const canvas = document.getElementById("myCanvas");
+  const ctx = canvas.getContext("2d");
+
+  // Filled red square
+  ctx.beginPath();
+  ctx.rect(20, 40, 50, 50);
+  ctx.fillStyle = "red";
+  ctx.fill();
+  ctx.closePath();
+
+  // Filled green circle
+  ctx.beginPath();
+  ctx.arc(240, 160, 20, 0, Math.PI * 2, false);
+  ctx.fillStyle = "green";
+  ctx.fill();
+  ctx.closePath();
+
+  // Stroked blue rectangle (semi-transparent)
+  ctx.beginPath();
+  ctx.rect(160, 10, 100, 40);
+  ctx.strokeStyle = "rgb(0 0 255 / 50%)";
+  ctx.stroke();
+  ctx.closePath();
+</script>
+```
+
+---
+
+## Step 2: Move the Ball
+
+Now we animate the ball by creating a game loop that redraws the canvas on each frame and updates the ball position using velocity variables.
+
+### Creating the Draw Loop
+
+Define a `draw()` function that executes repeatedly using `setInterval`:
+
+```javascript
+function draw() {
+  // drawing code
+}
+setInterval(draw, 10);
+```
+
+`setInterval(draw, 10)` calls the `draw` function every 10 milliseconds, creating approximately 100 frames per second.
+
+### Drawing the Ball
+
+Inside the `draw()` function, draw a ball (circle) at a fixed position:
+
+```javascript
+ctx.beginPath();
+ctx.arc(50, 50, 10, 0, Math.PI * 2);
+ctx.fillStyle = "#0095DD";
+ctx.fill();
+ctx.closePath();
+```
+
+### Adding Position Variables
+
+Instead of hardcoded positions, use variables so we can update them each frame. Place these above the `draw()` function:
+
+```javascript
+let x = canvas.width / 2;
+let y = canvas.height - 30;
+```
+
+This starts the ball at the horizontal center, near the bottom of the canvas.
+
+### Adding Velocity Variables
+
+Define speed and direction for horizontal (`dx`) and vertical (`dy`) movement:
+
+```javascript
+let dx = 2;
+let dy = -2;
+```
+
+- `dx = 2` moves the ball 2 pixels right per frame.
+- `dy = -2` moves the ball 2 pixels up per frame (negative y is upward on canvas).
+
+### Updating Position Each Frame
+
+Add position updates at the end of the `draw()` function:
+
+```javascript
+x += dx;
+y += dy;
+```
+
+### Clearing the Canvas
+
+Without clearing, the ball leaves a trail. Add `clearRect()` at the start of each frame:
+
+```javascript
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+```
+
+### Refactoring Into a Separate drawBall() Function
+
+For clean, maintainable code, separate the ball-drawing logic:
+
+```javascript
+function drawBall() {
+  ctx.beginPath();
+  ctx.arc(x, y, 10, 0, Math.PI * 2);
+  ctx.fillStyle = "#0095DD";
+  ctx.fill();
+  ctx.closePath();
+}
+```
+
+### Complete Code for Step 2
+
+```javascript
+const canvas = document.getElementById("myCanvas");
+const ctx = canvas.getContext("2d");
+
+let x = canvas.width / 2;
+let y = canvas.height - 30;
+let dx = 2;
+let dy = -2;
+
+function drawBall() {
+  ctx.beginPath();
+  ctx.arc(x, y, 10, 0, Math.PI * 2);
+  ctx.fillStyle = "#0095DD";
+  ctx.fill();
+  ctx.closePath();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBall();
+  x += dx;
+  y += dy;
+}
+
+setInterval(draw, 10);
+```
+
+**Key concepts:**
+- **Animation loop**: `setInterval(draw, 10)` continuously redraws the scene.
+- **Position variables**: `x` and `y` track the ball's current location.
+- **Velocity variables**: `dx` and `dy` determine movement per frame.
+- **Canvas clearing**: `clearRect()` removes the previous frame before drawing the new one.
+
+---
+
+## Step 3: Bounce Off the Walls
+
+We add collision detection so the ball bounces off the canvas edges instead of disappearing.
+
+### Defining the Ball Radius
+
+Extract the ball radius into a named constant for reuse in collision calculations:
+
+```javascript
+const ballRadius = 10;
+```
+
+Update `drawBall()` to use this variable:
+
+```javascript
+function drawBall() {
+  ctx.beginPath();
+  ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+  ctx.fillStyle = "#0095DD";
+  ctx.fill();
+  ctx.closePath();
+}
+```
+
+### Basic Wall Collision (Without Radius Adjustment)
+
+The simplest approach checks if the next ball position goes beyond the canvas boundaries:
+
+```javascript
+// Left and right walls
+if (x + dx > canvas.width || x + dx < 0) {
+  dx = -dx;
+}
+
+// Top and bottom walls
+if (y + dy > canvas.height || y + dy < 0) {
+  dy = -dy;
+}
+```
+
+Reversing `dx` or `dy` (multiplying by -1) changes the ball's direction.
+
+### Improved Collision (Accounting for Ball Radius)
+
+The basic version lets the ball sink halfway into the wall before bouncing. To fix this, account for the ball's radius:
+
+```javascript
+// Left and right walls
+if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+  dx = -dx;
+}
+
+// Top and bottom walls
+if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
+  dy = -dy;
+}
+```
+
+### Collision Detection Conditions
+
+| Wall | Condition | Action |
+|------|-----------|--------|
+| **Left** | `x + dx < ballRadius` | `dx = -dx` |
+| **Right** | `x + dx > canvas.width - ballRadius` | `dx = -dx` |
+| **Top** | `y + dy < ballRadius` | `dy = -dy` |
+| **Bottom** | `y + dy > canvas.height - ballRadius` | `dy = -dy` |
+
+### Complete Code for Step 3
+
+```javascript
+const canvas = document.getElementById("myCanvas");
+const ctx = canvas.getContext("2d");
+const ballRadius = 10;
+
+let x = canvas.width / 2;
+let y = canvas.height - 30;
+let dx = 2;
+let dy = -2;
+
+function drawBall() {
+  ctx.beginPath();
+  ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+  ctx.fillStyle = "#0095DD";
+  ctx.fill();
+  ctx.closePath();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBall();
+
+  // Collision detection - left and right walls
+  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+    dx = -dx;
+  }
+
+  // Collision detection - top and bottom walls
+  if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
+    dy = -dy;
+  }
+
+  x += dx;
+  y += dy;
+}
+
+setInterval(draw, 10);
+```
+
+---
+
+## Step 4: Paddle and Keyboard Controls
+
+Now we add a player-controlled paddle at the bottom of the screen and wire up keyboard input (left/right arrow keys).
+
+### Defining Paddle Variables
+
+```javascript
+const paddleHeight = 10;
+const paddleWidth = 75;
+let paddleX = (canvas.width - paddleWidth) / 2;
+```
+
+- `paddleHeight` and `paddleWidth` define the paddle dimensions.
+- `paddleX` starts the paddle centered horizontally. It is a `let` because it will change as the player moves it.
+
+### Drawing the Paddle
+
+Create a `drawPaddle()` function. The paddle sits at the very bottom of the canvas:
+
+```javascript
+function drawPaddle() {
+  ctx.beginPath();
+  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+  ctx.fillStyle = "#0095DD";
+  ctx.fill();
+  ctx.closePath();
+}
+```
+
+- The y-position is `canvas.height - paddleHeight`, placing it flush with the bottom edge.
+
+### Keyboard State Variables
+
+Track whether arrow keys are currently pressed:
+
+```javascript
+let rightPressed = false;
+let leftPressed = false;
+```
+
+### Event Listeners for Key Presses
+
+Register handlers for `keydown` (key pressed) and `keyup` (key released):
+
+```javascript
+document.addEventListener("keydown", keyDownHandler);
+document.addEventListener("keyup", keyUpHandler);
+```
+
+### Key Handler Functions
+
+Set the boolean flags based on which key is pressed or released:
+
+```javascript
+function keyDownHandler(e) {
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    rightPressed = true;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    leftPressed = true;
+  }
+}
+
+function keyUpHandler(e) {
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    rightPressed = false;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    leftPressed = false;
+  }
+}
+```
+
+Both `"ArrowRight"` (modern browsers) and `"Right"` (legacy IE/Edge) are checked for compatibility.
+
+### Paddle Movement Logic (With Boundary Checking)
+
+Add this inside the `draw()` function to move the paddle based on key state, while keeping it within canvas bounds:
+
+```javascript
+if (rightPressed) {
+  paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);
+} else if (leftPressed) {
+  paddleX = Math.max(paddleX - 7, 0);
+}
+```
+
+- The paddle moves 7 pixels per frame.
+- `Math.min` prevents the paddle from going past the right edge.
+- `Math.max` prevents it from going past the left edge.
+
+### Complete Code for Step 4
+
+```javascript
+const canvas = document.getElementById("myCanvas");
+const ctx = canvas.getContext("2d");
+const ballRadius = 10;
+
+let x = canvas.width / 2;
+let y = canvas.height - 30;
+let dx = 2;
+let dy = -2;
+
+const paddleHeight = 10;
+const paddleWidth = 75;
+let paddleX = (canvas.width - paddleWidth) / 2;
+
+let rightPressed = false;
+let leftPressed = false;
+
+document.addEventListener("keydown", keyDownHandler);
+document.addEventListener("keyup", keyUpHandler);
+
+function keyDownHandler(e) {
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    rightPressed = true;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    leftPressed = true;
+  }
+}
+
+function keyUpHandler(e) {
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    rightPressed = false;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    leftPressed = false;
+  }
+}
+
+function drawBall() {
+  ctx.beginPath();
+  ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+  ctx.fillStyle = "#0095DD";
+  ctx.fill();
+  ctx.closePath();
+}
+
+function drawPaddle() {
+  ctx.beginPath();
+  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+  ctx.fillStyle = "#0095DD";
+  ctx.fill();
+  ctx.closePath();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBall();
+  drawPaddle();
+
+  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+    dx = -dx;
+  }
+  if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
+    dy = -dy;
+  }
+
+  if (rightPressed) {
+    paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);
+  } else if (leftPressed) {
+    paddleX = Math.max(paddleX - 7, 0);
+  }
+
+  x += dx;
+  y += dy;
+}
+
+setInterval(draw, 10);
+```
+
+---
+
+## Step 5: Game Over
+
+We replace the bottom-wall bounce with actual game logic: the ball should bounce off the paddle, but if it misses, it is game over.
+
+### Storing the Interval Reference
+
+To stop the game loop on game over, store the interval ID:
+
+```javascript
+let interval = 0;
+```
+
+Then assign the return value of `setInterval`:
+
+```javascript
+interval = setInterval(draw, 10);
+```
+
+### Implementing Game Over and Paddle Collision
+
+Replace the bottom-wall collision check. Instead of bouncing off the bottom edge, we now check whether the ball hits the paddle or misses it:
+
+```javascript
+if (y + dy < ballRadius) {
+  // Ball hits top wall -- bounce
+  dy = -dy;
+} else if (y + dy > canvas.height - ballRadius) {
+  // Ball reaches bottom edge
+  if (x > paddleX && x < paddleX + paddleWidth) {
+    // Ball hits paddle -- bounce
+    dy = -dy;
+  } else {
+    // Ball missed the paddle -- game over
+    alert("GAME OVER");
+    document.location.reload();
+    clearInterval(interval);
+  }
+}
+```
+
+**How paddle collision works:**
+- `x > paddleX` -- the ball is past the paddle's left edge.
+- `x < paddleX + paddleWidth` -- the ball is before the paddle's right edge.
+- If both are true, the ball is above the paddle, so it bounces.
+- If the ball reaches the bottom without hitting the paddle, the game ends.
+
+### Complete Code for Step 5
+
+```javascript
+const canvas = document.getElementById("myCanvas");
+const ctx = canvas.getContext("2d");
+const ballRadius = 10;
+
+let x = canvas.width / 2;
+let y = canvas.height - 30;
+let dx = 2;
+let dy = -2;
+
+const paddleHeight = 10;
+const paddleWidth = 75;
+let paddleX = (canvas.width - paddleWidth) / 2;
+
+let rightPressed = false;
+let leftPressed = false;
+let interval = 0;
+
+document.addEventListener("keydown", keyDownHandler);
+document.addEventListener("keyup", keyUpHandler);
+
+function keyDownHandler(e) {
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    rightPressed = true;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    leftPressed = true;
+  }
+}
+
+function keyUpHandler(e) {
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    rightPressed = false;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    leftPressed = false;
+  }
+}
+
+function drawBall() {
+  ctx.beginPath();
+  ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+  ctx.fillStyle = "#0095DD";
+  ctx.fill();
+  ctx.closePath();
+}
+
+function drawPaddle() {
+  ctx.beginPath();
+  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+  ctx.fillStyle = "#0095DD";
+  ctx.fill();
+  ctx.closePath();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBall();
+  drawPaddle();
+
+  // Left and right wall collision
+  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+    dx = -dx;
+  }
+
+  // Top wall collision
+  if (y + dy < ballRadius) {
+    dy = -dy;
+  } else if (y + dy > canvas.height - ballRadius) {
+    // Bottom edge: paddle collision or game over
+    if (x > paddleX && x < paddleX + paddleWidth) {
+      dy = -dy;
+    } else {
+      alert("GAME OVER");
+      document.location.reload();
+      clearInterval(interval);
+    }
+  }
+
+  // Paddle movement
+  if (rightPressed) {
+    paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);
+  } else if (leftPressed) {
+    paddleX = Math.max(paddleX - 7, 0);
+  }
+
+  x += dx;
+  y += dy;
+}
+
+interval = setInterval(draw, 10);
+```
+
+---
+
+## Step 6: Build the Brick Field
+
+Now we create the grid of bricks that the ball will destroy. The bricks are stored in a 2D array and drawn in rows and columns.
+
+### Brick Configuration Variables
+
+Define constants that control the layout of the brick field:
+
+```javascript
+const brickRowCount = 3;
+const brickColumnCount = 5;
+const brickWidth = 75;
+const brickHeight = 20;
+const brickPadding = 10;
+const brickOffsetTop = 30;
+const brickOffsetLeft = 30;
+```
+
+- `brickRowCount` / `brickColumnCount` -- how many rows and columns of bricks.
+- `brickWidth` / `brickHeight` -- dimensions of each individual brick.
+- `brickPadding` -- space between bricks.
+- `brickOffsetTop` / `brickOffsetLeft` -- distance from the top and left canvas edges to the first brick.
+
+### Creating the Bricks 2D Array
+
+Use nested loops to create a 2D array. Each brick stores its `x` and `y` position (initially `0`, calculated during drawing):
+
+```javascript
+const bricks = [];
+for (let c = 0; c < brickColumnCount; c++) {
+  bricks[c] = [];
+  for (let r = 0; r < brickRowCount; r++) {
+    bricks[c][r] = { x: 0, y: 0 };
+  }
+}
+```
+
+### The drawBricks() Function
+
+Loop through every brick, calculate its position, store it, and draw it:
+
+```javascript
+function drawBricks() {
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
+      const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
+      bricks[c][r].x = brickX;
+      bricks[c][r].y = brickY;
+      ctx.beginPath();
+      ctx.rect(brickX, brickY, brickWidth, brickHeight);
+      ctx.fillStyle = "#0095DD";
+      ctx.fill();
+      ctx.closePath();
+    }
+  }
+}
+```
+
+**Position calculation formula:**
+- `brickX = column * (brickWidth + brickPadding) + brickOffsetLeft`
+- `brickY = row * (brickHeight + brickPadding) + brickOffsetTop`
+
+This creates an evenly-spaced grid with consistent padding and margins.
+
+### Calling drawBricks() in the Game Loop
+
+Add the call at the beginning of your `draw()` function, after clearing the canvas:
+
+```javascript
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBricks();
+  drawBall();
+  drawPaddle();
+  // ... rest of draw function
+}
+```
+
+### Complete Code for Step 6
+
+```javascript
+const canvas = document.getElementById("myCanvas");
+const ctx = canvas.getContext("2d");
+const ballRadius = 10;
+
+let x = canvas.width / 2;
+let y = canvas.height - 30;
+let dx = 2;
+let dy = -2;
+
+const paddleHeight = 10;
+const paddleWidth = 75;
+let paddleX = (canvas.width - paddleWidth) / 2;
+
+let rightPressed = false;
+let leftPressed = false;
+let interval = 0;
+
+const brickRowCount = 3;
+const brickColumnCount = 5;
+const brickWidth = 75;
+const brickHeight = 20;
+const brickPadding = 10;
+const brickOffsetTop = 30;
+const brickOffsetLeft = 30;
+
+const bricks = [];
+for (let c = 0; c < brickColumnCount; c++) {
+  bricks[c] = [];
+  for (let r = 0; r < brickRowCount; r++) {
+    bricks[c][r] = { x: 0, y: 0 };
+  }
+}
+
+document.addEventListener("keydown", keyDownHandler);
+document.addEventListener("keyup", keyUpHandler);
+
+function keyDownHandler(e) {
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    rightPressed = true;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    leftPressed = true;
+  }
+}
+
+function keyUpHandler(e) {
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    rightPressed = false;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    leftPressed = false;
+  }
+}
+
+function drawBall() {
+  ctx.beginPath();
+  ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+  ctx.fillStyle = "#0095DD";
+  ctx.fill();
+  ctx.closePath();
+}
+
+function drawPaddle() {
+  ctx.beginPath();
+  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+  ctx.fillStyle = "#0095DD";
+  ctx.fill();
+  ctx.closePath();
+}
+
+function drawBricks() {
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
+      const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
+      bricks[c][r].x = brickX;
+      bricks[c][r].y = brickY;
+      ctx.beginPath();
+      ctx.rect(brickX, brickY, brickWidth, brickHeight);
+      ctx.fillStyle = "#0095DD";
+      ctx.fill();
+      ctx.closePath();
+    }
+  }
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBricks();
+  drawBall();
+  drawPaddle();
+
+  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+    dx = -dx;
+  }
+  if (y + dy < ballRadius) {
+    dy = -dy;
+  } else if (y + dy > canvas.height - ballRadius) {
+    if (x > paddleX && x < paddleX + paddleWidth) {
+      dy = -dy;
+    } else {
+      alert("GAME OVER");
+      document.location.reload();
+      clearInterval(interval);
+    }
+  }
+
+  if (rightPressed) {
+    paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);
+  } else if (leftPressed) {
+    paddleX = Math.max(paddleX - 7, 0);
+  }
+
+  x += dx;
+  y += dy;
+}
+
+interval = setInterval(draw, 10);
+```
+
+---
+
+## Step 7: Collision Detection
+
+With bricks on screen, we need to detect when the ball hits one and make it disappear. Each brick gets a `status` property: `1` means visible, `0` means destroyed.
+
+### Adding the Status Property to Bricks
+
+Update the brick initialization to include a `status` flag:
+
+```javascript
+const bricks = [];
+for (let c = 0; c < brickColumnCount; c++) {
+  bricks[c] = [];
+  for (let r = 0; r < brickRowCount; r++) {
+    bricks[c][r] = { x: 0, y: 0, status: 1 };
+  }
+}
+```
+
+### The collisionDetection() Function
+
+Loop through every brick and check if the ball's center is within the brick's bounding box:
+
+```javascript
+function collisionDetection() {
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const b = bricks[c][r];
+      if (b.status === 1) {
+        if (
+          x > b.x &&
+          x < b.x + brickWidth &&
+          y > b.y &&
+          y < b.y + brickHeight
+        ) {
+          dy = -dy;
+          b.status = 0;
+        }
+      }
+    }
+  }
+}
+```
+
+**Collision conditions (all four must be true simultaneously):**
+- `x > b.x` -- ball center is to the right of the brick's left edge.
+- `x < b.x + brickWidth` -- ball center is to the left of the brick's right edge.
+- `y > b.y` -- ball center is below the brick's top edge.
+- `y < b.y + brickHeight` -- ball center is above the brick's bottom edge.
+
+When a collision is detected:
+- `dy = -dy` reverses the ball's vertical direction (bounce).
+- `b.status = 0` marks the brick as destroyed.
+
+### Updating drawBricks() to Respect Status
+
+Only draw bricks that are still active (`status === 1`):
+
+```javascript
+function drawBricks() {
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      if (bricks[c][r].status === 1) {
+        const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
+        const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
+        bricks[c][r].x = brickX;
+        bricks[c][r].y = brickY;
+        ctx.beginPath();
+        ctx.rect(brickX, brickY, brickWidth, brickHeight);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
+  }
+}
+```
+
+### Calling collisionDetection() in the Game Loop
+
+Add the call in your `draw()` function, after drawing all elements:
+
+```javascript
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBricks();
+  drawBall();
+  drawPaddle();
+  collisionDetection();
+  // ... rest of draw function
+}
+```
+
+---
+
+## Step 8: Track the Score and Win
+
+We add a score counter that increments each time a brick is destroyed, and a win condition that triggers when all bricks are gone.
+
+### Initializing the Score
+
+```javascript
+let score = 0;
+```
+
+### The drawScore() Function
+
+Display the current score on the canvas using text rendering:
+
+```javascript
+function drawScore() {
+  ctx.font = "16px Arial";
+  ctx.fillStyle = "#0095DD";
+  ctx.fillText(`Score: ${score}`, 8, 20);
+}
+```
+
+- `ctx.font` sets the font size and family (like CSS).
+- `ctx.fillText(text, x, y)` renders text at the given coordinates.
+- Position `(8, 20)` places the score in the top-left corner.
+
+### Incrementing the Score
+
+In the `collisionDetection()` function, increment the score when a brick is hit:
+
+```javascript
+dy = -dy;
+b.status = 0;
+score++;
+```
+
+### Adding the Win Condition
+
+After incrementing the score, check if the player has destroyed all bricks:
+
+```javascript
+score++;
+if (score === brickRowCount * brickColumnCount) {
+  alert("YOU WIN, CONGRATULATIONS!");
+  document.location.reload();
+  clearInterval(interval);
+}
+```
+
+The total number of bricks is `brickRowCount * brickColumnCount`. When the score reaches that number, every brick has been destroyed.
+
+### Complete collisionDetection() with Score and Win
+
+```javascript
+function collisionDetection() {
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const b = bricks[c][r];
+      if (b.status === 1) {
+        if (
+          x > b.x &&
+          x < b.x + brickWidth &&
+          y > b.y &&
+          y < b.y + brickHeight
+        ) {
+          dy = -dy;
+          b.status = 0;
+          score++;
+          if (score === brickRowCount * brickColumnCount) {
+            alert("YOU WIN, CONGRATULATIONS!");
+            document.location.reload();
+            clearInterval(interval);
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+### Calling drawScore() in the Game Loop
+
+Add the call in your `draw()` function:
+
+```javascript
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBricks();
+  drawBall();
+  drawPaddle();
+  drawScore();
+  collisionDetection();
+  // ... rest of draw function
+}
+```
+
+### Canvas Text Methods Reference
+
+| Method/Property | Purpose |
+|-----------------|---------|
+| `ctx.font` | Set font size and family |
+| `ctx.fillStyle` | Set text color |
+| `ctx.fillText(text, x, y)` | Draw filled text at coordinates |
+
+---
+
+## Step 9: Mouse Controls
+
+In addition to keyboard controls, we add mouse support so the player can move the paddle by moving the mouse.
+
+### Adding the mousemove Event Listener
+
+Register the handler alongside the existing keyboard listeners:
+
+```javascript
+document.addEventListener("mousemove", mouseMoveHandler);
+```
+
+### The mouseMoveHandler Function
+
+Calculate the mouse's horizontal position relative to the canvas and update the paddle position:
+
+```javascript
+function mouseMoveHandler(e) {
+  const relativeX = e.clientX - canvas.offsetLeft;
+  if (relativeX > 0 && relativeX < canvas.width) {
+    paddleX = relativeX - paddleWidth / 2;
+  }
+}
+```
+
+**How it works:**
+- `e.clientX` -- the mouse's horizontal position in the browser viewport.
+- `canvas.offsetLeft` -- the distance from the canvas's left edge to the viewport's left edge.
+- `relativeX` -- the mouse position relative to the canvas (not the viewport).
+- The boundary check (`relativeX > 0 && relativeX < canvas.width`) ensures the paddle only moves when the mouse is over the canvas.
+- `paddleX = relativeX - paddleWidth / 2` centers the paddle under the mouse cursor by subtracting half the paddle width.
+
+### Complete Event Listener Setup (Keyboard + Mouse)
+
+```javascript
+document.addEventListener("keydown", keyDownHandler);
+document.addEventListener("keyup", keyUpHandler);
+document.addEventListener("mousemove", mouseMoveHandler);
+```
+
+Both control methods work simultaneously. The player can use arrow keys or mouse -- or switch between them at any time.
+
+---
+
+## Step 10: Finishing Up
+
+The final step adds a lives system (so the player gets multiple chances) and upgrades the game loop from `setInterval` to `requestAnimationFrame` for smoother rendering.
+
+### Adding the Lives Variable
+
+```javascript
+let lives = 3;
+```
+
+### The drawLives() Function
+
+Display the remaining lives in the top-right corner:
+
+```javascript
+function drawLives() {
+  ctx.font = "16px Arial";
+  ctx.fillStyle = "#0095DD";
+  ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
+}
+```
+
+### Implementing the Lives System
+
+Replace the immediate game-over logic with a lives-based system. When the ball misses the paddle:
+
+```javascript
+if (y + dy < ballRadius) {
+  dy = -dy;
+} else if (y + dy > canvas.height - ballRadius) {
+  if (x > paddleX && x < paddleX + paddleWidth) {
+    dy = -dy;
+  } else {
+    lives--;
+    if (!lives) {
+      alert("GAME OVER");
+      document.location.reload();
+    } else {
+      // Reset ball and paddle positions
+      x = canvas.width / 2;
+      y = canvas.height - 30;
+      dx = 2;
+      dy = -2;
+      paddleX = (canvas.width - paddleWidth) / 2;
+    }
+  }
+}
+```
+
+**What happens when a life is lost:**
+- `lives--` decrements the lives counter.
+- If `lives` reaches `0`, the game ends with an alert and page reload.
+- Otherwise, the ball resets to center-bottom, velocity resets, and the paddle resets to center.
+
+### Upgrading to requestAnimationFrame
+
+Replace `setInterval` with `requestAnimationFrame` for a smoother, browser-optimized game loop:
+
+**Old approach (remove):**
+```javascript
+interval = setInterval(draw, 10);
+```
+
+**New approach:**
+Add `requestAnimationFrame(draw)` at the end of the `draw()` function:
+
+```javascript
+function draw() {
+  // ... all drawing and logic ...
+  requestAnimationFrame(draw);
+}
+
+// Start the game by calling draw() once:
+draw();
+```
+
+`requestAnimationFrame` lets the browser schedule rendering at the optimal frame rate (typically 60fps), which is more efficient than a fixed 10ms interval.
+
+### Calling drawLives() in the Game Loop
+
+```javascript
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBricks();
+  drawBall();
+  drawPaddle();
+  drawScore();
+  drawLives();
+  collisionDetection();
+  // ... rest of logic ...
+  requestAnimationFrame(draw);
+}
+```
+
+---
+
+## Complete Final Game Code
+
+Below is the entire game in a single, self-contained HTML file. This is the final product of all 10 steps combined.
+
+```html
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>2D Breakout Game</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+      canvas {
+        background: #eeeeee;
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="480" height="320"></canvas>
+
+    <script>
+      const canvas = document.getElementById("myCanvas");
+      const ctx = canvas.getContext("2d");
+
+      // --- Ball ---
+      const ballRadius = 10;
+      let x = canvas.width / 2;
+      let y = canvas.height - 30;
+      let dx = 2;
+      let dy = -2;
+
+      // --- Paddle ---
+      const paddleHeight = 10;
+      const paddleWidth = 75;
+      let paddleX = (canvas.width - paddleWidth) / 2;
+
+      // --- Controls ---
+      let rightPressed = false;
+      let leftPressed = false;
+
+      // --- Bricks ---
+      const brickRowCount = 3;
+      const brickColumnCount = 5;
+      const brickWidth = 75;
+      const brickHeight = 20;
+      const brickPadding = 10;
+      const brickOffsetTop = 30;
+      const brickOffsetLeft = 30;
+
+      const bricks = [];
+      for (let c = 0; c < brickColumnCount; c++) {
+        bricks[c] = [];
+        for (let r = 0; r < brickRowCount; r++) {
+          bricks[c][r] = { x: 0, y: 0, status: 1 };
+        }
+      }
+
+      // --- Score and Lives ---
+      let score = 0;
+      let lives = 3;
+
+      // =====================
+      // Event Listeners
+      // =====================
+      document.addEventListener("keydown", keyDownHandler);
+      document.addEventListener("keyup", keyUpHandler);
+      document.addEventListener("mousemove", mouseMoveHandler);
+
+      function keyDownHandler(e) {
+        if (e.key === "Right" || e.key === "ArrowRight") {
+          rightPressed = true;
+        } else if (e.key === "Left" || e.key === "ArrowLeft") {
+          leftPressed = true;
+        }
+      }
+
+      function keyUpHandler(e) {
+        if (e.key === "Right" || e.key === "ArrowRight") {
+          rightPressed = false;
+        } else if (e.key === "Left" || e.key === "ArrowLeft") {
+          leftPressed = false;
+        }
+      }
+
+      function mouseMoveHandler(e) {
+        const relativeX = e.clientX - canvas.offsetLeft;
+        if (relativeX > 0 && relativeX < canvas.width) {
+          paddleX = relativeX - paddleWidth / 2;
+        }
+      }
+
+      // =====================
+      // Collision Detection
+      // =====================
+      function collisionDetection() {
+        for (let c = 0; c < brickColumnCount; c++) {
+          for (let r = 0; r < brickRowCount; r++) {
+            const b = bricks[c][r];
+            if (b.status === 1) {
+              if (
+                x > b.x &&
+                x < b.x + brickWidth &&
+                y > b.y &&
+                y < b.y + brickHeight
+              ) {
+                dy = -dy;
+                b.status = 0;
+                score++;
+                if (score === brickRowCount * brickColumnCount) {
+                  alert("YOU WIN, CONGRATULATIONS!");
+                  document.location.reload();
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // =====================
+      // Drawing Functions
+      // =====================
+      function drawBall() {
+        ctx.beginPath();
+        ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      function drawPaddle() {
+        ctx.beginPath();
+        ctx.rect(
+          paddleX,
+          canvas.height - paddleHeight,
+          paddleWidth,
+          paddleHeight
+        );
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      function drawBricks() {
+        for (let c = 0; c < brickColumnCount; c++) {
+          for (let r = 0; r < brickRowCount; r++) {
+            if (bricks[c][r].status === 1) {
+              const brickX =
+                c * (brickWidth + brickPadding) + brickOffsetLeft;
+              const brickY =
+                r * (brickHeight + brickPadding) + brickOffsetTop;
+              bricks[c][r].x = brickX;
+              bricks[c][r].y = brickY;
+              ctx.beginPath();
+              ctx.rect(brickX, brickY, brickWidth, brickHeight);
+              ctx.fillStyle = "#0095DD";
+              ctx.fill();
+              ctx.closePath();
+            }
+          }
+        }
+      }
+
+      function drawScore() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#0095DD";
+        ctx.fillText(`Score: ${score}`, 8, 20);
+      }
+
+      function drawLives() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#0095DD";
+        ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
+      }
+
+      // =====================
+      // Main Game Loop
+      // =====================
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawBricks();
+        drawBall();
+        drawPaddle();
+        drawScore();
+        drawLives();
+        collisionDetection();
+
+        // Left and right wall collision
+        if (
+          x + dx > canvas.width - ballRadius ||
+          x + dx < ballRadius
+        ) {
+          dx = -dx;
+        }
+
+        // Top wall collision
+        if (y + dy < ballRadius) {
+          dy = -dy;
+        } else if (y + dy > canvas.height - ballRadius) {
+          // Bottom edge: paddle collision or lose a life
+          if (x > paddleX && x < paddleX + paddleWidth) {
+            dy = -dy;
+          } else {
+            lives--;
+            if (!lives) {
+              alert("GAME OVER");
+              document.location.reload();
+            } else {
+              x = canvas.width / 2;
+              y = canvas.height - 30;
+              dx = 2;
+              dy = -2;
+              paddleX = (canvas.width - paddleWidth) / 2;
+            }
+          }
+        }
+
+        // Paddle movement (keyboard)
+        if (rightPressed) {
+          paddleX = Math.min(
+            paddleX + 7,
+            canvas.width - paddleWidth
+          );
+        } else if (leftPressed) {
+          paddleX = Math.max(paddleX - 7, 0);
+        }
+
+        x += dx;
+        y += dy;
+        requestAnimationFrame(draw);
+      }
+
+      draw();
+    </script>
+  </body>
+</html>
+```
+
+---
+
+## Quick Reference: All Game Variables
+
+| Variable | Type | Purpose |
+|----------|------|---------|
+| `canvas` | const | Reference to the HTML canvas element |
+| `ctx` | const | 2D rendering context |
+| `ballRadius` | const | Radius of the ball (10) |
+| `x`, `y` | let | Current ball position |
+| `dx`, `dy` | let | Ball velocity (pixels per frame) |
+| `paddleHeight` | const | Height of the paddle (10) |
+| `paddleWidth` | const | Width of the paddle (75) |
+| `paddleX` | let | Current horizontal position of the paddle |
+| `rightPressed` | let | Whether the right arrow key is held down |
+| `leftPressed` | let | Whether the left arrow key is held down |
+| `brickRowCount` | const | Number of brick rows (3) |
+| `brickColumnCount` | const | Number of brick columns (5) |
+| `brickWidth` | const | Width of each brick (75) |
+| `brickHeight` | const | Height of each brick (20) |
+| `brickPadding` | const | Space between bricks (10) |
+| `brickOffsetTop` | const | Distance from top of canvas to first brick row (30) |
+| `brickOffsetLeft` | const | Distance from left of canvas to first brick column (30) |
+| `bricks` | const | 2D array holding all brick objects |
+| `score` | let | Current player score |
+| `lives` | let | Remaining lives (starts at 3) |
+
+## Quick Reference: All Functions
+
+| Function | Purpose |
+|----------|---------|
+| `keyDownHandler(e)` | Sets `rightPressed` or `leftPressed` to `true` on key press |
+| `keyUpHandler(e)` | Sets `rightPressed` or `leftPressed` to `false` on key release |
+| `mouseMoveHandler(e)` | Moves paddle to follow mouse horizontal position |
+| `collisionDetection()` | Checks ball against all active bricks; destroys hit bricks, increments score, checks win |
+| `drawBall()` | Renders the ball at current `(x, y)` position |
+| `drawPaddle()` | Renders the paddle at current `paddleX` position |
+| `drawBricks()` | Renders all bricks with `status === 1` |
+| `drawScore()` | Renders the score text in the top-left corner |
+| `drawLives()` | Renders the lives text in the top-right corner |
+| `draw()` | Main game loop: clears canvas, draws everything, handles collisions, updates positions |
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/game-engine/assets/simple-2d-engine.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/game-engine/assets/simple-2d-engine.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/game-engine/assets/simple-2d-engine.md
+- **SHA256_FINGERPRINT**: `add50e372d35fdcf7a40074d59db6979177d643b48f9cf0c72d28fbfd917fa37`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:29.024046+00:00
+---
+
+# Simple 2D Platformer Engine Template
+
+A grid-based 2D platformer engine tutorial by **Sebastien Benard** (deepnight), the lead developer behind *Dead Cells*. This template covers the fundamental architecture for a performant platformer: a dual-coordinate positioning system that blends integer grid cells with sub-pixel precision, velocity and friction mechanics, gravity, and a robust collision detection and response system. The approach is language-agnostic but examples use Haxe.
+
+**Source references:**
+- [Part 1 - Basics](https://deepnight.net/tutorial/a-simple-platformer-engine-part-1-basics/)
+- [Part 2 - Collisions](https://deepnight.net/tutorial/a-simple-platformer-engine-part-2-collisions/)
+
+**Author:** [Sebastien Benard / deepnight](https://deepnight.net)
+
+---
+
+## Engine Architecture Overview
+
+The engine is built around a grid-based world where each cell has a fixed pixel size (e.g., 16x16). Entities exist within this grid using a **dual-coordinate system**: integer cell coordinates for coarse position and floating-point ratios for sub-pixel precision within each cell. This design enables pixel-perfect collision detection against the grid while maintaining smooth, fluid movement.
+
+### Core Principles
+
+1. **Grid is truth:** The world is a 2D grid of cells. Collision data lives in the grid.
+2. **Entities straddle cells:** An entity's position is defined by which cell it occupies (`cx`, `cy`) plus how far into that cell it is (`xr`, `yr`).
+3. **Velocity is in grid-ratio units:** Movement deltas (`dx`, `dy`) represent fractions of a cell per step, not raw pixels.
+4. **Collisions are grid lookups:** Instead of testing sprite bounds against geometry, the engine checks the grid cells an entity is about to enter.
+
+---
+
+## Part 1: Basics
+
+### The Grid
+
+The level is a 2D array where each cell is either empty or solid. A constant defines the cell size in pixels:
+
+```haxe
+static inline var GRID = 16;
+```
+
+Collision data is stored as a simple 2D boolean or integer map:
+
+```haxe
+// Check if a grid cell is solid
+function hasCollision(cx:Int, cy:Int):Bool {
+  // Look up cell value in the level data
+  return level.getCollision(cx, cy) != 0;
+}
+```
+
+### Entity Positioning: Dual Coordinates
+
+Every entity tracks its position using four values:
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `cx` | Int | Cell X coordinate (which column the entity is in) |
+| `cy` | Int | Cell Y coordinate (which row the entity is in) |
+| `xr` | Float | X ratio within the cell, range 0.0 to 1.0 |
+| `yr` | Float | Y ratio within the cell, range 0.0 to 1.0 |
+
+An entity at `cx=5, cy=3, xr=0.5, yr=1.0` is horizontally centered in cell (5,3) and sitting on the bottom edge.
+
+### Converting to Pixel Coordinates
+
+To render the entity, convert grid coordinates to pixel positions:
+
+```haxe
+// Pixel position for rendering
+var pixelX : Float = (cx + xr) * GRID;
+var pixelY : Float = (cy + yr) * GRID;
+```
+
+This produces smooth, sub-pixel-precise positions for rendering even though the collision system operates on discrete grid cells.
+
+### Velocity and Movement
+
+Velocity is expressed in **cell-ratio units per fixed-step** (not pixels per frame):
+
+```haxe
+var dx : Float = 0; // Horizontal velocity (cells per step)
+var dy : Float = 0; // Vertical velocity (cells per step)
+```
+
+Each fixed-step update, velocity is added to the ratio:
+
+```haxe
+// Apply horizontal movement
+xr += dx;
+
+// Apply vertical movement
+yr += dy;
+```
+
+### Cell Overflow
+
+When the ratio exceeds the 0..1 range, the entity has moved into an adjacent cell:
+
+```haxe
+// X overflow
+while (xr > 1) { xr--; cx++; }
+while (xr < 0) { xr++; cx--; }
+
+// Y overflow
+while (yr > 1) { yr--; cy++; }
+while (yr < 0) { yr++; cy--; }
+```
+
+### Friction
+
+Friction is applied as a multiplier each step, decaying velocity toward zero:
+
+```haxe
+var frictX : Float = 0.82; // Horizontal friction (0 = instant stop, 1 = no friction)
+var frictY : Float = 0.82; // Vertical friction
+
+// Applied each step after movement
+dx *= frictX;
+dy *= frictY;
+
+// Clamp very small values to zero
+if (Math.abs(dx) < 0.0005) dx = 0;
+if (Math.abs(dy) < 0.0005) dy = 0;
+```
+
+Typical friction values:
+- `0.82` -- Standard ground friction (responsive, quick stop)
+- `0.94` -- Ice or slippery surface (slow deceleration)
+- `0.96` -- Air friction (very slow horizontal deceleration)
+
+### Gravity
+
+Gravity is a constant added to `dy` each step:
+
+```haxe
+static inline var GRAVITY = 0.05; // In cell-ratio units per step^2
+
+// In fixedUpdate:
+dy += GRAVITY;
+```
+
+Since `dy` accumulates and friction is applied, the entity reaches a natural terminal velocity.
+
+### Rendering / Sprite Sync
+
+After the physics step, the sprite is placed at the computed pixel position:
+
+```haxe
+// In postUpdate, after physics is done:
+sprite.x = (cx + xr) * GRID;
+sprite.y = (cy + yr) * GRID;
+```
+
+For a platformer character, the anchor point is typically at the bottom-center of the sprite. With `yr = 1.0` representing the bottom of the current cell, the sprite's feet align with the floor.
+
+### Basic Entity Template
+
+```haxe
+class Entity {
+  // Grid coordinates
+  var cx : Int = 0;
+  var cy : Int = 0;
+  var xr : Float = 0.5;
+  var yr : Float = 1.0;
+
+  // Velocity
+  var dx : Float = 0;
+  var dy : Float = 0;
+
+  // Friction
+  var frictX : Float = 0.82;
+  var frictY : Float = 0.82;
+
+  // Gravity
+  static inline var GRAVITY = 0.05;
+
+  // Grid size
+  static inline var GRID = 16;
+
+  // Pixel position (computed)
+  public var attachX(get, never) : Float;
+  inline function get_attachX() return (cx + xr) * GRID;
+
+  public var attachY(get, never) : Float;
+  inline function get_attachY() return (cy + yr) * GRID;
+
+  public function fixedUpdate() {
+    // Gravity
+    dy += GRAVITY;
+
+    // Apply velocity
+    xr += dx;
+    yr += dy;
+
+    // Apply friction
+    dx *= frictX;
+    dy *= frictY;
+
+    // Clamp small values
+    if (Math.abs(dx) < 0.0005) dx = 0;
+    if (Math.abs(dy) < 0.0005) dy = 0;
+
+    // Cell overflow
+    while (xr > 1) { xr--; cx++; }
+    while (xr < 0) { xr++; cx--; }
+    while (yr > 1) { yr--; cy++; }
+    while (yr < 0) { yr++; cy--; }
+  }
+
+  public function postUpdate() {
+    sprite.x = attachX;
+    sprite.y = attachY;
+  }
+}
+```
+
+---
+
+## Part 2: Collisions
+
+### Collision Philosophy
+
+Instead of using bounding-box-to-bounding-box collision detection (which becomes complex with slopes, one-way platforms, and edge cases), this engine checks grid cells directly. Since the entity's position is already expressed in grid terms, collision detection becomes a series of simple integer lookups.
+
+### The Core Idea
+
+Before allowing the entity to move into a neighboring cell, check if that cell is solid. If it is, clamp the entity's ratio and zero out its velocity on that axis.
+
+### Axis Separation
+
+Collisions are handled **per axis** -- first X, then Y (or vice versa). This simplifies the logic and avoids corner-case tunneling issues.
+
+### X-Axis Collision
+
+After applying `dx` to `xr`, before doing the cell-overflow step, check for collisions:
+
+```haxe
+// Apply X movement
+xr += dx;
+
+// Check collision to the RIGHT
+if (dx > 0 && hasCollision(cx + 1, cy) && xr >= 0.7) {
+  xr = 0.7;   // Clamp: stop before entering the solid cell
+  dx = 0;     // Kill horizontal velocity
+}
+
+// Check collision to the LEFT
+if (dx < 0 && hasCollision(cx - 1, cy) && xr <= 0.3) {
+  xr = 0.3;   // Clamp: stop before entering the solid cell
+  dx = 0;     // Kill horizontal velocity
+}
+
+// Cell overflow (after collision check)
+while (xr > 1) { xr--; cx++; }
+while (xr < 0) { xr++; cx--; }
+```
+
+**Why 0.7 and 0.3?** These thresholds represent the entity's collision radius within a cell. An entity centered at `xr = 0.5` with a half-width of 0.3 cells would collide at `xr = 0.7` on the right side and `xr = 0.3` on the left side. Adjust these values based on entity width.
+
+### Y-Axis Collision
+
+Similarly, after applying `dy` to `yr`:
+
+```haxe
+// Apply Y movement
+yr += dy;
+
+// Check collision BELOW (floor)
+if (dy > 0 && hasCollision(cx, cy + 1) && yr >= 1.0) {
+  yr = 1.0;   // Clamp: land on top of the solid cell
+  dy = 0;     // Kill vertical velocity
+}
+
+// Check collision ABOVE (ceiling)
+if (dy < 0 && hasCollision(cx, cy - 1) && yr <= 0.3) {
+  yr = 0.3;   // Clamp: stop before entering ceiling cell
+  dy = 0;     // Kill vertical velocity
+}
+
+// Cell overflow
+while (yr > 1) { yr--; cy++; }
+while (yr < 0) { yr++; cy--; }
+```
+
+For floor collisions, `yr = 1.0` means the entity sits exactly on the bottom edge of its current cell, which is the top edge of the cell below it. This is the natural "standing on ground" position.
+
+### On-Ground Detection
+
+To determine if the entity is standing on solid ground (for jump logic, animations, etc.):
+
+```haxe
+function isOnGround() : Bool {
+  return hasCollision(cx, cy + 1) && yr >= 0.98;
+}
+```
+
+The threshold `0.98` instead of `1.0` allows for minor floating-point imprecision.
+
+### Complete Entity with Collisions
+
+```haxe
+class Entity {
+  var cx : Int = 0;
+  var cy : Int = 0;
+  var xr : Float = 0.5;
+  var yr : Float = 1.0;
+  var dx : Float = 0;
+  var dy : Float = 0;
+  var frictX : Float = 0.82;
+  var frictY : Float = 0.82;
+
+  static inline var GRID = 16;
+  static inline var GRAVITY = 0.05;
+
+  // Collision radius (half-width in cell-ratio units)
+  var collRadius : Float = 0.3;
+
+  function hasCollision(testCx:Int, testCy:Int):Bool {
+    return level.isCollision(testCx, testCy);
+  }
+
+  function isOnGround():Bool {
+    return hasCollision(cx, cy + 1) && yr >= 0.98;
+  }
+
+  public function fixedUpdate() {
+    // --- Gravity ---
+    dy += GRAVITY;
+
+    // --- X Axis ---
+    xr += dx;
+
+    // Right collision
+    if (dx > 0 && hasCollision(cx + 1, cy) && xr >= 1.0 - collRadius) {
+      xr = 1.0 - collRadius;
+      dx = 0;
+    }
+
+    // Left collision
+    if (dx < 0 && hasCollision(cx - 1, cy) && xr <= collRadius) {
+      xr = collRadius;
+      dx = 0;
+    }
+
+    // X cell overflow
+    while (xr > 1) { xr--; cx++; }
+    while (xr < 0) { xr++; cx--; }
+
+    // --- Y Axis ---
+    yr += dy;
+
+    // Floor collision
+    if (dy > 0 && hasCollision(cx, cy + 1) && yr >= 1.0) {
+      yr = 1.0;
+      dy = 0;
+    }
+
+    // Ceiling collision
+    if (dy < 0 && hasCollision(cx, cy - 1) && yr <= collRadius) {
+      yr = collRadius;
+      dy = 0;
+    }
+
+    // Y cell overflow
+    while (yr > 1) { yr--; cy++; }
+    while (yr < 0) { yr++; cy--; }
+
+    // --- Friction ---
+    dx *= frictX;
+    dy *= frictY;
+
+    if (Math.abs(dx) < 0.0005) dx = 0;
+    if (Math.abs(dy) < 0.0005) dy = 0;
+  }
+
+  public function postUpdate() {
+    sprite.x = (cx + xr) * GRID;
+    sprite.y = (cy + yr) * GRID;
+  }
+}
+```
+
+---
+
+## Collision Edge Cases and Solutions
+
+### Diagonal Movement / Corner Clipping
+
+Because collisions are checked per-axis in sequence, an entity moving diagonally into a corner naturally resolves against one axis first. This prevents the entity from getting stuck in corners and eliminates the need for complex diagonal collision logic.
+
+### High-Speed Tunneling
+
+If `dx` or `dy` is large enough to skip an entire cell in one step, the entity could "tunnel" through walls. Solutions:
+
+1. **Cap velocity:** Clamp `dx` and `dy` to a maximum of 0.5 (half a cell per step)
+2. **Subdivide steps:** If velocity exceeds the threshold, run the collision check in smaller increments
+3. **Ray-march the grid:** Check every cell along the movement path
+
+```haxe
+// Simple velocity cap
+if (dx > 0.5) dx = 0.5;
+if (dx < -0.5) dx = -0.5;
+if (dy > 0.5) dy = 0.5;
+if (dy < -0.5) dy = -0.5;
+```
+
+### One-Way Platforms
+
+Platforms the entity can jump up through but land on from above:
+
+```haxe
+// In Y collision, check for one-way platform
+if (dy > 0 && isOneWayPlatform(cx, cy + 1) && yr >= 1.0 && prevYr < 1.0) {
+  yr = 1.0;
+  dy = 0;
+}
+```
+
+Key: Only collide when the entity is moving downward (`dy > 0`) and was previously above the platform (`prevYr < 1.0`).
+
+### Slopes
+
+For basic slope support, instead of a binary collision check, query the slope height at the entity's x-position within the cell:
+
+```haxe
+// Pseudocode for slope collision
+var slopeHeight = getSlopeHeight(cx, cy + 1, xr);
+if (yr >= slopeHeight) {
+  yr = slopeHeight;
+  dy = 0;
+}
+```
+
+---
+
+## Jumping
+
+Jumping is simply a negative `dy` impulse:
+
+```haxe
+function jump() {
+  if (isOnGround()) {
+    dy = -0.5; // Jump impulse (in cell-ratio units)
+  }
+}
+```
+
+Gravity naturally decelerates the upward motion, creating a parabolic arc. To allow variable-height jumps (holding the button longer = higher jump):
+
+```haxe
+// On jump button release, reduce upward velocity
+function onJumpRelease() {
+  if (dy < 0) {
+    dy *= 0.5; // Cut remaining upward velocity
+  }
+}
+```
+
+---
+
+## Coordinate System Diagram
+
+```
+  Cell (cx, cy)           Next Cell (cx+1, cy)
+  +-------------------+   +-------------------+
+  |                   |   |                   |
+  |  xr=0.0    xr=1.0 --> |  xr=0.0           |
+  |                   |   |                   |
+  |         *         |   |                   |
+  |     (xr=0.5,      |   |                   |
+  |      yr=0.5)      |   |                   |
+  |                   |   |                   |
+  +-------------------+   +-------------------+
+  yr=0.0      yr=1.0 = top of cell below
+
+  Pixel position = (cx + xr) * GRID, (cy + yr) * GRID
+```
+
+---
+
+## Update Order Summary
+
+```
+fixedUpdate():
+  1. Apply gravity          dy += GRAVITY
+  2. Apply X velocity       xr += dx
+  3. Check X collisions     Clamp xr, zero dx if colliding
+  4. Handle X cell overflow cx/xr normalization
+  5. Apply Y velocity       yr += dy
+  6. Check Y collisions     Clamp yr, zero dy if colliding
+  7. Handle Y cell overflow cy/yr normalization
+  8. Apply friction         dx *= frictX, dy *= frictY
+  9. Zero out tiny values   Threshold check
+
+postUpdate():
+  1. Sync sprite position   sprite.x/y = pixel coords
+  2. Update animation       Based on state/velocity
+  3. Camera follow          Track entity
+```
+
+---
+
+## Design Advantages
+
+| Feature | Benefit |
+|---------|---------|
+| Grid-based collision | O(1) lookup per check, no broad-phase needed |
+| Dual coordinates | Sub-pixel smooth rendering with integer collision |
+| Per-axis collision | Simple logic, naturally handles corners |
+| Ratio-based velocity | Resolution-independent movement |
+| Friction multiplier | Tunable feel per surface type |
+| Cell overflow while-loops | Handles multi-cell movement safely |
 
 
 ---
@@ -27748,72 +29803,555 @@ Now, assess all methods with unused parameters and refactor them using **Remove 
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/java-springboot/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-springboot/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-springboot/SKILL.md
-- **SHA256_FINGERPRINT**: `471ed537c42de1a0c4ab8c927d64b045a7c99d95318a513d5918ac2f7b1ebfc5`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:32.399283+00:00
+- **SHA256_FINGERPRINT**: `6388fb7e2ca7222ea74adf16c200c72ab9feefd9fa658177461a5399132a4513`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.486546+00:00
 ---
 
-**description**: Get best practices for developing applications with Spring Boot.
+**description**: Write and review application code in an existing Spring Boot 3/4 project: controllers, validation and ProblemDetail errors, Spring Data JPA/JDBC, RestClient and HTTP interfaces, configuration properties, Kafka/AMQP, caching, scheduling, virtual threads, AOT and startup tuning. Use when adding or changing features. To scaffold a new project use create-spring-boot-java-project instead.
 
-# Spring Boot Best Practices
+# Spring Boot application development
 
-Your goal is to help me write high-quality Spring Boot applications by following established best practices.
+Opinionated rules plus a router to deeper references. Code samples in the references were compiled and run on Spring Boot 4.1.1 (Spring Framework 7) and, where they differ, on Boot 3.5.16 (Framework 6.2). Boot 3 vs 4 differences are marked "Boot 3" / "Boot 4" in each reference.
 
-## Project Setup & Structure
+## Before writing code
 
-- **Build Tool:** Use Maven (`pom.xml`) or Gradle (`build.gradle`) for dependency management.
-- **Starters:** Use Spring Boot starters (e.g., `spring-boot-starter-web`, `spring-boot-starter-data-jpa`) to simplify dependency management.
-- **Package Structure:** Organize code by feature/domain (e.g., `com.example.app.order`, `com.example.app.user`) rather than by layer (e.g., `com.example.app.controller`, `com.example.app.service`).
+1. **Detect, do not assume:** read `pom.xml`/`build.gradle(.kts)` for the Spring Boot version, Java version, starters in use (`spring-boot-starter-web` is Boot 3, `spring-boot-starter-webmvc` is Boot 4), persistence (JPA, JDBC), the migration tool, the test setup, and the package layout and naming conventions of the existing code. Match them.
+2. **Never upgrade Spring Boot, Java or dependencies implicitly.** A Boot 3 -> 4 move is a deliberate task (`spring-boot-4-migration`).
+3. **Ask before adding infrastructure:** a broker (Kafka, RabbitMQ), a cache provider, a new database, or a scheduler/async setup. Add only what the user requested, with the Boot-managed version (no explicit version for BOM-managed artifacts, never `latest`).
+4. **Verify every change** with the project's own build: `./mvnw verify` or `./gradlew build` (plain `mvn`/`gradle` if no wrapper). Integration tests need Docker when they use Testcontainers.
 
-## Dependency Injection & Components
+## Router
 
-- **Constructor Injection:** Always use constructor-based injection for required dependencies. This makes components easier to test and dependencies explicit.
-- **Immutability:** Declare dependency fields as `private final`.
-- **Component Stereotypes:** Use `@Component`, `@Service`, `@Repository`, and `@Controller`/`@RestController` annotations appropriately to define beans.
+| Task | Read |
+| --- | --- |
+| Repositories, projections, pagination, N+1, `@Transactional`, auditing, Flyway/Liquibase, Spring Data JDBC | `references/data.md` |
+| Controllers, validation, `ProblemDetail`, `RestClient`, `@HttpExchange`, API versioning, OpenAPI, JSpecify | `references/rest-api.md` |
+| Kafka/AMQP, `@Cacheable`/Caffeine, `@Scheduled`, `@Async`, virtual threads, outbox | `references/messaging-caching.md` |
+| `@ConfigurationProperties`, profiles, secrets, config import, Docker Compose / Testcontainers at dev time | `references/configuration.md` |
+| AOT, CDS/AppCDS, lazy initialization, native image | `references/aot-and-startup.md` |
 
-## Configuration
+If these standalone skills are installed, also use them for their topic; otherwise rely on the official docs: `java-hibernate-jpa` (JPA mapping), `spring-boot-testing` (tests), `spring-security` (authentication, authorization, CSRF/CORS), `spring-observability` (metrics, tracing, Actuator, logs), `create-spring-boot-java-project` (project defaults, Boot 3 vs 4 build changes), `java-add-graalvm-native-image-support` (native executable).
 
-- **Externalized Configuration:** Use `application.yml` (or `application.properties`) for configuration. YAML is often preferred for its readability and hierarchical structure.
-- **Type-Safe Properties:** Use `@ConfigurationProperties` to bind configuration to strongly-typed Java objects.
-- **Profiles:** Use Spring Profiles (`application-dev.yml`, `application-prod.yml`) to manage environment-specific configurations.
-- **Secrets Management:** Do not hardcode secrets. Use environment variables, or a dedicated secret management tool like HashiCorp Vault or AWS Secrets Manager.
+## Core rules
 
-## Web Layer (Controllers)
+- **Structure and layers:** package by feature; constructor injection; controllers return DTOs/records, never entities; services own the transaction.
+- **Validation and errors:** Bean Validation on request records with `@Valid`; one `@RestControllerAdvice` returning `ProblemDetail`. JSpecify annotations document nullability only and do not validate.
+- **Jackson:** Boot 4 uses Jackson 3 (`tools.jackson.databind.*`, `JsonMapper`; annotations stay in `com.fasterxml.jackson.annotation`); Boot 3 uses Jackson 2 (`com.fasterxml.jackson.databind.*`, `ObjectMapper`).
+- **Slice-test gotcha:** put `@EnableJpaAuditing`, `@EnableCaching`, `@EnableAsync`, `@EnableScheduling` on dedicated `@Configuration` classes, not on the `@SpringBootApplication` class, or slices such as `@DataJpaTest` fail to start (for example, no `CacheManager`). Slices do not scan `@Configuration` classes: `@Import` the one a test needs.
+- **Proxied beans:** `@Cacheable`, `@Async` and `@Transactional` work through proxies: they do nothing on self-invocation or on `private`/`final` methods; test them through the injected bean.
 
-- **RESTful APIs:** Design clear and consistent RESTful endpoints.
-- **DTOs (Data Transfer Objects):** Use DTOs to expose and consume data in the API layer. Do not expose JPA entities directly to the client.
-- **Validation:** Use Java Bean Validation (JSR 380) with annotations (`@Valid`, `@NotNull`, `@Size`) on DTOs to validate request payloads.
-- **Error Handling:** Implement a global exception handler using `@ControllerAdvice` and `@ExceptionHandler` to provide consistent error responses.
+## Checklist
 
-## Service Layer
+- [ ] Versions, build tool and conventions detected; starters match the Boot major
+- [ ] No new infrastructure or dependency without the user's agreement
+- [ ] `./mvnw verify` / `./gradlew build` passes; secrets absent from code, properties and logs
 
-- **Business Logic:** Encapsulate all business logic within `@Service` classes.
-- **Statelessness:** Services should be stateless.
-- **Transaction Management:** Use `@Transactional` on service methods to manage database transactions declaratively. Apply it at the most granular level necessary.
+See also: Spring Boot reference <https://docs.spring.io/spring-boot/reference/>, Spring Framework reference <https://docs.spring.io/spring-framework/reference/>, Spring Data <https://docs.spring.io/spring-data/commons/reference/>.
 
-## Data Layer (Repositories)
 
-- **Spring Data JPA:** Use Spring Data JPA repositories by extending `JpaRepository` or `CrudRepository` for standard database operations.
-- **Custom Queries:** For complex queries, use `@Query` or the JPA Criteria API.
-- **Projections:** Use DTO projections to fetch only the necessary data from the database.
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-springboot/references/aot-and-startup.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-springboot/references/aot-and-startup.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-springboot/references/aot-and-startup.md
+- **SHA256_FINGERPRINT**: `76ee1cb3198168337740f97e5a99b71f9e3364318d86dfe7613e8ddeff82ea09`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.489530+00:00
+---
 
-## Logging
+# AOT, CDS and startup
 
-- **SLF4J:** Use the SLF4J API for logging.
-- **Logger Declaration:** `private static final Logger logger = LoggerFactory.getLogger(MyClass.class);`
-- **Parameterized Logging:** Use parameterized messages (`logger.info("Processing user {}...", userId);`) instead of string concatenation to improve performance.
+Start with measurement, not flags: record startup time (`Started ... in N seconds` log, or `spring.main.log-startup-info=true`) and memory on the target hardware before and after each change, with several runs (single timings are noisy: observed differences between runs of the same configuration were larger than some of the gains). Do not change JVM or Spring flags without a stated goal (startup, memory, image size). Verified on Boot 4.1.1, Maven, JDK 26 runtime (`--release 25`); JDK 21 and 25 were not available for these runs.
 
-## Testing
+## Spring AOT (build-time processing)
 
-- **Unit Tests:** Write unit tests for services and components using JUnit 5 and a mocking framework like Mockito.
-- **Integration Tests:** Use `@SpringBootTest` for integration tests that load the Spring application context.
-- **Test Slices:** Use test slice annotations like `@WebMvcTest` (for controllers) or `@DataJpaTest` (for repositories) to test specific parts of the application in isolation.
-- **Testcontainers:** Consider using Testcontainers for reliable integration tests with real databases, message brokers, etc.
+Spring AOT turns bean definitions and reflection/proxy hints into generated code. It is required for GraalVM native images and optional on the JVM.
 
-## Security
+```bash
+./mvnw -DskipTests package spring-boot:process-aot    # Gradle: ./gradlew processAot
+```
 
-- **Spring Security:** Use Spring Security for authentication and authorization.
-- **Password Encoding:** Always encode passwords using a strong hashing algorithm like BCrypt.
-- **Input Sanitization:** Prevent SQL injection by using Spring Data JPA or parameterized queries. Prevent Cross-Site Scripting (XSS) by properly encoding output.
+Verified: on the sample app (JPA, Flyway, Kafka, cache, validation, springdoc) `process-aot` succeeded and generated sources under `target/spring-aot/main/sources/` (for example `DemoApplication__BeanDefinitions.java`). Notes:
+
+- AOT evaluates conditions and bean definitions at build time: profiles and properties that change the bean graph (`@Profile`, `@ConditionalOnProperty`) are fixed at build time. Do not rely on runtime-only conditions.
+- `process-aot` starts the application context without connecting your beans to real services; if it fails, the usual causes are beans with runtime-only side effects in constructors or an ambiguous main class (set `<start-class>` in Maven, see `create-spring-boot-java-project` `references/spring-boot-4.md`).
+- Custom reflection/resources: register hints with `@ImportRuntimeHints` and `RuntimeHintsRegistrar`, or `@RegisterReflectionForBinding` for DTOs serialized by Jackson.
+- Using the generated code on the JVM requires running with `-Dspring.aot.enabled=true` and packaging the AOT output; that path was not verified here and gives modest gains, so prefer CDS/AOT cache below for JVM startup.
+
+## Native image
+
+For a native executable use the `java-add-graalvm-native-image-support` skill (build tool detection, native build, error iteration) and the native Dockerfiles of `create-spring-boot-java-project` (`references/docker.md`). Trade-offs: much faster startup and lower memory, but slower builds, closed-world assumptions (reflection hints), and some libraries need extra hints. Not verified in this skill.
+
+## Class Data Sharing (CDS) / Application CDS
+
+Spring Boot supports CDS through the extracted jar layout (`-Djarmode=tools`). Verified sequence on Boot 4.1.1 (the training run needs the app's dependencies, here a PostgreSQL):
+
+```bash
+./mvnw -DskipTests package
+java -Djarmode=tools -jar target/app.jar extract --destination extracted
+cd extracted
+# training run: create the archive on exit (the app exits right after context refresh)
+java -XX:ArchiveClassesAtExit=app.jsa -Dspring.context.exit=onRefresh -jar app.jar
+# production run
+java -XX:SharedArchiveFile=app.jsa -jar app.jar
+```
+
+Verified: `app.jsa` (about 50 MB for the sample app) was created and used without errors. The `[warning][cds] Skipping ... Failed verification` and `NoClassDefFoundError` preload warnings in the training run concern optional classes whose libraries are not on the classpath (reactor, Apache HttpClient, Log4j) and are harmless. The archive is tied to the exact JVM and jar: regenerate it in the build or image build for each version, and run the training with the same JDK as production.
+
+JDK 19+ can also create the archive automatically at the first run (`-XX:+AutoCreateSharedArchive -XX:SharedArchiveFile=app.jsa`; verified that the file is created).
+
+**JDK 25+ one-step AOT cache** ([JEP 514](https://openjdk.org/jeps/514)): `java -XX:AOTCacheOutput=app.aot -Dspring.context.exit=onRefresh -jar app.jar`, then `java -XX:AOTCache=app.aot -jar app.jar`. Verified on JDK 26 (about 160 MB cache, used without errors). JDK 24 introduced AOT caches ([JEP 483](https://openjdk.org/jeps/483)) but requires separate `AOTMode=record` and `AOTMode=create` steps; it does not recognize `AOTCacheOutput`. Check `java -version` before choosing the command, and keep CDS as the fallback for older JDKs. Same rule: one cache per JDK build and jar.
+
+In containers, create the archive during `docker build` (a `RUN` training step in the final stage) rather than at container start.
+
+## Lazy initialization
+
+```properties
+spring.main.lazy-initialization=true
+```
+
+- Defers bean creation to first use, which lowers startup time and memory at start but moves failures and the first-request latency to runtime: misconfigured beans no longer fail fast, and health checks may pass on a half-working app. Use it for dev/test or short-lived processes; avoid it as a production default. Set `@Lazy(false)` on beans that must start eagerly (schedulers, listeners).
+- Measured on the sample app: no consistent startup gain over several runs; do not promise one.
+
+## Other cheap wins
+
+- Remove unused starters and auto-configurations; `--debug` prints the condition evaluation report to find what starts.
+- `spring.jpa.open-in-view=false` and `spring.main.banner-mode=off` cost nothing.
+- Set `-XX:TieredStopAtLevel=1` only for short-lived CLI-style jobs; it hurts steady-state throughput.
+- Container memory: let the JVM size heap from container limits (`-XX:MaxRAMPercentage`); do not hard-code `-Xmx` equal to the limit.
+- Virtual threads do not change startup (`references/messaging-caching.md`).
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-springboot/references/configuration.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-springboot/references/configuration.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-springboot/references/configuration.md
+- **SHA256_FINGERPRINT**: `8947349c7837cc4db5d27240665baa697373188f111fc54b3a4760180314e18f`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.473915+00:00
+---
+
+# Configuration
+
+Formats, profiles, `.env` and secret basics, and the short `@ConfigurationProperties` example already live in `create-spring-boot-java-project` (`references/configuration.md`); read it for those and keep one format (properties or YAML) as the project already does. This file adds what is needed when changing an existing application. Verified on Boot 4.1.1.
+
+## Type-safe properties (records)
+
+```java
+@ConfigurationProperties(prefix = "app.mail")
+@Validated
+public record MailProperties(@NotBlank String from, @DefaultValue("3") @Positive int retries,
+		@DefaultValue("5s") Duration timeout) {}
+```
+
+```properties
+app.mail.from=noreply@example.com
+```
+
+- Records bind through their canonical constructor (constructor binding is the default for records). Use `@DefaultValue` (`org.springframework.boot.context.properties.bind.DefaultValue`) for optional values; `Duration`, `DataSize`, enums and `List`/`Map` bind natively (`5s`, `PT5S`, `10MB`).
+- Register with `@ConfigurationPropertiesScan` on the application class (or `@EnableConfigurationProperties(MailProperties.class)`). Verified: the record is a bean with `retries == 3` and `timeout == 5s` when only `from` is set.
+- `@Validated` + `jakarta.validation` constraints make the application fail at startup on invalid configuration, which is what you want. Validation needs the validation starter (`spring-boot-starter-validation`).
+- Prefer `@ConfigurationProperties` to scattered `@Value`; use `@Value` only for one-off values. Add `spring-boot-configuration-processor` (optional/annotation-processor path, as start.spring.io does) for IDE metadata.
+- Immutability: no setters; nested config as nested records.
+- Inject the record where needed; do not read `Environment` directly in business code.
+
+## Profiles
+
+- Keep production-safe defaults in `application.properties`; profile files (`application-dev.properties`) only override what differs. Activate with `SPRING_PROFILES_ACTIVE`.
+- Group related profiles with `spring.profiles.group.prod=prod-db,prod-observability` when a deployment needs several.
+- Use `@Profile` sparingly for beans; do not branch application logic on profile names.
+- Do not ship a `test` profile in `src/main`; tests use `src/test/resources` or `@TestPropertySource` (see `spring-boot-testing`).
+
+## Config import and secrets
+
+```properties
+spring.config.import=optional:file:.env[.properties],optional:configtree:/run/secrets/
+```
+
+- `optional:` prevents startup failure when the file is absent (local development); drop it for values that must exist in production.
+- Kubernetes/Docker secrets mounted as files: `configtree:` maps each file to a property (file name = key).
+- Environment variables override files through relaxed binding (`APP_MAIL_FROM` -> `app.mail.from`).
+- Never commit `.env` or real credentials; commit `.env.sample`. Do not log property values holding secrets, and do not expose `/actuator/env` and `/actuator/configprops` publicly (`spring-observability`, `spring-security`).
+- Externalized config sources like Vault or Spring Cloud Config are out of scope unless the project already uses them; follow its existing import setup.
+
+## Dev-time services
+
+### Docker Compose
+
+Add `spring-boot-docker-compose` (start.spring.io adds it, optional/development-only). With a `compose.yaml` at the project root, `./mvnw spring-boot:run` starts the services and wires connection details automatically. Pin image tags (start.spring.io generates `postgres:latest`; replace it, see `create-spring-boot-java-project` `references/database.md`). Not executed in this skill's verification: only the generated files were inspected.
+
+### Testcontainers at dev time
+
+start.spring.io (with the `testcontainers` dependency) generates `TestcontainersConfiguration` and a `TestDemoApplication` in `src/test`:
+
+```java
+public class TestDemoApplication {
+	public static void main(String[] args) {
+		SpringApplication.from(DemoApplication::main).with(TestcontainersConfiguration.class).run(args);
+	}
+}
+```
+
+Run it with `./mvnw spring-boot:test-run` (Gradle: `./gradlew bootTestRun`). Verified on Boot 4.1.1: PostgreSQL and Kafka containers started from the `@ServiceConnection` beans, the app reached `UP` on `/actuator/health`, and stopping the app removed the containers (Ryuk). Make `TestcontainersConfiguration` `public` if it is used from other packages (see `create-spring-boot-java-project` `references/spring-boot-4.md`). Choose either Compose or Testcontainers for dev-time services, not both, to avoid two databases fighting over the same properties.
+
+## Boot 3 vs 4
+
+Same property binding rules. Boot 4 changes that touch configuration: Jackson properties continue under `spring.jackson.*` for Jackson 3 (Jackson 2 compatibility lives in a separate module; consult the migration guide), modular auto-configuration (classes moved to `org.springframework.boot.<technology>.autoconfigure`, which matters only if you reference or exclude auto-configurations by class name: `spring.autoconfigure.exclude=org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration`). Use the `spring-boot-4-migration` skill for the move itself.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-springboot/references/data.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-springboot/references/data.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-springboot/references/data.md
+- **SHA256_FINGERPRINT**: `c9852b164b2010f1dc1207b467fcb7399a13d2c313f23d29765145240ac071f4`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.582272+00:00
+---
+
+# Data access (Spring Data JPA, Spring Data JDBC)
+
+For mapping problems (N+1 theory, equals/hashCode, cascades, locking, batching) use the `java-hibernate-jpa` skill; for PostgreSQL defaults and Docker Compose use `create-spring-boot-java-project` (`references/database.md`); for `@DataJpaTest` and Testcontainers use `spring-boot-testing`. This file covers the Spring layer on top. Verified with Spring Data JPA on Boot 4.1.1 and Boot 3.5.16 (same code).
+
+## Repositories
+
+```java
+public interface OrderRepository extends JpaRepository<PurchaseOrder, Long> {
+
+	interface CustomerView { Long getId(); String getCustomer(); }   // interface projection
+
+	Page<CustomerView> findByStatus(PurchaseOrder.Status status, Pageable pageable);
+
+	@Query("select new com.example.demo.OrderSummary(o.id, o.customer, o.total) from PurchaseOrder o where o.customer = :customer")
+	Page<OrderSummary> summaries(String customer, Pageable pageable);   // record DTO
+
+	@EntityGraph(attributePaths = "items")
+	Optional<PurchaseOrder> findWithItemsById(Long id);                 // fetches the collection in one query
+}
+```
+
+- Derived queries for simple lookups; `@Query` (JPQL) once the method name gets long; `@Query(nativeQuery = true)` only when JPQL cannot express it. Named parameters (`:customer`) bind by name when compiled with `-parameters` (the Boot parent POM and Gradle plugin enable it; verified without `@Param`).
+- **Projections:** return interface projections (closed: only getters for the needed columns) or record DTOs (`select new ...` with the fully qualified name) for read endpoints.
+- **Pagination:** `Page<T>` runs an extra `count` query; use `Slice<T>` when the total is not needed. Always sort on a stable, unique column (`Sort.by("id")`); cap the page size from user input (`Math.min(size, 100)`). Never combine pagination with a collection `JOIN FETCH` (in-memory paging; see `java-hibernate-jpa`).
+- **N+1:** fix per query with `@EntityGraph` or `JOIN FETCH`, keep associations `LAZY`, and assert statement counts in a test (`hibernate.generate_statistics`).
+- `spring.jpa.open-in-view=false`; load what the response needs inside the transaction and map to DTOs there.
+- **Boot 4:** JPA slice classes moved: `org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest`, `org.springframework.boot.jpa.test.autoconfigure.TestEntityManager`, `org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase` (Boot 3: `org.springframework.boot.test.autoconfigure.orm.jpa.*` and `...autoconfigure.jdbc.*`). Starter: `spring-boot-starter-data-jpa` (+ `spring-boot-starter-data-jpa-test` for tests).
+
+## Transactions
+
+- `@Transactional` on **service** methods (the use-case boundary), not on controllers or repositories. Reads: `@Transactional(readOnly = true)`.
+- Keep transactions short: no HTTP calls, messaging sends or file I/O inside; publish events after commit with `@TransactionalEventListener(phase = AFTER_COMMIT)` or an outbox (`references/messaging-caching.md`).
+- Spring rolls back on unchecked exceptions only; use `rollbackFor` for checked ones. Self-invocation bypasses the proxy.
+- Services return DTOs, so lazy associations are never touched after the transaction ends.
+
+## Auditing
+
+```java
+@Configuration(proxyBeanMethods = false)
+@EnableJpaAuditing
+class JpaAuditingConfig {}   // not on the @SpringBootApplication class
+
+@Entity @EntityListeners(AuditingEntityListener.class)
+class PurchaseOrder {
+	@CreatedDate Instant createdAt;
+	@LastModifiedDate Instant lastModifiedAt;
+}
+```
+
+`@DataJpaTest` does not scan `@Configuration` classes: `@Import(JpaAuditingConfig.class)` in the test, otherwise `createdAt` stays `null` (verified). For `@CreatedBy`/`@LastModifiedBy` provide an `AuditorAware<String>` bean (usually from the security context; see `spring-security`).
+
+## Schema management
+
+Follow the schema management rule of `java-hibernate-jpa` (prototype: `update`; production: Flyway/Liquibase with `ddl-auto=validate`; externally managed: `none`). With Spring Boot:
+
+- **Boot 4:** add `spring-boot-starter-flyway` (and `org.flywaydb:flyway-database-postgresql` for PostgreSQL) or `spring-boot-starter-liquibase`; the auto-configuration lives in the starter. **Boot 3:** `org.flywaydb:flyway-core` (+ `flyway-database-postgresql`) or `liquibase-core`.
+- Migrations in `src/main/resources/db/migration/V1__init.sql`; never edit an applied migration, add a new version. Each migration is one reviewable unit; use `ddl-auto=validate` so entity/schema drift fails at startup (verified: a Flyway-created schema passes `validate` for the entities above).
+- Add them only when the user wants versioned migrations or the app is headed to production; do not add Flyway to a project whose schema is managed elsewhere.
+
+## Spring Data JDBC (alternative)
+
+Choose it for simple aggregates without lazy loading, sessions or dirty tracking: aggregate roots are loaded and saved as a whole, and there is no persistence context. Starter `spring-boot-starter-data-jdbc` (do not put it next to `data-jpa` in the same module unless you configure repository scanning explicitly: both would try to claim repositories).
+
+```java
+public record Book(@Id Long id, String title, @MappedCollection(idColumn = "book") Set<Chapter> chapters) {
+	public record Chapter(String name) {}
+}
+
+public interface BookRepository extends ListCrudRepository<Book, Long>, PagingAndSortingRepository<Book, Long> {
+	List<Book> findByTitleStartingWith(String prefix);
+}
+```
+
+- You own the schema (`schema.sql` with `spring.sql.init.mode=always`, or Flyway/Liquibase as above); there is no `ddl-auto`.
+- `null` id means insert; the saved copy carries the generated id (`repo.save` returns it: use the return value with records).
+- Boot 4 test slice: `org.springframework.boot.data.jdbc.test.autoconfigure.DataJdbcTest` (verified with a Testcontainers PostgreSQL, `@AutoConfigureTestDatabase(replace = NONE)`).
+- Not a drop-in for JPA: no `@EntityGraph`, no lazy associations, references between aggregates are by id.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-springboot/references/messaging-caching.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-springboot/references/messaging-caching.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-springboot/references/messaging-caching.md
+- **SHA256_FINGERPRINT**: `1e9749666a0eca155a47f7ad630838ace6ba9392c528da3cf80e91dbe76eea56`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.617628+00:00
+---
+
+# Messaging, caching, scheduling, async
+
+**Ask before adding** a broker, a cache provider or a scheduler/async setup to an existing project: each one adds infrastructure and operational cost. When the user agrees, use the Boot-managed versions (no explicit version for Spring-managed artifacts). Verified on Boot 4.1.1 (JDK 26 runtime, `--release 25`); Boot 3 differences noted where known. Tests for these: `spring-boot-testing`; tracing/metrics for them: `spring-observability`.
+
+## Kafka (Spring for Apache Kafka)
+
+- **Boot 4:** `spring-boot-starter-kafka` (+ `spring-boot-starter-kafka-test`). **Boot 3:** `org.springframework.kafka:spring-kafka` (no starter; version managed by the Boot BOM).
+- Producer: `KafkaTemplate<String, String>`; consumer: `@KafkaListener`.
+
+```java
+@Component
+class Events {
+	private final KafkaTemplate<String, String> template;
+	Events(KafkaTemplate<String, String> template) { this.template = template; }
+
+	void publish(String key, String payload) { template.send("orders", key, payload); }
+
+	@KafkaListener(topics = "orders", groupId = "demo")
+	void on(String payload) { /* must be idempotent: delivery is at-least-once */ }
+}
+```
+
+```properties
+spring.kafka.bootstrap-servers=${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+spring.kafka.consumer.auto-offset-reset=earliest
+```
+
+- Consumers must be **idempotent** (at-least-once delivery); decide on a retry/dead-letter strategy (`DefaultErrorHandler` with `DeadLetterPublishingRecoverer`) before going to production.
+- Keep payloads as versioned DTOs (records); avoid sending JPA entities.
+- **Test with a real broker** through Testcontainers (verified: send then receive in a `@SpringBootTest`):
+
+```java
+import org.testcontainers.kafka.KafkaContainer;
+
+@TestConfiguration(proxyBeanMethods = false)
+public class TestcontainersConfiguration {
+	@Bean @ServiceConnection
+	KafkaContainer kafkaContainer() { return new KafkaContainer(DockerImageName.parse("apache/kafka-native:4.0.0")); }
+}
+```
+
+  Boot 4 uses Testcontainers 2.x (artifact `org.testcontainers:testcontainers-kafka`); Boot 3 uses 1.x (artifact `org.testcontainers:kafka`). The example uses `org.testcontainers.kafka.KafkaContainer`, available in recent 1.x releases as well as 2.x; check that the project's BOM-managed version supports `apache/kafka-native`. Do not substitute the legacy `org.testcontainers.containers.KafkaContainer`: it requires a `confluentinc/cp-kafka` image. If the project's older Testcontainers version lacks the modern class or native-image support, use the legacy class with a compatible pinned Confluent image instead, without implicitly upgrading dependencies. Pin the image tag, never `latest`. Wait with a `CountDownLatch`/Awaitility, not `Thread.sleep`.
+
+## RabbitMQ / AMQP (not verified in this skill's builds)
+
+`spring-boot-starter-amqp` (Boot 3 and 4), `RabbitTemplate` to send, `@RabbitListener` to consume, `@ServiceConnection` with the Testcontainers RabbitMQ module for tests. Declare queues/exchanges as `Queue`/`TopicExchange`/`Binding` beans, use `Jackson2JsonMessageConverter`-style JSON converters only after checking the Jackson major in use (Boot 4 = Jackson 3), and configure a dead-letter exchange. Check the Spring AMQP reference for the exact converter class names for your version before generating code.
+
+## Transactional outbox
+
+Publishing to a broker inside a database transaction is not atomic: a crash between commit and send loses the message. When messages must not be lost, write the event to an `outbox` table in the same transaction as the state change, and have a relay (scheduled poller or CDC such as Debezium) publish and mark it sent. Consumers stay idempotent. Do not implement it unless the user needs that guarantee; for events that can be lost, `@TransactionalEventListener(phase = AFTER_COMMIT)` is simpler.
+
+## Caching with Caffeine
+
+- Dependencies: `spring-boot-starter-cache` (Boot 4 + test starter `spring-boot-starter-cache-test`; Boot 3 the same starter name) and `com.github.ben-manes.caffeine:caffeine` (BOM-managed).
+
+```java
+@Configuration(proxyBeanMethods = false)
+@EnableCaching
+class CachingConfig {}   // a dedicated class, not the @SpringBootApplication class
+
+@Service
+class RateService {
+	@Cacheable("rates")                                   // key = method arguments
+	public Rate expensive(String currency) { ... }
+
+	@CacheEvict(value = "rates", allEntries = true)
+	public void evict() {}
+}
+```
+
+```properties
+spring.cache.type=caffeine
+spring.cache.cache-names=rates
+spring.cache.caffeine.spec=maximumSize=500,expireAfterWrite=10m
+```
+
+- Verified on Boot 4.1.1: second call is served from cache, `evict()` forces a reload. Always set `maximumSize` and an expiry; unbounded caches are memory leaks.
+- Cache immutable DTOs/records, not managed JPA entities. The cache is per JVM: with several instances use a distributed cache (Redis) only if the user asks for it, and expect stale data across nodes with Caffeine.
+- `@Cacheable` is proxy-based: self-invocation and `private` methods bypass it. Do not cache methods with side effects or `null` returns you do not intend to cache.
+- Enabling caching in `@SpringBootApplication` breaks slice tests that do not register a `CacheManager` (verified: `@DataJpaTest` fails with "No qualifying bean of type CacheManager"), hence the dedicated `@Configuration`.
+- To expose cache statistics in Micrometer call `recordStats` (Caffeine spec `recordStats`); otherwise Boot logs a warning that the cache is not recording statistics (observed).
+
+## Scheduling
+
+```java
+@Configuration(proxyBeanMethods = false)
+@EnableScheduling
+class SchedulingConfig {}
+
+@Scheduled(fixedDelayString = "${app.tick:PT10S}")   // or cron = "0 0 * * * *", zone = "UTC"
+void cleanup() { ... }
+```
+
+Verified: `@Scheduled(fixedDelayString = "${...:100ms}")` runs on Boot 4.1.1. Prefer `fixedDelay` over `fixedRate` to avoid overlapping runs. `@Scheduled` runs on **every instance**: with several replicas use a lock (ShedLock) or an external scheduler; add that only after asking. Scheduled methods take no arguments and must not throw unhandled exceptions silently: log and handle.
+
+## Async and virtual threads
+
+```properties
+spring.threads.virtual.enabled=true     # Java 21+, Boot 3.2+
+```
+
+With the property set, Boot runs Tomcat/Jetty request handling, `@Async` tasks (through the auto-configured task executor) and other Boot-managed executors on virtual threads. Verified on Boot 4.1.1: an `@Async` method reports `Thread.currentThread().isVirtual() == true`.
+
+```java
+@Configuration(proxyBeanMethods = false)
+@EnableAsync
+class AsyncConfig {}
+
+@Async
+public CompletableFuture<Result> compute() { ... }   // return void or CompletableFuture
+```
+
+- Needs Java 21+; on Boot 3 the property exists from 3.2. Do not enable it on Java 17.
+- Virtual threads help blocking I/O workloads (JDBC, HTTP). They do not speed up CPU-bound work. Pool sizes become the bottleneck: size the HikariCP pool deliberately and consider limits on downstream calls. Before JDK 24, `synchronized` blocks around blocking calls pin the carrier thread; prefer `ReentrantLock` there.
+- `@Async` is proxy-based like `@Transactional`: the caller must be another bean, and the transaction/security context does not follow into the async thread unless propagated.
+- With `@Async` returning `void`, exceptions are lost unless an `AsyncUncaughtExceptionHandler` is configured.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/java-springboot/references/rest-api.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/java-springboot/references/rest-api.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-springboot/references/rest-api.md
+- **SHA256_FINGERPRINT**: `791827b2c6b3aef3a6b32f089a3b0523ce52f976071f5bd99370673526e7cb39`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.603515+00:00
+---
+
+# REST API (Spring MVC)
+
+Verified on Boot 4.1.1 (Framework 7) and, where noted, Boot 3.5.16 (Framework 6.2). Security of endpoints: `spring-security`. Test slices (`@WebMvcTest`, `MockMvcTester`, `@RestClientTest`): `spring-boot-testing`.
+
+## Starters and packages (Boot 3 vs 4)
+
+| | Boot 3 | Boot 4 |
+| --- | --- | --- |
+| Web starter | `spring-boot-starter-web` | `spring-boot-starter-webmvc` (+ `spring-boot-starter-webmvc-test`) |
+| `RestClient` auto-config | Boot 3.2+ only, in the web starter; unavailable on 3.0/3.1 | add `spring-boot-starter-restclient` |
+| `@WebMvcTest` | `org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest` | `org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest` (also `AutoConfigureMockMvc`) |
+| Mock a bean | `@MockitoBean` (3.4+; `@MockBean` removed in 4) | `@MockitoBean` (`org.springframework.test.context.bean.override.mockito`) |
+| JSON | Jackson 2 `ObjectMapper` | Jackson 3 `tools.jackson.databind.json.JsonMapper` bean |
+
+Jackson 2 databind may still be on the classpath transitively (for example through Spring for Apache Kafka), which is not a reason to code against it in Boot 4. A temporary Jackson 2 bridge exists (`spring-boot-jackson2`, see the Boot 4 migration guide and `spring-boot-4-migration`).
+
+## Controllers and validation
+
+```java
+public record CreateOrderRequest(@NotBlank String customer, @Positive BigDecimal total) {}
+
+@RestController
+@RequestMapping("/api/orders")
+class OrderController {
+	private final OrderService orders;
+	OrderController(OrderService orders) { this.orders = orders; }
+
+	@PostMapping
+	ResponseEntity<OrderSummary> create(@Valid @RequestBody CreateOrderRequest req) {
+		var created = orders.create(req);
+		return ResponseEntity.created(URI.create("/api/orders/" + created.id())).body(created);
+	}
+}
+```
+
+- Nouns for resources, plural, HTTP verbs for actions; `201` + `Location` on create, `204` on delete, `404` via exception, not `null`.
+- Request/response types are records, separate from entities. Bean Validation (`jakarta.validation.constraints.*`) goes on the record components. In Framework 6.1+ (Boot 3.2+), put constraints directly on `@RequestParam`/`@PathVariable` parameters and omit class-level `@Validated`: built-in MVC method validation raises `HandlerMethodValidationException`. Class-level `@Validated` instead enables AOP validation, which raises `ConstraintViolationException` by default and needs its own error handler. On older Framework versions, use that AOP approach and map the exception to HTTP 400 explicitly.
+- Never accept unbounded input: cap `size` for pagination, limit request body size at the server/proxy.
+- Return `Page<T>` only if exposing Spring Data's page JSON is acceptable; for a stable public contract return your own `record PageResponse<T>(List<T> content, long total, int page, int size)`. Pagination parameters and stable sorting: `data.md`.
+
+## Errors: ProblemDetail (RFC 9457)
+
+```java
+@RestControllerAdvice
+class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+
+	@ExceptionHandler(OrderNotFoundException.class)
+	ProblemDetail notFound(OrderNotFoundException ex) {
+		var pd = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+		pd.setTitle("Order not found");
+		return pd;
+	}
+}
+```
+
+- Extending `ResponseEntityExceptionHandler` turns Spring MVC's own exceptions (validation `MethodArgumentNotValidException` and, in Framework 6.1+, `HandlerMethodValidationException`, malformed JSON, unsupported media type, invalid API version) into `application/problem+json` (verified: validation errors give status 400 problem details; the unknown-API-version error gives 400). Test invalid query/path parameters as well as invalid request bodies; class-level `@Validated` must not divert them to an unhandled AOP exception.
+- Verified the same advice works unchanged on Boot 3.5.16. Do not return exception messages that contain internals (SQL, class names) in `detail`; log them, return a stable message, and add a custom property (`pd.setProperty("code", "ORDER_NOT_FOUND")`) for clients.
+- Test with `jsonPath("$.status")`, `jsonPath("$.title")` and `content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON)`.
+
+## API versioning (Boot 4 / Framework 7 only)
+
+Framework 7 has first-class API versioning; it does not exist in Framework 6 (verified: `@GetMapping(version = ...)` does not compile on Boot 3.5.16, use URL prefixes such as `/api/v1/...` there).
+
+```properties
+spring.mvc.apiversion.use.header=X-API-Version
+spring.mvc.apiversion.default=1
+spring.mvc.apiversion.supported=1,2
+```
+
+```java
+@GetMapping(value = "/{id}", version = "1")  OrderSummary getV1(@PathVariable Long id) { ... }
+@GetMapping(value = "/{id}", version = "2")  OrderSummary getV2(@PathVariable Long id) { ... }
+```
+
+Alternatives to the header are `...use.path-segment`, `...use.query-parameter` and `...use.media-type-parameter`. Verified: a request without the header uses the default version, and an unsupported version (`3`) returns a `400` problem detail ("Invalid API version"). Version only when a breaking change is unavoidable; additive changes do not need a new version.
+
+## Calling other services
+
+### RestClient (Boot 3.2+/4)
+
+`RestClient` and `RestClientAdapter` require Framework 6.1+; Boot's builder auto-configuration starts in 3.2. On Boot 3.0/3.1, retain the project's existing `RestTemplate` rather than generating this example or implicitly upgrading dependencies.
+
+On Boot 4 add `spring-boot-starter-restclient` (it was in the verified build, which injected the builder; Boot 3.2+: `RestClient.Builder` comes with the web starter). Inject the **builder** (`RestClient.Builder`), never create clients without it, so that observability and customizers apply (`spring-observability`). Set base URL and timeouts through properties/customizers, not per call. Prefer `RestClient` over `RestTemplate` (maintenance mode) and over `WebClient` unless you are reactive.
+
+```java
+@Bean
+RestClient ratesClient(RestClient.Builder builder) {
+	return builder.baseUrl("https://rates.example.com").build();
+}
+// usage: ratesClient.get().uri("/rates/{c}", "EUR").retrieve().body(Rate.class);
+```
+
+`retrieve()` throws `RestClientResponseException` on 4xx/5xx; map to your own exceptions at the boundary.
+
+### HTTP interfaces (`@HttpExchange`)
+
+```java
+@HttpExchange("/rates")
+public interface RatesClient {
+	record Rate(String currency, double value) {}
+
+	@GetExchange("/{currency}")
+	Rate get(@PathVariable String currency);
+}
+```
+
+- **Boot 4 / Framework 7:** register with `@ImportHttpServices` and configure the URL in properties (verified):
+  ```java
+  @Configuration(proxyBeanMethods = false)
+  @ImportHttpServices(group = "rates", types = RatesClient.class)
+  class HttpClientsConfig {}
+  ```
+  ```properties
+  spring.http.serviceclient.rates.base-url=https://rates.example.com
+  ```
+  then inject `RatesClient` like any bean.
+- **Boot 3.2+ / Framework 6.1+:** `@ImportHttpServices` does not exist (verified). Build the proxy manually:
+  ```java
+  var client = HttpServiceProxyFactory.builderFor(RestClientAdapter.create(restClient)).build().createClient(RatesClient.class);
+  ```
+  (`org.springframework.web.client.support.RestClientAdapter`, same on Boot 4.)
+- **Boot 3.0/3.1 / Framework 6.0:** if WebClient is already available, HTTP interfaces can use `WebClientAdapter` with the Framework 6.0 `HttpServiceProxyFactory` API. Otherwise retain the existing `RestTemplate` setup; do not introduce `RestClientAdapter` or add WebFlux implicitly.
+- **Tests (Boot 3.2+/4):** `MockRestServiceServer.bindTo(RestClient.Builder)` records and answers requests without a network (verified for both the manual and the Boot 4 setups); use WireMock only for contract-style tests with real HTTP.
+
+## OpenAPI (springdoc)
+
+springdoc is not Spring-Boot-managed: pick the line that matches the Boot major from the springdoc compatibility table and pin it. Verified: `org.springdoc:springdoc-openapi-starter-webmvc-ui` 3.1.1 on Boot 4.1.1 serves `/v3/api-docs` including controller paths (springdoc 2.x targets Boot 3). Expose Swagger UI (`/swagger-ui.html`) only in non-production profiles or behind authentication; allow the paths in `spring-security`. Document with `@Operation`/`@ApiResponse` sparingly; the controller signature and validation annotations already feed the schema.
+
+## Null-safety with JSpecify (Framework 7 / Boot 4)
+
+Spring Framework 7 and Boot 4 annotate their APIs with JSpecify (`org.jspecify.annotations`): everything is non-null unless marked `@Nullable`. In your code:
+
+- Add `@NullMarked` in `package-info.java` (verified to compile on Boot 4.1.1 where `org.jspecify:jspecify` is already on the classpath) and mark nullable parameters, returns and fields with `org.jspecify.annotations.Nullable`.
+- Replace `org.springframework.lang.Nullable`/`NonNull` (deprecated in Framework 7) with JSpecify when touching those files.
+- JSpecify is documentation for tools (IDE, NullAway, Error Prone) and does **not** validate at runtime. For request validation keep using `jakarta.validation.constraints.NotNull`/`@NotBlank`. Optional: add NullAway to the build only if the project asks for it.
 
 
 ---
@@ -36813,6 +39351,2474 @@ minipro -p AT28C256 -w rom.bin
 
 
 ---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/lightweight-charts-react-components/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/SKILL.md
+- **SHA256_FINGERPRINT**: `a9d38b722a6f2ac1e58d10ff013ebbcd3aa458a5c7affb2b6b327d0d418057ee`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.615981+00:00
+---
+
+**description**: lightweight-charts-react-components recipes for TradingView lightweight-charts in React. Candlestick, line, and area series; volume and indicator panes; realtime WebSocket updates; infinite history on scroll; crosshair OHLC legends and tooltips; trade markers and price lines; synchronized charts; numeric options and yield-curve axes. Use when adding or fixing a financial or trading chart in a React app, or when the user mentions lightweight-charts, TradingView charts in React, or this package.
+
+# lightweight-charts-react-components guide
+
+## Quick Start
+
+Let the components manage chart and series creation and cleanup. Import components
+and ref types from `lightweight-charts-react-components`; import native data, option,
+and event types from `lightweight-charts`.
+
+1. Check versions against the compatibility table below. Read declared ranges
+   from the app's `package.json`, then the installed versions from the `version`
+   field of `node_modules/<package>/package.json` for
+   `lightweight-charts-react-components`, `lightweight-charts`, `react`, and
+   `react-dom`. If the library is not installed, follow
+   [Installation](#installation). Ensure chart rendering runs in the browser,
+   within the app's client boundary.
+2. For a basic static chart, start from the minimal chart below. Otherwise, read the
+   reference matching the requested behavior. Adapt its feed and UI; preserve its
+   data contract, component nesting, and API readiness handling.
+3. Choose one data owner: pass the complete dataset through `data` for React-owned
+   updates, or use `reactive={false}` and the series API for frequent ticks.
+
+### Installation
+
+Install the wrapper together with its `lightweight-charts` peer dependency, using
+the project's package manager. React and React DOM must already be installed.
+
+```sh
+npm install lightweight-charts-react-components lightweight-charts
+```
+
+### Minimal chart
+
+```tsx
+import type { LineData, UTCTimestamp } from "lightweight-charts";
+import {
+  Chart,
+  LineSeries,
+  TimeScale,
+  TimeScaleFitContentTrigger,
+} from "lightweight-charts-react-components";
+
+// Data must be sorted ascending by time with unique times (UTC seconds here).
+export function SimpleLineChart({ data }: { data: LineData<UTCTimestamp>[] }) {
+  return (
+    // autoSize follows the container, which needs a nonzero height.
+    <Chart
+      options={{ autoSize: true }}
+      containerProps={{ style: { height: 300, width: "100%" } }}
+    >
+      <LineSeries data={data} />
+      <TimeScale>
+        <TimeScaleFitContentTrigger deps={[]} />
+      </TimeScale>
+    </Chart>
+  );
+}
+```
+
+## Examples and snippets (reference files)
+
+Read the reference matching the user's outcome. Each contains a complete TypeScript
+recipe, data and integration contracts, reasons for the architecture, failure modes,
+and acceptance checks. Combine references when a task spans several outcomes; do
+not load every reference for a simple chart.
+
+| User request                                                                         | Reference                                                                        |
+| ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| WebSocket candles, updating the current bar, stale history, excessive chart renders  | [Market data and live updates](references/market-data-and-live-updates.md)       |
+| Older history on scroll, viewport jumps, symbol/interval changes, late API responses | [History and range selection](references/history-and-range-selection.md)         |
+| Candles plus volume, moving averages, oscillator panes, independent price scales     | [Price, volume, and indicators](references/price-volume-and-indicators.md)       |
+| OHLC legend, hover details, missing data, tooltip positioning                        | [Hover legends and tooltips](references/hover-legends-and-tooltips.md)           |
+| Executions and signals, stop/target levels, click-to-place price lines               | [Trade markers and price levels](references/trade-markers-and-price-levels.md)   |
+| Compare assets with different prices, fixed-baseline returns, toggle comparisons     | [Performance comparison](references/performance-comparison.md)                   |
+| Separate charts that share scrolling, zooming, and a crosshair                       | [Synchronized charts](references/synchronized-charts.md)                         |
+| Trading-session shading, pane backgrounds, custom drawing that follows zoom          | [Session overlays and primitives](references/session-overlays-and-primitives.md) |
+| Options strikes, yield maturities, choosing a numeric or custom horizontal axis      | [Numeric axes and chart types](references/numeric-axes-and-chart-types.md)       |
+
+If no reference matches the request, tell the user that the skill has no recipe
+for it. Then build the solution from the public components and the upstream
+`lightweight-charts` API, applying the Quick Start rules and the edge cases below.
+
+### Skill compatibility
+
+The recipes are verified against the reference versions below. These are the
+tested baseline, not the latest available releases.
+
+If an installed version differs from the reference version, compare it with the
+compatibility range. Inside the range, recipes apply as written. Outside it,
+tell the user about the mismatch before writing code, because breaking API
+changes can affect the recipes, and verify every API the recipe uses against
+the installed package.
+
+| Dependency or environment             | Reference version | Compatibility range and checks                                                                                                                       |
+| ------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `lightweight-charts-react-components` | `2.6.1`           | Recipe target: `>=2.6.1 <3`. Other versions require checking installed exports, chart API refs, and reactive data behavior before adapting a recipe. |
+| `lightweight-charts`                  | `5.2.1`           | Declared peer: `>=5.0.8 <6`.                                                                                                                         |
+| React and React DOM                   | `19.2.6`          | Declared peers: `>=18.2 <20`. Keep `react` and `react-dom` on matching versions and use the application's existing React instance.                   |
+| Node.js                               | —                 | Package engines: `>=18.14.0`. The app's build tools can require a newer version.                                                                     |
+| Module system                         | ESM               | ESM `import` entry only; there is no CommonJS `require` entry.                                                                                       |
+| Rendering                             | Browser           | Charts need the DOM and canvas. Render them on the client, never during server rendering.                                                            |
+
+## Common edge cases
+
+- **Chart sizing:** Put DOM styles on `containerProps` and give the chart a
+  nonzero height.
+- **Required ancestors:** Headless chart children need a chart wrapper ancestor.
+  `Markers`, `PriceLine`, and `SeriesPrimitive` belong inside their series;
+  `PriceScale`, `Watermark`, and `PanePrimitive` require a `Pane`;
+  `TimeScaleFitContentTrigger` requires a `TimeScale`.
+- **API refs and readiness:** Use `ref.current?.api()` for the native API and
+  `containerRef` for the div. For `Chart`, use `ChartApiRef<Time, IChartApi>`.
+  `.api()` can initially return null; follow the recipe's readiness step before
+  imperative setup.
+- **Viewport resets:** To preserve scroll/zoom, keep the chart's key stable and
+  live/history updates out of fit-trigger dependencies. Fit on initial load or a
+  deliberate reset. See [range handling](references/history-and-range-selection.md).
+- **Data updates:** Use `data` for React-owned updates, or `reactive={false}` and the
+  series API when per-tick React renders are measurably costly. Avoid mixing both.
+  Reactive `data` is always the complete dataset. With wrapper 2.6.1 and
+  Lightweight Charts 5.2.1, `series.data()` reconstructs candle and line objects;
+  the wrapper's earlier-item reference comparison therefore sends multi-bar tail
+  updates through `setData()`, even when React keeps earlier references stable.
+  Keep data immutable, but use the chart-owned `reactive={false}` recipe and
+  explicit `series.update(bar)` when incremental writes are required. See
+  [live updates](references/market-data-and-live-updates.md).
+
+## Source
+
+Adapted from [ukorvl/lightweight-charts-react-components](https://github.com/ukorvl/lightweight-charts-react-components/tree/0368191127568e48aef6f7bda2ff3900e8e24756/skills/lightweight-charts-react-components)
+at commit `0368191127568e48aef6f7bda2ff3900e8e24756`. Original author: ukorvl.
+The [MIT license](LICENSE) and all nine reference recipes are retained. Local
+corrections in [live updates](references/market-data-and-live-updates.md) reject
+malformed timestamps and explain the tested versions' reactive-update limitation;
+[session overlays](references/session-overlays-and-primitives.md) clarifies the
+primitive update callback.
+The other seven references and MIT notice are unchanged. This catalog copy adds
+source attribution and operational boundaries; it does not imply TradingView
+endorsement.
+
+Recipes generate application code and can change dependencies. Follow the user's
+requested scope and the host's approval policy. Feed access belongs to the app's
+separately authorized adapter; keep credentials out of client code. Trade markers
+are visual annotations, not order execution or server-side alerts. Use synthetic
+data for local checks and report browser/feed behavior that remains untested.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/lightweight-charts-react-components/references/history-and-range-selection.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/references/history-and-range-selection.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/references/history-and-range-selection.md
+- **SHA256_FINGERPRINT**: `72e4c189c55d71497f8fc59cf46f363f9ae4f2b50b8118701283a1444ccb8220`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.629835+00:00
+---
+
+# History and range selection
+
+Use this when a user scrolls left to fetch older bars, selects a different symbol
+or interval, or switches between preset viewing windows. These are distinct
+operations: adding history should preserve the view, changing dataset identity
+should reset it, and choosing a window should change only the visible range when
+the required data is already loaded.
+
+## Recipe: prepend older history without losing the viewed bars
+
+This is a **single-series intraday chart**. `initialData` is a nonempty ascending,
+unique array of UTC-second line points. `loadOlder(before, signal)` returns
+normalized ascending points and an explicit `hasMore`. Its cursor is exclusive;
+the recipe also discards overlap defensively. Mount with a new key for a new
+dataset. The adapter owns transport, authentication, and response validation.
+
+Use chart-owned data for this recipe so `setData()` and range restoration occur
+together. Capturing the range when a request starts would undo any panning the
+user performs while waiting; capture it immediately before applying the response.
+
+```tsx
+import { useCallback, useEffect, useRef, useState } from "react";
+import type {
+  IChartApi,
+  LineData,
+  LogicalRange,
+  Time,
+  UTCTimestamp,
+} from "lightweight-charts";
+import {
+  Chart,
+  LineSeries,
+  TimeScale,
+  type ChartApiRef,
+  type SeriesApiRef,
+} from "lightweight-charts-react-components";
+
+type Point = LineData<UTCTimestamp>;
+type HistoryPage = { data: Point[]; hasMore: boolean };
+type LoadOlder = (before: UTCTimestamp, signal: AbortSignal) => Promise<HistoryPage>;
+
+export function PaginatedHistory({
+  initialData,
+  loadOlder,
+}: {
+  initialData: Point[];
+  loadOlder: LoadOlder;
+}) {
+  const [seed] = useState(() => initialData.map(point => ({ ...point })));
+  const rows = useRef(seed);
+  const chartRef = useRef<ChartApiRef<Time, IChartApi>>(null);
+  const seriesRef = useRef<SeriesApiRef<"Line">>(null);
+  const alive = useRef(false);
+  const inFlight = useRef<AbortController | null>(null);
+  const exhausted = useRef(false);
+  const failed = useRef(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const requestOlder = useCallback(async () => {
+    const series = seriesRef.current?.api();
+    const scale = chartRef.current?.api()?.timeScale();
+    const first = rows.current[0];
+    if (!alive.current || !series || !scale || !first) return;
+    if (inFlight.current || exhausted.current || failed.current) return;
+
+    // A ref locks synchronously; React loading state alone allows duplicate
+    // requests when several range events arrive before a render.
+    const controller = new AbortController();
+    inFlight.current = controller;
+    setLoading(true);
+    setError(null);
+    try {
+      const page = await loadOlder(first.time, controller.signal);
+      if (!alive.current || controller.signal.aborted) return;
+
+      const byTime = new Map<UTCTimestamp, Point>();
+      for (const point of page.data) {
+        if (point.time < first.time) byTime.set(point.time, { ...point });
+      }
+      const older = [...byTime.values()].sort((a, b) => a.time - b.time);
+      if (older.length === 0 && page.hasMore) {
+        throw new Error("History cursor made no progress");
+      }
+
+      if (older.length > 0) {
+        const visible = scale.getVisibleLogicalRange();
+        rows.current = [...older, ...rows.current];
+        series.setData(rows.current);
+        if (visible) {
+          // Each inserted point shifts the old point's index by one. Translate
+          // both bounds to keep the same old bars and the same zoom width.
+          scale.setVisibleLogicalRange({
+            from: visible.from + older.length,
+            to: visible.to + older.length,
+          });
+        }
+      }
+      exhausted.current = !page.hasMore;
+    } catch (cause) {
+      if (alive.current && !controller.signal.aborted) {
+        // Stop event-driven retries after a failure. Let the user retry once
+        // instead of turning a drag into a loop of failed network requests.
+        failed.current = true;
+        setError(cause instanceof Error ? cause.message : "History load failed");
+      }
+    } finally {
+      if (inFlight.current === controller) inFlight.current = null;
+      if (alive.current) setLoading(false);
+    }
+  }, [loadOlder]);
+
+  const onRange = useCallback(
+    (range: LogicalRange | null) => {
+      if (!range) return;
+      const bars = seriesRef.current?.api()?.barsInLogicalRange(range);
+      if (bars && bars.barsBefore < 20) void requestOlder();
+    },
+    [requestOlder]
+  );
+
+  useEffect(() => {
+    alive.current = true;
+    let frame = 0;
+    const initializeView = () => {
+      const series = seriesRef.current?.api();
+      const scale = chartRef.current?.api()?.timeScale();
+      if (!series || !scale) {
+        frame = requestAnimationFrame(initializeView);
+        return;
+      }
+      // Start near the tail. No fit trigger runs after a page is prepended.
+      scale.setVisibleLogicalRange({
+        from: Math.max(0, seed.length - 80),
+        to: seed.length - 1 + 5,
+      });
+      onRange(scale.getVisibleLogicalRange());
+    };
+    initializeView();
+    return () => {
+      alive.current = false;
+      cancelAnimationFrame(frame);
+      inFlight.current?.abort();
+    };
+  }, [seed, onRange]);
+
+  return (
+    <section>
+      <p>{loading ? "Loading older history..." : "Scroll left for older history"}</p>
+      {error && (
+        <button
+          onClick={() => {
+            failed.current = false;
+            void requestOlder();
+          }}
+        >
+          Retry: {error}
+        </button>
+      )}
+      <Chart
+        ref={chartRef}
+        options={{ autoSize: true, timeScale: { timeVisible: true } }}
+        containerProps={{ style: { height: 360 } }}
+      >
+        <LineSeries ref={seriesRef} data={seed} reactive={false} />
+        <TimeScale onVisibleLogicalRangeChange={onRange} />
+      </Chart>
+    </section>
+  );
+}
+```
+
+Keep `loadOlder` stable for one dataset. Changing it restarts the view initialization
+effect; changing the dataset should instead remount with a new key. The cancellation
+check protects against transports that resolve even after abort.
+
+The index translation above assumes each prepended point adds one chart timeline
+position. With several series, logical indices refer to their **union of times**.
+Build one aligned timeline for all series and calculate the number of newly added
+timeline positions. Do not shift by the page length of an arbitrary indicator.
+If a live feed also owns the tail, merge against the current history at response
+time and apply updates through the same data owner; do not let the captured request
+snapshot overwrite newer ticks.
+
+## Recipe: symbol or interval replacement with stale-response protection
+
+Here the API returns a complete normalized OHLC snapshot. Copy this as a separate
+module. A selection ID labels each response, and a chart is mounted only for the
+matching result. This prevents showing the prior symbol under the new label and
+gives the new dataset its own initial fit.
+
+```tsx
+import { useEffect, useState } from "react";
+import type { CandlestickData, UTCTimestamp } from "lightweight-charts";
+import {
+  CandlestickSeries,
+  Chart,
+  TimeScale,
+  TimeScaleFitContentTrigger,
+} from "lightweight-charts-react-components";
+
+type Interval = "1h" | "1d";
+type Selection = { symbol: string; interval: Interval };
+type Snapshot = CandlestickData<UTCTimestamp>[];
+type LoadSnapshot = (selection: Selection, signal: AbortSignal) => Promise<Snapshot>;
+
+export function InstrumentHistory({ loadSnapshot }: { loadSnapshot: LoadSnapshot }) {
+  const [selection, setSelection] = useState<Selection>({
+    symbol: "ASSET_A",
+    interval: "1d",
+  });
+  // The effect depends on these values: re-clicking the current interval creates a
+  // new selection object but must not refetch or reset the view.
+  const { symbol, interval } = selection;
+  const id = `${symbol}:${interval}`;
+  const [result, setResult] = useState<{ id: string; data: Snapshot } | null>(null);
+  const [error, setError] = useState<{ id: string; message: string } | null>(null);
+  const [retry, setRetry] = useState(0);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    let active = true;
+    setResult(null);
+    setError(null);
+    void loadSnapshot({ symbol, interval }, controller.signal).then(
+      data => {
+        if (active) setResult({ id, data });
+      },
+      cause => {
+        if (active) {
+          setError({
+            id,
+            message: cause instanceof Error ? cause.message : "Load failed",
+          });
+        }
+      }
+    );
+    return () => {
+      active = false;
+      controller.abort();
+    };
+  }, [id, symbol, interval, loadSnapshot, retry]);
+
+  const current = result?.id === id ? result : null;
+  return (
+    <section>
+      <select
+        aria-label="Instrument"
+        value={selection.symbol}
+        onChange={event =>
+          setSelection(previous => ({ ...previous, symbol: event.target.value }))
+        }
+      >
+        <option value="ASSET_A">Asset A</option>
+        <option value="ASSET_B">Asset B</option>
+      </select>
+      <button onClick={() => setSelection(previous => ({ ...previous, interval: "1h" }))}>
+        Hourly
+      </button>
+      <button onClick={() => setSelection(previous => ({ ...previous, interval: "1d" }))}>
+        Daily
+      </button>
+      {error?.id === id ? (
+        <button onClick={() => setRetry(value => value + 1)}>
+          Retry: {error.message}
+        </button>
+      ) : !current ? (
+        <p>Loading {id}...</p>
+      ) : current.data.length === 0 ? (
+        <p>No history for {id}</p>
+      ) : (
+        <Chart
+          key={id}
+          options={{
+            autoSize: true,
+            timeScale: { timeVisible: selection.interval === "1h" },
+          }}
+          containerProps={{ style: { height: 360 } }}
+        >
+          <CandlestickSeries data={current.data} alwaysReplaceData />
+          <TimeScale>
+            <TimeScaleFitContentTrigger deps={[]} />
+          </TimeScale>
+        </Chart>
+      )}
+    </section>
+  );
+}
+```
+
+Supply a stable `loadSnapshot` adapter. If a same-symbol refresh should preserve
+zoom, keep the chart mounted, replace the full data array, and avoid a new fit
+trigger. The recipe intentionally resets on selection because the data identity
+and interval changed.
+
+For a preset such as “last month” over already-loaded data, keep the series data
+intact and call `timeScale.setVisibleRange({ from, to })` with matching time types,
+or update `TimeScale`'s `visibleRange` prop after initialization. For “last 100
+bars,” use logical bounds. Do not pass visible-range bounds and a fit trigger for
+the same interaction: the fit trigger can overwrite the requested range.
+Changing `timeVisible` formats an axis; it does not aggregate daily bars into
+hourly bars. The data adapter must return the chosen granularity.
+
+## Acceptance checks
+
+- Drag left rapidly: one request is in flight, overlapping timestamps are not
+  duplicated, and the bars visible at response time stay visible after prepend.
+- Pan again before the response arrives; the eventual response preserves that
+  later view. Keep scrolling until `hasMore` is false; requests stop.
+- Simulate an error: the chart remains usable and retry is explicit. Unmount
+  while fetching: no response updates a removed chart.
+- Select A, B, and a new interval rapidly. Return A's response last and verify
+  that only the final selection renders. Cover empty snapshots and retry.
+- Click the interval that is already selected: no request starts and the chart
+  keeps its zoom and scroll position.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/lightweight-charts-react-components/references/hover-legends-and-tooltips.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/references/hover-legends-and-tooltips.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/references/hover-legends-and-tooltips.md
+- **SHA256_FINGERPRINT**: `7c4c0a85bdbbc57945738e2a55eabf3c6580d2644ff7e5363fe5222347065fd1`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.627526+00:00
+---
+
+# Hover legends and tooltips
+
+Use this for “show OHLC under the cursor,” a persistent latest-bar legend, or a
+floating details box. The chart renders a canvas; the wrapper supplies event
+handlers but no tooltip or legend UI. Keep the HTML details alongside the chart
+in a positioned application container.
+
+## Architecture choices
+
+- Use `onCrosshairMove` on `Chart`; the wrapper owns subscription and cleanup.
+  Do not also call `subscribeCrosshairMove()` for the same handler.
+- Look up `param.seriesData` by the **native series API** returned by
+  `seriesRef.current.api()`. The map is not keyed by wrapper refs or string IDs.
+- The map can omit a series at a given time. Check presence and the appropriate
+  shape (`close` for candles, `value` for lines/histograms) before reading values.
+- Keep selection by time and read current data from the application snapshot.
+  Updating the currently hovered candle then updates the legend even when the
+  pointer stays still. Comparing only timestamps would leave stale OHLC values.
+- Ignore identical selection/position updates. Native option/data updates can
+  emit crosshair events; always creating new React state can feed back into
+  another options update and cause a render loop. Selection equality is safe
+  here because displayed OHLC comes from current data, not cached event values.
+- `param.point` is local to the chart pane, not the viewport. This recipe is for
+  one pane; add each pane's DOM offset for tooltips over a multi-pane chart.
+
+## Recipe: live OHLC legend and clamped tooltip
+
+`data` is normalized, ascending, unique UTC-second candles; the initial snapshot
+is ready before mounting. The application owns live updates through the complete
+array. Copy this as one component module. The details are React text, so symbol
+labels and values are not interpolated into `innerHTML`.
+
+```tsx
+import { useCallback, useMemo, useRef, useState } from "react";
+import type { CandlestickData, MouseEventParams, UTCTimestamp } from "lightweight-charts";
+import {
+  CandlestickSeries,
+  Chart,
+  TimeScale,
+  TimeScaleFitContentTrigger,
+  type SeriesApiRef,
+} from "lightweight-charts-react-components";
+
+type Hover = { time: UTCTimestamp; x: number; y: number };
+const tooltipWidth = 190;
+const tooltipHeight = 96;
+const chartOptions = { autoSize: true, timeScale: { timeVisible: true } };
+
+export function CandleDetails({
+  symbol,
+  data,
+}: {
+  symbol: string;
+  data: CandlestickData<UTCTimestamp>[];
+}) {
+  const seriesRef = useRef<SeriesApiRef<"Candlestick">>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [hover, setHover] = useState<Hover | null>(null);
+  const byTime = useMemo(() => new Map(data.map(bar => [bar.time, bar])), [data]);
+  const selected = hover ? byTime.get(hover.time) : undefined;
+  // Leaving the plot, missing data, and an empty dataset are distinct states.
+  const legend = selected ?? data[data.length - 1];
+
+  const onCrosshairMove = useCallback((param: MouseEventParams) => {
+    const series = seriesRef.current?.api();
+    const container = containerRef.current;
+    const point = param.point;
+    if (
+      !series ||
+      !container ||
+      !point ||
+      typeof param.time !== "number" ||
+      point.x < 0 ||
+      point.y < 0 ||
+      point.x > container.clientWidth ||
+      point.y > container.clientHeight
+    ) {
+      setHover(null);
+      return;
+    }
+    const bar = param.seriesData.get(series);
+    if (!bar || !("close" in bar)) {
+      setHover(null);
+      return;
+    }
+    // Clamp in the same coordinate system as the positioned chart container.
+    // If the card is narrower than the tooltip, CSS also shrinks its width.
+    const width = Math.min(tooltipWidth, container.clientWidth);
+    const x = Math.max(0, Math.min(point.x + 12, container.clientWidth - width));
+    const y = Math.max(0, Math.min(point.y + 12, container.clientHeight - tooltipHeight));
+    const next = { time: param.time as UTCTimestamp, x, y };
+    // Native updates can emit the same crosshair event without pointer movement.
+    // Preserve state identity in that case; current data still refreshes OHLC.
+    setHover(previous =>
+      previous?.time === next.time && previous.x === x && previous.y === y
+        ? previous
+        : next
+    );
+  }, []);
+
+  const describe = (bar: CandlestickData<UTCTimestamp>) =>
+    `O ${bar.open.toFixed(2)} · H ${bar.high.toFixed(2)} · L ${bar.low.toFixed(2)} · C ${bar.close.toFixed(2)}`;
+
+  return (
+    <section style={{ minWidth: 0 }}>
+      <p>
+        {symbol}: {legend ? describe(legend) : "No data"}
+      </p>
+      <div style={{ position: "relative" }}>
+        <Chart
+          containerRef={containerRef}
+          containerProps={{ style: { height: 360 } }}
+          options={chartOptions}
+          onCrosshairMove={onCrosshairMove}
+        >
+          <CandlestickSeries ref={seriesRef} data={data} />
+          <TimeScale>
+            <TimeScaleFitContentTrigger deps={[]} />
+          </TimeScale>
+        </Chart>
+        {hover && selected && (
+          <div
+            style={{
+              position: "absolute",
+              left: hover.x,
+              top: hover.y,
+              width: tooltipWidth,
+              maxWidth: "100%",
+              height: tooltipHeight,
+              boxSizing: "border-box",
+              padding: 10,
+              background: "#0f172a",
+              color: "white",
+              borderRadius: 4,
+              pointerEvents: "none", // Hover details must not steal chart pointer events.
+              zIndex: 2,
+            }}
+          >
+            <strong>{symbol}</strong>
+            <div>{new Date(selected.time * 1000).toISOString().slice(0, 16)} UTC</div>
+            <div style={{ fontSize: 12 }}>{describe(selected)}</div>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+```
+
+The plain 2-decimal formatter is appropriate only for assets with that precision.
+Use the same precision as the series' `priceFormat` for other tick sizes. For
+business dates, format the date fields directly; a numeric timestamp is epoch
+seconds and requires multiplying by 1000 before constructing a `Date`.
+
+This recipe falls back to the latest candle when the hovered series has no
+data. If the user wants to distinguish a gap from leaving the chart, keep an
+explicit “gap” state and show “No bar at this time” instead. A timezone or locale
+formatter changes labels, never the underlying bar timestamps.
+
+## Adaptation: several series or a fixed legend
+
+For several lines, keep refs indexed by a stable application series ID. For each
+series, retrieve its native API, then read `param.seriesData.get(api)`. Display
+`—` when the map has no point; do not show another asset's value at the same
+logical index. Derive labels/colors from the application's ID mapping, not the
+order in which map entries happen to appear.
+
+For a fixed legend, omit the floating box and position updates. Keep the selected
+time and derive the displayed values from the latest data, as above. For very
+high pointer-event rates, batch the HTML update with `requestAnimationFrame`;
+cancel the pending frame on cleanup. Avoid writing React state for every series
+separately within one crosshair callback.
+
+For a tooltip in a scrollable portal attached to `document.body`, convert the
+chart-local coordinate using `getBoundingClientRect()` and the portal's positioning
+model. Do not reuse the local x/y unchanged as page coordinates. With multiple
+panes, `param.paneIndex` identifies the source pane; compute its offset or put the
+tooltip inside the appropriate pane container.
+
+## Acceptance checks
+
+- Hover first/last bars and whitespace; leave the canvas and price axis. Missing
+  map entries never throw, the floating box disappears, and the legend falls back.
+- Update a hovered candle at the same timestamp without moving the pointer.
+  Its OHLC changes in the legend and tooltip.
+- Hover near all four edges at a narrow width. The box remains inside the chart
+  and does not prevent dragging, scrolling, or crosshair movement.
+- Do not suppress legend updates when only the hovered timestamp matches: a live
+  same-bar revision keeps the time but changes the values. Guard against a
+  missing lookup entry before reading candle fields.
+- For multi-series adaptation, test different calendars and missing points.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/lightweight-charts-react-components/references/market-data-and-live-updates.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/references/market-data-and-live-updates.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/references/market-data-and-live-updates.md
+- **SHA256_FINGERPRINT**: `aaf3615adcb32a33d5f2190fe4f19ed04cd479601b8b0529d310a0293be3250d`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.650261+00:00
+---
+
+# Market data and live updates
+
+Use this for a quote screen or trading terminal that loads OHLC history and then
+receives bar snapshots from a socket. The usual pains are duplicate timestamps,
+milliseconds treated as seconds, stale candles after a refetch, and a chart that
+keeps zooming out while the user reads history.
+
+## Decide who owns the complete history
+
+| Data flow                                                    | Implementation                                            | Reason                                                  |
+| ------------------------------------------------------------ | --------------------------------------------------------- | ------------------------------------------------------- |
+| Modest update rate; other React UI needs the history         | Full array in `data`, default `reactive`                  | One source of truth for the chart and application       |
+| A snapshot, refetch, prepend, trim, or historical correction | Replace the full array; optionally `alwaysReplaceData`    | The chart must match the supplied history exactly       |
+| Frequent ticks; chart does not need to render React per tick | `reactive={false}`, then `ref.current.api()?.update(bar)` | The chart owns ongoing updates; React owns its lifetime |
+
+Reactive `data` always means the **entire desired dataset**. Passing `[latestBar]`
+replaces history. The wrapper's incremental path compares earlier item references
+against `series.data()`. With wrapper **2.6.1** and Lightweight Charts **5.2.1**,
+that API reconstructs candle and line objects, so multi-bar tail replacements and
+appends use `setData()` even when React preserves earlier object references.
+Treat the React-owned recipe as complete-history replacement on this baseline.
+For frequent incremental writes, use the chart-owned recipe below with
+`reactive={false}` and explicit `series.update(bar)`.
+
+`reactive={false}` still calls `setData(data)` during initialization. It ignores
+subsequent data prop changes. Do not combine imperative ticks with a reactive
+snapshot that can overwrite them.
+
+## Normalize the feed at the boundary
+
+This adapter expects **complete candle snapshots**, not individual trades. Build
+OHLC aggregation upstream if the feed contains trade prices. `timestampMs` is the
+bar-open instant in UTC milliseconds. A payload that revises the same bar appears
+later in the response and wins. Invalid data is rejected rather than plotted.
+
+```ts file=market-data.ts
+import type { CandlestickData, UTCTimestamp } from "lightweight-charts";
+
+export type Candle = CandlestickData<UTCTimestamp>;
+export type WireCandle = {
+  timestampMs: number;
+  open: number | string;
+  high: number | string;
+  low: number | string;
+  close: number | string;
+};
+
+export function normalizeCandle(row: WireCandle): Candle {
+  // Reject runtime coercion of null, strings, and booleans to epoch seconds.
+  if (typeof row.timestampMs !== "number") {
+    throw new Error("Invalid candle timestamp");
+  }
+  const seconds = row.timestampMs / 1000;
+  const prices = [row.open, row.high, row.low, row.close].map(value => {
+    // The wire type is not a runtime guarantee, and Number() turns null and blank
+    // strings into 0, which would pass the range checks below.
+    if (typeof value === "number") return value;
+    if (typeof value === "string" && value.trim() !== "") return Number(value);
+    throw new Error("Missing OHLC price");
+  });
+  const [open, high, low, close] = prices;
+  if (
+    !Number.isSafeInteger(seconds) ||
+    !prices.every(Number.isFinite) ||
+    low > Math.min(open, close) ||
+    high < Math.max(open, close) ||
+    low > high
+  ) {
+    throw new Error("Invalid candle snapshot");
+  }
+  // The brand expresses validated epoch seconds; it does not perform conversion.
+  return { time: seconds as UTCTimestamp, open, high, low, close };
+}
+
+export function normalizeHistory(rows: WireCandle[]): Candle[] {
+  const byTime = new Map<UTCTimestamp, Candle>();
+  for (const row of rows) {
+    const candle = normalizeCandle(row);
+    byTime.set(candle.time, candle);
+  }
+  return [...byTime.values()].sort((a, b) => a.time - b.time);
+}
+
+export function upsertLatest(history: Candle[], bar: Candle): Candle[] {
+  const last = history[history.length - 1];
+  if (!last || bar.time > last.time) return [...history, bar];
+  if (bar.time === last.time) return [...history.slice(0, -1), bar];
+  // This tail-only path rejects late history. Reconcile corrections separately
+  // into a complete snapshot, then replace data instead of appending them.
+  return history;
+}
+```
+
+Keep daily business dates as `YYYY-MM-DD` or `BusinessDay` when the source is a
+calendar-day series. Do not convert those dates through the browser's local time
+zone. An intraday feed should consistently use UTC seconds. Do not mix time
+representations or infer seconds versus milliseconds from an arbitrary threshold.
+
+## Recipe: React-owned live candles
+
+Save the adapter above as `market-data.ts`, then this component as
+`LiveCandles.tsx`. The subscription adapter delivers normalized complete candles
+and returns an unsubscribe function. It must cover the snapshot-to-subscription
+gap using the provider's cursor/replay protocol. It must also reject stale same-bar
+revisions using the provider's sequence number when one exists; timestamp order
+alone cannot order revisions of one candle.
+
+```tsx file=LiveCandles.tsx
+import { useEffect, useState } from "react";
+import {
+  CandlestickSeries,
+  Chart,
+  TimeScale,
+  TimeScaleFitContentTrigger,
+} from "lightweight-charts-react-components";
+import { upsertLatest, type Candle } from "./market-data";
+
+export type SubscribeBars = (receive: (bar: Candle) => void) => () => void;
+
+export function LiveCandles({
+  initialData,
+  subscribe,
+}: {
+  initialData: Candle[];
+  subscribe: SubscribeBars;
+}) {
+  // Mount with a key containing symbol + interval + snapshot revision when the
+  // dataset identity changes. initialData is intentionally a mount-time seed.
+  const [data, setData] = useState<Candle[]>(() => initialData.map(bar => ({ ...bar })));
+
+  useEffect(() => {
+    let active = true;
+    const unsubscribe = subscribe(bar => {
+      if (active) setData(previous => upsertLatest(previous, { ...bar }));
+    });
+    return () => {
+      active = false;
+      unsubscribe();
+    };
+  }, [subscribe]);
+
+  return (
+    <section style={{ minWidth: 0 }}>
+      <Chart
+        containerProps={{ style: { height: 360, width: "100%" } }}
+        options={{
+          autoSize: true,
+          timeScale: { timeVisible: true, secondsVisible: false },
+        }}
+      >
+        <CandlestickSeries data={data} />
+        <TimeScale>
+          {/* A stable trigger fits once. Every tick must preserve user zoom. */}
+          <TimeScaleFitContentTrigger deps={[]} />
+        </TimeScale>
+      </Chart>
+    </section>
+  );
+}
+```
+
+The wrapper itself defaults only `addDefaultPane` to `false`; it does **not**
+enable `autoSize`. Set `autoSize: true` explicitly and give the wrapper a nonzero
+height. Width can follow its parent. Flex/grid cards often need `minWidth: 0` on
+the card to allow shrinking. Use `containerRef` for the DOM node and the chart
+`ref` for its API wrapper; these are different references.
+
+For a Next.js App Router integration, put `"use client"` at the top of the chart's
+client module. If its surrounding setup still cannot prerender the chart, load
+that module through a client-side dynamic boundary with `ssr: false`. Do not access
+`window` or create chart APIs during server rendering. See the
+[Next.js client-only loading guidance](https://nextjs.org/docs/app/guides/lazy-loading#skipping-ssr)
+for placement of that boundary.
+
+## Recipe: chart-owned ticks
+
+Use this alternative when the chart must consume many snapshots without a React
+render for each one. The subscription contract remains the same. The chart and
+series refs expose wrapper objects: the native APIs are returned by `.api()`.
+A non-null wrapper ref can still contain a null API until initialization finishes.
+
+```tsx
+import { useEffect, useRef, useState } from "react";
+import type { IChartApi, Time, UTCTimestamp } from "lightweight-charts";
+import {
+  CandlestickSeries,
+  Chart,
+  type ChartApiRef,
+  type SeriesApiRef,
+} from "lightweight-charts-react-components";
+import type { Candle } from "./market-data";
+import type { SubscribeBars } from "./LiveCandles";
+
+export function ImperativeCandles({
+  initialData,
+  subscribe,
+}: {
+  initialData: Candle[];
+  subscribe: SubscribeBars;
+}) {
+  const chartRef = useRef<ChartApiRef<Time, IChartApi>>(null);
+  const seriesRef = useRef<SeriesApiRef<"Candlestick">>(null);
+  // The seed stays stable; mount with a new key for another dataset identity.
+  const [seed] = useState(() => initialData.map(bar => ({ ...bar })));
+
+  const fitted = useRef(false);
+
+  useEffect(() => {
+    let active = true;
+    let frame = 0;
+    let unsubscribe: (() => void) | undefined;
+
+    const startWhenReady = () => {
+      if (!active) return;
+      const chart = chartRef.current?.api();
+      const series = seriesRef.current?.api();
+      if (!chart || !series) {
+        frame = requestAnimationFrame(startWhenReady);
+        return;
+      }
+      // Fit after initialization, then leave the viewport to the user.
+      if (!fitted.current) {
+        fitted.current = true;
+        chart.timeScale().fitContent();
+      }
+      // After a resubscribe the series can hold newer bars than the seed, and
+      // update() throws on a bar older than the series tail.
+      const current = series.data();
+      let lastTime = current[current.length - 1]?.time as UTCTimestamp | undefined;
+      unsubscribe = subscribe(bar => {
+        if (!active || (lastTime !== undefined && bar.time < lastTime)) return;
+        series.update({ ...bar });
+        lastTime = bar.time;
+      });
+    };
+    startWhenReady();
+    return () => {
+      active = false;
+      cancelAnimationFrame(frame);
+      unsubscribe?.();
+    };
+  }, [subscribe]);
+
+  return (
+    <Chart
+      ref={chartRef}
+      options={{ autoSize: true, timeScale: { timeVisible: true } }}
+      containerProps={{ style: { height: 360 } }}
+    >
+      <CandlestickSeries ref={seriesRef} data={seed} reactive={false} />
+    </Chart>
+  );
+}
+```
+
+Keep `subscribe` stable: each new function closes and reopens the feed.
+
+For explicit “Live” controls, call `chartRef.current?.api()?.timeScale().scrollToRealTime()`
+from the control handler. `fitContent()` shows the entire dataset; it does not mean
+“follow the last bar.” Upstream `shiftVisibleRangeOnNewBar` normally shifts only
+when the last bar is visible. For controlled follow mode, turn automatic shifting
+off and scroll after accepted updates only when follow mode is enabled.
+
+## Failure modes and acceptance checks
+
+- Rebuild the full snapshot when older bars are corrected. Tail-only examples
+  deliberately ignore older updates; reconnect recovery must replace history.
+- Pause drawing by stopping/buffering feed application if desired. Toggling
+  `reactive` does not stop the socket or give an imperative chart a replay buffer.
+- A trim or a batch append may call `setData()`; do not mutate earlier objects in
+  place and expect the wrapper to detect that mutation.
+- Avoid cloning the complete dataset on every render (for example `data.map(...)`
+  in JSX): it allocates unnecessarily and can retrigger the reactive data effect.
+  Preserving references does not bypass the baseline's `setData()` limitation
+  above. Use the chart-owned recipe when frequent full replacements are costly.
+- Confirm initial data is sorted and unique; a same-time update replaces exactly
+  one bar; a later-time update adds one; an older-time update follows the chosen
+  correction policy. Pan left, update, and verify the user's viewport remains.
+- In the chart-owned recipe, change `subscribe` after live bars arrive and replay
+  an older bar: nothing throws, the bar is ignored, and the viewport does not move.
+- Change symbol/interval and verify the old subscription is disposed and no old
+  bars enter the new chart. Check a narrow card and a client-rendered route for a
+  nonzero canvas size.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/lightweight-charts-react-components/references/numeric-axes-and-chart-types.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/references/numeric-axes-and-chart-types.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/references/numeric-axes-and-chart-types.md
+- **SHA256_FINGERPRINT**: `8a75a0643ad5f772b6446c23749f84c69c8fbd86253c3a021c6b3f3d64a02a9c`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.621805+00:00
+---
+
+# Numeric axes and chart types
+
+Use this for an options surface slice over strikes, a payoff profile over
+underlying prices, a yield curve over maturities, or a custom horizontal scale.
+The misleading part is that upstream series call the x field `time` even when
+the horizontal item is a **number representing a strike or maturity**.
+
+## Choose the chart constructor from the horizontal domain
+
+| Horizontal domain                            | Wrapper                 | Series/type contract                               |
+| -------------------------------------------- | ----------------------- | -------------------------------------------------- |
+| Dates or UTC time                            | `Chart`                 | `Time`, including UTC-second timestamps            |
+| Strike / underlying price                    | `OptionsChart`          | `number`, e.g. `LineData<number>`                  |
+| Time to maturity in one numeric unit         | `YieldCurveChart`       | `number`; only `LineSeries` and `AreaSeries`       |
+| A genuinely different horizontal behavior    | `CustomChart`           | Explicit `IHorzScaleBehavior<HorzScaleItem>`       |
+| Existing dates with a different label format | Usually `Chart` options | A formatter may be enough; no new domain is needed |
+
+Do not convert strikes into `UTCTimestamp` just to satisfy `Chart` typings.
+For yield curves, decide whether one x unit is a month or a year and keep every
+dataset and formatter consistent. All numeric x values must be finite, ascending,
+and unique. A refreshed curve is normally a full snapshot, not an appended tick.
+
+## Recipe: implied volatility by strike
+
+The pricing/market-data layer supplies volatility **in percentage points**, so
+24.5 means 24.5%, not 0.245. This component visualizes those observations; it does
+not price options or calculate volatility. Different expiries can be represented
+by separate line series when they use the same strike domain.
+
+```tsx
+import type { DeepPartial, LineData, PriceChartOptions } from "lightweight-charts";
+import {
+  LineSeries,
+  OptionsChart,
+  TimeScale,
+  TimeScaleFitContentTrigger,
+} from "lightweight-charts-react-components";
+
+const strikeOptions = {
+  autoSize: true,
+  // Built-in horizontal ticks use precision. timeFormatter formats the
+  // horizontal crosshair label; the series controls the vertical value format.
+  localization: {
+    precision: 0,
+    timeFormatter: (strike: number) => `$${strike.toFixed(0)}`,
+  },
+} satisfies DeepPartial<PriceChartOptions>;
+
+export function VolatilitySmile({
+  data,
+  expiryId,
+}: {
+  data: LineData<number>[];
+  expiryId: string;
+}) {
+  return (
+    <OptionsChart
+      key={expiryId}
+      options={strikeOptions}
+      containerProps={{ style: { height: 320 } }}
+    >
+      <LineSeries<number>
+        data={data}
+        alwaysReplaceData
+        options={{
+          color: "#2563eb",
+          priceLineVisible: false,
+          priceFormat: {
+            type: "custom",
+            minMove: 0.01,
+            formatter: (value: number) => `${value.toFixed(2)}%`,
+          },
+        }}
+      />
+      <TimeScale<number>>
+        <TimeScaleFitContentTrigger deps={[]} />
+      </TimeScale>
+    </OptionsChart>
+  );
+}
+
+export const exampleSmile: LineData<number>[] = [
+  { time: 80, value: 31.2 },
+  { time: 90, value: 26.5 },
+  { time: 100, value: 24.5 },
+  { time: 110, value: 25.7 },
+  { time: 120, value: 29.1 },
+];
+```
+
+`expiryId` changes dataset identity and resets the chart's initial view. Routine
+quote refreshes keep it stable and replace data without fitting each refresh.
+Choose strike precision from the instrument; whole-dollar labels here are merely
+the sample domain. Numeric x ticks are whole strikes, and the horizontal crosshair
+label includes the currency prefix. A payoff chart uses the same wrapper with y
+values and a formatter representing payoff currency instead of volatility.
+
+Do not use `localization.priceFormatter` to label strikes: it overrides the
+**vertical** price-scale formatter, including a series custom price formatter.
+The built-in numeric horizontal behavior uses `localization.precision` for ticks
+and `localization.timeFormatter` for the horizontal crosshair label. Formatting
+every horizontal tick with a prefix requires an appropriate custom behavior.
+
+## Recipe: current and previous yield curves
+
+Both datasets use **months to maturity** for x and percentage points for y. The
+wrapper configures upstream yield-curve semantics; it is not a date-time chart
+with labels renamed. The two lines share a scale so their levels are comparable.
+
+```tsx
+import type { DeepPartial, LineData, YieldCurveChartOptions } from "lightweight-charts";
+import {
+  LineSeries,
+  TimeScale,
+  TimeScaleFitContentTrigger,
+  YieldCurveChart,
+} from "lightweight-charts-react-components";
+
+const yieldOptions = {
+  autoSize: true,
+  localization: { priceFormatter: (value: number) => `${value.toFixed(2)}%` },
+  yieldCurve: {
+    startTimeRange: 0,
+    minimumTimeRange: 360,
+    formatTime: (months: number) => (months < 12 ? `${months}M` : `${months / 12}Y`),
+  },
+} satisfies DeepPartial<YieldCurveChartOptions>;
+
+export function YieldComparison({
+  current,
+  previous,
+  curveId,
+}: {
+  current: LineData<number>[];
+  previous: LineData<number>[];
+  curveId: string;
+}) {
+  return (
+    <YieldCurveChart
+      key={curveId}
+      options={yieldOptions}
+      containerProps={{ style: { height: 320 } }}
+    >
+      <LineSeries<number>
+        data={current}
+        alwaysReplaceData
+        options={{ color: "#2563eb", priceLineVisible: false }}
+      />
+      <LineSeries<number>
+        data={previous}
+        alwaysReplaceData
+        options={{ color: "#94a3b8", lineStyle: 2, priceLineVisible: false }}
+      />
+      <TimeScale<number>>
+        <TimeScaleFitContentTrigger deps={[]} />
+      </TimeScale>
+    </YieldCurveChart>
+  );
+}
+
+export const exampleYields: LineData<number>[] = [
+  { time: 1, value: 4.8 },
+  { time: 6, value: 4.5 },
+  { time: 12, value: 4.1 },
+  { time: 60, value: 3.7 },
+  { time: 120, value: 3.6 },
+  { time: 360, value: 3.8 },
+];
+```
+
+`YieldCurveChart` accepts only line and area series through the wrapper's runtime
+guard. Do not add candle, bar, histogram, or custom series to this chart. The
+minimum 360-month span is an explicit display choice here; adapt it to the
+product's intended tenor domain. Negative yield values remain legitimate y data;
+do not clamp them to zero.
+
+## Recipe: reuse upstream time behavior for quarterly labels
+
+This is a custom behavior example when an application chooses to package its
+quarterly formatting as an upstream horizontal-scale behavior. For simple label
+changes, ordinary `timeScale.tickMarkFormatter` and `localization.timeFormatter`
+on `Chart` are smaller. Extend the default behavior instead of reimplementing
+sorting, time conversion, caching, and tick generation.
+
+```tsx
+import { useState } from "react";
+import { defaultHorzScaleBehavior } from "lightweight-charts";
+import type { LineData, LocalizationOptions, TickMark, Time } from "lightweight-charts";
+import {
+  CustomChart,
+  LineSeries,
+  TimeScale,
+  TimeScaleFitContentTrigger,
+} from "lightweight-charts-react-components";
+
+function quarterLabel(time: Time): string {
+  const date =
+    typeof time === "number"
+      ? new Date(time * 1000)
+      : typeof time === "string"
+        ? new Date(`${time}T00:00:00Z`)
+        : new Date(Date.UTC(time.year, time.month - 1, time.day));
+  return `Q${Math.floor(date.getUTCMonth() / 3) + 1} ${date.getUTCFullYear()}`;
+}
+
+const DefaultTimeBehavior = defaultHorzScaleBehavior();
+function isTime(time: unknown): time is Time {
+  return (
+    typeof time === "number" ||
+    typeof time === "string" ||
+    (typeof time === "object" &&
+      time !== null &&
+      "year" in time &&
+      typeof time.year === "number" &&
+      "month" in time &&
+      typeof time.month === "number" &&
+      "day" in time &&
+      typeof time.day === "number")
+  );
+}
+
+class QuarterBehavior extends DefaultTimeBehavior {
+  override formatTickmark(
+    mark: TickMark,
+    _localization: LocalizationOptions<Time>
+  ): string {
+    // TickMark.originalTime is unknown; narrow it before formatting.
+    return isTime(mark.originalTime)
+      ? quarterLabel(mark.originalTime)
+      : super.formatTickmark(mark, _localization);
+  }
+}
+
+export function QuarterlyChart({ data }: { data: LineData<Time>[] }) {
+  // This constructor behavior belongs to one chart instance. Changing the
+  // behavior later requires a chart remount rather than an options update.
+  const [behavior] = useState(() => new QuarterBehavior());
+  return (
+    <CustomChart<Time, QuarterBehavior>
+      horzScaleBehavior={behavior}
+      options={{ autoSize: true, localization: { timeFormatter: quarterLabel } }}
+      containerProps={{ style: { height: 320 } }}
+    >
+      <LineSeries data={data} />
+      <TimeScale>
+        <TimeScaleFitContentTrigger deps={[]} />
+      </TimeScale>
+    </CustomChart>
+  );
+}
+```
+
+Use quarterly observations for quarterly labels; applying this formatter to
+daily observations can produce repeated quarter labels. The `time` field still
+contains valid dates/UTC times. For a non-time domain, implement its actual
+`IHorzScaleBehavior` contract and pass the matching horizontal type through
+`CustomChart`, series, `TimeScale`, refs, and handlers. Do not use a cast to mask
+an incompatible horizontal domain.
+
+## Refs, events, and acceptance checks
+
+Numeric charts' handlers receive `MouseEventParams<number>`. A hovered `param.time`
+is a strike or tenor, not epoch seconds. Format it with that domain's formatter;
+do not call `new Date(param.time * 1000)`. Numeric series refs use
+`SeriesApiRef<"Line", number>`; numeric scale refs use `TimeScaleApiRef<number>`.
+For native chart methods, type the wrapper ref with the corresponding upstream
+`IChartApiBase<number>` or `IYieldCurveChartApi` API type.
+
+- Verify a strike at 100 is labeled as a strike and volatility 24.5 as 24.5%.
+  Refresh the entire smile and ensure removed strikes disappear.
+- Verify tenors 6, 12, and 120 mean 6M, 1Y, and 10Y. Test negative yields and
+  both curves on one scale. Change curve identity and verify the initial range.
+- Confirm non-line/area series are rejected for yield curves. Check that custom
+  behavior instances remain stable during unrelated application renders.
+- Hover every chart type and verify the correct horizontal item type reaches
+  the tooltip. Test quarterly labels around year and timezone boundaries.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/lightweight-charts-react-components/references/performance-comparison.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/references/performance-comparison.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/references/performance-comparison.md
+- **SHA256_FINGERPRINT**: `a7a2ed3d8061ac135b59b10c98f40690337a0c9def8018a3d35f08e9953e5152`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.734738+00:00
+---
+
+# Performance comparison
+
+Use this when users want to compare several assets whose raw prices differ by
+orders of magnitude. A line at 200 and a line at 2 are rarely a useful performance
+comparison. Choose and name the comparison baseline before picking a scale mode.
+
+## Two meanings of percentage comparison
+
+| Product requirement                            | Data and scale                                              | Consequence                                             |
+| ---------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------- |
+| Relative movement from the first visible value | Raw prices with `PriceScaleMode.Percentage`                 | Baseline can move when the viewport moves               |
+| Return since a fixed date or session open      | Calculate returns upstream, plot on `PriceScaleMode.Normal` | Panning cannot change the meaning of the plotted return |
+
+The recipe below uses a fixed shared baseline. Do not apply percentage scale mode
+again to already-calculated returns. It would normalize data a second time and
+the starting zero is unsuitable as a percentage denominator.
+
+## Recipe: aligned, fixed-baseline return comparison
+
+Each asset supplies ascending unique UTC-second prices on the desired calendar.
+Every value is finite; baseline prices must be positive. Inputs should use the
+same currency and adjustment policy when that matters to the requested comparison.
+This code displays **price return**, not total return including dividends.
+
+Choose the earliest loaded timestamp present in all assets as the shared baseline.
+Keep later gaps as gaps; never invent a price by filling from a different date.
+For a contractual “since date X” requirement, have the adapter supply a common
+baseline observation at X or report the missing baseline instead of silently
+moving it. Mount with a stable dataset key so the initial fit corresponds to the
+completed snapshot.
+
+```tsx
+import { useMemo, useState } from "react";
+import { PriceScaleMode } from "lightweight-charts";
+import type { LineData, UTCTimestamp } from "lightweight-charts";
+import {
+  Chart,
+  LineSeries,
+  Pane,
+  TimeScale,
+  TimeScaleFitContentTrigger,
+} from "lightweight-charts-react-components";
+
+export type Asset = {
+  id: string;
+  label: string;
+  color: string;
+  data: LineData<UTCTimestamp>[];
+};
+
+export function buildComparison(assets: Asset[]) {
+  if (assets.length === 0) return null;
+  const indexes = assets.map(
+    asset => new Map(asset.data.map(point => [point.time, point.value]))
+  );
+  const baselineTime = assets[0].data.find(point =>
+    indexes.every(index => index.has(point.time))
+  )?.time;
+  if (baselineTime === undefined) return null;
+
+  const series = assets.map((asset, index) => {
+    const baseline = indexes[index].get(baselineTime);
+    if (baseline === undefined || !Number.isFinite(baseline) || baseline <= 0) {
+      throw new Error(`Invalid baseline for ${asset.id}`);
+    }
+    const data = asset.data
+      .filter(point => point.time >= baselineTime)
+      .map(point => ({ time: point.time, value: (point.value / baseline - 1) * 100 }));
+    return { ...asset, data };
+  });
+  return { baselineTime, series };
+}
+
+export function ReturnComparison({ assets }: { assets: Asset[] }) {
+  const comparison = useMemo(() => buildComparison(assets), [assets]);
+  const [hidden, setHidden] = useState<Set<string>>(() => new Set());
+  if (!comparison) return <p>No common baseline observation</p>;
+  const baselineLabel = new Date(comparison.baselineTime * 1000)
+    .toISOString()
+    .slice(0, 10);
+
+  return (
+    <section>
+      <p>Price return since {baselineLabel} UTC</p>
+      {comparison.series.map(asset => (
+        <button
+          key={asset.id}
+          aria-pressed={!hidden.has(asset.id)}
+          onClick={() =>
+            setHidden(previous => {
+              const next = new Set(previous);
+              if (next.has(asset.id)) next.delete(asset.id);
+              else next.add(asset.id);
+              return next;
+            })
+          }
+        >
+          {asset.label}
+        </button>
+      ))}
+      <Chart
+        options={{ autoSize: true, rightPriceScale: { mode: PriceScaleMode.Normal } }}
+        containerProps={{ style: { height: 360 } }}
+      >
+        <Pane>
+          {comparison.series.map(asset => (
+            <LineSeries
+              key={asset.id}
+              data={asset.data}
+              options={{
+                color: asset.color,
+                visible: !hidden.has(asset.id),
+                priceScaleId: "right",
+                priceLineVisible: false,
+                priceFormat: {
+                  type: "custom",
+                  minMove: 0.01,
+                  formatter: (value: number) =>
+                    `${value >= 0 ? "+" : ""}${value.toFixed(2)}%`,
+                },
+              }}
+            />
+          ))}
+        </Pane>
+        <TimeScale>
+          {/* Toggling a comparison changes visibility, not its baseline or view. */}
+          <TimeScaleFitContentTrigger deps={[comparison.baselineTime]} />
+        </TimeScale>
+      </Chart>
+    </section>
+  );
+}
+```
+
+All lines share one price scale because the transformed values have the same
+unit. A stable series ID preserves the upstream series when labels change or
+input order changes. `visible` keeps series mounted; conditional mounting is also
+valid when removing the series is intended, but may change the shared timeline.
+Keeping a hidden series can retain its time positions in that timeline.
+
+## Adaptation boundaries
+
+The earliest-common baseline is suitable for a complete, fixed initial snapshot.
+Prepending older history can change it. If the product promises a fixed baseline,
+store the chosen baseline time/prices in the application's comparison state and
+reuse them for subsequent snapshots; loading history must not redefine “return.”
+Likewise, toggling visibility must not recalculate the baseline from only the
+visible subset. The recipe always calculates across the full asset list.
+
+If calendars differ, choose the intersection baseline explicitly and leave later
+missing observations absent or insert whitespace points on a shared calendar.
+Do not align by array index. Crosshair details should read each series' event
+entry and show `—` when it is missing; see [hover details](hover-legends-and-tooltips.md).
+
+If the task is explicitly “percentage change relative to the currently visible
+window,” use raw price arrays and `rightPriceScale.mode: PriceScaleMode.Percentage`
+instead. Label this behavior because zooming and panning can change the displayed
+percentage baseline. Use separate axes or panes for metrics with different units.
+
+## Acceptance checks
+
+- At the shared baseline all assets equal 0%. A price moving from 100 to 110
+  yields +10%, and from 100 to 90 yields −10%.
+- Compare assets priced at 1 and 1000 with the same proportional movement.
+  Their return lines coincide. Pan and verify the fixed values do not change.
+- Toggle one asset, change input ordering, and update a last price. IDs, colors,
+  and the baseline retain their intended meaning.
+- Test no common time, missing observations, and an invalid baseline. Do not
+  substitute zero or forward-fill a missing price without a product requirement.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/lightweight-charts-react-components/references/price-volume-and-indicators.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/references/price-volume-and-indicators.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/references/price-volume-and-indicators.md
+- **SHA256_FINGERPRINT**: `ec2e5fcdec5427533ba2a8b20d26301b3ad93a43bf54c92f638566a6e7ada282`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.763258+00:00
+---
+
+# Price, volume, and indicators
+
+Use this for a technical-analysis view with candles, a moving average, volume,
+and optionally an oscillator. The architecture depends on **units**, not on
+series type: an SMA shares the price axis; volume needs a separate scale; RSI
+usually needs its own pane. Indicators are data series supplied by the application;
+the wrapper does not calculate them or fetch market data.
+
+## Choose the layout before adding series
+
+| Desired result               | Placement and scale                            | Why                                           |
+| ---------------------------- | ---------------------------------------------- | --------------------------------------------- |
+| Candles and SMA              | Same `Pane`, `priceScaleId: "right"`           | Both values are prices                        |
+| Readable volume panel        | Separate `Pane`, its own right scale           | Volume cannot compress the price scale        |
+| Compact volume under candles | Same pane, `priceScaleId: "volume"` for volume | Independent overlay scale with bottom margins |
+| RSI with threshold lines     | Separate pane; RSI series owns the lines       | Different units and useful fixed bounds       |
+
+Prefer one chart with multiple panes when the plots share an instrument and
+timeline. They automatically share the horizontal scale and crosshair; no
+two-chart synchronization code is needed. `stretchFactor` is a relative weight,
+not pixels. Explicit `Pane` components also give watermarks and pane primitives
+a valid pane context.
+
+## Recipe: price/SMA, volume, optional RSI
+
+The component expects normalized ascending unique UTC-second candles with volume
+attached to every candle. It takes RSI from an upstream calculation (such as
+Wilder RSI-14) rather than quietly implementing a different RSI formula. Values
+are numbers in the range 0–100. Their timestamps must refer to this candle grid;
+the indicator can omit its initial warm-up period.
+
+The local SMA is a simple trailing arithmetic mean, including the current candle.
+Its warm-up points are whitespace, not zero prices. Recomputing is suitable for
+moderate histories; a high-rate application can calculate incrementally in its
+data layer using the same period and timestamp contract.
+
+```tsx
+import { useMemo, useState } from "react";
+import type {
+  CandlestickData,
+  HistogramData,
+  LineData,
+  UTCTimestamp,
+  WhitespaceData,
+} from "lightweight-charts";
+import {
+  CandlestickSeries,
+  Chart,
+  HistogramSeries,
+  LineSeries,
+  Pane,
+  PriceLine,
+  TimeScale,
+  TimeScaleFitContentTrigger,
+  WatermarkText,
+} from "lightweight-charts-react-components";
+
+type CandleWithVolume = CandlestickData<UTCTimestamp> & { volume: number };
+type SmaPoint = LineData<UTCTimestamp> | WhitespaceData<UTCTimestamp>;
+
+export function trailingSma(candles: CandleWithVolume[], period: number): SmaPoint[] {
+  if (!Number.isInteger(period) || period < 1) throw new Error("Invalid SMA period");
+  let sum = 0;
+  return candles.map((bar, index) => {
+    sum += bar.close;
+    if (index >= period) sum -= candles[index - period].close;
+    return index + 1 < period
+      ? { time: bar.time }
+      : { time: bar.time, value: sum / period };
+  });
+}
+
+export function AnalysisChart({
+  candles,
+  rsi,
+  datasetId,
+}: {
+  candles: CandleWithVolume[];
+  rsi: LineData<UTCTimestamp>[];
+  datasetId: string;
+}) {
+  const [showRsi, setShowRsi] = useState(true);
+  const price = useMemo(
+    () =>
+      candles.map(({ time, open, high, low, close }) => ({
+        time,
+        open,
+        high,
+        low,
+        close,
+      })),
+    [candles]
+  );
+  const volume = useMemo<HistogramData<UTCTimestamp>[]>(
+    () =>
+      candles.map(bar => ({
+        time: bar.time,
+        value: bar.volume,
+        color: bar.close >= bar.open ? "#26a69a80" : "#ef535080",
+      })),
+    [candles]
+  );
+  const sma = useMemo(() => trailingSma(candles, 20), [candles]);
+
+  return (
+    <section>
+      <button onClick={() => setShowRsi(value => !value)}>
+        {showRsi ? "Hide RSI" : "Show RSI"}
+      </button>
+      <Chart
+        key={datasetId}
+        options={{ autoSize: true, layout: { panes: { enableResize: true } } }}
+        containerProps={{ style: { height: 540 } }}
+      >
+        <Pane stretchFactor={3}>
+          <CandlestickSeries data={price} options={{ priceScaleId: "right" }} />
+          <LineSeries
+            data={sma}
+            options={{
+              priceScaleId: "right",
+              color: "#2962ff",
+              lineWidth: 2,
+              priceLineVisible: false,
+            }}
+          />
+          <WatermarkText
+            lines={[{ text: "PRICE + SMA 20", color: "#64748b80", fontSize: 14 }]}
+          />
+        </Pane>
+        <Pane stretchFactor={1}>
+          <HistogramSeries
+            data={volume}
+            options={{ priceFormat: { type: "volume" }, priceLineVisible: false }}
+          />
+          <WatermarkText lines={[{ text: "VOLUME", color: "#64748b80", fontSize: 14 }]} />
+        </Pane>
+        {showRsi && (
+          <Pane stretchFactor={1}>
+            <LineSeries
+              data={rsi}
+              options={{
+                color: "#a855f7",
+                priceLineVisible: false,
+                // Supply bounds through the series, so the correct pane scale
+                // is constrained without a chart-level scale lookup.
+                autoscaleInfoProvider: () => ({
+                  priceRange: { minValue: 0, maxValue: 100 },
+                }),
+              }}
+            >
+              <PriceLine
+                price={70}
+                options={{ title: "70", color: "#a855f7", lineStyle: 2 }}
+              />
+              <PriceLine
+                price={30}
+                options={{ title: "30", color: "#a855f7", lineStyle: 2 }}
+              />
+            </LineSeries>
+            <WatermarkText
+              lines={[{ text: "RSI 14", color: "#64748b80", fontSize: 14 }]}
+            />
+          </Pane>
+        )}
+        <TimeScale>
+          {/* Pane visibility changes should not reset horizontal zoom. */}
+          <TimeScaleFitContentTrigger deps={[]} />
+        </TimeScale>
+      </Chart>
+    </section>
+  );
+}
+```
+
+Mount this after the initial snapshot is ready. `datasetId` changes only when the
+symbol, interval, or intended initial view changes, not on every live tick. Fresh
+indicator arrays legitimately cause full replacements. If frequent recalculation
+is expensive, move it into the data owner rather than mutating chart input objects.
+
+## Recipe: compact volume overlay with the correct scale owner
+
+The current `PriceScale` component requires a `Pane`, but its implementation
+calls `chart.priceScale(id)` without a pane index. In later panes this can target
+pane zero, and a named overlay scale may not exist there. Do not use
+`<PriceScale id="volume" />` as the mechanism for creating the overlay scale.
+Creating the volume series with `priceScaleId: "volume"` creates/uses that scale;
+then `volumeSeries.api().priceScale()` targets its actual pane.
+
+Copy this alternative as its own module. The ready loop handles the wrapper ref
+being assigned before the native series exists. The cleanup cancels only that
+loop; the wrapper owns removal of the series and chart.
+
+```tsx
+import { useEffect, useRef } from "react";
+import type { CandlestickData, HistogramData, UTCTimestamp } from "lightweight-charts";
+import {
+  CandlestickSeries,
+  Chart,
+  HistogramSeries,
+  Pane,
+  TimeScale,
+  TimeScaleFitContentTrigger,
+  type SeriesApiRef,
+} from "lightweight-charts-react-components";
+
+export function PriceWithVolumeOverlay({
+  price,
+  volume,
+}: {
+  price: CandlestickData<UTCTimestamp>[];
+  volume: HistogramData<UTCTimestamp>[];
+}) {
+  const priceRef = useRef<SeriesApiRef<"Candlestick">>(null);
+  const volumeRef = useRef<SeriesApiRef<"Histogram">>(null);
+
+  useEffect(() => {
+    let frame = 0;
+    const configureScales = () => {
+      const priceSeries = priceRef.current?.api();
+      const volumeSeries = volumeRef.current?.api();
+      if (!priceSeries || !volumeSeries) {
+        frame = requestAnimationFrame(configureScales);
+        return;
+      }
+      priceSeries
+        .priceScale()
+        .applyOptions({ scaleMargins: { top: 0.05, bottom: 0.25 } });
+      volumeSeries.priceScale().applyOptions({ scaleMargins: { top: 0.8, bottom: 0 } });
+    };
+    configureScales();
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  return (
+    <Chart options={{ autoSize: true }} containerProps={{ style: { height: 360 } }}>
+      <Pane>
+        <CandlestickSeries
+          ref={priceRef}
+          data={price}
+          options={{ priceScaleId: "right" }}
+        />
+        <HistogramSeries
+          ref={volumeRef}
+          data={volume}
+          options={{
+            priceScaleId: "volume",
+            priceFormat: { type: "volume" },
+            priceLineVisible: false,
+            lastValueVisible: false,
+          }}
+        />
+      </Pane>
+      <TimeScale>
+        <TimeScaleFitContentTrigger deps={[]} />
+      </TimeScale>
+    </Chart>
+  );
+}
+```
+
+An overlay scale named `volume` has no visible price axis of its own. Use a
+separate pane or visible left axis when users need volume axis labels. Margins
+reserve vertical regions on independent scales; they do not rescale or normalize
+the input data. If moving a series to another pane imperatively, reacquire its
+`priceScale()` after the move rather than keeping a prior scale handle.
+
+## Acceptance checks
+
+- Price remains readable when volume increases by orders of magnitude. Confirm
+  the SMA uses the same units and right scale as candles.
+- With fewer than 20 candles, SMA is whitespace. At the twentieth bar it equals
+  the mean of the first 20 closes. Replacing the last candle recomputes its SMA.
+- RSI stays on a 0–100 axis; 30/70 lines belong only to RSI. Toggle its pane and
+  verify existing series remain on their original panes and zoom stays intact.
+- Render the overlay in a later pane while adapting the recipe: its scale must
+  come from the volume series, with no incorrect-ID error on pane zero.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/lightweight-charts-react-components/references/session-overlays-and-primitives.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/references/session-overlays-and-primitives.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/references/session-overlays-and-primitives.md
+- **SHA256_FINGERPRINT**: `646f8dd77147ae590b5a838257bf6c317058ca3a5da26db6eb90edef0e5b7b8d`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.774593+00:00
+---
+
+# Session overlays and primitives
+
+Use this for market-session shading, selected backtest intervals, maintenance
+windows, or custom annotations that must follow chart scrolling and zooming.
+The overlay should stay attached to chart coordinates rather than a DOM pixel
+rectangle captured once.
+
+## Choose the narrowest extension
+
+| Needed visual                                            | Implementation                                        | Reason                                                      |
+| -------------------------------------------------------- | ----------------------------------------------------- | ----------------------------------------------------------- |
+| Event on one bar                                         | `Markers`                                             | Built-in marker layout                                      |
+| Horizontal threshold                                     | `PriceLine`                                           | Built-in price conversion and axis label                    |
+| Background across a pane                                 | `PanePrimitive`                                       | It belongs to the pane, not one series' price scale         |
+| Price-dependent drawing, series axis labels, hit testing | `SeriesPrimitive`                                     | Native attachment supplies the owning series                |
+| A new data series renderer                               | `CustomSeries` with an `ICustomSeriesPaneView` plugin | It participates as a series, including data and autoscaling |
+| New horizontal-axis semantics                            | `CustomChart`                                         | A renderer is not a horizontal-scale behavior               |
+
+## Recipe: reusable session bands on price and volume panes
+
+Session boundaries are prepared by the application's market-calendar adapter as
+UTC-second timestamps. Do not hard-code a fixed UTC offset for exchanges that
+observe daylight saving time. The example shades from `from` to `to` between
+the **centers** of two loaded timeline observations; it does not extend through
+half a bar on either side.
+
+This concrete plugin skips bands whose endpoints cannot be converted by
+`timeToCoordinate()`. For windows beginning outside loaded history, clip to the
+loaded timeline in the adapter. If the product needs exact boundaries between
+bars, provide an explicit boundary-to-coordinate interpolation policy instead of
+pretending an unknown time maps automatically.
+
+Save this as `SessionBands.ts`. Inferring the draw target's type from the upstream
+renderer interface avoids introducing a direct runtime dependency on
+`fancy-canvas`. Media coordinate space uses CSS pixels and handles device pixel
+ratios through the target; bitmap coordinate space would require explicit x/y
+pixel-ratio conversion.
+
+```ts file=SessionBands.ts
+import type {
+  IChartApiBase,
+  IPanePrimitive,
+  IPanePrimitivePaneView,
+  IPrimitivePaneRenderer,
+  PaneAttachedParameter,
+  Time,
+  UTCTimestamp,
+} from "lightweight-charts";
+
+export type SessionBand = {
+  id: string;
+  from: UTCTimestamp;
+  to: UTCTimestamp;
+  color: string;
+};
+type DrawTarget = Parameters<IPrimitivePaneRenderer["draw"]>[0];
+type Rect = { x: number; width: number; color: string };
+
+export class SessionBands implements IPanePrimitive<Time> {
+  private rects: Rect[] = [];
+  private requestUpdate: (() => void) | undefined;
+  private readonly views: IPanePrimitivePaneView[];
+
+  constructor(
+    private readonly chart: IChartApiBase<Time>,
+    private bands: SessionBand[]
+  ) {
+    this.views = [
+      {
+        zOrder: () => "bottom", // Shading remains behind candles and volume.
+        renderer: () => ({ draw: target => this.draw(target) }),
+      },
+    ];
+  }
+
+  attached({ requestUpdate }: PaneAttachedParameter<Time>) {
+    this.requestUpdate = requestUpdate;
+  }
+
+  detached() {
+    this.requestUpdate = undefined;
+  }
+
+  setBands(bands: SessionBand[]) {
+    this.bands = bands;
+    this.requestUpdate?.(); // External plugin mutations need a redraw request.
+  }
+
+  updateAllViews() {
+    const scale = this.chart.timeScale();
+    this.rects = this.bands.flatMap(band => {
+      const from = scale.timeToCoordinate(band.from);
+      const to = scale.timeToCoordinate(band.to);
+      if (from === null || to === null) return [];
+      return [{ x: Math.min(from, to), width: Math.abs(to - from), color: band.color }];
+    });
+  }
+
+  paneViews() {
+    return this.views;
+  }
+
+  private draw(target: DrawTarget) {
+    target.useMediaCoordinateSpace(({ context, mediaSize }) => {
+      context.save();
+      for (const rect of this.rects) {
+        context.fillStyle = rect.color;
+        context.fillRect(rect.x, 0, rect.width, mediaSize.height);
+      }
+      context.restore();
+    });
+  }
+}
+```
+
+Save the following as `SessionChart.tsx`. `candles` and `volume` share the same
+normalized ascending UTC-second grid. A stable `bands` array preserves the
+render callback's identity. A new array intentionally recreates the primitives
+with the new session definition.
+
+```tsx
+import { useCallback, useState } from "react";
+import type { CandlestickData, HistogramData, UTCTimestamp } from "lightweight-charts";
+import {
+  CandlestickSeries,
+  Chart,
+  HistogramSeries,
+  Pane,
+  PanePrimitive,
+  TimeScale,
+  TimeScaleFitContentTrigger,
+  type RenderPanePrimitive,
+} from "lightweight-charts-react-components";
+import { SessionBands, type SessionBand } from "./SessionBands";
+
+export function SessionChart({
+  candles,
+  volume,
+  bands,
+}: {
+  candles: CandlestickData<UTCTimestamp>[];
+  volume: HistogramData<UTCTimestamp>[];
+  bands: SessionBand[];
+}) {
+  const [showBands, setShowBands] = useState(true);
+  const renderBands = useCallback<RenderPanePrimitive>(
+    ({ chart }) => new SessionBands(chart, bands),
+    [bands]
+  );
+
+  return (
+    <section>
+      <button onClick={() => setShowBands(value => !value)}>
+        {showBands ? "Hide sessions" : "Show sessions"}
+      </button>
+      <Chart options={{ autoSize: true }} containerProps={{ style: { height: 450 } }}>
+        <Pane stretchFactor={3}>
+          <CandlestickSeries data={candles} />
+          {/* Each invocation constructs a separate attachment instance. */}
+          {showBands && <PanePrimitive render={renderBands} />}
+        </Pane>
+        <Pane stretchFactor={1}>
+          <HistogramSeries data={volume} options={{ priceFormat: { type: "volume" } }} />
+          {showBands && <PanePrimitive render={renderBands} />}
+        </Pane>
+        <TimeScale>
+          <TimeScaleFitContentTrigger deps={[]} />
+        </TimeScale>
+      </Chart>
+    </section>
+  );
+}
+```
+
+`PanePrimitive` requires a `Pane` ancestor; it throws outside one. A primitive
+can be passed as `plugin` **or** created with `render`, not both. The render
+factory receives initialized `{ chart, pane }`; it is useful when construction
+needs those APIs. The wrapper attaches it and detaches it on unmount.
+
+## Identity and updating choices
+
+The wrapper uses `plugin ?? render` identity as the attachment identity. A new
+plugin object or callback detaches the previous instance and attaches a new one.
+Do not inline a new factory on every pointer move or tick. The recipe memoizes
+it by the session definition, so intentional definition changes recreate it.
+Do not reuse one stateful plugin instance across two panes/charts: its attached
+state and redraw callback belong to one attachment.
+
+For frequent changes, create a stable plugin and call its own `setBands()` method
+through an application-owned instance or ref. The wrapper's primitive ref exposes
+the upstream interface, not custom methods; keep the concrete plugin typed in
+application code when calling those methods. `setBands()` above requests a redraw;
+changing a class field without that request need not repaint immediately.
+
+Compute coordinates in `updateAllViews()`, then draw the cached views. Upstream
+invokes this during relevant chart updates, so scrolling/zooming refreshes the
+geometry. Do not calculate x once in a React effect and retain it through zoom.
+If the plugin subscribes to external events, unsubscribe in `detached()` using
+the same handler identity. This recipe has no custom event subscriptions.
+
+## Series-specific drawings and custom-series boundaries
+
+For a vertical event line with a time-axis label, use a `SeriesPrimitive` under
+the target series. Implement `ISeriesPrimitive.updateAllViews()` to recalculate
+and cache `chart.timeScale().timeToCoordinate(time)`, or delegate that work to a
+pane view's own `update()` method. Lightweight Charts invokes the primitive's
+`updateAllViews()` callback during chart updates. Return one `IPrimitivePaneView`
+whose renderer fills a full-height rectangle in bitmap coordinate space (scale
+x and width by `horizontalPixelRatio`), plus one `ISeriesPrimitiveAxisView` from
+`timeAxisViews()` for the label. Format the label explicitly for UTC timestamps
+or business dates; `.toString()` on a `BusinessDay` object does not give a useful
+date. The `SeriesPrimitive` render factory receives `{ chart, series }`; use the
+series API for price conversion when drawing price-dependent shapes.
+
+For grouped volume bars or a genuinely new plot type, use `CustomSeries` with a
+plugin implementing upstream `ICustomSeriesPaneView`. The plugin supplies
+`renderer`, `update`, `priceValueBuilder`, `isWhitespace`, and `defaultOptions`.
+The price-value builder must include all values that should participate in
+autoscaling. Keep custom payloads in `customValues` and preserve
+the custom data shape when updating. `CustomSeries` requires a plugin instance;
+`CustomChart` instead changes the horizontal scale and is a different extension.
+
+## Acceptance checks
+
+- Pan, zoom, resize, and change device pixel ratio: bands remain attached to
+  the intended bars and fill only their owning pane.
+- Toggle sessions on/off repeatedly and change the bands array. Old attachments
+  disappear and no stale background persists.
+- Test missing/off-history endpoints and zero-width intervals against the stated
+  clipping policy. Verify daylight-saving changes in the calendar adapter.
+- For an external plugin update, call `setBands()` and verify it repaints without
+  requiring the user to move the chart. Confirm each pane has its own instance.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/lightweight-charts-react-components/references/synchronized-charts.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/references/synchronized-charts.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/references/synchronized-charts.md
+- **SHA256_FINGERPRINT**: `d1bf3b3a37edb65f1670a905f4b3bc089c75a05b8c504c4c16578d3f6e1282e7`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.764785+00:00
+---
+
+# Synchronized charts
+
+Use this when independent chart cards need shared scrolling, zoom, and a cursor:
+for example a price chart beside a benchmark or two separate dashboard widgets.
+For price, volume, and indicators in a vertically stacked view, first use
+[one chart with panes](price-volume-and-indicators.md); the shared horizontal scale
+already provides that coordination.
+
+The library has no dedicated synchronization component; the recipe below combines
+the public chart and time-scale APIs.
+
+## Choose the synchronization coordinate
+
+| Relationship                        | Range to synchronize          | Constraint                                   |
+| ----------------------------------- | ----------------------------- | -------------------------------------------- |
+| Identical timestamp grid            | Time bounds or logical bounds | Same time/index meaning in both charts       |
+| Different calendars or missing bars | Time bounds                   | Logical index 50 need not mean the same date |
+| Same visible bar count only         | Logical bounds                | This is not necessarily calendar alignment   |
+
+The recipe below requires the **same complete UTC-second grid in both charts**.
+Use time bounds so the intended calendar window is explicit. With differing
+histories, upstream range clamping can produce competing ranges; normalize the
+shared domain first or use a designated leader and a documented follower-clamping
+policy. Do not blindly use bidirectional callbacks over incompatible domains.
+
+## Recipe: two line charts with range and crosshair synchronization
+
+`first` and `second` contain sorted unique real-valued points with identical
+timestamps. Mount by dataset identity after both snapshots load. Chart widths
+can differ: time bounds synchronize the displayed dates, not pixel spacing.
+`CrosshairMode.Normal` keeps cursor behavior predictable when transferring a
+time/value to another series.
+
+```tsx
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { CrosshairMode } from "lightweight-charts";
+import type {
+  IChartApi,
+  IRange,
+  LineData,
+  MouseEventParams,
+  Time,
+  UTCTimestamp,
+} from "lightweight-charts";
+import {
+  Chart,
+  LineSeries,
+  TimeScale,
+  type ChartApiRef,
+  type SeriesApiRef,
+} from "lightweight-charts-react-components";
+
+type Side = "first" | "second";
+type Point = LineData<UTCTimestamp>;
+
+export function SynchronizedCharts({
+  first,
+  second,
+}: {
+  first: Point[];
+  second: Point[];
+}) {
+  const firstChart = useRef<ChartApiRef<Time, IChartApi>>(null);
+  const secondChart = useRef<ChartApiRef<Time, IChartApi>>(null);
+  const firstSeries = useRef<SeriesApiRef<"Line">>(null);
+  const secondSeries = useRef<SeriesApiRef<"Line">>(null);
+  const forwardingRange = useRef(false);
+  const pointerOwner = useRef<Side | null>(null);
+  const firstValues = useMemo(
+    () => new Map(first.map(point => [point.time, point.value])),
+    [first]
+  );
+  const secondValues = useMemo(
+    () => new Map(second.map(point => [point.time, point.value])),
+    [second]
+  );
+
+  const forwardRange = useCallback((source: Side, range: IRange<Time> | null) => {
+    if (!range || forwardingRange.current) return;
+    const target = (source === "first" ? secondChart : firstChart).current
+      ?.api()
+      ?.timeScale();
+    if (!target) return;
+    const existing = target.getVisibleRange();
+    // Equality also stops deferred notifications after the synchronous guard
+    // has been cleared. Inputs here use numeric timestamps exclusively.
+    if (existing?.from === range.from && existing?.to === range.to) return;
+    forwardingRange.current = true;
+    try {
+      target.setVisibleRange(range);
+    } finally {
+      forwardingRange.current = false;
+    }
+  }, []);
+
+  const forwardCrosshair = useCallback(
+    (source: Side, param: MouseEventParams) => {
+      // Only a chart currently under the user's pointer can lead. Programmatic
+      // changes on the follower must not become new input on the source.
+      if (pointerOwner.current !== source) return;
+      const targetChart = (source === "first" ? secondChart : firstChart).current?.api();
+      const targetSeries = (
+        source === "first" ? secondSeries : firstSeries
+      ).current?.api();
+      const values = source === "first" ? secondValues : firstValues;
+      if (!targetChart || !targetSeries) return;
+      const value =
+        typeof param.time === "number"
+          ? values.get(param.time as UTCTimestamp)
+          : undefined;
+      if (!param.point || value === undefined || typeof param.time !== "number") {
+        targetChart.clearCrosshairPosition();
+        return;
+      }
+      // A matching time uses the target's own value, never the source's price or
+      // y pixel. The target series provides the correct price scale and pane.
+      targetChart.setCrosshairPosition(value, param.time, targetSeries);
+    },
+    [firstValues, secondValues]
+  );
+
+  useEffect(() => {
+    let frame = 0;
+    const initialize = () => {
+      const a = firstChart.current?.api();
+      const b = secondChart.current?.api();
+      if (!a || !b || !firstSeries.current?.api() || !secondSeries.current?.api()) {
+        frame = requestAnimationFrame(initialize);
+        return;
+      }
+      a.timeScale().fitContent();
+      const range = a.timeScale().getVisibleRange();
+      if (range) b.timeScale().setVisibleRange(range);
+    };
+    initialize();
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  const leave = () => {
+    pointerOwner.current = null;
+    firstChart.current?.api()?.clearCrosshairPosition();
+    secondChart.current?.api()?.clearCrosshairPosition();
+  };
+
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
+        gap: 16,
+      }}
+    >
+      <Chart
+        ref={firstChart}
+        options={{ autoSize: true, crosshair: { mode: CrosshairMode.Normal } }}
+        containerProps={{
+          style: { height: 300 },
+          onPointerEnter: () => {
+            pointerOwner.current = "first";
+          },
+          onPointerLeave: leave,
+        }}
+        onCrosshairMove={param => forwardCrosshair("first", param)}
+      >
+        <LineSeries ref={firstSeries} data={first} options={{ color: "#2563eb" }} />
+        <TimeScale onVisibleTimeRangeChange={range => forwardRange("first", range)} />
+      </Chart>
+      <Chart
+        ref={secondChart}
+        options={{ autoSize: true, crosshair: { mode: CrosshairMode.Normal } }}
+        containerProps={{
+          style: { height: 300 },
+          onPointerEnter: () => {
+            pointerOwner.current = "second";
+          },
+          onPointerLeave: leave,
+        }}
+        onCrosshairMove={param => forwardCrosshair("second", param)}
+      >
+        <LineSeries ref={secondSeries} data={second} options={{ color: "#ea580c" }} />
+        <TimeScale onVisibleTimeRangeChange={range => forwardRange("second", range)} />
+      </Chart>
+    </div>
+  );
+}
+```
+
+Use `onPointerDown` as another owner-setting signal when adapting to touch input
+whose hover behavior differs. The wrapper cleans up `TimeScale` and chart
+subscriptions; this recipe cleans up only its own readiness frame. Do not remove
+wrapper-owned native charts in a separate effect.
+
+## Adaptation and failure modes
+
+For intrabar precision or future right-side whitespace on identical grids, logical
+bounds can preserve fractional bar positions better than time bounds. Replace
+both range callbacks and getters/setters consistently with their logical variants,
+and compare both numeric endpoints before setting. Keep a reentrancy guard as well.
+
+For different calendars, resolve the target crosshair by exact time and clear it
+when missing, as above. If the product wants nearest-previous matching, implement
+that search deliberately and indicate the actual matched timestamp in hover UI.
+Never copy the source y pixel or use its price on a target with different units.
+
+Two independently fitting charts can undo synchronization after data changes.
+Let a selected leader choose the view after both datasets update; follower charts
+should not also fit on each tick. For large dashboard grids, store one shared
+range in the application and broadcast only when endpoints change.
+
+## Acceptance checks
+
+- Pan/zoom either chart and verify the other shows matching dates without an
+  event loop. Test differing widths and a resize of the cards.
+- Move the crosshair in both directions. The target selects its own value at the
+  same time, even when one series' values are 100 times larger.
+- Leave a card or hover missing data: the follower cursor clears. Programmatic
+  updates never become a new crosshair leader.
+- Remount under a new dataset key and verify old callbacks/frames do not retain
+  the removed chart. Test any calendar policy added during adaptation.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/lightweight-charts-react-components/references/trade-markers-and-price-levels.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/references/trade-markers-and-price-levels.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/references/trade-markers-and-price-levels.md
+- **SHA256_FINGERPRINT**: `102f24fa6ab523b736c3842017cea2e73fba11fc0fbdec1e422cbc4c14e8cac1`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.780071+00:00
+---
+
+# Trade markers and price levels
+
+Use this for execution history, strategy signals, entry/stop/target overlays, or
+click-to-place horizontal levels. These are visual annotations. The chart does
+not execute orders, persist edits, or turn a marker into a drawing tool.
+
+## Choose the annotation by what it represents
+
+| Requirement                                                | Primitive                           | Ownership                                                  |
+| ---------------------------------------------------------- | ----------------------------------- | ---------------------------------------------------------- |
+| An execution or signal at a candle                         | `Markers`                           | Child of the candle series                                 |
+| A horizontal entry, stop, target, or alert level           | `PriceLine`                         | Child of the series whose price scale it uses              |
+| A vertical event line, region, or arbitrary custom drawing | `SeriesPrimitive` / `PanePrimitive` | See [session overlays](session-overlays-and-primitives.md) |
+
+Keep domain IDs stable. A level's React key must be its ID, not its changing price,
+so edits update an existing price line. Marker order must be ascending by time;
+multiple markers can belong to one candle. `Markers` expects the **complete list**
+on every reactive change, including `[]` to clear it.
+
+## Recipe: executions, editable levels, and click-to-place alerts
+
+`candles` is an ascending unique UTC-second snapshot. Each execution's `barTime`
+already identifies its containing candle on that exact timeline. The market-data
+adapter must map an execution instant to a bar using the venue's interval and
+session rules. A naive local-time rounding operation is unsafe for session-based
+bars. Events outside loaded history are retained upstream and become visible
+when that history is loaded.
+
+```tsx
+import { useCallback, useMemo, useRef, useState } from "react";
+import { LineStyle } from "lightweight-charts";
+import type {
+  CandlestickData,
+  MouseEventParams,
+  SeriesMarker,
+  UTCTimestamp,
+} from "lightweight-charts";
+import {
+  CandlestickSeries,
+  Chart,
+  Markers,
+  Pane,
+  PriceLine,
+  TimeScale,
+  TimeScaleFitContentTrigger,
+  type SeriesApiRef,
+} from "lightweight-charts-react-components";
+
+type Execution = {
+  id: string;
+  barTime: UTCTimestamp;
+  side: "buy" | "sell";
+  quantity: number;
+};
+type Level = { id: string; price: number; title: string; color: string };
+
+const quantize = (rawPrice: number, tickSize: number, precision: number) =>
+  Number((Math.round(rawPrice / tickSize) * tickSize).toFixed(precision));
+
+function PriceInput({
+  price,
+  tickSize,
+  precision,
+  onCommit,
+}: {
+  price: number;
+  tickSize: number;
+  precision: number;
+  onCommit: (price: number) => void;
+}) {
+  // Hold the typed text and round on commit. Rounding each keystroke would rewrite
+  // the field mid-entry: with a tick of 5, typing "105" would turn "1" into 0.
+  const [draft, setDraft] = useState<string | null>(null);
+  const commit = () => {
+    if (draft === null) return;
+    setDraft(null);
+    const rawPrice = Number(draft);
+    if (draft !== "" && Number.isFinite(rawPrice)) {
+      onCommit(quantize(rawPrice, tickSize, precision));
+    }
+  };
+  return (
+    <input
+      type="number"
+      step={tickSize}
+      value={draft ?? price}
+      onChange={event => setDraft(event.target.value)}
+      onBlur={commit}
+      onKeyDown={event => {
+        if (event.key === "Enter") commit();
+      }}
+    />
+  );
+}
+
+export function TradeAnnotations({
+  candles,
+  executions,
+  initialLevels,
+  tickSize,
+  precision,
+}: {
+  candles: CandlestickData<UTCTimestamp>[];
+  executions: Execution[];
+  initialLevels: Level[];
+  tickSize: number;
+  precision: number;
+}) {
+  const seriesRef = useRef<SeriesApiRef<"Candlestick">>(null);
+  const [levels, setLevels] = useState(initialLevels);
+  const [showExecutions, setShowExecutions] = useState(true);
+  const [placing, setPlacing] = useState(false);
+
+  const markers = useMemo<SeriesMarker<UTCTimestamp>[]>(() => {
+    if (!showExecutions) return [];
+    const loadedTimes = new Set(candles.map(bar => bar.time));
+    return executions
+      .filter(execution => loadedTimes.has(execution.barTime))
+      .map(execution => ({
+        id: execution.id,
+        time: execution.barTime,
+        position:
+          execution.side === "buy" ? ("belowBar" as const) : ("aboveBar" as const),
+        shape: execution.side === "buy" ? ("arrowUp" as const) : ("arrowDown" as const),
+        color: execution.side === "buy" ? "#16a34a" : "#dc2626",
+        text: `${execution.side.toUpperCase()} ${execution.quantity}`,
+      }))
+      .sort((a, b) => a.time - b.time || a.id.localeCompare(b.id));
+  }, [candles, executions, showExecutions]);
+
+  const onClick = useCallback(
+    (param: MouseEventParams) => {
+      if (!placing || !param.point || !(tickSize > 0) || !Number.isFinite(tickSize))
+        return;
+      const series = seriesRef.current?.api();
+      if (!series || param.paneIndex !== series.getPane().paneIndex()) return;
+      // Convert from pane-local pixels using the target series' actual scale.
+      // point.y is not a price and may refer to an unrelated pane.
+      const rawPrice = series.coordinateToPrice(param.point.y);
+      if (rawPrice === null || !Number.isFinite(rawPrice)) return;
+      const price = quantize(rawPrice, tickSize, precision);
+      const id = crypto.randomUUID();
+      setLevels(previous => [
+        ...previous,
+        { id, price, title: "Alert", color: "#f59e0b" },
+      ]);
+      setPlacing(false);
+    },
+    [placing, tickSize, precision]
+  );
+
+  return (
+    <section>
+      <button onClick={() => setShowExecutions(value => !value)}>
+        {showExecutions ? "Hide executions" : "Show executions"}
+      </button>
+      <button onClick={() => setPlacing(value => !value)}>
+        {placing ? "Cancel placement" : "Place alert level"}
+      </button>
+      <Chart
+        options={{ autoSize: true }}
+        containerProps={{ style: { height: 360 } }}
+        onClick={onClick}
+      >
+        <Pane>
+          <CandlestickSeries
+            ref={seriesRef}
+            data={candles}
+            options={{
+              priceLineVisible: false,
+              priceFormat: { type: "price", minMove: tickSize, precision },
+            }}
+          >
+            <Markers markers={markers} options={{ zOrder: "normal" }} />
+            {levels.map(level => (
+              <PriceLine
+                key={level.id}
+                price={level.price}
+                options={{
+                  title: level.title,
+                  color: level.color,
+                  lineStyle: LineStyle.Dashed,
+                  axisLabelVisible: true,
+                }}
+              />
+            ))}
+          </CandlestickSeries>
+        </Pane>
+        <TimeScale>
+          <TimeScaleFitContentTrigger deps={[]} />
+        </TimeScale>
+      </Chart>
+      {levels.map(level => (
+        <label key={level.id} style={{ display: "block" }}>
+          {level.title}
+          <PriceInput
+            price={level.price}
+            tickSize={tickSize}
+            precision={precision}
+            onCommit={price =>
+              setLevels(previous =>
+                previous.map(item => (item.id === level.id ? { ...item, price } : item))
+              )
+            }
+          />
+          <button
+            onClick={() =>
+              setLevels(previous => previous.filter(item => item.id !== level.id))
+            }
+          >
+            Remove
+          </button>
+        </label>
+      ))}
+    </section>
+  );
+}
+```
+
+Validate `tickSize` as a positive finite number and `precision` as the instrument's
+supported nonnegative integer before rendering. The rounding above is display
+rounding for a tick grid starting at zero. Instruments with different price-band
+rules need the venue-specific quantizer; do not reuse this as an order validator.
+`initialLevels` is a mount-time seed. Mount by instrument ID or replace it with a
+controlled `levels`/`onLevelsChange` contract when annotation state lives upstream.
+
+## Lifecycle and adaptation details
+
+`PriceLine` reacts to both `price` and `options` changes and removes its upstream
+line when unmounted. The explicit `price` prop is separate from `options`; do
+not put the price only inside options. Disabling the candle series' default last
+price line reduces visual confusion with domain levels.
+
+`Markers` creates the upstream plugin and updates marker lists reactively, but
+the current hook does not apply new `options` after creation. To change a plugin
+option such as `zOrder`, remount `Markers` with a key identifying that option or
+call `markersRef.current?.api()?.applyOptions(...)`. The latter requires a
+`MarkersApiRef` and initialized API. Showing/hiding the list uses `markers={[]}`
+without recreating the plugin.
+
+For marker click details, `MouseEventParams.hoveredObjectId` can identify a marker
+whose `id` was supplied. Resolve it against application execution IDs. For
+draggable lines or regions, implement interaction and hit testing in a drawing
+plugin; `PriceLine` alone has no drag callbacks.
+
+Keep persistence and network changes in the application's annotation store.
+Changing local chart state should not imply placing a live order or registering
+an alert on a server. Add the application's explicit save/submit flow if requested.
+
+## Acceptance checks
+
+- Add two executions to the same candle, reorder input, and verify sorted markers
+  remain. Hide them and verify the complete list is cleared; show them again.
+- With a tick of 5, type 105 into a level's price: the field keeps each digit, and
+  the line moves on blur or Enter. Clear the field and blur: the price is restored.
+- Edit a level's price and title without changing its ID. Remove it and verify the
+  line disappears. Change instrument and verify annotations do not leak across it.
+- In placement mode, click the price pane at a known price. Verify tick rounding.
+  Add another pane and verify clicks there do not create levels on the price series.
+- Change marker options and verify the chosen remount/API path actually applies
+  them; simply changing the options prop is insufficient in the current hook.
+
+
+---
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/linkedin-post-formatter/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/linkedin-post-formatter/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/linkedin-post-formatter/SKILL.md
@@ -45777,11 +50783,11 @@ dangerous capability. Otherwise use `PASS`.
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/mcp-security-audit/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/mcp-security-audit/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/mcp-security-audit/SKILL.md
-- **SHA256_FINGERPRINT**: `9b27802e5a15391ac9bd16bd1b9506fa21fbd956bc792b9633e6774dc8cbe7d7`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:35.509531+00:00
+- **SHA256_FINGERPRINT**: `9e9611d984d1027a6846d4473475236c8d532697352a77b7cdb20b2697d2f84b`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.775916+00:00
 ---
 
-**description**: Audit MCP (Model Context Protocol) server configurations for security issues. Use this skill when: - Reviewing .mcp.json files for security risks - Checking MCP server args for hardcoded secrets or shell injection patterns - Validating that MCP package-runner dependencies use exact reviewed versions, not bare names, @latest, or ranges - Detecting mutable npm/npx, bunx, pnpm dlx, yarn dlx, and npm exec references in MCP configurations - Auditing which MCP servers a project registers and whether they're on an approved list - Checking for environment variable usage vs. hardcoded credentials in MCP configs - Any request like "is my MCP config secure?", "audit my MCP servers", or "check .mcp.json" keywords: [mcp, security, audit, secrets, shell-injection, supply-chain, governance]
+**description**: Audit MCP (Model Context Protocol) server configurations for security issues. Use this skill when: - Reviewing .mcp.json files for security risks - Checking MCP server args for hardcoded secrets or shell injection patterns - Validating that MCP package-runner dependencies use exact reviewed versions, not bare names, @latest, or ranges - Detecting mutable npm/npx, bunx, pnpm dlx, yarn dlx, npm exec, uvx, uv tool run, and pipx run references in MCP configurations - Auditing which MCP servers a project registers and whether they're on an approved list - Checking for environment variable usage vs. hardcoded credentials in MCP configs - Any request like "is my MCP config secure?", "audit my MCP servers", or "check .mcp.json" keywords: [mcp, security, audit, secrets, shell-injection, supply-chain, governance]
 
 # MCP Security Audit
 
@@ -45927,9 +50933,19 @@ Review package-runner MCP entries for selectors that can resolve to different pa
 ```python
 import re
 EXACT_SEMVER = re.compile(r"^v?\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$")
-def split_package_spec(spec: str):
-    """Split npm-style package selectors, including scoped packages."""
+EXACT_PYTHON = re.compile(r"^===?\s*\d+(?:\.\d+)*(?:(?:a|b|rc)\d+)?(?:\.post\d+)?(?:\.dev\d+)?$")
+PYTHON_SPEC = re.compile(r"([A-Za-z0-9][A-Za-z0-9._-]*(?:\[[^\]]*\])?)\s*((?:===?|~=|!=|<=?|>=?)\s*.+)")
+PYTHON_RUNNERS = {"uvx", "uvx.exe", "uv", "uv.exe", "pipx", "pipx.exe"}
+
+def launcher_name(server_config: dict) -> str:
+    return str(server_config.get("command", "")).replace("\\", "/").rsplit("/", 1)[-1].lower()
+
+def split_package_spec(spec: str, python: bool = False):
+    """Split npm-style selectors (including scoped packages) or Python requirements."""
     spec = spec.strip()
+    requirement = PYTHON_SPEC.fullmatch(spec) if python else None
+    if requirement:
+        return requirement.group(1), requirement.group(2)  # e.g. ("pkg", "==1.2.0")
     if spec.startswith("@"):
         slash = spec.find("/")
         at = spec.rfind("@")
@@ -45943,11 +50959,25 @@ def split_package_spec(spec: str):
 
 def package_specs_from_runner(server_config: dict):
     """Return selectors without running commands; None means manual review."""
-    command = str(server_config.get("command", "")).replace("\\", "/").rsplit("/", 1)[-1].lower()
+    command = launcher_name(server_config)
     args = server_config.get("args", [])
     if not isinstance(args, list) or not all(isinstance(arg, str) for arg in args):
         return None
-    if command in {"npm", "npm.cmd"}:
+    package_flags = {"-p", "--package"}
+    ignored_flags = {"-y", "--yes", "--no", "--quiet"}
+    if command in PYTHON_RUNNERS:
+        if command in {"uv", "uv.exe"}:
+            if args[:2] != ["tool", "run"]:
+                return None
+            args = args[2:]
+        elif command in {"pipx", "pipx.exe"}:
+            if not args or args[0] != "run":
+                return None
+            args = args[1:]
+        # uvx -p means --python, so only the requirement flags name packages.
+        package_flags = {"--spec"} if command.startswith("pipx") else {"--from"}
+        ignored_flags = set()
+    elif command in {"npm", "npm.cmd"}:
         if not args or args[0] not in {"exec", "x"}:
             return None
         args = args[1:]
@@ -45962,16 +50992,16 @@ def package_specs_from_runner(server_config: dict):
     i = 0
     while i < len(args):
         arg = args[i]
-        if arg in {"-p", "--package"}:
+        if arg in package_flags:
             i += 1
             if i >= len(args) or not args[i] or args[i].startswith("-"):
                 return None
             selectors.append(args[i])
-        elif arg.startswith("--package="):
+        elif arg.startswith("--") and arg.split("=", 1)[0] in package_flags:
             if not arg.split("=", 1)[1]:
                 return None
             selectors.append(arg.split("=", 1)[1])
-        elif arg in {"-y", "--yes", "--no", "--quiet"}:
+        elif arg in ignored_flags:
             pass
         elif arg == "--":
             if selectors:
@@ -45987,6 +51017,9 @@ def package_specs_from_runner(server_config: dict):
 def check_pinned_versions(server_config: dict) -> list[dict]:
     """Flag mutable selectors; report unsupported forms for manual review."""
     specs = package_specs_from_runner(server_config)
+    python = launcher_name(server_config) in PYTHON_RUNNERS
+    if specs and python and any("://" in s or " @ " in s or s.startswith(("git+", ".", "/", "~", "file:")) for s in specs):
+        specs = None  # Git, URL, and path sources: a tag or file can change; review by hand.
     if specs is None:
         return [{
             "severity": "INFO",
@@ -45996,8 +51029,8 @@ def check_pinned_versions(server_config: dict) -> list[dict]:
         }]
     findings = []
     for spec in specs:
-        package, version = split_package_spec(spec)
-        if version and EXACT_SEMVER.fullmatch(version):
+        package, version = split_package_spec(spec, python)
+        if version and (EXACT_SEMVER.fullmatch(version) or EXACT_PYTHON.fullmatch(version)):
             continue
         mutable_tag = version and re.fullmatch(r"[A-Za-z][A-Za-z0-9._-]*", version)
         findings.append({
@@ -46013,6 +51046,8 @@ def check_pinned_versions(server_config: dict) -> list[dict]:
 **Good — exact reviewed version:**
 ```json
 { "command": "npx", "args": ["-y", "my-mcp-server@2.1.0"] }
+{ "command": "uvx", "args": ["my-mcp-server@2.1.0"] }
+{ "command": "uvx", "args": ["--from", "my-mcp-server==2.1.0", "my-mcp-server"] }
 ```
 
 **Review — mutable references:**
@@ -46020,9 +51055,11 @@ def check_pinned_versions(server_config: dict) -> list[dict]:
 { "command": "npx", "args": ["-y", "my-mcp-server@latest"] }
 { "command": "npx", "args": ["-y", "my-mcp-server"] }
 { "command": "npx", "args": ["-y", "@scope/server@^2.1.0"] }
+{ "command": "uvx", "args": ["my-mcp-server"] }
+{ "command": "pipx", "args": ["run", "--spec", "my-mcp-server>=2.1", "my-mcp-server"] }
 ```
 
-The extractor reviews every explicit `--package` / `-p` selector. Unknown launchers or flags require manual review rather than a clean result. An exact direct selector does not prove package integrity, benign behavior, or reproducibility of transitive dependencies without a lockfile.
+The extractor reviews every explicit `--package` / `-p` selector for JavaScript runners, and every `--from` (`uvx`, `uv tool run`) or `--spec` (`pipx run`) requirement for Python runners. For `uvx`, `-p` selects the Python interpreter, not a package. Git, URL, and local path sources for Python runners (for example `git+https://...@v1.0.0`) go to manual review, because a tag or file can change behind an exact-looking reference. Unknown launchers or flags require manual review rather than a clean result. An exact direct selector does not prove package integrity, benign behavior, or reproducibility of transitive dependencies without a lockfile.
 
 Do **not** invent a remediation pin by substituting today's registry version. Pin a version that was actually reviewed; if that evidence is unknown, record the uncertainty. `-y` / `--yes` suppresses an interactive prompt and may matter for CI ergonomics, but it is not a vulnerability by itself.
 
@@ -59132,6 +64169,133 @@ After generation:
 - Do you need integration tests or just unit tests?
 - Any specific database technology preferences?
 - Should the API include pagination, filtering, and sorting examples?
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/openapi-to-application-java-spring-boot/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/openapi-to-application-java-spring-boot/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/openapi-to-application-java-spring-boot/SKILL.md
+- **SHA256_FINGERPRINT**: `881f3e4a31183ec27d8673b1636502148f459edbe7bc4abd1486edda6f206fdd`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.783512+00:00
+---
+
+**description**: Generate a Spring Boot (Java) application from an OpenAPI 3 specification using the spec-first approach: openapi-generator (Maven or Gradle) produces API interfaces and DTOs, you implement controllers, services, persistence, security and tests. Use when asked to build, scaffold or implement a Spring Boot API from an OpenAPI/Swagger file.
+
+# Spring Boot application from an OpenAPI spec
+
+Spec-first: the OpenAPI file is the source of truth. Generate **interfaces and DTOs only** at build time (never commit generated code), then hand-write the implementation. Verified with Spring Boot 4.0.8 and 4.1.1, openapi-generator 7.26.0 (Maven plugin, Gradle Groovy and Kotlin DSL), JDK 21+.
+
+## Step 0: Detect and gather
+
+- Existing `pom.xml` / `build.gradle(.kts)`: keep its build tool and Spring Boot version, **never upgrade implicitly**, add the generator to it. Otherwise create the project with the `create-spring-boot-java-project` skill (dependencies: `web`, `validation`, `actuator`; add `data-jpa`, `postgresql`, `security` only if needed).
+- Get the spec (file, URL or pasted) and save it as `src/main/resources/openapi/<name>.yaml`. Accept 3.0.x and 3.1.x; Swagger 2.0 must be converted first.
+- Ask only what the spec does not answer: persistence (in-memory vs database), authentication, package name.
+
+## Step 1: Review the spec
+
+Check unique `operationId`s (they become method names), `tags` (they become one interface each), reusable `components/schemas`, `required` lists, validation constraints (`minLength`, `maximum`, `pattern`), error responses and `securitySchemes`. Flag gaps and fix the spec rather than the generated code.
+
+## Step 2: Configure the generator
+
+Pin the version in a property; check the latest on Maven Central or the [generator docs](https://openapi-generator.tech/docs/generators/spring) before changing it.
+
+Maven (`pom.xml`, in `<build><plugins>`, before `spring-boot-maven-plugin`):
+
+```xml
+<plugin>
+  <groupId>org.openapitools</groupId>
+  <artifactId>openapi-generator-maven-plugin</artifactId>
+  <version>${openapi-generator.version}</version>
+  <executions>
+    <execution>
+      <goals><goal>generate</goal></goals>
+      <configuration>
+        <inputSpec>${project.basedir}/src/main/resources/openapi/petstore.yaml</inputSpec>
+        <generatorName>spring</generatorName>
+        <apiPackage>com.example.petstore.api</apiPackage>
+        <modelPackage>com.example.petstore.api.model</modelPackage>
+        <generateSupportingFiles>false</generateSupportingFiles>
+        <configOptions>
+          <interfaceOnly>true</interfaceOnly>
+          <requestMappingMode>api_interface</requestMappingMode>
+          <useSpringBoot4>true</useSpringBoot4>
+          <useJackson3>true</useJackson3>
+          <useSpringBuiltInValidation>true</useSpringBuiltInValidation>
+          <useTags>true</useTags>
+          <skipDefaultInterface>true</skipDefaultInterface>
+          <openApiNullable>false</openApiNullable>
+          <documentationProvider>none</documentationProvider>
+          <annotationLibrary>none</annotationLibrary>
+        </configOptions>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+```
+
+Gradle (Groovy DSL; plugin `id 'org.openapi.generator' version '7.26.0'`):
+
+```groovy
+openApiGenerate {
+  generatorName = 'spring'
+  inputSpec = "$projectDir/src/main/resources/openapi/petstore.yaml".toString()
+  outputDir = layout.buildDirectory.dir('generated/openapi').get().asFile.path
+  apiPackage = 'com.example.petstore.api'
+  modelPackage = 'com.example.petstore.api.model'
+  generateApiTests = false
+  generateModelTests = false
+  generateSupportingFiles = false
+  configOptions = [interfaceOnly: 'true', requestMappingMode: 'api_interface', useSpringBoot4: 'true', useJackson3: 'true', useSpringBuiltInValidation: 'true', useTags: 'true',
+    skipDefaultInterface: 'true', openApiNullable: 'false', documentationProvider: 'none', annotationLibrary: 'none']
+}
+sourceSets.main.java.srcDir layout.buildDirectory.dir('generated/openapi/src/main/java')
+tasks.named('compileJava') { dependsOn 'openApiGenerate' }
+```
+
+Gradle (Kotlin DSL; plugin `id("org.openapi.generator") version "7.26.0"`, resolved from the Gradle plugin portal, so keep `gradlePluginPortal()` in `pluginManagement`):
+
+```kotlin
+openApiGenerate {
+    generatorName.set("spring")
+    inputSpec.set("$projectDir/src/main/resources/openapi/petstore.yaml")
+    outputDir.set(layout.buildDirectory.dir("generated/openapi").get().asFile.path)
+    apiPackage.set("com.example.petstore.api")
+    modelPackage.set("com.example.petstore.api.model")
+    generateApiTests.set(false)
+    generateModelTests.set(false)
+    generateSupportingFiles.set(false)
+    configOptions.set(mapOf("interfaceOnly" to "true", "requestMappingMode" to "api_interface", "useSpringBoot4" to "true", "useJackson3" to "true", "useSpringBuiltInValidation" to "true", "useTags" to "true",
+        "skipDefaultInterface" to "true", "openApiNullable" to "false", "documentationProvider" to "none", "annotationLibrary" to "none"))
+}
+sourceSets.main { java.srcDir(layout.buildDirectory.dir("generated/openapi/src/main/java")) }
+tasks.compileJava { dependsOn("openApiGenerate") }
+```
+
+Option notes:
+
+- **Spring Boot 3.x**: drop `useSpringBoot4` and `useJackson3` (`useSpringBoot3=true` is the default). Boot 4 needs both options; Jackson 3 is only allowed with `useSpringBoot4`.
+- **Request-parameter validation:** for Boot 3.2+/4 (Framework 6.1+), keep `useSpringBuiltInValidation=true` in all build-tool configurations. It omits type-level `@Validated` from generated API interfaces so MVC handles constrained query/path parameters through `HandlerMethodValidationException`. For Boot 3.0/3.1, leave this option `false` to retain AOP validation and explicitly map request-parameter `ConstraintViolationException` to HTTP 400 with the spec's error body. Do not blanket-map service-layer constraint violations to 400. Never patch generated interfaces to change validation behavior.
+- **Base paths:** `requestMappingMode=api_interface` puts the class-level base-path mapping on the interface when no controller is generated. For `servers: [{url: /v1}]` and path `/pets`, verify `/v1/pets`; do not add the same `/v1` prefix again through controller mappings, `server.servlet.context-path` or proxy rewriting.
+- `interfaceOnly=true` generates `<Tag>Api` interfaces (with `@RequestMapping`/validation annotations) and models. `delegatePattern=true` (instead) generates controllers calling a `<Tag>ApiDelegate` you implement; prefer `interfaceOnly`, it is simpler. If you use `delegatePattern` (verified on Boot 4.1.1): drop `skipDefaultInterface` (it breaks the generated delegate, compile errors); generate only `ApiUtil.java` as supporting file, otherwise the default delegate methods fail with `cannot find symbol ApiUtil` and a full set of supporting files adds an `OpenApiGeneratorApplication` main class (`Unable to find a single main class` in `bootJar`): Maven `<supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>` instead of `<generateSupportingFiles>false</generateSupportingFiles>`, Gradle `globalProperties = [apis: '', models: '', supportingFiles: 'ApiUtil.java']`. The generated `<Tag>ApiController` is a `@Controller` in `apiPackage`: it must be under the `@SpringBootApplication` package (e.g. `com.example.demo.api`), otherwise it is not scanned and the endpoints return 404.
+- `documentationProvider=none` and `annotationLibrary=none` avoid pulling springdoc/swagger annotations into the generated code. Serving the spec/Swagger UI is optional: add `org.springdoc:springdoc-openapi-starter-webmvc-ui` (3.x line for Boot 4, 2.8.x for Boot 3) only if requested; verified with springdoc 3.1.1 on Boot 4.1.1 (`/v3/api-docs` returns OpenAPI 3.1 JSON, `/swagger-ui/index.html` returns 200).
+- `openApiNullable=false` avoids the `jackson-databind-nullable` dependency; keep it `true` only if the spec has PATCH semantics with nullable fields.
+- Generated models use `jakarta.validation`: `spring-boot-starter-validation` must be on the classpath. Required properties become constructor arguments **in generated order**; read the generated class in `target/generated-sources/openapi` (or `build/generated/openapi`) before calling constructors.
+- Use `<importMappings>`/`<typeMappings>` only when a schema must map to an existing class.
+
+## Step 3: Implement
+
+- One `@RestController` per generated `<Tag>Api` interface, `implements` it, no extra mapping annotations (they are inherited from the interface). Keep controllers thin; put logic in `@Service` classes and return DTOs, not entities. Map entities to generated DTOs explicitly (a MapStruct mapper if the project already uses it).
+- Persistence: in-memory only when asked; otherwise Spring Data JPA entities and repositories separate from the generated DTOs, PostgreSQL via Docker Compose for dev, and schema handling per the schema management rule of the `java-hibernate-jpa` skill (Flyway or Liquibase for production). See the `java-springboot` skill.
+- Errors: use `@RestControllerAdvice` to preserve each operation's declared error status, media type and response schema, including validation failures. Handle `MethodArgumentNotValidException` for request bodies and, on Boot 3.2+/4, `HandlerMethodValidationException` for query/path parameters; override the corresponding handlers when extending `ResponseEntityExceptionHandler`. Return RFC 9457 `ProblemDetail` only when the spec declares it; otherwise return the declared error DTO instead of Spring's default validation response. If error responses are missing or ambiguous, ask before changing the contract rather than imposing Problem Details or a blanket 400/404/409 policy.
+- Security: map `securitySchemes` with the `spring-security` skill (JWT resource server, API key filter, method security). Do not generate `useSpringSecurityPreAuthorize` unless scopes are declared.
+- Never edit generated sources; change the spec or the generator options and rebuild.
+
+## Step 4: Test and verify
+
+- Follow the `spring-boot-testing` skill: `@WebMvcTest` slices per controller (mock the service), `@SpringBootTest` + MockMvc for the happy path and one validation failure per write operation, Testcontainers with `@ServiceConnection` for database code (see `java-testcontainers`).
+- Cover every operation in the spec: success, not found, invalid input. Test invalid constrained query/path parameters as well as invalid request bodies. For error responses, including validation failures, assert the declared status, content type and body schema, not just the status code. Optionally assert the spec itself stays valid in CI with `openapi-generator validate -i <spec>` or by letting the build fail on generation errors.
+- Run `./mvnw verify` or `./gradlew build`, then start the app and `curl` one endpoint plus `/actuator/health`. Include an endpoint from a spec with a non-root server URL and assert its full path, so a missing or duplicated base prefix is caught.
+- Report: spec issues found, generator version and options, files written, anything deferred.
 
 
 ---
@@ -73271,6 +78435,1951 @@ on, swallows the error and passes the lint. Catching that shape is a review job.
 
 
 ---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/ponder/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/ponder/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/ponder/SKILL.md
+- **SHA256_FINGERPRINT**: `5a0b646d2d26346a4aeb6c3a02b2f41461a1203d70620fa00fbd3c85414a4551`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.804213+00:00
+---
+
+**description**: Convergent deliberation loop - repeated grading passes over one subject until the answer stops changing, with coverage enforced so no unit is silently skipped. Use when the user says "ponder <anything>" ("ponder the UI", "ponder our error handling"), "think this over properly", "keep thinking until it converges", "keep looping until it converges", "loop on this until it stops changing", "go through all the screens and grade them", "audit/rate/grade every X", or asks for any broad sweep-and-grade across many units where a single pass would miss things. Also use to resume or recover a ponder already in flight - "where were we", "carry on pondering", a lost thread mid-loop, or a .ponder/ directory in the project - where the move is to run ponder status rather than start over.
+
+# Ponder
+
+Ponder runs repeated passes over one subject until the answer stops changing: each pass revises the previous pass's findings - adding what was missed (`Dreamer` → `add`), sharpening what was vague (`Builder` → `edit`), re-grading what was mis-scored from the human user's lived and emotional perspective (`Empath` → `change`), and retracting what was unsupported or dead-code noise (`Skeptic` → `delete`). You decide how many passes to run; the engine measures whether stopping is honest and refuses to let you stop while a single enumerated unit is ungraded.
+
+Unlike standard multi-pass prompts that force an LLM to manufacture nitpicks or hallucinate when asked to review again, Ponder treats **epistemic silence** as the goal of late passes: all four voices must verify the evidence and speak in `deliberation.json` (`voices = 4`), but a voice whose findings already hold emits **zero deltas**. Two consecutive fully reviewed, confident quiet passes earn `stop (converged)`.
+
+> **Lost the thread mid-ponder? Run `ponder status`.** It names the pass you are in, the phase you owe, and the literal next command. If you do not know the slug - or do not know whether a session exists at all - run `ponder list` first; a `.ponder/` directory in the project means one probably does. Do not start over: a second session throws away the first one's ledger, which is the whole value. See [Resumption](#resumption) before you conclude anything is missing.
+
+The binary is `ponder` on `PATH` (`~/.local/bin/ponder`), `${CLAUDE_PLUGIN_ROOT}/bin/ponder` (when installed as a plugin), or `~/code/ponder/bin/ponder`. If `command -v ponder` fails and neither path exists, clone [`https://github.com/Quinnod345/ponder`](https://github.com/Quinnod345/ponder) to `~/code/ponder` and run `~/code/ponder/install.sh` from that reviewed checkout. **Every command ends with a `NEXT:` line naming the phase you now owe.** That line is the engine driving you, and it is the thing that survives a compaction.
+
+Every `--file` in this document is a path you write first. Make the scratch directories once, before the first command: `mkdir -p .ponder/tmp/batch`. The engine ignores directories under `.ponder/` that hold no `session.json`, so `.ponder/tmp/` is a safe place to stage input - `tmp/` for what you hand the engine, `tmp/batch/` for what fan-out agents write.
+
+The terminal transcripts below are abbreviated and are there to show you the *shape* of a pass. Where a transcript and the engine disagree, the engine is right - read its actual output.
+
+Deeper references, load only when you need them:
+
+- `references/protocol.md` - every command, every flag, every JSON shape, the verdict rules, exit codes, and how reconciliation and `verify --repair` work.
+- `references/perspectives.md` - Skeptic / Builder / Dreamer / Empath as runnable prompts, and how to fan them out.
+- `references/harness-notes.md` - what differs between Claude Code and Codex: subagents, sandboxing, psql, install. Also the session lock, in full, if you are about to fan work out.
+
+Read the lens pack for your subject (`lenses/<lens>.md` in the ponder repo) before pass 1. It defines what a unit is, how to enumerate exhaustively, the dimensions, and what each rung of the 1-5 scale means.
+
+## The loop
+
+### Once, at the start
+
+**First check that you are actually at the start.** If a pondering of this subject is already open, `start` is the wrong command and a second session throws away the first one's ledger.
+
+```sh
+ponder list                                     # is one already open? if yes, go to Resumption
+ponder doctor                                   # environment + whether the OCA bridge is reachable
+ponder start "the UI" --lens ui --max-passes 6 --min-passes 2
+```
+
+`start` prints **Prior pondering** if the OCA remembers thinking about this subject before - read it, it is where you left off last time. The OCA is optional; an unreachable one degrades silently and never blocks a pass.
+
+### Every pass, in this order
+
+1. **predict** - before you look at anything.
+   `ponder predict --churn 0.35 --claim "Pass 1 over-graded empty states and never opened the error paths."`
+   You are stating what this pass will do to the finding set. The engine scores it as `surprise = |predicted - actual|`. Guessing low every time to look calibrated corrupts the only signal that tells you whether you understand the subject yet.
+   **`--churn` is validated to 0-1 - anything outside that is refused, not clamped: `ponder predict --churn 1.2` exits `1` and records nothing.** `0` and `1.0` are both legal. On pass 1 the number is recorded but not scored - there is no previous pass, so the engine reports no churn to take the distance from. Write the honest guess and put the real content in `--claim`. The signal starts at pass 2.
+2. **survey** *(pass 1 only)* - enumerate every unit exhaustively, using the lens pack's enumeration recipe, or let the CLI walk disk/git directly with `--scan <dir>`.
+   `ponder units --file .ponder/tmp/units.json --scan src/routes --strict-scope` (or `ponder units --scan src/routes` to auto-seed every file in `<dir>`)
+   When `--scan <dir> --strict-scope` is passed alongside `--file`, the engine cross-checks every `unit.path` against the actual files on disk under `<dir>` and exits `2` if any file was omitted. Later passes amend the inventory with deltas instead: `unit-add` for what the survey missed, `unit-edit` for what it got wrong, `unit-delete` for what is out of scope.
+3. **appraise** - grade every unit against the lens rubric.
+   Pass 1: `ponder grade --file .ponder/tmp/findings.json`
+   Pass 2+: re-read the units and the current findings. The output is deltas, filed at step 5 - on later passes you appraise *by* revising, so there is no separate command.
+4. **deliberate** - put the current finding set to the four perspectives (`references/perspectives.md`).
+   `ponder deliberate --file .ponder/tmp/deliberation-2.json`
+   **This is where the through-line gets written, not just where deltas get produced.** The findings are per-unit by construction; the argument is the only place in the loop where anything is said about the set as a whole. On the 228-screen run the single most valuable output was not one of the 760 findings - it was the Dreamer's cross-screen claim, which no individual grade could have carried. Write each `argument` as a paragraph that would be worth reading on its own, name the pattern across units, and let the deltas fall out of it. An argument written as a list of delta stubs has already thrown away the part that mattered.
+   Skipping is legal and recorded against you: `ponder deliberate --skip --why "..."` marks the pass skipped in `passes/NN/deliberation.json`, surfaces the reason in `report.md`, and - when the OCA is reachable - raises a `deliberation_skipped` metacognitive observation. The record survives with the OCA off; only the observation does not.
+5. **revise** - apply the deltas the deliberation produced.
+   `ponder delta --file .ponder/tmp/deltas-2.jsonl`
+   Every delta carries `op`, `perspective`, and a non-empty `why`. The engine rejects a delta without a `why`. On pass 2+ this call satisfies appraise as well.
+   **Token-efficient internal notation:** To keep multi-pass token usage low (~56% reduction across 4 passes), you may write internal machine-to-machine `deliberation.json` arguments and `deltas.jsonl` `why` strings using compact causal arrows (`"safe-query.js:5 binds $1 -> SQLi claim false -> retract"`), while keeping all user-facing finding `title`, `detail`, and `recommendation` fields in clear, complete prose.
+6. **judge** - `ponder judge` computes the metrics and prints advice.
+7. **decide** - `ponder decide <continue|stop|escalate> --why "..."` commits your call.
+
+On pass 2+ the engine skips survey and collapses appraise into the `ponder delta` call, so the command sequence is **predict → deliberate → delta → judge → decide**. Phase order is enforced: a command that arrives out of order exits `2` and names the phase you owe. Believe that message over your memory. And if at any point in this list you are not certain which pass you are in or what you already did, stop guessing and run **`ponder status`** - it is cheap, it takes no lock, and it answers both ([Resumption](#resumption)).
+
+`voices` counts the perspectives that **spoke in the deliberation** - a non-empty `argument` in `passes/NN/deliberation.json`. A Skeptic who opened the evidence, found the finding sound and said so has voted; finding nothing is a result, and a voice should not have to manufacture a delta to be counted. A pass that skipped deliberation heard nobody and reports `voices` 0. Watch the delta *ops* separately: a pass whose deltas are all `add` accumulated rather than argued, whatever its `voices` says.
+
+## How many passes
+
+`ponder judge` **advises**. `ponder decide` **commits**. The advice is computed from coverage, novelty, churn, thrash, surprise, stall, confidence floor and voices (formulas and the ordered verdict rules are in `references/protocol.md`). It cannot see what you know, so it can be overridden - with one exception below.
+
+**Write the `--why` before you choose.** Whichever way you are leaning, draft the sentence you would put in `ponder decide` and read it as the user will read it in `report.md` in a month. "Two quiet passes, full coverage, every open must above 0.5 confidence" is a stop. "Nothing new came up" is not - it is the sentence you write when you are tired. If you cannot write a `--why` that survives being read back, you have your answer: run another pass.
+
+**Default to the advice.** You may override it in either direction, and both directions cost the same thing: a `--why` of at least 12 characters, written permanently into `report.md` under **Overrides**. Overriding a `stop` into another pass is the cheap mistake - one more pass. Overriding a `continue` into a `stop` is the expensive one, and the bar for it is the whole honest-stop checklist below, every item, not a feeling that you are done. The two checklists below are where the decision actually gets made - the engine's rules got you a default, and you are the only one in the loop who can see whether it is right.
+
+Override toward another pass when any of these is true:
+
+- **The last pass changed your mind about something important.** If pass N killed a finding you would have shipped, moved a severity, or opened a dimension nobody had looked at, then pass N+1 has somewhere real to go. Late novelty is not noise - it is evidence the subject is deeper than your inventory.
+- **A whole class of unit was graded shallowly.** One finding on a screen no earlier pass had seen is a first look, not a grade. Same for "all six modals got one line each". Coverage counts units, not depth; it cannot see this and you can.
+- **The deliberation barely happened.** `voices < 3` - fewer than three perspectives argued at all - or four spoke and the deltas still came back all one op. Run another pass and put the Skeptic and the Empath on it specifically; the missing voices are usually the ones that would have cut findings, not added them.
+- **Your prediction was badly wrong toward more churn** (`surprise > 0.3` with actual above predicted). You do not model the subject yet, so you cannot claim it has settled.
+
+**Stopping is honest when all of these hold:**
+
+- `coverage` is 1.0 (the engine enforces this; see below).
+- The last two passes produced no `add` you would defend as new ground.
+- `churn` is near zero, and what did move was ranking, not substance.
+- Every open `must` finding has `confidence >= 0.5` - that is `confidenceFloor 0.00` on the judge table, not merely under the 0.2 the engine enforces. You are about to recommend work; a `must` you cannot defend is a guess you are asking someone to act on. If the floor is not zero, either go and get the evidence (a `change` raising the confidence) or drop the severity.
+- The last pass you would call substantive heard at least three voices. `ponder decide stop` warns below three and lets you through; if you go through, say why in the `--why`.
+- Every unit you dropped from the inventory, you dropped for a reason you would say out loud to the person who asked for the pondering. See the phantom rule below.
+
+**Stopping is not honest** because you are bored, because the context got long (that is what `ponder status` and a fresh subagent are for), because the remaining findings are tedious to write up, or because you hit `maxPasses` while the numbers were still moving. That last one is a **budget stop** - the engine reports it as `budget`, never as convergence, and so should you.
+
+**A converging pass is supposed to feel quiet, and a pass that emits nothing is a real result.** The last pass of the 228-screen run produced zero deltas from all four voices - every perspective read the set, found nothing it would change, and said so - and that was the correct, honest outcome, not a wasted pass. It is the strongest evidence of convergence the loop can produce: four voices looking for work and finding none. Expect the pass count to feel anticlimactic near the end, and do not manufacture a delta to prove you were there. The mechanics allow it: `ponder delta` takes an empty file, applies nothing, prints `0 deltas applied` and `delta voices 0/4 - no perspective emitted a delta`, and advances the phase like any other pass. A `voices 4/4` with `delta voices 0/4` and a deliberation whose arguments each say concretely *what was re-checked and why it held* is a converged pass. The same row with four arguments saying "looks fine" is three voices going through the motions, and only you can tell which one you just ran.
+
+**`blocked` cannot be overridden.** When `coverage < 1.0` the verdict is `blocked`, it names every ungraded unit, and `ponder decide stop` exits non-zero. Every other verdict is a judgement call about diminishing returns; this one is a fact about work not done, and it is the exact failure ponder exists to prevent - a sweep that grades 11 of 12 screens and reports as though it graded 12. There is exactly one move that always works: **go and grade the missing units** (`ponder delta` with `add`s). There is a second move, narrow and checked by the engine, for a unit that does not exist at all - the phantom rule below.
+
+Do not go looking for a way around it. `ponder decide` recomputes coverage from `units.json` and `findings.json` at the moment you decide, so a stale `metrics.json`, a hand-edited `verdict.json`, a lowered `--min-passes`, `--json` mode and a second session all leave the gate exactly where it was. Verified: every one of those still exits `2`, `--json` included - it just returns the refusal as `{"ok": false, "code": 2}` instead of printing it.
+
+**`escalate` means the loop is oscillating** (`thrash > 0.25` - passes reversing each other on the same targets). Another identical pass will not help. Rotate which perspectives lead, widen the evidence you are reading, or split the subject into two sessions and ponder each. Commit it with `ponder decide escalate --why "..."` and then actually do something different.
+
+Budget shape: `--min-passes 2` because a single pass is an opinion, not a pondering; `--max-passes 6` for a broad sweep, 3-4 for a narrow subject.
+
+### Correcting a unit - the caption has to follow the finding
+
+**A unit's `label` is a caption on the inventory, and a pass that corrects the finding underneath it has to correct the caption too.** Pass 1 enumerates a screen as `"Marketing footer - both links 404"`. Pass 3 opens the file, finds `/privacy-policy` resolves fine, and rewrites the finding to say so. If the caption cannot move, `report.md` now leads with a headline that contradicts the finding printed directly beneath it. The real 228-screen run shipped exactly that, because there was no way to fix it. There is now.
+
+```
+{"op":"unit-edit","target":"screen.marketing.footer","perspective":"builder","why":"Pass 1's label said both links 404; the finding under it now says the opposite, and says it correctly.","set":{"label":"Marketing footer - /privacy-policy resolves","meta":{"route":"/"}}}
+```
+
+- **It sets `label`, `path`, `kind`, `meta` - and nothing else.** Anything else is refused by name.
+- **It can never set `id`.** The id is the join key between `units.json` and `findings.json`; moving it would orphan every finding on that unit. The engine refuses and says so. If the id itself is wrong, `unit-delete` and `unit-add` the corrected unit, and pay what that costs coverage.
+- **`meta` merges key by key.** Correcting a route leaves the `state` marker sitting beside it alone. Every other field replaces.
+- **Coverage does not move.** That is the point. Correcting a caption by deleting the unit and re-adding it would drop coverage below 1.0 and block the stop - a wrong caption would reopen the session. `unit-edit` costs `churn` instead, which is honest: something did move.
+- **It is a revision, so it thrashes like one.** A label changed in pass 2 and put back in pass 3 registers as a reversal.
+- **It is on the record.** Every `unit-edit` appears in `report.md` under **Corrected screens** - or whatever your lens calls a unit - with its pass, its voice, the new values and your `why`. And a label edited by hand in `units.json` with no ledger record behind it is a divergence: `judge`, `decide`, `report` and `apply` all refuse the session until it reconciles. Correcting a caption on the record is one delta. Correcting one off the record is not available.
+
+Use it when the pass genuinely learned something about the unit. Do not use it to tidy wording you simply prefer - that is churn you will have to defend at `decide`.
+
+### The phantom rule - deleting a unit you never looked at
+
+`unit-delete` is the only op that shortens the ungraded list, so it is the one the engine watches hardest. What it costs coverage depends on whether you ever looked:
+
+- **The unit carries a finding** (even a retracted one - withdrawing a judgment does not un-see the thing). Deleting it is an honest scope change. It leaves the inventory and the coverage denominator.
+- **The unit was never graded.** It leaves the inventory and **stays in the coverage denominator**, still counted, still ungraded, gate still shut. Nothing errors. Coverage simply does not move, and if you were deleting it to make the number go up, it did not work.
+- **The unit was never graded and the delta carries `"phantom": true`.** Now the denominator drops - after the engine has checked you. It resolves **every path the unit has ever carried** from the project root: **any of them exists → the whole batch is rejected** (`Something you can open is not something pass 1 imagined`); all of them missing and the path never moved → accepted and recorded for ever as `verified-missing`; the path was edited, or there was never one → accepted and recorded for ever as `unverified`. Every accepted phantom is named permanently in `report.md` under **Phantom units**, with your `why` quoted underneath it.
+
+```
+{"op":"unit-delete","target":"screen.legacy.print","perspective":"skeptic","why":"Opened src/routes/legacy/print.tsx - the file is gone; the route was removed in #1841 and pass 1 enumerated it off a stale router snapshot.","phantom":true}
+```
+
+**Now the part that matters.** `phantom` is a claim that a route does not exist - that pass 1's survey enumerated something the software does not have. It is not a claim that you ran out of context, or time, or patience.
+
+**If you did not look at a screen, do not delete it from the list. Go look at it.** That is the whole job. The engine can catch you only when the unit has a path to check; a unit with no path is accepted on your word alone, and the record will say `unverified` next to your `why` for as long as the session exists. Writing `"phantom": true` about a route you simply never opened is lying to a file that keeps it - and it is precisely the half-delivered sweep ponder was built to make impossible, done by hand.
+
+Before you write `phantom`, answer one question: **what did I open, and what was not there?** If the answer names a path and an absence, put it in the `why` and file the delta. If the answer is "nothing, I just didn't get to it", you have a unit to grade, not a phantom to declare.
+
+**And the path is not a way around that.** `unit-edit` can move a unit's `path`. Two deltas - point the unit at a filename that does not exist, then claim it never existed - would have the engine certify the absence of a screen that is sitting right there in the repo. That is the same dishonesty as the last paragraph wearing a new op, and the engine closes it: **a phantom claim is checked against every path the unit has ever carried** - the one its `unit-seed` or `unit-add` gave it, every value any `unit-edit` has set since, the one `units.json` holds now, and any set earlier in the same batch. One survivor sinks the whole batch, and the refusal names the path it found and the pass that set it:
+
+```
+delta line 3: unit "screen.auth.sso" is claimed phantom, but a path it has carried exists:
+/abs/src/routes/auth/sso.tsx (carried by the unit-add that created it in pass 4). Something you
+can open is not something pass 1 imagined. A phantom claim is checked against every path the unit
+has ever had, so editing the path first does not clear it.
+```
+
+Editing a path never *strengthens* a phantom claim either. If the path moved and no version of it exists, the claim is accepted but permanently recorded `unverified` - never `verified-missing` - and `report.md` says which paths were checked. Every version was missing, and the engine still will not certify it, because "missing" and "never existed" are only the same claim when the target stayed still. So a moved path buys you exactly nothing and leaves a permanent note that the unit moved before it vanished.
+
+If the path in the inventory is genuinely wrong, correct it with a `unit-edit` and **go grade the screen**. That is what the op is for. It is not a step on the way to deleting the screen.
+
+**And one refusal that is not about you at all.** Every path is resolved from the session's project root, so the check is only as good as that root. If the root was *guessed* - no `--project`, and no `.git` / `package.json` / other project marker anywhere above the directory you started in, so the engine adopted a stray `.ponder` or fell back to the working directory - then a path that fails to resolve tells you nothing, and the claim is refused:
+
+```
+delta line 2: unit "screen.settings.profile" is claimed phantom and none of the 2 paths it has
+carried (src/routes/settings/profile.tsx, src/routes/settings/profile-v2.tsx) resolves under
+/private/tmp - but that project root was guessed, not established (no project marker anywhere
+above the working directory; adopted an ancestor .ponder). A file that is missing from the wrong
+directory is not a screen that never existed.
+```
+
+This is the engine refusing to certify its own guess. `ponder start` and `ponder status` print the project root and what decided it, so check that line first: if it says the root was adopted or fallen back to, and it is not where the software actually lives, start the session again with `--project <path>` and the claim will be checked properly. A unit that never had a path is unaffected - there was nothing for a root to resolve, and it is still accepted as `unverified` on your word.
+
+The honest exits when you genuinely cannot finish are `ponder decide continue` (do the work next pass) and `ponder abort --why "..."` (say what stopped you). Both leave a record that reads true later. A false phantom does not.
+
+## Fanning out over many units
+
+A sweep of 40 screens does not fit in one context and should not try to. Batch the *grading*; keep the *session* single-threaded.
+
+**Batching rule: 8-12 units per agent.** Fewer wastes a context; more and the last units in the batch get a thinner read than the first - exactly the shallow-grade failure you would then have to spend a pass fixing.
+
+Non-negotiables for fan-out:
+
+- **Only the parent runs `ponder`.** Batch agents grade and return text. The engine does hold an exclusive lock on the session, so a race cannot corrupt it - but a race has a **loser**, and the loser's work is refused, not merged. Two concurrent `ponder delta` calls: one applies its batch and advances the phase; the other waits for the lock, reloads the session, finds it now owes `judge`, and exits `2` with nothing applied. A subagent that does not check its exit code will report success while its entire batch went nowhere. Collect JSONL from the batch agents, concatenate, and make one call yourself. (`references/harness-notes.md` has the lock's full behaviour - the wait, the stale reclaim, what the loser sees.)
+- **Give each agent the rubric, its own units, and the output shape** - the lens pack text, its unit list with paths, the dimensions, the 1-5 scale. Do not give it the whole finding set on pass 1; you want independent grades, not consensus.
+- **On revision passes, hand each agent only the current findings for its own units**, and ask for *deltas*, not a re-grade. Ask for a re-grade and you get thirty `add`s that duplicate what is already there, which the Skeptic then has to kill, which the thrash detector then flags.
+- **Ask for JSONL, one object per line, and nothing else** - no prose, no fences. A truncated line is droppable; a truncated JSON array is garbage. Concatenation is then `cat`.
+
+**In Claude Code:** use the Agent tool, one agent per batch, all launched in a single message so they run in parallel. Each agent writes its lines to `.ponder/tmp/batch/findings-<n>.jsonl` and returns only the path plus a count. For a very large sweep (60+ units, or one where batches need retrying), the Workflow tool handles batching and result collection better than hand-rolled parallel agents.
+
+**In Codex:** there is no in-process subagent. Either spawn `codex exec` subprocesses, one per batch -
+
+```sh
+codex exec -C "$PWD" --sandbox workspace-write --skip-git-repo-check \
+  -o .ponder/tmp/batch/batch-3.txt \
+  "Grade these 10 screens against ~/code/ponder/lenses/ui.md. Units: ... .
+   Write one JSON finding object per line to .ponder/tmp/batch/findings-3.jsonl. Output nothing else." \
+  </dev/null &
+```
+
+- backgrounded with `&` and collected with `wait`; or run batches **sequentially in one context**, writing each batch's JSONL to disk and dropping the detail before starting the next. Sequential is slower but has no subprocess or sandbox surprises, and the disk is your memory either way. `codex exec` starts a fresh session and inherits none of your context, so everything it needs goes in the prompt or in a file it can read.
+
+Neither of the two extra tokens on that command line is decoration. Without `--skip-git-repo-check` the child exits `1` before it does any work - `Not inside a trusted directory and --skip-git-repo-check was not specified` - so a ponder of anything that is not a git checkout loses every batch at once. And `codex exec` reads stdin even when the prompt is an argument; backgrounded with `&` it inherits the parent's stdin, so `</dev/null` is what stops a batch blocking on a pipe nobody is going to close.
+
+Then, in either harness, concatenate once and hand the engine a single file. `ponder grade` takes JSON, not JSONL, so the batch lines need wrapping:
+
+```sh
+cat .ponder/tmp/batch/findings-*.jsonl > .ponder/tmp/all.jsonl
+node -e 'let s="";process.stdin.setEncoding("utf8");process.stdin.on("data",d=>s+=d).on("end",()=>{const findings=s.split("\n").filter(Boolean).map((l)=>JSON.parse(l));process.stdout.write(JSON.stringify({version:1,findings},null,2)+"\n")})' \
+  < .ponder/tmp/all.jsonl > .ponder/tmp/findings.json
+ponder grade --file .ponder/tmp/findings.json
+```
+
+`setEncoding("utf8")` is not decoration. Without it the chunks arrive as buffers and each one is stringified on its own, so a multi-byte character that straddles a 64 KB read boundary is coerced to replacement characters. Reproduced deterministically: 65,535 ASCII bytes followed by `数` turns that one character into three `U+FFFD` without it, and survives intact with it. Whether it bites at all depends on where your curly quotes and accents happen to fall, which is the worst property a corruption can have - it ships a mangled title with a clean exit code and no warning, and the run that finds it is not the run that has the bug.
+
+**Stage batch files in their own directory (`.ponder/tmp/batch/`) and never let the concat glob match its own output.** `cat .ponder/tmp/deltas-*.jsonl > .ponder/tmp/deltas-2.jsonl` works exactly once: on the re-run you are told to do when a batch dies, the glob now matches `deltas-2.jsonl`, the shell truncates it before `cat` opens it, and `cat` ends up reading the file it is writing.
+
+What happens next depends on sort order, which is the part that makes this hard to believe until it bills you. Measured: with `deltas-1.jsonl` sorting *before* the target, `cat` copies batch 1 in, then opens `deltas-2.jsonl` and finds that same content waiting for it - a loop that fills the disk (capped at 20 MB with `ulimit -f` in the test, still climbing when it hit the cap). With the target sorting first, there is no loop at all: it reads an empty file and you get a quietly incomplete batch instead. So the failure is either a full disk or silent data loss depending on what you named the files, and "I tried it once and it was fine" proves nothing. Deltas need no wrapping, so:
+
+```sh
+cat .ponder/tmp/batch/deltas-2-*.jsonl > .ponder/tmp/deltas-2.jsonl   # pattern cannot match the target
+ponder delta --file .ponder/tmp/deltas-2.jsonl
+```
+
+Deliberation does not fan out by unit. It fans out by perspective - four agents, one per voice, same finding set, each emitting only its own delta op. See `references/perspectives.md`.
+
+## Resumption
+
+**If you have lost context, do not guess and do not start over. Run `ponder status`.**
+
+```sh
+ponder status
+```
+
+```
+ponder status - ui-2026-08-24
+  session       ui-2026-08-24  open
+  subject       the UI
+  lens          ui - unit = screen, 12 dimensions
+  grade on      information-hierarchy, empty-states, loading-states, error-states, motion,
+            affordance-clarity, density, responsive-behaviour, accessibility,
+            copy-tone, consistency, delight
+  pass          3 of 6  (min 2)
+  owes          deliberate
+  coverage      0.92 - 11 of 12 screens graded
+  findings      29 total · 26 open · 0 resolved · 0 deferred · 3 retracted
+  prediction    churn 0.12 - "The invite route is small; one or two findings there and no..."
+  signals p2    novelty 0.12  churn 0.42  thrash 0.00  surprise 0.02  stall 0  conf-floor 0.11  voices 4/4
+  last verdict  pass 2: blocked → decided continue - "Dreamer found /invite/:token. Cannot stop with a screen..."
+  oca           reachable - postgres://localhost/oneiro
+  store         /abs/path/.ponder/ui-2026-08-24
+
+  1 ungraded screen - stop is refused until this list is empty:
+    screen.invite.accept
+
+  History
+    pass  advice    decision  reason
+    1     continue  continue  Pass 1 is the inventory plus a first opinion. Nothi...
+    2     blocked   continue  Dreamer found /invite/:token. Cannot stop with a sc...
+
+NEXT: deliberate - ponder deliberate --file deliberation.json --session ui-2026-08-24   # or: ponder deliberate --skip --why "<reason>"
+```
+
+**Act on the `owes` row and the `NEXT:` line.** `NEXT:` is the literal command, already carrying `--session`; paste it. Everything else you need to resume is in the same block: which pass, what is still ungraded, what the last pass decided and why, and where the files are. The `signals` row is labelled with the pass it came from - `signals p2` while you are working pass 3, because the current pass has not been judged yet.
+
+### Getting back to work in five commands
+
+Do these in order. Do not substitute recall for any of them.
+
+```sh
+ponder status                                   # 1. the pass, the phase you owe, the ungraded list
+ponder verify                                   # 2. do the files still agree with the ledger?
+cat .ponder/<slug>/findings.json                # 3. the current truth - every live finding, with ids
+cat .ponder/<slug>/ledger.jsonl                 # 4. how it got there: every delta, every why, in order
+ponder report                                   # 5. optional, when you want it readable rather than raw
+```
+
+Then run whatever `NEXT:` printed.
+
+**`ponder verify` is the command for a session you did not personally leave in a known state** - one you inherited, one another agent was driving, or one whose last command was interrupted. It replays `ledger.jsonl` from line 1, derives what `units.json` and `findings.json` must contain, and compares - then compares the ledger against the per-pass `deltas.jsonl` files, which are the same records written a second time. Exit `0` and a summary means the session is sound. Exit `2` names every id and field that disagrees, and `judge`, `decide`, `report` and `apply` will refuse the session on the same grounds, so it is better to find out now than at the verdict.
+
+Every command writes `ledger.jsonl` **before** it writes the state files, so the only thing an interrupted command can leave behind is a ledger that is ahead of its own view - and that is repairable. **`ponder verify --repair`** replays the ledger, rewrites the state files to what those records must have produced, appends the missing tail to any pass's `deltas.jsonl`, and prints line by line what it rebuilt. It refuses, exit `2`, when a state file holds a unit or a finding **no ledger record ever created**: that data exists in exactly one place, so nothing can rebuild it, and it is either a forgery or an unrecoverable loss. Do not go looking for a flag past that refusal - there isn't one, and `--repair` never invents state. Without `--repair`, `verify` writes nothing at all, so running it is free.
+
+Steps 3 and 4 are not optional reading for a mid-loop pass. You cannot deliberate over a finding set you have not re-read, and you cannot avoid re-adding what the Skeptic killed two passes ago without the ledger in front of you - that is what `thrash` measures and what an `escalate` you caused yourself looks like. For a big set, read the findings for the units this pass is about, plus every ledger line touching them.
+
+Everything else you might need:
+
+- `ponder status --json` for the same thing machine-readable, including the ungraded unit list.
+- `ponder list` shows every session it can see from here - both stores, this project's `.ponder/` and the `~/.ponder/` fallback - with each one's status, pass, phase and coverage. It is how you find a slug you have forgotten. Every other command then takes `--session <slug>` to target one. **Never start a new session because you lost the thread** - you would throw away the ledger, which is the whole value.
+- Nothing in `findings.json` or `ledger.jsonl` is ever erased. A retraction is a state, so pass 2's reasoning is still legible in pass 6 and a later pass can reverse an earlier pass's kill.
+- `ponder doctor` reconciles every session it can see and names any that fail under **Problems**, with the `ponder verify --session <slug>` that diagnoses each one. That is how a machine full of sessions tells you which one is damaged.
+- **Never hand-edit `units.json` or `findings.json` to fix something.** The ledger is the authority and every decision-point command recomputes against it, so a hand-edit does not correct the session - it breaks it, and you will meet the refusal at `judge`. Everything you might want to fix that way has a delta: `edit`, `change`, `delete`, `unit-add`, `unit-edit`, `unit-delete`.
+- Re-running a phase you already satisfied exits `2` and names the phase you actually owe. That is not an error to work around; it is the state machine correcting your memory.
+- If the subject genuinely changed under you, `ponder abort --why "..."` and start a clean session. Silently re-scoping an open session poisons its metrics.
+
+If you were the parent of fan-out agents and one died, re-run that batch only. The state lives in files, not in anybody's context.
+
+**A compaction is not a reason to stop.** It is the failure mode the whole design is built around: the files hold the pondering, `ponder status` hands it back, and the loop continues from exactly where it was. Deciding `stop` because your context got long is the dishonest stop wearing a technical excuse - and if coverage is short, the engine will refuse it anyway.
+
+## Worked example - pondering a UI
+
+Twelve screens, four passes, one of them blocked. Abbreviated throughout.
+
+**Pass 1 - seed.**
+
+```sh
+mkdir -p .ponder/tmp/batch
+ponder start "the UI" --lens ui --max-passes 6 --min-passes 2
+ponder predict --churn 0.9 --claim "Pass 1 is seeding. I expect the empty and error states to be the weak dimensions and the dashboard to grade well."
+```
+
+On pass 1 the number is recorded and not scored - there is no previous pass to have churned against - so the `--claim` is the part that will be worth reading in pass 2. Both go into `passes/01/predict.json` and into `report.md`.
+
+Enumerate per the lens - a unit is one thing a person can be looking at, so a route with a distinct
+empty, loading or failed state is more than one unit. Eleven units across seven routes (remember that number):
+
+```json
+{ "version": 1, "lens": "ui", "units": [
+  { "id": "screen.dashboard", "label": "Dashboard - populated", "path": "src/routes/dashboard.tsx",
+    "kind": "screen", "meta": { "route": "/" } },
+  { "id": "screen.settings.billing.empty", "label": "Settings → Billing - no invoices",
+    "path": "src/routes/settings/billing.tsx",
+    "kind": "screen", "meta": { "route": "/settings/billing", "state": "empty" } }
+] }
+```
+
+```sh
+ponder units --file .ponder/tmp/units.json     # 11 units
+ponder grade --file .ponder/tmp/findings.json  # 24 findings → f-0001..f-0024
+ponder deliberate --file .ponder/tmp/deliberation-1.json
+ponder delta --file .ponder/tmp/deltas-1.jsonl # 8 deltas: 2 add, 3 edit, 2 change, 1 delete
+ponder judge
+ponder decide continue --why "Pass 1 is the inventory plus a first opinion. Nothing has been argued with yet."
+```
+
+On pass 1, four of the eight signals (`novelty`, `churn`, `thrash`, `surprise`) print as `-` because there is no previous pass to measure change against; `coverage` (1.00), `confidenceFloor` (0.14), `stall` (0) and `voices` (4/4) describe the current state. Rule 2 advises `continue` regardless because a single pass is an opinion, not a pondering.
+
+**Pass 2 - the revision pass. This is where the value is.**
+
+```sh
+ponder predict --churn 0.4 --claim "Pass 1 over-graded card polish and never opened the error paths. Expect deletes on the dashboard and new findings on 500/timeout."
+ponder deliberate --file .ponder/tmp/deliberation-2.json
+```
+
+```json
+{ "question": "Does the pass-1 finding set survive a second reading of the code?",
+  "skeptic": { "argument": "Two findings are unsupported. f-0011 claims inconsistent card padding; both cards resolve to --space-4. f-0019 is f-0004 on a different screen - same root cause, counted twice.", "confidence": 0.85 },
+  "builder": { "argument": "Half the recommendations name a problem instead of a change. 'Improve hierarchy' is not a next step.", "confidence": 0.7 },
+  "dreamer": { "argument": "Nobody has asked what any screen does when the API 500s. Every finding so far assumes the happy path. Also: /invite/:token exists and is not in the inventory.", "confidence": 0.75 },
+  "empath": { "argument": "The billing empty state blocks a first-run user; it outranks three polish findings currently scored above it.", "confidence": 0.7 } }
+```
+
+The deltas - two of pass 1's findings deleted, three added, plus the missed route (note that `unit-add` must sit above any `add`, `unit-edit`, or `unit-delete` targeting that new unit because deltas apply in file order):
+
+```
+{"op":"delete","target":"f-0011","perspective":"skeptic","why":"Claimed inconsistent card padding; both cards resolve to --space-4. Unsupported."}
+{"op":"delete","target":"f-0019","perspective":"skeptic","why":"Duplicate of f-0004 - same root cause on a different screen."}
+{"op":"unit-add","perspective":"dreamer","why":"Route exists and was missed in the pass 1 survey. One unit, not four: the loader validates the token server-side and an invalid or spent token 404s at the router, so there is only ever one render state.","unit":{"id":"screen.invite.accept","label":"Accept invite","path":"src/routes/invite/accept.tsx","kind":"screen","meta":{"route":"/invite/:token"}}}
+{"op":"add","perspective":"dreamer","why":"No pass had asked what any screen does when the API 500s.","finding":{"unit":"screen.projects.detail","title":"No error state - a failed load renders an empty shell","detail":"The query error branch returns null, so a 500 is indistinguishable from 'no projects'.","dimension":"error-states","score":1,"severity":"must","confidence":0.85,"effort":"m","evidence":["src/routes/projects/[id].tsx:41-60"],"recommendation":"Render a failure state with the cause and a retry that refetches."}}
+{"op":"edit","target":"f-0007","perspective":"builder","why":"Recommendation named the problem, not the change.","set":{"recommendation":"Add an empty state with cause, expectation and a 'Add payment method' primary action."}}
+{"op":"change","target":"f-0009","perspective":"empath","why":"Blocks first-run; outranks polish.","set":{"severity":"must","score":2}}
+```
+
+```sh
+ponder delta --file .ponder/tmp/deltas-2.jsonl  # 11 deltas: 3 add, 3 edit, 2 change, 2 delete, 1 unit-add
+ponder judge
+```
+
+```
+ponder judge - pass 2 of 6
+  signal           value  reads as
+  coverage         0.92   11 of 12 screens graded
+  novelty          0.12   revising adds ÷ live findings
+  churn            0.42   revising deltas ÷ live findings
+  thrash           0.00   0 reversing deltas
+  surprise         0.02   predicted 0.40, got 0.42
+  stall            0      consecutive passes under 0.02 churn
+  confidenceFloor  0.11   open must-findings still guessing
+  voices           4/4    builder, dreamer, empath, skeptic
+  delta voices     4/4    builder, dreamer, empath, skeptic
+
+  advice: blocked - 1 of 12 screen has never been graded. Stopping is not permitted.
+
+  1 ungraded screen - "ponder decide stop" will be refused:
+    screen.invite.accept
+
+NEXT: decide - ponder decide continue --why "<reason>" --session ui-2026-08-24   # blocked: 1 ungraded screen - stop is refused until coverage is 1.0
+```
+
+The Dreamer found a route at deliberation time, after appraise had closed. Coverage dropped to 11/12 and the verdict is `blocked` - no override exists. Note thrash stayed at 0.00 even though the Skeptic killed two pass-1 findings: pass-1 seeding is not a deliberative `add`, so deleting its noise reads as the Skeptic working, not as the loop reversing itself.
+
+```sh
+ponder decide continue --why "Dreamer found /invite/:token. Cannot stop with a screen nobody has graded."
+```
+
+**Pass 3 - close the gap, and correct the caption pass 2 put on it.**
+
+```sh
+ponder predict --churn 0.12 --claim "The invite route is small; one or two findings there and nothing new elsewhere."
+ponder deliberate --file .ponder/tmp/deliberation-3.json
+```
+
+Grading the invite route turns up the screen nobody had described. Pass 2's Dreamer named it `"Accept invite"` off the router; opening the file, accept is one of *two* buttons, and the Dreamer's `add` lands on the decline button beside it. The Builder updates the unit caption with `unit-edit` so `report.md` does not contradict the finding beneath it:
+
+```
+{"op":"unit-edit","target":"screen.invite.accept","perspective":"builder","why":"Pass 2 named this screen off the router and called it \"Accept invite\". The finding filed against it this pass is about the decline button beside accept, so the caption now contradicts the finding printed under it.","set":{"label":"Accept or decline invite"}}
+```
+
+```sh
+ponder delta --file .ponder/tmp/deltas-3.jsonl  # 2 deltas: 1 add, 1 unit-edit
+ponder judge
+ponder decide continue --why "The invite route earned one finding on a thin pass. I don't trust a one-look grade on a screen no earlier pass had seen."
+```
+
+`ponder judge` on pass 3 reports `coverage 1.00` (12/12), `novelty 0.04`, `churn 0.07`, `voices 4/4` and `delta voices 2/4` (the Skeptic and Empath verified the set and found nothing to change). Because convergence requires two consecutive quiet passes and pass 2 churned `0.42`, the engine advises `continue`.
+
+**Pass 4 - confirm.**
+
+```sh
+ponder predict --churn 0.05 --claim "The invite route holds up on a hard second read. At most a ranking change."
+ponder deliberate --file .ponder/tmp/deliberation-4.json   # targeted re-check by builder and empath
+ponder delta --file .ponder/tmp/deltas-4.jsonl  # 2 deltas: 1 edit, 1 change. No adds.
+ponder judge
+```
+
+A two-key deliberation file is legal and prints warnings on `deliberate`, `delta`, and `decide stop` reminding you to explain in `--why` why fewer than three voices spoke. Here the Empath's `change` raises `f-0014` above 0.5 confidence after running the case, moving `confidenceFloor` to `0.00`:
+
+```
+ponder judge - pass 4 of 6
+  signal           value  reads as
+  coverage         1.00   12 of 12 screens graded
+  novelty          0.00   revising adds ÷ live findings
+  churn            0.07   revising deltas ÷ live findings
+  thrash           0.00   0 reversing deltas
+  surprise         0.02   predicted 0.05, got 0.07
+  stall            0      consecutive passes under 0.02 churn
+  confidenceFloor  0.00   open must-findings still guessing
+  voices           2/4    builder, empath
+  delta voices     2/4    builder, empath
+
+  advice: stop - novelty 0.00 and churn 0.07, two passes running. Further passes stopped changing the answer.
+
+NEXT: decide - ponder decide stop --why "<reason>" --session ui-2026-08-24   # the engine advises stop
+```
+
+```sh
+ponder decide stop --why "Coverage 12/12, two consecutive quiet passes, no open must-fix under 0.5 confidence. Pass 4 heard two voices because it was a targeted re-check of the invite screen and the last shaky must; passes 2 and 3 heard all four."
+ponder report --out docs/ui-ponder.md
+ponder apply --dry-run --severity must,should
+```
+
+Only a `stop` the engine advised for reason `converged` closes the session as **converged**; a budget stop, a perseveration stop or an override closes it as **stopped**, and `report.md` says which. `ponder apply` emits an ordered work plan grouped by unit, with evidence paths and recommendations. **Ponder never edits the subject's source** - it hands you the plan and you do the work. `--dry-run` prints and changes nothing; dropping it writes `apply-plan.md` and marks the session `applied` (terminal). Running `apply` on an open or aborted session exits `2`.
+
+## Anti-patterns
+
+- Running one pass and reporting it as a ponder.
+- A pass whose deltas are all `add`. You accumulated; you did not deliberate - and `voices 4/4` does not excuse it, because that counts who spoke, not what changed.
+- Predicting low churn every pass to look calibrated. It destroys `surprise`, the only signal that says whether you understand the subject.
+- `delete`ing a finding because it is low priority. Delete is for unsupported, duplicated, or wrong. Low priority is a `change` to `severity` or `status: deferred` - retracting it hides it from the ranking instead of ranking it.
+- Deleting a unit from the inventory to clear a `blocked` verdict. It does not clear it - a never-graded unit stays in the coverage denominator.
+- Claiming `"phantom": true` on a route you never opened. Phantom means the thing does not exist. If you did not look, go look.
+- `unit-edit`ing a path to something that does not exist and then claiming phantom on it. The engine checks every path the unit has ever carried and rejects the batch. It is the previous anti-pattern with an extra step.
+- Manufacturing a delta on a quiet pass so it does not look idle. Zero deltas from four voices that each said what they re-checked is convergence; one invented `edit` is churn you have to defend in `report.md` for ever.
+- Hand-editing `units.json` or `findings.json`. It is a divergence, not a fix - `judge`, `decide`, `report` and `apply` refuse it. Use a delta.
+- Letting a fan-out agent call `ponder`.
+- Starting a fresh session after a compaction instead of running `ponder status`.
+- Looking for a way past `blocked` - a flag, an env var, a hand-edited `metrics.json`. There isn't one; coverage is recomputed at decision time. The time is better spent grading the unit.
+- Treating a transcript in this file as the engine's contract. It shows the shape of a pass. `ponder status` and the `NEXT:` line show the truth.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/ponder/references/harness-notes.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/ponder/references/harness-notes.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/ponder/references/harness-notes.md
+- **SHA256_FINGERPRINT**: `bbb1ca1cf2f9a65ae763eccdaa95ae03662cbe0d4dcdd7b22e7cd8189026b237`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.886264+00:00
+---
+
+# Harness notes - Claude Code, Codex, and OpenClaw
+
+This skill is one directory, symlinked into every agent harness (`~/.claude/skills/ponder`,
+`~/.agents/skills/ponder`, and `~/.codex/skills/ponder`). Everything here is the set of
+differences that actually change what you type.
+
+## Install
+
+One source of truth, symlinked everywhere from a local checkout of [`Quinnod345/ponder`](https://github.com/Quinnod345/ponder):
+
+```sh
+git clone https://github.com/Quinnod345/ponder.git ~/code/ponder
+~/code/ponder/install.sh
+```
+
+It links `skill/ponder` into `~/.claude/skills/ponder`, `~/.agents/skills/ponder` (and
+`~/.codex/skills/ponder` when `~/.codex` exists) and `bin/ponder` into `~/.local/bin`, then runs
+`ponder doctor`. Re-running is safe - it replaces its own symlinks and refuses to clobber a real
+directory. The equivalent by hand:
+
+```sh
+ln -s ~/code/ponder/skill/ponder ~/.claude/skills/ponder
+ln -s ~/code/ponder/skill/ponder ~/.agents/skills/ponder
+chmod +x ~/code/ponder/bin/ponder
+ln -s ~/code/ponder/bin/ponder ~/.local/bin/ponder
+```
+
+`bin/ponder` is a POSIX `sh` shim, not JavaScript. That is deliberate: an extensionless JS file trips
+Node's module resolution. It walks its own symlink chain before `exec node .../lib/cli.js "$@"`, because
+without that a `ponder` symlinked onto PATH would look for `~/.local/lib/cli.js`. Do not "fix" either
+part.
+
+### Front matter
+
+Only two keys, because only two keys are valid in both harnesses:
+
+```yaml
+---
+name: ponder
+description: ...
+---
+```
+
+Codex additionally understands an optional `metadata:` block - `disable-model-invocation`
+(`~/.codex/skills/zoom-out/SKILL.md`), `argument-hint` (`~/.codex/skills/handoff/SKILL.md`) and
+`short-description` (`~/.codex/vendor_imports/skills/skills/.curated/linear/SKILL.md`). Claude Code
+reads the same keys at the top level instead, not nested - compare its own copy of zoom-out, which
+carries a bare `disable-model-invocation: true`. So a `metadata:` block would make the two installs
+behave differently from one file, and this skill has none.
+
+The other rule the front matter has to obey is YAML's, and it bites in exactly one place: a plain
+scalar cannot contain `: ` (colon-space). The `description` is a long prose line full of quoted
+trigger phrases, and one stray colon-space in it makes the whole block unparsable - which in both
+harnesses means the skill silently does not load rather than erroring. After any edit to it:
+
+```sh
+python3 -c "import yaml,sys; d=yaml.safe_load(open(sys.argv[1]).read().split('---',2)[1]); \
+  assert set(d) == {'name','description'}, d.keys(); print('ok:', d['name'], len(d['description']))" \
+  ~/code/ponder/skill/ponder/SKILL.md
+```
+
+### Checking the install
+
+```sh
+ls -l ~/.claude/skills/ponder ~/.codex/skills/ponder    # both should point at ~/code/ponder/skill/ponder
+head -4 ~/.claude/skills/ponder/SKILL.md                 # front matter intact through the symlink
+ponder doctor                                            # engine reachable, and what it can see
+```
+
+In **Claude Code**, the skill then appears in the available-skills list; `/ponder` invokes it, as does
+the Skill tool with `skill: "ponder"`. In **Codex**, skills under `$CODEX_HOME/skills` (default
+`~/.codex/skills`) are picked up on the **next turn** after installation, not the current one - if it
+does not fire immediately, that is why.
+
+## Invocation
+
+Both harnesses model-invoke skills from the `description`, and both take an explicit `/ponder`. The
+practical difference: Claude Code surfaces the skill list to the model every turn, so a trigger
+phrase reliably fires mid-conversation. In Codex, a skill invoked deep in a long session sometimes
+needs the explicit `/ponder` - if the user says "keep pondering" and nothing loads, read the SKILL.md
+by path and carry on rather than debating it:
+
+```sh
+cat ~/code/ponder/skill/ponder/SKILL.md
+```
+
+## Subagents and fan-out
+
+| | Claude Code | Codex |
+|---|---|---|
+| In-process subagents | **Agent tool.** Multiple calls in one message run in parallel. Returns text to the parent. | None. |
+| Very large sweeps | **Workflow tool** - handles batching, retries and collection better than hand-rolled parallel agents. | None. |
+| Subprocess agents | possible, rarely worth it | **`codex exec`** - the primary mechanism |
+| Background | Bash tool `run_in_background`, plus Monitor to wait on a condition | `&` + `wait`, or `nohup ... &` and poll the output file |
+
+`codex exec` flags that matter for fan-out:
+
+```sh
+codex exec -C "$PWD" \
+  --sandbox workspace-write \
+  --skip-git-repo-check \
+  -o .ponder/tmp/batch-3.txt \
+  "...prompt..."
+```
+
+- `-C, --cd <DIR>` - working root for the child.
+- `-s, --sandbox read-only|workspace-write|danger-full-access` - the child's own sandbox, independent
+  of yours.
+- `--add-dir <DIR>` - extra writable directory, needed if the session state lives outside the workspace.
+- `-o, --output-last-message <FILE>` - writes the child's final message to a file. **This is what makes
+  fan-out collectible.** Have the child write its JSONL to disk anyway and return only the path plus a
+  count; then `-o` is your receipt, not your payload.
+- `--output-schema <FILE>` - a JSON Schema for the final response, when you want the shape enforced.
+- `--json` - event stream as JSONL on stdout, for progress monitoring.
+- `--ephemeral` - no session files on disk, for throwaway batches.
+
+Two of those are load-bearing rather than optional, and both were checked on this machine against
+codex-cli 0.147.0:
+
+- **`--skip-git-repo-check` is not paranoia.** Without it the child refuses before doing any work -
+  `Not inside a trusted directory and --skip-git-repo-check was not specified`, exit `1`. Fan out over
+  a subject that is not a git checkout and every batch dies at once, identically and instantly, which
+  reads like a prompt problem and is not one.
+- **`codex exec` reads stdin even when the prompt is an argument** (`Reading additional input from
+  stdin...`). Backgrounded with `&` it inherits the parent's stdin, so redirect it: `... </dev/null &`.
+  From `/dev/null` it takes the EOF and carries on; from a pipe nobody closes it does not.
+
+`codex exec` starts a **fresh session**. It inherits none of your context, and it loads its own
+`AGENTS.md` chain from `-C`. Everything the batch needs goes in the prompt or in a file it can read.
+
+## The session lock
+
+**The engine locks. Do not architect around a lost-update race - there isn't one.** Earlier revisions
+of this file said the opposite and told you to defend against a hazard that does not exist. Here is
+what actually happens, read out of `lib/session.js` and reproduced on this machine.
+
+`lockSession()` takes an exclusive lock on the session directory before any command that writes
+state: `units`, `predict`, `grade`, `deliberate`, `delta`, `judge`, `decide`, `apply`, `abort`, and
+`verify --repair`. The read-only commands - `status`, `report`, `list`, `doctor`, and a plain
+`verify` - take no lock, so you can always ask where a session is even while a pass is being written
+into it. `verify` is the only command whose locking depends on a flag, for the obvious reason: with
+`--repair` it rewrites the state files, without it it writes nothing at all.
+
+| | |
+|---|---|
+| Mechanism | `open(.ponder/<slug>/.lock, 'wx')` - atomic create-exclusive. The winner writes its pid and a timestamp into the file; the file's *existence* is the lock |
+| Contending command | polls every 60 ms (`Atomics.wait`, no CPU spin) for up to **10 seconds** |
+| Wait exhausted | exits **`1`**: `another ponder command is already working on <slug>.` - and names the lock file |
+| Stale reclaim | a `.lock` whose mtime is older than **120 seconds** is deleted and taken. This is what covers a `kill -9` |
+| Normal release | `unlink` when the command finishes, plus a process `exit` hook for `process.exit()` |
+| Unlockable store | if the lock cannot be created for any reason other than `EEXIST`, the command runs without one. A safety net must not become a new way to fail |
+
+**What the loser of a real race sees.** Two `ponder delta` calls fired at the same pass, measured:
+
+```
+A rc=2   error out of order: "ponder delta" satisfies revise, but this session owes judge.
+B rc=0   ponder delta - pass 1, 1 delta applied
+```
+
+The lock serialises them and the phase machine finishes the job. B takes the lock, applies its batch,
+and advances the phase from `revise` to `judge`. A waits a few milliseconds, takes the lock, reloads
+`session.json` from disk - and now owes `judge`, so its `ponder delta` is out of order and exits `2`
+without applying anything. The ledger grew by exactly one line, `findings.json` agrees with it, and
+the phase advanced exactly once. Two `ponder decide` at once record one pass, not two. Two
+`ponder start` on one slug: `mkdir` without `recursive` is the atomic claim, so the second exits `1`
+with `session "<slug>" already exists`.
+
+The conformance suite pins this: **45 checks** in `concurrency: racing deltas have exactly one winner`
+and 14 more in `concurrency: racing decisions and starts have one winner too`, run over three fresh
+sessions because a lock-free engine only loses the race some of the time. Making `lockSession` a
+no-op fails both.
+
+**What this means for fan-out.** The rule is unchanged - *only the parent runs `ponder`* - but the
+reason is sequencing, not corruption. A race has a winner and a loser, and **the loser's work is
+refused, not merged**. A subagent that calls `ponder delta` and does not check its exit code will
+report success while its entire batch went nowhere. So: batch agents write JSONL to disk and return a
+path plus a count, the parent concatenates, and the parent makes one call. That also keeps `f-NNNN`
+assignment and the ledger in one place, which is where they belong.
+
+Two practical notes. The 10-second wait is generous against a command that finishes in well under a
+second, but a command stuck on a slow OCA bridge call (5 s per call) can outlast it - if a queued
+command exits `1` on the lock, re-run it rather than deleting the file. And delete a `.lock` by hand
+only when you know the process that made it is gone; otherwise wait, or let the 120-second stale
+reclaim do it for you.
+
+## Sandboxing, and whether psql is reachable
+
+**Claude Code on this machine:** the Bash tool is sandboxed, and the sandbox does not block the OCA.
+Verified: `psql "postgres://localhost/oneiro" -tAc "select 1"` returns `1` from inside the tool. Writes
+into the project tree are fine. If a bridge call ever does get blocked, ponder degrades silently by
+design - check `.ponder/<slug>/oca.log`, not the engine.
+
+**Codex on this machine:** `~/.codex/config.toml` sets `sandbox_mode = "danger-full-access"` and
+`approval_policy = "never"`, so psql works and state can be written anywhere.
+
+**Codex under any other policy - including any `codex exec -s workspace-write` you spawn yourself.**
+The three below follow from Codex's documented sandbox semantics and were **not** reproduced on this
+machine, because the config above makes the failure path unreachable here. Treat them as what to
+expect, and check with `ponder doctor` rather than assuming:
+
+- **Network is off under `workspace-write` by default.** `psql` to `postgres://localhost/oneiro` over
+  TCP should fail. The bridge returns `null`, the loop runs identically, and you lose prior-pondering
+  recall and the OCA writes. That is the designed degradation, not a bug - but do not promise the user
+  cross-session memory from a run you made in that sandbox.
+- **Writes outside the workspace are blocked.** The `~/.ponder/<slug>/` fallback should fail. Keep the
+  session inside the project with `ponder start --project "$PWD"`, or widen the child's sandbox when
+  you spawn it - `codex exec --add-dir ~/.ponder`. `--add-dir` is a **`codex exec`** flag, not a
+  ponder one; `ponder start --add-dir` exits `1` with `unknown flag --add-dir`.
+- **`read-only` cannot run a pass at all** - every command in the loop writes state. The
+  inspection commands that write nothing (`status`, `list`, `verify` without `--repair`) should
+  still work, which is enough to find out where a session stands but not to move it.
+
+`ponder doctor` settles all three in one call: it prints whether the OCA is reachable and which
+store roots are writable. Run it inside the child sandbox, not outside it.
+
+Rule of thumb: run `ponder doctor` as the first command in any unfamiliar harness. It reports node,
+psql, the DSN, OCA reachability and where state will be written, which is exactly the set of things
+that differ between these two environments.
+
+## Context and compaction
+
+Claude Code compacts long sessions, and a compaction is the single most likely way a long ponder
+dies. Codex has no compaction guarantee and a smaller effective working window in practice. The
+mitigation is the same in both and it is already built in: state lives in files, and every command
+prints `NEXT:`. After any loss, `ponder status` tells you what you owe; `.ponder/<slug>/ledger.jsonl`
+tells you everything every pass did and why.
+
+Practical consequence for Codex specifically: prefer sequential batches that write JSONL to disk and
+drop the detail, over holding 40 units' worth of code in one context. The disk is the memory.
+
+## Paths
+
+Skill-relative references (`references/protocol.md`) resolve differently per harness -
+`~/.claude/skills/ponder/references/...` vs `~/.codex/skills/ponder/references/...`. Both are symlinks to
+the same place, so when in doubt use the repo path, which is always correct:
+
+```sh
+~/code/ponder/skill/ponder/references/protocol.md
+~/code/ponder/lenses/ui.md
+```
+
+Session state goes in `<project>/.ponder/`. It is plain JSON and JSONL. Commit it when the ledger is
+worth keeping across branches and machines - that history is the point of the append-only design -
+otherwise add `.ponder/` to `.gitignore`. Do not commit `.ponder/tmp/`.
+
+## Known bites
+
+- **`codex exec` hangs with no output, including `--version`.** Seen on macOS when codex is
+  launched over SSH or tmux: a macOS Gatekeeper/amfid block keyed to the install path. Run a
+  clean-path copy of the binary instead.
+- **A queued command that exits `1` on the lock.** Not corruption - the session lock did its job and
+  the wait ran out. Re-run the command. See [The session lock](#the-session-lock); do not delete a
+  `.lock` file unless the process that wrote it is gone.
+- **A skill edit that does not take effect.** Both harnesses read SKILL.md at load; edit the repo copy
+  (`~/code/ponder/skill/ponder/SKILL.md`) and start a new turn - in Codex, a new session.
+- **The OCA's cognitive-loop process on `:3333` is not running.** Nothing in ponder depends on it; the
+  bridge shells out to `psql` directly. If something suggests otherwise, it is wrong.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/ponder/references/perspectives.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/ponder/references/perspectives.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/ponder/references/perspectives.md
+- **SHA256_FINGERPRINT**: `70062af207d98bb5294d392777121a3226c1883ba7f167bcf7fb1044cbc4fe83`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.915045+00:00
+---
+
+# The four perspectives
+
+Ponder's deliberation is the Oneiro Cognitive Architecture's L8 Adversarial Deliberation, pointed at
+a finding set instead of at a decision. The prompts below are adapted from the real engine in
+[`oneiro-oca`](https://github.com/Quinnod345/oneiro-oca) (`oca-cognitive/deliberation/engine.js`); the OCA system prompt for each voice is quoted
+verbatim so the two systems stay recognisably the same architecture.
+
+**The load-bearing idea: each perspective owns exactly one delta operation.** That is not a
+convention bolted on afterwards - it falls out of the loss functions. A voice that minimises false
+positives naturally deletes. A voice that maximises novelty naturally adds.
+
+| Perspective | OCA loss function | Temperature | Asks | Emits |
+|---|---|---|---|---|
+| **Skeptic** | minimise false positives | 0.2 | "What here is unsupported, duplicated, or just wrong?" | `delete` |
+| **Builder** | maximise shipped output | 0.5 | "Is this actionable? What is the concrete next step?" | `edit` |
+| **Dreamer** | maximise novelty | 0.9 | "What did everyone miss? What if the frame is wrong?" | `add` |
+| **Empath** | maximise social accuracy | 0.5 | "Does this serve the person using it? Is it ranked right?" | `change` |
+
+`voices` counts distinct perspectives that **spoke** - a non-empty `argument` in the pass's
+`deliberation.json`. A Skeptic who opened every evidence path, found the findings sound and said so
+has voted; a voice should not have to manufacture a delta to be counted, and one that does is worse
+than useless. The other reading is still printed, as `delta voices`: who emitted something. Read the
+pair. Four spoke and one acted is a quiet pass or three voices going through the motions; all `add`
+is an accumulating list however many voices spoke.
+
+There is no fifth synthesis voice. OCA resolves a deliberation with an LLM Executive Controller;
+in ponder, executive control (L10) *is* the revise phase - the resolution is the delta set you apply.
+
+The three inventory ops belong to no one voice: `unit-add` is the Dreamer's in practice, `unit-edit`
+the Builder's, `unit-delete` the Skeptic's, but any perspective may emit any of them when it is the
+one that found the problem. What matters is the attribution on the delta being true.
+
+**The deliberation is also the only place anything gets said about the set as a whole.** Findings are
+per-unit by construction; a pattern running across forty of them lives nowhere but in an argument. On
+a 228-screen run the highest-value output of the whole session was one such cross-screen through-line,
+and no individual finding could have carried it. Write each `argument` so it would be worth reading on
+its own, and let the deltas fall out of it - not the other way round.
+
+## Shared preamble
+
+Every perspective prompt gets the same context block. Give it the current finding set for the units
+in scope, not a summary of it.
+
+```
+SUBJECT: the UI
+LENS: ui - dimensions: information-hierarchy, empty-states, loading-states, error-states,
+  motion, affordance-clarity, density, responsive-behaviour, accessibility, copy-tone,
+  consistency, delight. Scale 1 broken ... 3 acceptable ... 5 exemplary.
+PASS: 3 of max 6
+UNITS IN SCOPE: <id, label, path for each>
+CURRENT FINDINGS: <the finding objects, verbatim, with ids>
+LEDGER FOR THESE UNITS: <what earlier passes already did to them, and why>
+
+Write your deliberation entry (`{"argument": "<2-4 sentence summary of what holds, what changed, and your DONE/NOT DONE vote>", "confidence": 0.0-1.0}`) to `.ponder/tmp/<voice>-argument.json`.
+Write your deltas to `.ponder/tmp/<voice>.jsonl` - one delta object per line, nothing else. No prose, no code fences. On a quiet pass where the set holds, write an empty `.jsonl` file and still write `<voice>-argument.json`.
+Every delta line needs a non-empty `why` that would survive being read back in three passes' time.
+Emit only your own operation.
+```
+
+The ledger matters. Without it, the Dreamer re-adds what the Skeptic killed two passes ago, the
+Skeptic kills it again, and `thrash` climbs past 0.25 into an `escalate` you caused yourself.
+
+## Your argument is a deliverable
+
+`voices` counts a non-empty `argument`, which makes the field easy to read as a formality. It is
+not. On the 228-screen run this guidance is drawn from, the single most valuable output of four
+passes was not any of the 832 findings - it was one paragraph in the Dreamer's `argument` naming
+what was wrong with the subject as a whole. It is the first thing a human reads in `report.md`,
+above every finding.
+
+Write it for that reader. What you found, what you killed and why, and what you would say if they
+had time for one paragraph and not for the list. On the pass you expect to stop on, that paragraph
+is the pondering's actual conclusion - the findings are its evidence.
+
+## A quiet pass is a result
+
+Convergence is two consecutive passes that stop changing the answer, so on a late pass the honest
+output is often nothing at all. On that same run, pass 4 produced **zero deltas from all four
+voices** and four explicit DONE votes, and that was the correct result - the engine accepts an
+empty deltas file and reports `delta voices 0/4`.
+
+This is why `voices` counts who spoke rather than who acted: a Skeptic who opened the evidence,
+found the set sound and said so has voted. Do not manufacture a delta to look diligent. It
+registers as churn on a pass that should be still, it pushes convergence out by at least one more
+pass, and the next Skeptic will delete it anyway.
+
+If your honest read is that the set holds, emit an empty file and say so. State it as a vote -
+DONE, or NOT DONE with the specific thing still wrong. Those votes are the record of why the
+pondering stopped, and they outlive everyone's memory of it.
+
+## Skeptic - `delete`
+
+OCA system prompt, verbatim:
+
+> You are the Skeptic perspective in a cognitive architecture. Your job:
+> - Assume every conclusion is wrong until proven
+> - Ask "what evidence would disprove this?"
+> - Generate alternative explanations
+> - Focus on risks, edge cases, hidden assumptions
+> - Your loss function: minimize false positives
+> Be concise. 2-4 sentences max.
+
+Ponder adaptation:
+
+```
+You are the Skeptic. Assume every finding is wrong until its evidence proves it.
+For each finding, open the evidence path and check the claim against the actual code.
+Ask what would disprove it. Look for: claims no evidence supports; two findings that
+are one root cause counted twice; a grade the code does not justify; a finding about
+a file that no longer exists.
+
+Your loss function is minimising false positives. Deleting a real problem costs the
+loop a pass. Leaving a fake one costs a builder a day of work on nothing.
+
+Emit only `delete` deltas:
+{"op":"delete","target":"f-0012","perspective":"skeptic","why":"<what you checked and what it showed>"}
+
+Do NOT delete a finding for being low priority - that is the Empath's `change` to
+severity, or `status: "deferred"`. Delete means wrong, unsupported, or duplicated.
+
+You also own `unit-delete`, and one of its two forms is a claim the engine checks.
+A unit that was graded and is now out of scope leaves plainly. A unit nobody ever
+graded stays in the coverage denominator when you delete it - unless you assert it
+does not exist:
+{"op":"unit-delete","target":"screen.legacy.print","perspective":"skeptic","why":"<what you opened and what was not there>","phantom":true}
+
+The engine resolves EVERY path that unit has ever carried - the one it was
+enumerated with, every value a `unit-edit` has set since, and the one in units.json
+now - from the project root. If any of them is there, the whole batch is rejected.
+Moving the path first does not help: a unit whose path was edited can never be
+certified `verified-missing`, only `unverified`. Claim phantom only about a route
+you went and looked for and did not find. "I did not get to it" is not a phantom;
+it is a finding you still owe.
+
+Pass 1's seeded findings are fair game. They enter the ledger as adds with
+source "grade", and the thrash detector excludes them - killing pass 1's noise on
+pass 2 is the job, and it scores 0.00 thrash. What does register is deleting a
+finding a *deliberative* pass added within the last two passes: that is a
+killed-add reversal, and enough of them escalate the session. Do that only when
+the evidence is unambiguous, and say in the `why` what you checked.
+```
+
+Measured on a two-delta pass: deleting a pass-1 seeded finding and a pass-1 Dreamer
+`add` together produced `thrash 0.50` - one reversing delta out of two, and the
+reversal named was the Dreamer's, not the seed's.
+
+### Verify mechanically, not by reading
+
+Your highest-leverage move is not reading findings sceptically - it is checking the whole corpus in
+one query. On the 228-screen run, the Skeptic verified all **2,705** `path:line` anchors in a single
+pass and found exactly one off-by-one. That is minutes of work and it settles the evidentiary floor
+for the entire session.
+
+Write the check; do not eyeball it. With python3 or jq over `findings.json`:
+
+- every evidence path resolves on disk, and no line range exceeds its file's length
+- no two findings share a (unit, dimension) with near-identical titles - that is the duplicate
+  cluster, and on a fanned-out pass 1 it is always there
+- every `f-NNNN` referenced in an open finding's live fields is still open. Retracted anchors are
+  how a cluster's canonical ticket becomes a corpse: the Builder points fifteen findings at one
+  ticket, you retract that ticket, and now fifteen findings instruct someone to "see f-0084" - a
+  real failure that happened between two passes of the reference run.
+
+Then open only what the query flagged. A duplicate found by grouping is worth ten found by reading.
+
+## Builder - `edit`
+
+OCA system prompt, verbatim:
+
+> You are the Builder perspective in a cognitive architecture. Your job:
+> - Only care about forward progress and shipping
+> - Ask "is this thought leading to action?"
+> - Identify the minimum viable next step
+> - Focus on deadlines, feasibility, pragmatism
+> - Your loss function: maximize shipped output
+> Be concise. 2-4 sentences max.
+
+Ponder adaptation:
+
+```
+You are the Builder. A finding that does not name a change is a complaint.
+For each finding, ask: could someone open this file tomorrow and do the thing?
+Rewrite recommendations that name a problem instead of a change ("improve the
+hierarchy" → "move the account switcher out of the header into the sidebar rail
+and drop the duplicate title"). Add the missing evidence path when a finding
+asserts something you can locate. Sharpen a title that describes a feeling.
+Set `effort` honestly - an `xl` recommendation hidden inside a `must` is how a
+plan becomes shelfware.
+
+Your loss function is maximising shipped output.
+
+Emit only `edit` deltas - prose and evidence only:
+{"op":"edit","target":"f-0007","perspective":"builder","why":"<why the old text could not be acted on>","set":{"recommendation":"...","evidence":["path:88-94"]}}
+
+Do NOT touch score, severity, confidence or status. Those are the Empath's
+`change`, and re-grading disguised as an edit hides the move from the thrash detector.
+
+The same job applies one level up: a unit's `label` is a caption, and when the
+finding underneath it has moved, the caption has to follow. Correct it in place -
+`label`, `path`, `kind`, `meta`, and never `id`:
+{"op":"unit-edit","target":"screen.marketing.footer","perspective":"builder","why":"<what pass 1's caption claimed and what the finding under it now says>","set":{"label":"..."}}
+
+That costs churn and nothing else - a `unit-edit` never moves coverage - and it is
+the only way to fix a caption, because a hand-edit to units.json is a divergence the
+next `judge` refuses.
+```
+
+## Dreamer - `add`
+
+OCA system prompt, verbatim:
+
+> You are the Dreamer perspective in a cognitive architecture. Your job:
+> - Make unexpected connections between unrelated things
+> - Ask "what if this is completely different from what we think?"
+> - Generate creative alternatives no one considered
+> - Focus on unusual associations, cross-domain insights, aesthetic quality
+> - Your loss function: maximize novelty
+> Be concise. 2-4 sentences max.
+
+Ponder adaptation:
+
+```
+You are the Dreamer. Everyone else is looking at the findings. You look at the gaps.
+
+Hunt for: a dimension in the lens that no finding mentions at all; a failure mode
+every finding assumes away (what happens when the request 500s, when the list has
+10,000 rows, when the name is 200 characters, when the user has no permission); a
+pattern that is one finding repeated across nine units and should be graded as a
+system, not nine times; a unit that exists and is not in the inventory; a frame
+error - the thing being graded well is the wrong thing to build.
+
+Your loss function is maximising novelty. Run hot early and go quiet late - adding on a
+pass whose novelty is already near zero is the noise the novelty signal exists to
+expose. A wrong `add` costs one Skeptic
+delete next pass. A missed class of problem survives the whole session.
+
+Emit `add` deltas, and `unit-add` when you find a unit nobody enumerated. Write
+every `unit-add` ABOVE any `add` that names it - the inventory is built as the
+file is read, so an `add` that arrives first fails the whole batch with
+`finding targets unknown unit "..."` and nothing at all is applied:
+{"op":"unit-add","perspective":"dreamer","why":"<how it was missed>","unit":{"id":"<lowercase.dotted.slug>","label":"...","path":"...","kind":"screen","meta":{}}}
+{"op":"add","perspective":"dreamer","why":"<why no earlier pass could have seen this>","finding":{"unit":"<unit id>","title":"...","detail":"...","dimension":"<a lens dimension>","score":1,"severity":"must","confidence":0.85,"effort":"m","evidence":["path:41-60"],"recommendation":"..."}}
+
+Unit ids are lowercase slugs - a-z, 0-9, dot, dash, underscore - and must be
+unique. Every unit needs a `label`; `path` is optional but is the evidence anchor.
+
+Check the ledger before you add. Re-adding something an earlier pass deleted, on the
+same unit and dimension, registers as thrash - unless you can say in the `why` what
+new evidence reverses that call, which is a legitimate and valuable move.
+A `unit-add` drops coverage below 1.0 and blocks stopping until the unit is graded.
+That is the intended behaviour. Add it anyway.
+```
+
+### Query the corpus, don't read the findings
+
+Everyone else is reading findings. Your leverage is running something across the whole subject that
+no per-unit grader would ever run. On the reference run the Dreamer's best contribution was an
+import graph: 20 source files backing 25 graded units had no importer anywhere in the repo, so 91
+findings - 11% of the set, six of them `must` - were graded on interface no gesture can open. No
+amount of careful reading finds that. One query does.
+
+Shapes that pay:
+
+- **reachability** - what is enumerated but unreferenced, and what is referenced but unenumerated
+- **adoption** - a primitive that exists and is imported by 20 of 60 candidates; a token scale used
+  5 times against 137 raw values
+- **absence** - a variant file present on 2 of 30 routes; a rule that covers one technology while
+  the subject uses two
+- **counting** - one finding repeated across nine units is one systemic finding, and the count is
+  the evidence
+
+Then say the through-line in your `argument`. That paragraph, not your deltas, is usually the most
+valuable thing you produce.
+
+## Empath - `change`
+
+OCA system prompt, verbatim:
+
+> You are the Empath perspective in a cognitive architecture. Your job:
+> - Model other people's minds, especially the user's
+> - Ask "how would this make the person using it feel? What do they actually need?"
+> - Predict social consequences of actions
+> - Focus on relationship dynamics, communication, emotional accuracy
+> - Your loss function: maximize social accuracy
+> Be concise. 2-4 sentences max.
+
+Ponder adaptation:
+
+```
+You are the Empath. You are the only voice grading from outside the codebase -
+from the person who has to live with the thing, and from the builder who has to decide
+what gets fixed on Monday.
+
+Re-rank. Ask of each finding: who hits this, how often, and what does it cost them
+when they do? A broken first-run path outranks three polish findings scored above it.
+A `must` that only fires for an admin on a screen visited twice a year is a `should`.
+Push `confidence` down on findings that are really hypotheses - a `must` at 0.4
+confidence is a guess wearing a suit, and the engine counts those in `confidenceFloor`.
+
+Your loss function is maximising social accuracy.
+
+Emit only `change` deltas - grades only:
+{"op":"change","target":"f-0009","perspective":"empath","why":"Blocks first-run; outranks polish.","set":{"severity":"must","score":2}}
+
+Fields you may set: score, severity, confidence, effort, status.
+Do NOT rewrite prose; that is the Builder's `edit`.
+```
+
+### Rank from the file, not from the prose
+
+The failure mode here is specific, and it happened: on the reference run the Empath ranked pass 1
+"on argument quality rather than on files I had opened", and the top of the list changed materially
+in pass 2 once it opened them. A well-written finding is not a severe one. A terse finding on a
+broken payment path outranks an eloquent one about spacing.
+
+Before you promote anything to `must`, open its evidence and confirm it. If you cannot, lower the
+confidence or the severity rather than leaving a guess someone is being asked to act on - the
+engine refuses to converge while open `must` findings sit below 0.5 confidence, and that gate
+exists because of exactly this.
+
+## How to actually run them
+
+### Parallel - four subagents, one per voice
+
+Each agent gets the shared preamble and one perspective prompt, writes its deliberation entry (`argument` and `confidence`) to `.ponder/tmp/<voice>-argument.json`, and writes JSONL for its own op to `.ponder/tmp/<voice>.jsonl` (which may be empty on a quiet pass).
+The parent first assembles `.ponder/tmp/deliberation-3.json` from the four `<voice>-argument.json` files and calls `ponder deliberate --file .ponder/tmp/deliberation-3.json` so all four voices and their arguments are recorded even when zero deltas are emitted. Next, the parent concatenates the four delta files in Skeptic → Builder → Empath → Dreamer order (deletes and edits land before adds, so the Dreamer's additions are numbered after the survivors) and calls `ponder delta --file` once. Name the four files explicitly rather than globbing - a glob that
+matches its own output truncates the target and then reads the file it is writing.
+
+```sh
+jq -n \
+  --slurpfile skeptic .ponder/tmp/skeptic-argument.json \
+  --slurpfile builder .ponder/tmp/builder-argument.json \
+  --slurpfile empath  .ponder/tmp/empath-argument.json \
+  --slurpfile dreamer .ponder/tmp/dreamer-argument.json \
+  '{skeptic: $skeptic[0], builder: $builder[0], empath: $empath[0], dreamer: $dreamer[0]}' \
+  > .ponder/tmp/deliberation-3.json
+ponder deliberate --file .ponder/tmp/deliberation-3.json
+
+cat .ponder/tmp/skeptic.jsonl .ponder/tmp/builder.jsonl \
+    .ponder/tmp/empath.jsonl  .ponder/tmp/dreamer.jsonl > .ponder/tmp/deltas-3.jsonl
+ponder delta --file .ponder/tmp/deltas-3.jsonl
+```
+
+Dreamer last is deliberate, and it is why the Dreamer's own file must be internally ordered
+`unit-add` before `add`: by the time the engine reads those lines, no later line can supply a
+missing unit. One bad line rejects the whole batch - all four voices - so if it fails, fix the line
+and re-run the same concatenated file rather than re-running the agents.
+
+This is what OCA itself does - `Promise.all` over the four, with per-voice temperature. Use it when
+you expect real disagreement: pass 1, pass 2, any pass after a `unit-add`, and any pass following an
+`escalate`.
+
+**Tradeoff:** the arguments are genuinely independent - no voice is anchored on another's read, which
+is the entire reason the Dreamer finds anything. The cost is four contexts, and the voices cannot
+answer each other, so you get four monologues and the parent does the reconciling. If two voices
+contradict (Skeptic deletes what the Dreamer just added), the parent resolves it in the `why` of
+whichever delta survives, and records the loser in the deliberation file - do not just drop it.
+
+In Claude Code: four Agent-tool calls in one message. In Codex: four `codex exec` subprocesses with
+`-o`, backgrounded and `wait`ed, or run in sequence.
+
+### Sequential - all four in one context
+
+Role-play the four in order, writing each argument before starting the next.
+
+**Tradeoff:** cheap, and the voices can answer each other, which is closer to a real deliberation.
+The cost is anchoring - every voice after the first is reading the previous voices' conclusions, and
+in practice the Dreamer gets crushed if it goes last, because by then the finding set feels settled.
+
+If you go sequential, **run Dreamer first**, before the set has been defended, then Skeptic, then
+Empath, then Builder (whose edits should be written against the surviving set). Accept that this pass
+produced a weaker Dreamer than a parallel one would, and say so in your `decide` reason if you are
+about to stop.
+
+### Choosing
+
+Parallel for pass 1 and 2, and any pass where you expect the set to move. Sequential for quiet late
+passes, small unit counts (under ~8), or a targeted re-check of one or two units. Never sequential
+for the pass you intend to stop on - that is the pass whose argument has to hold up.
+
+## Confidence
+
+Ponder wants an explicit `confidence` on each argument in `deliberation.json` (0-1), and on each
+finding. State it - the number you write is the number that lands in `deliberations.skeptic_confidence`
+and friends, unchanged. Nothing re-derives it.
+
+That is the difference worth knowing. OCA's own engine has no number to write, so it *infers* one
+from the wording - "definitely" → 0.9, "probably" → 0.7, "maybe" → 0.4, "unlikely" → 0.2, otherwise
+0.5. Ponder's rows sit in the same table beside those inferred ones, which means a hedged argument
+carrying `"confidence": 0.9` reads as incoherent to anything comparing the two. Make the prose and
+the number agree: write "the evidence does not support this" at 0.85, "this may be a duplicate" at
+0.5, and do not dress a guess as a conclusion in either field.
+
+The `confidence` on a **finding** is load-bearing in a way the argument's is not: open `must`
+findings below 0.5 feed `confidenceFloor`, and above 0.2 that rule alone forces another pass.
+
+## Anti-patterns
+
+- **A pass that only adds.** Four voices produced one op. It did not deliberate; it accumulated.
+- **Skeptic deleting things it merely dislikes.** Delete means wrong. Unimportant is a `change`.
+- **A phantom claim about a unit nobody opened.** `"phantom": true` says the route does not exist.
+  The engine catches it when the unit has a path; when it has none, the record carries your word as
+  `unverified` for ever. Go and look instead.
+- **Builder re-grading.** Rewriting a recommendation and quietly dropping the severity hides a
+  re-grade from the thrash detector; that is what the conformance suite warns about.
+- **Dreamer re-adding what the ledger already shows deleted.** Read the ledger first, or say what
+  new evidence reverses the call.
+- **Empath deferring everything hard.** `status: "deferred"` is a decision about sequencing, not a
+  way to make a finding stop being your problem.
+- **Perspectives that never contradict each other.** If the four voices agreed on everything, you
+  ran one voice four times. Check the temperatures, check that each got the ledger, and check you
+  did not paste a summary where the finding set should have been.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/ponder/references/protocol.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/ponder/references/protocol.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/ponder/references/protocol.md
+- **SHA256_FINGERPRINT**: `6919d0f358077413c60edbde62d10227e762704e8571cea52383ec6579354be5`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.928824+00:00
+---
+
+# Ponder protocol - commands, JSON shapes, verdict rules
+
+The authority for all of this is `~/code/ponder/SPEC.md`. This file is the working reference:
+what to type, what to hand it, what comes back. Where this file and SPEC.md disagree, SPEC.md wins.
+
+## Invocation
+
+`bin/ponder` is a POSIX `sh` shim that execs `node lib/cli.js`. Put it on PATH once:
+
+```sh
+ln -s ~/code/ponder/bin/ponder ~/.local/bin/ponder    # ~/.local/bin is already on PATH
+```
+
+Every command accepts:
+
+| Flag | Meaning |
+|---|---|
+| `--session <slug>` | Which session to act on. Defaults to the most recently touched **open** session in the current project. |
+| `--json` | Machine-readable output on stdout. Use this whenever you are going to parse the result. |
+| `--help` | Usage for that command. Same as `ponder help <command>`. |
+
+Exit codes: `0` success, `1` user error (bad flag, missing file, malformed JSON, a delta the engine
+refuses), `2` state-machine violation (wrong phase, `decide stop` under a `blocked` verdict, or state
+that does not reconcile with the ledger).
+
+**Every command ends with a `NEXT:` line** naming the phase you now owe and the literal command that
+satisfies it. That line is the engine driving the agent, and it is what survives a context compaction.
+
+## State layout
+
+Sessions live in `<project>/.ponder/<slug>/`, falling back to `~/.ponder/<slug>/` when the project
+path is not writable. Which directory `<project>` is - and what decided that - is under
+[`ponder start`](#ponder-start-subject---lens-lens); it is printed every time, and it is what every
+relative path in the session resolves against.
+
+```
+.ponder/<slug>/
+  session.json          identity, config, status, pass history
+  units.json            the inventory
+  findings.json         the live finding set - current truth
+  ledger.jsonl          append-only; every delta ever applied, forever
+  passes/NN/
+    predict.json        this pass's prediction, written before the work
+    deliberation.json   the four perspectives' arguments
+    deltas.jsonl        the deltas this pass applied
+    metrics.json        computed convergence signals
+    verdict.json        engine advice + agent decision + reason
+  report.md             written by `ponder report`
+  oca.log               every OCA bridge failure, for debugging only
+```
+
+Nothing is ever deleted from `findings.json` or `ledger.jsonl`. A `delete` delta sets
+`status: "retracted"`. Retraction is a state, not an erasure - a later pass must be able to see, and
+reverse, what an earlier pass killed.
+
+**`ledger.jsonl` is written before the state files**, every time. `units.json`, `findings.json` and
+`passes/NN/deltas.jsonl` are a view of it, and a crash mid-command can only leave the ledger ahead of
+its own view - which `ponder verify --repair` rebuilds deterministically. See
+[The ledger is the authority](#the-ledger-is-the-authority).
+
+## Phase machine
+
+`session.phase` names what you owe next. A command that arrives out of order exits `2` and names the
+expected phase.
+
+```
+predict → survey → appraise → deliberate → revise → judge → decide → (next pass) predict
+```
+
+| Phase | Pass 1 | Pass 2+ |
+|---|---|---|
+| predict | `ponder predict` | `ponder predict` |
+| survey | `ponder units` | skipped automatically; amend with `unit-add` / `unit-edit` / `unit-delete` deltas |
+| appraise | `ponder grade` | `ponder delta` (same call satisfies revise) |
+| deliberate | `ponder deliberate` (or `--skip --why`) | same |
+| revise | `ponder delta` | satisfied by the appraise call |
+| judge | `ponder judge` | same |
+| decide | `ponder decide` | same |
+
+So the command sequence is **predict → units → grade → deliberate → delta → judge → decide** on
+pass 1, and **predict → deliberate → delta → judge → decide** on every pass after.
+
+## Commands
+
+### `ponder start "<subject>" --lens <lens>`
+
+```sh
+ponder start "the UI" --lens ui --max-passes 6 --min-passes 2
+ponder start "our error handling" --lens custom --rubric ./rubrics/errors.md --slug errors-aug
+```
+
+| Flag | Default | Meaning |
+|---|---|---|
+| `--lens <name>` | required | `ui`, `architecture`, `docs`, `tests`, `product`, `copy`, `custom` |
+| `--rubric <file>` | - | required with `--lens custom`; any file with the lens front-matter shape |
+| `--project <path>` | resolved (below) | The root every relative path in the session resolves against, and where `.ponder/` is rooted |
+| `--slug <slug>` | `<subject-slug>-<date>` | Session id. Derived from the *subject*, not the lens, with leading stopwords dropped: `"the UI"` → `ui-2026-08-24`, `"our error handling"` → `error-handling-2026-08-24`. A collision gets a `-2` suffix; an explicit `--slug` that already exists exits `1` |
+| `--max-passes N` | 6 | Hitting it produces a `stop` with reason `budget`, never `converged` |
+| `--min-passes N` | 2 | Below it, `judge` always advises `continue` |
+
+Ponder has one mode. It deliberates and produces a plan; `ponder apply` is a separate, explicit step
+that emits an ordered work plan and still never edits your source.
+
+**The project root, and why the `project` line is worth reading.** Every relative path in the
+session - every unit `path`, every finding's `evidence` anchor, every phantom claim checked against
+one - resolves from `session.project`. Without `--project`, the engine walks up from the working
+directory: first for a project marker (`.git`, `.hg`, `.svn`, `package.json`, `go.mod`,
+`Cargo.toml`, `pyproject.toml`, `deno.json(c)`, `Gemfile`, `pom.xml`, `build.gradle(.kts)`,
+`composer.json`, `mix.exs`, `*.xcodeproj`, `*.xcworkspace`) - the nearest hit is the root, full
+stop - and only if there is no marker anywhere above you, again for an existing `.ponder` to adopt.
+Failing both, the working directory. `.ponder` never competes with a marker: it is where sessions
+are kept, not what makes something a project.
+
+`start` prints the answer and what decided it, and `session.json` records it in `projectFrom`
+(`how`: `explicit` | `marker` | `ponder` | `cwd`):
+
+```
+  project   /abs/path/app  (cwd is /abs/path/app/src; matched .git)
+  store     /abs/path/app/.ponder/ui-2026-08-24
+```
+
+A root from `--project` or a marker is **established**; one adopted from a `.ponder` or fallen back
+to is **guessed**, and `start` and `status` warn when it is. A guessed root cannot certify an
+absence, so a phantom claim under one is refused (see `ponder delta`). If the printed root is not
+where the software lives, start again with `--project <path>` before doing the work.
+
+Creates the session and prints **Prior pondering** - up to five earlier ponder episodes on a similar
+subject, read from the OCA's `episodic_memory`. Read them; that is where the last session left off.
+No OCA, no section, no problem.
+
+### `ponder predict --churn <0-1> --claim "<one line>"`
+
+```sh
+ponder predict --churn 0.35 --claim "Pass 1 over-graded polish and never opened the error paths."
+```
+
+Written before you look at anything. `--churn` is your estimate of this pass's `churn` metric
+(deltas ÷ live findings), `--claim` is one line about what the pass will find. Scored at `judge` as
+`surprise = |predicted - actual|`. Sandbagging the estimate destroys the only signal that says
+whether you model the subject yet.
+
+**`--churn` is validated to 0 ≤ n ≤ 1 and exits `1` outside it.** On pass 1 the number does not
+matter much: there is no previous pass, so the engine reports no churn and scores no surprise. Write
+the honest guess anyway - `--claim` is the part that carries, and the pair is recorded in
+`passes/01/predict.json` and in `report.md`. The scoring starts at pass 2, where `churn` exists and
+`surprise` is the distance from it. `--claim` is required and must be non-empty - an unstated
+expectation cannot be scored.
+
+### `ponder units --file <units.json>` / `--stdin`
+
+Pass 1 only. Later passes amend the inventory with `unit-add`, `unit-edit` and `unit-delete` deltas -
+add what the survey missed, correct what it got wrong, remove what is out of scope.
+
+The inventory is written to the ledger too, as a single `unit-seed` record carrying every unit id in
+order and every unit body as stored. That is what makes the coverage denominator auditable: an
+unledgered inventory is a denominator taken on trust. `unit-seed` is a seed, not a delta - it is
+excluded from every convergence ratio and from the delta counts, exactly like `grade` seeding.
+
+### `ponder grade --file <findings.json>` / `--stdin`
+
+Pass 1 only. Seeds the finding set. Every seeded finding is written to the ledger as an `add` with
+`source: "grade"`, so the ledger holds every creation - the thrash detector reads those creation
+values as the first setting of each field. They are excluded from every ratio, though: a seed is
+something the pass created, not something it changed, and counting it as movement is what used to
+pin pass 1's numbers near the ceiling. `metrics.json` reports the count separately as
+`deltas.seeded`. Grade-sourced adds are also excluded from thrash's killed-add rule, so pass 2
+deleting pass 1's noise reads as the Skeptic working, not as the loop oscillating. A seeded finding
+may carry its own `why`, which becomes that ledger entry's reason.
+
+### `ponder deliberate --file <deliberation.json>` / `--stdin`
+
+```sh
+ponder deliberate --file .ponder/tmp/deliberation-2.json
+ponder deliberate --skip --why "Pass 4 was a two-unit re-check; nothing to argue about."
+```
+
+`--skip` is legal and is recorded as a `deliberation_skipped` metacognitive observation against the
+session. It shows up in `report.md`.
+
+### `ponder delta --file <deltas.jsonl>` / `--stdin`
+
+Applies the pass's revisions in file order, **all-or-nothing**: one bad line on line 40 means nothing
+in the batch is applied, and every problem is listed at once with its line number. Every delta needs a
+non-empty `why` and a `perspective`. A `unit-add` must sit above any `add` that names the unit it
+creates, and above any `unit-edit` or `unit-delete` that targets it - the inventory is built as the
+file is read, so the reverse order fails with `unknown unit "..."`.
+
+`--file` also accepts a JSON array of delta objects, not only JSONL. Blank lines are ignored.
+
+### `ponder judge`
+
+Computes the metrics for the current pass, writes `passes/NN/metrics.json`, folds in any open OCA
+metacognitive observations as a tie-breaker toward `escalate`, and prints advice. Advice only -
+nothing is committed until `decide`.
+
+### `ponder decide <continue|stop|escalate> --why "<reason>"`
+
+Commits your call, closes the pass, and opens the next one (or closes the session on `stop`).
+
+- Every decision needs a `--why`, override or not. It is written to `verdict.json` and, for
+  overrides, surfaced permanently in `report.md` under **Overrides**.
+- You may override the advice, **except**: `stop` exits `2` and prints the ungraded units whenever
+  coverage is below 1.0. There is no flag for it. Note what the gate actually reads - not the verdict
+  label on disk, but coverage recomputed from `units.json` and `findings.json` at decision time, so
+  a stale or hand-edited `metrics.json` / `verdict.json` changes nothing. `escalate` while blocked is
+  legal and warns that coverage still has to reach 1.0 before the session can stop.
+- Overriding requires at least 12 characters of `--why`.
+- `stop` while `voices < 3` warns and proceeds, naming which perspectives actually spoke in the
+  pass's deliberation. A pass that skipped deliberation heard nobody, so it always warns.
+- Only a `stop` on reason `converged` closes the session as `converged`; every other stop -
+  `budget`, `perseveration`, an override - closes it as `stopped`, and `report.md` says which.
+
+### `ponder status`
+
+Where you are and what you owe: session identity, pass number, phase, unit and finding counts, last
+verdict + decision + reason, the project root and what decided it, and the ungraded unit list when
+there is one. `--json` for the same thing parseable. **This is the resumption command.** Run it
+before concluding anything about a session you did not personally start ten minutes ago - and read
+the `project` line while you are there: a session whose root was guessed has been resolving every
+path in it against a directory nobody chose, and it says so.
+
+### `ponder verify [--repair]`
+
+Replays `ledger.jsonl` from line 1, derives the state those records must have produced, and compares
+it against what `units.json` and `findings.json` actually contain - then compares the ledger against
+the per-pass `deltas.jsonl` files, which are the same records written a second time. Exit `0` and a
+summary when the session reconciles; exit `2` and the full diagnosis when it does not.
+
+```
+ponder verify - ui-2026-08-24
+  ledger    41 records - 1 unit-seed, 24 add, 1 unit-add, 2 unit-edit, 1 unit-delete
+  passes    41 of those records also in the per-pass delta files, across 4 pass directories
+  units     12 in units.json, 12 derived from the ledger
+  findings  29 in findings.json, 29 derived from the ledger
+  result    reconciles - every unit and every finding is accounted for by a ledger record
+```
+
+**Run it first on any session you did not personally start**, and after any interruption. Without
+`--repair` it never writes anything, and it takes no lock - it is the one command whose locking
+depends on a flag. Full mechanics - what is reconciled, what `--repair` rebuilds and what it refuses
+- are under [The ledger is the authority](#the-ledger-is-the-authority) below.
+
+`--json` carries `divergences`, `ledgerProblems`, `unionProblems`, `ledgerSkipped`, `repaired`,
+`rebuilt`, `unrepairable` and `counts`, and a failure returns the usual
+`{ "ok": false, "error", "detail", "code": 2, "next" }`.
+
+### `ponder report [--out <path>]`
+
+Regenerates the readable summary from current state, in this order: **Convergence**, **Overrides**,
+**Prediction vs reality**, **Coverage** (with **Corrected \<units\>** and **Phantom units** under
+it), **Findings** grouped by unit, **Retracted**, **Deliberation** pass by pass, and the full
+**Ledger**. Safe to run mid-loop.
+`--out` redirects it: the report is written to that path **instead of** `.ponder/<slug>/report.md`,
+not as well as, so run `ponder report` on its own first if you want the session's own copy refreshed
+too. Either way the command prints where it wrote.
+
+### `ponder apply [--dry-run] [--severity must,should]`
+
+Separate and explicit; never part of a pass. Selects `status: open` findings at or above the given
+severity (default `must`) and emits an ordered work plan grouped by unit, with evidence paths and
+recommendations. `--dry-run` prints it and touches nothing. Without `--dry-run` it prints it, writes
+`apply-plan.md`, marks the session `applied` - a terminal status - and records an OCA episodic entry.
+**It refuses (exit `2`) without `--dry-run` while the session is still open**, so it cannot close a
+pondering behind your back, and **it refuses (exit `2`) either way on an aborted session**
+(`session <slug> was aborted; there is no plan to apply.`) - a pondering abandoned mid-loop has
+findings nobody finished arguing with, and must not be able to quietly become an applied one. **Ponder never edits the subject's source.** It hands you a plan; you do the work.
+
+### `ponder list` / `ponder abort --why "<reason>"` / `ponder doctor` / `ponder version` / `ponder help`
+
+`list` shows every session both stores can see from here - this project's `.ponder/` and the
+`~/.ponder/` fallback - with slug, status, pass, phase, coverage, lens and subject, and prints the
+store roots it searched. It takes no arguments; use it to recover a slug you have forgotten. `abort` closes a
+session as `aborted` with a permanent reason - use it when the subject changed under you, rather
+than silently re-scoping an open session. `doctor` prints node version, `psql` presence, the DSN it
+would use, whether the OCA is reachable, where state will be written, the project root it resolves
+from here and what decided it, **and whether every session it can see reconciles with its own
+ledger** - a session that does not is named under **Problems** with the
+`ponder verify --session <slug>` that diagnoses it. A project root adopted from an ancestor
+`.ponder` rather than established by a project marker is a **Problem** too, in this directory or in
+any session it can see: that is the configuration in which a path that fails to resolve means
+nothing, and it is worth knowing before you trust one. Run it first in an unfamiliar harness.
+
+`ponder version` - or `ponder --version` - prints the engine version (`ponder 1.0.0`) and nothing
+else; `--json` wraps it in the usual envelope as `version`. `ponder help` lists
+every command with its usage line; `ponder help <command>` prints one, and `--help` works on any
+command as a flag. Everything the engine can do is discoverable from those two - a command that runs
+but is documented nowhere is a command nobody can find.
+
+## File shapes
+
+### `units.json`
+
+```json
+{
+  "version": 1,
+  "lens": "ui",
+  "units": [
+    { "id": "screen.settings.billing",
+      "label": "Settings → Billing",
+      "path": "src/routes/settings/billing.tsx",
+      "kind": "screen",
+      "meta": { "route": "/settings/billing" } }
+  ]
+}
+```
+
+`id` is required, unique, lowercase dotted slug, and **the one field nothing can change** - it is the
+join key for findings, so moving it would orphan every finding hanging off that unit. A `unit-edit`
+that tries is rejected, exit `1`. `path` is optional but strongly preferred: it is the evidence
+anchor, and it is what lets the engine check a phantom claim. `addedInPass` is stamped by the engine.
+
+`label`, `path`, `kind` and `meta` are all correctable by a later pass with a `unit-edit` delta - see
+below. A unit that has left the inventory also carries `removedInPass`, `removalKind`
+(`appraised` | `removed-ungraded` | `phantom`), and on a phantom `phantomVerification` and
+`phantomPath`. All of those are engine-stamped and all of them are reconciled against the ledger.
+
+### `findings.json` (what `ponder grade` takes)
+
+```json
+{
+  "version": 1,
+  "findings": [
+    { "unit": "screen.settings.billing",
+      "title": "Empty state is a bare 'No invoices' string",
+      "detail": "No illustration, no explanation of when invoices appear, no primary action.",
+      "dimension": "empty-states",
+      "score": 2,
+      "severity": "must",
+      "confidence": 0.8,
+      "effort": "s",
+      "evidence": ["src/routes/settings/billing.tsx:88-94"],
+      "recommendation": "Add an empty state with cause, expectation and a primary action." }
+  ]
+}
+```
+
+| Field | Values | Notes |
+|---|---|---|
+| `unit` | a unit `id` | Must exist in the inventory |
+| `dimension` | one of the lens's dimensions | Drives duplicate detection and reversal detection |
+| `score` | integer 1-5 | 1 broken, 3 acceptable, 5 exemplary; the lens defines each rung |
+| `severity` | `must` \| `should` \| `could` \| `note` | |
+| `confidence` | 0-1 | Below 0.5 it is a hypothesis, not a conclusion |
+| `effort` | `xs` \| `s` \| `m` \| `l` \| `xl` | |
+| `evidence` | array of `path:line-line` | The thing that makes a finding arguable instead of an opinion |
+| `status` | `open` \| `resolved` \| `retracted` \| `deferred` | Engine-managed; starts `open` |
+
+The engine assigns `id` (`f-NNNN`, never reused), `status`, `createdInPass`, `lastTouchedPass` and
+`history`. Do not send them.
+
+### `deliberation.json`
+
+```json
+{
+  "question": "Does the pass-1 finding set survive a second reading of the code?",
+  "skeptic": { "argument": "...", "confidence": 0.85 },
+  "builder": { "argument": "...", "confidence": 0.7 },
+  "dreamer": { "argument": "...", "confidence": 0.75 },
+  "empath":  { "argument": "...", "confidence": 0.7 }
+}
+```
+
+The four keys and their `argument` / `confidence` map one-to-one onto the OCA `deliberations`
+columns (`skeptic_argument`, `skeptic_confidence`, ...), which is why this is the shape to write.
+`argument` must be a non-empty string; `confidence` is optional and must be 0-1 if present. Fewer
+than four keys is accepted, and `deliberate` warns which voices were silent - those are exactly the
+ones missing from this pass's `voices`, so a two-key file is a pass that will warn again at
+`decide stop`.
+
+Two other shapes are tolerated and mean the same thing - `{"perspectives": {"skeptic": {...}, ...}}`
+and an array of `{"perspective": "skeptic", "argument": ...}` entries. The engine's own error message
+advertises the `perspectives` wrapper, so do not be surprised by it; the flat form above is fine.
+
+`question` is optional. It is stored in `passes/NN/deliberation.json` and goes no further - the
+`deliberations` row's `decision` column is a string the bridge synthesises (`ponder <slug> pass N:
+revise the finding set for "<subject>"`), not your question. The pass's delta summary becomes
+`resolution`, with `resolution_method = 'ponder-pass'` - in ponder, the executive-control synthesis
+*is* the revise phase.
+
+### `deltas.jsonl` and `ledger.jsonl`
+
+One JSON object per line. You supply `op`, `perspective`, `why`, and the op's payload; the engine
+stamps `pass` and `at`.
+
+```
+{"op":"delete","target":"f-0012","perspective":"skeptic","why":"Duplicate of f-0004."}
+{"op":"add","perspective":"dreamer","why":"No pass had looked at loading states as a set.","finding":{"unit":"screen.dashboard","title":"...","detail":"...","dimension":"loading-states","score":2,"severity":"should","confidence":0.7,"effort":"s","evidence":["src/routes/dashboard.tsx:20-31"],"recommendation":"..."}}
+{"op":"edit","target":"f-0007","perspective":"builder","why":"Recommendation was not actionable.","set":{"recommendation":"..."}}
+{"op":"change","target":"f-0009","perspective":"empath","why":"Blocks first-run, outranks polish.","set":{"severity":"must","score":2}}
+{"op":"unit-add","perspective":"dreamer","why":"Route was missed in pass 1.","unit":{"id":"screen.invite.accept","label":"Accept invite","path":"src/routes/invite/accept.tsx","kind":"screen","meta":{"route":"/invite/:token"}}}
+{"op":"unit-edit","target":"screen.marketing.footer","perspective":"builder","why":"Pass 1's label said both links 404; the finding under it now says the opposite, and says it correctly.","set":{"label":"Marketing footer - /privacy-policy resolves","meta":{"route":"/"}}}
+{"op":"unit-delete","target":"screen.legacy.print","perspective":"skeptic","why":"Route was removed in #1841; the file is dead.","phantom":true}
+```
+
+Seven ops. Four revise the finding set, three amend the inventory.
+
+| Op | Carries | Owner | For |
+|---|---|---|---|
+| `add` | `finding` (a whole finding object, no `id`) | Dreamer | Ground nobody had covered |
+| `edit` | `set` (partial finding) | Builder | Prose and evidence - `title`, `detail`, `recommendation`, `evidence` |
+| `change` | `set` (partial finding) | Empath | Grades - `score`, `severity`, `confidence`, `effort`, `status` |
+| `delete` | `target` | Skeptic | Unsupported, duplicated, or wrong. Sets `status: "retracted"` |
+| `unit-add` | `unit` | any | Inventory amendment. **Drops coverage below 1.0 until the unit is graded** |
+| `unit-edit` | `target` (a unit id) + `set` (partial unit) | any | Correcting a unit in place - `label`, `path`, `kind`, `meta`. **Never touches coverage** - see below |
+| `unit-delete` | `target` (a unit id), optionally `phantom` | any | Inventory amendment. What it costs coverage depends entirely on whether the unit was ever graded - see below |
+
+The engine does not enforce which fields go with which op, but the conformance suite warns when a
+`change` edits only prose - that hides re-grading from the thrash detector. `delete` is for findings
+that are wrong, not findings that are unimportant; unimportant is a `change` to `severity`, or
+`status: "deferred"`.
+
+### `unit-edit` - correcting a unit in place
+
+A unit's `label` is a caption on the inventory, and captions go stale. Pass 1 writes
+`"Billing - both links 404"`; pass 3 opens the file, finds one of them resolves, and rewrites the
+finding underneath. Without `unit-edit` the caption keeps saying 404 for ever, and `report.md` ships a
+headline contradicting the finding it sits above.
+
+```json
+{"op":"unit-edit","target":"screen.marketing.footer","perspective":"builder",
+ "why":"Pass 1's label said both links 404; the finding under it now says the opposite, and says it correctly.",
+ "set":{"label":"Marketing footer - /privacy-policy resolves","meta":{"route":"/"}}}
+```
+
+(Wrapped here to read. In the file it is one object on one line, like every other delta.)
+
+| Field | Rule |
+|---|---|
+| `target` | a **live** unit id. Unknown unit → rejected. A unit already removed → rejected: *"a unit that has left the inventory is not edited back into shape, it is re-added"* |
+| `set` | non-empty object. May set `label`, `path`, `kind`, `meta` - and nothing else. An unknown field is rejected by name: `"note" is not a settable unit field (label, path, kind, meta)` |
+| `set.id` | **always rejected, exit `1`**, by name rather than as an unknown field. The id is the join key between `units.json` and `findings.json`; moving it orphans every finding on that unit. If the id itself is wrong, `unit-delete` it and `unit-add` the corrected one, and accept what that costs coverage |
+| `why` | required and non-empty, like every delta |
+
+Value rules: `label` must be a non-empty string. `path` and `kind` take a non-empty string or `null`
+(clearing a path clears the anchor, not the *history* of the anchor - see the phantom rule below).
+`meta` must be an object.
+
+**`meta` merges key by key.** Every other field replaces wholesale. Correcting
+`{"route":"/settings/billing"}` on a unit whose meta is `{"route":"/billing","state":"empty"}` leaves
+`state` sitting exactly where it was - fixing a route must not silently wipe the state marker beside
+it. Replay applies the same merge, so the ledger derives byte-identical state.
+
+What it costs:
+
+- **Coverage: nothing.** A `unit-edit` is neither an addition nor a removal, so the numerator and the
+  denominator are both exactly what they were. This is the whole reason it exists: correcting a
+  caption with `unit-delete` + `unit-add` would drop coverage below 1.0 and block the stop, which
+  turns a wrong caption into a reopened session.
+- **Churn: yes.** It is a revising delta. It goes on the ledger, it counts toward `churn`, and it
+  participates in thrash detection - a label moved in pass 2 and put back in pass 3 is a
+  `field-revert` exactly like a severity flipped back and forth. Reversal is judged on the
+  *effective* value, so two edits touching different `meta` keys are not a false reversal.
+- **The record: permanent.** Every `unit-edit` appears in `report.md` under **Corrected \<units\>**
+  with its pass, its perspective, each field's new value and its `why` - the same treatment a removal
+  gets. A hand-edited label in `units.json` with no ledger record behind it is a divergence, and
+  every decision-point command refuses the session until it reconciles - which `verify --repair`
+  does by putting the ledger's value back. The hand edit loses; that is the design.
+
+### `unit-delete` and the phantom rule
+
+`unit-delete` is the only op that can shorten the ungraded list, which makes it the only op with an
+obvious route past the coverage gate: enumerate twelve screens, look at eleven, delete the twelfth.
+The engine closes that route. Three outcomes, decided by the engine, not by you:
+
+| The unit | `phantom` | What happens |
+|---|---|---|
+| carries at least one finding (a retracted one counts - withdrawing a judgment does not un-see the thing) | omitted | **`appraised`** removal. An honest scope change: it leaves the inventory *and* the coverage denominator |
+| was never graded | omitted | **`removed-ungraded`**. It leaves the inventory but **stays in the coverage denominator**, still listed as ungraded. Coverage does not move and the gate does not open |
+| was never graded | `true` | **`phantom`**, once the engine has checked the claim. Then it leaves the denominator |
+
+A `phantom` claim is checked against **every path the unit has ever carried**, not just the one
+`units.json` holds now: the original from its `unit-seed` or `unit-add` ledger record, plus every
+value any `unit-edit` has set since, plus the current one - resolved from the project root,
+deduplicated, and including a path set earlier in the *same* delta batch.
+
+That is not belt and braces. `unit-edit` can move a `path`, so a claim checked only against the
+current value would be a two-delta route through the coverage gate: point a real unit at a filename
+that does not exist, then claim the unit never existed and let the engine certify the absence. One
+surviving path sinks the claim.
+
+| The unit's paths | Result |
+|---|---|
+| **any** of them exists | **the whole batch is rejected, exit `1`.** The message names the path found and how it got there: `unit "<id>" is claimed phantom, but a path it has carried exists: <abs> (set by a unit-edit in pass 3). Something you can open is not something pass 1 imagined. A phantom claim is checked against every path the unit has ever had, so editing the path first does not clear it.` |
+| exactly one, never edited, and it does not exist | accepted · `verified-missing`, with the checked absolute path recorded |
+| the path was ever edited and no version of it exists | accepted · **`unverified`, never `verified-missing`.** Every version was checked and every one was missing, but the engine will not certify an absence about a target that moved. The ledger record carries `pathsChecked`, and `ponder delta` and `report.md` both say so |
+| the unit never had a path | accepted · `unverified` - nothing could be checked at all |
+
+Those rows describe a root the engine is sure of: `--project`, or one a project marker established.
+Under a **guessed** root - an adopted ancestor `.ponder`, or a working-directory fallback (see
+`ponder start`) - a unit with paths and no path that resolves is refused, exit `1`, naming the root
+and `--project`: `none of the 2 paths it has carried ... resolves under <root> - but that project root
+was guessed, not established`. Nothing was really checked, and a file missing from the wrong
+directory is not a screen that never existed. A unit that never had a path is unaffected.
+
+So editing a path is never a way to *strengthen* a phantom claim. At best it leaves the claim exactly
+where it would have been with no path at all; at worst it is refused outright.
+
+Also refused: `"phantom": true` on a unit that carries a finding (`it cannot also be a unit that never
+existed`), `phantom` on any op other than `unit-delete`, a `phantom` that is not a boolean, and a
+second `unit-delete` on a unit already removed - with exactly one exception, which is upgrading a
+`removed-ungraded` unit to a checked phantom claim once you have gone and looked.
+
+Every accepted phantom is named permanently in `report.md` under **Phantom units**, with its
+verification state and your `why` quoted underneath - and the two unverified cases are written
+differently there, because they are different claims: *"this unit had no path, so nothing could be
+checked"* versus *"this unit's path was edited, so every version of it was checked and none was
+found, but the engine will not certify an absence about a target that moved."* A unit deleted while
+ungraded is named too, in the **Ungraded** list it never left. That is the deal: you may narrow the
+subject, and the narrowing is on the record for ever.
+
+**`phantom` means the route does not exist. It does not mean you ran out of patience.** The engine can
+only catch the lie when there is a path to check; the unverified case runs on your word.
+
+### `metrics.json`, `verdict.json` and `judge --json`
+
+`ponder judge --json` prints one envelope. Every command's `--json` has the same outer shape -
+`ok`, `command`, `session`, the command's own payload, `warnings`, `next` - and nothing else reaches
+stdout, including warnings, which move into the `warnings` array:
+
+```json
+{ "ok": true, "command": "judge", "session": "ui-2026-08-24",
+  "metrics": { "...": "the metrics.json object, inline" },
+  "verdict": "blocked", "reason": "coverage",
+  "message": "1 of 12 screen has never been graded. Stopping is not permitted.",
+  "ungraded": ["screen.invite.accept"],
+  "observations": [],
+  "warnings": [],
+  "next": { "phase": "decide", "command": "ponder decide continue --why \"<reason>\" ..." } }
+```
+
+On failure the envelope is `{ "ok": false, "error", "detail", "code", "next" }` and the process exits
+with `code`.
+
+`metrics.json` keys: `version`, `pass`, `at`, the eight signals (`coverage`, `novelty`, `churn`,
+`thrash`, `surprise`, `stall`, `confidenceFloor`, `voices`), plus `voiceNames`,
+`deliberationSkipped`, `deltaVoices`, `deltaVoiceNames`, `predictedChurn`, `claim`, `units`
+(`enumerated`, `graded`, `removed`, `removedUngraded`, `phantom`), `ungraded`, `removedUngraded`,
+`phantoms`, `findings` counts, `deltas` (`total`, `byOp`, `seeded`, `revisions`), `reversals` (a note
+per reversing delta), `shakyMustFindings`, `minPasses`, `maxPasses`. Numbers are rounded to four
+places, so the table `judge` prints (two places) and the file disagree in the last digit - trust the
+file. On pass 1, `novelty`, `churn`, `thrash` and `surprise` are `null`, not `0`.
+
+`verdict.json` keys: `version`, `pass`, `verdict`, `reason`, `rule`, `message`, `notes`, `ungraded`,
+`signals` (the eight, copied, plus `deltaVoices`), `removedUngraded`, `phantoms`, `advisedAt`, then
+after `decide`: `decision`, `why`, `override`, `warnings`, `decidedAt`, `coverageAtDecision`.
+
+`reason` is a stable label, not prose - one of `coverage`, `min-passes`, `thrash`, `perseveration`,
+`low-confidence`, `converged`, `budget`, `oca-observations`, `default`. The human sentence is in
+`message`.
+
+## The ledger is the authority
+
+Everything above governs what the *engine* will do. None of it governs a text editor. `units.json` and
+`findings.json` are ordinary files: forge a `removalKind`, delete a unit's entry, invent a finding,
+flip a status from `open` to `resolved`. So the state is not trusted, it is **recomputed**.
+
+**Reconciliation** replays `ledger.jsonl` from line 1, derives the state those records must have
+produced, and compares:
+
+| Document | Reconciled |
+|---|---|
+| `findings.json` | which ids exist; and per finding `unit`, `title`, `detail`, `dimension`, `score`, `severity`, `confidence`, `effort`, `evidence`, `recommendation`, `status`, `createdInPass` |
+| `units.json` | which ids exist; and per unit `label`, `path`, `kind`, `meta`, `addedInPass`, `removedInPass`, `removalKind`, `phantomVerification`, `phantomPath` |
+
+`label`, `path`, `kind` and `meta` are in that list *because* `unit-edit` replays them, key-by-key
+`meta` merge included. Correcting a caption on the record is cheap; correcting one off the record is
+not possible. Not reconciled: `lastTouchedPass`, a finding's `history`, timestamps, and `session.json`
+- derived bookkeeping and the phase machine, neither of which can buy anyone coverage.
+
+It then checks the ledger against itself. `ledger.jsonl` is the ordered union of the per-pass
+`deltas.jsonl` files - one call writes both copies - so those files are an independent second copy of
+every record. That is what catches a plausible line appended to `ledger.jsonl` alone, a reordered
+ledger, a truncated one, or a pass directory deleted out from under it.
+
+**`judge`, `decide`, `report` and `apply` reconcile before they act**, and a divergence is exit `2`
+naming what diverged. Those four turn state into a claim - a verdict, a decision, a document, a work
+plan. The rest of the loop does not pay the cost: `predict`, `units`, `grade`, `delta`, `status` and
+`list` run without it.
+
+### Write ordering - ledger first, always
+
+Every command that changes state appends to `ledger.jsonl` **first** and writes `units.json`,
+`findings.json` and `passes/NN/deltas.jsonl` **after**. The asymmetry is deliberate:
+
+- **Ledger ahead** - fully recoverable. Every record determines what the state files must contain, so
+  replaying derives what they have not caught up to. Deterministic, no guessing.
+- **State ahead** - unrecoverable. The extra data exists in exactly one place and there is nothing to
+  rebuild it from.
+
+So the only crash state reachable is the recoverable one. A torn write never costs a pass's work.
+
+### `ponder verify --repair`
+
+Repairs a ledger-ahead session: replays the ledger, rewrites `units.json` and `findings.json` to the
+state those records must have produced, appends the missing tail to any `passes/NN/deltas.jsonl` that
+holds a strict prefix, then re-reconciles and prints line by line what it rebuilt.
+
+```
+Repaired from the ledger
+  - units.json - 12 units rebuilt from the ledger (screen.auth.sso, screen.billing were behind it)
+  - passes/03/deltas.jsonl - 2 records appended to catch it up to the ledger
+```
+
+| What `--repair` found | What it does |
+|---|---|
+| a unit or finding the ledger created that the state file lacks, or a field whose stored value is behind the ledger's | rebuilds it |
+| a `passes/NN/deltas.jsonl` holding a strict prefix of the ledger's records for that pass | appends the missing tail |
+| a unit or finding in a state file that **no ledger record ever created** | **refuses** - the data exists in no other copy. Forgery or unrecoverable loss; both are a hard error |
+| a duplicated or unidentified entry in a state file | **refuses** - same reason |
+| a `passes/NN/deltas.jsonl` holding a record the ledger does not, or a different record at the same position | **refuses** - two copies of an append-only log disagreeing, not one lagging |
+| a problem inside `ledger.jsonl` itself, or a line that will not parse | **refuses** - repair rebuilds *from* the ledger, so a broken ledger is nothing to rebuild from |
+
+Every refusal stays exit `2`, and `--repair` prints what it cannot rebuild before it refuses. A
+repaired session is byte-identical to what the interrupted command would have written. Without
+`--repair`, `verify` writes nothing.
+
+**What this does not guarantee.** It is not a signature and not a hash chain. Someone who edits all
+three copies consistently - the state file, `ledger.jsonl`, and the matching `passes/NN/deltas.jsonl`
+at the right position - defeats it, and that is outside the threat model, said plainly rather than
+implied away. What it does is raise the cost of a dishonest stop from one edit to a consistent forgery
+across three files, one of them an append-only log that `report.md` quotes.
+
+Two boundaries worth knowing before you meet them. `session.json` is not reconciled and `--repair`
+does not rebuild it - the ledger records operations on units and findings, not the phase machine. And
+a session whose inventory was seeded before `unit-seed` existed has no ledger record for its units,
+so it will never reconcile: re-seed it rather than working around it.
+
+## Convergence signals
+
+| Signal | Formula | Reads as |
+|---|---|---|
+| `coverage` | graded units ÷ enumerated units | Did we actually look at everything? |
+| `novelty` | revising `add` deltas ÷ live findings - **null on pass 1** | Still finding new ground? |
+| `churn` | revising deltas ÷ live findings - **null on pass 1** | How much moved this pass? |
+| `thrash` | revising deltas that reverse an earlier delta on the same target ÷ revising deltas - **null on pass 1** | Oscillating instead of converging? |
+| `surprise` | \|predicted churn - actual churn\| - **null on pass 1** | How well the loop models itself |
+| `stall` | consecutive passes with `churn < 0.02` | Perseveration guard |
+| `confidenceFloor` | fraction of `open` + `must` findings with `confidence < 0.5` | Are the important calls still guesses? |
+| `voices` | distinct perspectives that **spoke in this pass's deliberation** | Did the pass argue with itself? |
+
+**Pass 1 reports `null` for `novelty`, `churn`, `thrash` and `surprise`** - printed as `-` in the
+signal table, and `-` is not a zero. All four measure change against a previous pass, and pass 1 has
+none: every finding is new because there was nothing there before, and there is no actual churn to
+score the prediction against. They start reading at pass 2. `coverage`, `confidenceFloor`, `stall` and
+`voices` describe a state rather than a change, so they read from pass 1 onward.
+
+The numerator for `novelty` and `churn` is **revising** deltas - the seed `add`s that `ponder grade`
+writes are excluded, so the numbers describe what a pass *changed*, not what it created. The
+denominator is the **live** finding count, total minus retracted, so retracting noise does not dilute
+the next pass's signal. `confidenceFloor`'s denominator is only the `open` + `must` findings.
+
+`thrash` is the odd one out: **both** halves of it are revising deltas, not total deltas, so it reads
+as the share of this pass's own revisions that undid earlier work. A `unit-add`, `unit-edit` or
+`unit-delete` is a revising delta like any other - inventory amendments count in `churn`, because they
+moved the pondering, and never in `novelty`, because they are not `add`s of findings.
+
+**Coverage is the one signal a `unit-edit` cannot move.** Correcting a unit is neither an addition nor
+a removal, so the numerator and the denominator come out of the pass exactly as they went in.
+
+`voices` counts the perspectives that **argued**, read from `passes/NN/deliberation.json`: a
+perspective with a non-empty `argument` spoke, whatever it did or did not go on to emit. A Skeptic
+who checked the evidence, found the finding sound and said so has voted - the deliberation heard it.
+A pass that skipped deliberation (`ponder deliberate --skip`) heard nobody, and its `voices` is 0.
+
+The old reading is still available and still worth watching: `judge` prints a **`delta voices`** row
+under `voices`, and `metrics.json` carries `deltaVoices` / `deltaVoiceNames`. Read the two together.
+`voices 4/4` with `delta voices 1/4` is four perspectives arguing and one acting - sometimes a genuine
+quiet pass, sometimes three voices going through the motions. `voices 0/4` with a healthy
+`delta voices` is deltas nobody argued for.
+
+A delta **reverses** an earlier one when, on the same target, an earlier pass set a field to X, a
+later pass changed it, and this pass sets it back to X - on a unit's `label`, `path`, `kind` or `meta`
+via `unit-edit` exactly as on a finding's fields, with seeded and added values counting as the first
+setting and `meta` compared on its merged value rather than on the partial object submitted; or when
+this pass `add`s a finding materially matching one an earlier pass `delete`d (same `unit` + same
+`dimension`); or when it `delete`s one added within the previous two passes.
+
+## Verdict rules, in order
+
+First match wins.
+
+1. `coverage < 1.0` → **`blocked`**. Stopping is not permitted; the verdict names every ungraded
+   unit, and names apart the ones deleted without ever being graded, saying why they still count.
+   No override exists.
+2. `pass < minPasses` → **`continue`**. A single pass is an opinion, not a pondering.
+3. `thrash > 0.25` → **`escalate`**. Another identical pass will not help - rotate perspectives,
+   widen the evidence, or split the subject. Skipped when `thrash` is null.
+4. **Evidence and review guard (`confidenceFloor > 0` or `voices < 3`):** any open `must` finding
+   below 0.5 confidence (`confidenceFloor > 0`) or fewer than three reviewing perspectives
+   (`voices < 3`) blocks convergence → if `pass >= maxPasses`, **`stop`** with reason `budget`;
+   else if `stall >= 2`, **`escalate`**; else **`continue`** with reason `low-confidence` or
+   `insufficient-perspectives`. Stillness with unresolved uncertainty does not earn convergence,
+   and no quiet pass bypasses this guard.
+5. `novelty < 0.05` and `churn < 0.10`, with `voices >= 3` and `confidenceFloor == 0`, sustained
+   two consecutive passes → **`stop`**, reason `converged` (engine rule id `6`). Checked before
+   the fallback perseveration stop so two fully reviewed, confident quiet passes earn `converged`.
+6. `stall >= 2` and `coverage == 1.0` → **`stop`**, reason `perseveration` (engine rule id `4`).
+   Nothing is moving, and the two-pass convergence check did not match (for example, because the
+   prior pass lacked full perspective review or confidence). `stall` only counts passes whose churn
+   was a number, so a pass with no churn cannot feed it.
+7. `pass >= maxPasses` → **`stop`**, reason `budget`. Report it as a budget stop, never as
+   convergence.
+8. otherwise → **`continue`**, reason `default` - unless the OCA is holding open metacognitive
+   observations of high severity about this loop, which tip an otherwise-`continue` into
+   **`escalate`**, reason `oca-observations`.
+
+Pass 1 reports no `churn`, `novelty` or `thrash`, so rules 3, 5 and 6 have nothing to fire on there,
+and the skip is explicit rather than a null comparison happening to come out false. Rule 1 still
+applies in full - coverage is computed from the inventory and the finding set, not from the ledger,
+and it blocks pass 1 exactly as hard as pass 6.
+
+## Lens packs
+
+`lenses/<name>.md`, read by the agent at survey and appraise:
+
+```yaml
+---
+name: ui
+unit: screen
+enumerate: |
+  How to find every unit. Concrete commands and heuristics.
+dimensions: [information-hierarchy, empty-states, loading-states, error-states,
+             motion, affordance-clarity, density, responsive-behaviour,
+             accessibility, copy-tone, consistency, delight]
+scale: { 1: broken, 2: bad, 3: acceptable, 4: good, 5: exemplary }
+---
+```
+
+The body defines what a unit is, how to enumerate exhaustively, each dimension with concrete 1 / 3 / 5
+examples, what counts as evidence, and what each of the four perspectives should hunt for.
+`--lens custom --rubric <file>` loads any file with the same front-matter shape.
+
+## OCA bridge
+
+Optional, silent when absent, zero npm dependencies - it shells out to `psql`.
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `PONDER_OCA` | `auto` | `auto` probes once per process and disables itself on failure; `on` makes an unreachable OCA a hard error; `off` skips it entirely |
+| `PONDER_OCA_DSN` | `postgres://localhost/oneiro` | |
+
+Timeout is 5s per call. Any non-zero exit, timeout or parse failure is logged to
+`.ponder/<slug>/oca.log` and returns `null`. **The bridge can never break the engine** - if a pass
+behaves strangely, the OCA is not the reason; check `oca.log` and move on.
+
+What it buys you: `start` prints prior pondering on the same subject; each pass writes a scored
+prediction to `episodic_memory` and `hypotheses`; deliberations land in `deliberations`; stuck,
+perseverating, thrashing and low-confidence passes raise `metacognitive_observations` that `judge`
+reads back as a tie-breaker toward `escalate`. The cognitive-loop process on `:3333` is **not**
+running and nothing here depends on it - the bridge talks to Postgres directly.
+
+## Common errors
+
+Messages below are the literal ones the engine prints. Errors go to stderr; the `NEXT:` line still
+goes to stdout, so a failed command still tells you where you are.
+
+| Exit | Message | Cause | Fix |
+|---|---|---|---|
+| `2` | `out of order: "ponder judge" satisfies judge, but this session owes decide.` | A phase skipped or repeated | Do what `NEXT:` says. The state machine is correcting your memory, not malfunctioning |
+| `2` | `cannot stop: coverage is 0.67, not 1.0. 1 screen has never been graded.` | The coverage gate | Grade the named units. A `unit-delete` does not shorten this list unless the unit was graded or is a verified phantom |
+| `2` | `session <slug> is still open on pass N (<phase>).` | `ponder apply` without `--dry-run` on an open session | `--dry-run` to preview, or finish the pondering first |
+| `2` | `session <slug> was aborted; there is no plan to apply.` | `ponder apply` on an aborted session, with or without `--dry-run` | Nothing to fix. An abandoned pondering is not a plan - start a fresh session |
+| `2` | `pass N has not been judged.` | The session owes `decide` but `passes/NN/metrics.json` is missing - the phase machine catches an ordinary `decide`-before-`judge` first, so this one means the pass artefacts were disturbed | `ponder judge` again |
+| `1` | `N problems in this delta batch - nothing was applied.` + `delta line 4: every delta needs a non-empty "why" - an unexplained revision is not a revision.` | A delta without a reason | Every delta carries a `why`. Nothing in the batch applied, so fix and re-run the whole file |
+| `1` | `delta line 1: finding targets unknown unit "u.two" - add it first with a unit-add delta.` | An `add` naming a unit that is not in the inventory *yet* | Move the `unit-add` line above the `add`. Same file is fine; order is not optional |
+| `1` | `unit "<id>" is claimed phantom, but a path it has carried exists: <abs> (carried by the unit-add that created it in pass 4).` | A `"phantom": true` on a unit that has, at some point, pointed at a file you can open | Go and grade it. The file is right there. The check runs against every path the unit ever had, so moving the path first does not clear it |
+| `1` | `unit "<id>" is claimed phantom and none of the 2 paths it has carried (...) resolves under <root> - but that project root was guessed, not established (...).` | A `"phantom": true` under a project root no `--project` and no project marker established | Check the `project` line from `ponder start` / `ponder status`. If the root is wrong, start again with `--project <path>`; if it is right, the claim is still uncheckable from there and the unit needs grading |
+| `1` | `unit-edit may never set "id". The unit id is the join key between units.json and findings.json...` | A `unit-edit` trying to rename a unit | Ids do not move. If the id itself is wrong, `unit-delete` it and `unit-add` the corrected one, and pay the coverage |
+| `1` | `"note" is not a settable unit field (label, path, kind, meta).` | A `unit-edit` setting something that is not one of the four | Those four, and nothing else |
+| `1` | `unit "<id>" was removed in pass 3 - a unit that has left the inventory is not edited back into shape, it is re-added.` | A `unit-edit` on a removed unit | `unit-add` it back if it belongs in the subject |
+| `2` | `session <slug> does not reconcile with its ledger - 2 divergences.` | `judge`, `decide`, `report` or `apply` on state that disagrees with the ledger | `ponder verify --session <slug>` for the diagnosis, then `ponder verify --repair` if the ledger is merely ahead. A state-ahead session is a hard error by design |
+| `1` | `--churn must be between 0 and 1 (got 1.2).` | A prediction outside the 0-1 range the metric lives in | Pick a number in range. `0` and `1.0` are both legal. On pass 1 nothing scores it - write the honest guess and put the content in `--claim` |
+| `1` | `overriding the "continue" advice with "stop" needs a --why of at least 12 characters (got 4).` | Thin override reason | Write the actual reason. It is permanent in `report.md` |
+| `1` | `session "ui-2026-08-24" already exists at ...` | `--slug` collision | Pick another slug, or resume: `ponder status --session <slug>` |
+| `1` | `<path> line 1 is not valid JSON: ...` | A truncated or fenced JSONL line | Ask the batch agent for JSONL and nothing else - no prose, no code fences |
+| `0` | No **Prior pondering** section | OCA unreachable, or nothing matched | Expected. `ponder doctor` if you care |
+
+One failure prints no error at all: a `unit-delete` on a never-graded unit succeeds, and coverage does
+not move. That is not a bug to route around. The unit left the inventory and stayed in the coverage
+denominator, exactly as designed - grade it, or claim `"phantom": true` and let the engine check.
+
+
+---
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/postgresql-code-review/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/postgresql-code-review/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/postgresql-code-review/SKILL.md
@@ -80375,4164 +87484,3 @@ fully typed. This is a silent failure — always verify before releasing.
 | Bug fix, no API change | PATCH | `1.2.3 → 1.2.4` |
 | Pre-release | suffix | `2.0.0a1 → 2.0.0rc1 → 2.0.0` |
 | Packaging-only fix (no code change) | post-release | `1.2.3 → 1.2.3.post1` |
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-pypi-package-builder/references/community-docs.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-pypi-package-builder/references/community-docs.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-pypi-package-builder/references/community-docs.md
-- **SHA256_FINGERPRINT**: `e1d442d1ee120e614522100d2ef3feb016ea1ae4c29a20d6a4c656681fdd91ce`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.702954+00:00
----
-
-# Community Docs, PR Checklist, Anti-patterns, and Release Checklist
-
-## Table of Contents
-1. [README.md required sections](#1-readmemd-required-sections)
-2. [Docstrings — Google style](#2-docstrings--google-style)
-3. [CONTRIBUTING.md template](#3-contributingmd)
-4. [SECURITY.md template](#4-securitymd)
-5. [GitHub Issue Templates](#5-github-issue-templates)
-6. [PR Checklist](#6-pr-checklist)
-7. [Anti-patterns to avoid](#7-anti-patterns-to-avoid)
-8. [Master Release Checklist](#8-master-release-checklist)
-
----
-
-## 1. `README.md` Required Sections
-
-A good README is the single most important file for adoption. Users decide in 30 seconds whether
-to use your library based on the README.
-
-```markdown
-# your-package
-
-> One-line description — what it does and why it's useful.
-
-[![PyPI version](https://badge.fury.io/py/your-package.svg)](https://pypi.org/project/your-package/)
-[![Python Versions](https://img.shields.io/pypi/pyversions/your-package)](https://pypi.org/project/your-package/)
-[![CI](https://github.com/you/your-package/actions/workflows/ci.yml/badge.svg)](https://github.com/you/your-package/actions/workflows/ci.yml)
-[![Coverage](https://codecov.io/gh/you/your-package/branch/master/graph/badge.svg)](https://codecov.io/gh/you/your-package)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-
-## Installation
-
-pip install your-package
-
-# With Redis backend:
-pip install "your-package[redis]"
-
-## Quick Start
-
-(A copy-paste working example — no setup required to run it)
-
-from your_package import YourClient
-
-client = YourClient(api_key="sk-...")
-result = client.process({"input": "value"})
-print(result)
-
-## Features
-
-- Feature 1
-- Feature 2
-
-## Configuration
-
-| Parameter | Type | Default | Description |
-|---|---|---|—--|
-| api_key | str | required | Authentication credential |
-| timeout | int | 30 | Request timeout in seconds |
-| retries | int | 3 | Number of retry attempts |
-
-## Backends
-
-Brief comparison — in-memory vs Redis — and when to use each.
-
-## Contributing
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md)
-
-## Changelog
-
-See [CHANGELOG.md](./CHANGELOG.md)
-
-## License
-
-MIT — see [LICENSE](./LICENSE)
-```
-
----
-
-## 2. Docstrings — Google Style
-
-Use Google-style docstrings for every public class, method, and function. IDEs display these
-as tooltips, mkdocs/sphinx can auto-generate documentation from them, and they convey intent
-clearly to contributors.
-
-```python
-class YourClient:
-    """
-    Main client for <purpose>.
-
-    Args:
-        api_key: Authentication credential.
-        timeout: Request timeout in seconds. Defaults to 30.
-        retries: Number of retry attempts. Defaults to 3.
-
-    Raises:
-        ValueError: If api_key is empty or timeout is non-positive.
-
-    Example:
-        >>> from your_package import YourClient
-        >>> client = YourClient(api_key="sk-...")
-        >>> result = client.process({"input": "value"})
-    """
-```
-
----
-
-## 3. `CONTRIBUTING.md`
-
-```markdown
-# Contributing to your-package
-
-## Development Setup
-
-git clone https://github.com/you/your-package
-cd your-package
-pip install -e ".[dev]"
-pre-commit install
-
-## Running Tests
-
-pytest
-
-## Running Linting
-
-ruff check .
-black . --check
-mypy your_package/
-
-## Submitting a PR
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feat/your-feature`
-3. Make changes with tests
-4. Ensure CI passes: `pre-commit run --all-files && pytest`
-5. Update `CHANGELOG.md` under `[Unreleased]`
-6. Open a PR — use the PR template
-
-## Commit Message Format (Conventional Commits)
-
-- `feat: add Redis backend`
-- `fix: correct retry behavior on timeout`
-- `docs: update README quick start`
-- `chore: bump ruff to 0.5`
-- `test: add edge cases for memory backend`
-
-## Reporting Bugs
-
-Use the GitHub issue template. Include Python version, package version,
-and a minimal reproducible example.
-```
-
----
-
-## 4. `SECURITY.md`
-
-```markdown
-# Security Policy
-
-## Supported Versions
-
-| Version | Supported |
-|---|---|
-| 1.x.x   | Yes       |
-| < 1.0   | No        |
-
-## Reporting a Vulnerability
-
-Do NOT open a public GitHub issue for security vulnerabilities.
-
-Report via: GitHub private security reporting (preferred)
-or email: security@yourdomain.com
-
-Include:
-- Description of the vulnerability
-- Steps to reproduce
-- Potential impact
-- Suggested fix (if any)
-
-We aim to acknowledge within 48 hours and resolve within 14 days.
-```
-
----
-
-## 5. GitHub Issue Templates
-
-### `.github/ISSUE_TEMPLATE/bug_report.md`
-
-```markdown
----
-name: Bug Report
-about: Report a reproducible bug
-labels: bug
----
-
-**Python version:**
-**Package version:**
-
-**Describe the bug:**
-
-**Minimal reproducible example:**
-```python
-# paste code here
-```
-
-**Expected behavior:**
-
-**Actual behavior:**
-```
-
-### `.github/ISSUE_TEMPLATE/feature_request.md`
-
-```markdown
----
-name: Feature Request
-about: Suggest a new feature or enhancement
-labels: enhancement
----
-
-**Problem this would solve:**
-
-**Proposed solution:**
-
-**Alternatives considered:**
-```
-
----
-
-## 6. PR Checklist
-
-All items must be checked before requesting review. CI must be fully green.
-
-### Code Quality Gates
-```
-[ ] ruff check . — zero errors
-[ ] black . --check — zero formatting issues
-[ ] isort . --check-only — imports sorted correctly
-[ ] mypy your_package/ — zero type errors
-[ ] pytest — all tests pass
-[ ] Coverage >= 80% (enforced by fail_under in pyproject.toml)
-[ ] All GitHub Actions workflows green
-```
-
-### Structure
-```
-[ ] pyproject.toml: name, dynamic/version, description, requires-python, license, authors,
-    keywords (10+), classifiers, dependencies, all [project.urls] filled in
-[ ] dynamic = ["version"] if using setuptools_scm
-[ ] [tool.setuptools_scm] with local_scheme = "no-local-version"
-[ ] setup.py shim present (if using setuptools_scm)
-[ ] py.typed marker file exists in the package directory (empty file)
-[ ] py.typed listed in [tool.setuptools.package-data]
-[ ] "Typing :: Typed" classifier in pyproject.toml
-[ ] __init__.py has __all__ listing all public symbols
-[ ] __version__ via importlib.metadata (not hardcoded string)
-```
-
-### Testing
-```
-[ ] conftest.py has shared fixtures for client and backend
-[ ] Core happy path tested
-[ ] Error conditions and edge cases tested
-[ ] Each backend tested independently in isolation
-[ ] Redis backend tested in separate CI job with redis service (if applicable)
-[ ] asyncio_mode = "auto" in pyproject.toml (for async tests)
-[ ] fetch-depth: 0 in all CI checkout steps
-```
-
-### Optional Backend (if applicable)
-```
-[ ] BaseBackend abstract class defines the interface
-[ ] MemoryBackend works with zero extra deps
-[ ] RedisBackend raises ImportError with clear pip install hint if redis not installed
-[ ] Both backends unit-tested independently
-[ ] redis extra declared in [project.optional-dependencies]
-[ ] README shows both install paths (base and [redis])
-```
-
-### Changelog & Docs
-```
-[ ] CHANGELOG.md updated under [Unreleased]
-[ ] README has: description, install, quick start, config table, badges, license
-[ ] All public symbols have Google-style docstrings
-[ ] CONTRIBUTING.md: dev setup, test/lint commands, PR instructions
-[ ] SECURITY.md: supported versions, reporting process
-[ ] .github/ISSUE_TEMPLATE/bug_report.md
-[ ] .github/ISSUE_TEMPLATE/feature_request.md
-```
-
-### CI/CD
-```
-[ ] ci.yml: lint + mypy + test matrix (all supported Python versions)
-[ ] ci.yml: separate job for Redis backend with redis service
-[ ] publish.yml: triggered on v*.*.* tags, uses Trusted Publishing (OIDC)
-[ ] fetch-depth: 0 in all workflow checkout steps
-[ ] pypi environment created in GitHub repo Settings → Environments
-[ ] No API tokens in repository secrets
-```
-
----
-
-## 7. Anti-patterns to Avoid
-
-| Anti-pattern | Why it's bad | Correct approach |
-|---|---|---|
-| `__version__ = "1.0.0"` hardcoded with setuptools_scm | Goes stale after first git tag | Use `importlib.metadata.version()` |
-| Missing `fetch-depth: 0` in CI checkout | setuptools_scm can't find tags → version = `0.0.0+dev` | Add `fetch-depth: 0` to **every** checkout step |
-| `local_scheme` not set | `+g<hash>` suffix breaks PyPI uploads (local versions rejected) | `local_scheme = "no-local-version"` |
-| Missing `py.typed` file | IDEs and mypy don't see package as typed | Create empty `py.typed` in package root |
-| `py.typed` not in `package-data` | File missing from installed wheel — useless | Add to `[tool.setuptools.package-data]` |
-| Importing optional dep at module top | `ImportError` on `import your_package` for all users | Lazy import inside the function/class that needs it |
-| Duplicating metadata in `setup.py` | Conflicts with `pyproject.toml`; drifts | Keep `setup.py` as 3-line shim only |
-| No `fail_under` in coverage config | Coverage regressions go unnoticed | Set `fail_under = 80` |
-| No mypy in CI | Type errors silently accumulate | Add mypy step to `ci.yml` |
-| API tokens in GitHub Secrets for PyPI | Security risk, rotation burden | Use Trusted Publishing (OIDC) |
-| Committing directly to `main`/`master` | Bypasses CI checks | Enforce via `no-commit-to-branch` pre-commit hook |
-| Missing `[Unreleased]` section in CHANGELOG | Changes pile up and get forgotten at release time | Keep `[Unreleased]` updated every PR |
-| Pinning exact dep versions in a library | Breaks dependency resolution for users | Use `>=` lower bounds only; avoid `==` |
-| No `__all__` in `__init__.py` | Users can accidentally import internal helpers | Declare `__all__` with every public symbol |
-| `from your_package import *` in tests | Tests pass even when imports are broken | Always use explicit imports |
-| No `SECURITY.md` | No path for responsible vulnerability disclosure | Add file with response timeline |
-| `Any` everywhere in type hints | Defeats mypy entirely | Use `object` for truly arbitrary values |
-| `Union` return types | Forces every caller to write `isinstance()` checks | Return concrete types; use overloads |
-| `setup.cfg` + `pyproject.toml` both active | Conflicts and confusing for contributors | Migrate everything to `pyproject.toml` |
-| Releasing on untagged commits | Version number is meaningless | Always tag before release |
-| Not testing on all supported Python versions | Breakage discovered by users, not you | Matrix test in CI |
-| `license = {text = "MIT"}` (old form) | Deprecated; PEP 639 uses SPDX strings | `license = "MIT"` |
-| No issue templates | Bug reports are inconsistent | Add `bug_report.md` + `feature_request.md` |
-
----
-
-## 8. Master Release Checklist
-
-Run through every item before pushing a release tag. CI must be fully green.
-
-### Code Quality
-```
-[ ] ruff check . — zero errors
-[ ] ruff format . --check — zero formatting issues
-[ ] mypy src/your_package/ — zero type errors
-[ ] pytest — all tests pass
-[ ] Coverage >= 80% (fail_under enforced in pyproject.toml)
-[ ] All GitHub Actions CI jobs green (lint + test matrix)
-```
-
-### Project Structure
-```
-[ ] pyproject.toml — name, description, requires-python, license (SPDX string), authors,
-    keywords (10+), classifiers (Python versions + Typing :: Typed), urls (all 5 fields)
-[ ] dynamic = ["version"] set (if using setuptools_scm or hatch-vcs)
-[ ] [tool.setuptools_scm] with local_scheme = "no-local-version"
-[ ] setup.py shim present (if using setuptools_scm)
-[ ] py.typed marker file exists (empty file in package root)
-[ ] py.typed listed in [tool.setuptools.package-data]
-[ ] "Typing :: Typed" classifier in pyproject.toml
-[ ] __init__.py has __all__ listing all public symbols
-[ ] __version__ reads from importlib.metadata (not hardcoded)
-```
-
-### Testing
-```
-[ ] conftest.py has shared fixtures for client and backend
-[ ] Core happy path tested
-[ ] Error conditions and edge cases tested
-[ ] Each backend tested independently in isolation
-[ ] asyncio_mode = "auto" in pyproject.toml (for async tests)
-[ ] fetch-depth: 0 in all CI checkout steps
-```
-
-### CHANGELOG and Docs
-```
-[ ] CHANGELOG.md: [Unreleased] entries moved to [x.y.z] - YYYY-MM-DD
-[ ] README has: description, install commands, quick start, config table, badges
-[ ] All public symbols have Google-style docstrings
-[ ] CONTRIBUTING.md: dev setup, test/lint commands, PR instructions
-[ ] SECURITY.md: supported versions, reporting process with timeline
-```
-
-### Versioning
-```
-[ ] All CI checks pass on the commit you plan to tag
-[ ] CHANGELOG.md updated and committed
-[ ] Git tag follows format v1.2.3 (semver, v prefix)
-[ ] No stale local_scheme suffixes will appear in the built wheel name
-```
-
-### CI/CD
-```
-[ ] ci.yml: lint + mypy + test matrix (all supported Python versions)
-[ ] publish.yml: triggered on v*.*.* tags, uses Trusted Publishing (OIDC)
-[ ] pypi environment created in GitHub repo Settings → Environments
-[ ] No API tokens stored in repository secrets
-```
-
-### The Release Command Sequence
-```bash
-# 1. Run full local validation
-ruff check . ; ruff format . --check ; mypy src/your_package/ ; pytest
-
-# 2. Update CHANGELOG.md — move [Unreleased] to [x.y.z]
-# 3. Commit the changelog
-git add CHANGELOG.md
-git commit -m "chore: prepare release vX.Y.Z"
-
-# 4. Tag and push — this triggers publish.yml automatically
-git tag vX.Y.Z
-git push origin main --tags
-
-# 5. Monitor: https://github.com/<you>/<pkg>/actions
-# 6. Verify: https://pypi.org/project/your-package/
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-pypi-package-builder/references/library-patterns.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-pypi-package-builder/references/library-patterns.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-pypi-package-builder/references/library-patterns.md
-- **SHA256_FINGERPRINT**: `375feb245945ca4062b92af186dcdaf1e2d887883e0216b1496355000a697edc`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.678246+00:00
----
-
-# Library Core Patterns, OOP/SOLID, and Type Hints
-
-## Table of Contents
-1. [OOP & SOLID Principles](#1-oop--solid-principles)
-2. [Type Hints Best Practices](#2-type-hints-best-practices)
-3. [Core Class Design](#3-core-class-design)
-4. [Factory / Builder Pattern](#4-factory--builder-pattern)
-5. [Configuration Pattern](#5-configuration-pattern)
-6. [`__init__.py` — explicit public API](#6-__init__py--explicit-public-api)
-7. [Optional Backends (Plugin Pattern)](#7-optional-backends-plugin-pattern)
-
----
-
-## 1. OOP & SOLID Principles
-
-Apply these principles to produce maintainable, testable, extensible packages.
-**Do not over-engineer** — apply the principle that solves a real problem, not all of them
-at once.
-
-### S — Single Responsibility Principle
-
-Each class/module should have **one reason to change**.
-
-```python
-# BAD: one class handles data, validation, AND persistence
-class UserManager:
-    def validate(self, user): ...
-    def save_to_db(self, user): ...
-    def send_email(self, user): ...
-
-# GOOD: split responsibilities
-class UserValidator:
-    def validate(self, user: User) -> None: ...
-
-class UserRepository:
-    def save(self, user: User) -> None: ...
-
-class UserNotifier:
-    def notify(self, user: User) -> None: ...
-```
-
-### O — Open/Closed Principle
-
-Open for extension, closed for modification. Use **protocols or ABCs** as extension points.
-
-```python
-from abc import ABC, abstractmethod
-
-class StorageBackend(ABC):
-    """Define the interface once; never modify it for new implementations."""
-    @abstractmethod
-    def get(self, key: str) -> str | None: ...
-    @abstractmethod
-    def set(self, key: str, value: str) -> None: ...
-
-class MemoryBackend(StorageBackend):    # Extend by subclassing
-    ...
-
-class RedisBackend(StorageBackend):     # Add new impl without touching StorageBackend
-    ...
-```
-
-### L — Liskov Substitution Principle
-
-Subclasses must be substitutable for their base. Never narrow a contract in a subclass.
-
-```python
-class BaseProcessor:
-    def process(self, data: dict) -> dict: ...
-
-# BAD: raises TypeError for valid dicts — breaks substitutability
-class StrictProcessor(BaseProcessor):
-    def process(self, data: dict) -> dict:
-        if not data:
-            raise TypeError("Must have data")  # Base never raised this
-
-# GOOD: accept what base accepts, fulfill the same contract
-class StrictProcessor(BaseProcessor):
-    def process(self, data: dict) -> dict:
-        if not data:
-            return {}   # Graceful — same return type, no new exceptions
-```
-
-### I — Interface Segregation Principle
-
-Prefer **small, focused protocols** over large monolithic ABCs.
-
-```python
-# BAD: forces all implementers to handle read+write+delete+list
-class BigStorage(ABC):
-    @abstractmethod
-    def read(self): ...
-    @abstractmethod
-    def write(self): ...
-    @abstractmethod
-    def delete(self): ...
-    @abstractmethod
-    def list_all(self): ...   # Not every backend needs this
-
-# GOOD: separate protocols — clients depend only on what they need
-from typing import Protocol
-
-class Readable(Protocol):
-    def read(self, key: str) -> str | None: ...
-
-class Writable(Protocol):
-    def write(self, key: str, value: str) -> None: ...
-
-class Deletable(Protocol):
-    def delete(self, key: str) -> None: ...
-```
-
-### D — Dependency Inversion Principle
-
-High-level modules depend on **abstractions** (protocols/ABCs), not concrete implementations.
-Pass dependencies in via `__init__` (constructor injection).
-
-```python
-# BAD: high-level class creates its own dependency
-class ApiClient:
-    def __init__(self) -> None:
-        self._cache = RedisCache()   # Tightly coupled to Redis
-
-# GOOD: depend on the abstraction; inject the concrete at call site
-class ApiClient:
-    def __init__(self, cache: CacheBackend) -> None:  # CacheBackend is a Protocol
-        self._cache = cache
-
-# User code (or tests):
-client = ApiClient(cache=RedisCache())    # Real
-client = ApiClient(cache=MemoryCache())  # Test
-```
-
-### Composition Over Inheritance
-
-Prefer delegating to contained objects over deep inheritance chains.
-
-```python
-# Prefer this (composition):
-class YourClient:
-    def __init__(self, backend: StorageBackend, http: HttpTransport) -> None:
-        self._backend = backend
-        self._http = http
-
-# Avoid this (deep inheritance):
-class YourClient(BaseClient, CacheMixin, RetryMixin, LoggingMixin):
-    ...    # Fragile, hard to test, MRO confusion
-```
-
-### Exception Hierarchy
-
-Always define a base exception for your package; layer specifics below it.
-
-```python
-# your_package/exceptions.py
-class YourPackageError(Exception):
-    """Base exception — catch this to catch any package error."""
-
-class ConfigurationError(YourPackageError):
-    """Raised when package is misconfigured."""
-
-class AuthenticationError(YourPackageError):
-    """Raised on auth failure."""
-
-class RateLimitError(YourPackageError):
-    """Raised when rate limit is exceeded."""
-    def __init__(self, retry_after: int) -> None:
-        self.retry_after = retry_after
-        super().__init__(f"Rate limited. Retry after {retry_after}s.")
-```
-
----
-
-## 2. Type Hints Best Practices
-
-Follow PEP 484 (type hints), PEP 526 (variable annotations), PEP 544 (protocols),
-PEP 561 (typed packages). These are not optional for a quality library.
-
-```python
-from __future__ import annotations    # Enables PEP 563 deferred evaluation — always add this
-
-# For ARGUMENTS: prefer abstract / protocol types (more flexible for callers)
-from collections.abc import Iterable, Mapping, Sequence, Callable
-
-def process_items(items: Iterable[str]) -> list[int]: ...   # ✓ Accepts any iterable
-def process_items(items: list[str]) -> list[int]: ...       # ✗ Too restrictive
-
-# For RETURN TYPES: prefer concrete types (callers know exactly what they get)
-def get_names() -> list[str]: ...                           # ✓ Concrete
-def get_names() -> Iterable[str]: ...                       # ✗ Caller can't index it
-
-# Use X | Y syntax (Python 3.10+), not Union[X, Y] or Optional[X]
-def find(key: str) -> str | None: ...                       # ✓ Modern
-def find(key: str) -> Optional[str]: ...                    # ✗ Old style
-
-# None should be LAST in unions
-def get(key: str) -> str | int | None: ...                  # ✓
-
-# Avoid Any — it disables type checking entirely
-def process(data: Any) -> Any: ...                          # ✗ Loses all safety
-def process(data: dict[str, object]) -> dict[str, object]:  # ✓
-
-# Use object instead of Any when a param accepts literally anything
-def log(value: object) -> None: ...                         # ✓
-
-# Avoid Union return types — they require isinstance() checks at every call site
-def get_value() -> str | int: ...                           # ✗ Forces callers to branch
-```
-
-### Protocols vs ABCs
-
-```python
-from typing import Protocol, runtime_checkable
-from abc import ABC, abstractmethod
-
-# Use Protocol when you don't control the implementer classes (duck typing)
-@runtime_checkable    # Makes isinstance() checks work at runtime
-class Serializable(Protocol):
-    def to_dict(self) -> dict[str, object]: ...
-
-# Use ABC when you control the class hierarchy and want default implementations
-class BaseBackend(ABC):
-    @abstractmethod
-    async def get(self, key: str) -> str | None: ...
-
-    def get_or_default(self, key: str, default: str) -> str:
-        result = self.get(key)
-        return result if result is not None else default
-```
-
-### TypeVar and Generics
-
-```python
-from typing import TypeVar, Generic
-
-T = TypeVar("T")
-T_co = TypeVar("T_co", covariant=True)   # For read-only containers
-
-class Repository(Generic[T]):
-    """Type-safe generic repository."""
-    def __init__(self, model_class: type[T]) -> None:
-        self._store: list[T] = []
-
-    def add(self, item: T) -> None:
-        self._store.append(item)
-
-    def get_all(self) -> list[T]:
-        return list(self._store)
-```
-
-### dataclasses for data containers
-
-```python
-from dataclasses import dataclass, field
-
-@dataclass(frozen=True)   # frozen=True → immutable, hashable (good for configs/keys)
-class Config:
-    api_key: str
-    timeout: int = 30
-    headers: dict[str, str] = field(default_factory=dict)
-
-    def __post_init__(self) -> None:
-        if not self.api_key:
-            raise ValueError("api_key must not be empty")
-```
-
-### TYPE_CHECKING guard (avoid circular imports)
-
-```python
-from __future__ import annotations
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from your_package.models import HeavyModel    # Only imported during type checking
-
-def process(model: "HeavyModel") -> None:
-    ...
-```
-
-### Overload for multiple signatures
-
-```python
-from typing import overload
-
-@overload
-def get(key: str, default: None = ...) -> str | None: ...
-@overload
-def get(key: str, default: str) -> str: ...
-def get(key: str, default: str | None = None) -> str | None:
-    ...    # Single implementation handles both
-```
-
----
-
-## 3. Core Class Design
-
-The main class of your library should have a clear, minimal `__init__`, sensible defaults for all
-parameters, and raise `TypeError` / `ValueError` early for invalid inputs. This prevents confusing
-errors at call time rather than at construction.
-
-```python
-# your_package/core.py
-from __future__ import annotations
-
-from your_package.exceptions import YourPackageError
-
-class YourClient:
-    """
-    Main entry point for <your purpose>.
-
-    Args:
-        api_key: Required authentication credential.
-        timeout: Request timeout in seconds. Defaults to 30.
-        retries: Number of retry attempts. Defaults to 3.
-
-    Raises:
-        ValueError: If api_key is empty or timeout is non-positive.
-
-    Example:
-        >>> from your_package import YourClient
-        >>> client = YourClient(api_key="sk-...")
-        >>> result = client.process(data)
-    """
-
-    def __init__(
-        self,
-        api_key: str,
-        timeout: int = 30,
-        retries: int = 3,
-    ) -> None:
-        if not api_key:
-            raise ValueError("api_key must not be empty")
-        if timeout <= 0:
-            raise ValueError("timeout must be positive")
-        self._api_key = api_key
-        self.timeout = timeout
-        self.retries = retries
-
-    def process(self, data: dict) -> dict:
-        """
-        Process data and return results.
-
-        Args:
-            data: Input dictionary to process.
-
-        Returns:
-            Processed result as a dictionary.
-
-        Raises:
-            YourPackageError: If processing fails.
-        """
-        ...
-```
-
-### Design rules
-
-- Accept all config in `__init__`, not scattered across method calls.
-- Validate at construction time — fail fast with a clear message.
-- Keep `__init__` signatures stable. Adding new **keyword-only** args with defaults is backwards
-  compatible. Removing or reordering positional args is a breaking change.
-
----
-
-## 4. Factory / Builder Pattern
-
-Use a factory function when users need to create pre-configured instances. This avoids cluttering
-`__init__` with a dozen keyword arguments and keeps the common case simple.
-
-```python
-# your_package/factory.py
-from __future__ import annotations
-
-from your_package.core import YourClient
-from your_package.backends.memory import MemoryBackend
-
-def create_client(
-    api_key: str,
-    *,
-    timeout: int = 30,
-    retries: int = 3,
-    backend: str = "memory",
-    backend_url: str | None = None,
-) -> YourClient:
-    """
-    Factory that returns a configured YourClient.
-
-    Args:
-        api_key: Required API key.
-        timeout: Request timeout in seconds.
-        retries: Number of retry attempts.
-        backend: Storage backend type. One of 'memory' or 'redis'.
-        backend_url: Connection URL for the chosen backend.
-
-    Example:
-        >>> client = create_client(api_key="sk-...", backend="redis", backend_url="redis://localhost")
-    """
-    if backend == "redis":
-        from your_package.backends.redis import RedisBackend
-        _backend = RedisBackend(url=backend_url or "redis://localhost:6379")
-    else:
-        _backend = MemoryBackend()
-
-    return YourClient(api_key=api_key, timeout=timeout, retries=retries, backend=_backend)
-```
-
-**Why a factory, not a class method?** Both work. A standalone factory function is easier to
-mock in tests and avoids coupling the factory logic into the class itself.
-
----
-
-## 5. Configuration Pattern
-
-Use a dataclass (or Pydantic `BaseModel`) to hold configuration. This gives you free validation,
-helpful error messages, and a single place to document every option.
-
-```python
-# your_package/config.py
-from __future__ import annotations
-from dataclasses import dataclass, field
-
-@dataclass
-class YourSettings:
-    """
-    Configuration for YourClient.
-
-    Attributes:
-        timeout: HTTP timeout in seconds.
-        retries: Number of retry attempts on transient errors.
-        base_url: Base API URL.
-    """
-    timeout: int = 30
-    retries: int = 3
-    base_url: str = "https://api.example.com"
-    extra_headers: dict[str, str] = field(default_factory=dict)
-
-    def __post_init__(self) -> None:
-        if self.timeout <= 0:
-            raise ValueError("timeout must be positive")
-        if self.retries < 0:
-            raise ValueError("retries must be non-negative")
-```
-
-If you need environment variable loading, use `pydantic-settings` as an **optional** dependency —
-declare it in `[project.optional-dependencies]`, not as a required dep.
-
----
-
-## 6. `__init__.py` — Explicit Public API
-
-A well-defined `__all__` is not just style — it tells users (and IDEs) exactly what's part of your
-public API, and prevents accidental imports of internal helpers as part of your contract.
-
-```python
-# your_package/__init__.py
-"""your-package: <one-line description>."""
-
-from importlib.metadata import version, PackageNotFoundError
-
-try:
-    __version__ = version("your-package")
-except PackageNotFoundError:
-    __version__ = "0.0.0-dev"
-
-from your_package.core import YourClient
-from your_package.config import YourSettings
-from your_package.exceptions import YourPackageError
-
-__all__ = [
-    "YourClient",
-    "YourSettings",
-    "YourPackageError",
-    "__version__",
-]
-```
-
-Rules:
-- Only export what users are supposed to use. Internal helpers go in `_utils.py` or submodules.
-- Keep imports at the top level of `__init__.py` shallow — avoid importing heavy optional deps
-  (like `redis`) at module level. Import them lazily inside the class or function that needs them.
-- `__version__` is always part of the public API — it enables `your_package.__version__` for
-  debugging.
-
----
-
-## 7. Optional Backends (Plugin Pattern)
-
-This pattern lets your package work out-of-the-box (no extra deps) with an in-memory backend,
-while letting advanced users plug in Redis, a database, or any custom storage.
-
-### 5.1 Abstract base class — defines the interface
-
-```python
-# your_package/backends/__init__.py
-from abc import ABC, abstractmethod
-
-class BaseBackend(ABC):
-    """Abstract storage backend interface.
-
-    Implement this to add a custom backend (database, cache, etc.).
-    """
-
-    @abstractmethod
-    async def get(self, key: str) -> str | None:
-        """Retrieve a value by key. Returns None if not found."""
-        ...
-
-    @abstractmethod
-    async def set(self, key: str, value: str, ttl: int | None = None) -> None:
-        """Store a value. Optional TTL in seconds."""
-        ...
-
-    @abstractmethod
-    async def delete(self, key: str) -> None:
-        """Delete a key."""
-        ...
-```
-
-### 5.2 Memory backend — zero extra deps
-
-```python
-# your_package/backends/memory.py
-from __future__ import annotations
-
-import asyncio
-import time
-from your_package.backends import BaseBackend
-
-class MemoryBackend(BaseBackend):
-    """Thread-safe in-memory backend. Works out of the box — no extra dependencies."""
-
-    def __init__(self) -> None:
-        self._store: dict[str, tuple[str, float | None]] = {}
-        self._lock = asyncio.Lock()
-
-    async def get(self, key: str) -> str | None:
-        async with self._lock:
-            entry = self._store.get(key)
-            if entry is None:
-                return None
-            value, expires_at = entry
-            if expires_at is not None and time.time() > expires_at:
-                del self._store[key]
-                return None
-            return value
-
-    async def set(self, key: str, value: str, ttl: int | None = None) -> None:
-        async with self._lock:
-            expires_at = time.time() + ttl if ttl is not None else None
-            self._store[key] = (value, expires_at)
-
-    async def delete(self, key: str) -> None:
-        async with self._lock:
-            self._store.pop(key, None)
-```
-
-### 5.3 Redis backend — raises clear ImportError if not installed
-
-The key design: import `redis` lazily inside `__init__`, not at module level. This way,
-`import your_package` never fails even if `redis` isn't installed.
-
-```python
-# your_package/backends/redis.py
-from __future__ import annotations
-from your_package.backends import BaseBackend
-
-try:
-    import redis.asyncio as aioredis
-except ImportError as exc:
-    raise ImportError(
-        "Redis backend requires the redis extra:\n"
-        "  pip install your-package[redis]"
-    ) from exc
-
-class RedisBackend(BaseBackend):
-    """Redis-backed storage for distributed/multi-process deployments."""
-
-    def __init__(self, url: str = "redis://localhost:6379") -> None:
-        self._client = aioredis.from_url(url, decode_responses=True)
-
-    async def get(self, key: str) -> str | None:
-        return await self._client.get(key)
-
-    async def set(self, key: str, value: str, ttl: int | None = None) -> None:
-        await self._client.set(key, value, ex=ttl)
-
-    async def delete(self, key: str) -> None:
-        await self._client.delete(key)
-```
-
-### 5.4 How users choose a backend
-
-```python
-# Default: in-memory, no extra deps needed
-from your_package import YourClient
-client = YourClient(api_key="sk-...")
-
-# Redis: pip install your-package[redis]
-from your_package.backends.redis import RedisBackend
-client = YourClient(api_key="sk-...", backend=RedisBackend(url="redis://localhost:6379"))
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-pypi-package-builder/references/pyproject-toml.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-pypi-package-builder/references/pyproject-toml.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-pypi-package-builder/references/pyproject-toml.md
-- **SHA256_FINGERPRINT**: `9cd3c728765dcfd34d45ff523930791a40be332042683f2438f90402aea41479`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.808990+00:00
----
-
-# pyproject.toml, Backends, Versioning, and Typed Package
-
-## Table of Contents
-1. [Complete pyproject.toml — setuptools + setuptools_scm](#1-complete-pyprojecttoml)
-2. [hatchling (modern, zero-config)](#2-hatchling-modern-zero-config)
-3. [flit (minimal, version from `__version__`)](#3-flit-minimal-version-from-__version__)
-4. [poetry (integrated dep manager)](#4-poetry-integrated-dep-manager)
-5. [Versioning Strategy — PEP 440, semver, dep specifiers](#5-versioning-strategy)
-6. [setuptools_scm — dynamic version from git tags](#6-dynamic-versioning-with-setuptools_scm)
-7. [setup.py shim for legacy editable installs](#7-setuppy-shim)
-8. [PEP 561 typed package (py.typed)](#8-typed-package-pep-561)
-
----
-
-## 1. Complete pyproject.toml
-
-### setuptools + setuptools_scm (recommended for git-tag versioning)
-
-```toml
-[build-system]
-requires = ["setuptools>=68", "wheel", "setuptools_scm"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "your-package"
-dynamic = ["version"]           # Version comes from git tags via setuptools_scm
-description = "<your description> — <key feature 1>, <key feature 2>"
-readme = "README.md"
-requires-python = ">=3.10"
-license = "MIT"                # PEP 639 SPDX expression (string, not {text = "MIT"})
-license-files = ["LICENSE"]
-authors = [
-    {name = "Your Name", email = "you@example.com"},
-]
-maintainers = [
-    {name = "Your Name", email = "you@example.com"},
-]
-keywords = [
-    "python",
-    # Add 10-15 specific keywords that describe your library — they affect PyPI discoverability
-]
-classifiers = [
-    "Development Status :: 3 - Alpha",          # Change to 5 at stable release
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    "Typing :: Typed",          # Add this when shipping py.typed
-]
-dependencies = [
-    # List your runtime dependencies here. Keep them minimal.
-    # Example: "httpx>=0.24", "pydantic>=2.0"
-    # Leave empty if your library has no required runtime deps.
-]
-
-[project.optional-dependencies]
-redis = [
-    "redis>=4.2",               # Optional heavy backend
-]
-dev = [
-    "pytest>=7.0",
-    "pytest-asyncio>=0.21",
-    "httpx>=0.24",
-    "pytest-cov>=4.0",
-    "ruff>=0.4",
-    "black>=24.0",
-    "isort>=5.13",
-    "mypy>=1.0",
-    "pre-commit>=3.0",
-    "build",
-    "twine",
-]
-
-[project.urls]
-Homepage      = "https://github.com/yourusername/your-package"
-Documentation = "https://github.com/yourusername/your-package#readme"
-Repository    = "https://github.com/yourusername/your-package"
-"Bug Tracker" = "https://github.com/yourusername/your-package/issues"
-Changelog     = "https://github.com/yourusername/your-package/blob/master/CHANGELOG.md"
-
-# --- Setuptools configuration ---
-[tool.setuptools.packages.find]
-include = ["your_package*"]   # flat layout
-# For src/ layout, use:
-# where = ["src"]
-
-[tool.setuptools.package-data]
-your_package = ["py.typed"]  # Ship the py.typed marker in the wheel
-
-# --- setuptools_scm: version from git tags ---
-[tool.setuptools_scm]
-version_scheme = "post-release"
-local_scheme   = "no-local-version"  # Prevents +local suffix breaking PyPI uploads
-
-# --- Ruff (linting) ---
-[tool.ruff]
-target-version = "py310"
-line-length    = 100
-
-[tool.ruff.lint]
-select = ["E", "F", "W", "I", "N", "UP", "B", "SIM", "C4", "PTH", "RUF"]
-ignore = ["E501"]   # Line length enforced by formatter
-
-[tool.ruff.lint.per-file-ignores]
-"tests/*"   = ["S101", "ANN"]    # Allow assert and missing annotations in tests
-"scripts/*" = ["T201"]           # Allow print in scripts
-
-[tool.ruff.format]
-quote-style = "double"
-
-# --- Black (formatting) ---
-[tool.black]
-line-length    = 100
-target-version = ["py310", "py311", "py312", "py313"]
-
-# --- isort (import sorting) ---
-[tool.isort]
-profile     = "black"
-line_length = 100
-
-# --- mypy (static type checking) ---
-[tool.mypy]
-python_version         = "3.10"
-warn_return_any        = true
-warn_unused_configs    = true
-warn_unused_ignores    = true
-disallow_untyped_defs  = true
-disallow_any_generics  = true
-ignore_missing_imports = true
-strict                 = false     # Set true for maximum strictness
-
-[[tool.mypy.overrides]]
-module = "tests.*"
-disallow_untyped_defs = false     # Relaxed in tests
-
-# --- pytest ---
-[tool.pytest.ini_options]
-asyncio_mode  = "auto"
-testpaths     = ["tests"]
-pythonpath    = ["."]          # For flat layout; remove for src/
-python_files  = "test_*.py"
-python_classes = "Test*"
-python_functions = "test_*"
-addopts       = "-v --tb=short --cov=your_package --cov-report=term-missing"
-
-# --- Coverage ---
-[tool.coverage.run]
-source = ["your_package"]
-omit   = ["tests/*"]
-
-[tool.coverage.report]
-fail_under   = 80
-show_missing = true
-exclude_lines = [
-    "pragma: no cover",
-    "def __repr__",
-    "raise NotImplementedError",
-    "if TYPE_CHECKING:",
-    "@abstractmethod",
-]
-```
-
----
-
-## 2. hatchling (Modern, Zero-Config)
-
-Best for new pure-Python projects that don't need C extensions. No `setup.py` needed. Use
-`hatch-vcs` for git-tag versioning, or omit it for manual version bumps.
-
-```toml
-[build-system]
-requires = ["hatchling", "hatch-vcs"]     # hatch-vcs for git-tag versioning
-build-backend = "hatchling.build"
-
-[project]
-name = "your-package"
-dynamic = ["version"]            # Remove and add version = "1.0.0" for manual versioning
-description = "One-line description"
-readme = "README.md"
-requires-python = ">=3.10"
-license = "MIT"
-license-files = ["LICENSE"]
-authors = [{name = "Your Name", email = "you@example.com"}]
-keywords = ["python"]
-classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3",
-    "Typing :: Typed",
-]
-dependencies = []
-
-[project.optional-dependencies]
-dev = ["pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.6", "mypy>=1.10"]
-
-[project.urls]
-Homepage  = "https://github.com/yourusername/your-package"
-Changelog = "https://github.com/yourusername/your-package/blob/master/CHANGELOG.md"
-
-# --- Hatchling build config ---
-[tool.hatch.build.targets.wheel]
-packages = ["src/your_package"]    # src/ layout
-# packages = ["your_package"]      # ← flat layout
-
-[tool.hatch.version]
-source = "vcs"                     # git-tag versioning via hatch-vcs
-
-[tool.hatch.version.raw-options]
-local_scheme = "no-local-version"
-
-# ruff, mypy, pytest, coverage sections — same as setuptools template above
-```
-
----
-
-## 3. flit (Minimal, Version from `__version__`)
-
-Best for very simple, single-module packages. Zero config. Version is read directly from
-`your_package/__init__.py`. Always requires a **static string** for `__version__`.
-
-```toml
-[build-system]
-requires = ["flit_core>=3.9"]
-build-backend = "flit_core.buildapi"
-
-[project]
-name = "your-package"
-dynamic = ["version", "description"]  # Read from __init__.py __version__ and docstring
-readme = "README.md"
-requires-python = ">=3.10"
-license = "MIT"
-authors = [{name = "Your Name", email = "you@example.com"}]
-classifiers = [
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Typing :: Typed",
-]
-dependencies = []
-
-[project.urls]
-Homepage = "https://github.com/yourusername/your-package"
-
-# flit reads __version__ from your_package/__init__.py automatically.
-# Ensure __init__.py has: __version__ = "1.0.0"  (static string — flit does NOT support
-# importlib.metadata for dynamic version discovery)
-```
-
----
-
-## 4. poetry (Integrated Dependency + Build Manager)
-
-Best for teams that want a single tool to manage deps, build, and publish. Poetry v2+
-supports the standard `[project]` table.
-
-```toml
-[build-system]
-requires = ["poetry-core>=2.0"]
-build-backend = "poetry.core.masonry.api"
-
-[project]
-name = "your-package"
-version = "1.0.0"
-description = "One-line description"
-readme = "README.md"
-requires-python = ">=3.10"
-license = "MIT"
-authors = [{name = "Your Name", email = "you@example.com"}]
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Typing :: Typed",
-]
-dependencies = []   # poetry v2+ uses standard [project] table
-
-[project.optional-dependencies]
-dev = ["pytest>=8.0", "ruff>=0.6", "mypy>=1.10"]
-
-# Optional: use [tool.poetry] only for poetry-specific features
-[tool.poetry.group.dev.dependencies]
-# Poetry-specific group syntax (alternative to [project.optional-dependencies])
-pytest = ">=8.0"
-```
-
----
-
-## 5. Versioning Strategy
-
-### PEP 440 — The Standard
-
-```
-Canonical form:  N[.N]+[{a|b|rc}N][.postN][.devN]
-
-Examples:
-  1.0.0          Stable release
-  1.0.0a1        Alpha (pre-release)
-  1.0.0b2        Beta
-  1.0.0rc1       Release candidate
-  1.0.0.post1    Post-release (e.g., packaging fix only — no code change)
-  1.0.0.dev1     Development snapshot (NOT for PyPI)
-```
-
-### Semantic Versioning (SemVer) — use this for every library
-
-```
-MAJOR.MINOR.PATCH
-
-MAJOR: Breaking API change (remove/rename public function/class/arg)
-MINOR: New feature, fully backward-compatible
-PATCH: Bug fix, no API change
-```
-
-| Change | What bumps | Example |
-|---|---|---|
-| Remove / rename a public function | MAJOR | `1.2.3 → 2.0.0` |
-| Add new public function | MINOR | `1.2.3 → 1.3.0` |
-| Bug fix, no API change | PATCH | `1.2.3 → 1.2.4` |
-| New pre-release | suffix | `2.0.0a1`, `2.0.0rc1` |
-
-### Version in code — read from package metadata
-
-```python
-# your_package/__init__.py
-from importlib.metadata import version, PackageNotFoundError
-
-try:
-    __version__ = version("your-package")
-except PackageNotFoundError:
-    __version__ = "0.0.0-dev"    # Fallback for uninstalled dev checkouts
-```
-
-Never hardcode `__version__ = "1.0.0"` when using setuptools_scm — it goes stale after the
-first git tag. Use `importlib.metadata` always.
-
-### Version specifier best practices for dependencies
-
-```toml
-# In [project] dependencies — for a LIBRARY:
-"httpx>=0.24"            # Minimum version — PREFERRED for libraries
-"httpx>=0.24,<1.0"       # Upper bound only when a known breaking change exists
-
-# ONLY for applications (never for libraries):
-"httpx==0.27.0"          # Pin exactly — breaks dep resolution in libraries
-
-# NEVER do this in a library:
-# "httpx~=0.24.0"        # Compatible release operator — too tight
-# "httpx==0.27.*"        # Wildcard pin — fragile
-```
-
----
-
-## 6. Dynamic Versioning with `setuptools_scm`
-
-`setuptools_scm` reads your git tags and sets the package version automatically — no more manually
-editing version strings before each release.
-
-### How it works
-
-```
-git tag v1.0.0        →  package version = 1.0.0
-git tag v1.1.0        →  package version = 1.1.0
-(commits after tag)   →  version = 1.1.0.post1+g<hash>  (stripped for PyPI)
-```
-
-`local_scheme = "no-local-version"` strips the `+g<hash>` suffix so PyPI uploads never fail with
-a "local version label not allowed" error.
-
-### Access version at runtime
-
-```python
-# your_package/__init__.py
-from importlib.metadata import version, PackageNotFoundError
-
-try:
-    __version__ = version("your-package")
-except PackageNotFoundError:
-    __version__ = "0.0.0-dev"  # Fallback for uninstalled dev checkouts
-```
-
-Never hardcode `__version__ = "1.0.0"` when using setuptools_scm — it will go stale after the
-first tag.
-
-### Full release flow (this is it — nothing else needed)
-
-```bash
-git tag v1.2.0
-git push origin master --tags
-# GitHub Actions publish.yml triggers automatically
-```
-
----
-
-## 7. `setup.py` Shim
-
-Some older tools and IDEs still expect a `setup.py`. Keep it as a three-line shim — all real
-configuration stays in `pyproject.toml`.
-
-```python
-# setup.py — thin shim only. All config lives in pyproject.toml.
-from setuptools import setup
-
-setup()
-```
-
-Never duplicate `name`, `version`, `dependencies`, or any other metadata from `pyproject.toml`
-into `setup.py`. If you copy anything there it will eventually drift and cause confusing conflicts.
-
----
-
-## 8. Typed Package (PEP 561)
-
-A properly declared typed package means mypy, pyright, and IDEs automatically pick up your type
-hints without any extra configuration from your users.
-
-### Step 1: Create the marker file
-
-```bash
-# The file must exist; its content doesn't matter — its presence is the signal.
-touch your_package/py.typed
-```
-
-### Step 2: Include it in the wheel
-
-Already in the template above:
-
-```toml
-[tool.setuptools.package-data]
-your_package = ["py.typed"]
-```
-
-### Step 3: Add the PyPI classifier
-
-```toml
-classifiers = [
-    ...
-    "Typing :: Typed",
-]
-```
-
-### Step 4: Type-annotate all public functions
-
-```python
-# Good — fully typed
-def process(
-    self,
-    data: dict[str, object],
-    *,
-    timeout: int = 30,
-) -> dict[str, object]:
-    ...
-
-# Bad — mypy will flag this, and IDEs give no completions to users
-def process(self, data, timeout=30):
-    ...
-```
-
-### Step 5: Verify py.typed ships in the wheel
-
-```bash
-python -m build
-unzip -l dist/your_package-*.whl | grep py.typed
-# Must show: your_package/py.typed
-```
-
-If it's missing, check your `[tool.setuptools.package-data]` config.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-pypi-package-builder/references/release-governance.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-pypi-package-builder/references/release-governance.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-pypi-package-builder/references/release-governance.md
-- **SHA256_FINGERPRINT**: `75951fd7c1bcc7d31646e79ece1b1a14bddeca4e9d4b8224712e223f017483d3`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.712248+00:00
----
-
-# Release Governance — Branching, Protection, OIDC, and Access Control
-
-## Table of Contents
-1. [Branch Strategy](#1-branch-strategy)
-2. [Branch Protection Rules](#2-branch-protection-rules)
-3. [Tag-Based Release Model](#3-tag-based-release-model)
-4. [Role-Based Access Control](#4-role-based-access-control)
-5. [Secure Publishing with OIDC (Trusted Publishing)](#5-secure-publishing-with-oidc-trusted-publishing)
-6. [Validate Tag Author in CI](#6-validate-tag-author-in-ci)
-7. [Prevent Invalid Release Tags](#7-prevent-invalid-release-tags)
-8. [Full `publish.yml` with Governance Gates](#8-full-publishyml-with-governance-gates)
-
----
-
-## 1. Branch Strategy
-
-Use a clear branch hierarchy to separate development work from releasable code.
-
-```
-main          ← stable; only receives PRs from develop or hotfix/*
-develop       ← integration branch; all feature PRs merge here first
-feature/*     ← new capabilities (e.g., feature/add-redis-backend)
-fix/*         ← bug fixes (e.g., fix/memory-leak-on-close)
-hotfix/*      ← urgent production fixes; PR directly to main + cherry-pick to develop
-release/*     ← (optional) release preparation (e.g., release/v2.0.0)
-```
-
-### Rules
-
-| Rule | Why |
-|---|---|
-| No direct push to `main` | Prevent accidental breakage of the stable branch |
-| All changes via PR | Enforces review + CI before merge |
-| At least one approval required | Second pair of eyes on all changes |
-| CI must pass | Never merge broken code |
-| Only tags trigger releases | No ad-hoc publish from branch pushes |
-
----
-
-## 2. Branch Protection Rules
-
-Configure these in **GitHub → Settings → Branches → Add rule** for `main` and `develop`.
-
-### For `main`
-
-```yaml
-# Equivalent GitHub branch protection config (for documentation)
-branch: main
-rules:
-  - require_pull_request_reviews:
-      required_approving_review_count: 1
-      dismiss_stale_reviews: true
-  - require_status_checks_to_pass:
-      contexts:
-        - "Lint, Format & Type Check"
-        - "Test (Python 3.11)"   # at minimum; add all matrix versions
-      strict: true               # branch must be up-to-date before merge
-  - restrict_pushes:
-      allowed_actors: []         # nobody — only PR merges
-  - require_linear_history: true # prevents merge commits on main
-```
-
-### For `develop`
-
-```yaml
-branch: develop
-rules:
-  - require_pull_request_reviews:
-      required_approving_review_count: 1
-  - require_status_checks_to_pass:
-      contexts: ["CI"]
-      strict: false   # less strict for the integration branch
-```
-
-### Via GitHub CLI
-
-```bash
-# Protect main (requires gh CLI and admin rights)
-gh api repos/{owner}/{repo}/branches/main/protection \
-  --method PUT \
-  --input - <<'EOF'
-{
-  "required_status_checks": {
-    "strict": true,
-    "contexts": ["Lint, Format & Type Check", "Test (Python 3.11)"]
-  },
-  "enforce_admins": false,
-  "required_pull_request_reviews": {
-    "required_approving_review_count": 1,
-    "dismiss_stale_reviews": true
-  },
-  "restrictions": null
-}
-EOF
-```
-
----
-
-## 3. Tag-Based Release Model
-
-**Only annotated tags on `main` trigger a release.** Branch pushes and PR merges never publish.
-
-### Tag Naming Convention
-
-```
-vMAJOR.MINOR.PATCH           # Stable:         v1.2.3
-vMAJOR.MINOR.PATCHaN         # Alpha:           v2.0.0a1
-vMAJOR.MINOR.PATCHbN         # Beta:            v2.0.0b1
-vMAJOR.MINOR.PATCHrcN        # Release Candidate: v2.0.0rc1
-```
-
-### Release Workflow
-
-```bash
-# 1. Merge develop → main via PR (reviewed, CI green)
-
-# 2. Update CHANGELOG.md on main
-#    Move [Unreleased] entries to [vX.Y.Z] - YYYY-MM-DD
-
-# 3. Commit the changelog
-git checkout main
-git pull origin main
-git add CHANGELOG.md
-git commit -m "chore: release v1.2.3"
-
-# 4. Create and push an annotated tag
-git tag -a v1.2.3 -m "Release v1.2.3"
-git push origin v1.2.3          # ← ONLY the tag; not --tags (avoids pushing all tags)
-
-# 5. Confirm: GitHub Actions publish.yml triggers automatically
-#    Monitor: Actions tab → publish workflow
-#    Verify:  https://pypi.org/project/your-package/
-```
-
-### Why annotated tags?
-
-Annotated tags (`git tag -a`) carry a tagger identity, date, and message — lightweight tags do
-not. `setuptools_scm` works with both, but annotated tags are safer for release governance because
-they record *who* created the tag.
-
----
-
-## 4. Role-Based Access Control
-
-| Role | What they can do |
-|---|---|
-| **Maintainer** | Create release tags, approve PRs, manage branch protection |
-| **Contributor** | Open PRs to `develop`; cannot push to `main` or create release tags |
-| **CI (GitHub Actions)** | Publish to PyPI via OIDC; cannot push code or create tags |
-
-### Implement via GitHub Teams
-
-```bash
-# Create a Maintainers team and restrict tag creation to that team
-gh api repos/{owner}/{repo}/tags/protection \
-  --method POST \
-  --field pattern="v*"
-# Then set allowed actors to the Maintainers team only
-```
-
----
-
-## 5. Secure Publishing with OIDC (Trusted Publishing)
-
-**Never store a PyPI API token as a GitHub secret.** Use Trusted Publishing (OIDC) instead.
-The PyPI project authorises a specific GitHub repository + workflow + environment — no long-lived
-secret is exchanged.
-
-### One-time PyPI Setup
-
-1. Go to https://pypi.org/manage/project/your-package/settings/publishing/
-2. Click **Add a new publisher**
-3. Fill in:
-   - **Owner:** your-github-username
-   - **Repository:** your-repo-name
-   - **Workflow name:** `publish.yml`
-   - **Environment name:** `release` (must match the `environment:` key in the workflow)
-4. Save. No token required.
-
-### GitHub Environment Setup
-
-1. Go to **GitHub → Settings → Environments → New environment** → name it `release`
-2. Add a protection rule: **Required reviewers** (optional but recommended for extra safety)
-3. Add a deployment branch rule: **Only tags matching `v*`**
-
-### Minimal `publish.yml` using OIDC
-
-```yaml
-# .github/workflows/publish.yml
-name: Publish to PyPI
-
-on:
-  push:
-    tags:
-      - "v[0-9]+.[0-9]+.[0-9]+*"   # Matches v1.0.0, v2.0.0a1, v1.2.3rc1
-
-jobs:
-  publish:
-    name: Build and publish
-    runs-on: ubuntu-latest
-    environment: release       # Must match the PyPI Trusted Publisher environment name
-    permissions:
-      id-token: write          # Required for OIDC — grants a short-lived token to PyPI
-      contents: read
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0       # REQUIRED for setuptools_scm
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install build
-        run: pip install build
-
-      - name: Build distributions
-        run: python -m build
-
-      - name: Validate distributions
-        run: pip install twine ; twine check dist/*
-
-      - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        # No `password:` or `user:` needed — OIDC handles authentication
-```
-
----
-
-## 6. Validate Tag Author in CI
-
-Restrict who can trigger a release by checking `GITHUB_ACTOR` against an allowlist.
-Add this as the **first step** in your publish job to fail fast.
-
-```yaml
-- name: Validate tag author
-  run: |
-    ALLOWED_USERS=("your-github-username" "co-maintainer-username")
-    if [[ ! " ${ALLOWED_USERS[*]} " =~ " ${GITHUB_ACTOR} " ]]; then
-      echo "::error::Release blocked: ${GITHUB_ACTOR} is not an authorised releaser."
-      exit 1
-    fi
-    echo "Release authorised for ${GITHUB_ACTOR}."
-```
-
-### Notes
-
-- `GITHUB_ACTOR` is the GitHub username of the person who pushed the tag.
-- Store the allowlist in a separate file (e.g., `.github/MAINTAINERS`) for maintainability.
-- For teams: replace the username check with a GitHub API call to verify team membership.
-
----
-
-## 7. Prevent Invalid Release Tags
-
-Reject workflow runs triggered by tags that do not follow your versioning convention.
-This stops accidental publishes from tags like `test`, `backup-old`, or `v1`.
-
-```yaml
-- name: Validate release tag format
-  run: |
-    # Accepts: v1.0.0  v1.0.0a1  v1.0.0b2  v1.0.0rc1  v1.0.0.post1
-    if [[ ! "${GITHUB_REF}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+(a|b|rc|\.post)[0-9]*$ ]] && \
-       [[ ! "${GITHUB_REF}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-      echo "::error::Tag '${GITHUB_REF}' does not match the required format v<MAJOR>.<MINOR>.<PATCH>[pre]."
-      exit 1
-    fi
-    echo "Tag format valid: ${GITHUB_REF}"
-```
-
-### Regex explained
-
-| Pattern | Matches |
-|---|---|
-| `v[0-9]+\.[0-9]+\.[0-9]+` | `v1.0.0`, `v12.3.4` |
-| `(a\|b\|rc)[0-9]*` | `v1.0.0a1`, `v2.0.0rc2` |
-| `\.post[0-9]*` | `v1.0.0.post1` |
-
----
-
-## 8. Full `publish.yml` with Governance Gates
-
-Complete workflow combining tag validation, author check, TestPyPI gate, and production publish.
-
-```yaml
-# .github/workflows/publish.yml
-name: Publish to PyPI
-
-on:
-  push:
-    tags:
-      - "v[0-9]+.[0-9]+.[0-9]+*"
-
-jobs:
-  publish:
-    name: Build, validate, and publish
-    runs-on: ubuntu-latest
-    environment: release
-    permissions:
-      id-token: write
-      contents: read
-
-    steps:
-      - name: Validate release tag format
-        run: |
-          if [[ ! "${GITHUB_REF}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+(a[0-9]*|b[0-9]*|rc[0-9]*|\.post[0-9]*)?$ ]]; then
-            echo "::error::Invalid tag format: ${GITHUB_REF}"
-            exit 1
-          fi
-
-      - name: Validate tag author
-        run: |
-          ALLOWED_USERS=("your-github-username")
-          if [[ ! " ${ALLOWED_USERS[*]} " =~ " ${GITHUB_ACTOR} " ]]; then
-            echo "::error::${GITHUB_ACTOR} is not authorised to release."
-            exit 1
-          fi
-
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install build tooling
-        run: pip install build twine
-
-      - name: Build
-        run: python -m build
-
-      - name: Validate distributions
-        run: twine check dist/*
-
-      - name: Publish to TestPyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
-        continue-on-error: true   # Non-fatal; remove if you always want this to pass
-
-      - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-```
-
-### Security checklist
-
-- [ ] PyPI Trusted Publishing configured (no API token stored in GitHub)
-- [ ] GitHub `release` environment has branch protection: tags matching `v*` only
-- [ ] Tag format validation step is the first step in the job
-- [ ] Allowed-users list is maintained and reviewed regularly
-- [ ] No secrets printed in logs (check all `echo` and `run` steps)
-- [ ] `permissions:` is scoped to `id-token: write` only — no `write-all`
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-pypi-package-builder/references/testing-quality.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-pypi-package-builder/references/testing-quality.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-pypi-package-builder/references/testing-quality.md
-- **SHA256_FINGERPRINT**: `0e5ccce5be353acfce9e564fad36166d068bf7e33611a37b3f13cf338ab5651a`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.720362+00:00
----
-
-# Testing and Code Quality
-
-## Table of Contents
-1. [conftest.py](#1-conftestpy)
-2. [Unit tests](#2-unit-tests)
-3. [Backend unit tests](#3-backend-unit-tests)
-4. [Running tests](#4-running-tests)
-5. [Code quality tools](#5-code-quality-tools)
-6. [Pre-commit hooks](#6-pre-commit-hooks)
-
----
-
-## 1. `conftest.py`
-
-Use `conftest.py` to define shared fixtures. Keep fixtures focused — one fixture per concern.
-For async tests, use `pytest-asyncio` with `asyncio_mode = "auto"` in `pyproject.toml`.
-
-```python
-# tests/conftest.py
-import pytest
-from your_package.core import YourClient
-from your_package.backends.memory import MemoryBackend
-
-@pytest.fixture
-def memory_backend() -> MemoryBackend:
-    return MemoryBackend()
-
-@pytest.fixture
-def client(memory_backend: MemoryBackend) -> YourClient:
-    return YourClient(
-        api_key="test-key",
-        backend=memory_backend,
-    )
-```
-
----
-
-## 2. Unit Tests
-
-Test both the happy path and the edge cases (e.g. invalid inputs, error conditions).
-
-```python
-# tests/test_core.py
-import pytest
-from your_package import YourClient
-from your_package.exceptions import YourPackageError
-
-def test_client_creates_with_valid_key():
-    client = YourClient(api_key="sk-test")
-    assert client is not None
-
-def test_client_raises_on_empty_key():
-    with pytest.raises(ValueError, match="api_key"):
-        YourClient(api_key="")
-
-def test_client_raises_on_invalid_timeout():
-    with pytest.raises(ValueError, match="timeout"):
-        YourClient(api_key="sk-test", timeout=-1)
-
-@pytest.mark.asyncio
-async def test_process_returns_expected_result(client: YourClient):
-    result = await client.process({"input": "value"})
-    assert "output" in result
-
-@pytest.mark.asyncio
-async def test_process_raises_on_invalid_input(client: YourClient):
-    with pytest.raises(YourPackageError):
-        await client.process({})  # empty input should fail
-```
-
----
-
-## 3. Backend Unit Tests
-
-Test each backend independently, in isolation from the rest of the library. This makes failures
-easier to diagnose and ensures your abstract interface is actually implemented correctly.
-
-```python
-# tests/test_backends.py
-import pytest
-from your_package.backends.memory import MemoryBackend
-
-@pytest.mark.asyncio
-async def test_set_and_get():
-    backend = MemoryBackend()
-    await backend.set("key1", "value1")
-    result = await backend.get("key1")
-    assert result == "value1"
-
-@pytest.mark.asyncio
-async def test_get_missing_key_returns_none():
-    backend = MemoryBackend()
-    result = await backend.get("nonexistent")
-    assert result is None
-
-@pytest.mark.asyncio
-async def test_delete_removes_key():
-    backend = MemoryBackend()
-    await backend.set("key1", "value1")
-    await backend.delete("key1")
-    result = await backend.get("key1")
-    assert result is None
-
-@pytest.mark.asyncio
-async def test_ttl_expires_entry():
-    import asyncio
-    backend = MemoryBackend()
-    await backend.set("key1", "value1", ttl=1)
-    await asyncio.sleep(1.1)
-    result = await backend.get("key1")
-    assert result is None
-
-@pytest.mark.asyncio
-async def test_different_keys_are_independent():
-    backend = MemoryBackend()
-    await backend.set("key1", "a")
-    await backend.set("key2", "b")
-    assert await backend.get("key1") == "a"
-    assert await backend.get("key2") == "b"
-    await backend.delete("key1")
-    assert await backend.get("key2") == "b"
-```
-
----
-
-## 4. Running Tests
-
-```bash
-pip install -e ".[dev]"
-pytest                           # All tests
-pytest --cov --cov-report=html   # With HTML coverage report (opens in browser)
-pytest -k "test_middleware"      # Filter by name
-pytest -x                        # Stop on first failure
-pytest -v                        # Verbose output
-```
-
-Coverage config in `pyproject.toml` enforces a minimum threshold (`fail_under = 80`). CI will
-fail if you drop below it, which catches coverage regressions automatically.
-
----
-
-## 5. Code Quality Tools
-
-### Ruff (linting — replaces flake8, pylint, many others)
-
-```bash
-pip install ruff
-ruff check .           # Check for issues
-ruff check . --fix     # Auto-fix safe issues
-```
-
-Ruff is extremely fast and replaces most of the Python linting ecosystem. Configure it in
-`pyproject.toml` — see `references/pyproject-toml.md` for the full config.
-
-### Black (formatting)
-
-```bash
-pip install black
-black .                # Format all files
-black . --check        # CI mode — reports issues without modifying files
-```
-
-### isort (import sorting)
-
-```bash
-pip install isort
-isort .                # Sort imports
-isort . --check-only   # CI mode
-```
-
-Always set `profile = "black"` in `[tool.isort]` — otherwise black and isort conflict.
-
-### mypy (static type checking)
-
-```bash
-pip install mypy
-mypy your_package/   # Type-check your package source only
-```
-
-Common fixes:
-
-- `ignore_missing_imports = true` — ignore untyped third-party deps
-- `from __future__ import annotations` — enables PEP 563 deferred evaluation (Python 3.9 compat)
-- `pip install types-redis` — type stubs for the redis library
-
-### Run all at once
-
-```bash
-ruff check . && black . --check && isort . --check-only && mypy your_package/
-```
-
----
-
-## 6. Pre-commit Hooks
-
-Pre-commit runs all quality tools automatically before each commit, so issues never reach CI.
-Install once per clone with `pre-commit install`.
-
-```yaml
-# .pre-commit-config.yaml
-repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.4
-    hooks:
-      - id: ruff
-        args: [--fix]
-      - id: ruff-format
-
-  - repo: https://github.com/psf/black
-    rev: 24.4.2
-    hooks:
-      - id: black
-
-  - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.10.0
-    hooks:
-      - id: mypy
-        additional_dependencies: [types-redis]  # Add stubs for typed dependencies
-
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
-    hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-yaml
-      - id: check-toml
-      - id: check-merge-conflict
-      - id: debug-statements
-      - id: no-commit-to-branch
-        args: [--branch, master, --branch, main]
-```
-
-```bash
-pip install pre-commit
-pre-commit install           # Install once per clone
-pre-commit run --all-files   # Run all hooks manually (useful before the first install)
-```
-
-The `no-commit-to-branch` hook prevents accidentally committing directly to `main`/`master`,
-which would bypass CI checks. Always work on a feature branch.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-pypi-package-builder/references/tooling-ruff.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-pypi-package-builder/references/tooling-ruff.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-pypi-package-builder/references/tooling-ruff.md
-- **SHA256_FINGERPRINT**: `b678426c3ab94615e56d362900daa60f846aacc3d1e561ed6b8fcaed01869fb1`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.846242+00:00
----
-
-# Tooling — Ruff-Only Setup and Code Quality
-
-## Table of Contents
-1. [Use Only Ruff (Replaces black, isort, flake8)](#1-use-only-ruff-replaces-black-isort-flake8)
-2. [Ruff Configuration in pyproject.toml](#2-ruff-configuration-in-pyprojecttoml)
-3. [mypy Configuration](#3-mypy-configuration)
-4. [pre-commit Configuration](#4-pre-commit-configuration)
-5. [pytest and Coverage Configuration](#5-pytest-and-coverage-configuration)
-6. [Dev Dependencies in pyproject.toml](#6-dev-dependencies-in-pyprojecttoml)
-7. [CI Lint Job — Ruff Only](#7-ci-lint-job--ruff-only)
-8. [Migration Guide — Removing black and isort](#8-migration-guide--removing-black-and-isort)
-
----
-
-## 1. Use Only Ruff (Replaces black, isort, flake8)
-
-**Decision:** Use `ruff` as the single linting and formatting tool. Remove `black` and `isort`.
-
-| Old (avoid) | New (use) | What it does |
-|---|---|---|
-| `black` | `ruff format` | Code formatting |
-| `isort` | `ruff check --select I` | Import sorting |
-| `flake8` | `ruff check` | Style and error linting |
-| `pyupgrade` | `ruff check --select UP` | Upgrade syntax to modern Python |
-| `bandit` | `ruff check --select S` | Security linting |
-| All of the above | `ruff` | One tool, one config section |
-
-**Why ruff?**
-- 10–100× faster than the tools it replaces (written in Rust).
-- Single config section in `pyproject.toml` — no `.flake8`, `.isort.cfg`, `pyproject.toml[tool.black]` sprawl.
-- Actively maintained by Astral; follows the same rules as the tools it replaces.
-- `ruff format` is black-compatible — existing black-formatted code passes without changes.
-
----
-
-## 2. Ruff Configuration in pyproject.toml
-
-```toml
-[tool.ruff]
-target-version = "py310"        # Minimum supported Python version
-line-length    = 88             # black-compatible default
-src            = ["src", "tests"]
-
-[tool.ruff.lint]
-select = [
-    "E",   # pycodestyle errors
-    "W",   # pycodestyle warnings
-    "F",   # pyflakes
-    "I",   # isort
-    "B",   # flake8-bugbear (opinionated but very useful)
-    "C4",  # flake8-comprehensions
-    "UP",  # pyupgrade (modernise syntax)
-    "SIM", # flake8-simplify
-    "TCH", # flake8-type-checking (move imports to TYPE_CHECKING block)
-    "ANN", # flake8-annotations (enforce type hints — remove if too strict)
-    "S",   # flake8-bandit (security)
-    "N",   # pep8-naming
-]
-ignore = [
-    "ANN101",  # Missing type annotation for `self`
-    "ANN102",  # Missing type annotation for `cls`
-    "S101",    # Use of `assert` — necessary in tests
-    "S603",    # subprocess without shell=True — often intentional
-    "B008",    # Do not perform function calls in default arguments (false positives in FastAPI/Typer)
-]
-
-[tool.ruff.lint.isort]
-known-first-party = ["your_package"]
-
-[tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S101", "ANN", "D"]   # Allow assert and skip annotations/docstrings in tests
-
-[tool.ruff.format]
-quote-style              = "double"   # black-compatible
-indent-style             = "space"
-skip-magic-trailing-comma = false
-line-ending              = "auto"
-```
-
-### Useful ruff commands
-
-```bash
-# Check for lint issues (no changes)
-ruff check .
-
-# Auto-fix fixable issues
-ruff check --fix .
-
-# Format code (replaces black)
-ruff format .
-
-# Check formatting without changing files (CI mode)
-ruff format --check .
-
-# Run both lint and format check in one command (for CI)
-ruff check . && ruff format --check .
-```
-
----
-
-## 3. mypy Configuration
-
-```toml
-[tool.mypy]
-python_version          = "3.10"
-strict                  = true
-warn_return_any         = true
-warn_unused_ignores     = true
-warn_redundant_casts    = true
-disallow_untyped_defs   = true
-disallow_incomplete_defs = true
-check_untyped_defs      = true
-no_implicit_optional    = true
-show_error_codes        = true
-
-# Ignore missing stubs for third-party packages that don't ship types
-[[tool.mypy.overrides]]
-module = ["redis.*", "pydantic_settings.*"]
-ignore_missing_imports = true
-```
-
-### Running mypy — handle both src and flat layouts
-
-```bash
-# src layout:
-mypy src/your_package/
-
-# flat layout:
-mypy your_package/
-```
-
-In CI, detect layout dynamically:
-
-```yaml
-- name: Run mypy
-  run: |
-    if [ -d "src" ]; then
-        mypy src/
-    else
-        mypy your_package/
-    fi
-```
-
----
-
-## 4. pre-commit Configuration
-
-```yaml
-# .pre-commit-config.yaml
-repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.4    # Pin to a specific release; update periodically with `pre-commit autoupdate`
-    hooks:
-      - id: ruff
-        args: [--fix]       # Auto-fix what can be fixed
-      - id: ruff-format     # Format (replaces black hook)
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.10.0
-    hooks:
-      - id: mypy
-        additional_dependencies:
-          - types-requests
-          - types-redis
-          # Add stubs for any typed dependency used in your package
-
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
-    hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-toml
-      - id: check-yaml
-      - id: check-merge-conflict
-      - id: check-added-large-files
-        args: ["--maxkb=500"]
-```
-
-### ❌ Remove these hooks (replaced by ruff)
-
-```yaml
-# DELETE or never add:
-- repo: https://github.com/psf/black           # replaced by ruff-format
-- repo: https://github.com/PyCQA/isort          # replaced by ruff lint I rules
-- repo: https://github.com/PyCQA/flake8         # replaced by ruff check
-- repo: https://github.com/PyCQA/autoflake      # replaced by ruff check F401
-```
-
-### Setup
-
-```bash
-pip install pre-commit
-pre-commit install     # Installs git hook — runs on every commit
-pre-commit run --all-files  # Run manually on all files
-pre-commit autoupdate  # Update all hooks to latest pinned versions
-```
-
----
-
-## 5. pytest and Coverage Configuration
-
-```toml
-[tool.pytest.ini_options]
-testpaths    = ["tests"]
-addopts      = "-ra -q --strict-markers --cov=your_package --cov-report=term-missing"
-asyncio_mode = "auto"    # Enables async tests without @pytest.mark.asyncio decorator
-
-[tool.coverage.run]
-source   = ["your_package"]
-branch   = true
-omit     = ["**/__main__.py", "**/cli.py"]  # omit entry points from coverage
-
-[tool.coverage.report]
-show_missing   = true
-skip_covered   = false
-fail_under     = 85        # Fail CI if coverage drops below 85%
-exclude_lines  = [
-    "pragma: no cover",
-    "if TYPE_CHECKING:",
-    "raise NotImplementedError",
-    "@abstractmethod",
-]
-```
-
-### asyncio_mode = "auto" — remove @pytest.mark.asyncio
-
-With `asyncio_mode = "auto"` set in `pyproject.toml`, **do not** add `@pytest.mark.asyncio`
-to test functions. The decorator is redundant and will raise a warning in modern pytest-asyncio.
-
-```python
-# WRONG — the decorator is deprecated when asyncio_mode = "auto":
-@pytest.mark.asyncio
-async def test_async_operation():
-    result = await my_async_func()
-    assert result == expected
-
-# CORRECT — just use async def:
-async def test_async_operation():
-    result = await my_async_func()
-    assert result == expected
-```
-
----
-
-## 6. Dev Dependencies in pyproject.toml
-
-Declare all dev/test tools in an `[extras]` group named `dev`.
-
-```toml
-[project.optional-dependencies]
-dev = [
-    "pytest>=8",
-    "pytest-asyncio>=0.23",
-    "pytest-cov>=5",
-    "ruff>=0.4",
-    "mypy>=1.10",
-    "pre-commit>=3.7",
-    "httpx>=0.27",       # If testing HTTP transport
-    "respx>=0.21",       # If mocking httpx in tests
-]
-redis = [
-    "redis>=5",
-]
-docs = [
-    "mkdocs-material>=9",
-    "mkdocstrings[python]>=0.25",
-]
-```
-
-Install dev dependencies:
-
-```bash
-pip install -e ".[dev]"
-pip install -e ".[dev,redis]"   # Include optional extras
-```
-
----
-
-## 7. CI Lint Job — Ruff Only
-
-Replace the separate `black`, `isort`, and `flake8` steps with a single `ruff` step.
-
-```yaml
-# .github/workflows/ci.yml  — lint job
-lint:
-  name: Lint & Type Check
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
-
-    - uses: actions/setup-python@v5
-      with:
-        python-version: "3.11"
-
-    - name: Install dev dependencies
-      run: pip install -e ".[dev]"
-
-    # Single step: ruff replaces black + isort + flake8
-    - name: ruff lint
-      run: ruff check .
-
-    - name: ruff format check
-      run: ruff format --check .
-
-    - name: mypy
-      run: |
-        if [ -d "src" ]; then
-            mypy src/
-        else
-            mypy $(basename $(ls -d */))/ 2>/dev/null || mypy .
-        fi
-```
-
----
-
-## 8. Migration Guide — Removing black and isort
-
-If you are converting an existing project that used `black` and `isort`:
-
-```bash
-# 1. Remove black and isort from dev dependencies
-pip uninstall black isort
-
-# 2. Remove black and isort config sections from pyproject.toml
-# [tool.black]  ← delete this section
-# [tool.isort]  ← delete this section
-
-# 3. Add ruff to dev dependencies (see Section 2 for config)
-
-# 4. Run ruff format to confirm existing code is already compatible
-ruff format --check .
-# ruff format is black-compatible; output should be identical
-
-# 5. Update .pre-commit-config.yaml (see Section 4)
-# Remove black and isort hooks; add ruff and ruff-format hooks
-
-# 6. Update CI (see Section 7)
-# Remove black, isort, flake8 steps; add ruff check + ruff format --check
-
-# 7. Reinstall pre-commit hooks
-pre-commit uninstall
-pre-commit install
-pre-commit run --all-files   # Verify clean
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-pypi-package-builder/references/versioning-strategy.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-pypi-package-builder/references/versioning-strategy.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-pypi-package-builder/references/versioning-strategy.md
-- **SHA256_FINGERPRINT**: `cfb0d997b8cadc265beece2d727e5f31e07065729e65d38b1af1e5ce7a60abfa`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.940149+00:00
----
-
-# Versioning Strategy — PEP 440, SemVer, and Decision Engine
-
-## Table of Contents
-1. [PEP 440 — The Standard](#1-pep-440--the-standard)
-2. [Semantic Versioning (SemVer)](#2-semantic-versioning-semver)
-3. [Pre-release Identifiers](#3-pre-release-identifiers)
-4. [Versioning Decision Engine](#4-versioning-decision-engine)
-5. [Dynamic Versioning — setuptools_scm (Recommended)](#5-dynamic-versioning--setuptools_scm-recommended)
-6. [Hatchling with hatch-vcs Plugin](#6-hatchling-with-hatch-vcs-plugin)
-7. [Static Versioning — flit](#7-static-versioning--flit)
-8. [Static Versioning — hatchling manual](#8-static-versioning--hatchling-manual)
-9. [DO NOT Hardcode Version (except flit)](#9-do-not-hardcode-version-except-flit)
-10. [Dependency Version Specifiers](#10-dependency-version-specifiers)
-11. [PyPA Release Commands](#11-pypa-release-commands)
-
----
-
-## 1. PEP 440 — The Standard
-
-All Python package versions must comply with [PEP 440](https://peps.python.org/pep-0440/).
-Non-compliant versions (e.g., `1.0-beta`, `2023.1.1.dev`) will be rejected by PyPI.
-
-```
-Canonical form:  N[.N]+[{a|b|rc}N][.postN][.devN]
-
-1.0.0            Stable release
-1.0.0a1          Alpha pre-release
-1.0.0b2          Beta pre-release
-1.0.0rc1         Release candidate
-1.0.0.post1      Post-release (packaging fix; same codebase)
-1.0.0.dev1       Development snapshot — DO NOT upload to PyPI
-2.0.0            Major release (breaking changes)
-```
-
-### Epoch prefix (rare)
-
-```
-1!1.0.0          Epoch 1; used when you need to skip ahead of an old scheme
-```
-
-Use epochs only as a last resort to fix a broken version sequence.
-
----
-
-## 2. Semantic Versioning (SemVer)
-
-SemVer maps cleanly onto PEP 440. Always use `MAJOR.MINOR.PATCH`:
-
-```
-MAJOR  Increment when you make incompatible API changes (rename, remove, break)
-MINOR  Increment when you add functionality backward-compatibly (new features)
-PATCH  Increment when you make backward-compatible bug fixes
-
-Examples:
-  1.0.0 → 1.0.1   Bug fix, no API change
-  1.0.0 → 1.1.0   New method added; existing API intact
-  1.0.0 → 2.0.0   Public method renamed or removed
-```
-
-### What counts as a breaking change?
-
-| Change | Breaking? |
-|---|---|
-| Rename a public function | YES — `MAJOR` |
-| Remove a parameter | YES — `MAJOR` |
-| Add a required parameter | YES — `MAJOR` |
-| Add an optional parameter with a default | NO — `MINOR` |
-| Add a new function/class | NO — `MINOR` |
-| Fix a bug | NO — `PATCH` |
-| Update a dependency lower bound | NO (usually) — `PATCH` |
-| Update a dependency upper bound (breaking) | YES — `MAJOR` |
-
----
-
-## 3. Pre-release Identifiers
-
-Use pre-release versions to get user feedback before a stable release.
-Pre-releases are **not** installed by default by pip (`pip install pkg` skips them).
-Users must opt-in: `pip install "pkg==2.0.0a1"` or `pip install --pre pkg`.
-
-```
-1.0.0a1    Alpha-1: very early; expect bugs; API may change
-1.0.0b1    Beta-1:  feature-complete; API stabilising; seek broader feedback
-1.0.0rc1   Release candidate: code-frozen; final testing before stable
-1.0.0      Stable: ready for production
-```
-
-### Increment rule
-
-```
-Start:       1.0.0a1
-More alphas: 1.0.0a2, 1.0.0a3
-Move to beta: 1.0.0b1  (reset counter)
-Move to RC:  1.0.0rc1
-Stable:      1.0.0
-```
-
----
-
-## 4. Versioning Decision Engine
-
-Use this decision tree to pick the right versioning strategy before writing any code.
-
-```
-Is the project using git and tagging releases with version tags?
-├── YES → setuptools + setuptools_scm  (DEFAULT — best for most projects)
-│         Git tag v1.0.0 becomes the installed version automatically.
-│         Zero manual version bumping.
-│
-└── NO — Is the project a simple, single-module library with infrequent releases?
-          ├── YES → flit
-          │         Set __version__ = "1.0.0" in __init__.py.
-          │         Update manually before each release.
-          │
-          └── NO — Does the team want an integrated build + dep management tool?
-                    ├── YES → poetry
-                    │         Manage version in [tool.poetry] version field.
-                    │
-                    └── NO → hatchling (modern, fast, pure-Python)
-                              Use hatch-vcs plugin for dynamic versioning
-                              or set version manually in [project].
-
-Does the package have C/Cython/Fortran extensions?
-└── YES (always) → setuptools (only backend with native extension support)
-```
-
-### Summary Table
-
-| Backend | Version source | Best for |
-|---|---|---|
-| `setuptools` + `setuptools_scm` | Git tags — fully automatic | DEFAULT for new projects |
-| `hatchling` + `hatch-vcs` | Git tags — automatic via plugin | hatchling users |
-| `flit` | `__version__` in `__init__.py` | Very simple, minimal config |
-| `poetry` | `[tool.poetry] version` field | Integrated dep + build management |
-| `hatchling` manual | `[project] version` field | One-off static versioning |
-
----
-
-## 5. Dynamic Versioning — setuptools_scm (Recommended)
-
-`setuptools_scm` reads the current git tag and computes the version at build time.
-No separate `__version__` update step — just tag and push.
-
-### `pyproject.toml` configuration
-
-```toml
-[build-system]
-requires      = ["setuptools>=70", "setuptools_scm>=8"]
-build-backend = "setuptools.backends.legacy:build"
-
-[project]
-name    = "your-package"
-dynamic = ["version"]
-
-[tool.setuptools_scm]
-version_scheme = "post-release"
-local_scheme   = "no-local-version"   # Prevents +g<hash> from breaking PyPI
-```
-
-### `__init__.py` — correct version access
-
-```python
-# your_package/__init__.py
-from importlib.metadata import version, PackageNotFoundError
-
-try:
-    __version__ = version("your-package")
-except PackageNotFoundError:
-    # Package is not installed (running from a source checkout without pip install -e .)
-    __version__ = "0.0.0.dev0"
-
-__all__ = ["__version__"]
-```
-
-### How the version is computed
-
-```
-git tag v1.0.0            →  installed_version = "1.0.0"
-3 commits after v1.0.0    →  installed_version = "1.0.0.post3+g<hash>"  (dev only)
-git tag v1.1.0            →  installed_version = "1.1.0"
-```
-
-With `local_scheme = "no-local-version"`, the `+g<hash>` suffix is stripped for PyPI
-uploads while still being visible locally.
-
-### Critical CI requirement
-
-```yaml
-- uses: actions/checkout@v4
-  with:
-    fetch-depth: 0    # REQUIRED — without this, git has no tag history
-                      # setuptools_scm falls back to 0.0.0+d<date> silently
-```
-
-**Every** CI job that installs or builds the package must have `fetch-depth: 0`.
-
-### Debugging version issues
-
-```bash
-# Check what version setuptools_scm would produce right now:
-python -m setuptools_scm
-
-# If you see 0.0.0+d... it means:
-# 1. No tags reachable from HEAD, OR
-# 2. fetch-depth: 0 was not set in CI
-```
-
----
-
-## 6. Hatchling with hatch-vcs Plugin
-
-An alternative to setuptools_scm for teams already using hatchling.
-
-```toml
-[build-system]
-requires      = ["hatchling", "hatch-vcs"]
-build-backend = "hatchling.build"
-
-[project]
-name    = "your-package"
-dynamic = ["version"]
-
-[tool.hatch.version]
-source = "vcs"
-
-[tool.hatch.build.hooks.vcs]
-version-file = "src/your_package/_version.py"
-```
-
-Access the version the same way as setuptools_scm:
-
-```python
-from importlib.metadata import version, PackageNotFoundError
-try:
-    __version__ = version("your-package")
-except PackageNotFoundError:
-    __version__ = "0.0.0.dev0"
-```
-
----
-
-## 7. Static Versioning — flit
-
-Use flit only for simple, single-module packages where manual version bumping is acceptable.
-
-### `pyproject.toml`
-
-```toml
-[build-system]
-requires      = ["flit_core>=3.9"]
-build-backend = "flit_core.buildapi"
-
-[project]
-name    = "your-package"
-dynamic = ["version", "description"]
-```
-
-### `__init__.py`
-
-```python
-"""your-package — a focused, single-purpose utility."""
-__version__ = "1.2.0"   # flit reads this; update manually before each release
-```
-
-**flit exception:** this is the ONLY case where hardcoding `__version__` is correct.
-flit discovers the version by importing `__init__.py` and reading `__version__`.
-
-### Release flow for flit
-
-```bash
-# 1. Bump __version__ in __init__.py
-# 2. Update CHANGELOG.md
-# 3. Commit
-git add src/your_package/__init__.py CHANGELOG.md
-git commit -m "chore: release v1.2.0"
-# 4. Tag (flit can also publish directly)
-git tag v1.2.0
-git push origin v1.2.0
-# 5. Build and publish
-flit publish
-# OR
-python -m build && twine upload dist/*
-```
-
----
-
-## 8. Static Versioning — hatchling manual
-
-```toml
-[build-system]
-requires      = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
-name    = "your-package"
-version = "1.0.0"   # Manual; update before each release
-```
-
-Update `version` in `pyproject.toml` before every release. No `__version__` required
-(access via `importlib.metadata.version()` as usual).
-
----
-
-## 9. DO NOT Hardcode Version (except flit)
-
-Hardcoding `__version__` in `__init__.py` when **not** using flit creates a dual source of
-truth that diverges over time.
-
-```python
-# BAD — when using setuptools_scm, hatchling, or poetry:
-__version__ = "1.0.0"    # gets stale; diverges from the installed package version
-
-# GOOD — works for all backends except flit:
-from importlib.metadata import version, PackageNotFoundError
-try:
-    __version__ = version("your-package")
-except PackageNotFoundError:
-    __version__ = "0.0.0.dev0"
-```
-
----
-
-## 10. Dependency Version Specifiers
-
-Pick the right specifier style to avoid poisoning your users' environments.
-
-```toml
-# [project] dependencies — library best practices:
-
-"httpx>=0.24"            # Minimum only — PREFERRED; lets users upgrade freely
-"httpx>=0.24,<2.0"       # Upper bound only when a known breaking change exists in next major
-"requests>=2.28,<3.0"    # Acceptable for well-known major-version breaks
-
-# Application / CLI (pinning is fine):
-"httpx==0.27.2"          # Lock exact version for reproducible deploys
-
-# NEVER in a library:
-# "httpx~=0.24.0"        # Too tight; blocks minor upgrades
-# "httpx==0.27.*"        # Not valid PEP 440
-# "httpx"                # No constraint; fragile against future breakage
-```
-
----
-
-## 11. PyPA Release Commands
-
-The canonical sequence from code to user install.
-
-```bash
-# Step 1: Tag the release (triggers CI publish.yml automatically if configured)
-git tag -a v1.2.3 -m "Release v1.2.3"
-git push origin v1.2.3
-
-# Step 2 (manual fallback only): Build locally
-python -m build
-# Produces:
-#   dist/your_package-1.2.3.tar.gz   (sdist)
-#   dist/your_package-1.2.3-py3-none-any.whl  (wheel)
-
-# Step 3: Validate
-twine check dist/*
-
-# Step 4: Test on TestPyPI first (first release or major change)
-twine upload --repository testpypi dist/*
-pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ your-package==1.2.3
-
-# Step 5: Publish to production PyPI
-twine upload dist/*
-# OR via GitHub Actions (recommended):
-# push the tag → publish.yml runs → pypa/gh-action-pypi-publish handles upload via OIDC
-
-# Step 6: Verify
-pip install your-package==1.2.3
-python -c "import your_package; print(your_package.__version__)"
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-clients-sdk/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-clients-sdk/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-clients-sdk/SKILL.md
-- **SHA256_FINGERPRINT**: `98038574cd7735ffdd7f709b8a882f48d8e91b4072906424887e01919a426954`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.888836+00:00
----
-
-**description**: Qdrant provides client SDKs for various programming languages, allowing easy integration with Qdrant deployments.
-
-# Qdrant Clients SDK
-
-Qdrant has the following officially supported client SDKs:
-
-- Python — [qdrant-client](https://github.com/qdrant/qdrant-client) · Installation: `pip install qdrant-client[fastembed]`
-- JavaScript / TypeScript — [qdrant-js](https://github.com/qdrant/qdrant-js) · Installation: `npm install @qdrant/js-client-rest`
-- Rust — [rust-client](https://github.com/qdrant/rust-client) · Installation: `cargo add qdrant-client`
-- Go — [go-client](https://github.com/qdrant/go-client) · Installation: `go get github.com/qdrant/go-client`
-- .NET — [qdrant-dotnet](https://github.com/qdrant/qdrant-dotnet) · Installation: `dotnet add package Qdrant.Client`
-- Java — [java-client](https://github.com/qdrant/java-client) · Available on Maven Central: https://central.sonatype.com/artifact/io.qdrant/client
-
-## API Reference
-
-All interaction with Qdrant can happen through the REST API or gRPC API. We recommend using the REST API if you are using Qdrant for the first time or working on a prototype.
-
-* REST API - [OpenAPI Reference](https://api.qdrant.tech/api-reference) - [GitHub](https://github.com/qdrant/qdrant/blob/master/docs/redoc/master/openapi.json)
-* gRPC API - [gRPC protobuf definitions](https://github.com/qdrant/qdrant/tree/master/lib/api/src/grpc/proto)
-
-## Code examples
-
-To obtain code examples for a specific client and use case, you can send a search request to the library of curated code snippets for the Qdrant client.
-
-```bash
-curl -X GET "https://snippets.qdrant.tech/search?language=python&query=how+to+upload+points"
-```
-
-Available languages: `python`, `typescript`, `rust`, `java`, `go`, `csharp`
-
-Response example:
-
-```markdown
-
-## Snippet 1
-
-*qdrant-client* (vlatest) — https://search.qdrant.tech/md/documentation/manage-data/points/
-
-Uploads multiple vector-embedded points to a Qdrant collection using the Python qdrant_client (PointStruct) with id, payload (e.g., color), and a 3D-like vector for similarity search. It supports parallel uploads (parallel=4) and a retry policy (max_retries=3) for robust indexing. The operation is idempotent: re-uploading with the same id overwrites existing points; if ids aren’t provided, Qdrant auto-generates UUIDs.
-
-client.upload_points(
-    collection_name="{collection_name}",
-    points=[
-        models.PointStruct(
-            id=1,
-            payload={
-                "color": "red",
-            },
-            vector=[0.9, 0.1, 0.1],
-        ),
-        models.PointStruct(
-            id=2,
-            payload={
-                "color": "green",
-            },
-            vector=[0.1, 0.9, 0.1],
-        ),
-    ],
-    parallel=4,
-    max_retries=3,
-)
-```
-
-Default response format is markdown, if snippet output is required in JSON format, you can add `&format=json` to the query string.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-deployment-options/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-deployment-options/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-deployment-options/SKILL.md
-- **SHA256_FINGERPRINT**: `16add82ae044c2d6055628bafa202c6f0baef8f148a27c325338935fbe152695`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.892843+00:00
----
-
-**description**: Guides Qdrant deployment selection. Use when someone asks 'how to deploy Qdrant', 'Docker vs Cloud', 'local mode', 'embedded Qdrant', 'Qdrant EDGE', 'which deployment option', 'self-hosted vs cloud', or 'need lowest latency deployment'. Also use when choosing between deployment types for a new project.
-
-# Which Qdrant Deployment Do I Need?
-
-Start with what you need: managed ops or full control? Network latency acceptable or not? Production or prototyping? The answer narrows to one of four options.
-
-## Getting Started or Prototyping
-
-Use when: building a prototype, running tests, CI/CD pipelines, or learning Qdrant.
-
-- Use local mode (Python only): zero-dependency, in-memory or disk-persisted, no server needed [Local mode](https://search.qdrant.tech/md/documentation/quickstart/)
-- Local mode data format is NOT compatible with server. Do not use for production or benchmarking.
-- For a real server locally, use Docker [Quick start](https://search.qdrant.tech/md/documentation/quickstart/?s=download-and-run)
-
-## Going to Production (Self-Hosted)
-
-Use when: you need full control over infrastructure, data residency, or custom configuration.
-
-- Docker is the default deployment. Full Qdrant Open Source feature set, minimal setup. [Quick start](https://search.qdrant.tech/md/documentation/quickstart/?s=download-and-run)
-- You own operations: upgrades, backups, scaling, monitoring
-- Must set up distributed mode manually for multi-node clusters [Distributed deployment](https://search.qdrant.tech/md/documentation/operations/distributed_deployment/)
-- Consider Hybrid Cloud if you want Qdrant Cloud management on your infrastructure [Hybrid Cloud](https://search.qdrant.tech/md/documentation/hybrid-cloud/)
-
-## Going to Production (Zero-Ops)
-
-Use when: you want managed infrastructure with zero-downtime updates, automatic backups, and resharding without operating clusters yourself.
-
-- Qdrant Cloud handles upgrades, scaling, backups, and monitoring [Qdrant Cloud](https://search.qdrant.tech/md/documentation/cloud-quickstart/)
-- Supports multi-version upgrades automatically
-- Provides features not available in self-hosted: `/sys_metrics`, managed resharding, pre-configured alerts
-
-## Need Lowest Possible Latency
-
-Use when: network round-trip to a server is unacceptable. Edge devices, in-process search, or latency-critical applications.
-
-- Qdrant EDGE: in-process bindings to Qdrant shard-level functions, no network overhead [Qdrant EDGE](https://search.qdrant.tech/md/documentation/edge/edge-quickstart/)
-- Same data format as server. Can sync with server via shard snapshots.
-- Single-node feature set only. No distributed mode.
-
-## What NOT to Do
-
-- Use local mode for production or benchmarking (not optimized, incompatible data format)
-- Self-host without monitoring and backup strategy (you will lose data or miss outages)
-- Choose EDGE when you need distributed search (single-node only)
-- Pick Hybrid Cloud unless you have data residency requirements (unnecessary Kubernetes complexity when Qdrant Cloud works)
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-model-migration/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-model-migration/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-model-migration/SKILL.md
-- **SHA256_FINGERPRINT**: `0e8096ef985193a2e6383dd66772dbfc4f4cc416260d057bd489b8b0150a09ba`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.920527+00:00
----
-
-**description**: Guides embedding model migration in Qdrant without downtime. Use when someone asks 'how to switch embedding models', 'how to migrate vectors', 'how to update to a new model', 'zero-downtime model change', 'how to re-embed my data', or 'can I use two models at once'. Also use when upgrading model dimensions, switching providers, or A/B testing models.
-
-# What to Do When Changing Embedding Models
-
-Vectors from different models are incompatible. You cannot mix old and new embeddings in the same vector space. You also cannot add new named vector fields to an existing collection. All named vectors must be defined at collection creation time. Both migration strategies below require creating a new collection.
-
-- Understand collection aliases before choosing a strategy [Collection aliases](https://search.qdrant.tech/md/documentation/manage-data/collections/?s=collection-aliases)
-
-## Can I Avoid Re-embedding?
-
-Use when: looking for shortcuts before committing to full migration.
-
-You MUST re-embed if: changing model provider (OpenAI to Cohere), changing architecture (CLIP to BGE), incompatible dimension counts across different models, or adding sparse vectors to dense-only collection.
-
-You CAN avoid re-embedding if: using Matryoshka models (use `dimensions` parameter to output lower-dimensional embeddings, learn linear transformation from sample data, some recall loss, good for 100M+ datasets). Or changing quantization (binary to scalar): Qdrant re-quantizes automatically. [Quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/)
-
-## Need Zero Downtime (Alias Swap)
-
-Use when: production must stay available. Recommended for model replacement at scale.
-
-- Create a new collection with the new model's dimensions and distance metric
-- Re-embed all data into the new collection in the background
-- Point your application at a collection alias instead of a direct collection name
-- Atomically swap the alias to the new collection [Switch collection](https://search.qdrant.tech/md/documentation/manage-data/collections/?s=switch-collection)
-- Verify search quality, then delete the old collection
-
-Careful, the alias swap only redirects queries. Payloads must be re-uploaded separately.
-
-## Need Both Models Live (Side-by-Side)
-
-Use when: A/B testing models, multi-modal (dense + sparse), or evaluating a new model before committing.
-
-You cannot add a named vector to an existing collection. Create a new collection with both vector fields defined upfront:
-
-- Create new collection with old and new named vectors both defined [Collection with multiple vectors](https://search.qdrant.tech/md/documentation/manage-data/collections/?s=collection-with-multiple-vectors)
-- Migrate data from old collection, preserving existing vectors in the old named field
-- Backfill new model embeddings incrementally using `UpdateVectors` [Update vectors](https://search.qdrant.tech/md/documentation/manage-data/points/?s=update-vectors)
-- Compare quality by querying with `using: "old_model"` vs `using: "new_model"`
-- Swap alias to new collection once satisfied
-
-Co-locating large multi-vectors (especially ColBERT) with dense vectors degrades ALL queries, even those only using dense. At millions of points, users report 13s latency dropping to 2s after removing ColBERT. Put large vectors on disk during side-by-side migration.
-
-If you anticipate future model migrations, define both vector fields upfront at collection creation.
-
-## Dense to Hybrid Search Migration
-
-Use when: adding sparse/BM25 vectors to an existing dense-only collection. Most common migration pattern.
-
-You cannot add sparse vectors to an existing dense-only collection. Must recreate:
-
-- Create new collection with both dense and sparse vector configs defined
-- Re-embed all data with both dense and sparse models
-- Migrate payloads, swap alias
-
-Sparse vectors at chunk level have different TF-IDF characteristics than document level. Test retrieval quality after migration, especially for non-English text without stop-word removal.
-
-## Re-embedding Is Too Slow
-
-Use when: dataset is large and re-embedding is the bottleneck.
-
-- Use `update_mode: insert` (v1.17+) for safe idempotent migration [Update mode](https://search.qdrant.tech/md/documentation/manage-data/points/?s=update-mode)
-- Scroll the old collection with `with_vectors=False`, re-embed in batches, upsert into new collection
-- Upload in parallel batches (64-256 points per request, 2-4 parallel streams) [Bulk upload](https://search.qdrant.tech/md/documentation/tutorials-develop/bulk-upload/)
-- Disable HNSW during bulk load (set `indexing_threshold_kb` very high, restore after)
-- For Qdrant Cloud inference, switching models is a config change, not a pipeline change [Inference docs](https://search.qdrant.tech/md/documentation/inference/)
-
-For 400GB+ datasets, expect days. For small datasets (<25MB), re-indexing from source is faster than using the migration tool.
-
-## What NOT to Do
-
-- Assume you can add named vectors to an existing collection (must be defined at creation time)
-- Delete the old collection before verifying the new one
-- Forget to update the query embedding model in your application code
-- Skip payload migration when using alias swap (aliases redirect queries, they do not copy data)
-- Keep ColBERT vectors co-located with dense vectors during a long migration (I/O cost degrades all queries)
-- Migrate to hybrid search without testing BM25 quality at chunk level
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-monitoring/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-monitoring/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-monitoring/SKILL.md
-- **SHA256_FINGERPRINT**: `39eb306c7a2e2db181ccb5c83d4ada6b63f38b099b74b803faa13f5b4fd7b404`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.038274+00:00
----
-
-**description**: Guides Qdrant monitoring and observability setup. Use when someone asks 'how to monitor Qdrant', 'what metrics to track', 'is Qdrant healthy', 'optimizer stuck', 'why is memory growing', 'requests are slow', or needs to set up Prometheus, Grafana, or health checks. Also use when debugging production issues that require metric analysis.
-
-# Qdrant Monitoring
-
-Qdrant monitoring allows tracking performance and health of your deployment, and identifying issues before they become outages. First determine whether you need to set up monitoring or diagnose an active issue.
-
-- Understand available metrics [Monitoring docs](https://search.qdrant.tech/md/documentation/operations/monitoring/)
-
-## Monitoring Setup
-
-Prometheus scraping, health probes, Hybrid Cloud specifics, alerting, and log centralization. [Monitoring Setup](setup/SKILL.md)
-
-## Debugging with Metrics
-
-Optimizer stuck, memory growth, slow requests. Using metrics to diagnose active production issues. [Debugging with Metrics](debugging/SKILL.md)
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-monitoring/debugging/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-monitoring/debugging/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-monitoring/debugging/SKILL.md
-- **SHA256_FINGERPRINT**: `fd331436ca5596a0b154ca8d420dee604df67c493c7cb394996486ddee73db15`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.949298+00:00
----
-
-**description**: Diagnoses Qdrant production issues using metrics and observability tools. Use when someone reports 'optimizer stuck', 'indexing too slow', 'memory too high', 'OOM crash', 'queries are slow', 'latency spike', or 'search was fast now it's slow'. Also use when performance degrades without obvious config changes.
-
-# How to Debug Qdrant with Metrics
-
-First check optimizer status. Most production issues trace back to active optimizations competing for resources. If optimizer is clean, check memory, then request metrics.
-
-## Optimizer Stuck or Too Slow
-
-Use when: optimizer running for hours, not finishing, or showing errors.
-
-- Use `/collections/{collection_name}/optimizations` endpoint (v1.17+) to check status [Optimization monitoring](https://search.qdrant.tech/md/documentation/operations/optimizer/?s=optimization-monitoring)
-- Query with optional detail flags: `?with=queued,completed,idle_segments`
-- Returns: queued optimizations count, active optimizer type, involved segments, progress tracking
-- Web UI has an Optimizations tab with timeline view and per-task duration metrics [Web UI](https://search.qdrant.tech/md/documentation/operations/optimizer/?s=web-ui)
-- If `optimizer_status` shows an error in collection info, check logs for disk full or corrupted segments
-- Large merges and HNSW rebuilds legitimately take hours on big datasets. Check progress before assuming it's stuck.
-
-## Memory Seems Too High
-
-Use when: memory exceeds expectations, node crashes with OOM, or memory keeps growing.
-
-- Process memory metrics available via `/metrics` (RSS, allocated bytes, page faults)
-- Qdrant uses two types of RAM: resident memory (data structures, quantized vectors) and OS page cache (cached disk reads). Page cache filling available RAM is normal. [Memory article](https://qdrant.tech/articles/memory-consumption/)
-- If resident memory (RSSAnon) exceeds 80% of total RAM, investigate
-- Check `/telemetry` for per-collection breakdown of point counts and vector configurations
-- Estimate expected memory: `num_vectors * dimensions * 4 bytes * 1.5` for vectors, plus payload and index overhead [Capacity planning](https://search.qdrant.tech/md/documentation/operations/capacity-planning/)
-- Common causes of unexpected growth: quantized vectors with `always_ram=true`, too many payload indexes, large `max_segment_size` during optimization
-
-## Queries Are Slow
-
-Use when: queries slower than expected and you need to identify the cause.
-
-- Track `rest_responses_avg_duration_seconds` and `rest_responses_max_duration_seconds` per endpoint
-- Use histogram metric `rest_responses_duration_seconds` (v1.8+) for percentile analysis in Grafana
-- Equivalent gRPC metrics with `grpc_responses_` prefix
-- Check optimizer status first. Active optimizations compete for CPU and I/O, degrading search latency.
-- Check segment count via collection info. Too many unmerged segments after bulk upload causes slower search.
-- Compare filtered vs unfiltered query times. Large gap means missing payload index. [Payload index](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=payload-index)
-
-## What NOT to Do
-
-- Ignore optimizer status when debugging slow queries (most common root cause)
-- Assume memory leak when page cache fills RAM (normal OS behavior)
-- Make config changes while optimizer is running (causes cascading re-optimizations)
-- Blame Qdrant before checking if bulk upload just finished (unmerged segments)
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-monitoring/setup/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-monitoring/setup/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-monitoring/setup/SKILL.md
-- **SHA256_FINGERPRINT**: `567d4ee03c316146100d96d1df8a761a007423eb24c3e93ecda160e0d2416839`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.129398+00:00
----
-
-**description**: Guides Qdrant monitoring setup including Prometheus scraping, health probes, Hybrid Cloud metrics, alerting, and log centralization. Use when someone asks 'how to set up monitoring', 'Prometheus config', 'Grafana dashboard', 'health check endpoints', 'how to scrape Hybrid Cloud', 'what alerts to set', 'how to centralize logs', or 'audit logging'.
-
-# How to Set Up Qdrant Monitoring
-
-Get Prometheus scraping working first, then health probes, then alerting. Do not skip monitoring setup before going to production.
-
-## Prometheus Metrics
-
-Use when: setting up metric collection for the first time or adding a new deployment.
-
-- Node metrics at `/metrics` endpoint [Monitoring docs](https://search.qdrant.tech/md/documentation/operations/monitoring/)
-- Cluster metrics at `/sys_metrics` (Qdrant Cloud only)
-- Prefix customization via `service.metrics_prefix` config or `QDRANT__SERVICE__METRICS_PREFIX` env var
-- Example self-hosted setup with Prometheus + Grafana [prometheus-monitoring repo](https://github.com/qdrant/prometheus-monitoring)
-
-## Hybrid Cloud Scraping
-
-Use when: running Qdrant Hybrid Cloud and need cluster-level visibility.
-
-Do not just scrape Qdrant nodes. In Hybrid Cloud, you manage the Kubernetes data plane. You must also scrape the cluster-exporter and operator pods for full cluster visibility and operator state.
-
-- Hybrid Cloud Prometheus setup tutorial [Hybrid Cloud Prometheus](https://search.qdrant.tech/md/documentation/tutorials-and-examples/hybrid-cloud-prometheus/)
-- Official Grafana dashboards [Grafana dashboard repo](https://github.com/qdrant/qdrant-cloud-grafana-dashboard)
-
-## Liveness and Readiness Probes
-
-Use when: configuring Kubernetes health checks.
-
-- Use `/healthz`, `/livez`, `/readyz` for basic status, liveness, and readiness [Kubernetes health endpoints](https://search.qdrant.tech/md/documentation/operations/monitoring/?s=kubernetes-health-endpoints)
-
-## Alerting
-
-Use when: setting up alerts for production or Hybrid Cloud deployments.
-
-- Hybrid Cloud provides ~11 pre-configured Prometheus alerts out of the box [Cloud cluster monitoring](https://search.qdrant.tech/md/documentation/cloud/cluster-monitoring/)
-- Use AlertmanagerConfig to route alerts to Slack, PagerDuty, or other targets based on labels
-- At minimum, alert on: optimizer errors, node not ready, replication factor below target, disk usage >80%
-
-## Log Centralization and Audit Logging
-
-Use when: enterprise compliance requires centralized logs or audit trails.
-
-- Enable JSON log format for structured analysis: set `logger.format` to `json` in config [Configuration](https://search.qdrant.tech/md/documentation/operations/configuration/)
-- Use FluentD/OpenSearch for log aggregation
-- Audit logs (v1.17+) write to local filesystem (`/qdrant/storage/audit/`), not stdout. Mount a Persistent Volume and deploy a sidecar container to tail these files to stdout so DaemonSets can pick them up. [Audit logging](https://search.qdrant.tech/md/documentation/operations/security/?s=audit-logging)
-
-## What NOT to Do
-
-- Scrape `/sys_metrics` on self-hosted (only available on Qdrant Cloud)
-- Scrape only Qdrant nodes in Hybrid Cloud (miss cluster-exporter and operator metrics)
-- Skip monitoring setup before going to production (you will regret it)
-- Alert on page cache memory usage (it's supposed to fill available RAM, normal OS behavior)
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-performance-optimization/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-performance-optimization/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-performance-optimization/SKILL.md
-- **SHA256_FINGERPRINT**: `f4d1decb0ee0d6a9056f020ec69682e3a4c5759db1003da12d958d672a489c0a`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.057589+00:00
----
-
-**description**: Different techniques to optimize the performance of Qdrant, including indexing strategies, query optimization, and hardware considerations. Use when you want to improve the speed and efficiency of your Qdrant deployment.
-
-# Qdrant Performance Optimization
-
-There are different aspects of Qdrant performance, this document serves as a navigation hub for different aspects of performance optimization in Qdrant.
-
-## Search Speed Optimization
-
-There are two different criteria for search speed: latency and throughput.
-Latency is the time it takes to get a response for a single query, while throughput is the number of queries that can be processed in a given time frame.
-Depending on your use case, you may want to optimize for one or both of these metrics.
-
-More on search speed optimization can be found in the [Search Speed Optimization](search-speed-optimization/SKILL.md) skill.
-
-## Indexing Performance Optimization
-
-Qdrant needs to build a vector index to perform efficient similarity search. The time it takes to build the index can vary depending on the size of your dataset, hardware, and configuration.
-
-More on indexing performance optimization can be found in the [Indexing Performance Optimization](indexing-performance-optimization/SKILL.md) skill.
-
-## Memory Usage Optimization
-
-Vector search can be memory intensive, especially when dealing with large datasets.
-Qdrant has a flexible memory management system, which allows you to precisely control which parts of storage are kept in memory and which are stored on disk. This can help you optimize memory usage without sacrificing performance.
-
-More on memory usage optimization can be found in the [Memory Usage Optimization](memory-usage-optimization/SKILL.md) skill.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-performance-optimization/indexing-performance-optimization/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-performance-optimization/indexing-performance-optimization/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-performance-optimization/indexing-performance-optimization/SKILL.md
-- **SHA256_FINGERPRINT**: `ec66ccbf9cee7fa091e29621f7375dcd7c29d682621551c25eb63756f7946133`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.102648+00:00
----
-
-**description**: Diagnoses and fixes slow Qdrant indexing and data ingestion. Use when someone reports 'uploads are slow', 'indexing takes forever', 'optimizer is stuck', 'HNSW build time too long', or 'data uploaded but search is bad'. Also use when optimizer status shows errors, segments won't merge, or indexing threshold questions arise.
-
-# What to Do When Qdrant Indexing Is Too Slow
-
-Qdrant does NOT build HNSW indexes immediately. Small segments use brute-force until they exceed `indexing_threshold_kb` (default: 20 MB). Search during this window is slower by design, not a bug.
-
-- Understand the indexing optimizer [Indexing optimizer](https://search.qdrant.tech/md/documentation/operations/optimizer/?s=indexing-optimizer)
-
-## Uploads/Ingestion Too Slow
-
-Use when: upload or upsert API calls are slow.
-Identify bottleneck: client-side (network, batching) vs server-side (CPU, disk I/O)
-
-For client-side, optimize batching and parallelism:
-
-- Use batch upserts (64-256 points per request) [Points API](https://search.qdrant.tech/md/documentation/manage-data/points/?s=upload-points)
-- Use 2-4 parallel upload streams
-
-For server-side, optimize Qdrant configuration and indexing strategy:
-
-- Create more shards (3-12), each shard has an independent update worker [Sharding](https://search.qdrant.tech/md/documentation/operations/distributed_deployment/?s=sharding)
-- Create payload indexes before HNSW builds (needed for filterable vector index) [Payload index](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=payload-index)
-
-Suitable for initial bulk load of large datasets:
-
-- Disable HNSW during bulk load (set `indexing_threshold_kb` very high, restore after) [Collection params](https://search.qdrant.tech/md/documentation/manage-data/collections/?s=update-collection-parameters)
-- Setting `m=0` to disable HNSW is legacy, use high `indexing_threshold_kb` instead
-
-Careful, fast unindexed upload might temporarily use more RAM and degrade search performance until optimizer catches up.
-
-See https://search.qdrant.tech/md/documentation/tutorials-develop/bulk-upload/
-
-## Optimizer Stuck or Taking Too Long
-
-Use when: optimizer running for hours, not finishing.
-
-- Check actual progress via optimizations endpoint (v1.17+) [Optimization monitoring](https://search.qdrant.tech/md/documentation/operations/optimizer/?s=optimization-monitoring)
-- Large merges and HNSW rebuilds legitimately take hours on big datasets
-- Check CPU and disk I/O (HNSW is CPU-bound, merging is I/O-bound, HDD is not viable)
-- If `optimizer_status` shows an error, check logs for disk full or corrupted segments
-
-## HNSW Build Time Too High
-
-Use when: HNSW index build dominates total indexing time.
-
-- Reduce `m` (default 16, good for most cases, 32+ rarely needed) [HNSW params](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=vector-index)
-- Reduce `ef_construct` (100-200 sufficient) [HNSW config](https://search.qdrant.tech/md/documentation/manage-data/collections/?s=indexing-vectors-in-hnsw)
-- Keep `max_indexing_threads` proportional to CPU cores [Configuration](https://search.qdrant.tech/md/documentation/operations/configuration/)
-- Use GPU for indexing [GPU indexing](https://search.qdrant.tech/md/documentation/operations/running-with-gpu/)
-
-## HNSW index for multi-tenant collections
-
-If you have a multi-tenant use case where all data is split by some payload field (e.g. `tenant_id`), you can avoid building a global HNSW index and instead rely on `payload_m` to build HNSW index only for subsets of data.
-Skipping global HNSW index can significantly reduce indexing time.
-
-See [Multi-tenant collections](https://search.qdrant.tech/md/documentation/manage-data/multitenancy/) for details.
-
-## Additional Payload Indexes Are Too Slow
-
-Qdrant builds extra HNSW links for all payload indexes to ensure that quality of filtered vector search does not degrade.
-Some payload indexes (e.g. `text` fields with long texts) can have a very high number of unique values per point, which can lead to long HNSW build time.
-
-You can disable building extra HNSW links for specific payload index and instead rely on slightly slower query-time strategies like ACORN.
-
-Read more about disabling extra HNSW links in [documentation](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=disable-the-creation-of-extra-edges-for-payload-fields)
-
-Read more about ACORN in [documentation](https://search.qdrant.tech/md/documentation/search/search/?s=acorn-search-algorithm)
-
-## What NOT to Do
-
-- Do not create payload indexes AFTER HNSW is built (breaks filterable vector index)
-- Do not use `m=0` for bulk uploads into an existing collection, it might drop the existing HNSW and cause long reindexing
-- Do not upload one point at a time (per-request overhead dominates)
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-performance-optimization/memory-usage-optimization/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-performance-optimization/memory-usage-optimization/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-performance-optimization/memory-usage-optimization/SKILL.md
-- **SHA256_FINGERPRINT**: `089ea269231f4aaeb6132314e592287d79fd30668d94d0499b463103e21e833f`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.110833+00:00
----
-
-**description**: Diagnoses and reduces Qdrant memory usage. Use when someone reports 'memory too high', 'RAM keeps growing', 'node crashed', 'out of memory', 'memory leak', or asks 'why is memory usage so high?', 'how to reduce RAM?'. Also use when memory doesn't match calculations, quantization didn't help, or nodes crash during recovery.
-
-# Understanding memory usage
-
-Qdrant operates with two types of memory:
-
-- Resident memory (aka RSSAnon) - memory used for internal data structures like the ID tracker, plus components that must stay in RAM, such as quantized vectors when `always_ram=true` and payload indexes.
-
-- OS page cache - memory used for caching disk reads, which can be released when needed. Original vectors are normally stored in page cache, so the service won't crash if RAM is full, but performance may degrade.
-
-It is normal for the OS page cache to occupy all available RAM, but if resident memory is above 80% of total RAM, it is a sign of a problem.
-
-## Memory usage monitoring
-
-- Qdrant exposes memory usage through the `/metrics` endpoint. See [Monitoring docs](https://search.qdrant.tech/md/documentation/operations/monitoring/).
-
-## How much memory is needed for Qdrant?
-
-Optimal memory usage depends on the use case.
-
-- For regular search scenarios, general guidelines are provided in the [Capacity planning docs](https://search.qdrant.tech/md/documentation/operations/capacity-planning/).
-
-For a detailed breakdown of memory usage at large scale, see [Large scale memory usage example](https://search.qdrant.tech/md/documentation/tutorials-operations/large-scale-search/?s=memory-usage).
-
-Payload indexes and HNSW graph also require memory, along with vectors themselves, so it's important to consider them in calculations.
-
-Additionally, Qdrant requires some extra memory for optimizations. During optimization, optimized segments are fully loaded into RAM, so it is important to leave enough headroom.
-The larger `max_segment_size` is, the more headroom is needed.
-
-### When to put HNSW index on disk
-
-Putting frequently used components (such as HNSW index) on disk might cause significant performance degradation.
-There are some scenarios, however, when it can be a good option:
-
-- Deployments with low latency disks - local NVMe or similar.
-- Multi-tenant deployments, where only a subset of tenants is frequently accessed, so that only a fraction of data & index is loaded in RAM at a time.
-- For deployments with [inline storage](https://search.qdrant.tech/md/documentation/operations/optimize/?s=inline-storage-in-hnsw-index) enabled.
-
-## How to minimize memory footprint
-
-The main challenge is to put on disk those parts of data, which are rarely accessed.
-Here are the main techniques to achieve that:
-
-- Use quantization to store only compressed vectors in RAM [Quantization docs](https://search.qdrant.tech/md/documentation/manage-data/quantization/)
-
-- Use float16 or int8 datatypes to reduce memory usage of vectors by 2x or 4x respectively, with some tradeoff in precision. Read more about vector datatypes in [documentation](https://search.qdrant.tech/md/documentation/manage-data/vectors/?s=datatypes)
-
-- Leverage Matryoshka Representation Learning (MRL) to store only small vectors in RAM while keeping large vectors on disk. Examples of how to use MRL with Qdrant Cloud inference: [MRL docs](https://search.qdrant.tech/md/documentation/inference/?s=reduce-vector-dimensionality-with-matryoshka-models)
-
-- For multi-tenant deployments with small tenants, vectors might be stored on disk because the same tenant's data is stored together [Multitenancy docs](https://search.qdrant.tech/md/documentation/manage-data/multitenancy/?s=calibrate-performance)
-
-- For deployments with fast local storage and relatively low requirements for search throughput, it may be possible to store all components of vector store on disk. Read more about the performance implications of on-disk storage in [the article](https://qdrant.tech/articles/memory-consumption/)
-
-- For low RAM environments, consider `async_scorer` config, which enables support of `io_uring` for parallel disk access, which can significantly improve performance of on-disk storage. Read more about `async_scorer` in [the article](https://qdrant.tech/articles/io_uring/) (only available on Linux with kernel 5.11+)
-
-- Consider storing Sparse Vectors and text payload on disk, as they are usually more disk-friendly than dense vectors.
-- Configure payload indexes to be stored on disk [docs](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=on-disk-payload-index)
-- Configure sparse vectors to be stored on disk [docs](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=sparse-vector-index)
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-performance-optimization/search-speed-optimization/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-performance-optimization/search-speed-optimization/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-performance-optimization/search-speed-optimization/SKILL.md
-- **SHA256_FINGERPRINT**: `0e180f3d56e1e745fd94c3c63f30b9d995c2eb55254df6e4db05530388226409`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.260537+00:00
----
-
-**description**: Diagnoses and fixes slow Qdrant search. Use when someone reports 'search is slow', 'high latency', 'queries take too long', 'low QPS', 'throughput too low', 'filtered search is slow', or 'search was fast but now it's slow'. Also use when search performance degrades after config changes or data growth.
-
-# Diagnose a problem
-
-There the multiple possible reasons for search performance degradation. The most common ones are:
-
-* Memory pressure: if the working set exceeds available RAM
-* Complex requests (e.g. high `hnsw_ef`, complex filters without payload index)
-* Competing background processes (e.g. optimizer still running after bulk upload)
-* Problem with the cluster (e.g. network issues, hardware degradation)
-
-## Single Query Too Slow (Latency)
-
-Use when: individual queries take too long regardless of load.
-
-### Diagnostic steps:
-
-- Check if second run of the same request is significantly faster (indicates memory pressure)
-- Try the same query with `with_payload: false` and `with_vectors: false` to see if payload retrieval is the bottleneck
-- If request uses filters, try to remove them one by one to identify if a specific filter condition is the bottleneck
-
-### Common fixes:
-
-- Tune HNSW parameters: [Fine-tuning search](https://search.qdrant.tech/md/documentation/operations/optimize/?s=fine-tuning-search-parameters)
-- Enable in-memory quantization: [Scalar quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/?s=scalar-quantization)
-- Reduce Vector Dimensionality with Matryoshka Models: [Matryoshka Models](https://search.qdrant.tech/md/documentation/inference/?s=reduce-vector-dimensionality-with-matryoshka-models)
-- Use oversampling + rescore for high-dimensional vectors [Search with quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/?s=searching-with-quantization)
-- Enable io_uring for disk-heavy workloads on Linux [io_uring](https://qdrant.tech/articles/io_uring/)
-
-## Can't Handle Enough QPS (Throughput)
-
-Use when: system can't serve enough queries per second under load.
-
-- Reduce segment count (`default_segment_number` to 2) [Maximizing throughput](https://search.qdrant.tech/md/documentation/operations/optimize/?s=maximizing-throughput)
-- Use batch search API instead of single queries [Batch search](https://search.qdrant.tech/md/documentation/search/search/?s=batch-search-api)
-- Enable quantization to reduce CPU cost [Scalar quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/?s=scalar-quantization)
-- Add replicas to distribute read load [Replication](https://search.qdrant.tech/md/documentation/operations/distributed_deployment/?s=replication)
-
-## Filtered Search Is Slow
-
-Use when: filtered search is significantly slower than unfiltered. Most common SA complaint after memory.
-
-- Create payload index on the filtered field [Payload index](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=payload-index)
-- Use `is_tenant=true` for primary filtering condition: [Tenant index](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=tenant-index)
-- Try ACORN algorithm for complex filters: [ACORN](https://search.qdrant.tech/md/documentation/search/search/?s=acorn-search-algorithm)
-- Avoid using `nested` filtering conditions as a primary filter. It might force qdrant to read raw payload values instead of using index.
-- If payload index was added after HNSW build, trigger re-index to create filterable subgraph links
-
-## Optimize search performance with parallel updates
-
-### Diagnostic steps
-
-- Try to run the same query with `indexed_only=true` parameter, if the query is significantly faster, it means that the optimizer is still running and has not yet indexed all segments.
-- If CPU or IO usage is high even with no queries, it also indicates that the optimizer is still running.
-
-### Recommended configuration changes
-
-- reduce `optimizer_cpu_budget` to reserve more CPU for queries
-- Use `prevent_unoptimized=true` to prevent creating segments with a large amount of unindexed data for searches. Instead, once a segment reaches the so called indexing_threshold, all additional points will be added in ‘deferred state’.
-
-Learn more [here](https://search.qdrant.tech/md/documentation/search/low-latency-search/?s=query-indexed-data-only)
-
-## What NOT to Do
-
-- Set `always_ram=false` on quantization (disk thrashing on every search)
-- Put HNSW on disk for latency-sensitive production (only for cold storage)
-- Increase segment count for throughput (opposite: fewer = better)
-- Create payload indexes on every field (wastes memory)
-- Blame Qdrant before checking optimizer status
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-scaling/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-scaling/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-scaling/SKILL.md
-- **SHA256_FINGERPRINT**: `93e88a704a652399b689154b99b5e4698047c200cb6fc92998c71e22ca9b410e`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.266452+00:00
----
-
-**description**: Guides Qdrant scaling decisions. Use when someone asks 'how many nodes do I need', 'data doesn't fit on one node', 'need more throughput', 'cluster is slow', 'too many tenants', 'vertical or horizontal', 'how to shard', or 'need to add capacity'.
-
-# Qdrant Scaling
-
-First determine what you're scaling for:
-
-- data volume
-- query throughput (QPS)
-- query latency
-- query volume
-
-After determining the scaling goal, we can choose scaling strategy based on tradeoffs and assumptions.
-Each pulls toward different strategies. Scaling for throughput and latency are opposite tuning directions.
-
-## Scaling Data Volume
-
-This becomes relevant when volume of the dataset exceeds the capacity of a single node.
-Read more about scaling for data volume in [Scaling Data Volume](scaling-data-volume/SKILL.md)
-
-## Scaling for Query Throughput
-
-If your system needs to handle more parallel queries than a single node can handle,
- then you need to scale for query throughput.
-
-Read more about scaling for query throughput in [Scaling for Query Throughput](scaling-qps/SKILL.md)
-
-## Scaling for Query Latency
-
-Latency of a single query is determined by the slowest component in the query execution path.
-It is in sometimes correlated with throughput, but not always. It might require different strategies for scaling.
-
-Read more about scaling for query latency in [Scaling for Query Latency](minimize-latency/SKILL.md)
-
-## Scaling for Query Volume
-
-By query volume we understand the amount of results that a single query returns.
-If the query volume is too high, it can cause performance issues and increase latency.
-
-Tuning for query volume is opposite might require special strategies.
-
-Read more about scaling for query volume in [Scaling for Query Volume](scaling-query-volume/SKILL.md)
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-scaling/minimize-latency/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-scaling/minimize-latency/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-scaling/minimize-latency/SKILL.md
-- **SHA256_FINGERPRINT**: `64f00f98bb020ad2a3da46d1fa8e899a1c610b80b15c3d8eef0be70923e2e60d`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.270840+00:00
----
-
-**description**: Guides Qdrant query latency optimization. Use when someone asks 'search is slow', 'how to reduce latency', 'p99 is too high', 'tail latency', 'single query too slow', 'how to make search faster', or 'latency spikes'.
-
-# Scaling for Query Latency
-
-Latency of a single query is determined by the slowest component in the query execution path. It is sometimes correlated with throughput, but not always — throughput and latency are opposite tuning directions.
-
-Low latency optimization is aimed at utilising maximum resource saturation for a single query, while throughput optimization is aimed at minimizing per-query resource usage to allow more parallel queries.
-
-## Performance Tuning for Lower Latency
-
-- Increase segment count to match CPU cores (`default_segment_number: 16`) [Minimizing latency](https://search.qdrant.tech/md/documentation/operations/optimize/?s=minimizing-latency)
-- Keep quantized vectors and HNSW in RAM (`always_ram=true`)
-- Reduce `hnsw_ef` at query time (trade recall for speed) [Search params](https://search.qdrant.tech/md/documentation/operations/optimize/?s=fine-tuning-search-parameters)
-- Use local NVMe, avoid network-attached storage
-
-## Memory Pressure and Latency
-
-RAM is the most critical resource for latency. If working set exceeds available RAM, OS cache eviction causes severe, sustained latency degradation.
-
-- Vertical scale RAM first. Critical if working set >80%.
-- Use quantization: scalar (4x reduction) or binary (16x reduction) [Quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/)
-- Move payload indexes to disk if filtering is infrequent [On-disk payload index](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=on-disk-payload-index)
-- Set `optimizer_cpu_budget` to limit background optimization CPUs
-- Schedule indexing: set high `indexing_threshold` during peak hours
-
-## Vertical Scaling for Latency
-
-More RAM and faster CPU directly reduce latency. See [Vertical Scaling](../scaling-data-volume/vertical-scaling/SKILL.md) for node sizing guidelines.
-
-## What NOT to Do
-
-- Do not expect to optimize latency and throughput simultaneously on the same node
-- Do not use few large segments for latency-sensitive workloads (each segment takes longer to search)
-- Do not run at >90% RAM (cache eviction causes severe latency degradation that can last days)
-- Do not ignore optimizer status during performance debugging
-- Do not scale down RAM without load testing (cache eviction causes days-long latency incidents)
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-scaling/scaling-data-volume/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-scaling/scaling-data-volume/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-scaling/scaling-data-volume/SKILL.md
-- **SHA256_FINGERPRINT**: `0f03d3b945e0b7506f75e83f80b84febe253c6df8d4b0c997a86666ef178e71d`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.373868+00:00
----
-
-**description**: Guides Qdrant data volume scaling decisions. Use when someone asks 'data doesn't fit on one node', 'too much data', 'need more storage', 'vertical or horizontal scaling', 'tenant scaling', 'time window rotation', or 'data growth exceeds capacity'.
-
-# Scaling Data Volume
-
-This document covers data volume scaling scenarios,
-where the total size of the dataset exceeds the capacity of a single node.
-
-## Tenant Scaling
-
-If the use case is multi-tenant, meaning that each user only has access to a subset of the data,
-and we never need to query across all the data, then we can use multi-tenancy patterns to scale.
-
-The recommended way is to use multi-tenant workloads with payload partitioning, per-tenant indexes, and tiered multitenancy.
-
-Learn more [Tenant Scaling](tenant-scaling/SKILL.md)
-
-## Sliding Time Window
-
-Some use-cases are based on a sliding time window, where only the most recent data is relevant.
-For example an index for social media posts, where only the last 6 months of data require fast search.
-
-Learn more [Sliding Time Window](sliding-time-window/SKILL.md)
-
-## Global Search
-
-Most general use-cases require global search across all data.
-In these situations, we might need to fall back to vertical scaling,
-and then horizontal scaling when we reach the limits of vertical scaling.
-
-### Vertical Scaling
-
-When data doesn't fit in a single node, the first approach is to scale the node itself — more RAM, better disk, quantization, mmap.
-Exhaust vertical options before going horizontal, as horizontal scaling adds permanent operational complexity.
-
-Learn more [Vertical Scaling](vertical-scaling/SKILL.md)
-
-### Horizontal Scaling
-
-When a single node can't hold the data even with quantization and mmap, distribute data across multiple nodes via sharding.
-
-Learn more [Horizontal Scaling](horizontal-scaling/SKILL.md)
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-scaling/scaling-data-volume/horizontal-scaling/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-scaling/scaling-data-volume/horizontal-scaling/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-scaling/scaling-data-volume/horizontal-scaling/SKILL.md
-- **SHA256_FINGERPRINT**: `4f54f1c282e92ffe574a76612e60cb8ba5d16c54cf39cb3261b5be966058eff0`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.381338+00:00
----
-
-**description**: Diagnoses and guides Qdrant horizontal scaling decisions. Use when someone asks 'vertical or horizontal?', 'how many nodes?', 'how many shards?', 'how to add nodes', 'resharding', 'data doesn't fit', or 'need more capacity'. Also use when data growth outpaces current deployment.
-
-# What to Do When Qdrant Needs More Capacity
-
-Vertical first: simpler operations, no network overhead, good up to ~100M vectors per node depending on dimensions and quantization. Horizontal when: data exceeds single node capacity, need fault tolerance, need to isolate tenants, or IOPS-bound (more nodes = more independent IOPS).
-
-## Most basic distributed configuration
-
-- 3 nodes, 3 shards with `replication_factor: 2` for zero-downtime scaling
-
-Minimum of 3 nodes is important for consensus and fault tolerance. With 3 nodes, you can lose 1 node without downtime. With 2 nodes, losing 1 node causes downtime for collection operations.
-Replication factor of 2 means each shard has 1 replica, so you have 2 copies of data. This allows for zero-downtime scaling and maintenance. With `replication_factor: 1`, zero-downtime is not guaranteed even for point-level operations, and cluster maintenance requires downtime.
-
-## Choosing number of shards
-
-Shards are the unit of data distribution.
-More shards allows more nodes and better distribution, but adds overhead. Fewer shards reduces overhead but limits horizontal scaling.
-
-For cluster of 3-6 nodes the recommended shard count is 6-12.
-This allows for 2-4 shards per node, which balances distribution and overhead.
-
-## Changing number of shards
-
-Use when: shard count isn't evenly divisible by node count, causing uneven distribution, or need to rebalance.
-
-Resharding is expensive and time-consuming, it should be used as a last resort if regular data distribution is not possible.
-Resharding is designed to be transparent for user operations, updates and searches should still work during resharding with some small performance impact.
-
-But resharding operation itself is time-consuming and requires to move large amounts of data between nodes.
-
-- Available in Qdrant Cloud [Resharding](https://search.qdrant.tech/md/documentation/operations/distributed_deployment/?s=resharding)
-- Resharding is not available for self-hosted deployments.
-
-Better alternatives: over-provision shards initially, or spin up new cluster with correct config and migrate data.
-
-## What NOT to Do
-
-- Do not jump to horizontal before exhausting vertical (adds complexity for no gain)
-- Do not set `shard_number` that isn't a multiple of node count (uneven distribution)
-- Do not use `replication_factor: 1` in production if you need fault tolerance
-- Do not add nodes without rebalancing shards (use shard move API to redistribute)
-- Do not scale down RAM without load testing (cache eviction causes days-long latency incidents)
-- Do not hit the collection limit by using one collection per tenant (use payload partitioning)
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-scaling/scaling-data-volume/sliding-time-window/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-scaling/scaling-data-volume/sliding-time-window/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-scaling/scaling-data-volume/sliding-time-window/SKILL.md
-- **SHA256_FINGERPRINT**: `2d8e65f75743a2533f61ee63b542b075c95c5b00f253629fe3249c9023db0cf3`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.431097+00:00
----
-
-**description**: Guides sliding time window scaling in Qdrant. Use when someone asks 'only recent data matters', 'how to expire old vectors', 'time-based data rotation', 'delete old data efficiently', 'social media feed search', 'news search', 'log search with retention', or 'how to keep only last N months of data'.
-
-# Scaling with a Sliding Time Window
-
-Use when only recent data needs fast search -- social media posts, news articles, support tickets, logs, job listings. Old data either becomes irrelevant or can tolerate slower access.
-
-Three strategies: **shard rotation** (recommended), **collection rotation** (when per-period config differs), and **filter-and-delete** (simplest, for continuous cleanup).
-
-## Shard Rotation (Recommended)
-
-Use when: data has natural time boundaries (daily, weekly, monthly). Preferred because queries span all time periods in one request without application-level fan-out. [User-defined sharding](https://search.qdrant.tech/md/documentation/operations/distributed_deployment/?s=user-defined-sharding)
-
-1. Create a collection with user-defined sharding enabled
-2. Create one shard key per time period (e.g., `2025-01`, `2025-02`, ..., `2025-06`)
-3. Ingest data into the current period's shard key
-4. When a new period starts, create a new shard key and redirect writes
-5. Delete the oldest shard key outside the retention window
-
-- Deleting a shard key reclaims all resources instantly (no fragmentation, no optimizer overhead)
-- Pre-create the next period's shard key before rotation to avoid write disruption
-- Use `shard_key_selector` at query time to search only specific periods for efficiency
-- Shard keys can be placed on specific nodes for hot/cold tiering
-
-## Collection Rotation (Alias Swap)
-
-Use when: you need per-period collection configuration (e.g., different quantization or storage settings). [Collection aliases](https://search.qdrant.tech/md/documentation/manage-data/collections/?s=collection-aliases)
-
-1. Create one collection per time period, point a write alias at the newest
-2. Query across all active collections in parallel, merge results client-side
-3. When a new period starts, create the new collection and swap the write alias [Switch collection](https://search.qdrant.tech/md/documentation/manage-data/collections/?s=switch-collection)
-4. Drop the oldest collection outside the window
-
-Trade-off vs shard rotation: allows per-collection config differences, but requires application-level fan-out and more operational overhead.
-
-## Filter-and-Delete
-
-Use when: data arrives continuously without clear time boundaries, or you want the simplest setup.
-
-1. Store a `timestamp` payload on every point, create a payload index on it [Payload index](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=payload-index)
-2. Filter to the desired window at query time using `range` condition [Range filter](https://search.qdrant.tech/md/documentation/search/filtering/?s=range)
-3. Periodically delete expired points using delete-by-filter [Delete points](https://search.qdrant.tech/md/documentation/manage-data/points/?s=delete-points)
-
-- Run cleanup during off-peak hours in batches (10k-50k points) to avoid optimizer locks
-- Deletes are not free: tombstoned points degrade search until optimizer compacts segments
-- Does not reclaim disk instantly (compaction is asynchronous)
-
-## Hot/Cold Tiers
-
-Use when: recent data needs fast in-RAM search, older data should remain searchable at lower performance.
-
-- **Shard rotation:** place current shard key on fast-storage nodes, move older shard keys to cheaper nodes via shard placement. All queries still go through a single collection.
-- **Collection rotation:** keep current collection in RAM (`always_ram: true`), move older collections to mmap/on-disk vectors. [Quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/)
-
-## What NOT to Do
-
-- Do not use filter-and-delete for high-volume time-series with millions of daily deletes (use rotation instead)
-- Do not forget to index the timestamp field (range filters without an index cause full scans)
-- Do not use collection rotation when shard rotation would suffice (unnecessary fan-out complexity)
-- Do not drop a shard key or collection before verifying its period is fully outside the retention window
-- Do not skip pre-creating the next period's shard key or collection (write failures during rotation are hard to recover)
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-scaling/scaling-data-volume/tenant-scaling/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-scaling/scaling-data-volume/tenant-scaling/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-scaling/scaling-data-volume/tenant-scaling/SKILL.md
-- **SHA256_FINGERPRINT**: `9209a698f1cff13b7693822fae9ca091a2fc8e171c638d454ae627d8469b71d4`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.328866+00:00
----
-
-**description**: Guides Qdrant multi-tenant scaling. Use when someone asks 'how to scale tenants', 'one collection per tenant?', 'tenant isolation', 'dedicated shards', or reports tenant performance issues. Also use when multi-tenant workloads outgrow shared infrastructure.
-
-# What to Do When Scaling Multi-Tenant Qdrant
-
-Do not create one collection per tenant. Does not scale past a few hundred and wastes resources. One company hit the 1000 collection limit after a year of collection-per-repo and had to migrate to payload partitioning. Use a shared collection with a tenant key.
-
-- Understand multitenancy patterns [Multitenancy](https://search.qdrant.tech/md/documentation/manage-data/multitenancy/)
-
-Here is a short summary of the patterns:
-
-## Number of Tenants is around 10k
-
-Use the default multitenancy strategy via payload filtering.
-
-Read about [Partition by payload](https://search.qdrant.tech/md/documentation/manage-data/multitenancy/?s=partition-by-payload) and [Calibrate performance](https://search.qdrant.tech/md/documentation/manage-data/multitenancy/?s=calibrate-performance) for best practices on indexing and query performance.
-
-## Number of Tenants is around 100k and more
-
-At this scale, the cluster may consist of several peers.
-To localize tenant data and improve performance, use [custom sharding](https://search.qdrant.tech/md/documentation/operations/distributed_deployment/?s=user-defined-sharding) to assign tenants to specific shards based on tenant ID hash.
-This will localize tenant requests to specific nodes instead of broadcasting them to all nodes, improving performance and reducing load on each node.
-
-## If tenants are unevenly sized
-
-If some tenants are much larger than others, use [tiered multitenancy](https://search.qdrant.tech/md/documentation/manage-data/multitenancy/?s=tiered-multitenancy) to promote large tenants to dedicated shards while keeping small tenants on shared shards. This optimizes resource allocation and performance for tenants of varying sizes.
-
-## Need Strict Tenant Isolation
-
-Use when: legal/compliance requirements demand per-tenant encryption or strict isolation beyond what payload filtering provides.
-
-- Multiple collections may be necessary for per-tenant encryption keys
-- Limit collection count and use payload filtering within each collection
-- This is the exception, not the default. Only use when compliance requires it.
-
-## What NOT to Do
-
-- Do not create one collection per tenant without compliance justification (does not scale past hundreds)
-- Do not skip `is_tenant=true` on the tenant index (kills sequential read performance)
-- Do not build global HNSW for multi-tenant collections (wasteful, use `payload_m` instead)
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-scaling/scaling-data-volume/vertical-scaling/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-scaling/scaling-data-volume/vertical-scaling/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-scaling/scaling-data-volume/vertical-scaling/SKILL.md
-- **SHA256_FINGERPRINT**: `0b976e1ea39aa47862f4dc447d9b8bb29155646afd4c496a922fbc5120f3a0bc`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.457706+00:00
----
-
-**description**: Guides Qdrant vertical scaling decisions. Use when someone asks 'how to scale up a node', 'need more RAM', 'upgrade node size', 'vertical scaling', 'resize cluster', 'scale up vs scale out', or when memory/CPU is insufficient on current nodes. Also use when someone wants to avoid the complexity of horizontal scaling.
-
-# What to Do When Qdrant Needs to Scale Vertically
-
-Vertical scaling means increasing CPU, RAM, or disk on existing nodes rather than adding more nodes. This is the recommended first step before considering horizontal scaling. Vertical scaling is simpler, avoids distributed system complexity, and is reversible.
-
-- Vertical scaling for Qdrant Cloud is done through the [Qdrant Cloud Console](https://cloud.qdrant.io/)
-- For self-hosted deployments, resize the underlying VM or container resources
-
-## When to Scale Vertically
-
-Use when: current node resources (RAM, CPU, disk) are insufficient, but the workload doesn't yet require distribution.
-
-- RAM usage approaching 80% of available memory (OS page cache eviction starts, severe performance degradation)
-- CPU saturation during query serving or indexing
-- Disk space running low for on-disk vectors and payloads
-- A single node can handle up to ~100M vectors depending on dimensions and quantization
-- For non-production workloads, which are tolerant to single-point-of-failure and don't require high availability
-
-## How to Scale Vertically in Qdrant Cloud
-
-Vertical scaling is managed through the Qdrant Cloud Console.
-
-- Log into [Qdrant Cloud Console](https://cloud.qdrant.io/) or use [CLI tool](https://github.com/qdrant/qcloud-cli)
-- Select the cluster to resize
-- Choose a larger node configuration (more RAM, CPU, or both)
-- The upgrade process involves a rolling restart with no downtime if replication is configured
-- Ensure `replication_factor: 2` or higher before resizing to maintain availability during the rolling restart
-
-**Important:** Scaling up is straightforward. Scaling down requires care -- if the working set no longer fits in RAM after downsizing, performance will degrade severely due to cache eviction. Always load test before scaling down.
-
-## RAM Sizing Guidelines
-
-RAM is the most critical resource for Qdrant performance. Use these guidelines to right-size.
-
-- Exact estimation of RAM usage is difficult; use this simple approximate formula: `num_vectors * dimensions * 4 bytes * 1.5` for full-precision vectors in RAM
-- With scalar quantization: divide by 4 (INT8 reduces each float32 to 1 byte) [Quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/)
-- With binary quantization: divide by 32 [Binary quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/?s=binary-quantization)
-- Add overhead for HNSW index (~20-30% of vector data), payload indexes, and WAL
-- Reserve 20% headroom for optimizer operations and OS cache
-- Monitor actual usage via Grafana/Prometheus before and after resizing [Monitoring](../../../qdrant-monitoring/SKILL.md)
-
-## When Vertical Scaling Is No Longer Enough
-
-Recognize these signals that it's time to go horizontal:
-
-- Data volume exceeds what a single node can hold even with quantization and mmap
-- IOPS are saturated (more nodes = more independent disk I/O)
-- Need fault tolerance (requires replication across nodes)
-- Need tenant isolation via dedicated shards
-- Single-node CPU is maxed and query latency is unacceptable
-- Next vertical scaling step is the largest available node size. You might need to be able to temporarily scale up to the larger node size to do batch operations or recovery. If you are already at the largest node size, you won't be able to do that.
-
-When you hit these limits, see [Horizontal Scaling](../horizontal-scaling/SKILL.md) for guidance on sharding and node planning.
-
-## What NOT to Do
-
-- Do not scale down RAM without load testing first (cache eviction = severe latency degradation that can last days)
-- Do not ignore the 80% RAM threshold (performance cliff, not gradual degradation)
-- Do not skip replication before resizing in Cloud (rolling restart without replicas = downtime)
-- Do not jump to horizontal scaling before exhausting vertical options (adds permanent operational complexity)
-- Do not assume more CPU always helps (IOPS-bound workloads won't improve with more cores)
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-scaling/scaling-qps/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-scaling/scaling-qps/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-scaling/scaling-qps/SKILL.md
-- **SHA256_FINGERPRINT**: `1da1b9761fb7610567e82cf06c8ed343452beab16f0c7daee7805219ac566439`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.567748+00:00
----
-
-**description**: Guides Qdrant query throughput (QPS) scaling. Use when someone asks 'how to increase QPS', 'need more throughput', 'queries per second too low', 'batch search', 'read replicas', or 'how to handle more concurrent queries'.
-
-# Scaling for Query Throughput (QPS)
-
-Throughput scaling means handling more parallel queries per second.
-This is different from latency - throughput and latency are opposite tuning directions and cannot be optimized simultaneously on the same node.
-
-High throughput favors fewer, larger segments so each query touches less overhead.
-
-## Performance Tuning for Higher RPS
-
-- Use fewer, larger segments (`default_segment_number: 2`) [Maximizing throughput](https://search.qdrant.tech/md/documentation/operations/optimize/?s=maximizing-throughput)
-- Enable quantization with `always_ram=true` to reduce disk IO [Quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/)
-- Use batch search API to amortize overhead [Batch search](https://search.qdrant.tech/md/documentation/search/search/?s=batch-search-api)
-
-## Minimize impact of Update Workloads
-
-- Configure update throughput control (v1.17+) to prevent unoptimized searches degrading reads [Low latency search](https://search.qdrant.tech/md/documentation/search/low-latency-search/)
-- Set `optimizer_cpu_budget` to limit indexing CPUs (e.g. `2` on an 8-CPU node reserves 6 for queries)
-- Configure delayed read fan-out (v1.17+) for tail latency [Delayed fan-outs](https://search.qdrant.tech/md/documentation/search/low-latency-search/?s=use-delayed-fan-outs)
-
-## Horizontal Scaling for Throughput
-
-If a single node is saturated on CPU after applying the tuning above, scale horizontally with read replicas.
-
-- Shard replicas serve queries from replicated shards, distributing read load across nodes
-- Each replica adds independent query capacity without re-sharding
-- Use `replication_factor: 2+` and route reads to replicas [Distributed deployment](https://search.qdrant.tech/md/documentation/operations/distributed_deployment/?s=replication)
-
-See also [Horizontal Scaling](../scaling-data-volume/horizontal-scaling/SKILL.md) for general horizontal scaling guidance.
-
-## Disk I/O Bottlenecks
-
-If it is not possible to keep all vectors in RAM, disk I/O can become the bottleneck for throughput.
-In this case:
-
-- Upgrade to provisioned IOPS or local NVMe first. See impact of disk performance to vector search in [Disk performance article](https://qdrant.tech/articles/memory-consumption/)
-- Use `io_uring` on Linux (kernel 5.11+) [io_uring article](https://qdrant.tech/articles/io_uring/)
-- In case of quantized vectors, prefer global rescoring over per-segment rescoring to reduce disk reads. Example in the [tutorial](https://search.qdrant.tech/md/documentation/tutorials-operations/large-scale-search/?s=search-query)
-- Configure higher number of search threads to parallelize disk reads. Default is `cpu_count - 1`, which is optimal for RAM-based search but may be too low for disk-based search. See [configuration reference](https://search.qdrant.tech/md/documentation/operations/configuration/?s=configuration-options)
-- If still saturated, scale out horizontally (each node adds independent IOPS)
-
-## What NOT to Do
-
-- Do not expect to optimize throughput and latency simultaneously on the same node
-- Do not use many small segments for throughput workloads (increases per-query overhead)
-- Do not scale horizontally when IOPS-bound without also upgrading disk tier
-- Do not run at >90% RAM (OS cache eviction = severe performance degradation)
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-scaling/scaling-query-volume/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-scaling/scaling-query-volume/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-scaling/scaling-query-volume/SKILL.md
-- **SHA256_FINGERPRINT**: `296eecc4cbfe24fd8190fc1c9e2f9cf510a5f7efa1a76404f968690d1de68c5e`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.471322+00:00
----
-
-**description**: Guides Qdrant query volume scaling. Use when someone asks 'query returns too many results', 'scroll performance', 'large limit values', 'paginating search results', 'fetching many vectors', or 'high cardinality results'.
-
-# Scaling for Query Volume
-
-Problem: When a query has a large limit (e.g. 1000) and there are multiple shards (e.g. 10), naively each shard must return the full 1000 results — totaling 10,000 scored points transferred and merged. This is wasteful since data is randomly distributed across auto-shards.
-
-## Core idea
-
-Instead of asking every shard for the full limit, ask each shard for a smaller limit computed via Poisson distribution statistics, then merge. This is safe because auto-sharding guarantees random, independent data distribution.
-
-## When it activates
-
-- More than 1 shard
-- Auto-sharding is in use (all queried shards share the same shard key)
-- The request's limit + offset >= SHARD_QUERY_SUBSAMPLING_LIMIT (128)
-- The query is not exact
-
-## Key tradeoff
-
- The strategy trades a small probability of slightly incomplete results for a large reduction in inter-shard data transfer, especially for high-limit queries across many shards. The 1.2x safety factor and the 99.9% Poisson threshold keep the error rate very low — comparable to inaccuracies already introduced by approximate vector indices like HNSW.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-search-quality/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-search-quality/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-search-quality/SKILL.md
-- **SHA256_FINGERPRINT**: `8354b70f0d4844bc9be88bd7ca3fc5bd568aca3cd5e6d8f16cc6f1dcb17894f0`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.581023+00:00
----
-
-**description**: Diagnoses and improves Qdrant search relevance. Use when someone reports 'search results are bad', 'wrong results', 'low precision', 'low recall', 'irrelevant matches', 'missing expected results', or asks 'how to improve search quality?', 'which embedding model?', 'should I use hybrid search?', 'should I use reranking?'. Also use when search quality degrades after quantization, model change, or data growth.
-
-# Qdrant Search Quality
-
-First determine whether the problem is the embedding model, Qdrant configuration, or the query strategy. Most quality issues come from the model or data, not from Qdrant itself. If search quality is low, inspect how chunks are being passed to Qdrant before tuning any parameters. Splitting mid-sentence can drop quality 30-40%.
-
-- Start by testing with exact search to isolate the problem [Search API](https://search.qdrant.tech/md/documentation/search/search/?s=search-api)
-
-## Diagnosis and Tuning
-
-Isolate the source of quality issues, tune HNSW parameters, and choose the right embedding model. [Diagnosis and Tuning](diagnosis/SKILL.md)
-
-## Search Strategies
-
-Hybrid search, reranking, relevance feedback, and exploration APIs for improving result quality. [Search Strategies](search-strategies/SKILL.md)
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-search-quality/diagnosis/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-search-quality/diagnosis/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-search-quality/diagnosis/SKILL.md
-- **SHA256_FINGERPRINT**: `e79a5466a4d313c69e901e45ace0e433946f82b6cc1b0f928872db2f735bf969`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.648237+00:00
----
-
-**description**: Diagnoses Qdrant search quality issues. Use when someone reports 'results are bad', 'wrong results', 'not relevant results', 'missing matches', 'recall is low', 'approximate search worse than exact', 'which embedding model', or 'quality dropped after quantization'. Also use when search quality degrades without obvious changes.
-
-# How to Diagnose Bad Search Quality
-
-Before tuning, establish baselines. Use exact KNN as ground truth, compare against approximate HNSW. Target >95% recall@K for production.
-
-## Don't Know What's Wrong Yet
-
-Use when: results are irrelevant or missing expected matches and you need to isolate the cause.
-
-- Test with `exact=true` to bypass HNSW approximation [Search API](https://search.qdrant.tech/md/documentation/tutorials-search-engineering/retrieval-quality/?s=standard-mode-vs-exact-search)
-- Exact search bad = model or search pipeline problem. Exact good, approximate bad = tune HNSW.
-- Check if quantization degrades quality (compare with and without)
-- Check if filters are too restrictive (then you might need to use ACORN)
-- If duplicate results from chunked documents, use Grouping API to deduplicate [Grouping](https://search.qdrant.tech/md/documentation/search/search/?s=grouping-api)
-
-Payload filtering and sparse vector search are different things. Metadata (dates, categories, tags) goes in payload for filtering. Text content goes in sparse vectors for search.
-
-## Approximate Search Worse Than Exact
-
-Use when: exact search returns good results but HNSW approximation misses them.
-
-- Increase `hnsw_ef` at query time [Search params](https://search.qdrant.tech/md/documentation/operations/optimize/?s=fine-tuning-search-parameters)
-- Increase `ef_construct` (200+ for high quality) [HNSW config](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=vector-index)
-- Increase `m` (16 default, 32 for high recall) [HNSW config](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=vector-index)
-- Enable oversampling + rescore with quantization [Search with quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/?s=searching-with-quantization)
-- ACORN for filtered queries (v1.16+) [ACORN](https://search.qdrant.tech/md/documentation/search/search/?s=acorn-search-algorithm)
-
-Binary quantization requires rescore. Without it, quality loss is severe. Use oversampling (3-5x minimum for binary) to recover recall. Always test quantization impact on your data before production. [Quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/)
-
-## Wrong Embedding Model
-
-Use when: exact search also returns bad results.
-
-Test top 3 MTEB models on 100-1000 sample queries, measure recall@10. Domain-specific models often outperform general models. [Hosted inference](https://search.qdrant.tech/md/documentation/inference/)
-
-## Unoptimized Search Pipeline
-
-Use when: exact search also returns bad results and model choice is confirmed by user.
-
-Optimize search according to advanced search-strategies skill.
-
-## What NOT to Do
-
-- Tune Qdrant before verifying the model is right for the task (most quality issues are model issues)
-- Use binary quantization without rescore (severe quality loss)
-- Set `hnsw_ef` lower than results requested (guaranteed bad recall)
-- Skip payload indexes on filtered fields then blame quality (HNSW can't traverse filtered-out nodes, and filterable HNSW is built only if payload indexes were set up prior)
-- Deploy without baseline recall or other search relevance metrics (no way to measure regressions)
-- Confuse payload filtering with sparse vector search (different things, different config)
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-search-quality/search-strategies/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-search-quality/search-strategies/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-search-quality/search-strategies/SKILL.md
-- **SHA256_FINGERPRINT**: `5dc95a1d2cd56d505ef5c3b54cbc82c712293531466fa1dce1df799485ec2a9c`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.690894+00:00
----
-
-**description**: Guides Qdrant search strategy selection. Use when someone asks 'should I use hybrid search?', 'BM25 or sparse vectors?', 'how to rerank?', 'results are not relevant', 'I don't get needed results from my dataset but they're there', 'retrieval quality is not good enough', 'results too similar', 'need diversity', 'MMR', 'relevance feedback', 'recommendation API', 'discovery API', 'ColBERT reranking', or 'missing keyword matches
-
-# How to Improve Search Results with Advanced Strategies
-
-These strategies complement basic vector search. Use them after confirming the embedding model is fitting the task and HNSW config is correct. If exact search returns bad results, verify the selection of the embedding model (retriever) first.
-If the user wants to use a weaker embedding model because it is small, fast, and cheap, use reranking or relevance feedback to improve search quality.
-
-## Missing Obvious Keyword Matches
-
-Use when: pure vector search misses results that contain obvious keyword matches. Domain terminology not in embedding training data, exact keyword matching critical (brand names, SKUs), acronyms common. Skip when: pure semantic queries, all data in training set, latency budget very tight.
-
-- Dense + sparse with `prefetch` and fusion [Hybrid search](https://search.qdrant.tech/md/documentation/search/hybrid-queries/?s=hybrid-search)
-- Prefer learned sparse ([miniCOIL](https://search.qdrant.tech/md/documentation/fastembed/fastembed-minicoil/), SPLADE, GTE) over raw BM25 if applicable (when user needs smart keywords matching and learned sparse models know the vocabulary of the domain)
-- For non-English languages, [configure sparse BM25 parameters accordingly](https://search.qdrant.tech/md/documentation/search/text-search/?s=language-specific-settings)
-- RRF: good default, supports weighted (v1.17+) [RRF](https://search.qdrant.tech/md/documentation/search/hybrid-queries/?s=reciprocal-rank-fusion-rrf)
-- DBSF with asymmetric limits (sparse_limit=250, dense_limit=100) can outperform RRF for technical docs [DBSF](https://search.qdrant.tech/md/documentation/search/hybrid-queries/?s=distribution-based-score-fusion-dbsf)
-- Fusion can also be done through reranking
-
-## Right Documents Found But Wrong Order
-
-Use when: good recall but poor precision (right docs in top-100, not top-10).
-
-- Cross-encoder rerankers via FastEmbed [Rerankers](https://search.qdrant.tech/md/documentation/fastembed/fastembed-rerankers/)
-- See how to use [Multistage queries](https://search.qdrant.tech/md/documentation/search/hybrid-queries/?s=multi-stage-queries) in Qdrant
-- ColBERT and ColPali/ColQwen reranking is especially precise due to late interaction mechanisms, but it is heavy. It is important to configure and store multivectors without building HNSW for them to save resources. See [Multivector representation](https://search.qdrant.tech/md/documentation/tutorials-search-engineering/using-multivector-representations/)
-
-## Right Documents Not Found But They Are There
-
-Use when: basic retrieval is in place but the retriever misses relevant items you know exist in the dataset. Works on any embeddable data (text, images, etc.).
-
-Relevance Feedback (RF) Query uses a feedback model's scores on retrieved results to steer the retriever through the full vector space on subsequent iterations, like reranking the entire collection through the retriever. Complementary to reranking: a reranker sees a limited subset, RF leverages feedback signals collection-wide. Even 3–5 feedback scores are enough. Can run multiple iterations.
-
-A feedback model is anything producing a relevance score per document: a bi-encoder, cross-encoder, late-interaction model, LLM-as-judge. Fuzzy relevance scores work, not just binary (good/bad, relevant/irrelevant), due to the fact that feedback is expressed as a graded relevance score (higher = more relevant).
-
-Skip when: if the retriever already has strong recall, or if retriever and feedback model strongly agree on relevance.
-
-- RF Query is currently based on a [3-parameter naive formula](https://search.qdrant.tech/md/documentation/search/search-relevance/?s=naive-strategy) with no universal defaults, so it must be tuned per dataset, retriever, and feedback model
-- Use [qdrant-relevance-feedback](https://pypi.org/project/qdrant-relevance-feedback/) to tune parameters, evaluate impact with Evaluator, and check retriever-feedback agreement. See README for setup instructions. No GPUs are needed, and the framework also provides predefined retriever and feedback model options.
-- Check the configuration of the [Relevance Feedback Query API](https://search.qdrant.tech/md/documentation/search/search-relevance/?s=relevance-feedback)
-- Use this as a helper end-to-end text retrieval example with parameter tuning and evals to understand how to use the API and run the `qdrant-relevance-feedback` framework: [RF tutorial](https://search.qdrant.tech/md/documentation/tutorials-search-engineering/using-relevance-feedback/)
-
-## Results Too Similar
-
-Use when: top results are redundant, near-duplicates, or lack diversity. Common in dense content domains (academic papers, product catalogs).
-
-- Use MMR (v1.15+) as a query parameter with `diversity` to balance relevance and diversity [MMR](https://search.qdrant.tech/md/documentation/search/search-relevance/?s=maximal-marginal-relevance-mmr)
-- Start with `diversity=0.5`, lower for more precision, higher for more exploration
-- MMR is slower than standard search. Only use when redundancy is an actual problem.
-
-## Know What Good Results Could Look Like But Can't Get Them
-
-Use when: you can provide positive and negative example points to steer search closer to positive and further from negative.
-
-- Recommendation API: positive/negative examples to recommend fitting vectors [Recommendation API](https://search.qdrant.tech/md/documentation/search/explore/?s=recommendation-api)
-  - Best score strategy: better for diverse examples, supports negative-only [Best score](https://search.qdrant.tech/md/documentation/search/explore/?s=best-score-strategy)
-- Discovery API: context pairs (positive/negative) to constrain search regions without a request target [Discovery](https://search.qdrant.tech/md/documentation/search/explore/?s=discovery-api)
-
-## Have Business Logic Behind Relevance
-Use when: results should be additionally ranked according to some business logic based on data, like recency or distance.
-
-Check how to set up in [Score Boosting docs](https://search.qdrant.tech/md/documentation/search/search-relevance/?s=score-boosting)
-
-## What NOT to Do
-
-- Use hybrid search before verifying pure vector quality (adds complexity, may mask model issues)
-- Use BM25 on non-English text without correctly configuring language-specific stop-word removal (severely degraded results)
-- Skip evaluation when adding relevance feedback (it's good to check on real queries that it actually could help)
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-version-upgrade/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-version-upgrade/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-version-upgrade/SKILL.md
-- **SHA256_FINGERPRINT**: `0338702f2b64fcdd2a017f1526c7d2db2c646189c9ba520e5dd04bf0d269c471`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.711769+00:00
----
-
-**description**: Guidance on how to upgrade your Qdrant version without interrupting the availability of your application and ensuring data integrity.
-
-# Qdrant Version Upgrade
-
-Qdrant has the following guarantees about version compatibility:
-
-- Major and minor versions of Qdrant and SDK are expected to match. For example, Qdrant 1.17.x is compatible with SDK 1.17.x.
-
-- Qdrant is tested for backward compatibility between minor versions. For example, Qdrant 1.17.x should be compatible with SDK 1.16.x. Qdrant server 1.16.x is also expected to be compatible with SDK 1.17.x, but only for the subset of features that were available in 1.16.x.
-
-- For migration to the next minor version, it is recommended to first upgrade the SDK to the next minor version and then upgrade the Qdrant server.
-
-- Storage compatibility is only guaranteed for one minor version. For example, data stored with Qdrant 1.16.x is expected to be compatible with Qdrant 1.17.x. If you need to migrate more than one minor version, it is required do the upgrade step by step, one minor version at a time. For example, to migrate from 1.15.x to 1.17.x, you need to first upgrade to 1.16.x and then to 1.17.x. Note: Qdrant Cloud automates this process, so you can directly upgrade from 1.15.x to 1.17.x without intermediate steps.
-
-- A Qdrant cluster with a replication factor of 2 or higher can be upgraded without downtime by performing a rolling upgrade. This means that you can upgrade one node at a time while the other nodes continue to serve requests. This allows you to maintain availability of your application during the upgrade process. More about replication factor: [Replication factor](https://search.qdrant.tech/md/documentation/operations/distributed_deployment/?s=replication-factor)
-
-For managing Qdrant version upgrades in Qdrant Cloud, you can use the [qcloud](https://github.com/qdrant/qcloud-cli) CLI tool.

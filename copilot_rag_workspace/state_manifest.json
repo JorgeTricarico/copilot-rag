@@ -1,7 +1,7 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-01T05:12:42.422053+00:00",
-  "total_documents": 2007,
+  "last_sync_utc": "2026-11-02T05:12:42.963388+00:00",
+  "total_documents": 2067,
   "documents": {
     "anthropics_skills::README.md": {
       "doc_id": "anthropics_skills::README.md",
@@ -2951,6 +2951,17 @@
       "last_updated_utc": "2026-10-21T03:45:03.253011+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_one-shot-feature-issue-planner.agent.md"
     },
+    "github_awesome-copilot::agents/openapi-to-application-java-spring-boot.agent.md": {
+      "doc_id": "github_awesome-copilot::agents/openapi-to-application-java-spring-boot.agent.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/openapi-to-application-java-spring-boot.agent.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/openapi-to-application-java-spring-boot.agent.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "d73b2fad3e7e3fbebf2fd6bda9fde89bb36fc1bb",
+      "content_sha256": "59a645c839f9a4b7b35e9f675e17a131dc94213125eecc8aa269279b57f0d6ec",
+      "word_count": 537,
+      "last_updated_utc": "2026-11-02T05:12:37.165802+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__agents_openapi-to-application-java-spring-boot.agent.md"
+    },
     "github_awesome-copilot::agents/openapi-to-application.agent.md": {
       "doc_id": "github_awesome-copilot::agents/openapi-to-application.agent.md",
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/openapi-to-application.agent.md",
@@ -4216,6 +4227,17 @@
       "last_updated_utc": "2026-10-21T03:45:07.120192+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__instructions_blazor.instructions.md"
     },
+    "github_awesome-copilot::instructions/bulma-v1.instructions.md": {
+      "doc_id": "github_awesome-copilot::instructions/bulma-v1.instructions.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/bulma-v1.instructions.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/instructions/bulma-v1.instructions.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "1a8d4167d4fd078a48892e452a18660a0c27921d",
+      "content_sha256": "4d35f7554ce28293cd737288164136ab497085614acd5c7be6d8807059a27831",
+      "word_count": 825,
+      "last_updated_utc": "2026-11-02T05:12:37.158013+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__instructions_bulma-v1.instructions.md"
+    },
     "github_awesome-copilot::instructions/caveman-mode.instructions.md": {
       "doc_id": "github_awesome-copilot::instructions/caveman-mode.instructions.md",
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/caveman-mode.instructions.md",
@@ -4364,10 +4386,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/copilot-sdk-csharp.instructions.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/instructions/copilot-sdk-csharp.instructions.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "e3e0524e7be1a8e195c91d33140f6d90ba439f24",
-      "content_sha256": "b63516287968dfee0a2b9a479b16d9dbcf50de10cae8fa8187a44ce9cc556c91",
-      "word_count": 1558,
-      "last_updated_utc": "2026-10-21T03:45:07.669375+00:00",
+      "git_blob_sha": "b9a851eca6b840c90d3d84b16cd375707f330bbc",
+      "content_sha256": "90fec8087e8828ccfaab4cd09ab68738daad2323905cb0cefab614f6176db0b2",
+      "word_count": 1592,
+      "last_updated_utc": "2026-11-02T05:12:37.126790+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__instructions_copilot-sdk-csharp.instructions.md"
     },
     "github_awesome-copilot::instructions/copilot-sdk-go.instructions.md": {
@@ -4375,10 +4397,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/copilot-sdk-go.instructions.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/instructions/copilot-sdk-go.instructions.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "08977298e206f181138bca21ecadcd8e697d5f8b",
-      "content_sha256": "be5dc2e5c18b246ea0cca6f516935907149b9cf6cc5685401eea66006b9c2316",
-      "word_count": 1731,
-      "last_updated_utc": "2026-10-21T03:45:07.625194+00:00",
+      "git_blob_sha": "486e1456f0622b6d631499062ed15ed696a9bd75",
+      "content_sha256": "7283b9b9b1f6b6454bbe0fc3f4415afb9d378226cc40dd785cab74529f4fcadb",
+      "word_count": 1765,
+      "last_updated_utc": "2026-11-02T05:12:37.161022+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__instructions_copilot-sdk-go.instructions.md"
     },
     "github_awesome-copilot::instructions/copilot-sdk-java.instructions.md": {
@@ -4386,10 +4408,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/copilot-sdk-java.instructions.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/instructions/copilot-sdk-java.instructions.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "c4f604ed123ba41073b33c49ae5f935e32ab3d3d",
-      "content_sha256": "256ef3c06c7216f3c287106c5f09f5644e4fc4ad8e9961a492cfca02de3ce611",
-      "word_count": 2587,
-      "last_updated_utc": "2026-10-21T03:45:07.779328+00:00",
+      "git_blob_sha": "b8860c6573c0f39daf4f1917a44b9eeda45f6ac5",
+      "content_sha256": "694b121734e751dd0c8d9a07bd2eacf8946287027d2f4e912b15efe64a56df9d",
+      "word_count": 2619,
+      "last_updated_utc": "2026-11-02T05:12:37.162341+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__instructions_copilot-sdk-java.instructions.md"
     },
     "github_awesome-copilot::instructions/copilot-sdk-nodejs.instructions.md": {
@@ -4397,10 +4419,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/copilot-sdk-nodejs.instructions.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/instructions/copilot-sdk-nodejs.instructions.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "0506c48a948a781c71b77502f6f0372e0a93948f",
-      "content_sha256": "8bce7c6ee7b94df921b19ee64e05170343f33b5b7fc9128aec63188cdac1f3f0",
-      "word_count": 2016,
-      "last_updated_utc": "2026-10-21T03:45:07.656059+00:00",
+      "git_blob_sha": "0d7f604c2abbccb7a4e1996a53a920e27591607e",
+      "content_sha256": "2a041f623870618d654a0db759831c28219bdfad4aa6331c76e16da63fa083d9",
+      "word_count": 2050,
+      "last_updated_utc": "2026-11-02T05:12:37.155809+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__instructions_copilot-sdk-nodejs.instructions.md"
     },
     "github_awesome-copilot::instructions/copilot-sdk-python.instructions.md": {
@@ -4408,10 +4430,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/copilot-sdk-python.instructions.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/instructions/copilot-sdk-python.instructions.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "2978a067d63d31bc531ed6a873b40b27f639b132",
-      "content_sha256": "0cae17383b27d4ad8bbc10677da0eabe072ddcc34425a7cfcdbbef5031f19377",
-      "word_count": 2173,
-      "last_updated_utc": "2026-10-21T03:45:07.775357+00:00",
+      "git_blob_sha": "5de9f95469c3e2e107eb35b469d1916cd95226d6",
+      "content_sha256": "7d2df9826e9553c6a63e88cb481d8ef2341e24ded366e9e0f43d7ecfdca71aa6",
+      "word_count": 2207,
+      "last_updated_utc": "2026-11-02T05:12:37.144500+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__instructions_copilot-sdk-python.instructions.md"
     },
     "github_awesome-copilot::instructions/copilot-thought-logging.instructions.md": {
@@ -4875,6 +4897,17 @@
       "word_count": 2428,
       "last_updated_utc": "2026-10-21T03:45:09.171900+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__instructions_go.instructions.md"
+    },
+    "github_awesome-copilot::instructions/godot-4-gdscript.instructions.md": {
+      "doc_id": "github_awesome-copilot::instructions/godot-4-gdscript.instructions.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/godot-4-gdscript.instructions.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/instructions/godot-4-gdscript.instructions.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "de5564a9d6cada158b6ca186301c5a99a7531e52",
+      "content_sha256": "0fb17fa63a9df55f88bc49d393fbe38b9853b1f3ceab95bc3a294a14978e90a9",
+      "word_count": 297,
+      "last_updated_utc": "2026-11-02T05:12:37.165488+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__instructions_godot-4-gdscript.instructions.md"
     },
     "github_awesome-copilot::instructions/hooks.instructions.md": {
       "doc_id": "github_awesome-copilot::instructions/hooks.instructions.md",
@@ -5827,10 +5860,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/springboot-4-migration.instructions.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/instructions/springboot-4-migration.instructions.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "729e48383092293bcb9234e8c86952a131977118",
-      "content_sha256": "110239ddd00e4f5a16e2a1366162823efd930e5cee36afc1d0b43b3e40f40299",
-      "word_count": 4636,
-      "last_updated_utc": "2026-10-21T03:45:12.365837+00:00",
+      "git_blob_sha": "116a056c10a4510fa57e584b87897d3d7157cb98",
+      "content_sha256": "8177d54d411919ad5ca7e52e06875ccdb11009df64b30a6102010ea155b63077",
+      "word_count": 172,
+      "last_updated_utc": "2026-11-02T05:12:37.334302+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__instructions_springboot-4-migration.instructions.md"
     },
     "github_awesome-copilot::instructions/springboot.instructions.md": {
@@ -5838,10 +5871,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/springboot.instructions.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/instructions/springboot.instructions.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "e0d0285f248bbee8e1a80fbac8ad02e721066e15",
-      "content_sha256": "14efdfde00296e034e83082665c4b957c4e4e7d0ff66fd95c42b7538f87fc8d2",
-      "word_count": 392,
-      "last_updated_utc": "2026-10-21T03:45:12.430787+00:00",
+      "git_blob_sha": "ef10ed75e224442271557c506b5d44ab9e1b920d",
+      "content_sha256": "b22904d663d94c2770795b3a71278332678699e9af4b7e3bafcc3fa3048f0280",
+      "word_count": 444,
+      "last_updated_utc": "2026-11-02T05:12:37.311056+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__instructions_springboot.instructions.md"
     },
     "github_awesome-copilot::instructions/sql-server-safe-tsql.instructions.md": {
@@ -9083,10 +9116,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/copilot-sdk/SKILL.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/copilot-sdk/SKILL.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "88dcf6d4ca5df7e0f73d1a91ec88b474808b9d14",
-      "content_sha256": "2969160ebd01af4d3c32bfce5edeb6f8b5bc42dbb84a3174b8a630069eadf895",
-      "word_count": 2682,
-      "last_updated_utc": "2026-10-21T03:45:22.607644+00:00",
+      "git_blob_sha": "1c98747108b4e5f196d63e3cd139b6d0ef405d4b",
+      "content_sha256": "ba68d8e0be999cdee52821b371f43c81a8c9f6a5bb38ceefa1d323a660d09a06",
+      "word_count": 2760,
+      "last_updated_utc": "2026-11-02T05:12:37.291919+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_copilot-sdk_SKILL.md"
     },
     "github_awesome-copilot::skills/copilot-spaces/SKILL.md": {
@@ -9303,11 +9336,99 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-spring-boot-java-project/SKILL.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/create-spring-boot-java-project/SKILL.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "dbe9e3d76e3e02a1058d813852ae643df9812f7c",
-      "content_sha256": "2bfa2e761cc8784fe574bd07c4587fd87731ed8bab536d303c9c87824b0d7baa",
-      "word_count": 470,
-      "last_updated_utc": "2026-10-21T03:45:23.346313+00:00",
+      "git_blob_sha": "6da0df4d0d66d167486caa7038fbec17bb67501f",
+      "content_sha256": "51a15fd77903ca194468be71c4ebec3317e7b5044c36c310fe6dcee6296c5a47",
+      "word_count": 561,
+      "last_updated_utc": "2026-11-02T05:12:37.298947+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_create-spring-boot-java-project_SKILL.md"
+    },
+    "github_awesome-copilot::skills/create-spring-boot-java-project/references/PROVENANCE.md": {
+      "doc_id": "github_awesome-copilot::skills/create-spring-boot-java-project/references/PROVENANCE.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-spring-boot-java-project/references/PROVENANCE.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/create-spring-boot-java-project/references/PROVENANCE.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "4464d8b377f6e8136841575ce1421c6b61a16656",
+      "content_sha256": "b8a6623408b4d166ee9d8c0ec954c4d4434808d6f700295d07249bdbba236b4c",
+      "word_count": 197,
+      "last_updated_utc": "2026-11-02T05:12:37.305753+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_create-spring-boot-java-project_references_PROVENANCE.md"
+    },
+    "github_awesome-copilot::skills/create-spring-boot-java-project/references/configuration.md": {
+      "doc_id": "github_awesome-copilot::skills/create-spring-boot-java-project/references/configuration.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-spring-boot-java-project/references/configuration.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/create-spring-boot-java-project/references/configuration.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "97947d87a1a9c0ec3d4a6f55553ce5999bb21757",
+      "content_sha256": "7c383beed85570467af906bb652adb3cf17b7e09e00747ddec6ea83c653aa127",
+      "word_count": 241,
+      "last_updated_utc": "2026-11-02T05:12:37.305453+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_create-spring-boot-java-project_references_configuration.md"
+    },
+    "github_awesome-copilot::skills/create-spring-boot-java-project/references/database.md": {
+      "doc_id": "github_awesome-copilot::skills/create-spring-boot-java-project/references/database.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-spring-boot-java-project/references/database.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/create-spring-boot-java-project/references/database.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "37e3b05126441e4036683c045823a02b0afe8697",
+      "content_sha256": "0e7c5ee45cffcad6033e0cad27bcb950a5604d557ee2c2c261479ceed65d859a",
+      "word_count": 385,
+      "last_updated_utc": "2026-11-02T05:12:37.314162+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_create-spring-boot-java-project_references_database.md"
+    },
+    "github_awesome-copilot::skills/create-spring-boot-java-project/references/docker.md": {
+      "doc_id": "github_awesome-copilot::skills/create-spring-boot-java-project/references/docker.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-spring-boot-java-project/references/docker.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/create-spring-boot-java-project/references/docker.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "99aaf03a35c1de557f226497ca2a45ba0ac4d591",
+      "content_sha256": "1f38198df919253b2b0fc1769ddd9b9e99738ea6928dd47cfacf89ab5cbf09d1",
+      "word_count": 579,
+      "last_updated_utc": "2026-11-02T05:12:37.319559+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_create-spring-boot-java-project_references_docker.md"
+    },
+    "github_awesome-copilot::skills/create-spring-boot-java-project/references/logging.md": {
+      "doc_id": "github_awesome-copilot::skills/create-spring-boot-java-project/references/logging.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-spring-boot-java-project/references/logging.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/create-spring-boot-java-project/references/logging.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "96371d77b10ad2f381edde9e0203f18ae9ee92d0",
+      "content_sha256": "e06287625c79e2aafec727e27b2882a3c126d7baf02c595e747ed1402fa4476a",
+      "word_count": 208,
+      "last_updated_utc": "2026-11-02T05:12:37.438572+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_create-spring-boot-java-project_references_logging.md"
+    },
+    "github_awesome-copilot::skills/create-spring-boot-java-project/references/security.md": {
+      "doc_id": "github_awesome-copilot::skills/create-spring-boot-java-project/references/security.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-spring-boot-java-project/references/security.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/create-spring-boot-java-project/references/security.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "b1523347c4fca7db03454594f627b922972c2033",
+      "content_sha256": "1ac9bdaefd01eba4daccf60554dc01742498e6030fc9e18100bf3eb89a1d6dc2",
+      "word_count": 274,
+      "last_updated_utc": "2026-11-02T05:12:37.447055+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_create-spring-boot-java-project_references_security.md"
+    },
+    "github_awesome-copilot::skills/create-spring-boot-java-project/references/spring-boot-4.md": {
+      "doc_id": "github_awesome-copilot::skills/create-spring-boot-java-project/references/spring-boot-4.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-spring-boot-java-project/references/spring-boot-4.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/create-spring-boot-java-project/references/spring-boot-4.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "1b4165e65356e9b98dd1531237ed450f20282ab6",
+      "content_sha256": "e455b4c568c207fc68dbfff8c1af6db8014a6167f538818ec420f79701d335b1",
+      "word_count": 266,
+      "last_updated_utc": "2026-11-02T05:12:37.460150+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_create-spring-boot-java-project_references_spring-boot-4.md"
+    },
+    "github_awesome-copilot::skills/create-spring-boot-java-project/references/versions.md": {
+      "doc_id": "github_awesome-copilot::skills/create-spring-boot-java-project/references/versions.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-spring-boot-java-project/references/versions.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/create-spring-boot-java-project/references/versions.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "3a4bd50c71ab1796d69ebf68949776fa1996154b",
+      "content_sha256": "feb2a00db404425ab6d05cb68be6bdef56b74886309b699fbc187fa5fcb270ec",
+      "word_count": 364,
+      "last_updated_utc": "2026-11-02T05:12:37.475098+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_create-spring-boot-java-project_references_versions.md"
     },
     "github_awesome-copilot::skills/create-spring-boot-kotlin-project/SKILL.md": {
       "doc_id": "github_awesome-copilot::skills/create-spring-boot-kotlin-project/SKILL.md",
@@ -10287,6 +10408,17 @@
       "word_count": 697,
       "last_updated_utc": "2026-10-21T03:45:26.453005+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_email-drafter_SKILL.md"
+    },
+    "github_awesome-copilot::skills/embedding-anisotropy-check/SKILL.md": {
+      "doc_id": "github_awesome-copilot::skills/embedding-anisotropy-check/SKILL.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/embedding-anisotropy-check/SKILL.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/embedding-anisotropy-check/SKILL.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "dbdd69ae02634be17821b5a21d84448f10e62396",
+      "content_sha256": "ca17095cf2d4d2412f10dccfa97b01712aba3479853ea268c2273eb05e77ac69",
+      "word_count": 1211,
+      "last_updated_utc": "2026-11-02T05:12:37.471667+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_embedding-anisotropy-check_SKILL.md"
     },
     "github_awesome-copilot::skills/entra-agent-user/SKILL.md": {
       "doc_id": "github_awesome-copilot::skills/entra-agent-user/SKILL.md",
@@ -12933,11 +13065,66 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-springboot/SKILL.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/java-springboot/SKILL.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "39ae2e5f13de608cfac6e4fb15bb7842bd413215",
-      "content_sha256": "471ed537c42de1a0c4ab8c927d64b045a7c99d95318a513d5918ac2f7b1ebfc5",
-      "word_count": 512,
-      "last_updated_utc": "2026-10-21T03:45:32.399283+00:00",
+      "git_blob_sha": "3729077eaf60351e7d4d7a46464e6f5d2797bd74",
+      "content_sha256": "6388fb7e2ca7222ea74adf16c200c72ab9feefd9fa658177461a5399132a4513",
+      "word_count": 546,
+      "last_updated_utc": "2026-11-02T05:12:37.486546+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_java-springboot_SKILL.md"
+    },
+    "github_awesome-copilot::skills/java-springboot/references/aot-and-startup.md": {
+      "doc_id": "github_awesome-copilot::skills/java-springboot/references/aot-and-startup.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-springboot/references/aot-and-startup.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/java-springboot/references/aot-and-startup.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "bdebfab601c65bd14bcd6ba8ad1322197872d829",
+      "content_sha256": "76ee1cb3198168337740f97e5a99b71f9e3364318d86dfe7613e8ddeff82ea09",
+      "word_count": 735,
+      "last_updated_utc": "2026-11-02T05:12:37.489530+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_java-springboot_references_aot-and-startup.md"
+    },
+    "github_awesome-copilot::skills/java-springboot/references/configuration.md": {
+      "doc_id": "github_awesome-copilot::skills/java-springboot/references/configuration.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-springboot/references/configuration.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/java-springboot/references/configuration.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "500624d3e2d0c42c186932658733e2469b7544e4",
+      "content_sha256": "8947349c7837cc4db5d27240665baa697373188f111fc54b3a4760180314e18f",
+      "word_count": 584,
+      "last_updated_utc": "2026-11-02T05:12:37.473915+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_java-springboot_references_configuration.md"
+    },
+    "github_awesome-copilot::skills/java-springboot/references/data.md": {
+      "doc_id": "github_awesome-copilot::skills/java-springboot/references/data.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-springboot/references/data.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/java-springboot/references/data.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "e66458facf39cb04df86210da94efef797143bbf",
+      "content_sha256": "c9852b164b2010f1dc1207b467fcb7399a13d2c313f23d29765145240ac071f4",
+      "word_count": 695,
+      "last_updated_utc": "2026-11-02T05:12:37.582272+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_java-springboot_references_data.md"
+    },
+    "github_awesome-copilot::skills/java-springboot/references/messaging-caching.md": {
+      "doc_id": "github_awesome-copilot::skills/java-springboot/references/messaging-caching.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-springboot/references/messaging-caching.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/java-springboot/references/messaging-caching.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "ecfd728c0c1cd7498105e348610f2d082e983631",
+      "content_sha256": "1e9749666a0eca155a47f7ad630838ace6ba9392c528da3cf80e91dbe76eea56",
+      "word_count": 924,
+      "last_updated_utc": "2026-11-02T05:12:37.617628+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_java-springboot_references_messaging-caching.md"
+    },
+    "github_awesome-copilot::skills/java-springboot/references/rest-api.md": {
+      "doc_id": "github_awesome-copilot::skills/java-springboot/references/rest-api.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/java-springboot/references/rest-api.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/java-springboot/references/rest-api.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "69226559eebfd6823659a7ffbb356292d87c43e1",
+      "content_sha256": "791827b2c6b3aef3a6b32f089a3b0523ce52f976071f5bd99370673526e7cb39",
+      "word_count": 1059,
+      "last_updated_utc": "2026-11-02T05:12:37.603515+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_java-springboot_references_rest-api.md"
     },
     "github_awesome-copilot::skills/java-testcontainers/SKILL.md": {
       "doc_id": "github_awesome-copilot::skills/java-testcontainers/SKILL.md",
@@ -13345,6 +13532,116 @@
       "word_count": 614,
       "last_updated_utc": "2026-10-21T03:45:33.680500+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_legacy-circuit-mockups_references_t48eeprom-programmer.md"
+    },
+    "github_awesome-copilot::skills/lightweight-charts-react-components/SKILL.md": {
+      "doc_id": "github_awesome-copilot::skills/lightweight-charts-react-components/SKILL.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/SKILL.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/SKILL.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "f0afcc07d15584907697d38bcf2172f7974b01aa",
+      "content_sha256": "a9d38b722a6f2ac1e58d10ff013ebbcd3aa458a5c7affb2b6b327d0d418057ee",
+      "word_count": 1105,
+      "last_updated_utc": "2026-11-02T05:12:37.615981+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_lightweight-charts-react-components_SKILL.md"
+    },
+    "github_awesome-copilot::skills/lightweight-charts-react-components/references/history-and-range-selection.md": {
+      "doc_id": "github_awesome-copilot::skills/lightweight-charts-react-components/references/history-and-range-selection.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/references/history-and-range-selection.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/references/history-and-range-selection.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "c34bb56f8e0a3bbe376c53dda2ee32cbd9dc980d",
+      "content_sha256": "72e4c189c55d71497f8fc59cf46f363f9ae4f2b50b8118701283a1444ccb8220",
+      "word_count": 1448,
+      "last_updated_utc": "2026-11-02T05:12:37.629835+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_lightweight-charts-react-components_references_history-and-range-selection.md"
+    },
+    "github_awesome-copilot::skills/lightweight-charts-react-components/references/hover-legends-and-tooltips.md": {
+      "doc_id": "github_awesome-copilot::skills/lightweight-charts-react-components/references/hover-legends-and-tooltips.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/references/hover-legends-and-tooltips.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/references/hover-legends-and-tooltips.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "9c4f787ed33230de816d333df8de0328ab1b713e",
+      "content_sha256": "7c4c0a85bdbbc57945738e2a55eabf3c6580d2644ff7e5363fe5222347065fd1",
+      "word_count": 1096,
+      "last_updated_utc": "2026-11-02T05:12:37.627526+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_lightweight-charts-react-components_references_hover-legends-and-tooltips.md"
+    },
+    "github_awesome-copilot::skills/lightweight-charts-react-components/references/market-data-and-live-updates.md": {
+      "doc_id": "github_awesome-copilot::skills/lightweight-charts-react-components/references/market-data-and-live-updates.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/references/market-data-and-live-updates.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/references/market-data-and-live-updates.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "a932316c3074d8ee8c7626558320141acb692b48",
+      "content_sha256": "aaf3615adcb32a33d5f2190fe4f19ed04cd479601b8b0529d310a0293be3250d",
+      "word_count": 1596,
+      "last_updated_utc": "2026-11-02T05:12:37.650261+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_lightweight-charts-react-components_references_market-data-and-live-updates.md"
+    },
+    "github_awesome-copilot::skills/lightweight-charts-react-components/references/numeric-axes-and-chart-types.md": {
+      "doc_id": "github_awesome-copilot::skills/lightweight-charts-react-components/references/numeric-axes-and-chart-types.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/references/numeric-axes-and-chart-types.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/references/numeric-axes-and-chart-types.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "65af9381aa4758907bf7943e72e25fa244bf50b2",
+      "content_sha256": "8a75a0643ad5f772b6446c23749f84c69c8fbd86253c3a021c6b3f3d64a02a9c",
+      "word_count": 1302,
+      "last_updated_utc": "2026-11-02T05:12:37.621805+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_lightweight-charts-react-components_references_numeric-axes-and-chart-types.md"
+    },
+    "github_awesome-copilot::skills/lightweight-charts-react-components/references/performance-comparison.md": {
+      "doc_id": "github_awesome-copilot::skills/lightweight-charts-react-components/references/performance-comparison.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/references/performance-comparison.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/references/performance-comparison.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "c4a390ca5cc3756fd23565d748b17457b0a451de",
+      "content_sha256": "a7a2ed3d8061ac135b59b10c98f40690337a0c9def8018a3d35f08e9953e5152",
+      "word_count": 902,
+      "last_updated_utc": "2026-11-02T05:12:37.734738+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_lightweight-charts-react-components_references_performance-comparison.md"
+    },
+    "github_awesome-copilot::skills/lightweight-charts-react-components/references/price-volume-and-indicators.md": {
+      "doc_id": "github_awesome-copilot::skills/lightweight-charts-react-components/references/price-volume-and-indicators.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/references/price-volume-and-indicators.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/references/price-volume-and-indicators.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "739a5798c5e58c27f19ee4ed8566e9d387801d9c",
+      "content_sha256": "ec2e5fcdec5427533ba2a8b20d26301b3ad93a43bf54c92f638566a6e7ada282",
+      "word_count": 1198,
+      "last_updated_utc": "2026-11-02T05:12:37.763258+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_lightweight-charts-react-components_references_price-volume-and-indicators.md"
+    },
+    "github_awesome-copilot::skills/lightweight-charts-react-components/references/session-overlays-and-primitives.md": {
+      "doc_id": "github_awesome-copilot::skills/lightweight-charts-react-components/references/session-overlays-and-primitives.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/references/session-overlays-and-primitives.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/references/session-overlays-and-primitives.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "03d2f4596ea21437db47b46c8224e7c4d1b37d31",
+      "content_sha256": "646f8dd77147ae590b5a838257bf6c317058ca3a5da26db6eb90edef0e5b7b8d",
+      "word_count": 1229,
+      "last_updated_utc": "2026-11-02T05:12:37.774593+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_lightweight-charts-react-components_references_session-overlays-and-primitives.md"
+    },
+    "github_awesome-copilot::skills/lightweight-charts-react-components/references/synchronized-charts.md": {
+      "doc_id": "github_awesome-copilot::skills/lightweight-charts-react-components/references/synchronized-charts.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/references/synchronized-charts.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/references/synchronized-charts.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "880a6648fbd48154c7d8f8823c4616349a1a72ae",
+      "content_sha256": "d1bf3b3a37edb65f1670a905f4b3bc089c75a05b8c504c4c16578d3f6e1282e7",
+      "word_count": 1057,
+      "last_updated_utc": "2026-11-02T05:12:37.764785+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_lightweight-charts-react-components_references_synchronized-charts.md"
+    },
+    "github_awesome-copilot::skills/lightweight-charts-react-components/references/trade-markers-and-price-levels.md": {
+      "doc_id": "github_awesome-copilot::skills/lightweight-charts-react-components/references/trade-markers-and-price-levels.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/lightweight-charts-react-components/references/trade-markers-and-price-levels.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/lightweight-charts-react-components/references/trade-markers-and-price-levels.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "c86c90f126d384558454a43473523c6f88ed54b9",
+      "content_sha256": "102f24fa6ab523b736c3842017cea2e73fba11fc0fbdec1e422cbc4c14e8cac1",
+      "word_count": 1191,
+      "last_updated_utc": "2026-11-02T05:12:37.780071+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_lightweight-charts-react-components_references_trade-markers-and-price-levels.md"
     },
     "github_awesome-copilot::skills/linkedin-post-formatter/SKILL.md": {
       "doc_id": "github_awesome-copilot::skills/linkedin-post-formatter/SKILL.md",
@@ -13857,10 +14154,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/mcp-security-audit/SKILL.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/mcp-security-audit/SKILL.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "c73917df200aa233f368baf5503947476d3202d9",
-      "content_sha256": "9b27802e5a15391ac9bd16bd1b9506fa21fbd956bc792b9633e6774dc8cbe7d7",
-      "word_count": 1377,
-      "last_updated_utc": "2026-10-21T03:45:35.509531+00:00",
+      "git_blob_sha": "0b0bcdfba5879a72fda4cf418b86d297ad8a95f1",
+      "content_sha256": "9e9611d984d1027a6846d4473475236c8d532697352a77b7cdb20b2697d2f84b",
+      "word_count": 1629,
+      "last_updated_utc": "2026-11-02T05:12:37.775916+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_mcp-security-audit_SKILL.md"
     },
     "github_awesome-copilot::skills/md-to-docx/SKILL.md": {
@@ -14610,6 +14907,17 @@
       "word_count": 606,
       "last_updated_utc": "2026-10-21T03:45:37.869092+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_openapi-to-application-code_SKILL.md"
+    },
+    "github_awesome-copilot::skills/openapi-to-application-java-spring-boot/SKILL.md": {
+      "doc_id": "github_awesome-copilot::skills/openapi-to-application-java-spring-boot/SKILL.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/openapi-to-application-java-spring-boot/SKILL.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/openapi-to-application-java-spring-boot/SKILL.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "3c697148951b9893dc6a4c459bde03beef663c77",
+      "content_sha256": "881f3e4a31183ec27d8673b1636502148f459edbe7bc4abd1486edda6f206fdd",
+      "word_count": 1169,
+      "last_updated_utc": "2026-11-02T05:12:37.783512+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_openapi-to-application-java-spring-boot_SKILL.md"
     },
     "github_awesome-copilot::skills/optimize-simplicite-logs/SKILL.md": {
       "doc_id": "github_awesome-copilot::skills/optimize-simplicite-logs/SKILL.md",
@@ -15721,6 +16029,50 @@
       "word_count": 878,
       "last_updated_utc": "2026-10-21T03:45:41.467229+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_poka-yoke_references_lang-typescript.md"
+    },
+    "github_awesome-copilot::skills/ponder/SKILL.md": {
+      "doc_id": "github_awesome-copilot::skills/ponder/SKILL.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/ponder/SKILL.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/ponder/SKILL.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "0b4c3aab48e9abe7e09ffe259ad590a5bb47a125",
+      "content_sha256": "5a0b646d2d26346a4aeb6c3a02b2f41461a1203d70620fa00fbd3c85414a4551",
+      "word_count": 7885,
+      "last_updated_utc": "2026-11-02T05:12:37.804213+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_ponder_SKILL.md"
+    },
+    "github_awesome-copilot::skills/ponder/references/harness-notes.md": {
+      "doc_id": "github_awesome-copilot::skills/ponder/references/harness-notes.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/ponder/references/harness-notes.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/ponder/references/harness-notes.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "d3b18bdd60e0a3515924e2d1698196a24f1bc393",
+      "content_sha256": "bbb1ca1cf2f9a65ae763eccdaa95ae03662cbe0d4dcdd7b22e7cd8189026b237",
+      "word_count": 2269,
+      "last_updated_utc": "2026-11-02T05:12:37.886264+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_ponder_references_harness-notes.md"
+    },
+    "github_awesome-copilot::skills/ponder/references/perspectives.md": {
+      "doc_id": "github_awesome-copilot::skills/ponder/references/perspectives.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/ponder/references/perspectives.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/ponder/references/perspectives.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "2acb1e2649dcd06336f5d3cb917505d62ed7f17b",
+      "content_sha256": "70062af207d98bb5294d392777121a3226c1883ba7f167bcf7fb1044cbc4fe83",
+      "word_count": 3814,
+      "last_updated_utc": "2026-11-02T05:12:37.915045+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_ponder_references_perspectives.md"
+    },
+    "github_awesome-copilot::skills/ponder/references/protocol.md": {
+      "doc_id": "github_awesome-copilot::skills/ponder/references/protocol.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/ponder/references/protocol.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/ponder/references/protocol.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "00de589d0becc6730edd97ceb5e6b9b44522fd86",
+      "content_sha256": "6919d0f358077413c60edbde62d10227e762704e8571cea52383ec6579354be5",
+      "word_count": 8119,
+      "last_updated_utc": "2026-11-02T05:12:37.928824+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_ponder_references_protocol.md"
     },
     "github_awesome-copilot::skills/postgresql-code-review/SKILL.md": {
       "doc_id": "github_awesome-copilot::skills/postgresql-code-review/SKILL.md",
@@ -18252,15 +18604,147 @@
       "last_updated_utc": "2026-10-21T03:45:49.834225+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_sponsor-finder_SKILL.md"
     },
+    "github_awesome-copilot::skills/spring-boot-4-migration/SKILL.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-boot-4-migration/SKILL.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/SKILL.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/SKILL.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "7c346c25a1b17fd7f074394f63e3d741ce7c6dff",
+      "content_sha256": "87ee88417da8da0ef387cc07da40e8aa8a2bf16f3ef2c1fed67e92214304ca81",
+      "word_count": 923,
+      "last_updated_utc": "2026-11-02T05:12:37.904798+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-4-migration_SKILL.md"
+    },
+    "github_awesome-copilot::skills/spring-boot-4-migration/references/01-prerequisites.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-boot-4-migration/references/01-prerequisites.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/01-prerequisites.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/01-prerequisites.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "dc6ce6e14fd71420b5f79103bdcc45ce980dedf0",
+      "content_sha256": "11b7b55f71b806eceecd83455cef9bbe6d27e70008a70d09835842be25d96a2c",
+      "word_count": 259,
+      "last_updated_utc": "2026-11-02T05:12:37.944117+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-4-migration_references_01-prerequisites.md"
+    },
+    "github_awesome-copilot::skills/spring-boot-4-migration/references/02-starters-and-removed-features.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-boot-4-migration/references/02-starters-and-removed-features.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/02-starters-and-removed-features.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/02-starters-and-removed-features.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "7b3a9da80dcbcde81f4fcdfd61ed9a119e64f975",
+      "content_sha256": "ecee594da641adea4238eee5a5e50573787b44e15027c84043d630384ee8c21f",
+      "word_count": 971,
+      "last_updated_utc": "2026-11-02T05:12:37.929452+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-4-migration_references_02-starters-and-removed-features.md"
+    },
+    "github_awesome-copilot::skills/spring-boot-4-migration/references/03-jackson-3.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-boot-4-migration/references/03-jackson-3.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/03-jackson-3.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/03-jackson-3.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "efdd8513d1ab289805e4e7c8867471a621c0a24d",
+      "content_sha256": "28a80219010a49d423f45169e418d7fac14cdfbc09d0cd80243939a51c0a3c2b",
+      "word_count": 449,
+      "last_updated_utc": "2026-11-02T05:12:37.935241+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-4-migration_references_03-jackson-3.md"
+    },
+    "github_awesome-copilot::skills/spring-boot-4-migration/references/04-core-framework.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-boot-4-migration/references/04-core-framework.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/04-core-framework.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/04-core-framework.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "03afa97cff317f4a48aa3c4582b09d6df1cd272f",
+      "content_sha256": "2380cc8670cfd4bd9f9e05bf7097bdbc398f939adda35d158abae24ca71947fb",
+      "word_count": 427,
+      "last_updated_utc": "2026-11-02T05:12:37.952816+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-4-migration_references_04-core-framework.md"
+    },
+    "github_awesome-copilot::skills/spring-boot-4-migration/references/05-build-and-dependencies.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-boot-4-migration/references/05-build-and-dependencies.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/05-build-and-dependencies.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/05-build-and-dependencies.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "beb4095c1a0c7d889872c0bfddcb5317b63efe2e",
+      "content_sha256": "bd28809a92898fbf5c72cc37a1eb2e121b44cacaa3c40dde94be828f15871dfa",
+      "word_count": 643,
+      "last_updated_utc": "2026-11-02T05:12:38.037304+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-4-migration_references_05-build-and-dependencies.md"
+    },
+    "github_awesome-copilot::skills/spring-boot-4-migration/references/06-configuration-properties.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-boot-4-migration/references/06-configuration-properties.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/06-configuration-properties.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/06-configuration-properties.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "65de141151343062ab6354746e4891774173b822",
+      "content_sha256": "5f7c1cd5700006c840a702199d7e556219c3d54bf8b536467e1eeb02d0ceabe8",
+      "word_count": 285,
+      "last_updated_utc": "2026-11-02T05:12:38.046200+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-4-migration_references_06-configuration-properties.md"
+    },
+    "github_awesome-copilot::skills/spring-boot-4-migration/references/07-web-and-messaging.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-boot-4-migration/references/07-web-and-messaging.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/07-web-and-messaging.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/07-web-and-messaging.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "ee5a3195ec57629a8cc4beb80fc5b653c3c3af21",
+      "content_sha256": "66fca3b137d735eadcaa2ec23d402cfc2ec86592fcf574671bdff9fbbfc2ee65",
+      "word_count": 633,
+      "last_updated_utc": "2026-11-02T05:12:38.098672+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-4-migration_references_07-web-and-messaging.md"
+    },
+    "github_awesome-copilot::skills/spring-boot-4-migration/references/08-testing.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-boot-4-migration/references/08-testing.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/08-testing.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/08-testing.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "5392c9eb6cd898a5077c61f3dc6b1eccb22adff2",
+      "content_sha256": "8d897c22f82e4db921fa565f13dd87c6463b6f4ffe043fff0ac982d7b5d0a300",
+      "word_count": 497,
+      "last_updated_utc": "2026-11-02T05:12:38.090554+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-4-migration_references_08-testing.md"
+    },
+    "github_awesome-copilot::skills/spring-boot-4-migration/references/09-actuator-and-observability.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-boot-4-migration/references/09-actuator-and-observability.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/09-actuator-and-observability.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/09-actuator-and-observability.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "8e7543459921ae0314efcb5babf1d7764571df03",
+      "content_sha256": "35c997cb457915c85ddb72cde71da1d48222bdc901d58e5fb515f7864059d98c",
+      "word_count": 229,
+      "last_updated_utc": "2026-11-02T05:12:38.098034+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-4-migration_references_09-actuator-and-observability.md"
+    },
+    "github_awesome-copilot::skills/spring-boot-4-migration/references/10-kotlin-and-java-build-config.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-boot-4-migration/references/10-kotlin-and-java-build-config.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/10-kotlin-and-java-build-config.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/10-kotlin-and-java-build-config.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "f83eed8b26f2c8eeb4f44bd9e3711419fef9c01e",
+      "content_sha256": "1b92b236584ea3cda26fc11772302294f2a74d65591a13d95a1f350b6403592b",
+      "word_count": 128,
+      "last_updated_utc": "2026-11-02T05:12:38.109586+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-4-migration_references_10-kotlin-and-java-build-config.md"
+    },
+    "github_awesome-copilot::skills/spring-boot-4-migration/references/11-checklist-pitfalls-resources.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-boot-4-migration/references/11-checklist-pitfalls-resources.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/11-checklist-pitfalls-resources.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/11-checklist-pitfalls-resources.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "e5ec3ec85f3ba9a9c91533e3d18bf4a3b11a9fad",
+      "content_sha256": "855947d2bde793288fea82234ca4bea11bac210e92aed5ef451f7a572c19416d",
+      "word_count": 718,
+      "last_updated_utc": "2026-11-02T05:12:38.098387+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-4-migration_references_11-checklist-pitfalls-resources.md"
+    },
     "github_awesome-copilot::skills/spring-boot-testing/SKILL.md": {
       "doc_id": "github_awesome-copilot::skills/spring-boot-testing/SKILL.md",
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-testing/SKILL.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-testing/SKILL.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "9e97e9835e1ffefcd26f7b46b7633070cd5fd13e",
-      "content_sha256": "c4e06ed52ac6636bb205d97dabbcb27ef4b0f045a37e41acc8b14e5905dfd97e",
-      "word_count": 731,
-      "last_updated_utc": "2026-10-21T03:45:49.815428+00:00",
+      "git_blob_sha": "159c697d77c41ad9c94ec62d5ae771a120e7d259",
+      "content_sha256": "6c3a071e151f16d77a3111138a361c9c82ca3ca6cc7ceb0418fdff045e84b7ab",
+      "word_count": 924,
+      "last_updated_utc": "2026-11-02T05:12:38.099353+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-testing_SKILL.md"
     },
     "github_awesome-copilot::skills/spring-boot-testing/references/assertj-basics.md": {
@@ -18301,21 +18785,32 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-testing/references/datajpatest.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-testing/references/datajpatest.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "60de474d3d3ff1b5f40969f3540abd784ef8e384",
-      "content_sha256": "00692c6e21535f362fea76a86345515307e6da8187ff956fec01fab4f80e21b8",
-      "word_count": 441,
-      "last_updated_utc": "2026-10-21T03:45:49.942156+00:00",
+      "git_blob_sha": "4dc6a23f484b2aed376e7e0c0eb80ec554dcff79",
+      "content_sha256": "5c045f25d39b04eb4f92d431d630253e687cd2769f4f63d60a2deff3daed5161",
+      "word_count": 450,
+      "last_updated_utc": "2026-11-02T05:12:38.179261+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-testing_references_datajpatest.md"
+    },
+    "github_awesome-copilot::skills/spring-boot-testing/references/failsafe-integration-tests.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-boot-testing/references/failsafe-integration-tests.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-testing/references/failsafe-integration-tests.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-testing/references/failsafe-integration-tests.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "b84e1877552091afde1b13d6c0e87b4ca80d3cb4",
+      "content_sha256": "5dc80c1069bb73ebeecdd2ab9e84ed34a2a18f10713ffa8c79e58110c616732e",
+      "word_count": 299,
+      "last_updated_utc": "2026-11-02T05:12:38.195146+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-testing_references_failsafe-integration-tests.md"
     },
     "github_awesome-copilot::skills/spring-boot-testing/references/instancio.md": {
       "doc_id": "github_awesome-copilot::skills/spring-boot-testing/references/instancio.md",
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-testing/references/instancio.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-testing/references/instancio.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "ce18aa2a4df341bd4ef7f1dc6e3d43c9086aa9c8",
-      "content_sha256": "4f2cc53cb171a6dc4e9830fb1b1b88d3dc2788277d62391228233e89811943e1",
-      "word_count": 505,
-      "last_updated_utc": "2026-10-21T03:45:49.971031+00:00",
+      "git_blob_sha": "29c1bf7a2ab4b593c7f687f822be2b3fd51c7391",
+      "content_sha256": "5602c7e7d4eea5c9900f530e2cc59e4351f3417a1a6203932d7d9d026b612385",
+      "word_count": 514,
+      "last_updated_utc": "2026-11-02T05:12:38.245221+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-testing_references_instancio.md"
     },
     "github_awesome-copilot::skills/spring-boot-testing/references/mockitobean.md": {
@@ -18378,10 +18873,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-testing/references/sb4-migration.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-testing/references/sb4-migration.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "e4a42fc4ca1049bafe277ce98ecb983b13619b05",
-      "content_sha256": "4fa030772592552bbc452450a3c417c9e1a91e28239252c41d8e5a3e0e689bb7",
-      "word_count": 349,
-      "last_updated_utc": "2026-10-21T03:45:50.283055+00:00",
+      "git_blob_sha": "776aa7514e1cfdc0bc6e02e7ff15ea514ec902ad",
+      "content_sha256": "56e78030f67c8c33b5ba756e0f9ae21ccdd2b3cf2a007264dabf81528e489af1",
+      "word_count": 353,
+      "last_updated_utc": "2026-11-02T05:12:38.256071+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-testing_references_sb4-migration.md"
     },
     "github_awesome-copilot::skills/spring-boot-testing/references/test-slices-overview.md": {
@@ -18389,10 +18884,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-testing/references/test-slices-overview.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-testing/references/test-slices-overview.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "892e1e1f13757ca8137263536db2833aef665be7",
-      "content_sha256": "0436bc4c95031b864bcd0e8d45aaac7e84bafac384592b8ed06c591b4504fca6",
-      "word_count": 571,
-      "last_updated_utc": "2026-10-21T03:45:50.240398+00:00",
+      "git_blob_sha": "812a27982f0cdebce45184033b70036aceb72444",
+      "content_sha256": "a72f9834922aebc68e9729ed846d9e6f4dc43819464431a971d1e0215d98d532",
+      "word_count": 580,
+      "last_updated_utc": "2026-11-02T05:12:38.239416+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-testing_references_test-slices-overview.md"
     },
     "github_awesome-copilot::skills/spring-boot-testing/references/testcontainers-jdbc.md": {
@@ -18400,10 +18895,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-testing/references/testcontainers-jdbc.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-testing/references/testcontainers-jdbc.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "88015199a7fc6cf66d9eb1919cf1f4702d7bb0a7",
-      "content_sha256": "0fc50f36533c8740e0724d59b2707e488b9754e3ee196b21793c539972c23381",
-      "word_count": 459,
-      "last_updated_utc": "2026-10-21T03:45:50.412794+00:00",
+      "git_blob_sha": "d447147e19ba43bc849c0f64854bd1c480806d92",
+      "content_sha256": "5fe7378cb6c65bfd9a9744f147fe280b44906915b41b8b9558b30ce944cbb034",
+      "word_count": 717,
+      "last_updated_utc": "2026-11-02T05:12:38.257228+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-testing_references_testcontainers-jdbc.md"
     },
     "github_awesome-copilot::skills/spring-boot-testing/references/webmvctest.md": {
@@ -18416,6 +18911,171 @@
       "word_count": 328,
       "last_updated_utc": "2026-10-21T03:45:50.492012+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-boot-testing_references_webmvctest.md"
+    },
+    "github_awesome-copilot::skills/spring-observability/SKILL.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-observability/SKILL.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-observability/SKILL.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-observability/SKILL.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "778e4aedec071c0fc78ced02300711f4df1af84b",
+      "content_sha256": "2acfa47151cadda3ae66bacfbcd507d14f16fee5f0a66db4502958bef5597c8c",
+      "word_count": 432,
+      "last_updated_utc": "2026-11-02T05:12:38.236800+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-observability_SKILL.md"
+    },
+    "github_awesome-copilot::skills/spring-observability/references/actuator.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-observability/references/actuator.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-observability/references/actuator.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-observability/references/actuator.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "71ce5d27e3ef3cbe1c3967a07de1842ccf3d3d08",
+      "content_sha256": "c13fb5671172d3c24c7a08866bff22acbfb62db2ff9557b62c9addd1d7d61138",
+      "word_count": 185,
+      "last_updated_utc": "2026-11-02T05:12:38.261105+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-observability_references_actuator.md"
+    },
+    "github_awesome-copilot::skills/spring-observability/references/dumps-and-diagnostics.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-observability/references/dumps-and-diagnostics.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-observability/references/dumps-and-diagnostics.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-observability/references/dumps-and-diagnostics.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "ab22c605b7978e46cbf963ce6ad330c18ec0c71f",
+      "content_sha256": "155b8d80c77967d336b0ac9dcd807f198360114ebcbcbefba84a4c54e8b143fa",
+      "word_count": 184,
+      "last_updated_utc": "2026-11-02T05:12:38.344208+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-observability_references_dumps-and-diagnostics.md"
+    },
+    "github_awesome-copilot::skills/spring-observability/references/logging.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-observability/references/logging.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-observability/references/logging.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-observability/references/logging.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "810358f86d1ff5e4b76452b30946955bb1d527c3",
+      "content_sha256": "5f40495c0041110a56cb1d08c1404f917ea080360b55fed56d75904521ec7dd7",
+      "word_count": 199,
+      "last_updated_utc": "2026-11-02T05:12:38.354561+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-observability_references_logging.md"
+    },
+    "github_awesome-copilot::skills/spring-observability/references/metrics.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-observability/references/metrics.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-observability/references/metrics.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-observability/references/metrics.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "57229259a6f81a9c11e205dcc31cc1a97b30e8af",
+      "content_sha256": "70297f3b73273696813068bd9123918ed7aeafb88f87e9f094944a85ee5882a2",
+      "word_count": 176,
+      "last_updated_utc": "2026-11-02T05:12:38.401416+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-observability_references_metrics.md"
+    },
+    "github_awesome-copilot::skills/spring-observability/references/tracing-observation.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-observability/references/tracing-observation.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-observability/references/tracing-observation.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-observability/references/tracing-observation.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "718f66fa671ba09e5dc29161d9301976a2aac472",
+      "content_sha256": "5f1ffe75e9f2d350424a4d62d71218f68208e258f6676053335de263b03c30a3",
+      "word_count": 285,
+      "last_updated_utc": "2026-11-02T05:12:38.397413+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-observability_references_tracing-observation.md"
+    },
+    "github_awesome-copilot::skills/spring-security/SKILL.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-security/SKILL.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-security/SKILL.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-security/SKILL.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "10625b079ea48f5c735a252ccc929a2061588a41",
+      "content_sha256": "2ba0d72e27bb8c40ee34acffd1bf393c5db0ca3e254df9d86f5a3504ef708445",
+      "word_count": 580,
+      "last_updated_utc": "2026-11-02T05:12:38.403337+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-security_SKILL.md"
+    },
+    "github_awesome-copilot::skills/spring-security/references/actuator-protection.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-security/references/actuator-protection.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-security/references/actuator-protection.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-security/references/actuator-protection.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "a917f3b739cd924ed4fa24a5cd8c3e46f77f2460",
+      "content_sha256": "d16531a059c3c1924cf6b72636ceb03b3f802df7164a80be43cfe1d81a07119d",
+      "word_count": 195,
+      "last_updated_utc": "2026-11-02T05:12:38.400245+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-security_references_actuator-protection.md"
+    },
+    "github_awesome-copilot::skills/spring-security/references/csrf-cors-sessions-headers.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-security/references/csrf-cors-sessions-headers.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-security/references/csrf-cors-sessions-headers.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-security/references/csrf-cors-sessions-headers.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "4a9fd87b8f5d64c137c699be1cbb4df40846bfdf",
+      "content_sha256": "cd8f51194cefe022463d2ebc237cf6fa9d38b5abc029d7b49f5f13d57a709c87",
+      "word_count": 375,
+      "last_updated_utc": "2026-11-02T05:12:38.403918+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-security_references_csrf-cors-sessions-headers.md"
+    },
+    "github_awesome-copilot::skills/spring-security/references/method-security.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-security/references/method-security.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-security/references/method-security.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-security/references/method-security.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "d0e5a61b0c8363da665cd5acec24c5aee9d3cb1e",
+      "content_sha256": "8740ca7177018483f4cc10f16cad2b6773367289d405724e2c245f2d29aaab11",
+      "word_count": 158,
+      "last_updated_utc": "2026-11-02T05:12:38.400496+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-security_references_method-security.md"
+    },
+    "github_awesome-copilot::skills/spring-security/references/oauth2-resource-server-jwt.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-security/references/oauth2-resource-server-jwt.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-security/references/oauth2-resource-server-jwt.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-security/references/oauth2-resource-server-jwt.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "10421d289e2621d5ce8beb0fcdbe7f37b1a80e48",
+      "content_sha256": "692ea4087ae9df7a737b5b85714e65cee76dce1d3d8e60268bbb310a31fe0507",
+      "word_count": 259,
+      "last_updated_utc": "2026-11-02T05:12:38.511790+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-security_references_oauth2-resource-server-jwt.md"
+    },
+    "github_awesome-copilot::skills/spring-security/references/oidc-login-oauth2-client.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-security/references/oidc-login-oauth2-client.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-security/references/oidc-login-oauth2-client.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-security/references/oidc-login-oauth2-client.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "eb49188c1a2af9c1ab57915241a1a184254b9ed5",
+      "content_sha256": "6091dddd3e4620a768e0b44d879ce5adfaecccf62c1ce7fe5ee76cefc0284925",
+      "word_count": 200,
+      "last_updated_utc": "2026-11-02T05:12:38.505728+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-security_references_oidc-login-oauth2-client.md"
+    },
+    "github_awesome-copilot::skills/spring-security/references/password-encoding.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-security/references/password-encoding.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-security/references/password-encoding.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-security/references/password-encoding.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "5cf8c6a6fe8530c867d018061118aef7c1cc043a",
+      "content_sha256": "6b9416b860990f7d31b86c6c144de7022628b0a342540490a68e94bffa600900",
+      "word_count": 75,
+      "last_updated_utc": "2026-11-02T05:12:38.958793+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-security_references_password-encoding.md"
+    },
+    "github_awesome-copilot::skills/spring-security/references/review-checklist.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-security/references/review-checklist.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-security/references/review-checklist.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-security/references/review-checklist.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "80082c0b06b81e947e1fa7587430c2717b8329a4",
+      "content_sha256": "d211e93c91d82535e98484bba00c3d628fdb91335b2766a1a23277483a515c2f",
+      "word_count": 98,
+      "last_updated_utc": "2026-11-02T05:12:38.555419+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-security_references_review-checklist.md"
+    },
+    "github_awesome-copilot::skills/spring-security/references/testing-security.md": {
+      "doc_id": "github_awesome-copilot::skills/spring-security/references/testing-security.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-security/references/testing-security.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/spring-security/references/testing-security.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "2f38df304a6246fe7966cc2744fe00b78e892c0a",
+      "content_sha256": "a65dc3cd9b7b141e8e4eb58d0b367c3dede74751e67da609b3b7136f667e4c68",
+      "word_count": 345,
+      "last_updated_utc": "2026-11-02T05:12:38.544815+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_spring-security_references_testing-security.md"
     },
     "github_awesome-copilot::skills/sql-code-review/SKILL.md": {
       "doc_id": "github_awesome-copilot::skills/sql-code-review/SKILL.md",
@@ -20095,9 +20755,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "d00df7e9d9dcf4a035663816819c8f1adadb381571d69d41edd403ff8be778bf",
+      "content_sha256": "d6dc90bf2063ff7622ab3fdda5ed35797624781d31ee53da1b792237ce44784c",
       "word_count": 25036,
-      "last_updated_utc": "2026-11-01T05:12:41.774042+00:00",
+      "last_updated_utc": "2026-11-02T05:12:42.055747+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -20106,9 +20766,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "d00df7e9d9dcf4a035663816819c8f1adadb381571d69d41edd403ff8be778bf",
+      "content_sha256": "d6dc90bf2063ff7622ab3fdda5ed35797624781d31ee53da1b792237ce44784c",
       "word_count": 25036,
-      "last_updated_utc": "2026-11-01T05:12:41.721617+00:00",
+      "last_updated_utc": "2026-11-02T05:12:41.994042+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -20315,9 +20975,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/local-server",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "d793b57506f4911da2a37a1a6077cdebc2020ba764eef4f2f336a37feb97c455",
+      "content_sha256": "3ca9c30f61509e28c50f9fb9bf257cab3f4d0ca7ee499981d9f8786a017c0c60",
       "word_count": 867,
-      "last_updated_utc": "2026-10-31T04:48:47.217875+00:00",
+      "last_updated_utc": "2026-11-02T05:12:41.998311+00:00",
       "local_clean_path": "clean_sources/langgraph__local-server.md"
     },
     "langgraph::observability": {
@@ -20326,9 +20986,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/observability",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "fba619ae440eb732caf7c21ff314414a2d6f428a110c2405501023e490aef435",
+      "content_sha256": "f11104cb6ca12bafc267e384151a8bad3068ac80d449962e4b3c869c11d1a4d2",
       "word_count": 586,
-      "last_updated_utc": "2026-10-31T04:48:47.229427+00:00",
+      "last_updated_utc": "2026-11-02T05:12:42.064919+00:00",
       "local_clean_path": "clean_sources/langgraph__observability.md"
     },
     "langgraph::overview": {
@@ -20414,9 +21074,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/studio",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "ae2df1389e872da9547b8ed06bc36557a8e568ba522f68bdeec2f9fb21627cf5",
+      "content_sha256": "5b152a87b5279e81108f3ce44bcad1b1ec2188791f5e9ddd86de20dd48d8efde",
       "word_count": 813,
-      "last_updated_utc": "2026-10-31T04:48:47.251683+00:00",
+      "last_updated_utc": "2026-11-02T05:12:42.149251+00:00",
       "local_clean_path": "clean_sources/langgraph__studio.md"
     },
     "langgraph::test": {
@@ -21987,9 +22647,9 @@
       "canonical_web_url": "https://github.com/microsoft/vscode/issues/345227",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
       "git_blob_sha": null,
-      "content_sha256": "37c17a66f0af13b3298602df5b90ab4708cd1ac01c14041b0985c4e5ae27cab6",
-      "word_count": 699,
-      "last_updated_utc": "2026-10-30T17:51:52.729025+00:00",
+      "content_sha256": "843e7825077e9c1deb3dbddb742f8ab961755261b4a3f65adb9aff4c555aab20",
+      "word_count": 733,
+      "last_updated_utc": "2026-11-02T05:12:42.741320+00:00",
       "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_345227.md"
     },
     "vscode_insiders::iteration-plan_271045": {

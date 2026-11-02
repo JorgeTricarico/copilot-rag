@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part2
-- **Generado (UTC)**: 2026-10-31T04:48:47.963565+00:00
-- **Total Palabras**: 449,879 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-02T05:12:42.794229+00:00
+- **Total Palabras**: 448,572 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -2267,6 +2267,42 @@ Before finalizing, you MUST verify that the plan:
 ## Success Definition
 
 A successful response is a **single-pass, issue-ready feature specification and implementation plan** that a team can immediately put into GitHub and execute.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::agents/openapi-to-application-java-spring-boot.agent.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/agents/openapi-to-application-java-spring-boot.agent.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/agents/openapi-to-application-java-spring-boot.agent.md
+- **SHA256_FINGERPRINT**: `59a645c839f9a4b7b35e9f675e17a131dc94213125eecc8aa269279b57f0d6ec`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.165802+00:00
+---
+
+**description**: Expert assistant for generating Spring Boot applications from OpenAPI specifications, spec-first with openapi-generator
+
+# OpenAPI to Application Generator (Spring Boot)
+
+You turn OpenAPI 3 specifications into working Spring Boot applications, spec-first: the spec is the source of truth, openapi-generator produces API interfaces and DTOs at build time, and you implement everything else.
+
+## Workflow
+
+1. If the `openapi-to-application-java-spring-boot` skill is installed, follow it for generator configuration, implementation and verification. Otherwise use this fallback:
+   - Save the spec as `src/main/resources/openapi/<name>.yaml` and check it (unique `operationId`s, tags, `required` lists, constraints, error responses, `securitySchemes`).
+   - Add `org.openapitools:openapi-generator-maven-plugin` (or the Gradle `org.openapi.generator` plugin), pinned to the latest release from Maven Central, with `generatorName=spring`, `interfaceOnly=true`, `requestMappingMode=api_interface`, `useTags=true`, `skipDefaultInterface=true`, `openApiNullable=false`, `documentationProvider=none`, `annotationLibrary=none`, `generateSupportingFiles=false`, and your `apiPackage`/`modelPackage`. For Spring Boot 4 also set `useSpringBoot4=true` and `useJackson3=true`; on Boot 3 omit both. For Boot 3.2+/4 set `useSpringBuiltInValidation=true` so generated interfaces omit type-level `@Validated` and use MVC method validation. On Boot 3.0/3.1 keep it `false` and explicitly map request-parameter `ConstraintViolationException` to HTTP 400 with the declared error body, without blanket-mapping service-layer violations. Add `spring-boot-starter-validation`.
+   - Build once, then read the generated `<Tag>Api` interfaces and models (under `target/generated-sources/openapi` or `build/generated/openapi`) before writing code.
+   - Implement one `@RestController` per generated `<Tag>Api` (implement the interface, no extra mappings), with logic in `@Service` classes and persistence in entities separate from the DTOs. The interface carries the server base path; do not duplicate it through controller mappings, context paths or proxy rewriting.
+   - Add a `@RestControllerAdvice` preserving each operation's declared error status, media type and response schema, including validation failures. Handle `MethodArgumentNotValidException` for bodies and, on Boot 3.2+/4, `HandlerMethodValidationException` for query/path parameters; override the corresponding handlers if extending `ResponseEntityExceptionHandler`. Use RFC 9457 `ProblemDetail` only when the spec declares it; otherwise return the declared error DTO instead of Spring's default validation response. Ask before filling gaps or changing the contract.
+   - Write `@WebMvcTest` slices per controller and a `@SpringBootTest` happy path; cover success, not found and invalid input for each operation, including constrained query/path parameters and request bodies, asserting error status, content type and body schema.
+   - Run `./mvnw verify` or `./gradlew build`, start the app, and `curl` one endpoint plus `/actuator/health`. Verify a non-root server URL, such as `/v1` with `/pets` exposed at `/v1/pets`, to catch missing or duplicated prefixes.
+2. New project: use the `create-spring-boot-java-project` skill if installed, otherwise generate the project with start.spring.io. Existing project: keep its build tool, Spring Boot and Java versions; never upgrade implicitly.
+3. If installed, use the `spring-security` skill for security schemes, the `spring-boot-testing` skill (plus `java-testcontainers` for database or broker tests) for tests, and `java-springboot` for general conventions; otherwise apply standard Spring Boot practices.
+
+## Guidelines
+
+- Review the spec first (operationIds, tags, schemas, constraints, errors, security) and ask about ambiguities; fix the spec, not generated code.
+- Pin the generator version; use `useSpringBoot4` + `useJackson3` for Boot 4, defaults for Boot 3.
+- Generate interfaces and models only; keep controllers thin, logic in services, entities separate from generated DTOs.
+- Preserve the spec's error status codes, media types and response schemas, including validation failures. Use RFC 9457 problem details only when declared; ask before changing the contract.
+- Never commit generated sources; always build and run the tests before reporting done.
 
 
 ---
@@ -30374,6 +30410,139 @@ Before submitting any AVM-related code:
 
 
 ---
+# DOCUMENT_SOURCE: github_awesome-copilot::instructions/bulma-v1.instructions.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/instructions/bulma-v1.instructions.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/bulma-v1.instructions.md
+- **SHA256_FINGERPRINT**: `4d35f7554ce28293cd737288164136ab497085614acd5c7be6d8807059a27831`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.158013+00:00
+---
+
+**description**: Bulma v1 conventions: Dart Sass modules, CSS variables, themes and dark mode, the smart grid and skeletons
+
+# Bulma v1
+
+Bulma v1 is a rewrite of the Bulma CSS framework on Dart Sass and CSS variables. Most tutorials and older code show Bulma 0.9, so follow these rules when you write or review Bulma code.
+
+## Key changes in Bulma v1
+
+- **Same HTML, except tiles.** Class names did not change, so most 0.9 markup still renders. Tiles were removed.
+- **Dart Sass only.** Build with the `sass` package. `node-sass` and LibSass can't compile it.
+- **Sass modules.** Customize with `@use "bulma/sass" with (...)`. Setting variables and then calling `@import "bulma"` is the 0.9 pattern.
+- **CSS variables.** Every component reads variables prefixed `--bulma-`, so you can theme with plain CSS and no build step.
+- **Themes and dark mode.** A light theme and a dark theme ship by default. The dark theme follows the user's system setting.
+- **Color palettes.** Each of the 7 main colors gets soft, bold, light, dark, invert and 21 numbered shades.
+- **Grid.** The smart grid and fixed grid replace tiles.
+- **Skeletons.** Loading placeholders, as standalone blocks and as an `is-skeleton` modifier.
+- **Prefixed builds.** A prebuilt version prefixes every class with `bulma-`.
+
+## Installation
+
+```bash
+npm install bulma
+```
+
+Import the compiled CSS once:
+
+```js
+import 'bulma/css/bulma.min.css';
+```
+
+Or load it from a CDN:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
+```
+
+Other builds live in `bulma/css/versions/`:
+
+| File                            | Use it when                                          |
+| ------------------------------- | ---------------------------------------------------- |
+| `bulma-prefixed.css`            | Bulma has to share a page with another CSS framework |
+| `bulma-no-helpers.css`          | You only want components, not the `has-*` helpers    |
+| `bulma-no-helpers-prefixed.css` | Both of the above                                    |
+| `bulma-no-dark-mode.css`        | The site should always render in the light theme     |
+
+## Customizing with Sass
+
+Pass variables through `@use ... with`:
+
+```scss
+@use "bulma/sass" with (
+  $primary: #8a4d76,
+  $link: #fa7c91,
+  $family-primary: '"Nunito", sans-serif'
+);
+```
+
+- Don't generate `$primary: ...;` followed by `@import "bulma";`. That is the 0.9 setup, and Sass has deprecated `@import`.
+- Import only what you need by loading the utilities first and then single modules, for example `@use "bulma/sass/utilities" with (...)` and `@use "bulma/sass/form"`.
+- Several component variables are now split into hue, saturation and lightness (`$input-h`, `$input-s`, `$input-background-l`). A variable name from a 0.9 tutorial may no longer exist. Check Bulma's list of Sass variables before using one.
+
+## Customizing with CSS variables
+
+You can change colors at runtime without Sass. Main colors are built from hue, saturation and lightness variables, so overriding those updates every shade derived from them:
+
+```css
+/* Load after Bulma */
+:root {
+  --bulma-primary-h: 280deg;
+  --bulma-primary-s: 60%;
+  --bulma-primary-l: 45%;
+}
+```
+
+- Scope variables to a component to change one part only, for example `.button { --bulma-button-border-width: 2px; }`.
+- In your own CSS, read Bulma's values with `var(--bulma-...)` instead of copying hex codes, so custom styles follow the theme.
+
+## Dark mode
+
+- The page is light by default and turns dark when the user's system prefers dark.
+- Force a theme with `data-theme="dark"` or the `theme-dark` class, on `<html>` or on any element. `data-theme="light"` and `theme-light` force light.
+- Use `bulma-no-dark-mode.css` if the site should never switch.
+- Pair **soft** backgrounds with **bold** text, for example `has-background-primary-soft has-text-primary-bold`. Soft and bold swap in dark mode, so the contrast holds.
+- Avoid fixed colors such as `has-background-white` or hard-coded hex values for page surfaces. In custom CSS use `var(--bulma-scheme-main)` for the page background so it follows the theme.
+
+## Layout
+
+Tiles (`tile is-ancestor`, `is-parent`, `is-child`) are gone from Bulma v1, so that markup gets no styles. Use the smart grid, which fits as many cells per row as their minimum width allows:
+
+```html
+<div class="grid">
+  <div class="cell">One</div>
+  <div class="cell">Two</div>
+  <div class="cell is-col-span-2">Three, two columns wide</div>
+</div>
+```
+
+For a set number of columns, wrap the grid in `fixed-grid`:
+
+```html
+<div class="fixed-grid has-3-cols">
+  <div class="grid">
+    <div class="cell">One</div>
+    <div class="cell">Two</div>
+    <div class="cell">Three</div>
+  </div>
+</div>
+```
+
+- Cells take `is-col-span-*`, `is-row-span-*`, `is-col-start-*` and `is-row-start-*`.
+- `columns` and `column` (with sizes like `is-half` or `is-one-third`) still work for a single flex row.
+
+## Skeletons
+
+- Add `is-skeleton` to a component to show its loading state, for example `button is-skeleton`, `input is-skeleton` or `image is-64x64 is-skeleton`.
+- Use `skeleton-block` for a plain placeholder box and `skeleton-lines` with empty child `div`s for text lines.
+
+## Bulma has no JavaScript
+
+- Bulma is CSS only. The navbar burger, dropdowns, modals and tabs need your own code to toggle `is-active`.
+- In React or Vue, a Bulma component library such as [Bestax](https://bestax.io) or [Buefy](https://buefy.org) handles that state for you. Keep using the one the project already has.
+- Don't add Bootstrap attributes such as `data-bs-toggle`. They do nothing in Bulma.
+- Don't mix in Bootstrap or Tailwind classes. Use Bulma's own names: `button` not `btn`, `column is-half` not `col-md-6`, `is-flex` not `d-flex`, `mt-4` and `px-2` for spacing, `has-text-centered` for alignment.
+
+
+---
 # DOCUMENT_SOURCE: github_awesome-copilot::instructions/caveman-mode.instructions.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/instructions/caveman-mode.instructions.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/caveman-mode.instructions.md
@@ -34686,11 +34855,13 @@ public Set<RelatedEntity> getRelatedEntities() {
 # DOCUMENT_SOURCE: github_awesome-copilot::instructions/copilot-sdk-csharp.instructions.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/instructions/copilot-sdk-csharp.instructions.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/copilot-sdk-csharp.instructions.md
-- **SHA256_FINGERPRINT**: `b63516287968dfee0a2b9a479b16d9dbcf50de10cae8fa8187a44ce9cc556c91`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:07.669375+00:00
+- **SHA256_FINGERPRINT**: `90fec8087e8828ccfaab4cd09ab68738daad2323905cb0cefab614f6176db0b2`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.126790+00:00
 ---
 
-**description**: This file provides guidance on building C# applications using GitHub Copilot SDK.
+**description**: This file provides guidance on building C# applications using the Microsoft Copilot SDK.
+
+The Microsoft Copilot SDK is transitioning from the GitHub Copilot SDK in phases. No immediate changes are required; package names and examples below use the currently published identifiers. See the [official transition announcement](https://github.blog/changelog/2026-10-28-github-copilot-sdk-is-becoming-microsoft-copilot-sdk/).
 
 ## Core Principles
 
@@ -35261,11 +35432,13 @@ var session = await client.CreateSessionAsync(new SessionConfig
 # DOCUMENT_SOURCE: github_awesome-copilot::instructions/copilot-sdk-go.instructions.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/instructions/copilot-sdk-go.instructions.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/copilot-sdk-go.instructions.md
-- **SHA256_FINGERPRINT**: `be5dc2e5c18b246ea0cca6f516935907149b9cf6cc5685401eea66006b9c2316`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:07.625194+00:00
+- **SHA256_FINGERPRINT**: `7283b9b9b1f6b6454bbe0fc3f4415afb9d378226cc40dd785cab74529f4fcadb`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.161022+00:00
 ---
 
-**description**: This file provides guidance on building Go applications using GitHub Copilot SDK.
+**description**: This file provides guidance on building Go applications using the Microsoft Copilot SDK.
+
+The Microsoft Copilot SDK is transitioning from the GitHub Copilot SDK in phases. No immediate changes are required; package names and examples below use the currently published identifiers. See the [official transition announcement](https://github.blog/changelog/2026-10-28-github-copilot-sdk-is-becoming-microsoft-copilot-sdk/).
 
 ## Core Principles
 
@@ -35911,11 +36084,13 @@ session, _ := client.CreateSession(&copilot.SessionConfig{
 # DOCUMENT_SOURCE: github_awesome-copilot::instructions/copilot-sdk-java.instructions.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/instructions/copilot-sdk-java.instructions.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/copilot-sdk-java.instructions.md
-- **SHA256_FINGERPRINT**: `256ef3c06c7216f3c287106c5f09f5644e4fc4ad8e9961a492cfca02de3ce611`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:07.779328+00:00
+- **SHA256_FINGERPRINT**: `694b121734e751dd0c8d9a07bd2eacf8946287027d2f4e912b15efe64a56df9d`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.162341+00:00
 ---
 
-**description**: This file provides guidance on building Java applications using GitHub Copilot SDK for Java.
+**description**: This file provides guidance on building Java applications using the Microsoft Copilot SDK.
+
+The Microsoft Copilot SDK is transitioning from the GitHub Copilot SDK in phases. No immediate changes are required; package names and examples below use the currently published identifiers. See the [official transition announcement](https://github.blog/changelog/2026-10-28-github-copilot-sdk-is-becoming-microsoft-copilot-sdk/).
 
 ## Core Principles
 
@@ -36807,11 +36982,13 @@ var session = client.createSession(new SessionConfig()
 # DOCUMENT_SOURCE: github_awesome-copilot::instructions/copilot-sdk-nodejs.instructions.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/instructions/copilot-sdk-nodejs.instructions.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/copilot-sdk-nodejs.instructions.md
-- **SHA256_FINGERPRINT**: `8bce7c6ee7b94df921b19ee64e05170343f33b5b7fc9128aec63188cdac1f3f0`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:07.656059+00:00
+- **SHA256_FINGERPRINT**: `2a041f623870618d654a0db759831c28219bdfad4aa6331c76e16da63fa083d9`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.155809+00:00
 ---
 
-**description**: This file provides guidance on building Node.js/TypeScript applications using GitHub Copilot SDK.
+**description**: This file provides guidance on building Node.js/TypeScript applications using the Microsoft Copilot SDK.
+
+The Microsoft Copilot SDK is transitioning from the GitHub Copilot SDK in phases. No immediate changes are required; package names and examples below use the currently published identifiers. See the [official transition announcement](https://github.blog/changelog/2026-10-28-github-copilot-sdk-is-becoming-microsoft-copilot-sdk/).
 
 ## Core Principles
 
@@ -37548,11 +37725,13 @@ console.log(message.data.content);
 # DOCUMENT_SOURCE: github_awesome-copilot::instructions/copilot-sdk-python.instructions.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/instructions/copilot-sdk-python.instructions.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/copilot-sdk-python.instructions.md
-- **SHA256_FINGERPRINT**: `0cae17383b27d4ad8bbc10677da0eabe072ddcc34425a7cfcdbbef5031f19377`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:07.775357+00:00
+- **SHA256_FINGERPRINT**: `7d2df9826e9553c6a63e88cb481d8ef2341e24ded366e9e0f43d7ecfdca71aa6`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.144500+00:00
 ---
 
-**description**: This file provides guidance on building Python applications using GitHub Copilot SDK.
+**description**: This file provides guidance on building Python applications using the Microsoft Copilot SDK.
+
+The Microsoft Copilot SDK is transitioning from the GitHub Copilot SDK in phases. No immediate changes are required; package names and examples below use the currently published identifiers. See the [official transition announcement](https://github.blog/changelog/2026-10-28-github-copilot-sdk-is-becoming-microsoft-copilot-sdk/).
 
 ## Core Principles
 
@@ -52219,6 +52398,48 @@ Follow idiomatic Go practices and community standards when writing Go code. Thes
 - Overusing unconstrained types (e.g., `any`); prefer specific types or generic type parameters with constraints. If an unconstrained type is required, use `any` rather than `interface{}`
 - Not considering the zero value of types
 - **Creating duplicate `package` declarations** - this is a compile error; always check existing files before adding package declarations
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::instructions/godot-4-gdscript.instructions.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/instructions/godot-4-gdscript.instructions.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/godot-4-gdscript.instructions.md
+- **SHA256_FINGERPRINT**: `0fb17fa63a9df55f88bc49d393fbe38b9853b1f3ceab95bc3a294a14978e90a9`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.165488+00:00
+---
+
+**description**: Prevent Godot 3 syntax in Godot 4 projects: GDScript 2.0 annotations, await, setters, @rpc, typed signals and Callables
+
+# Godot 4 GDScript 2.0 (no Godot 3 syntax)
+
+## GDScript 2.0 syntax (never Godot 3)
+| Godot 3 (wrong) | Godot 4 (use) |
+|---|---|
+| `export var speed = 5` / `export(int) var` | `@export var speed: float = 5.0` (`@export_range`, `@export_enum`, `@export_group`) |
+| `onready var x = $X` | `@onready var x: Node2D = $X` |
+| `tool` | `@tool` (first line) |
+| `yield(get_tree().create_timer(1), "timeout")` | `await get_tree().create_timer(1.0).timeout` |
+| `yield(obj, "signal")` | `await obj.signal_name` |
+| `var x setget set_x, get_x` | `var x: int:` with `set(value):` / `get:` blocks |
+| `puppet` funcs | `@rpc` (authority-only; Godot 4 default) |
+| `remote` funcs | `@rpc("any_peer")` |
+| `remotesync` funcs | `@rpc("any_peer", "call_local")` |
+| `puppetsync` funcs | `@rpc("call_local")` |
+| `master` funcs | no direct map; use `@rpc("any_peer")` + `multiplayer.get_remote_sender_id()` check |
+| `funcref(obj, "m")` | `Callable(obj, "m")` or just `obj.m` |
+| `PoolStringArray`, `PoolVector2Array` | `PackedStringArray`, `PackedVector2Array` |
+- Use static typing everywhere: `var hp: int = 100`, `func hit(dmg: int) -> void:`. Use `:=` for inferred types.
+- Lifecycle overrides (`_ready`, `_process`) no longer call the parent automatically; call `super()` when extending a scripted class.
+- Use `StringName` literals `&"action"` for input actions/groups and `^"path"` NodePaths where it helps.
+
+## Signals & Callables
+- Declare typed signals: `signal health_changed(new_value: int)`.
+- Connect with the Signal object: `button.pressed.connect(_on_button_pressed)`. Never use the Godot 3 form `connect("pressed", self, "_on_button_pressed")`.
+- Bind extra args with `.bind()`: `enemy.died.connect(_on_enemy_died.bind(enemy))`. Flags: `connect(callable, CONNECT_ONE_SHOT)`.
+- Emit with `health_changed.emit(hp)` rather than `emit_signal("health_changed", hp)`.
+- Disconnect with `sig.disconnect(callable)`; check `sig.is_connected(callable)` first.
+- Use lambdas for small handlers: `timer.timeout.connect(func(): queue_free())`.
+- Prefer signals ("call down, signal up") over `get_parent().get_parent()` chains.
 
 
 ---
@@ -75745,1550 +75966,38 @@ Each requirement must be:
 # DOCUMENT_SOURCE: github_awesome-copilot::instructions/springboot-4-migration.instructions.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/instructions/springboot-4-migration.instructions.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/springboot-4-migration.instructions.md
-- **SHA256_FINGERPRINT**: `110239ddd00e4f5a16e2a1366162823efd930e5cee36afc1d0b43b3e40f40299`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:12.365837+00:00
+- **SHA256_FINGERPRINT**: `8177d54d411919ad5ca7e52e06875ccdb11009df64b30a6102010ea155b63077`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.334302+00:00
 ---
 
-**description**: Comprehensive guide for migrating Spring Boot applications from 3.x to 4.0, focusing on Gradle Kotlin DSL and version catalogs
+**description**: Pointer to the spring-boot-4-migration skill for upgrading Spring Boot 3.x projects to 4.0
 
-# Spring Boot 3.x to 4.0 Migration Guide
+# Spring Boot 4.0 Migration
 
-## Project Context
+Apply this only when the user explicitly asks to migrate Spring Boot 3.x to 4 (or to fix failures caused by that migration). Editing the Boot version in a build file is not enough. Patch bumps within 3.x and 4.0 to 4.1 upgrades are not covered; follow the target Spring Boot version's [release notes](https://github.com/spring-projects/spring-boot/releases) and [upgrade guide](https://docs.spring.io/spring-boot/upgrading.html) for those, not the JDK-focused `java-upgrade` skill.
 
-This guide provides comprehensive GitHub Copilot instructions for upgrading Spring Boot projects from version 3.x to 4.0, with emphasis on Gradle Kotlin DSL, version catalogs (`libs.versions.toml`), and Kotlin-specific considerations.
+For a 3.x to 4 migration, use the `spring-boot-4-migration` skill. It holds the full workflow and topic references (starters, Jackson 3, testing, configuration properties, removed APIs) for Maven and Gradle.
 
-**Key architectural changes in Spring Boot 4.0:**
-- Modular dependency structure with focused, smaller modules
-- Spring Framework 7.x required
-- Jakarta EE 11 (Servlet 6.1 baseline)
-- Jackson 3.x migration (package namespace changes)
-- Kotlin 2.2+ requirement
-- Comprehensive property reorganization
+- Detect the current Boot version first and migrate to the latest 3.5.x before moving to 4.0.
+- Run the build and tests after each migration step.
+- Never read or print secrets such as `.env` files.
 
-## System Requirements
-
-### Minimum Versions
-
-- **Java**: 17+ (prefer latest LTS: Java 21 or 25)
-- **Kotlin**: 2.2.0 or later
-- **Spring Framework**: 7.x (managed by Spring Boot 4.0)
-- **Jakarta EE**: 11 (Servlet 6.1 baseline)
-- **GraalVM** (for native images): 25+
-- **Gradle**: 8.5+ (for Kotlin DSL and version catalog support)
-- **Gradle CycloneDX Plugin**: 3.0.0+
-
-### Verify Compatibility
-
-```bash
-# Check current versions
-./gradlew --version
-./gradlew dependencies --configuration runtimeClasspath
-```
-
-## Pre-Migration Steps
-
-### 1. Upgrade to Latest Spring Boot 3.5.x
-
-Before migrating to 4.0, upgrade to the latest 3.5.x release:
-
-```kotlin
-// libs.versions.toml
-[versions]
-springBoot = "3.5.6" # Latest 3.x before migrating to 4.0
-```
-
-### 2. Clean Up Deprecations
-
-Remove all deprecated API usage from Spring Boot 3.x. These will be compilation errors in 4.0:
-
-```bash
-# Build and review warnings
-./gradlew clean build --warning-mode all
-```
-
-### 3. Review Dependency Changes
-
-Compare your dependencies against:
-- [Spring Boot 3.5.x Dependency Versions](https://docs.spring.io/spring-boot/3.5/appendix/dependency-versions/coordinates.html)
-- [Spring Boot 4.0.x Dependency Versions](https://docs.spring.io/spring-boot/4.0/appendix/dependency-versions/coordinates.html)
-
-## Module Restructuring and Starter Changes
-
-### Critical: Modular Architecture
-
-Spring Boot 4.0 introduces **smaller, focused modules** replacing large monolithic jars. This requires dependency updates in most projects.
-
-**Important for Library Authors:** Due to the modularization effort and package reorganization, **supporting both Spring Boot 3 and Spring Boot 4 within the same artifact is strongly discouraged**. Library authors should publish separate artifacts for each major version to avoid runtime conflicts and ensure clean dependency management.
-
-### Migration Strategy: Choose One Approach
-
-#### Option 1: Technology-Specific Starters (Recommended for Production)
-
-Most technologies covered by Spring Boot now have **dedicated test starter companions**. This provides fine-grained control.
-
-**Complete Starter Reference:** For comprehensive tables of all available starters (Core, Web, Database, Spring Data, Messaging, Security, Templating, Production-Ready, etc.) and their test companions, refer to the [official Spring Boot 4.0 Migration Guide](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide#starters).
-
-**libs.versions.toml:**
-```toml
-[versions]
-springBoot = "4.0.0"
-
-[libraries]
-# Core starters with dedicated test modules
-spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-webmvc", version.ref = "springBoot" }
-spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test", version.ref = "springBoot" }
-
-spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "springBoot" }
-spring-boot-starter-data-jpa-test = { module = "org.springframework.boot:spring-boot-starter-data-jpa-test", version.ref = "springBoot" }
-
-spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "springBoot" }
-spring-boot-starter-security-test = { module = "org.springframework.boot:spring-boot-starter-security-test", version.ref = "springBoot" }
-```
-
-**build.gradle.kts:**
-```kotlin
-dependencies {
-    implementation(libs.spring.boot.starter.webmvc)
-    implementation(libs.spring.boot.starter.data.jpa)
-    implementation(libs.spring.boot.starter.security)
-
-    testImplementation(libs.spring.boot.starter.webmvc.test)
-    testImplementation(libs.spring.boot.starter.data.jpa.test)
-    testImplementation(libs.spring.boot.starter.security.test)
-}
-```
-
-#### Option 2: Classic Starters (Quick Migration, Deprecated)
-
-For rapid migration, use **classic starters** that bundle all auto-configuration (like Spring Boot 3.x):
-
-**libs.versions.toml:**
-```toml
-[libraries]
-spring-boot-starter-classic = { module = "org.springframework.boot:spring-boot-starter-classic", version.ref = "springBoot" }
-spring-boot-starter-test-classic = { module = "org.springframework.boot:spring-boot-starter-test-classic", version.ref = "springBoot" }
-```
-
-**build.gradle.kts:**
-```kotlin
-dependencies {
-    implementation(libs.spring.boot.starter.classic)
-    testImplementation(libs.spring.boot.starter.test.classic)
-}
-```
-
-**Warning**: Classic starters are **deprecated** and will be removed in future releases. Plan migration to technology-specific starters.
-
-#### Option 3: Direct Module Dependencies (Advanced)
-
-For explicit control over transitive dependencies:
-
-**libs.versions.toml:**
-```toml
-[libraries]
-spring-boot-webmvc = { module = "org.springframework.boot:spring-boot-webmvc", version.ref = "springBoot" }
-spring-boot-webmvc-test = { module = "org.springframework.boot:spring-boot-webmvc-test", version.ref = "springBoot" }
-```
-
-### Renamed Starters (Breaking Changes)
-
-Update these starter names in your `libs.versions.toml`:
-
-| Spring Boot 3.x | Spring Boot 4.0 | Notes |
-|----------------|-----------------|-------|
-| `spring-boot-starter-web` | `spring-boot-starter-webmvc` | Explicit naming |
-| `spring-boot-starter-web-services` | `spring-boot-starter-webservices` | Hyphen removed |
-| `spring-boot-starter-aop` | `spring-boot-starter-aspectj` | Only needed if using `org.aspectj.lang.annotation` |
-| `spring-boot-starter-oauth2-authorization-server` | `spring-boot-starter-security-oauth2-authorization-server` | Security namespace |
-| `spring-boot-starter-oauth2-client` | `spring-boot-starter-security-oauth2-client` | Security namespace |
-| `spring-boot-starter-oauth2-resource-server` | `spring-boot-starter-security-oauth2-resource-server` | Security namespace |
-
-**Migration Example (libs.versions.toml):**
-```toml
-[libraries]
-# Old (Spring Boot 3.x)
-# spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "springBoot" }
-# spring-boot-starter-oauth2-client = { module = "org.springframework.boot:spring-boot-starter-oauth2-client", version.ref = "springBoot" }
-
-# New (Spring Boot 4.0)
-spring-boot-starter-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc", version.ref = "springBoot" }
-spring-boot-starter-security-oauth2-client = { module = "org.springframework.boot:spring-boot-starter-security-oauth2-client", version.ref = "springBoot" }
-```
-
-### AspectJ Starter Clarification
-
-Only include `spring-boot-starter-aspectj` if you're **actually using AspectJ annotations**:
-
-```kotlin
-// Only needed if code uses org.aspectj.lang.annotation package
-import org.aspectj.lang.annotation.Aspect
-import org.aspectj.lang.annotation.Before
-
-@Aspect
-class MyAspect {
-    @Before("execution(* com.example..*(..))")
-    fun beforeAdvice() { }
-}
-```
-
-If not using AspectJ, remove the dependency.
-
-## Removed Features and Alternatives
-
-### Embedded Servers
-
-#### Undertow Removed
-
-**Undertow is completely removed** - not compatible with Servlet 6.1 baseline.
-
-**Migration:**
-- Use **Tomcat** (default) or **Jetty**
-- Do **not** deploy Spring Boot 4.0 apps to non-Servlet 6.1 containers
-
-**libs.versions.toml:**
-```toml
-[libraries]
-# Remove Undertow
-# spring-boot-starter-undertow = { module = "org.springframework.boot:spring-boot-starter-undertow", version.ref = "springBoot" }
-
-# Use Tomcat (default) or Jetty
-spring-boot-starter-jetty = { module = "org.springframework.boot:spring-boot-starter-jetty", version.ref = "springBoot" }
-```
-
-**build.gradle.kts:**
-```kotlin
-dependencies {
-    implementation(libs.spring.boot.starter.webmvc) {
-        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
-    }
-    implementation(libs.spring.boot.starter.jetty) // Alternative to Tomcat
-}
-```
-
-### Session Management
-
-#### Spring Session Hazelcast and MongoDB Removed
-
-**Maintained by respective teams**, no longer in Spring Boot dependency management.
-
-**Migration (libs.versions.toml):**
-```toml
-[versions]
-hazelcast-spring-session = "3.x.x" # Check Hazelcast documentation
-mongodb-spring-session = "4.x.x"   # Check MongoDB documentation
-
-[libraries]
-# Explicit versions required
-spring-session-hazelcast = { module = "com.hazelcast:spring-session-hazelcast", version.ref = "hazelcast-spring-session" }
-spring-session-mongodb = { module = "org.springframework.session:spring-session-data-mongodb", version.ref = "mongodb-spring-session" }
-```
-
-### Reactive Messaging
-
-#### Pulsar Reactive Removed
-
-Spring Pulsar dropped Reactor support - reactive Pulsar client removed.
-
-**Migration:**
-- Use imperative Pulsar client
-- Or migrate to alternative reactive messaging (Kafka, RabbitMQ)
-
-### Testing
-
-#### Spock Framework Removed
-
-**Spock does not yet support Groovy 5** (required for Spring Boot 4.0).
-
-**Migration:**
-- Use JUnit 5 with Kotlin
-- Or wait for Spock Groovy 5 compatibility
-
-### Build Features
-
-#### Executable Jar Launch Scripts Removed
-
-Embedded launch scripts for "fully executable" jars removed (Unix-specific, limited use).
-
-**build.gradle.kts (remove):**
-```kotlin
-// Remove this configuration
-tasks.bootJar {
-    launchScript() // No longer supported
-}
-```
-
-**Alternatives:**
-- Use `java -jar app.jar` directly
-- Use Gradle Application Plugin for native launchers
-- Use systemd service files
-
-#### Classic Uber-Jar Loader Removed
-
-The classic uber-jar loader has been removed. Remove any loader implementation configuration from your build.
-
-**Maven (pom.xml) - remove:**
-```xml
-<build>
-    <plugins>
-        <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-            <configuration>
-                <loaderImplementation>CLASSIC</loaderImplementation>
-            </configuration>
-        </plugin>
-    </plugins>
-</build>
-```
-
-**Gradle (build.gradle.kts) - remove:**
-```kotlin
-tasks.bootJar {
-    loaderImplementation = org.springframework.boot.loader.tools.LoaderImplementation.CLASSIC // REMOVE THIS
-}
-```
-
-## Jackson 3 Migration
-
-### Major Breaking Change: Package Namespace
-
-Jackson 3 changes **group ID and package names**:
-
-| Component | Old (Jackson 2) | New (Jackson 3) |
-|-----------|----------------|-----------------|
-| Group ID | `com.fasterxml.jackson` | `tools.jackson` |
-| Packages | `com.fasterxml.jackson.*` | `tools.jackson.*` |
-| Exception | `jackson-annotations` | Still uses `com.fasterxml.jackson.core` group |
-
-**libs.versions.toml:**
-```toml
-[versions]
-jackson = "3.0.1" # Managed by Spring Boot 4.0
-
-[libraries]
-# Jackson 3 uses new group ID
-jackson-databind = { module = "tools.jackson.core:jackson-databind", version.ref = "jackson" }
-jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
-
-# Exception: annotations still use old group
-jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
-```
-
-### Class and Annotation Renames
-
-Update imports and annotations:
-
-| Spring Boot 3.x | Spring Boot 4.0 |
-|----------------|-----------------|
-| `Jackson2ObjectMapperBuilderCustomizer` | `JsonMapperBuilderCustomizer` |
-| `JsonObjectSerializer` | `ObjectValueSerializer` |
-| `JsonValueDeserializer` | `ObjectValueDeserializer` |
-| `@JsonComponent` | `@JacksonComponent` |
-| `@JsonMixin` | `@JacksonMixin` |
-
-**Migration Example:**
-```kotlin
-// Old (Spring Boot 3.x)
-import com.fasterxml.jackson.databind.ObjectMapper
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
-import org.springframework.boot.jackson.JsonComponent
-
-@JsonComponent
-class CustomSerializer : JsonSerializer<MyType>() { }
-
-@Configuration
-class JacksonConfig {
-    @Bean
-    fun customizer(): Jackson2ObjectMapperBuilderCustomizer {
-        return Jackson2ObjectMapperBuilderCustomizer { builder ->
-            builder.simpleDateFormat("yyyy-MM-dd")
-        }
-    }
-}
-
-// New (Spring Boot 4.0)
-import tools.jackson.databind.ObjectMapper
-import org.springframework.boot.autoconfigure.jackson.JsonMapperBuilderCustomizer
-import org.springframework.boot.jackson.JacksonComponent
-
-@JacksonComponent
-class CustomSerializer : JsonSerializer<MyType>() { }
-
-@Configuration
-class JacksonConfig {
-    @Bean
-    fun customizer(): JsonMapperBuilderCustomizer {
-        return JsonMapperBuilderCustomizer { builder ->
-            builder.simpleDateFormat("yyyy-MM-dd")
-        }
-    }
-}
-```
-
-### Configuration Property Changes
-
-**application.yml migration:**
-```yaml
-# Old (Spring Boot 3.x)
-spring:
-  jackson:
-    read:
-      enums-using-to-string: true
-    write:
-      dates-as-timestamps: false
-
-# New (Spring Boot 4.0)
-spring:
-  jackson:
-    json:
-      read:
-        enums-using-to-string: true
-      write:
-        dates-as-timestamps: false
-```
-
-### Jackson 2 Compatibility Module (Temporary)
-
-For gradual migration, use the **temporary compatibility module** (deprecated, will be removed):
-
-**libs.versions.toml:**
-```toml
-[libraries]
-spring-boot-jackson2 = { module = "org.springframework.boot:spring-boot-jackson2", version.ref = "springBoot" }
-```
-
-**build.gradle.kts:**
-```kotlin
-dependencies {
-    implementation(libs.spring.boot.jackson2)
-}
-```
-
-**application.yml:**
-```yaml
-spring:
-  jackson:
-    use-jackson2-defaults: true # Use Jackson 2 behavior
-```
-
-**Properties under `spring.jackson2.*` namespace** when using compatibility module.
-
-**Plan migration away from this module** - it will be removed in future versions.
-
-## Core Framework Changes
-
-### Nullability Annotations: JSpecify
-
-Spring Boot 4.0 adds **JSpecify nullability annotations** throughout the codebase.
-
-**Impact:**
-- Kotlin null-safety may flag new warnings/errors
-- Null checkers (SpotBugs, NullAway) may report new issues
-- **RestClient methods like `body()` are now explicitly marked as nullable** - always check for null or use `Objects.requireNonNull()`
-
-**Migration for Kotlin:**
-```kotlin
-// Explicit nullable types may be required
-fun processUser(id: String?): User? {
-    return userRepository.findById(id) // May now be explicitly nullable
-}
-
-// RestClient body() can return null
-val body: String? = restClient.get()
-    .uri("https://api.example.com/data")
-    .retrieve()
-    .body(String::class.java) // Nullable - handle appropriately
-
-if (body != null) {
-    println(body.length)
-}
-```
-
-**Actuator endpoint parameters:**
-- Cannot use `javax.annotations.NonNull` or `org.springframework.lang.Nullable`
-- Use `org.jspecify.annotations.Nullable` instead
-
-**libs.versions.toml:**
-```toml
-[libraries]
-jspecify = { module = "org.jspecify:jspecify", version = "1.0.0" }
-```
-
-### Package Relocations
-
-#### BootstrapRegistry
-
-**Old import:**
-```kotlin
-import org.springframework.boot.BootstrapRegistry
-```
-
-**New import:**
-```kotlin
-import org.springframework.boot.bootstrap.BootstrapRegistry
-```
-
-#### EnvironmentPostProcessor
-
-**Old import:**
-```kotlin
-import org.springframework.boot.env.EnvironmentPostProcessor
-```
-
-**New import:**
-```kotlin
-import org.springframework.boot.EnvironmentPostProcessor
-```
-
-**Update `META-INF/spring.factories`:**
-```properties
-# Old
-org.springframework.boot.env.EnvironmentPostProcessor=com.example.MyPostProcessor
-
-# New
-org.springframework.boot.EnvironmentPostProcessor=com.example.MyPostProcessor
-```
-
-**Note:** Deprecated form still available temporarily but will be removed.
-
-#### Entity Scan
-
-**Old import:**
-```kotlin
-import org.springframework.boot.autoconfigure.domain.EntityScan
-```
-
-**New import:**
-```kotlin
-import org.springframework.boot.persistence.autoconfigure.EntityScan
-```
-
-### Logging Changes
-
-#### Logback Default Charset
-
-Log files now default to **UTF-8** (harmonized with Log4j2):
-
-**logback-spring.xml (explicit configuration):**
-```xml
-<configuration>
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>app.log</file>
-        <encoder>
-            <charset>UTF-8</charset>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
-        </encoder>
-    </appender>
-</configuration>
-```
-
-**Console logging:** Uses `Console#charset()` if available (Java 17+), otherwise falls back to UTF-8. This provides better platform compatibility while maintaining consistent encoding.
-
-### DevTools Changes
-
-#### Live Reload Disabled by Default
-
-**application.yml:**
-```yaml
-spring:
-  devtools:
-    livereload:
-      enabled: true # Must explicitly enable in 4.0
-```
-
-**libs.versions.toml:**
-```toml
-[libraries]
-spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools", version.ref = "springBoot" }
-```
-
-**build.gradle.kts:**
-```kotlin
-dependencies {
-    developmentOnly(libs.spring.boot.devtools)
-}
-```
-
-### PropertyMapper API Behavioral Change
-
-**Breaking change:** No longer calls adapter/predicate methods by default when source is `null`.
-
-**Migration pattern:**
-```kotlin
-// Old behavior (Spring Boot 3.x)
-map.from(source::method).to(destination::method)
-// Calls destination.method(null) if source returns null
-
-// New behavior (Spring Boot 4.0)
-map.from(source::method).to(destination::method)
-// Skips call if source returns null
-
-// Explicit null handling (new)
-map.from(source::method).always().to(destination::method)
-// Always calls destination.method(value), even if null
-```
-
-**Removed method:** `alwaysApplyingNotNull()` - use `always()` instead.
-
-**Migration example:** Review [Spring Boot commit 239f384ac0](https://github.com/spring-projects/spring-boot/commit/239f384ac0893d151b89f204886874c6adb00001) to see how Spring Boot itself adapted to the new API.
-
-## Dependency and Build Changes
-
-### Gradle Plugin Updates
-
-**build.gradle.kts:**
-```kotlin
-plugins {
-    kotlin("jvm") version "2.2.0" // Minimum 2.2.0
-    kotlin("plugin.spring") version "2.2.0"
-    id("org.springframework.boot") version "4.0.0"
-    id("io.spring.dependency-management") version "1.1.7"
-    id("org.cyclonedx.bom") version "3.0.0" // Minimum 3.0.0
-}
-```
-
-### Optional Dependencies in Gradle
-
-Optional dependencies are **no longer included in uber jars by default**.
-
-**build.gradle.kts (include optionals explicitly):**
-```kotlin
-tasks.bootJar {
-    includeOptional = true // If needed
-}
-```
-
-### Spring Retry → Spring Framework Core Retry
-
-Spring Boot 4.0 removes dependency management for **Spring Retry** (portfolio migrating to Spring Framework 7.0 core retry).
-
-**Migration Option 1: Use Spring Framework Core Retry (Recommended)**
-
-```kotlin
-// Use built-in Spring Framework retry
-import org.springframework.core.retry.RetryTemplate
-import org.springframework.core.retry.support.RetryTemplateBuilder
-
-@Configuration
-class RetryConfig {
-    @Bean
-    fun retryTemplate(): RetryTemplate {
-        return RetryTemplateBuilder()
-            .maxAttempts(3)
-            .fixedBackoff(1000)
-            .build()
-    }
-}
-```
-
-**Migration Option 2: Explicit Spring Retry Version (Temporary)**
-
-**libs.versions.toml:**
-```toml
-[versions]
-spring-retry = "2.0.5" # Explicit version required
-
-[libraries]
-spring-retry = { module = "org.springframework.retry:spring-retry", version.ref = "spring-retry" }
-```
-
-**Plan migration to Spring Framework core retry.**
-
-### Spring Authorization Server
-
-Now part of Spring Security - explicit version management removed.
-
-**libs.versions.toml (before - Spring Boot 3.x):**
-```toml
-[versions]
-spring-authorization-server = "1.3.0" # No longer works
-
-[libraries]
-spring-security-oauth2-authorization-server = { module = "org.springframework.security:spring-security-oauth2-authorization-server", version.ref = "spring-authorization-server" }
-```
-
-**Migration (Spring Boot 4.0):**
-```toml
-[versions]
-spring-security = "7.0.0" # Use Spring Security version instead
-
-[libraries]
-# Managed by spring-security.version property, not separate
-spring-security-oauth2-authorization-server = { module = "org.springframework.security:spring-security-oauth2-authorization-server", version.ref = "spring-security" }
-```
-
-Or rely on Spring Boot dependency management (recommended):
-```kotlin
-dependencies {
-    implementation("org.springframework.security:spring-security-oauth2-authorization-server")
-    // Version managed by Spring Boot 4.0
-}
-```
-
-### Elasticsearch Client Changes
-
-#### Low-Level Client Replacement
-
-**Deprecated low-level `RestClient` → new `Rest5Client`:**
-
-**Note:** Higher-level clients (`ElasticsearchClient` and Spring Data's `ReactiveElasticsearchClient`) **remain unchanged** and have been updated internally to use the new low-level client.
-
-**Imports:**
-```kotlin
-// Old (Spring Boot 3.x)
-import org.elasticsearch.client.RestClient
-import org.elasticsearch.client.RestClientBuilder
-import org.springframework.boot.autoconfigure.elasticsearch.RestClientBuilderCustomizer
-
-// New (Spring Boot 4.0)
-import co.elastic.clients.transport.rest_client.Rest5Client
-import co.elastic.clients.transport.rest_client.Rest5ClientBuilder
-import org.springframework.boot.autoconfigure.elasticsearch.Rest5ClientBuilderCustomizer
-```
-
-**Configuration:**
-```kotlin
-@Configuration
-class ElasticsearchConfig {
-
-    // Old
-    // @Bean
-    // fun restClientCustomizer(): RestClientBuilderCustomizer {
-    //     return RestClientBuilderCustomizer { builder ->
-    //         builder.setRequestConfigCallback { config ->
-    //             config.setConnectTimeout(5000)
-    //         }
-    //     }
-    // }
-
-    // New
-    @Bean
-    fun rest5ClientCustomizer(): Rest5ClientBuilderCustomizer {
-        return Rest5ClientBuilderCustomizer { builder ->
-            builder.setRequestConfigCallback { config ->
-                config.setConnectTimeout(5000)
-            }
-        }
-    }
-}
-```
-
-**Dependency Consolidation:**
-
-Sniffer now included in `co.elastic.clients:elasticsearch-java` module.
-
-**libs.versions.toml:**
-```toml
-[libraries]
-# Remove these - no longer managed
-# elasticsearch-rest-client = { module = "org.elasticsearch.client:elasticsearch-rest-client", version = "..." }
-# elasticsearch-rest-client-sniffer = { module = "org.elasticsearch.client:elasticsearch-rest-client-sniffer", version = "..." }
-
-# Use single dependency (includes sniffer)
-elasticsearch-java = { module = "co.elastic.clients:elasticsearch-java", version = "8.x.x" }
-```
-
-### Hibernate Dependency Changes
-
-**libs.versions.toml:**
-```toml
-[libraries]
-# Renamed module (hibernate-jpamodelgen replaced by hibernate-processor)
-hibernate-processor = { module = "org.hibernate.orm:hibernate-processor", version.ref = "hibernate" }
-
-# These artifacts are NO LONGER PUBLISHED by Hibernate:
-# hibernate-proxool - discontinued by Hibernate project
-# hibernate-vibur - discontinued by Hibernate project
-# Remove any dependencies on these modules
-```
-
-**Note:** `hibernate-jpamodelgen` artifact still exists but is deprecated. Use `hibernate-processor` going forward.
-
-## Configuration Property Changes
-
-### MongoDB Property Restructuring
-
-**Major reorganization:** Non-Spring Data properties moved to `spring.mongodb.*`:
-
-**application.yml migration:**
-```yaml
-# Old (Spring Boot 3.x)
-spring:
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/mydb
-      database: mydb
-      host: localhost
-      port: 27017
-      username: user
-      password: pass
-      authentication-database: admin
-      replica-set-name: rs0
-      additional-hosts:
-        - host1:27017
-        - host2:27017
-      ssl:
-        enabled: true
-        bundle: my-bundle
-      representation:
-        uuid: STANDARD
-
-management:
-  health:
-    mongo:
-      enabled: true
-  metrics:
-    mongo:
-      command:
-        enabled: true
-      connectionpool:
-        enabled: true
-
-# New (Spring Boot 4.0)
-spring:
-  mongodb:
-    uri: mongodb://localhost:27017/mydb
-    database: mydb
-    host: localhost
-    port: 27017
-    username: user
-    password: pass
-    authentication-database: admin
-    replica-set-name: rs0
-    additional-hosts:
-      - host1:27017
-      - host2:27017
-    ssl:
-      enabled: true
-      bundle: my-bundle
-    representation:
-      uuid: STANDARD # Explicit configuration now required
-
-  data:
-    mongodb:
-      # Spring Data-specific properties remain here
-      auto-index-creation: true
-      field-naming-strategy: org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy
-      gridfs:
-        bucket: fs
-        database: gridfs-db
-      repositories:
-        type: auto
-      representation:
-        big-decimal: DECIMAL128 # Explicit configuration now required
-
-management:
-  health:
-    mongodb: # Renamed from "mongo"
-      enabled: true
-  metrics:
-    mongodb: # Renamed from "mongo"
-      command:
-        enabled: true
-      connectionpool:
-        enabled: true
-```
-
-**Key changes:**
-- **UUID representation**: **MANDATORY** - No default provided, must explicitly configure `spring.mongodb.representation.uuid` (e.g., `STANDARD`, `JAVA_LEGACY`, `PYTHON_LEGACY`, `C_SHARP_LEGACY`)
-- **BigDecimal representation**: **MANDATORY** - No default provided, must explicitly configure `spring.data.mongodb.representation.big-decimal` (e.g., `DECIMAL128`, `STRING`)
-- **Management properties**: `mongo` → `mongodb`
-- **Failure to configure these will result in runtime errors when persisting UUID or BigDecimal values**
-
-### Spring Session Property Renames
-
-**application.yml migration:**
-```yaml
-# Old (Spring Boot 3.x)
-spring:
-  session:
-    redis:
-      namespace: myapp:session
-      flush-mode: on-save
-    mongodb:
-      collection-name: sessions
-
-# New (Spring Boot 4.0)
-spring:
-  session:
-    data:
-      redis:
-        namespace: myapp:session
-        flush-mode: on-save
-      mongodb:
-        collection-name: sessions
-```
-
-### Persistence Module Property Change
-
-**application.yml migration:**
-```yaml
-# Old (Spring Boot 3.x)
-spring:
-  dao:
-    exceptiontranslation:
-      enabled: true
-
-# New (Spring Boot 4.0)
-spring:
-  persistence:
-    exceptiontranslation:
-      enabled: true
-```
-
-## Web Framework Changes
-
-### Static Resource Locations
-
-`PathRequest#toStaticResources()` now includes `/fonts/**` by default.
-
-**Security configuration (exclude fonts if needed):**
-```kotlin
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest
-import org.springframework.boot.autoconfigure.security.StaticResourceLocation
-
-@Configuration
-@EnableWebSecurity
-class SecurityConfig {
-
-    @Bean
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http {
-            authorizeHttpRequests {
-                // Exclude fonts if needed
-                authorize(PathRequest.toStaticResources()
-                    .atCommonLocations()
-                    .excluding(StaticResourceLocation.FONTS), permitAll)
-                authorize(anyRequest, authenticated)
-            }
-        }
-        return http.build()
-    }
-}
-```
-
-### HttpMessageConverters Deprecation
-
-`HttpMessageConverters` deprecated due to framework improvements (conflated client/server converters).
-
-**Migration:**
-```kotlin
-// Old (Spring Boot 3.x)
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters
-import org.springframework.context.annotation.Bean
-
-@Configuration
-class WebConfig {
-    @Bean
-    fun customConverters(): HttpMessageConverters {
-        return HttpMessageConverters(MyCustomConverter())
-    }
-}
-
-// New (Spring Boot 4.0)
-import org.springframework.boot.autoconfigure.http.client.ClientHttpMessageConvertersCustomizer
-import org.springframework.boot.autoconfigure.http.server.ServerHttpMessageConvertersCustomizer
-
-@Configuration
-class WebConfig {
-
-    // Separate client and server converters
-    @Bean
-    fun clientConvertersCustomizer(): ClientHttpMessageConvertersCustomizer {
-        return ClientHttpMessageConvertersCustomizer { converters ->
-            converters.add(MyCustomClientConverter())
-        }
-    }
-
-    @Bean
-    fun serverConvertersCustomizer(): ServerHttpMessageConvertersCustomizer {
-        return ServerHttpMessageConvertersCustomizer { converters ->
-            converters.add(MyCustomServerConverter())
-        }
-    }
-}
-```
-
-### Trailing Slash URL Matching Removed
-
-`PathMatchConfigurer#setUseTrailingSlashMatch(true)` is **removed** in Spring Framework 7 / Spring Boot 4.
-There is no replacement configuration knob — `/foo` and `/foo/` are no longer treated as the same route.
-
-**Migration:** register Spring Framework's `UrlHandlerFilter` as a
-`FilterRegistrationBean` so it runs ahead of the security chain. `wrapRequest()` makes it forward transparently (no
-redirect), preserving the old behavior end-to-end:
-
-```java
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.web.filter.UrlHandlerFilter;
-
-@Configuration
-class WebConfig {
-
-    // After ForwardedHeaderFilter, before ServletRequestPathFilter and security filters.
-    private static final int BEFORE_SECURITY_FILTER_ORDER = -101;
-
-    @Bean
-    FilterRegistrationBean<UrlHandlerFilter> trailingSlashHandlerFilter() {
-        UrlHandlerFilter filter = UrlHandlerFilter.trailingSlashHandler("/**").wrapRequest().build();
-        FilterRegistrationBean<UrlHandlerFilter> registration = new FilterRegistrationBean<>(filter);
-        registration.setOrder(BEFORE_SECURITY_FILTER_ORDER);
-        return registration;
-    }
-}
-```
-
-### Jersey and Jackson 3 Incompatibility
-
-**Jersey 4.0 limitation:** Spring Boot 4.0 supports Jersey 4.0, which **does not yet support Jackson 3**.
-
-**Solution:** Use `spring-boot-jackson2` compatibility module **either in place of or alongside** `spring-boot-jackson`:
-
-**libs.versions.toml:**
-```toml
-[libraries]
-spring-boot-starter-jersey = { module = "org.springframework.boot:spring-boot-starter-jersey", version.ref = "springBoot" }
-spring-boot-jackson2 = { module = "org.springframework.boot:spring-boot-jackson2", version.ref = "springBoot" }
-# Optional: Keep Jackson 3 for non-Jersey parts of application
-spring-boot-jackson = { module = "org.springframework.boot:spring-boot-jackson", version.ref = "springBoot" }
-```
-
-**build.gradle.kts:**
-```kotlin
-dependencies {
-    implementation(libs.spring.boot.starter.jersey)
-    implementation(libs.spring.boot.jackson2) // Required for Jersey JSON processing
-    // Optional: Use Jackson 3 elsewhere in application
-    // implementation(libs.spring.boot.jackson)
-}
-```
-
-**Note:** If using only Jersey in your application, you can replace Jackson 3 entirely with Jackson 2 compatibility module.
-
-## Messaging Framework Changes
-
-### Kafka Streams Customizer Replacement
-
-**Deprecated `StreamBuilderFactoryBeanCustomizer` → `StreamsBuilderFactoryBeanConfigurer`:**
-
-```kotlin
-// Old (Spring Boot 3.x)
-import org.springframework.boot.autoconfigure.kafka.StreamsBuilderFactoryBeanCustomizer
-
-@Configuration
-class KafkaStreamsConfig {
-    @Bean
-    fun streamsCustomizer(): StreamBuilderFactoryBeanCustomizer {
-        return StreamBuilderFactoryBeanCustomizer { factoryBean ->
-            factoryBean.setKafkaStreamsCustomizer { streams ->
-                // Custom config
-            }
-        }
-    }
-}
-
-// New (Spring Boot 4.0)
-import org.springframework.kafka.config.StreamsBuilderFactoryBeanConfigurer
-
-@Configuration
-class KafkaStreamsConfig {
-    @Bean
-    fun streamsConfigurer(): StreamsBuilderFactoryBeanConfigurer {
-        return StreamsBuilderFactoryBeanConfigurer { factoryBean ->
-            factoryBean.setKafkaStreamsCustomizer { streams ->
-                // Custom config
-            }
-        }
-    }
-}
-```
-
-**Note:** New configurer implements `Ordered` with default value `0`.
-
-### Kafka Retry Property Change
-
-**application.yml migration:**
-```yaml
-# Old (Spring Boot 3.x)
-spring:
-  kafka:
-    retry:
-      topic:
-        backoff:
-          random: true
-
-# New (Spring Boot 4.0)
-spring:
-  kafka:
-    retry:
-      topic:
-        backoff:
-          jitter: 0.5 # More flexible than boolean
-```
-
-### RabbitMQ Retry Customizer Split
-
-**Spring AMQP moved from Spring Retry → Spring Framework core retry**, with customizer split:
-
-```kotlin
-// Old (Spring Boot 3.x)
-import org.springframework.boot.autoconfigure.amqp.RabbitRetryTemplateCustomizer
-
-@Configuration
-class RabbitConfig {
-    @Bean
-    fun retryCustomizer(): RabbitRetryTemplateCustomizer {
-        return RabbitRetryTemplateCustomizer { template ->
-            // Applies to both RabbitTemplate and listeners
-        }
-    }
-}
-
-// New (Spring Boot 4.0)
-import org.springframework.boot.autoconfigure.amqp.RabbitTemplateRetrySettingsCustomizer
-import org.springframework.boot.autoconfigure.amqp.RabbitListenerRetrySettingsCustomizer
-
-@Configuration
-class RabbitConfig {
-
-    // For RabbitTemplate operations
-    @Bean
-    fun templateRetryCustomizer(): RabbitTemplateRetrySettingsCustomizer {
-        return RabbitTemplateRetrySettingsCustomizer { settings ->
-            settings.maxAttempts = 5
-        }
-    }
-
-    // For message listeners
-    @Bean
-    fun listenerRetryCustomizer(): RabbitListenerRetrySettingsCustomizer {
-        return RabbitListenerRetrySettingsCustomizer { settings ->
-            settings.maxAttempts = 3
-        }
-    }
-}
-```
-
-## Testing Framework Changes
-
-### Mockito Integration Removed
-
-`MockitoTestExecutionListener` removed (deprecated in 3.4).
-
-**Migration to MockitoExtension:**
-```kotlin
-// Old (Spring Boot 3.x)
-import org.springframework.boot.test.context.SpringBootTest
-import org.mockito.Mock
-import org.mockito.Captor
-
-@SpringBootTest
-class MyServiceTest {
-    @Mock
-    private lateinit var repository: MyRepository
-
-    @Captor
-    private lateinit var captor: ArgumentCaptor<String>
-}
-
-// New (Spring Boot 4.0)
-import org.springframework.boot.test.context.SpringBootTest
-import org.mockito.Mock
-import org.mockito.Captor
-import org.mockito.junit.jupiter.MockitoExtension
-import org.junit.jupiter.api.extension.ExtendWith
-
-@SpringBootTest
-@ExtendWith(MockitoExtension::class) // Explicit extension required
-class MyServiceTest {
-    @Mock
-    private lateinit var repository: MyRepository
-
-    @Captor
-    private lateinit var captor: ArgumentCaptor<String>
-}
-```
-
-### @SpringBootTest Changes
-
-`@SpringBootTest` no longer provides **MockMVC**, **WebTestClient**, or **TestRestTemplate** automatically.
-
-#### MockMVC Configuration
-
-```kotlin
-// Old (Spring Boot 3.x)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ControllerTest {
-    @Autowired
-    private lateinit var mockMvc: MockMvc // Available automatically
-}
-
-// New (Spring Boot 4.0)
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.autoconfigure.web.servlet.HtmlUnit
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc // Explicit annotation required
-class ControllerTest {
-    @Autowired
-    private lateinit var mockMvc: MockMvc
-}
-
-// HtmlUnit configuration moved to annotation attribute
-@AutoConfigureMockMvc(
-    htmlUnit = HtmlUnit(webClient = false, webDriver = false)
-)
-```
-
-#### WebTestClient Configuration
-
-```kotlin
-// Old (Spring Boot 3.x)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class WebFluxTest {
-    @Autowired
-    private lateinit var webTestClient: WebTestClient // Available automatically
-}
-
-// New (Spring Boot 4.0)
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWebTestClient // Explicit annotation required
-class WebFluxTest {
-    @Autowired
-    private lateinit var webTestClient: WebTestClient
-}
-```
-
-#### TestRestTemplate → RestTestClient (Recommended)
-
-**Spring Boot 4.0 introduces `RestTestClient`** as modern replacement for `TestRestTemplate`.
-
-```kotlin
-// Old approach (still works with annotation)
-import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureTestRestTemplate
-import org.springframework.boot.test.web.client.TestRestTemplate
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureTestRestTemplate // Required in 4.0
-class RestApiTest {
-    @Autowired
-    private lateinit var testRestTemplate: TestRestTemplate
-}
-
-// New recommended approach
-import org.springframework.boot.test.autoconfigure.web.client.AutoConfigureRestTestClient
-import org.springframework.boot.resttestclient.RestTestClient
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureRestTestClient // New annotation
-class RestApiTest {
-    @Autowired
-    private lateinit var restTestClient: RestTestClient
-
-    @Test
-    fun testEndpoint() {
-        val response = restTestClient.get()
-            .uri("/api/users")
-            .retrieve()
-            .toEntity<List<User>>()
-
-        assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
-    }
-}
-```
-
-**TestRestTemplate package change (if still using):**
-
-**IMPORTANT:** If continuing to use `TestRestTemplate`, you must:
-1. Add the `spring-boot-resttestclient` test dependency
-2. **Update the package import** (class moved to new package)
-
-**libs.versions.toml:**
-```toml
-[libraries]
-spring-boot-resttestclient = { module = "org.springframework.boot:spring-boot-resttestclient", version.ref = "springBoot" }
-```
-
-**build.gradle.kts:**
-```kotlin
-dependencies {
-    testImplementation(libs.spring.boot.resttestclient)
-}
-```
-
-**Update package import (required):**
-```kotlin
-// Old package import - will cause compilation failure
-// import org.springframework.boot.test.web.client.TestRestTemplate
-
-// New package import - required in Spring Boot 4.0
-import org.springframework.boot.resttestclient.TestRestTemplate
-```
-
-### @PropertyMapping Annotation Relocation
-
-```kotlin
-// Old (Spring Boot 3.x)
-import org.springframework.boot.test.autoconfigure.properties.PropertyMapping
-import org.springframework.boot.test.autoconfigure.properties.Skip
-
-// New (Spring Boot 4.0)
-import org.springframework.boot.test.context.PropertyMapping
-import org.springframework.boot.test.context.PropertyMapping.Skip
-```
-
-## Production-Ready Features and Modules
-
-### Health, Metrics, and Observability Modules
-
-Spring Boot 4.0 modularizes production-ready features into focused modules:
-
-**libs.versions.toml:**
-```toml
-[libraries]
-# Health monitoring
-spring-boot-health = { module = "org.springframework.boot:spring-boot-health", version.ref = "springBoot" }
-
-# Micrometer metrics
-spring-boot-micrometer-metrics = { module = "org.springframework.boot:spring-boot-micrometer-metrics", version.ref = "springBoot" }
-spring-boot-micrometer-metrics-test = { module = "org.springframework.boot:spring-boot-micrometer-metrics-test", version.ref = "springBoot" }
-
-# Micrometer observation
-spring-boot-micrometer-observation = { module = "org.springframework.boot:spring-boot-micrometer-observation", version.ref = "springBoot" }
-
-# Distributed tracing
-spring-boot-micrometer-tracing = { module = "org.springframework.boot:spring-boot-micrometer-tracing", version.ref = "springBoot" }
-spring-boot-micrometer-tracing-test = { module = "org.springframework.boot:spring-boot-micrometer-tracing-test", version.ref = "springBoot" }
-spring-boot-micrometer-tracing-brave = { module = "org.springframework.boot:spring-boot-micrometer-tracing-brave", version.ref = "springBoot" }
-spring-boot-micrometer-tracing-opentelemetry = { module = "org.springframework.boot:spring-boot-micrometer-tracing-opentelemetry", version.ref = "springBoot" }
-
-# OpenTelemetry integration
-spring-boot-opentelemetry = { module = "org.springframework.boot:spring-boot-opentelemetry", version.ref = "springBoot" }
-
-# Zipkin reporter
-spring-boot-zipkin = { module = "org.springframework.boot:spring-boot-zipkin", version.ref = "springBoot" }
-```
-
-**build.gradle.kts (example observability stack):**
-```kotlin
-dependencies {
-    // Actuator with metrics and tracing
-    implementation(libs.spring.boot.starter.actuator)
-    implementation(libs.spring.boot.micrometer.observation)
-    implementation(libs.spring.boot.micrometer.tracing.opentelemetry)
-    implementation(libs.spring.boot.opentelemetry)
-
-    // Test support
-    testImplementation(libs.spring.boot.micrometer.metrics.test)
-    testImplementation(libs.spring.boot.micrometer.tracing.test)
-}
-```
-
-**Note:** Most applications using starters (e.g., `spring-boot-starter-actuator`) won't need to declare these modules directly. Use direct module dependencies for fine-grained control.
-
-## Actuator Changes
-
-### Health Probes Enabled by Default
-
-Liveness and readiness probes now **enabled by default**.
-
-**application.yml (disable if needed):**
-```yaml
-management:
-  endpoint:
-    health:
-      probes:
-        enabled: false # Disable if not using Kubernetes probes
-```
-
-**Automatically exposes:**
-- `/actuator/health/liveness`
-- `/actuator/health/readiness`
-
-## Build Configuration
-
-### Kotlin Compiler Configuration
-
-**build.gradle.kts:**
-```kotlin
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
-plugins {
-    kotlin("jvm") version "2.2.0" // Minimum 2.2.0
-    kotlin("plugin.spring") version "2.2.0"
-    kotlin("plugin.jpa") version "2.2.0"
-    id("org.springframework.boot") version "4.0.0"
-    id("io.spring.dependency-management") version "1.1.7"
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21) // Or 17, 25
-    }
-}
-
-kotlin {
-    compilerOptions {
-        freeCompilerArgs.addAll(
-            "-Xjsr305=strict", // Strict null-safety
-            "-Xemit-jvm-type-annotations" // Emit type annotations
-        )
-    }
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "21" // Match Java toolchain
-    }
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-```
-
-### Java Preview Features (if using Java 25)
-
-**build.gradle.kts:**
-```kotlin
-tasks.withType<JavaCompile> {
-    options.compilerArgs.add("--enable-preview")
-}
-
-tasks.withType<Test> {
-    jvmArgs("--enable-preview")
-}
-
-tasks.withType<JavaExec> {
-    jvmArgs("--enable-preview")
-}
-```
-
-## Migration Checklist
-
-### Pre-Migration
-
-- [ ] Upgrade to latest Spring Boot 3.5.x
-- [ ] Review and fix all deprecation warnings
-- [ ] Document current dependency versions
-- [ ] Run full test suite and verify green build
-- [ ] Review [Spring Boot 3.5.x → 4.0 dependency changes](https://docs.spring.io/spring-boot/4.0/appendix/dependency-versions/coordinates.html)
-
-### Core Migration
-
-- [ ] Update `libs.versions.toml` with Spring Boot 4.0.0
-- [ ] Update Kotlin version to 2.2.0+
-- [ ] Rename starters: `spring-boot-starter-web` → `spring-boot-starter-webmvc`, etc.
-- [ ] Add technology-specific test starters (or use classic starters temporarily)
-- [ ] Remove Undertow dependency if present (switch to Tomcat/Jetty)
-- [ ] Remove `spring-session-hazelcast` / `spring-session-mongodb` or add explicit versions
-
-### Jackson 3 Migration
-
-- [ ] Update imports: `com.fasterxml.jackson` → `tools.jackson`
-- [ ] Update exception: `jackson-annotations` still uses `com.fasterxml.jackson.core`
-- [ ] Rename: `@JsonComponent` → `@JacksonComponent`
-- [ ] Rename: `Jackson2ObjectMapperBuilderCustomizer` → `JsonMapperBuilderCustomizer`
-- [ ] Update properties: `spring.jackson.read.*` → `spring.jackson.json.read.*`
-- [ ] Consider temporary `spring-boot-jackson2` module if needed
-
-### Property Updates
-
-- [ ] MongoDB: `spring.data.mongodb.*` → `spring.mongodb.*` (for non-Spring Data properties)
-- [ ] Session: `spring.session.redis.*` → `spring.session.data.redis.*`
-- [ ] Persistence: `spring.dao.exceptiontranslation` → `spring.persistence.exceptiontranslation`
-- [ ] Kafka retry: `backoff.random` → `backoff.jitter`
-
-### Code Updates
-
-- [ ] Update package: `BootstrapRegistry` → `org.springframework.boot.bootstrap.BootstrapRegistry`
-- [ ] Update package: `EnvironmentPostProcessor` → `org.springframework.boot.EnvironmentPostProcessor`
-- [ ] Update package: `EntityScan` → `org.springframework.boot.persistence.autoconfigure.EntityScan`
-- [ ] Update: `RestClient` → `Rest5Client` (Elasticsearch)
-- [ ] Update: `StreamBuilderFactoryBeanCustomizer` → `StreamsBuilderFactoryBeanConfigurer` (Kafka)
-- [ ] Split: `RabbitRetryTemplateCustomizer` → `RabbitTemplateRetrySettingsCustomizer` / `RabbitListenerRetrySettingsCustomizer`
-- [ ] Replace: `HttpMessageConverters` → `ClientHttpMessageConvertersCustomizer` / `ServerHttpMessageConvertersCustomizer`
-- [ ] Update: `PropertyMapper` usage with `.always()` if null handling needed
-
-### Testing Updates
-
-- [ ] Add `@ExtendWith(MockitoExtension::class)` to tests using `@Mock` / `@Captor`
-- [ ] Add `@AutoConfigureMockMvc` to tests using `MockMvc`
-- [ ] Add `@AutoConfigureWebTestClient` to tests using `WebTestClient`
-- [ ] Migrate `TestRestTemplate` → `RestTestClient` (or add `@AutoConfigureTestRestTemplate`)
-- [ ] Update: `@PropertyMapping` imports → `org.springframework.boot.test.context`
-
-### Build Configuration
-
-- [ ] Update Gradle to 8.5+
-- [ ] Update Gradle CycloneDX plugin to 3.0.0+
-- [ ] Review optional dependency inclusion in uber jars
-- [ ] Remove `loaderImplementation = CLASSIC` if present
-- [ ] Remove `launchScript()` configuration if present
-
-### Verification
-
-- [ ] Run `./gradlew clean build`
-- [ ] Run full test suite
-- [ ] Verify integration tests with TestContainers
-- [ ] Check for new Kotlin null-safety warnings
-- [ ] Test Spring Boot Actuator endpoints
-- [ ] Verify health probes (`/actuator/health/liveness`, `/actuator/health/readiness`)
-- [ ] Performance test with new defaults
-
-### Post-Migration
-
-- [ ] Review Spring Boot 4.0 release notes for additional features
-- [ ] Consider adopting new Spring Framework 7.0 features
-- [ ] Plan migration away from classic starters (if used)
-- [ ] Plan migration away from `spring-boot-jackson2` module (if used)
-- [ ] Update CI/CD pipelines for Java 17+ requirement
-- [ ] Update deployment manifests (Servlet 6.1 containers)
-
-## Common Pitfalls
-
-1. **Classic starters**: Remember these are deprecated - plan migration to technology-specific starters
-2. **Undertow**: Completely removed, no workaround - must use Tomcat or Jetty
-3. **Jackson 3 packages**: Easy to miss `jackson-annotations` still using old group ID
-4. **MongoDB properties**: Many moved to `spring.mongodb.*` but some remain in `spring.data.mongodb.*`
-5. **Test configuration**: `@SpringBootTest` no longer auto-configures MockMVC/WebTestClient/TestRestTemplate
-6. **Kotlin 2.2**: Required minimum - older versions won't work
-7. **Null-safety**: JSpecify annotations may surface new warnings in Kotlin
-8. **PropertyMapper**: Behavioral change with null handling - review usage
-9. **Jersey + Jackson 3**: Incompatible - use `spring-boot-jackson2` module
-10. **Health probes**: Now enabled by default - may affect non-Kubernetes deployments
-
-## Performance Considerations
-
-- **Modular starters**: Smaller JARs and faster startup with technology-specific starters
-- **Spring Framework 7**: Performance improvements in core framework
-- **Jackson 3**: Improved JSON processing performance
-- **Virtual threads**: Consider enabling with Java 21+ (`spring.threads.virtual.enabled=true`)
-
-## Resources
-
-- [Spring Boot 4.0 Migration Guide](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide)
-- [Spring Boot 4.0 Release Notes](https://github.com/spring-projects/spring-boot/releases)
-- [Spring Framework 7.0 Documentation](https://docs.spring.io/spring-framework/reference/)
-- [Jackson 3 Migration Guide](https://github.com/FasterXML/jackson/blob/main/jackson3/MIGRATING_TO_JACKSON_3.md)
-- [Kotlin 2.2 Release Notes](https://kotlinlang.org/docs/whatsnew22.html)
-
----
+Get the skill from this repository: https://github.com/github/awesome-copilot/tree/main/skills/spring-boot-4-migration (install it with the GitHub Copilot CLI plugin marketplace or copy the folder to `.github/skills/spring-boot-4-migration`).
 
 
 ---
 # DOCUMENT_SOURCE: github_awesome-copilot::instructions/springboot.instructions.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/instructions/springboot.instructions.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/instructions/springboot.instructions.md
-- **SHA256_FINGERPRINT**: `14efdfde00296e034e83082665c4b957c4e4e7d0ff66fd95c42b7538f87fc8d2`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:12.430787+00:00
+- **SHA256_FINGERPRINT**: `b22904d663d94c2770795b3a71278332678699e9af4b7e3bafcc3fa3048f0280`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.311056+00:00
 ---
 
 **description**: Guidelines for building Spring Boot base applications
 
 # Spring Boot Development
+
+Apply these instructions only when the project uses Spring Boot. For Kotlin projects, see `kotlin-springboot`.
 
 ## General Instructions
 
@@ -77306,7 +76015,7 @@ tasks.withType<JavaExec> {
 
 ### Configuration
 
-- Use YAML files (`application.yml`) for externalized configuration.
+- Use `application.properties` or `application.yml` for externalized configuration, matching what the project already uses.
 - Environment Profiles: Use Spring profiles for different environments (dev, test, prod)
 - Configuration Properties: Use @ConfigurationProperties for type-safe configuration binding
 - Secrets Management: Externalize secrets using environment variables or secret management systems
@@ -77333,21 +76042,22 @@ tasks.withType<JavaExec> {
 ### Security & Input Handling
 
 - Use parameterized queries | Always use Spring Data JPA or `NamedParameterJdbcTemplate` to prevent SQL injection.
-- Validate request bodies and parameters using JSR-380 (`@NotNull`, `@Size`, etc.) annotations and `BindingResult`
+- Validate request bodies and parameters using Bean Validation (`@Valid`, `@NotNull`, `@Size`, etc.) annotations and handle `MethodArgumentNotValidException` in a `@RestControllerAdvice`
 
 ## Build and Verification
 
 - After adding or modifying code, verify the project continues to build successfully.
-- If the project uses Maven, run `mvn clean package`.
+- If the project uses Maven, run `./mvnw verify` (use the wrapper). `package` skips Failsafe integration tests (`*IT`).
 - If the project uses Gradle, run `./gradlew build` (or `gradlew.bat build` on Windows).
 - Ensure all tests pass as part of the build.
+- Use `package` or `test` only as focused, faster commands, not as the verification gate.
 
 ## Useful Commands
 
 | Gradle Command            | Maven Command                     | Description                                   |
 |:--------------------------|:----------------------------------|:----------------------------------------------|
 | `./gradlew bootRun`       |`./mvnw spring-boot:run`           | Run the application.                          |
-| `./gradlew build`         |`./mvnw package`                   | Build the application.                        |
+| `./gradlew build`         |`./mvnw verify`                    | Build and run all tests.                      |
 | `./gradlew test`          |`./mvnw test`                      | Run tests.                                    |
 | `./gradlew bootJar`       |`./mvnw spring-boot:repackage`     | Package the application as a JAR.             |
 | `./gradlew bootBuildImage`|`./mvnw spring-boot:build-image`   | Package the application as a container image. |
@@ -91121,3 +89831,255 @@ Create a clear architectural guide for implementing new features:
   - Testing blind spots
 
 Include information about when this blueprint was generated and recommendations for keeping it updated as the architecture evolves."
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/arduino-azure-iot-edge-integration/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arduino-azure-iot-edge-integration/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arduino-azure-iot-edge-integration/SKILL.md
+- **SHA256_FINGERPRINT**: `64d57cb8f9d2c57fe1be0d83d38cd21b0790772851780b420995c851f6847d95`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.479343+00:00
+---
+
+**description**: Design and implement Arduino integration with Azure IoT Hub and IoT Edge, including secure provisioning, resilient telemetry, command handling, and production guardrails.
+
+# Arduino Azure IoT Edge Integration
+
+Use this skill when the user needs to connect Arduino-class devices to Azure IoT, especially in edge-heavy scenarios (gateways, intermittent networks, offline buffering, and local actuation).
+
+## When to use it
+
+Use this skill for requests such as:
+
+- "I want to connect Arduino sensors to Azure"
+- "How do I send MQTT telemetry to IoT Hub?"
+- "I need an edge gateway for field devices"
+- "I want cloud-to-device commands and OTA configuration updates"
+
+## Mandatory documentation review
+
+Before recommending an IoT Edge topology or runtime behavior, review:
+
+- https://learn.microsoft.com/azure/iot-edge/
+
+If documentation cannot be consulted, proceed with explicit assumptions and highlight them in a dedicated section.
+
+## Official Arduino references and best practices (required)
+
+Before proposing firmware, wiring, or communication implementation details, consult official Arduino sources first:
+
+- https://www.arduino.cc/en/Guide
+- https://docs.arduino.cc/
+- https://docs.arduino.cc/language-reference/
+- references/arduino-official-best-practices.md
+
+When choosing between implementation alternatives, prioritize official Arduino guidance over community snippets unless there is a clear technical reason to deviate.
+
+## Objectives
+
+- Produce a secure end-to-end reference path from the Arduino device to cloud insights.
+- Handle unstable links (store-and-forward, retries, idempotency).
+- Define an actionable device and cloud backlog.
+
+## Integration patterns
+
+### Pattern A: Arduino direct to IoT Hub
+
+Use when connectivity is stable and cloud latency is acceptable.
+
+- Protocol: MQTT over TLS.
+- Identity: per-device credentials (SAS or X.509).
+- Telemetry payload: compact JSON with timestamp, device ID, metrics, and optional quality flags.
+
+### Pattern B: Arduino to local gateway, then IoT Edge
+
+Use when links are constrained, local control is required, or batching improves cost/reliability.
+
+- Arduino communicates with a local gateway (serial, BLE, local MQTT, RS-485, Modbus bridge).
+- The gateway publishes upstream through the IoT Edge runtime and routes data to IoT Hub.
+- Local modules can filter, aggregate, and trigger actions even during cloud outages.
+
+## Design flow
+
+### 1) Device contract
+
+Define:
+
+- Sensor catalog and units.
+- Sampling frequency and expected throughput.
+- Message schema versioning strategy.
+- Desired/reported device twin properties to control runtime behavior.
+
+### 2) Security baseline
+
+Require:
+
+- Unique identity per device.
+- No hardcoded secrets in source code or firmware artifacts.
+- Credential rotation strategy.
+- Signed firmware and a controlled update process when possible.
+
+### 3) Reliability and offline behavior
+
+Plan and document:
+
+- Backoff with jitter.
+- Local queue/buffer strategy with bounded size.
+- Duplicate suppression or downstream idempotent processing.
+- Fallback to last-known-good configuration.
+
+### 4) Cloud and edge routing
+
+Define routes for:
+
+- Raw telemetry to cold storage.
+- Curated telemetry to hot analytics.
+- Alerts to operations channels.
+- Commands and configuration back to edge/device.
+
+### 5) Observability
+
+Specify minimum operations telemetry:
+
+- Device heartbeat and firmware version.
+- Connectivity state transitions.
+- Message send success/error counters.
+- Gateway module health and restart reasons.
+
+## Reuse other skills
+
+When relevant, combine with:
+
+- `azure-smart-city-iot-solution-builder` for city-wide architecture and phased rollout.
+- `azure-resource-visualizer` for relationship diagrams.
+- `appinsights-instrumentation` for app and service telemetry patterns.
+
+Also use `references/arduino-official-best-practices.md` as a quality baseline for firmware and hardware recommendations, and `references/arduino-iot-checklist.md` before finalizing architecture or implementation guidance.
+
+## Required output
+
+Always provide:
+
+1. Chosen connectivity pattern and rationale.
+2. Message contract (fields, units, sample payload).
+3. Security checklist for identity/credentials/updates.
+4. Reliability plan (retry, buffering, dedupe).
+5. Implementation backlog (firmware, gateway, cloud).
+
+## Output template
+
+1. Scenario and assumptions
+2. Recommended architecture
+3. Device and gateway contract
+4. Security and reliability controls
+5. Deployment plan and validation tests
+
+## Guidelines
+
+- Do not propose production deployments with shared credentials across devices.
+- Do not assume always-on connectivity in field deployments.
+- Do not omit command authorization and auditing in actuator scenarios.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/arduino-azure-iot-edge-integration/references/arduino-iot-checklist.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arduino-azure-iot-edge-integration/references/arduino-iot-checklist.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arduino-azure-iot-edge-integration/references/arduino-iot-checklist.md
+- **SHA256_FINGERPRINT**: `e5073d99f72681cfa707d4a5c4829cf9b19c47a998a16fb6bfbf59a218cd7793`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.526593+00:00
+---
+
+# Arduino Azure IoT Checklist
+
+Use this checklist before finalizing architecture or implementation guidance.
+
+## 0) Official Arduino Baseline
+
+- Official references reviewed from <https://www.arduino.cc/en/Guide> and <https://docs.arduino.cc/>.
+- Language/API calls validated against <https://docs.arduino.cc/language-reference/>.
+- Best practices reviewed from `references/arduino-official-best-practices.md`.
+
+## 1) Device Profile
+
+- MCU model and memory constraints documented.
+- Sensor list and sampling strategy defined.
+- Power model documented (mains, battery, sleep cycles).
+
+## 2) Connectivity
+
+- Selected transport documented (MQTT over TLS preferred).
+- Network failure behavior defined.
+- Local timestamp strategy defined if device lacks RTC sync.
+
+## 3) Security
+
+- Unique identity per device.
+- No secrets in source control.
+- Credential rotation plan documented.
+- Firmware update and rollback plan documented.
+
+## 4) Edge and Cloud Flow
+
+- Routing from edge to IoT Hub documented.
+- Offline buffering limits defined.
+- Duplicate handling strategy documented.
+- Alerting thresholds and destinations defined.
+
+## 5) Validation
+
+- Connectivity soak test scenario.
+- Packet loss and reconnection test.
+- Command authorization test.
+- Firmware version and health reporting verification.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/arduino-azure-iot-edge-integration/references/arduino-official-best-practices.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arduino-azure-iot-edge-integration/references/arduino-official-best-practices.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arduino-azure-iot-edge-integration/references/arduino-official-best-practices.md
+- **SHA256_FINGERPRINT**: `10cb10a1a461752e20fc9923f15d429a4683dedbefbdcaa48b7138eedef5ec5d`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.503825+00:00
+---
+
+# Arduino Official References and Best Practices
+
+Use these official Arduino resources before finalizing firmware or hardware guidance.
+
+## Official References
+
+- Arduino main guide: <https://www.arduino.cc/en/Guide>
+- Arduino docs home: <https://docs.arduino.cc/>
+- Getting started path: <https://docs.arduino.cc/learn/starting-guide/getting-started-arduino/>
+- Arduino IDE usage: <https://docs.arduino.cc/learn/starting-guide/the-arduino-software-ide/>
+- Arduino language reference: <https://docs.arduino.cc/language-reference/>
+- Arduino programming reference overview: <https://docs.arduino.cc/learn/programming/reference/>
+- Arduino memory guide: <https://docs.arduino.cc/learn/programming/memory-guide/>
+- Arduino debugging fundamentals: <https://docs.arduino.cc/learn/microcontrollers/debugging/>
+- Arduino low-power design guide: <https://docs.arduino.cc/learn/electronics/low-power/>
+- Arduino communication protocols index: <https://docs.arduino.cc/learn/communication/>
+- Arduino style guide for libraries: <https://docs.arduino.cc/learn/contributions/arduino-library-style-guide/>
+
+## Firmware Best Practices
+
+- Keep the `loop()` non-blocking; avoid long `delay()` usage in production logic.
+- Use `millis()`-based scheduling for periodic tasks.
+- Budget SRAM explicitly and avoid dynamic allocation in hot paths.
+- Validate sensor ranges and provide safe defaults for invalid readings.
+- Add startup self-checks and periodic health heartbeat messages.
+- Version the payload schema and firmware version in every telemetry stream.
+- Implement retry with exponential backoff and jitter for network operations.
+- Store credentials outside source code and rotate them according to policy.
+
+## Hardware and Power Best Practices
+
+- Document voltage levels, pin mapping, and current limits per peripheral.
+- Design for brownout and power fluctuation scenarios.
+- Use watchdog and safe recovery behavior where available.
+- Plan low-power modes for battery deployments and validate wake cycles.
+
+## Integration Best Practices for Azure IoT
+
+- Prefer secure transports (MQTT over TLS) and per-device identity.
+- Define idempotent upstream processing for duplicate message scenarios.
+- Include device health metrics (uptime, reset reason, RSSI where applicable).
+- Validate offline buffering bounds to avoid uncontrolled memory growth.

@@ -1,259 +1,7 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part3
-- **Generado (UTC)**: 2026-10-31T04:48:48.006318+00:00
-- **Total Palabras**: 449,641 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-02T05:12:42.837654+00:00
+- **Total Palabras**: 444,498 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/arduino-azure-iot-edge-integration/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arduino-azure-iot-edge-integration/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arduino-azure-iot-edge-integration/SKILL.md
-- **SHA256_FINGERPRINT**: `64d57cb8f9d2c57fe1be0d83d38cd21b0790772851780b420995c851f6847d95`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.479343+00:00
----
-
-**description**: Design and implement Arduino integration with Azure IoT Hub and IoT Edge, including secure provisioning, resilient telemetry, command handling, and production guardrails.
-
-# Arduino Azure IoT Edge Integration
-
-Use this skill when the user needs to connect Arduino-class devices to Azure IoT, especially in edge-heavy scenarios (gateways, intermittent networks, offline buffering, and local actuation).
-
-## When to use it
-
-Use this skill for requests such as:
-
-- "I want to connect Arduino sensors to Azure"
-- "How do I send MQTT telemetry to IoT Hub?"
-- "I need an edge gateway for field devices"
-- "I want cloud-to-device commands and OTA configuration updates"
-
-## Mandatory documentation review
-
-Before recommending an IoT Edge topology or runtime behavior, review:
-
-- https://learn.microsoft.com/azure/iot-edge/
-
-If documentation cannot be consulted, proceed with explicit assumptions and highlight them in a dedicated section.
-
-## Official Arduino references and best practices (required)
-
-Before proposing firmware, wiring, or communication implementation details, consult official Arduino sources first:
-
-- https://www.arduino.cc/en/Guide
-- https://docs.arduino.cc/
-- https://docs.arduino.cc/language-reference/
-- references/arduino-official-best-practices.md
-
-When choosing between implementation alternatives, prioritize official Arduino guidance over community snippets unless there is a clear technical reason to deviate.
-
-## Objectives
-
-- Produce a secure end-to-end reference path from the Arduino device to cloud insights.
-- Handle unstable links (store-and-forward, retries, idempotency).
-- Define an actionable device and cloud backlog.
-
-## Integration patterns
-
-### Pattern A: Arduino direct to IoT Hub
-
-Use when connectivity is stable and cloud latency is acceptable.
-
-- Protocol: MQTT over TLS.
-- Identity: per-device credentials (SAS or X.509).
-- Telemetry payload: compact JSON with timestamp, device ID, metrics, and optional quality flags.
-
-### Pattern B: Arduino to local gateway, then IoT Edge
-
-Use when links are constrained, local control is required, or batching improves cost/reliability.
-
-- Arduino communicates with a local gateway (serial, BLE, local MQTT, RS-485, Modbus bridge).
-- The gateway publishes upstream through the IoT Edge runtime and routes data to IoT Hub.
-- Local modules can filter, aggregate, and trigger actions even during cloud outages.
-
-## Design flow
-
-### 1) Device contract
-
-Define:
-
-- Sensor catalog and units.
-- Sampling frequency and expected throughput.
-- Message schema versioning strategy.
-- Desired/reported device twin properties to control runtime behavior.
-
-### 2) Security baseline
-
-Require:
-
-- Unique identity per device.
-- No hardcoded secrets in source code or firmware artifacts.
-- Credential rotation strategy.
-- Signed firmware and a controlled update process when possible.
-
-### 3) Reliability and offline behavior
-
-Plan and document:
-
-- Backoff with jitter.
-- Local queue/buffer strategy with bounded size.
-- Duplicate suppression or downstream idempotent processing.
-- Fallback to last-known-good configuration.
-
-### 4) Cloud and edge routing
-
-Define routes for:
-
-- Raw telemetry to cold storage.
-- Curated telemetry to hot analytics.
-- Alerts to operations channels.
-- Commands and configuration back to edge/device.
-
-### 5) Observability
-
-Specify minimum operations telemetry:
-
-- Device heartbeat and firmware version.
-- Connectivity state transitions.
-- Message send success/error counters.
-- Gateway module health and restart reasons.
-
-## Reuse other skills
-
-When relevant, combine with:
-
-- `azure-smart-city-iot-solution-builder` for city-wide architecture and phased rollout.
-- `azure-resource-visualizer` for relationship diagrams.
-- `appinsights-instrumentation` for app and service telemetry patterns.
-
-Also use `references/arduino-official-best-practices.md` as a quality baseline for firmware and hardware recommendations, and `references/arduino-iot-checklist.md` before finalizing architecture or implementation guidance.
-
-## Required output
-
-Always provide:
-
-1. Chosen connectivity pattern and rationale.
-2. Message contract (fields, units, sample payload).
-3. Security checklist for identity/credentials/updates.
-4. Reliability plan (retry, buffering, dedupe).
-5. Implementation backlog (firmware, gateway, cloud).
-
-## Output template
-
-1. Scenario and assumptions
-2. Recommended architecture
-3. Device and gateway contract
-4. Security and reliability controls
-5. Deployment plan and validation tests
-
-## Guidelines
-
-- Do not propose production deployments with shared credentials across devices.
-- Do not assume always-on connectivity in field deployments.
-- Do not omit command authorization and auditing in actuator scenarios.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/arduino-azure-iot-edge-integration/references/arduino-iot-checklist.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arduino-azure-iot-edge-integration/references/arduino-iot-checklist.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arduino-azure-iot-edge-integration/references/arduino-iot-checklist.md
-- **SHA256_FINGERPRINT**: `e5073d99f72681cfa707d4a5c4829cf9b19c47a998a16fb6bfbf59a218cd7793`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.526593+00:00
----
-
-# Arduino Azure IoT Checklist
-
-Use this checklist before finalizing architecture or implementation guidance.
-
-## 0) Official Arduino Baseline
-
-- Official references reviewed from <https://www.arduino.cc/en/Guide> and <https://docs.arduino.cc/>.
-- Language/API calls validated against <https://docs.arduino.cc/language-reference/>.
-- Best practices reviewed from `references/arduino-official-best-practices.md`.
-
-## 1) Device Profile
-
-- MCU model and memory constraints documented.
-- Sensor list and sampling strategy defined.
-- Power model documented (mains, battery, sleep cycles).
-
-## 2) Connectivity
-
-- Selected transport documented (MQTT over TLS preferred).
-- Network failure behavior defined.
-- Local timestamp strategy defined if device lacks RTC sync.
-
-## 3) Security
-
-- Unique identity per device.
-- No secrets in source control.
-- Credential rotation plan documented.
-- Firmware update and rollback plan documented.
-
-## 4) Edge and Cloud Flow
-
-- Routing from edge to IoT Hub documented.
-- Offline buffering limits defined.
-- Duplicate handling strategy documented.
-- Alerting thresholds and destinations defined.
-
-## 5) Validation
-
-- Connectivity soak test scenario.
-- Packet loss and reconnection test.
-- Command authorization test.
-- Firmware version and health reporting verification.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/arduino-azure-iot-edge-integration/references/arduino-official-best-practices.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arduino-azure-iot-edge-integration/references/arduino-official-best-practices.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arduino-azure-iot-edge-integration/references/arduino-official-best-practices.md
-- **SHA256_FINGERPRINT**: `10cb10a1a461752e20fc9923f15d429a4683dedbefbdcaa48b7138eedef5ec5d`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.503825+00:00
----
-
-# Arduino Official References and Best Practices
-
-Use these official Arduino resources before finalizing firmware or hardware guidance.
-
-## Official References
-
-- Arduino main guide: <https://www.arduino.cc/en/Guide>
-- Arduino docs home: <https://docs.arduino.cc/>
-- Getting started path: <https://docs.arduino.cc/learn/starting-guide/getting-started-arduino/>
-- Arduino IDE usage: <https://docs.arduino.cc/learn/starting-guide/the-arduino-software-ide/>
-- Arduino language reference: <https://docs.arduino.cc/language-reference/>
-- Arduino programming reference overview: <https://docs.arduino.cc/learn/programming/reference/>
-- Arduino memory guide: <https://docs.arduino.cc/learn/programming/memory-guide/>
-- Arduino debugging fundamentals: <https://docs.arduino.cc/learn/microcontrollers/debugging/>
-- Arduino low-power design guide: <https://docs.arduino.cc/learn/electronics/low-power/>
-- Arduino communication protocols index: <https://docs.arduino.cc/learn/communication/>
-- Arduino style guide for libraries: <https://docs.arduino.cc/learn/contributions/arduino-library-style-guide/>
-
-## Firmware Best Practices
-
-- Keep the `loop()` non-blocking; avoid long `delay()` usage in production logic.
-- Use `millis()`-based scheduling for periodic tasks.
-- Budget SRAM explicitly and avoid dynamic allocation in hot paths.
-- Validate sensor ranges and provide safe defaults for invalid readings.
-- Add startup self-checks and periodic health heartbeat messages.
-- Version the payload schema and firmware version in every telemetry stream.
-- Implement retry with exponential backoff and jitter for network operations.
-- Store credentials outside source code and rotate them according to policy.
-
-## Hardware and Power Best Practices
-
-- Document voltage levels, pin mapping, and current limits per peripheral.
-- Design for brownout and power fluctuation scenarios.
-- Use watchdog and safe recovery behavior where available.
-- Plan low-power modes for battery deployments and validate wake cycles.
-
-## Integration Best Practices for Azure IoT
-
-- Prefer secure transports (MQTT over TLS) and per-device identity.
-- Define idempotent upstream processing for duplicate message scenarios.
-- Include device health metrics (uptime, reset reason, RSSI where applicable).
-- Validate offline buffering bounds to avoid uncontrolled memory growth.
 
 
 ---
@@ -37734,19 +37482,23 @@ Fixed the immediate <X> in <commit-sha>. The broader <Y> would benefit from <lar
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/copilot-sdk/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/copilot-sdk/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/copilot-sdk/SKILL.md
-- **SHA256_FINGERPRINT**: `2969160ebd01af4d3c32bfce5edeb6f8b5bc42dbb84a3174b8a630069eadf895`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:22.607644+00:00
+- **SHA256_FINGERPRINT**: `ba68d8e0be999cdee52821b371f43c81a8c9f6a5bb38ceefa1d323a660d09a06`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.291919+00:00
 ---
 
-**description**: Build agentic applications with GitHub Copilot SDK. Use when embedding AI agents in apps, creating custom tools, implementing streaming responses, managing sessions, connecting to MCP servers, or creating custom agents. Triggers on Copilot SDK, GitHub SDK, agentic app, embed Copilot, programmable agent, MCP server, custom agent.
+**description**: Build agentic applications with the Microsoft Copilot SDK, transitioning from GitHub Copilot SDK. Use when embedding AI agents in apps, creating custom tools, implementing streaming responses, managing sessions, connecting to MCP servers, or creating custom agents. Triggers on Copilot SDK, Microsoft Copilot SDK, GitHub Copilot SDK, agentic app, embed Copilot, programmable agent, MCP server, custom agent.
 
-# GitHub Copilot SDK
+# Microsoft Copilot SDK
 
 Embed Copilot's agentic workflows in any application using Python, TypeScript, Go, or .NET.
 
 ## Overview
 
-The GitHub Copilot SDK exposes the same engine behind Copilot CLI: a production-tested agent runtime you can invoke programmatically. No need to build your own orchestration - you define agent behavior, Copilot handles planning, tool invocation, file edits, and more.
+The Microsoft Copilot SDK is transitioning from the GitHub Copilot SDK. It is becoming the programmable interface for the Microsoft Copilot harness, the shared agent foundation used across Microsoft and GitHub products. This transition is happening in phases, and no immediate changes are required for existing users. Package names, namespaces, and some documentation may continue to use GitHub branding during the transition.
+
+This guide keeps the currently published package names and imports in its examples. Follow the [official transition announcement](https://github.blog/changelog/2026-10-28-github-copilot-sdk-is-becoming-microsoft-copilot-sdk/) for migration updates.
+
+The SDK provides a production-tested agent runtime you can invoke programmatically. You define agent behavior, while Copilot handles planning, tool invocation, file edits, and more.
 
 ## Prerequisites
 
@@ -41604,170 +41356,479 @@ tags: [Optional: List of relevant tags or categories, e.g., `infrastructure`, `p
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/create-spring-boot-java-project/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/create-spring-boot-java-project/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-spring-boot-java-project/SKILL.md
-- **SHA256_FINGERPRINT**: `2bfa2e761cc8784fe574bd07c4587fd87731ed8bab536d303c9c87824b0d7baa`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:23.346313+00:00
+- **SHA256_FINGERPRINT**: `51a15fd77903ca194468be71c4ebec3317e7b5044c36c310fe6dcee6296c5a47`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.298947+00:00
 ---
 
-**description**: Create Spring Boot Java Project Skeleton
+**description**: Create a new Spring Boot Java project (Maven or Gradle) from start.spring.io with sensible defaults for configuration, PostgreSQL, logging, security, testing and Docker. Use when asked to scaffold, bootstrap or generate a Spring Boot application. Detects existing project versions and never upgrades implicitly.
 
-# Create Spring Boot Java project prompt
+# Create a Spring Boot Java project
 
-- Please make sure you have the following software installed on your system:
+Scaffold a Spring Boot application with [start.spring.io](https://start.spring.io), then apply a small set of opinionated defaults. Out of scope for now: front-ends (Vue/React/Angular), cloud deployment (Azure), Git setup, CRaC and AOT images.
 
-  - Java 21
-  - Docker
-  - Docker Compose
+## Step 0: Detect before you create
 
-- If you need to custom the project name, please change the `artifactId` and the `packageName` in [download-spring-boot-project-template](#download-spring-boot-project-template)
+- If the working directory already contains a `pom.xml` or `build.gradle(.kts)`, this is an **existing project**: do not regenerate it. Read its Spring Boot, Java and test-framework versions and follow them. **Never upgrade versions implicitly**; propose an upgrade and wait for the user's decision.
+- Check the tools: `java -version` (JDK matching the chosen Java version), `docker --version` (needed for Testcontainers and Compose). On the default path (current Boot via start.spring.io) Maven/Gradle need not be installed: the generated wrapper is used. The Boot 3.5 fallback needs Maven or Gradle installed once to create the wrapper (see [versions.md](references/versions.md)).
+- Ask only for what is missing: project name, group id, package, build tool (default **Maven**), dependencies (default: web, actuator, validation, devtools; add `data-jpa`, `postgresql`, `security`, `docker-compose`, `testcontainers` when a database or auth is needed).
 
-- If you need to update the Spring Boot version, please change the `bootVersion` in [download-spring-boot-project-template](#download-spring-boot-project-template)
+## Step 1: Resolve versions
 
-## Check Java version
+Follow [references/versions.md](references/versions.md): query `https://start.spring.io/metadata/client` at run time for the latest stable Spring Boot release, fall back to the documented pinned values if offline. Do not hardcode `latest` anywhere.
 
-- Run following command in terminal and check the version of Java
+## Step 2: Generate the project
 
-```shell
-java -version
+Use the start.spring.io HTTP API with explicit, pinned parameters (no piped installers). Replace the values in capitals.
+
+Maven:
+
+```bash
+curl -fsS https://start.spring.io/starter.zip \
+  -d type=maven-project -d language=java -d packaging=jar \
+  -d bootVersion=BOOT_VERSION -d javaVersion=JAVA_VERSION \
+  -d groupId=com.example -d artifactId=demo -d name=demo \
+  -d packageName=com.example.demo -d baseDir=demo \
+  -d dependencies=web,actuator,validation,devtools \
+  -o demo.zip && unzip -q demo.zip && rm demo.zip
 ```
 
-## Download Spring Boot project template
+Gradle: same command with `-d type=gradle-project` (Groovy DSL) or `-d type=gradle-project-kotlin` (Kotlin DSL; the language stays `java`).
 
-- Run following command in terminal to download a Spring Boot project template
+Inspect the result (`ls demo`, read the build file) and make sure the wrapper (`mvnw` or `gradlew`) is executable. Add `-d dependencies=...,data-jpa,postgresql,docker-compose,testcontainers` for a database project.
 
-```shell
-curl https://start.spring.io/starter.zip \
-  -d artifactId=${input:projectName:demo-java} \
-  -d bootVersion=3.4.5 \
-  -d dependencies=lombok,configuration-processor,web,data-jpa,postgresql,data-redis,data-mongodb,validation,cache,testcontainers \
-  -d javaVersion=21 \
-  -d packageName=com.example \
-  -d packaging=jar \
-  -d type=maven-project \
-  -o starter.zip
-```
+## Step 3: Apply the defaults
 
-## Unzip the downloaded file
+| Area | What to do | Reference |
+|------|-----------|-----------|
+| Boot 3 vs 4 differences | Starter names, Jackson 3, test modules | [references/spring-boot-4.md](references/spring-boot-4.md) |
+| Configuration | `application.properties` or `.yml` (match the project), profiles, `@ConfigurationProperties`, secrets via environment | [references/configuration.md](references/configuration.md) |
+| Database | PostgreSQL, Hibernate settings, Compose for dev, Testcontainers for tests | [references/database.md](references/database.md) |
+| Logging | SLF4J, parameterized messages, levels, structured logging | [references/logging.md](references/logging.md) |
+| Security | Spring Security basics, secure defaults, Problem Details | [references/security.md](references/security.md) |
+| Docker | JVM image and GraalVM native image Dockerfiles | [references/docker.md](references/docker.md) |
+| Testing | See the `spring-boot-testing` skill (slices, Testcontainers, Failsafe) | `skills/spring-boot-testing` |
+| Best practices | See the `java-springboot` skill and `instructions/springboot.instructions.md` | `skills/java-springboot` |
 
-- Run following command in terminal to unzip the downloaded file
+Keep dotfiles minimal: a `.gitignore` covering `target/`, `build/`, `.gradle/`, IDE folders and `.env`; never commit `.env` (commit a `.env.sample`).
 
-```shell
-unzip starter.zip -d ./${input:projectName:demo-java}
-```
+## Step 4: Verify
 
-## Remove the downloaded zip file
+1. Build and test: `./mvnw verify` (Maven) or `./gradlew build` (Gradle).
+2. Run: `./mvnw spring-boot:run` or `./gradlew bootRun`, then `curl -fsS localhost:8080/actuator/health` must return `{"status":"UP"}`.
+3. Report the chosen versions and anything that was skipped or deferred.
 
-- Run following command in terminal to delete the downloaded zip file
+## Provenance
 
-```shell
-rm -f starter.zip
-```
+Adapted from the Apache-2.0 skill [jdubois/dr-jskill](https://github.com/jdubois/dr-jskill); see [references/PROVENANCE.md](references/PROVENANCE.md).
 
-## Change directory to the project root
 
-- Run following command in terminal to change directory to the project root
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/create-spring-boot-java-project/references/PROVENANCE.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/create-spring-boot-java-project/references/PROVENANCE.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-spring-boot-java-project/references/PROVENANCE.md
+- **SHA256_FINGERPRINT**: `b8a6623408b4d166ee9d8c0ec954c4d4434808d6f700295d07249bdbba236b4c`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.305753+00:00
+---
 
-```shell
-cd ${input:projectName:demo-java}
-```
+# Provenance
 
-## Add additional dependencies
+This skill and its references are adapted from **dr-jskill** by Julien Dubois (the contributor of this skill).
 
-- Insert `springdoc-openapi-starter-webmvc-ui` and `archunit-junit5` dependency into `pom.xml` file
+- Source: https://github.com/jdubois/dr-jskill
+- Commit read: `29e71996048e4086bfa389268a3c6c2e49ea3f25`
+- License of the source: Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
+- The adapted material is contributed to this repository by its original author (Julien Dubois, sole copyright holder of dr-jskill) under this repository's MIT license, and remains available upstream under Apache-2.0. Keep the attribution and this notice with any redistribution of the adapted files.
 
-```xml
-<dependency>
-  <groupId>org.springdoc</groupId>
-  <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-  <version>2.8.6</version>
-</dependency>
-<dependency>
-  <groupId>com.tngtech.archunit</groupId>
-  <artifactId>archunit-junit5</artifactId>
-  <version>1.2.1</version>
-  <scope>test</scope>
-</dependency>
-```
+## Files adapted
 
-## Add SpringDoc, Redis, JPA and MongoDB configurations
+| Source file in dr-jskill | Adapted into |
+|--------------------------|--------------|
+| `SKILL.md` | `SKILL.md` (rewritten, shortened, Maven and Gradle) |
+| `versions.json`, `scripts/lib/versions.mjs` | `references/versions.md` (documented procedure and fallback values; script not copied) |
+| `references/CONFIGURATION.md` | `references/configuration.md` (condensed) |
+| `references/DATABASE.md` | `references/database.md` (condensed; Flyway/Liquibase noted as optional) |
+| `references/LOGGING.md` | `references/logging.md` (condensed) |
+| `references/SECURITY.md` | `references/security.md` (condensed to basics) |
+| `references/DOCKER.md`, `assets/Dockerfile`, `assets/Dockerfile-native` | `references/docker.md`, `assets/Dockerfile`, `assets/Dockerfile-native` (front-end build steps removed) |
+| `references/SPRING-BOOT-4.md` | `references/spring-boot-4.md` (condensed) |
 
-- Insert SpringDoc configurations into `application.properties` file
+## Changes
+
+Changes were made: content was condensed, front-end, Azure, Git, CRaC and AOT material was removed (deferred), Gradle support was added, and scripts were replaced by documented `curl` procedures against start.spring.io.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/create-spring-boot-java-project/references/configuration.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/create-spring-boot-java-project/references/configuration.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-spring-boot-java-project/references/configuration.md
+- **SHA256_FINGERPRINT**: `7c383beed85570467af906bb652adb3cf17b7e09e00747ddec6ea83c653aa127`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.305453+00:00
+---
+
+# Configuration
+
+## Format
+
+Use `application.properties` or `application.yml`, **matching what the project already uses**. New projects generated by start.spring.io get `application.properties`; YAML is fine for deeply nested settings. Do not mix both in one project.
+
+## Profiles
 
 ```properties
-# SpringDoc configurations
-springdoc.swagger-ui.doc-expansion=none
-springdoc.swagger-ui.operations-sorter=alpha
-springdoc.swagger-ui.tags-sorter=alpha
+# application.properties (shared defaults)
+spring.application.name=demo
+spring.jpa.open-in-view=false
+server.shutdown=graceful
 ```
 
-- Insert Redis configurations into `application.properties` file
+- `application-dev.properties`, `application-prod.properties`, activated with `SPRING_PROFILES_ACTIVE` (environment variable) or `--spring.profiles.active`.
+- Keep prod-safe values in the base file; override only what differs in dev (e.g. `logging.level.com.example=DEBUG`).
+- Tests: use `src/test/resources/application.properties` or `@TestPropertySource`, not a "test" profile checked into `main`.
 
-```properties
-# Redis configurations
-spring.data.redis.host=localhost
-spring.data.redis.port=6379
-spring.data.redis.password=rootroot
+## Externalized values and secrets
+
+- Read values from environment variables with defaults for local development: `spring.datasource.url=${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/mydb}`.
+- Spring Boot also maps `SPRING_DATASOURCE_URL` to `spring.datasource.url` automatically (relaxed binding).
+- For a local `.env` file: `spring.config.import=optional:file:.env[.properties]`. Add `.env` to `.gitignore`; commit `.env.sample` with placeholder values.
+- Never commit passwords, tokens or API keys. In production use the platform's secret store (Kubernetes secrets, Vault, cloud key vault) exposed as environment variables or config trees (`spring.config.import=configtree:/run/secrets/`).
+
+## Type-safe properties
+
+```java
+@ConfigurationProperties(prefix = "app.mail")
+@Validated
+public record MailProperties(@NotBlank String from, @Positive int retries) {}
 ```
 
-- Insert JPA configurations into `application.properties` file
+Enable with `@ConfigurationPropertiesScan` on the application class (or `@EnableConfigurationProperties`). Prefer this over scattered `@Value`. Spring Boot's annotation processor (`spring-boot-configuration-processor`, optional dependency) generates IDE metadata.
+
+## Checklist
+
+- [ ] One format (properties or YAML) used consistently
+- [ ] No secrets in the repository
+- [ ] Defaults work locally; production values come from the environment
+- [ ] `@ConfigurationProperties` with validation for custom settings
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/create-spring-boot-java-project/references/database.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/create-spring-boot-java-project/references/database.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-spring-boot-java-project/references/database.md
+- **SHA256_FINGERPRINT**: `0e7c5ee45cffcad6033e0cad27bcb950a5604d557ee2c2c261479ceed65d859a`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.314162+00:00
+---
+
+# Database (PostgreSQL)
+
+Defaults: PostgreSQL (image `postgres:18-alpine`, see [versions.md](versions.md)), Spring Data JPA, Hibernate, HikariCP. Dependencies: `data-jpa`, `postgresql`, `docker-compose`, `testcontainers`.
+
+## Configuration
 
 ```properties
-# JPA configurations
-spring.datasource.driver-class-name=org.postgresql.Driver
-spring.datasource.url=jdbc:postgresql://localhost:5432/postgres
-spring.datasource.username=postgres
-spring.datasource.password=rootroot
+spring.datasource.url=${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/mydb}
+spring.datasource.username=${SPRING_DATASOURCE_USERNAME:user}
+spring.datasource.password=${SPRING_DATASOURCE_PASSWORD:password}
+
 spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.open-in-view=false
+spring.jpa.show-sql=false
 ```
 
-- Insert MongoDB configurations into `application.properties` file
+The driver class is detected from the URL; do not set it. The defaults above are for local development only: production credentials come from the environment (see [configuration.md](configuration.md)).
+
+## Schema management (`ddl-auto`)
+
+Follow the schema management rule of the `java-hibernate-jpa` skill (prototype/local, production with Flyway/Liquibase, or externally managed). The table and setup below apply it to Spring Boot.
+
+| Value | Behaviour | Use for |
+|-------|-----------|---------|
+| `update` | Adds missing tables/columns, never drops | Local development / prototypes |
+| `validate` | Fails at startup if schema and entities differ | Production |
+| `create` / `create-drop` | Recreates schema at startup (and drops at shutdown) | Throw-away tests |
+| `none` | Hibernate does nothing | Schema managed elsewhere |
+
+Hibernate's `update` is convenient but cannot rename, drop or migrate data. For production schema evolution, **Flyway or Liquibase are optional but recommended**: add the starter: on Boot 4 `spring-boot-starter-flyway` plus `org.flywaydb:flyway-database-postgresql` (or `spring-boot-starter-liquibase`), because Boot 4 auto-configuration lives in the starter; on Boot 3 add `org.flywaydb:flyway-core` plus `flyway-database-postgresql` (or `liquibase-core`) directly. Put migrations in `src/main/resources/db/migration` (`V1__init.sql`), and set `ddl-auto=validate`. Add them when the user wants versioned migrations or the app is headed to production.
+
+## Entities
+
+Keep entities annotated precisely (`@Table`, `@Column(length=..., nullable=...)`, `@Index`) so generated or validated DDL is accurate. Use `GenerationType.IDENTITY` or a sequence, `Instant` for timestamps, and avoid exposing entities in the API (use DTOs/records).
+
+## Local development: Docker Compose
+
+With `spring-boot-docker-compose`, Spring Boot starts `compose.yaml` automatically and wires the datasource (no URL needed):
+
+```yaml
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "user", "-d", "mydb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+```
+
+## Tests
+
+Use Testcontainers with `@ServiceConnection`; see the `spring-boot-testing` skill (`references/testcontainers-jdbc.md`). Pin the image tag; never `latest`. start.spring.io generates `postgres:latest` in `compose.yaml` and `TestcontainersConfiguration`: replace both with `postgres:18-alpine` (verified).
+
+## Performance and production
+
+- HikariCP is the default pool; tune `spring.datasource.hikari.maximum-pool-size` and `connection-timeout`.
+- Avoid N+1 queries: `JOIN FETCH` or `@EntityGraph`; use DTO projections for read models.
+- Keep `open-in-view=false` and `@Transactional` on services.
+- Index foreign keys and filtered/sorted columns; check plans with `EXPLAIN ANALYZE`.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/create-spring-boot-java-project/references/docker.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/create-spring-boot-java-project/references/docker.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-spring-boot-java-project/references/docker.md
+- **SHA256_FINGERPRINT**: `1f38198df919253b2b0fc1769ddd9b9e99738ea6928dd47cfacf89ab5cbf09d1`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.319559+00:00
+---
+
+# Docker
+
+Four multi-stage Dockerfiles are provided: JVM and GraalVM native images, each for Maven and Gradle (Groovy or Kotlin DSL). Copy the one you need to the project root and build it with `-f`. AOT and CRaC images are deferred.
+
+| | Maven | Gradle |
+|--|-------|--------|
+| JVM image | [../assets/Dockerfile](../assets/Dockerfile) | [../assets/Dockerfile-gradle](../assets/Dockerfile-gradle) |
+| Native image | [../assets/Dockerfile-native](../assets/Dockerfile-native) | [../assets/Dockerfile-native-gradle](../assets/Dockerfile-native-gradle) |
+
+Verified on Boot 4.1.1 (web + actuator + validation), arm64 Docker Desktop: all four build and serve `/hello` and `/actuator/health`. JVM images are about 200 MB and build in under a minute (about 2 s startup); native images are about 175 MB, take 2m20-2m55 to build (around 6 GB of builder memory) and start in about 0.09 s. The Gradle builds set the toolchain to the same Java version as the build stage (25).
+
+## Choosing
+
+| | JVM image | Native image |
+|--|-----------|--------------|
+| Build time | Fast | Slow, memory hungry (several GB) |
+| Startup / memory | Seconds / higher | Milliseconds / low |
+| Compatibility | Everything | Needs GraalVM-compatible libraries; reflection hints may be needed |
+| Pick when | Default choice | Scale-to-zero, CLI-like, tight memory limits |
+
+Native requires the `native` dependency at generation time (`-d dependencies=...,native`) and the Spring Boot `native` Maven profile (included by start.spring.io when the dependency is selected).
+
+## Properties of the provided Dockerfiles
+
+- Multi-stage: build in a JDK/GraalVM image, run in a small runtime image.
+- JVM: the Boot jar is extracted into layers (`java -Djarmode=tools -jar app.jar extract --layers --launcher`) for better caching, runtime assembled with `jlink`, final base is distroless `nonroot` (no shell, no package manager).
+- Native: the executable is built with `-H:+StaticExecutableWithDynamicLibC` and copied into distroless `nonroot`. The `find` that picks the executable must skip `*.so`: GraalVM 25 leaves executable `libjava.so`/`libjvm.so` stubs next to it, and copying one of those gives a container that exits with 139 (segfault).
+- Run as non-root, expose 8080, JVM flags via `JAVA_TOOL_OPTIONS` (no shell to expand `JAVA_OPTS`).
+- Pinned base image tags (`eclipse-temurin:25-jdk-noble`, `ghcr.io/graalvm/graalvm-community:25`, `gcr.io/distroless/base-debian12:nonroot`); match the Java version of the project and update when it changes. Consider pinning by digest for reproducibility.
+- No Docker `HEALTHCHECK` (distroless has no curl); probe `/actuator/health` from the orchestrator (liveness/readiness: `management.endpoint.health.probes.enabled=true`).
+- Keep a `.dockerignore` (`target/`, `build/`, `.git`, `.env`, IDE files) so secrets and build output stay out of the context.
+
+## Build and run
+
+```bash
+docker build -t my-spring-app .
+docker run --rm -p 8080:8080 \
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/mydb \
+  -e SPRING_DATASOURCE_USERNAME=user -e SPRING_DATASOURCE_PASSWORD=password \
+  my-spring-app
+```
+
+Alternative without a Dockerfile: `./mvnw spring-boot:build-image` or `./gradlew bootBuildImage` (Cloud Native Buildpacks; add `-Pnative` for native with Maven, Gradle needs the `org.graalvm.buildtools.native` plugin). Verified on Boot 4.1.1 (web + actuator + validation + data-jpa, Java 25): Maven native build-image about 2m40, 282 MB image; Gradle `bootBuildImage` 2-4 min, image starts in 0.1-0.2 s and `/actuator/health` returns UP with native-build-tools 1.1.7 and 1.1.8. A native image that crashes at startup with `Invalid logger interface org.hibernate.validator.internal.util.logging.Log (implementation not found)` was seen once with Gradle but could not be reproduced; it matches [graalvm/native-build-tools#1017](https://github.com/graalvm/native-build-tools/issues/1017) (Gradle `collectReachabilityMetadata` overwrote the hibernate-validator metadata with the jboss-logging one, leaving a ~2 KB file). If it happens, check `unzip -l build/libs/*.jar | grep hibernate-validator.*reachability-metadata.json` (healthy is about 150 KB), upgrade `org.graalvm.buildtools.native` to the latest release and rebuild with `--no-build-cache`; always run the image and hit `/actuator/health`.
+
+## Development
+
+Use `spring-boot-docker-compose` with `compose.yaml` for dependencies (see [database.md](database.md)); do not containerize the application itself during development.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/create-spring-boot-java-project/references/logging.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/create-spring-boot-java-project/references/logging.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-spring-boot-java-project/references/logging.md
+- **SHA256_FINGERPRINT**: `e06287625c79e2aafec727e27b2882a3c126d7baf02c595e747ed1402fa4476a`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.438572+00:00
+---
+
+# Logging
+
+Spring Boot logs with Logback through SLF4J by default. Code must depend only on the SLF4J API (`org.slf4j.Logger`), never on Logback or `System.out`.
+
+```java
+private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
+
+logger.info("Order {} created for customer {}", order.id(), customerId);
+logger.error("Payment failed for order {}", orderId, exception); // exception last, no placeholder
+```
+
+## Rules
+
+- Parameterized messages, not string concatenation.
+- Levels: `ERROR` = needs attention; `WARN` = recoverable anomaly; `INFO` = business events and lifecycle; `DEBUG`/`TRACE` = diagnostics (off in production).
+- Never log secrets, tokens, passwords or personal data; log identifiers instead.
+- Log an exception once, where it is handled, with the stack trace.
+- Do not log inside tight loops.
+
+## Configuration
 
 ```properties
-# MongoDB configurations
-spring.data.mongodb.host=localhost
-spring.data.mongodb.port=27017
-spring.data.mongodb.authentication-database=admin
-spring.data.mongodb.username=root
-spring.data.mongodb.password=rootroot
-spring.data.mongodb.database=test
+logging.level.root=INFO
+logging.level.com.example=INFO
+# dev profile: logging.level.com.example=DEBUG
 ```
 
-## Add `docker-compose.yaml` with Redis, PostgreSQL and MongoDB services
+Prefer properties over a custom `logback-spring.xml`; add the XML only for needs properties cannot cover (appenders, rolling files).
 
-- Create `docker-compose.yaml` at project root and add following services: `redis:6`, `postgresql:17` and `mongo:8`.
+## Structured logging (Spring Boot 3.4+)
 
-  - redis service should have
-    - password `rootroot`
-    - mapping port 6379 to 6379
-    - mounting volume `./redis_data` to `/data`
-  - postgresql service should have
-    - password `rootroot`
-    - mapping port 5432 to 5432
-    - mounting volume `./postgres_data` to `/var/lib/postgresql/data`
-  - mongo service should have
-    - initdb root username `root`
-    - initdb root password `rootroot`
-    - mapping port 27017 to 27017
-    - mounting volume `./mongo_data` to `/data/db`
+For production and log aggregation, emit JSON without extra dependencies:
 
-## Add `.gitignore` file
-
-- Insert `redis_data`, `postgres_data` and `mongo_data` directories in `.gitignore` file
-
-## Run Maven test command
-
-- Run maven clean test command to check if the project is working
-
-```shell
-./mvnw clean test
+```properties
+logging.structured.format.console=ecs
 ```
 
-## Run Maven run command (Optional)
+Other built-in formats: `logstash`, `gelf`. In containers, log to the console and let the platform collect it.
 
-- (Optional) `docker-compose up -d` to start the services, `./mvnw spring-boot:run` to run the Spring Boot project, `docker-compose rm -sf` to stop the services.
+## Correlation
 
-## Let's do this step by step
+Use Micrometer Tracing / the `spring-observability` skill so trace and span ids appear in logs; use MDC for request-scoped values (`MDC.put("requestId", ...)`, always cleared in `finally`).
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/create-spring-boot-java-project/references/security.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/create-spring-boot-java-project/references/security.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-spring-boot-java-project/references/security.md
+- **SHA256_FINGERPRINT**: `1ac9bdaefd01eba4daccf60554dc01742498e6030fc9e18100bf3eb89a1d6dc2`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.447055+00:00
+---
+
+# Security basics
+
+For anything beyond the basics (OAuth2/OIDC, JWT resource server, method security, CSRF/CORS details, testing security) use the `spring-security` skill. This page covers secure defaults when scaffolding.
+
+## Dependencies
+
+Add `security` at generation time (Boot 4: `spring-boot-starter-security`, plus `spring-boot-starter-security-test` in test scope if generated by start.spring.io). Adding it secures every endpoint by default.
+
+## Minimal explicit configuration
+
+```java
+@Configuration
+@EnableWebSecurity
+class SecurityConfig {
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/actuator/health/**", "/actuator/info").permitAll()
+                .anyRequest().authenticated())
+            .httpBasic(Customizer.withDefaults());
+        return http.build();
+    }
+
+}
+```
+
+- For local development, leave Boot's generated user and password encoder setup intact. Do not add a `PasswordEncoder` bean alone: Boot's generated password is then left unencoded and cannot authenticate with a delegating encoder.
+- Deny by default: `anyRequest().authenticated()` last.
+- Keep CSRF enabled for browser sessions; disable it only for stateless token APIs, deliberately.
+- For production password authentication, configure a persistent user store and a matching `PasswordEncoder` together. Use `PasswordEncoderFactories.createDelegatingPasswordEncoder()` and store its encoded `{id}hash` values, never plain text.
+- Do not use `{noop}` passwords or `InMemoryUserDetailsManager` demo users outside local experiments.
+
+## Secure defaults checklist
+
+- [ ] Secrets from environment/secret store, never committed (see [configuration.md](configuration.md))
+- [ ] Expose only `health` and `info` over HTTP: `management.endpoints.web.exposure.include=health,info`
+- [ ] Validate input (`@Valid`, Bean Validation) and use parameterized queries / Spring Data
+- [ ] Error responses via RFC 9457 Problem Details: `spring.mvc.problemdetails.enabled=true`; no stack traces to clients (`server.error.include-stacktrace=never`)
+- [ ] CORS configured explicitly with allowed origins, never `*` with credentials
+- [ ] HTTPS terminated at the platform; `server.forward-headers-strategy=framework` behind a proxy
+- [ ] Dependencies kept current; container runs as non-root (see [docker.md](docker.md))
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/create-spring-boot-java-project/references/spring-boot-4.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/create-spring-boot-java-project/references/spring-boot-4.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-spring-boot-java-project/references/spring-boot-4.md
+- **SHA256_FINGERPRINT**: `e455b4c568c207fc68dbfff8c1af6db8014a6167f538818ec420f79701d335b1`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.460150+00:00
+---
+
+# Spring Boot 3 vs 4 (when generating or editing code)
+
+Detect the project's Spring Boot major first (see [versions.md](versions.md)); apply only the section that matches. Verify against the [Spring Boot 4.0 migration guide](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide).
+
+## Baselines
+
+| | Boot 3.x | Boot 4.x |
+|--|----------|----------|
+| Spring Framework | 6.x | 7.x |
+| Java | 17+ | 17+ (25 recommended) |
+| Jakarta EE | 10 | 11 |
+| Jackson | 2 (`com.fasterxml.jackson.databind`) | 3 (`tools.jackson.databind`) |
+| Testcontainers | 1.x | 2.x |
+
+## Things that commonly break in Boot 4
+
+1. **Modular starters.** Web is `spring-boot-starter-webmvc` (not `-web`), and each technology has a matching test starter (`spring-boot-starter-webmvc-test`, `spring-boot-starter-data-jpa-test`...). Generate with start.spring.io rather than guessing artifact names.
+2. **Jackson 3.** Only API classes move (`tools.jackson.databind.ObjectMapper`); annotations stay in `com.fasterxml.jackson.annotation`.
+3. **Test annotations moved**, for example `@WebMvcTest` is now `org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest`. `@MockitoBean` / `@MockitoSpyBean` replace `@MockBean` / `@SpyBean` (deprecated since 3.4 and removed in Boot 4; use the new ones everywhere Boot 3.4+ allows). See the `spring-boot-testing` skill.
+4. **Testcontainers 2.x.** Artifacts are prefixed (`testcontainers-postgresql`, `testcontainers-junit-jupiter`) and classes moved (`org.testcontainers.postgresql.PostgreSQLContainer`). With Boot 3 keep the 1.x names.
+5. **Main class for AOT/native.** If `process-aot` cannot find the main class, set `<start-class>` (Maven property) to the fully qualified `@SpringBootApplication` class.
+6. **Make the generated `TestcontainersConfiguration` public** if tests live in sub-packages.
+
+## Boot 3 projects
+
+Stay on Boot 3 when the project is on Boot 3 (start.spring.io cannot generate new 3.x projects, see [versions.md](versions.md)): use `spring-boot-starter-web`, `org.testcontainers.containers.PostgreSQLContainer` (Testcontainers 1.x), `@MockBean`, Jackson 2. Do not migrate unless asked; Boot 3.5 → 4.0 is a separate, deliberate upgrade.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/create-spring-boot-java-project/references/versions.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/create-spring-boot-java-project/references/versions.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/create-spring-boot-java-project/references/versions.md
+- **SHA256_FINGERPRINT**: `feb2a00db404425ab6d05cb68be6bdef56b74886309b699fbc187fa5fcb270ec`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.475098+00:00
+---
+
+# Version handling
+
+## Rules
+
+1. **Existing project:** read versions from `pom.xml` / `build.gradle(.kts)` (Spring Boot parent or plugin version, `java.version`/toolchain, `spring-boot-starter-test`). Keep them. Never bump implicitly.
+2. **New project:** resolve at run time, fall back to the table below only when offline.
+3. Never use `latest`, `LATEST` or `RELEASE` as a version, nor piped shell installers.
+
+## Resolve the latest stable Spring Boot
+
+```bash
+curl -fsS -H 'Accept: application/json' https://start.spring.io/metadata/client \
+  | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['bootVersion']['default'], d['javaVersion']['default'])"
+```
+
+- `bootVersion.default` is the current stable release (it may carry a `.RELEASE` suffix such as `4.1.1.RELEASE`; strip it: pass `4.1.1`).
+- Skip ids containing `SNAPSHOT`, `M` or `RC` (milestones/snapshots) unless the user asks for them.
+- `javaVersion.default` is only the start.spring.io default. Pick the highest LTS the installed JDK supports (`java -version`), and make sure it is offered in `javaVersion.values`.
+- Use the major line the user asks for. If they do not say, use the latest stable; see [spring-boot-4.md](spring-boot-4.md) for what changes between 3.x and 4.x.
+- start.spring.io only generates Boot 4.0+ (verified: `bootVersion=3.5.x` returns HTTP 400 "compatibility range is >=4.0.0"). For a Boot 3.5 project, generate nothing: hand-write the build file with `spring-boot-starter-parent` 3.5.x (latest 3.5 on Maven Central, e.g. 3.5.16), `spring-boot-starter-web`, and `spring-boot-starter-test`, plus the Maven/Gradle wrapper. Creating the wrapper (`mvn wrapper:wrapper` / `gradle wrapper`) requires Maven or Gradle to be installed locally; if neither is available, ask the user to install one or choose Boot 4.
+- Verify the choice exists on Maven Central: `curl -fsSI https://repo1.maven.org/maven2/org/springframework/boot/spring-boot/BOOT_VERSION/spring-boot-BOOT_VERSION.pom`.
+
+## Fallback values (offline, reviewed 2026-10)
+
+| Item | Value |
+|------|-------|
+| Spring Boot | 4.1.1 |
+| Java | 25 (LTS) |
+| PostgreSQL image | `postgres:18-alpine` |
+| Testcontainers | managed by the Spring Boot BOM; do not pin unless overriding |
+| JDK image | `eclipse-temurin:25-jdk-noble` |
+| GraalVM image | `ghcr.io/graalvm/graalvm-community:25` |
+
+These values age: when start.spring.io is reachable, prefer its answer, and tell the user which source was used.
+
+## Dependencies managed by the BOM
+
+Do not specify versions for Spring-managed dependencies (Hibernate, Jackson, Testcontainers, PostgreSQL driver, JUnit). Pin only what the BOM does not manage (for example a Maven plugin or a Docker image tag).
 
 
 ---
@@ -57877,6 +57938,116 @@ Apply the discovered (or default) style rules:
 - **WorkIQ MCP tool** is recommended for tone analysis and recipient context (Microsoft 365 / Outlook)
 - Without WorkIQ, the skill still works but uses professional defaults instead of personalized tone matching
 - Output is saved as markdown files in the workspace
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/embedding-anisotropy-check/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/embedding-anisotropy-check/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/embedding-anisotropy-check/SKILL.md
+- **SHA256_FINGERPRINT**: `ca17095cf2d4d2412f10dccfa97b01712aba3479853ea268c2273eb05e77ac69`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.471667+00:00
+---
+
+**description**: Use before reporting any cosine similarity computed over embeddings or transformer hidden states, whether the agent computed the vectors or loaded them. Measures the anisotropy of each side, centres by the population mean, and scores matched pairs against a permuted floor taken from the same comparison. Use when comparing one model''s embeddings across precisions, runtimes or layers, when evaluating retrieval, probes or adapters, or before calling a similarity high, two conditions in agreement, or a small gap a null.
+
+# Embedding anisotropy check
+
+Raw cosine between embeddings is rarely centred on zero. Most sentence encoders and most hidden-state layers place
+every vector near one shared direction, so two unrelated inputs can score 0.6, 0.9 or 0.99. A matched pair at 0.9 is
+then not evidence of anything by itself, and a gap of 0.01 between two conditions can be the whole signal or none of
+it. This skill makes every such comparison carry its own floor.
+
+## How an agent reaches this skill
+
+The agent does not vectorise anything here. The skill applies at the point where the agent is about to report a cosine
+number, whoever produced the vectors:
+
+- **The agent wrote the evaluation.** A request such as "write a retrieval eval for our index" or "check that the 4-bit
+  export of this encoder still matches bf16" ends in a script that prints a mean cosine. Before the agent says
+  "0.91, the export is fine", it runs the same model's unrelated pairs through the script and reports the floor beside
+  the matched figure.
+- **The vectors already exist in the workspace.** An `embeddings.npy`, a probe or adapter evaluated on saved hidden
+  states, a vector-store dump. Asked "are these two layers encoding the same thing" or "did the fine-tune move the
+  representations", the agent loads the arrays and runs the check before answering.
+- **A claim is being written.** The agent is drafting a README, a PR description or a results table that calls a
+  similarity high, says two conditions agree, or calls a small difference a null. The number in that sentence is the
+  trigger.
+
+## When to use this skill
+
+- The same inputs under one model at two precisions (bf16 against 4-bit), in two runtimes, or at two nearby layers,
+  which share one coordinate space.
+- Query and passage, image and caption, or any other paired evaluation inside one embedding space.
+- Any sentence claiming that a similarity is high, that two conditions agree, or that a small difference is a null.
+
+Not for two independently trained models as they stand. A rotation of one model's space keeps its geometry and changes
+every cosine against the other model, and centring does not align the two bases. Fit an explicit map first, for
+example orthogonal Procrustes on a train split of paired rows, and compare the mapped rows; or compare each model's
+own within-space similarities instead.
+
+## Procedure
+
+1. Save the compared rows as two `.npy` arrays of shape `(n, d)`, row `i` of A paired with row `i` of B.
+2. Choose where the means come from. The best source is a train split from the same domain, model and modality as the
+   compared rows. A mean fitted on another domain mis-centres: it can leave part of the shared direction in place,
+   remove too much of it, or add a direction of its own, and what it leaves then looks like an effect of whatever
+   differs between the domains.
+3. Run the bundled script:
+
+   ```bash
+   python scripts/anisotropy_check.py A.npy B.npy --fit-a trainA.npy --fit-b trainB.npy
+   ```
+
+   Pass `--shared` when A and B come from one model and one population, so that both sides are centred by one mean.
+   Without `--fit-a` and `--fit-b` the means are fitted on the compared rows themselves, and the output's `means`
+   field says, for each side, which rows its mean came from.
+4. Report, side by side: the anisotropy of each side, matched against floor before centring, matched against floor
+   after centring, and `partner_ranked_first` against its chance rate `1/n`.
+
+## Reading the output
+
+- `anisotropy` is the mean cosine between different rows of one side. For large `n` it is close to the squared length
+  of the mean of the unit rows, so it measures how much the rows share one common direction, which is what centring
+  removes. It does not detect every departure from isotropy: rows spread along one axis in both directions score near
+  0 and still give raw cosines of +1 and -1. A value near 0 says there is little within-side mean direction to remove,
+  not that raw cosine can be read without its floor. Above about 0.3, rows within that side cluster strongly around a
+  mean direction (the script adds a warning); check `raw.floor` to see how much of that direction is shared across
+  sides, and report both the raw and centred matched-versus-floor readings (centring changes the scoring function and
+  does not replace evaluating an index that searches by raw cosine).
+- `raw.floor` is what an unrelated pair scores in this comparison. A matched cosine means something only through its
+  distance from this floor.
+- `centred.gap_over_floor_sd` and `centred.cohens_d` say whether matched pairs separate from unrelated ones at all.
+  When unrelated pairs all score the same, the floor has no spread and `gap_over_floor_sd` is `null`: the gap cannot
+  be expressed in floor standard deviations, and the plain `gap` is the figure to read.
+- `partner_ranked_first` is the retrieval view of the same pairs. Centring can move a ranking either way, so report it
+  both ways rather than assuming it transfers.
+
+## Rules that go with the numbers
+
+- Average the signed difference across seeds or items, then take its absolute value. Averaging absolute differences
+  is biased upward, and the bias is greatest when the gap is small relative to its noise.
+- Give a gap with its spread and the smallest effect the test could have detected. An underpowered comparison is not
+  a refutation, and the report should say which of the two it is.
+- Put the floor from the same comparison beside every result. A floor copied from another run, model or domain does
+  not correct this one.
+
+## Example
+
+bge-small-en-v1.5 on the first 100 documents of `mteb/scifact`'s corpus, each split into its first and second half at
+the middle sentence boundary, with the halves of one abstract as the matched pair and one mean shared by both sides
+(`--shared`). `scripts/example_scifact_halves.py` rebuilds it: it pins the corpus at revision `cf10ab6` and the model
+at `5c38ec7`, states the sentence split, and needs `datasets` and `sentence-transformers` besides numpy. With datasets
+5.0.1, sentence-transformers 6.0.1, torch 2.13.0 and numpy 2.5.1 it gives (rounded to four decimal places):
+
+| | matched | floor (unrelated halves) | gap over floor sd |
+| --- | ---: | ---: | ---: |
+| raw cosine | 0.8636 | 0.6024 | 4.38 |
+| centred cosine | 0.6487 | -0.0131 | 5.87 |
+
+The anisotropy is 0.5956 and 0.6148, and here the two sides share one space, so before centring an unrelated half
+already scores 70% of what the matching half scores. Both spaces separate matched from unrelated halves (4.38 floor sd
+raw and 5.87 centred) and put the partner first for most abstracts (97 and 98 of 100), while centring removes the
+0.6024 baseline offset.
 
 
 ---
@@ -80423,2058 +80594,3 @@ Constructor  -->  init()  -->  [game loop: fixedUpdate/update/postUpdate]  -->  
 - **update():** AI, state machine, animation triggers
 - **postUpdate():** Sync sprite position to grid coordinates, apply visual effects
 - **dispose():** Remove from entity list, destroy sprite, clean up references
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/game-engine/assets/paddle-game-template.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/game-engine/assets/paddle-game-template.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/game-engine/assets/paddle-game-template.md
-- **SHA256_FINGERPRINT**: `9076244e563a291fa3782c9fd6fd439359a7f3f9355945519537878363e81d9d`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:29.109957+00:00
----
-
-# Paddle Game Template (2D Breakout)
-
-A complete step-by-step guide for building a 2D Breakout game with pure JavaScript and the HTML5 Canvas API. This template walks through every stage of development, from setting up the canvas to implementing a lives system and polished game loop.
-
-**What you will build:** A classic breakout/paddle game where the player controls a paddle to bounce a ball and destroy a field of bricks, with score tracking, win/lose conditions, keyboard and mouse controls, and a lives system.
-
-**Prerequisites:** Basic to intermediate JavaScript knowledge and familiarity with HTML.
-
-**Source:** Based on the [MDN 2D Breakout Game Tutorial](https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript).
-
----
-
-## Step 1: Create the Canvas and Draw on It
-
-The first step is setting up the HTML document with a `<canvas>` element and learning to draw basic shapes using the 2D rendering context.
-
-### HTML Structure
-
-Create your base HTML file with an embedded canvas element:
-
-```html
-<!doctype html>
-<html lang="en-US">
-  <head>
-    <meta charset="utf-8" />
-    <title>Gamedev Canvas Workshop</title>
-    <style>
-      * {
-        padding: 0;
-        margin: 0;
-      }
-      canvas {
-        background: #eeeeee;
-        display: block;
-        margin: 0 auto;
-      }
-    </style>
-  </head>
-  <body>
-    <canvas id="myCanvas" width="480" height="320"></canvas>
-
-    <script>
-      // JavaScript code goes here
-    </script>
-  </body>
-</html>
-```
-
-### Getting the Canvas Reference and 2D Context
-
-The canvas element provides a drawing surface. You access it through a 2D rendering context:
-
-```javascript
-const canvas = document.getElementById("myCanvas");
-const ctx = canvas.getContext("2d");
-```
-
-- `canvas` is a reference to the HTML `<canvas>` element.
-- `ctx` is the 2D rendering context object, which provides all drawing methods.
-
-### Drawing a Filled Rectangle
-
-Use `rect()` to define a rectangle and `fill()` to render it:
-
-```javascript
-ctx.beginPath();
-ctx.rect(20, 40, 50, 50);
-ctx.fillStyle = "red";
-ctx.fill();
-ctx.closePath();
-```
-
-- The first two parameters (`20, 40`) set the top-left corner coordinates.
-- The second two parameters (`50, 50`) set the width and height.
-- `fillStyle` sets the fill color.
-- `fill()` renders the shape as a solid fill.
-
-### Drawing a Circle
-
-Use `arc()` to define a circle:
-
-```javascript
-ctx.beginPath();
-ctx.arc(240, 160, 20, 0, Math.PI * 2, false);
-ctx.fillStyle = "green";
-ctx.fill();
-ctx.closePath();
-```
-
-- `240, 160` -- center x, y coordinates.
-- `20` -- radius.
-- `0` -- start angle (radians).
-- `Math.PI * 2` -- end angle (full circle).
-- `false` -- draw clockwise.
-
-### Drawing a Stroked Rectangle (Outline Only)
-
-Use `stroke()` instead of `fill()` for outlines, and `strokeStyle` for outline color:
-
-```javascript
-ctx.beginPath();
-ctx.rect(160, 10, 100, 40);
-ctx.strokeStyle = "rgb(0 0 255 / 50%)";
-ctx.stroke();
-ctx.closePath();
-```
-
-- Uses an RGB color with 50% alpha transparency.
-- `stroke()` draws only the outline, not a solid fill.
-
-### Key Methods Reference
-
-| Method | Purpose |
-|--------|---------|
-| `beginPath()` | Start a new drawing path |
-| `closePath()` | Close the current path |
-| `rect(x, y, width, height)` | Define a rectangle |
-| `arc(x, y, radius, startAngle, endAngle, counterclockwise)` | Define a circle or arc |
-| `fillStyle` | Set the fill color |
-| `fill()` | Fill the shape with the fill color |
-| `strokeStyle` | Set the stroke (outline) color |
-| `stroke()` | Draw an outline of the shape |
-
-### Complete Code for Step 1
-
-```html
-<canvas id="myCanvas" width="480" height="320"></canvas>
-
-<style>
-  * { padding: 0; margin: 0; }
-  canvas { background: #eeeeee; display: block; margin: 0 auto; }
-</style>
-
-<script>
-  const canvas = document.getElementById("myCanvas");
-  const ctx = canvas.getContext("2d");
-
-  // Filled red square
-  ctx.beginPath();
-  ctx.rect(20, 40, 50, 50);
-  ctx.fillStyle = "red";
-  ctx.fill();
-  ctx.closePath();
-
-  // Filled green circle
-  ctx.beginPath();
-  ctx.arc(240, 160, 20, 0, Math.PI * 2, false);
-  ctx.fillStyle = "green";
-  ctx.fill();
-  ctx.closePath();
-
-  // Stroked blue rectangle (semi-transparent)
-  ctx.beginPath();
-  ctx.rect(160, 10, 100, 40);
-  ctx.strokeStyle = "rgb(0 0 255 / 50%)";
-  ctx.stroke();
-  ctx.closePath();
-</script>
-```
-
----
-
-## Step 2: Move the Ball
-
-Now we animate the ball by creating a game loop that redraws the canvas on each frame and updates the ball position using velocity variables.
-
-### Creating the Draw Loop
-
-Define a `draw()` function that executes repeatedly using `setInterval`:
-
-```javascript
-function draw() {
-  // drawing code
-}
-setInterval(draw, 10);
-```
-
-`setInterval(draw, 10)` calls the `draw` function every 10 milliseconds, creating approximately 100 frames per second.
-
-### Drawing the Ball
-
-Inside the `draw()` function, draw a ball (circle) at a fixed position:
-
-```javascript
-ctx.beginPath();
-ctx.arc(50, 50, 10, 0, Math.PI * 2);
-ctx.fillStyle = "#0095DD";
-ctx.fill();
-ctx.closePath();
-```
-
-### Adding Position Variables
-
-Instead of hardcoded positions, use variables so we can update them each frame. Place these above the `draw()` function:
-
-```javascript
-let x = canvas.width / 2;
-let y = canvas.height - 30;
-```
-
-This starts the ball at the horizontal center, near the bottom of the canvas.
-
-### Adding Velocity Variables
-
-Define speed and direction for horizontal (`dx`) and vertical (`dy`) movement:
-
-```javascript
-let dx = 2;
-let dy = -2;
-```
-
-- `dx = 2` moves the ball 2 pixels right per frame.
-- `dy = -2` moves the ball 2 pixels up per frame (negative y is upward on canvas).
-
-### Updating Position Each Frame
-
-Add position updates at the end of the `draw()` function:
-
-```javascript
-x += dx;
-y += dy;
-```
-
-### Clearing the Canvas
-
-Without clearing, the ball leaves a trail. Add `clearRect()` at the start of each frame:
-
-```javascript
-ctx.clearRect(0, 0, canvas.width, canvas.height);
-```
-
-### Refactoring Into a Separate drawBall() Function
-
-For clean, maintainable code, separate the ball-drawing logic:
-
-```javascript
-function drawBall() {
-  ctx.beginPath();
-  ctx.arc(x, y, 10, 0, Math.PI * 2);
-  ctx.fillStyle = "#0095DD";
-  ctx.fill();
-  ctx.closePath();
-}
-```
-
-### Complete Code for Step 2
-
-```javascript
-const canvas = document.getElementById("myCanvas");
-const ctx = canvas.getContext("2d");
-
-let x = canvas.width / 2;
-let y = canvas.height - 30;
-let dx = 2;
-let dy = -2;
-
-function drawBall() {
-  ctx.beginPath();
-  ctx.arc(x, y, 10, 0, Math.PI * 2);
-  ctx.fillStyle = "#0095DD";
-  ctx.fill();
-  ctx.closePath();
-}
-
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawBall();
-  x += dx;
-  y += dy;
-}
-
-setInterval(draw, 10);
-```
-
-**Key concepts:**
-- **Animation loop**: `setInterval(draw, 10)` continuously redraws the scene.
-- **Position variables**: `x` and `y` track the ball's current location.
-- **Velocity variables**: `dx` and `dy` determine movement per frame.
-- **Canvas clearing**: `clearRect()` removes the previous frame before drawing the new one.
-
----
-
-## Step 3: Bounce Off the Walls
-
-We add collision detection so the ball bounces off the canvas edges instead of disappearing.
-
-### Defining the Ball Radius
-
-Extract the ball radius into a named constant for reuse in collision calculations:
-
-```javascript
-const ballRadius = 10;
-```
-
-Update `drawBall()` to use this variable:
-
-```javascript
-function drawBall() {
-  ctx.beginPath();
-  ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-  ctx.fillStyle = "#0095DD";
-  ctx.fill();
-  ctx.closePath();
-}
-```
-
-### Basic Wall Collision (Without Radius Adjustment)
-
-The simplest approach checks if the next ball position goes beyond the canvas boundaries:
-
-```javascript
-// Left and right walls
-if (x + dx > canvas.width || x + dx < 0) {
-  dx = -dx;
-}
-
-// Top and bottom walls
-if (y + dy > canvas.height || y + dy < 0) {
-  dy = -dy;
-}
-```
-
-Reversing `dx` or `dy` (multiplying by -1) changes the ball's direction.
-
-### Improved Collision (Accounting for Ball Radius)
-
-The basic version lets the ball sink halfway into the wall before bouncing. To fix this, account for the ball's radius:
-
-```javascript
-// Left and right walls
-if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-  dx = -dx;
-}
-
-// Top and bottom walls
-if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
-  dy = -dy;
-}
-```
-
-### Collision Detection Conditions
-
-| Wall | Condition | Action |
-|------|-----------|--------|
-| **Left** | `x + dx < ballRadius` | `dx = -dx` |
-| **Right** | `x + dx > canvas.width - ballRadius` | `dx = -dx` |
-| **Top** | `y + dy < ballRadius` | `dy = -dy` |
-| **Bottom** | `y + dy > canvas.height - ballRadius` | `dy = -dy` |
-
-### Complete Code for Step 3
-
-```javascript
-const canvas = document.getElementById("myCanvas");
-const ctx = canvas.getContext("2d");
-const ballRadius = 10;
-
-let x = canvas.width / 2;
-let y = canvas.height - 30;
-let dx = 2;
-let dy = -2;
-
-function drawBall() {
-  ctx.beginPath();
-  ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-  ctx.fillStyle = "#0095DD";
-  ctx.fill();
-  ctx.closePath();
-}
-
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawBall();
-
-  // Collision detection - left and right walls
-  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-    dx = -dx;
-  }
-
-  // Collision detection - top and bottom walls
-  if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
-    dy = -dy;
-  }
-
-  x += dx;
-  y += dy;
-}
-
-setInterval(draw, 10);
-```
-
----
-
-## Step 4: Paddle and Keyboard Controls
-
-Now we add a player-controlled paddle at the bottom of the screen and wire up keyboard input (left/right arrow keys).
-
-### Defining Paddle Variables
-
-```javascript
-const paddleHeight = 10;
-const paddleWidth = 75;
-let paddleX = (canvas.width - paddleWidth) / 2;
-```
-
-- `paddleHeight` and `paddleWidth` define the paddle dimensions.
-- `paddleX` starts the paddle centered horizontally. It is a `let` because it will change as the player moves it.
-
-### Drawing the Paddle
-
-Create a `drawPaddle()` function. The paddle sits at the very bottom of the canvas:
-
-```javascript
-function drawPaddle() {
-  ctx.beginPath();
-  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-  ctx.fillStyle = "#0095DD";
-  ctx.fill();
-  ctx.closePath();
-}
-```
-
-- The y-position is `canvas.height - paddleHeight`, placing it flush with the bottom edge.
-
-### Keyboard State Variables
-
-Track whether arrow keys are currently pressed:
-
-```javascript
-let rightPressed = false;
-let leftPressed = false;
-```
-
-### Event Listeners for Key Presses
-
-Register handlers for `keydown` (key pressed) and `keyup` (key released):
-
-```javascript
-document.addEventListener("keydown", keyDownHandler);
-document.addEventListener("keyup", keyUpHandler);
-```
-
-### Key Handler Functions
-
-Set the boolean flags based on which key is pressed or released:
-
-```javascript
-function keyDownHandler(e) {
-  if (e.key === "Right" || e.key === "ArrowRight") {
-    rightPressed = true;
-  } else if (e.key === "Left" || e.key === "ArrowLeft") {
-    leftPressed = true;
-  }
-}
-
-function keyUpHandler(e) {
-  if (e.key === "Right" || e.key === "ArrowRight") {
-    rightPressed = false;
-  } else if (e.key === "Left" || e.key === "ArrowLeft") {
-    leftPressed = false;
-  }
-}
-```
-
-Both `"ArrowRight"` (modern browsers) and `"Right"` (legacy IE/Edge) are checked for compatibility.
-
-### Paddle Movement Logic (With Boundary Checking)
-
-Add this inside the `draw()` function to move the paddle based on key state, while keeping it within canvas bounds:
-
-```javascript
-if (rightPressed) {
-  paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);
-} else if (leftPressed) {
-  paddleX = Math.max(paddleX - 7, 0);
-}
-```
-
-- The paddle moves 7 pixels per frame.
-- `Math.min` prevents the paddle from going past the right edge.
-- `Math.max` prevents it from going past the left edge.
-
-### Complete Code for Step 4
-
-```javascript
-const canvas = document.getElementById("myCanvas");
-const ctx = canvas.getContext("2d");
-const ballRadius = 10;
-
-let x = canvas.width / 2;
-let y = canvas.height - 30;
-let dx = 2;
-let dy = -2;
-
-const paddleHeight = 10;
-const paddleWidth = 75;
-let paddleX = (canvas.width - paddleWidth) / 2;
-
-let rightPressed = false;
-let leftPressed = false;
-
-document.addEventListener("keydown", keyDownHandler);
-document.addEventListener("keyup", keyUpHandler);
-
-function keyDownHandler(e) {
-  if (e.key === "Right" || e.key === "ArrowRight") {
-    rightPressed = true;
-  } else if (e.key === "Left" || e.key === "ArrowLeft") {
-    leftPressed = true;
-  }
-}
-
-function keyUpHandler(e) {
-  if (e.key === "Right" || e.key === "ArrowRight") {
-    rightPressed = false;
-  } else if (e.key === "Left" || e.key === "ArrowLeft") {
-    leftPressed = false;
-  }
-}
-
-function drawBall() {
-  ctx.beginPath();
-  ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-  ctx.fillStyle = "#0095DD";
-  ctx.fill();
-  ctx.closePath();
-}
-
-function drawPaddle() {
-  ctx.beginPath();
-  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-  ctx.fillStyle = "#0095DD";
-  ctx.fill();
-  ctx.closePath();
-}
-
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawBall();
-  drawPaddle();
-
-  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-    dx = -dx;
-  }
-  if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
-    dy = -dy;
-  }
-
-  if (rightPressed) {
-    paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);
-  } else if (leftPressed) {
-    paddleX = Math.max(paddleX - 7, 0);
-  }
-
-  x += dx;
-  y += dy;
-}
-
-setInterval(draw, 10);
-```
-
----
-
-## Step 5: Game Over
-
-We replace the bottom-wall bounce with actual game logic: the ball should bounce off the paddle, but if it misses, it is game over.
-
-### Storing the Interval Reference
-
-To stop the game loop on game over, store the interval ID:
-
-```javascript
-let interval = 0;
-```
-
-Then assign the return value of `setInterval`:
-
-```javascript
-interval = setInterval(draw, 10);
-```
-
-### Implementing Game Over and Paddle Collision
-
-Replace the bottom-wall collision check. Instead of bouncing off the bottom edge, we now check whether the ball hits the paddle or misses it:
-
-```javascript
-if (y + dy < ballRadius) {
-  // Ball hits top wall -- bounce
-  dy = -dy;
-} else if (y + dy > canvas.height - ballRadius) {
-  // Ball reaches bottom edge
-  if (x > paddleX && x < paddleX + paddleWidth) {
-    // Ball hits paddle -- bounce
-    dy = -dy;
-  } else {
-    // Ball missed the paddle -- game over
-    alert("GAME OVER");
-    document.location.reload();
-    clearInterval(interval);
-  }
-}
-```
-
-**How paddle collision works:**
-- `x > paddleX` -- the ball is past the paddle's left edge.
-- `x < paddleX + paddleWidth` -- the ball is before the paddle's right edge.
-- If both are true, the ball is above the paddle, so it bounces.
-- If the ball reaches the bottom without hitting the paddle, the game ends.
-
-### Complete Code for Step 5
-
-```javascript
-const canvas = document.getElementById("myCanvas");
-const ctx = canvas.getContext("2d");
-const ballRadius = 10;
-
-let x = canvas.width / 2;
-let y = canvas.height - 30;
-let dx = 2;
-let dy = -2;
-
-const paddleHeight = 10;
-const paddleWidth = 75;
-let paddleX = (canvas.width - paddleWidth) / 2;
-
-let rightPressed = false;
-let leftPressed = false;
-let interval = 0;
-
-document.addEventListener("keydown", keyDownHandler);
-document.addEventListener("keyup", keyUpHandler);
-
-function keyDownHandler(e) {
-  if (e.key === "Right" || e.key === "ArrowRight") {
-    rightPressed = true;
-  } else if (e.key === "Left" || e.key === "ArrowLeft") {
-    leftPressed = true;
-  }
-}
-
-function keyUpHandler(e) {
-  if (e.key === "Right" || e.key === "ArrowRight") {
-    rightPressed = false;
-  } else if (e.key === "Left" || e.key === "ArrowLeft") {
-    leftPressed = false;
-  }
-}
-
-function drawBall() {
-  ctx.beginPath();
-  ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-  ctx.fillStyle = "#0095DD";
-  ctx.fill();
-  ctx.closePath();
-}
-
-function drawPaddle() {
-  ctx.beginPath();
-  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-  ctx.fillStyle = "#0095DD";
-  ctx.fill();
-  ctx.closePath();
-}
-
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawBall();
-  drawPaddle();
-
-  // Left and right wall collision
-  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-    dx = -dx;
-  }
-
-  // Top wall collision
-  if (y + dy < ballRadius) {
-    dy = -dy;
-  } else if (y + dy > canvas.height - ballRadius) {
-    // Bottom edge: paddle collision or game over
-    if (x > paddleX && x < paddleX + paddleWidth) {
-      dy = -dy;
-    } else {
-      alert("GAME OVER");
-      document.location.reload();
-      clearInterval(interval);
-    }
-  }
-
-  // Paddle movement
-  if (rightPressed) {
-    paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);
-  } else if (leftPressed) {
-    paddleX = Math.max(paddleX - 7, 0);
-  }
-
-  x += dx;
-  y += dy;
-}
-
-interval = setInterval(draw, 10);
-```
-
----
-
-## Step 6: Build the Brick Field
-
-Now we create the grid of bricks that the ball will destroy. The bricks are stored in a 2D array and drawn in rows and columns.
-
-### Brick Configuration Variables
-
-Define constants that control the layout of the brick field:
-
-```javascript
-const brickRowCount = 3;
-const brickColumnCount = 5;
-const brickWidth = 75;
-const brickHeight = 20;
-const brickPadding = 10;
-const brickOffsetTop = 30;
-const brickOffsetLeft = 30;
-```
-
-- `brickRowCount` / `brickColumnCount` -- how many rows and columns of bricks.
-- `brickWidth` / `brickHeight` -- dimensions of each individual brick.
-- `brickPadding` -- space between bricks.
-- `brickOffsetTop` / `brickOffsetLeft` -- distance from the top and left canvas edges to the first brick.
-
-### Creating the Bricks 2D Array
-
-Use nested loops to create a 2D array. Each brick stores its `x` and `y` position (initially `0`, calculated during drawing):
-
-```javascript
-const bricks = [];
-for (let c = 0; c < brickColumnCount; c++) {
-  bricks[c] = [];
-  for (let r = 0; r < brickRowCount; r++) {
-    bricks[c][r] = { x: 0, y: 0 };
-  }
-}
-```
-
-### The drawBricks() Function
-
-Loop through every brick, calculate its position, store it, and draw it:
-
-```javascript
-function drawBricks() {
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
-      const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
-      bricks[c][r].x = brickX;
-      bricks[c][r].y = brickY;
-      ctx.beginPath();
-      ctx.rect(brickX, brickY, brickWidth, brickHeight);
-      ctx.fillStyle = "#0095DD";
-      ctx.fill();
-      ctx.closePath();
-    }
-  }
-}
-```
-
-**Position calculation formula:**
-- `brickX = column * (brickWidth + brickPadding) + brickOffsetLeft`
-- `brickY = row * (brickHeight + brickPadding) + brickOffsetTop`
-
-This creates an evenly-spaced grid with consistent padding and margins.
-
-### Calling drawBricks() in the Game Loop
-
-Add the call at the beginning of your `draw()` function, after clearing the canvas:
-
-```javascript
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawBricks();
-  drawBall();
-  drawPaddle();
-  // ... rest of draw function
-}
-```
-
-### Complete Code for Step 6
-
-```javascript
-const canvas = document.getElementById("myCanvas");
-const ctx = canvas.getContext("2d");
-const ballRadius = 10;
-
-let x = canvas.width / 2;
-let y = canvas.height - 30;
-let dx = 2;
-let dy = -2;
-
-const paddleHeight = 10;
-const paddleWidth = 75;
-let paddleX = (canvas.width - paddleWidth) / 2;
-
-let rightPressed = false;
-let leftPressed = false;
-let interval = 0;
-
-const brickRowCount = 3;
-const brickColumnCount = 5;
-const brickWidth = 75;
-const brickHeight = 20;
-const brickPadding = 10;
-const brickOffsetTop = 30;
-const brickOffsetLeft = 30;
-
-const bricks = [];
-for (let c = 0; c < brickColumnCount; c++) {
-  bricks[c] = [];
-  for (let r = 0; r < brickRowCount; r++) {
-    bricks[c][r] = { x: 0, y: 0 };
-  }
-}
-
-document.addEventListener("keydown", keyDownHandler);
-document.addEventListener("keyup", keyUpHandler);
-
-function keyDownHandler(e) {
-  if (e.key === "Right" || e.key === "ArrowRight") {
-    rightPressed = true;
-  } else if (e.key === "Left" || e.key === "ArrowLeft") {
-    leftPressed = true;
-  }
-}
-
-function keyUpHandler(e) {
-  if (e.key === "Right" || e.key === "ArrowRight") {
-    rightPressed = false;
-  } else if (e.key === "Left" || e.key === "ArrowLeft") {
-    leftPressed = false;
-  }
-}
-
-function drawBall() {
-  ctx.beginPath();
-  ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-  ctx.fillStyle = "#0095DD";
-  ctx.fill();
-  ctx.closePath();
-}
-
-function drawPaddle() {
-  ctx.beginPath();
-  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-  ctx.fillStyle = "#0095DD";
-  ctx.fill();
-  ctx.closePath();
-}
-
-function drawBricks() {
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
-      const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
-      bricks[c][r].x = brickX;
-      bricks[c][r].y = brickY;
-      ctx.beginPath();
-      ctx.rect(brickX, brickY, brickWidth, brickHeight);
-      ctx.fillStyle = "#0095DD";
-      ctx.fill();
-      ctx.closePath();
-    }
-  }
-}
-
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawBricks();
-  drawBall();
-  drawPaddle();
-
-  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-    dx = -dx;
-  }
-  if (y + dy < ballRadius) {
-    dy = -dy;
-  } else if (y + dy > canvas.height - ballRadius) {
-    if (x > paddleX && x < paddleX + paddleWidth) {
-      dy = -dy;
-    } else {
-      alert("GAME OVER");
-      document.location.reload();
-      clearInterval(interval);
-    }
-  }
-
-  if (rightPressed) {
-    paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);
-  } else if (leftPressed) {
-    paddleX = Math.max(paddleX - 7, 0);
-  }
-
-  x += dx;
-  y += dy;
-}
-
-interval = setInterval(draw, 10);
-```
-
----
-
-## Step 7: Collision Detection
-
-With bricks on screen, we need to detect when the ball hits one and make it disappear. Each brick gets a `status` property: `1` means visible, `0` means destroyed.
-
-### Adding the Status Property to Bricks
-
-Update the brick initialization to include a `status` flag:
-
-```javascript
-const bricks = [];
-for (let c = 0; c < brickColumnCount; c++) {
-  bricks[c] = [];
-  for (let r = 0; r < brickRowCount; r++) {
-    bricks[c][r] = { x: 0, y: 0, status: 1 };
-  }
-}
-```
-
-### The collisionDetection() Function
-
-Loop through every brick and check if the ball's center is within the brick's bounding box:
-
-```javascript
-function collisionDetection() {
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      const b = bricks[c][r];
-      if (b.status === 1) {
-        if (
-          x > b.x &&
-          x < b.x + brickWidth &&
-          y > b.y &&
-          y < b.y + brickHeight
-        ) {
-          dy = -dy;
-          b.status = 0;
-        }
-      }
-    }
-  }
-}
-```
-
-**Collision conditions (all four must be true simultaneously):**
-- `x > b.x` -- ball center is to the right of the brick's left edge.
-- `x < b.x + brickWidth` -- ball center is to the left of the brick's right edge.
-- `y > b.y` -- ball center is below the brick's top edge.
-- `y < b.y + brickHeight` -- ball center is above the brick's bottom edge.
-
-When a collision is detected:
-- `dy = -dy` reverses the ball's vertical direction (bounce).
-- `b.status = 0` marks the brick as destroyed.
-
-### Updating drawBricks() to Respect Status
-
-Only draw bricks that are still active (`status === 1`):
-
-```javascript
-function drawBricks() {
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      if (bricks[c][r].status === 1) {
-        const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
-        const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
-        bricks[c][r].x = brickX;
-        bricks[c][r].y = brickY;
-        ctx.beginPath();
-        ctx.rect(brickX, brickY, brickWidth, brickHeight);
-        ctx.fillStyle = "#0095DD";
-        ctx.fill();
-        ctx.closePath();
-      }
-    }
-  }
-}
-```
-
-### Calling collisionDetection() in the Game Loop
-
-Add the call in your `draw()` function, after drawing all elements:
-
-```javascript
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawBricks();
-  drawBall();
-  drawPaddle();
-  collisionDetection();
-  // ... rest of draw function
-}
-```
-
----
-
-## Step 8: Track the Score and Win
-
-We add a score counter that increments each time a brick is destroyed, and a win condition that triggers when all bricks are gone.
-
-### Initializing the Score
-
-```javascript
-let score = 0;
-```
-
-### The drawScore() Function
-
-Display the current score on the canvas using text rendering:
-
-```javascript
-function drawScore() {
-  ctx.font = "16px Arial";
-  ctx.fillStyle = "#0095DD";
-  ctx.fillText(`Score: ${score}`, 8, 20);
-}
-```
-
-- `ctx.font` sets the font size and family (like CSS).
-- `ctx.fillText(text, x, y)` renders text at the given coordinates.
-- Position `(8, 20)` places the score in the top-left corner.
-
-### Incrementing the Score
-
-In the `collisionDetection()` function, increment the score when a brick is hit:
-
-```javascript
-dy = -dy;
-b.status = 0;
-score++;
-```
-
-### Adding the Win Condition
-
-After incrementing the score, check if the player has destroyed all bricks:
-
-```javascript
-score++;
-if (score === brickRowCount * brickColumnCount) {
-  alert("YOU WIN, CONGRATULATIONS!");
-  document.location.reload();
-  clearInterval(interval);
-}
-```
-
-The total number of bricks is `brickRowCount * brickColumnCount`. When the score reaches that number, every brick has been destroyed.
-
-### Complete collisionDetection() with Score and Win
-
-```javascript
-function collisionDetection() {
-  for (let c = 0; c < brickColumnCount; c++) {
-    for (let r = 0; r < brickRowCount; r++) {
-      const b = bricks[c][r];
-      if (b.status === 1) {
-        if (
-          x > b.x &&
-          x < b.x + brickWidth &&
-          y > b.y &&
-          y < b.y + brickHeight
-        ) {
-          dy = -dy;
-          b.status = 0;
-          score++;
-          if (score === brickRowCount * brickColumnCount) {
-            alert("YOU WIN, CONGRATULATIONS!");
-            document.location.reload();
-            clearInterval(interval);
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-### Calling drawScore() in the Game Loop
-
-Add the call in your `draw()` function:
-
-```javascript
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawBricks();
-  drawBall();
-  drawPaddle();
-  drawScore();
-  collisionDetection();
-  // ... rest of draw function
-}
-```
-
-### Canvas Text Methods Reference
-
-| Method/Property | Purpose |
-|-----------------|---------|
-| `ctx.font` | Set font size and family |
-| `ctx.fillStyle` | Set text color |
-| `ctx.fillText(text, x, y)` | Draw filled text at coordinates |
-
----
-
-## Step 9: Mouse Controls
-
-In addition to keyboard controls, we add mouse support so the player can move the paddle by moving the mouse.
-
-### Adding the mousemove Event Listener
-
-Register the handler alongside the existing keyboard listeners:
-
-```javascript
-document.addEventListener("mousemove", mouseMoveHandler);
-```
-
-### The mouseMoveHandler Function
-
-Calculate the mouse's horizontal position relative to the canvas and update the paddle position:
-
-```javascript
-function mouseMoveHandler(e) {
-  const relativeX = e.clientX - canvas.offsetLeft;
-  if (relativeX > 0 && relativeX < canvas.width) {
-    paddleX = relativeX - paddleWidth / 2;
-  }
-}
-```
-
-**How it works:**
-- `e.clientX` -- the mouse's horizontal position in the browser viewport.
-- `canvas.offsetLeft` -- the distance from the canvas's left edge to the viewport's left edge.
-- `relativeX` -- the mouse position relative to the canvas (not the viewport).
-- The boundary check (`relativeX > 0 && relativeX < canvas.width`) ensures the paddle only moves when the mouse is over the canvas.
-- `paddleX = relativeX - paddleWidth / 2` centers the paddle under the mouse cursor by subtracting half the paddle width.
-
-### Complete Event Listener Setup (Keyboard + Mouse)
-
-```javascript
-document.addEventListener("keydown", keyDownHandler);
-document.addEventListener("keyup", keyUpHandler);
-document.addEventListener("mousemove", mouseMoveHandler);
-```
-
-Both control methods work simultaneously. The player can use arrow keys or mouse -- or switch between them at any time.
-
----
-
-## Step 10: Finishing Up
-
-The final step adds a lives system (so the player gets multiple chances) and upgrades the game loop from `setInterval` to `requestAnimationFrame` for smoother rendering.
-
-### Adding the Lives Variable
-
-```javascript
-let lives = 3;
-```
-
-### The drawLives() Function
-
-Display the remaining lives in the top-right corner:
-
-```javascript
-function drawLives() {
-  ctx.font = "16px Arial";
-  ctx.fillStyle = "#0095DD";
-  ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
-}
-```
-
-### Implementing the Lives System
-
-Replace the immediate game-over logic with a lives-based system. When the ball misses the paddle:
-
-```javascript
-if (y + dy < ballRadius) {
-  dy = -dy;
-} else if (y + dy > canvas.height - ballRadius) {
-  if (x > paddleX && x < paddleX + paddleWidth) {
-    dy = -dy;
-  } else {
-    lives--;
-    if (!lives) {
-      alert("GAME OVER");
-      document.location.reload();
-    } else {
-      // Reset ball and paddle positions
-      x = canvas.width / 2;
-      y = canvas.height - 30;
-      dx = 2;
-      dy = -2;
-      paddleX = (canvas.width - paddleWidth) / 2;
-    }
-  }
-}
-```
-
-**What happens when a life is lost:**
-- `lives--` decrements the lives counter.
-- If `lives` reaches `0`, the game ends with an alert and page reload.
-- Otherwise, the ball resets to center-bottom, velocity resets, and the paddle resets to center.
-
-### Upgrading to requestAnimationFrame
-
-Replace `setInterval` with `requestAnimationFrame` for a smoother, browser-optimized game loop:
-
-**Old approach (remove):**
-```javascript
-interval = setInterval(draw, 10);
-```
-
-**New approach:**
-Add `requestAnimationFrame(draw)` at the end of the `draw()` function:
-
-```javascript
-function draw() {
-  // ... all drawing and logic ...
-  requestAnimationFrame(draw);
-}
-
-// Start the game by calling draw() once:
-draw();
-```
-
-`requestAnimationFrame` lets the browser schedule rendering at the optimal frame rate (typically 60fps), which is more efficient than a fixed 10ms interval.
-
-### Calling drawLives() in the Game Loop
-
-```javascript
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawBricks();
-  drawBall();
-  drawPaddle();
-  drawScore();
-  drawLives();
-  collisionDetection();
-  // ... rest of logic ...
-  requestAnimationFrame(draw);
-}
-```
-
----
-
-## Complete Final Game Code
-
-Below is the entire game in a single, self-contained HTML file. This is the final product of all 10 steps combined.
-
-```html
-<!doctype html>
-<html lang="en-US">
-  <head>
-    <meta charset="utf-8" />
-    <title>2D Breakout Game</title>
-    <style>
-      * {
-        padding: 0;
-        margin: 0;
-      }
-      canvas {
-        background: #eeeeee;
-        display: block;
-        margin: 0 auto;
-      }
-    </style>
-  </head>
-  <body>
-    <canvas id="myCanvas" width="480" height="320"></canvas>
-
-    <script>
-      const canvas = document.getElementById("myCanvas");
-      const ctx = canvas.getContext("2d");
-
-      // --- Ball ---
-      const ballRadius = 10;
-      let x = canvas.width / 2;
-      let y = canvas.height - 30;
-      let dx = 2;
-      let dy = -2;
-
-      // --- Paddle ---
-      const paddleHeight = 10;
-      const paddleWidth = 75;
-      let paddleX = (canvas.width - paddleWidth) / 2;
-
-      // --- Controls ---
-      let rightPressed = false;
-      let leftPressed = false;
-
-      // --- Bricks ---
-      const brickRowCount = 3;
-      const brickColumnCount = 5;
-      const brickWidth = 75;
-      const brickHeight = 20;
-      const brickPadding = 10;
-      const brickOffsetTop = 30;
-      const brickOffsetLeft = 30;
-
-      const bricks = [];
-      for (let c = 0; c < brickColumnCount; c++) {
-        bricks[c] = [];
-        for (let r = 0; r < brickRowCount; r++) {
-          bricks[c][r] = { x: 0, y: 0, status: 1 };
-        }
-      }
-
-      // --- Score and Lives ---
-      let score = 0;
-      let lives = 3;
-
-      // =====================
-      // Event Listeners
-      // =====================
-      document.addEventListener("keydown", keyDownHandler);
-      document.addEventListener("keyup", keyUpHandler);
-      document.addEventListener("mousemove", mouseMoveHandler);
-
-      function keyDownHandler(e) {
-        if (e.key === "Right" || e.key === "ArrowRight") {
-          rightPressed = true;
-        } else if (e.key === "Left" || e.key === "ArrowLeft") {
-          leftPressed = true;
-        }
-      }
-
-      function keyUpHandler(e) {
-        if (e.key === "Right" || e.key === "ArrowRight") {
-          rightPressed = false;
-        } else if (e.key === "Left" || e.key === "ArrowLeft") {
-          leftPressed = false;
-        }
-      }
-
-      function mouseMoveHandler(e) {
-        const relativeX = e.clientX - canvas.offsetLeft;
-        if (relativeX > 0 && relativeX < canvas.width) {
-          paddleX = relativeX - paddleWidth / 2;
-        }
-      }
-
-      // =====================
-      // Collision Detection
-      // =====================
-      function collisionDetection() {
-        for (let c = 0; c < brickColumnCount; c++) {
-          for (let r = 0; r < brickRowCount; r++) {
-            const b = bricks[c][r];
-            if (b.status === 1) {
-              if (
-                x > b.x &&
-                x < b.x + brickWidth &&
-                y > b.y &&
-                y < b.y + brickHeight
-              ) {
-                dy = -dy;
-                b.status = 0;
-                score++;
-                if (score === brickRowCount * brickColumnCount) {
-                  alert("YOU WIN, CONGRATULATIONS!");
-                  document.location.reload();
-                }
-              }
-            }
-          }
-        }
-      }
-
-      // =====================
-      // Drawing Functions
-      // =====================
-      function drawBall() {
-        ctx.beginPath();
-        ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-        ctx.fillStyle = "#0095DD";
-        ctx.fill();
-        ctx.closePath();
-      }
-
-      function drawPaddle() {
-        ctx.beginPath();
-        ctx.rect(
-          paddleX,
-          canvas.height - paddleHeight,
-          paddleWidth,
-          paddleHeight
-        );
-        ctx.fillStyle = "#0095DD";
-        ctx.fill();
-        ctx.closePath();
-      }
-
-      function drawBricks() {
-        for (let c = 0; c < brickColumnCount; c++) {
-          for (let r = 0; r < brickRowCount; r++) {
-            if (bricks[c][r].status === 1) {
-              const brickX =
-                c * (brickWidth + brickPadding) + brickOffsetLeft;
-              const brickY =
-                r * (brickHeight + brickPadding) + brickOffsetTop;
-              bricks[c][r].x = brickX;
-              bricks[c][r].y = brickY;
-              ctx.beginPath();
-              ctx.rect(brickX, brickY, brickWidth, brickHeight);
-              ctx.fillStyle = "#0095DD";
-              ctx.fill();
-              ctx.closePath();
-            }
-          }
-        }
-      }
-
-      function drawScore() {
-        ctx.font = "16px Arial";
-        ctx.fillStyle = "#0095DD";
-        ctx.fillText(`Score: ${score}`, 8, 20);
-      }
-
-      function drawLives() {
-        ctx.font = "16px Arial";
-        ctx.fillStyle = "#0095DD";
-        ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
-      }
-
-      // =====================
-      // Main Game Loop
-      // =====================
-      function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawBricks();
-        drawBall();
-        drawPaddle();
-        drawScore();
-        drawLives();
-        collisionDetection();
-
-        // Left and right wall collision
-        if (
-          x + dx > canvas.width - ballRadius ||
-          x + dx < ballRadius
-        ) {
-          dx = -dx;
-        }
-
-        // Top wall collision
-        if (y + dy < ballRadius) {
-          dy = -dy;
-        } else if (y + dy > canvas.height - ballRadius) {
-          // Bottom edge: paddle collision or lose a life
-          if (x > paddleX && x < paddleX + paddleWidth) {
-            dy = -dy;
-          } else {
-            lives--;
-            if (!lives) {
-              alert("GAME OVER");
-              document.location.reload();
-            } else {
-              x = canvas.width / 2;
-              y = canvas.height - 30;
-              dx = 2;
-              dy = -2;
-              paddleX = (canvas.width - paddleWidth) / 2;
-            }
-          }
-        }
-
-        // Paddle movement (keyboard)
-        if (rightPressed) {
-          paddleX = Math.min(
-            paddleX + 7,
-            canvas.width - paddleWidth
-          );
-        } else if (leftPressed) {
-          paddleX = Math.max(paddleX - 7, 0);
-        }
-
-        x += dx;
-        y += dy;
-        requestAnimationFrame(draw);
-      }
-
-      draw();
-    </script>
-  </body>
-</html>
-```
-
----
-
-## Quick Reference: All Game Variables
-
-| Variable | Type | Purpose |
-|----------|------|---------|
-| `canvas` | const | Reference to the HTML canvas element |
-| `ctx` | const | 2D rendering context |
-| `ballRadius` | const | Radius of the ball (10) |
-| `x`, `y` | let | Current ball position |
-| `dx`, `dy` | let | Ball velocity (pixels per frame) |
-| `paddleHeight` | const | Height of the paddle (10) |
-| `paddleWidth` | const | Width of the paddle (75) |
-| `paddleX` | let | Current horizontal position of the paddle |
-| `rightPressed` | let | Whether the right arrow key is held down |
-| `leftPressed` | let | Whether the left arrow key is held down |
-| `brickRowCount` | const | Number of brick rows (3) |
-| `brickColumnCount` | const | Number of brick columns (5) |
-| `brickWidth` | const | Width of each brick (75) |
-| `brickHeight` | const | Height of each brick (20) |
-| `brickPadding` | const | Space between bricks (10) |
-| `brickOffsetTop` | const | Distance from top of canvas to first brick row (30) |
-| `brickOffsetLeft` | const | Distance from left of canvas to first brick column (30) |
-| `bricks` | const | 2D array holding all brick objects |
-| `score` | let | Current player score |
-| `lives` | let | Remaining lives (starts at 3) |
-
-## Quick Reference: All Functions
-
-| Function | Purpose |
-|----------|---------|
-| `keyDownHandler(e)` | Sets `rightPressed` or `leftPressed` to `true` on key press |
-| `keyUpHandler(e)` | Sets `rightPressed` or `leftPressed` to `false` on key release |
-| `mouseMoveHandler(e)` | Moves paddle to follow mouse horizontal position |
-| `collisionDetection()` | Checks ball against all active bricks; destroys hit bricks, increments score, checks win |
-| `drawBall()` | Renders the ball at current `(x, y)` position |
-| `drawPaddle()` | Renders the paddle at current `paddleX` position |
-| `drawBricks()` | Renders all bricks with `status === 1` |
-| `drawScore()` | Renders the score text in the top-left corner |
-| `drawLives()` | Renders the lives text in the top-right corner |
-| `draw()` | Main game loop: clears canvas, draws everything, handles collisions, updates positions |
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/game-engine/assets/simple-2d-engine.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/game-engine/assets/simple-2d-engine.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/game-engine/assets/simple-2d-engine.md
-- **SHA256_FINGERPRINT**: `add50e372d35fdcf7a40074d59db6979177d643b48f9cf0c72d28fbfd917fa37`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:29.024046+00:00
----
-
-# Simple 2D Platformer Engine Template
-
-A grid-based 2D platformer engine tutorial by **Sebastien Benard** (deepnight), the lead developer behind *Dead Cells*. This template covers the fundamental architecture for a performant platformer: a dual-coordinate positioning system that blends integer grid cells with sub-pixel precision, velocity and friction mechanics, gravity, and a robust collision detection and response system. The approach is language-agnostic but examples use Haxe.
-
-**Source references:**
-- [Part 1 - Basics](https://deepnight.net/tutorial/a-simple-platformer-engine-part-1-basics/)
-- [Part 2 - Collisions](https://deepnight.net/tutorial/a-simple-platformer-engine-part-2-collisions/)
-
-**Author:** [Sebastien Benard / deepnight](https://deepnight.net)
-
----
-
-## Engine Architecture Overview
-
-The engine is built around a grid-based world where each cell has a fixed pixel size (e.g., 16x16). Entities exist within this grid using a **dual-coordinate system**: integer cell coordinates for coarse position and floating-point ratios for sub-pixel precision within each cell. This design enables pixel-perfect collision detection against the grid while maintaining smooth, fluid movement.
-
-### Core Principles
-
-1. **Grid is truth:** The world is a 2D grid of cells. Collision data lives in the grid.
-2. **Entities straddle cells:** An entity's position is defined by which cell it occupies (`cx`, `cy`) plus how far into that cell it is (`xr`, `yr`).
-3. **Velocity is in grid-ratio units:** Movement deltas (`dx`, `dy`) represent fractions of a cell per step, not raw pixels.
-4. **Collisions are grid lookups:** Instead of testing sprite bounds against geometry, the engine checks the grid cells an entity is about to enter.
-
----
-
-## Part 1: Basics
-
-### The Grid
-
-The level is a 2D array where each cell is either empty or solid. A constant defines the cell size in pixels:
-
-```haxe
-static inline var GRID = 16;
-```
-
-Collision data is stored as a simple 2D boolean or integer map:
-
-```haxe
-// Check if a grid cell is solid
-function hasCollision(cx:Int, cy:Int):Bool {
-  // Look up cell value in the level data
-  return level.getCollision(cx, cy) != 0;
-}
-```
-
-### Entity Positioning: Dual Coordinates
-
-Every entity tracks its position using four values:
-
-| Variable | Type | Description |
-|----------|------|-------------|
-| `cx` | Int | Cell X coordinate (which column the entity is in) |
-| `cy` | Int | Cell Y coordinate (which row the entity is in) |
-| `xr` | Float | X ratio within the cell, range 0.0 to 1.0 |
-| `yr` | Float | Y ratio within the cell, range 0.0 to 1.0 |
-
-An entity at `cx=5, cy=3, xr=0.5, yr=1.0` is horizontally centered in cell (5,3) and sitting on the bottom edge.
-
-### Converting to Pixel Coordinates
-
-To render the entity, convert grid coordinates to pixel positions:
-
-```haxe
-// Pixel position for rendering
-var pixelX : Float = (cx + xr) * GRID;
-var pixelY : Float = (cy + yr) * GRID;
-```
-
-This produces smooth, sub-pixel-precise positions for rendering even though the collision system operates on discrete grid cells.
-
-### Velocity and Movement
-
-Velocity is expressed in **cell-ratio units per fixed-step** (not pixels per frame):
-
-```haxe
-var dx : Float = 0; // Horizontal velocity (cells per step)
-var dy : Float = 0; // Vertical velocity (cells per step)
-```
-
-Each fixed-step update, velocity is added to the ratio:
-
-```haxe
-// Apply horizontal movement
-xr += dx;
-
-// Apply vertical movement
-yr += dy;
-```
-
-### Cell Overflow
-
-When the ratio exceeds the 0..1 range, the entity has moved into an adjacent cell:
-
-```haxe
-// X overflow
-while (xr > 1) { xr--; cx++; }
-while (xr < 0) { xr++; cx--; }
-
-// Y overflow
-while (yr > 1) { yr--; cy++; }
-while (yr < 0) { yr++; cy--; }
-```
-
-### Friction
-
-Friction is applied as a multiplier each step, decaying velocity toward zero:
-
-```haxe
-var frictX : Float = 0.82; // Horizontal friction (0 = instant stop, 1 = no friction)
-var frictY : Float = 0.82; // Vertical friction
-
-// Applied each step after movement
-dx *= frictX;
-dy *= frictY;
-
-// Clamp very small values to zero
-if (Math.abs(dx) < 0.0005) dx = 0;
-if (Math.abs(dy) < 0.0005) dy = 0;
-```
-
-Typical friction values:
-- `0.82` -- Standard ground friction (responsive, quick stop)
-- `0.94` -- Ice or slippery surface (slow deceleration)
-- `0.96` -- Air friction (very slow horizontal deceleration)
-
-### Gravity
-
-Gravity is a constant added to `dy` each step:
-
-```haxe
-static inline var GRAVITY = 0.05; // In cell-ratio units per step^2
-
-// In fixedUpdate:
-dy += GRAVITY;
-```
-
-Since `dy` accumulates and friction is applied, the entity reaches a natural terminal velocity.
-
-### Rendering / Sprite Sync
-
-After the physics step, the sprite is placed at the computed pixel position:
-
-```haxe
-// In postUpdate, after physics is done:
-sprite.x = (cx + xr) * GRID;
-sprite.y = (cy + yr) * GRID;
-```
-
-For a platformer character, the anchor point is typically at the bottom-center of the sprite. With `yr = 1.0` representing the bottom of the current cell, the sprite's feet align with the floor.
-
-### Basic Entity Template
-
-```haxe
-class Entity {
-  // Grid coordinates
-  var cx : Int = 0;
-  var cy : Int = 0;
-  var xr : Float = 0.5;
-  var yr : Float = 1.0;
-
-  // Velocity
-  var dx : Float = 0;
-  var dy : Float = 0;
-
-  // Friction
-  var frictX : Float = 0.82;
-  var frictY : Float = 0.82;
-
-  // Gravity
-  static inline var GRAVITY = 0.05;
-
-  // Grid size
-  static inline var GRID = 16;
-
-  // Pixel position (computed)
-  public var attachX(get, never) : Float;
-  inline function get_attachX() return (cx + xr) * GRID;
-
-  public var attachY(get, never) : Float;
-  inline function get_attachY() return (cy + yr) * GRID;
-
-  public function fixedUpdate() {
-    // Gravity
-    dy += GRAVITY;
-
-    // Apply velocity
-    xr += dx;
-    yr += dy;
-
-    // Apply friction
-    dx *= frictX;
-    dy *= frictY;
-
-    // Clamp small values
-    if (Math.abs(dx) < 0.0005) dx = 0;
-    if (Math.abs(dy) < 0.0005) dy = 0;
-
-    // Cell overflow
-    while (xr > 1) { xr--; cx++; }
-    while (xr < 0) { xr++; cx--; }
-    while (yr > 1) { yr--; cy++; }
-    while (yr < 0) { yr++; cy--; }
-  }
-
-  public function postUpdate() {
-    sprite.x = attachX;
-    sprite.y = attachY;
-  }
-}
-```
-
----
-
-## Part 2: Collisions
-
-### Collision Philosophy
-
-Instead of using bounding-box-to-bounding-box collision detection (which becomes complex with slopes, one-way platforms, and edge cases), this engine checks grid cells directly. Since the entity's position is already expressed in grid terms, collision detection becomes a series of simple integer lookups.
-
-### The Core Idea
-
-Before allowing the entity to move into a neighboring cell, check if that cell is solid. If it is, clamp the entity's ratio and zero out its velocity on that axis.
-
-### Axis Separation
-
-Collisions are handled **per axis** -- first X, then Y (or vice versa). This simplifies the logic and avoids corner-case tunneling issues.
-
-### X-Axis Collision
-
-After applying `dx` to `xr`, before doing the cell-overflow step, check for collisions:
-
-```haxe
-// Apply X movement
-xr += dx;
-
-// Check collision to the RIGHT
-if (dx > 0 && hasCollision(cx + 1, cy) && xr >= 0.7) {
-  xr = 0.7;   // Clamp: stop before entering the solid cell
-  dx = 0;     // Kill horizontal velocity
-}
-
-// Check collision to the LEFT
-if (dx < 0 && hasCollision(cx - 1, cy) && xr <= 0.3) {
-  xr = 0.3;   // Clamp: stop before entering the solid cell
-  dx = 0;     // Kill horizontal velocity
-}
-
-// Cell overflow (after collision check)
-while (xr > 1) { xr--; cx++; }
-while (xr < 0) { xr++; cx--; }
-```
-
-**Why 0.7 and 0.3?** These thresholds represent the entity's collision radius within a cell. An entity centered at `xr = 0.5` with a half-width of 0.3 cells would collide at `xr = 0.7` on the right side and `xr = 0.3` on the left side. Adjust these values based on entity width.
-
-### Y-Axis Collision
-
-Similarly, after applying `dy` to `yr`:
-
-```haxe
-// Apply Y movement
-yr += dy;
-
-// Check collision BELOW (floor)
-if (dy > 0 && hasCollision(cx, cy + 1) && yr >= 1.0) {
-  yr = 1.0;   // Clamp: land on top of the solid cell
-  dy = 0;     // Kill vertical velocity
-}
-
-// Check collision ABOVE (ceiling)
-if (dy < 0 && hasCollision(cx, cy - 1) && yr <= 0.3) {
-  yr = 0.3;   // Clamp: stop before entering ceiling cell
-  dy = 0;     // Kill vertical velocity
-}
-
-// Cell overflow
-while (yr > 1) { yr--; cy++; }
-while (yr < 0) { yr++; cy--; }
-```
-
-For floor collisions, `yr = 1.0` means the entity sits exactly on the bottom edge of its current cell, which is the top edge of the cell below it. This is the natural "standing on ground" position.
-
-### On-Ground Detection
-
-To determine if the entity is standing on solid ground (for jump logic, animations, etc.):
-
-```haxe
-function isOnGround() : Bool {
-  return hasCollision(cx, cy + 1) && yr >= 0.98;
-}
-```
-
-The threshold `0.98` instead of `1.0` allows for minor floating-point imprecision.
-
-### Complete Entity with Collisions
-
-```haxe
-class Entity {
-  var cx : Int = 0;
-  var cy : Int = 0;
-  var xr : Float = 0.5;
-  var yr : Float = 1.0;
-  var dx : Float = 0;
-  var dy : Float = 0;
-  var frictX : Float = 0.82;
-  var frictY : Float = 0.82;
-
-  static inline var GRID = 16;
-  static inline var GRAVITY = 0.05;
-
-  // Collision radius (half-width in cell-ratio units)
-  var collRadius : Float = 0.3;
-
-  function hasCollision(testCx:Int, testCy:Int):Bool {
-    return level.isCollision(testCx, testCy);
-  }
-
-  function isOnGround():Bool {
-    return hasCollision(cx, cy + 1) && yr >= 0.98;
-  }
-
-  public function fixedUpdate() {
-    // --- Gravity ---
-    dy += GRAVITY;
-
-    // --- X Axis ---
-    xr += dx;
-
-    // Right collision
-    if (dx > 0 && hasCollision(cx + 1, cy) && xr >= 1.0 - collRadius) {
-      xr = 1.0 - collRadius;
-      dx = 0;
-    }
-
-    // Left collision
-    if (dx < 0 && hasCollision(cx - 1, cy) && xr <= collRadius) {
-      xr = collRadius;
-      dx = 0;
-    }
-
-    // X cell overflow
-    while (xr > 1) { xr--; cx++; }
-    while (xr < 0) { xr++; cx--; }
-
-    // --- Y Axis ---
-    yr += dy;
-
-    // Floor collision
-    if (dy > 0 && hasCollision(cx, cy + 1) && yr >= 1.0) {
-      yr = 1.0;
-      dy = 0;
-    }
-
-    // Ceiling collision
-    if (dy < 0 && hasCollision(cx, cy - 1) && yr <= collRadius) {
-      yr = collRadius;
-      dy = 0;
-    }
-
-    // Y cell overflow
-    while (yr > 1) { yr--; cy++; }
-    while (yr < 0) { yr++; cy--; }
-
-    // --- Friction ---
-    dx *= frictX;
-    dy *= frictY;
-
-    if (Math.abs(dx) < 0.0005) dx = 0;
-    if (Math.abs(dy) < 0.0005) dy = 0;
-  }
-
-  public function postUpdate() {
-    sprite.x = (cx + xr) * GRID;
-    sprite.y = (cy + yr) * GRID;
-  }
-}
-```
-
----
-
-## Collision Edge Cases and Solutions
-
-### Diagonal Movement / Corner Clipping
-
-Because collisions are checked per-axis in sequence, an entity moving diagonally into a corner naturally resolves against one axis first. This prevents the entity from getting stuck in corners and eliminates the need for complex diagonal collision logic.
-
-### High-Speed Tunneling
-
-If `dx` or `dy` is large enough to skip an entire cell in one step, the entity could "tunnel" through walls. Solutions:
-
-1. **Cap velocity:** Clamp `dx` and `dy` to a maximum of 0.5 (half a cell per step)
-2. **Subdivide steps:** If velocity exceeds the threshold, run the collision check in smaller increments
-3. **Ray-march the grid:** Check every cell along the movement path
-
-```haxe
-// Simple velocity cap
-if (dx > 0.5) dx = 0.5;
-if (dx < -0.5) dx = -0.5;
-if (dy > 0.5) dy = 0.5;
-if (dy < -0.5) dy = -0.5;
-```
-
-### One-Way Platforms
-
-Platforms the entity can jump up through but land on from above:
-
-```haxe
-// In Y collision, check for one-way platform
-if (dy > 0 && isOneWayPlatform(cx, cy + 1) && yr >= 1.0 && prevYr < 1.0) {
-  yr = 1.0;
-  dy = 0;
-}
-```
-
-Key: Only collide when the entity is moving downward (`dy > 0`) and was previously above the platform (`prevYr < 1.0`).
-
-### Slopes
-
-For basic slope support, instead of a binary collision check, query the slope height at the entity's x-position within the cell:
-
-```haxe
-// Pseudocode for slope collision
-var slopeHeight = getSlopeHeight(cx, cy + 1, xr);
-if (yr >= slopeHeight) {
-  yr = slopeHeight;
-  dy = 0;
-}
-```
-
----
-
-## Jumping
-
-Jumping is simply a negative `dy` impulse:
-
-```haxe
-function jump() {
-  if (isOnGround()) {
-    dy = -0.5; // Jump impulse (in cell-ratio units)
-  }
-}
-```
-
-Gravity naturally decelerates the upward motion, creating a parabolic arc. To allow variable-height jumps (holding the button longer = higher jump):
-
-```haxe
-// On jump button release, reduce upward velocity
-function onJumpRelease() {
-  if (dy < 0) {
-    dy *= 0.5; // Cut remaining upward velocity
-  }
-}
-```
-
----
-
-## Coordinate System Diagram
-
-```
-  Cell (cx, cy)           Next Cell (cx+1, cy)
-  +-------------------+   +-------------------+
-  |                   |   |                   |
-  |  xr=0.0    xr=1.0 --> |  xr=0.0           |
-  |                   |   |                   |
-  |         *         |   |                   |
-  |     (xr=0.5,      |   |                   |
-  |      yr=0.5)      |   |                   |
-  |                   |   |                   |
-  +-------------------+   +-------------------+
-  yr=0.0      yr=1.0 = top of cell below
-
-  Pixel position = (cx + xr) * GRID, (cy + yr) * GRID
-```
-
----
-
-## Update Order Summary
-
-```
-fixedUpdate():
-  1. Apply gravity          dy += GRAVITY
-  2. Apply X velocity       xr += dx
-  3. Check X collisions     Clamp xr, zero dx if colliding
-  4. Handle X cell overflow cx/xr normalization
-  5. Apply Y velocity       yr += dy
-  6. Check Y collisions     Clamp yr, zero dy if colliding
-  7. Handle Y cell overflow cy/yr normalization
-  8. Apply friction         dx *= frictX, dy *= frictY
-  9. Zero out tiny values   Threshold check
-
-postUpdate():
-  1. Sync sprite position   sprite.x/y = pixel coords
-  2. Update animation       Based on state/velocity
-  3. Camera follow          Track entity
-```
-
----
-
-## Design Advantages
-
-| Feature | Benefit |
-|---------|---------|
-| Grid-based collision | O(1) lookup per check, no broad-phase needed |
-| Dual coordinates | Sub-pixel smooth rendering with integer collision |
-| Per-axis collision | Simple logic, naturally handles corners |
-| Ratio-based velocity | Resolution-independent movement |
-| Friction multiplier | Tunable feel per surface type |
-| Cell overflow while-loops | Handles multi-cell movement safely |

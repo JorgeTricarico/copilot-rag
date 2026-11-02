@@ -1,7 +1,4168 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-10-31T04:48:48.083159+00:00
-- **Total Palabras**: 369,214 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-02T05:12:42.919098+00:00
+- **Total Palabras**: 402,005 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-pypi-package-builder/references/community-docs.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-pypi-package-builder/references/community-docs.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-pypi-package-builder/references/community-docs.md
+- **SHA256_FINGERPRINT**: `e1d442d1ee120e614522100d2ef3feb016ea1ae4c29a20d6a4c656681fdd91ce`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.702954+00:00
+---
+
+# Community Docs, PR Checklist, Anti-patterns, and Release Checklist
+
+## Table of Contents
+1. [README.md required sections](#1-readmemd-required-sections)
+2. [Docstrings — Google style](#2-docstrings--google-style)
+3. [CONTRIBUTING.md template](#3-contributingmd)
+4. [SECURITY.md template](#4-securitymd)
+5. [GitHub Issue Templates](#5-github-issue-templates)
+6. [PR Checklist](#6-pr-checklist)
+7. [Anti-patterns to avoid](#7-anti-patterns-to-avoid)
+8. [Master Release Checklist](#8-master-release-checklist)
+
+---
+
+## 1. `README.md` Required Sections
+
+A good README is the single most important file for adoption. Users decide in 30 seconds whether
+to use your library based on the README.
+
+```markdown
+# your-package
+
+> One-line description — what it does and why it's useful.
+
+[![PyPI version](https://badge.fury.io/py/your-package.svg)](https://pypi.org/project/your-package/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/your-package)](https://pypi.org/project/your-package/)
+[![CI](https://github.com/you/your-package/actions/workflows/ci.yml/badge.svg)](https://github.com/you/your-package/actions/workflows/ci.yml)
+[![Coverage](https://codecov.io/gh/you/your-package/branch/master/graph/badge.svg)](https://codecov.io/gh/you/your-package)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+## Installation
+
+pip install your-package
+
+# With Redis backend:
+pip install "your-package[redis]"
+
+## Quick Start
+
+(A copy-paste working example — no setup required to run it)
+
+from your_package import YourClient
+
+client = YourClient(api_key="sk-...")
+result = client.process({"input": "value"})
+print(result)
+
+## Features
+
+- Feature 1
+- Feature 2
+
+## Configuration
+
+| Parameter | Type | Default | Description |
+|---|---|---|—--|
+| api_key | str | required | Authentication credential |
+| timeout | int | 30 | Request timeout in seconds |
+| retries | int | 3 | Number of retry attempts |
+
+## Backends
+
+Brief comparison — in-memory vs Redis — and when to use each.
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md)
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md)
+
+## License
+
+MIT — see [LICENSE](./LICENSE)
+```
+
+---
+
+## 2. Docstrings — Google Style
+
+Use Google-style docstrings for every public class, method, and function. IDEs display these
+as tooltips, mkdocs/sphinx can auto-generate documentation from them, and they convey intent
+clearly to contributors.
+
+```python
+class YourClient:
+    """
+    Main client for <purpose>.
+
+    Args:
+        api_key: Authentication credential.
+        timeout: Request timeout in seconds. Defaults to 30.
+        retries: Number of retry attempts. Defaults to 3.
+
+    Raises:
+        ValueError: If api_key is empty or timeout is non-positive.
+
+    Example:
+        >>> from your_package import YourClient
+        >>> client = YourClient(api_key="sk-...")
+        >>> result = client.process({"input": "value"})
+    """
+```
+
+---
+
+## 3. `CONTRIBUTING.md`
+
+```markdown
+# Contributing to your-package
+
+## Development Setup
+
+git clone https://github.com/you/your-package
+cd your-package
+pip install -e ".[dev]"
+pre-commit install
+
+## Running Tests
+
+pytest
+
+## Running Linting
+
+ruff check .
+black . --check
+mypy your_package/
+
+## Submitting a PR
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feat/your-feature`
+3. Make changes with tests
+4. Ensure CI passes: `pre-commit run --all-files && pytest`
+5. Update `CHANGELOG.md` under `[Unreleased]`
+6. Open a PR — use the PR template
+
+## Commit Message Format (Conventional Commits)
+
+- `feat: add Redis backend`
+- `fix: correct retry behavior on timeout`
+- `docs: update README quick start`
+- `chore: bump ruff to 0.5`
+- `test: add edge cases for memory backend`
+
+## Reporting Bugs
+
+Use the GitHub issue template. Include Python version, package version,
+and a minimal reproducible example.
+```
+
+---
+
+## 4. `SECURITY.md`
+
+```markdown
+# Security Policy
+
+## Supported Versions
+
+| Version | Supported |
+|---|---|
+| 1.x.x   | Yes       |
+| < 1.0   | No        |
+
+## Reporting a Vulnerability
+
+Do NOT open a public GitHub issue for security vulnerabilities.
+
+Report via: GitHub private security reporting (preferred)
+or email: security@yourdomain.com
+
+Include:
+- Description of the vulnerability
+- Steps to reproduce
+- Potential impact
+- Suggested fix (if any)
+
+We aim to acknowledge within 48 hours and resolve within 14 days.
+```
+
+---
+
+## 5. GitHub Issue Templates
+
+### `.github/ISSUE_TEMPLATE/bug_report.md`
+
+```markdown
+---
+name: Bug Report
+about: Report a reproducible bug
+labels: bug
+---
+
+**Python version:**
+**Package version:**
+
+**Describe the bug:**
+
+**Minimal reproducible example:**
+```python
+# paste code here
+```
+
+**Expected behavior:**
+
+**Actual behavior:**
+```
+
+### `.github/ISSUE_TEMPLATE/feature_request.md`
+
+```markdown
+---
+name: Feature Request
+about: Suggest a new feature or enhancement
+labels: enhancement
+---
+
+**Problem this would solve:**
+
+**Proposed solution:**
+
+**Alternatives considered:**
+```
+
+---
+
+## 6. PR Checklist
+
+All items must be checked before requesting review. CI must be fully green.
+
+### Code Quality Gates
+```
+[ ] ruff check . — zero errors
+[ ] black . --check — zero formatting issues
+[ ] isort . --check-only — imports sorted correctly
+[ ] mypy your_package/ — zero type errors
+[ ] pytest — all tests pass
+[ ] Coverage >= 80% (enforced by fail_under in pyproject.toml)
+[ ] All GitHub Actions workflows green
+```
+
+### Structure
+```
+[ ] pyproject.toml: name, dynamic/version, description, requires-python, license, authors,
+    keywords (10+), classifiers, dependencies, all [project.urls] filled in
+[ ] dynamic = ["version"] if using setuptools_scm
+[ ] [tool.setuptools_scm] with local_scheme = "no-local-version"
+[ ] setup.py shim present (if using setuptools_scm)
+[ ] py.typed marker file exists in the package directory (empty file)
+[ ] py.typed listed in [tool.setuptools.package-data]
+[ ] "Typing :: Typed" classifier in pyproject.toml
+[ ] __init__.py has __all__ listing all public symbols
+[ ] __version__ via importlib.metadata (not hardcoded string)
+```
+
+### Testing
+```
+[ ] conftest.py has shared fixtures for client and backend
+[ ] Core happy path tested
+[ ] Error conditions and edge cases tested
+[ ] Each backend tested independently in isolation
+[ ] Redis backend tested in separate CI job with redis service (if applicable)
+[ ] asyncio_mode = "auto" in pyproject.toml (for async tests)
+[ ] fetch-depth: 0 in all CI checkout steps
+```
+
+### Optional Backend (if applicable)
+```
+[ ] BaseBackend abstract class defines the interface
+[ ] MemoryBackend works with zero extra deps
+[ ] RedisBackend raises ImportError with clear pip install hint if redis not installed
+[ ] Both backends unit-tested independently
+[ ] redis extra declared in [project.optional-dependencies]
+[ ] README shows both install paths (base and [redis])
+```
+
+### Changelog & Docs
+```
+[ ] CHANGELOG.md updated under [Unreleased]
+[ ] README has: description, install, quick start, config table, badges, license
+[ ] All public symbols have Google-style docstrings
+[ ] CONTRIBUTING.md: dev setup, test/lint commands, PR instructions
+[ ] SECURITY.md: supported versions, reporting process
+[ ] .github/ISSUE_TEMPLATE/bug_report.md
+[ ] .github/ISSUE_TEMPLATE/feature_request.md
+```
+
+### CI/CD
+```
+[ ] ci.yml: lint + mypy + test matrix (all supported Python versions)
+[ ] ci.yml: separate job for Redis backend with redis service
+[ ] publish.yml: triggered on v*.*.* tags, uses Trusted Publishing (OIDC)
+[ ] fetch-depth: 0 in all workflow checkout steps
+[ ] pypi environment created in GitHub repo Settings → Environments
+[ ] No API tokens in repository secrets
+```
+
+---
+
+## 7. Anti-patterns to Avoid
+
+| Anti-pattern | Why it's bad | Correct approach |
+|---|---|---|
+| `__version__ = "1.0.0"` hardcoded with setuptools_scm | Goes stale after first git tag | Use `importlib.metadata.version()` |
+| Missing `fetch-depth: 0` in CI checkout | setuptools_scm can't find tags → version = `0.0.0+dev` | Add `fetch-depth: 0` to **every** checkout step |
+| `local_scheme` not set | `+g<hash>` suffix breaks PyPI uploads (local versions rejected) | `local_scheme = "no-local-version"` |
+| Missing `py.typed` file | IDEs and mypy don't see package as typed | Create empty `py.typed` in package root |
+| `py.typed` not in `package-data` | File missing from installed wheel — useless | Add to `[tool.setuptools.package-data]` |
+| Importing optional dep at module top | `ImportError` on `import your_package` for all users | Lazy import inside the function/class that needs it |
+| Duplicating metadata in `setup.py` | Conflicts with `pyproject.toml`; drifts | Keep `setup.py` as 3-line shim only |
+| No `fail_under` in coverage config | Coverage regressions go unnoticed | Set `fail_under = 80` |
+| No mypy in CI | Type errors silently accumulate | Add mypy step to `ci.yml` |
+| API tokens in GitHub Secrets for PyPI | Security risk, rotation burden | Use Trusted Publishing (OIDC) |
+| Committing directly to `main`/`master` | Bypasses CI checks | Enforce via `no-commit-to-branch` pre-commit hook |
+| Missing `[Unreleased]` section in CHANGELOG | Changes pile up and get forgotten at release time | Keep `[Unreleased]` updated every PR |
+| Pinning exact dep versions in a library | Breaks dependency resolution for users | Use `>=` lower bounds only; avoid `==` |
+| No `__all__` in `__init__.py` | Users can accidentally import internal helpers | Declare `__all__` with every public symbol |
+| `from your_package import *` in tests | Tests pass even when imports are broken | Always use explicit imports |
+| No `SECURITY.md` | No path for responsible vulnerability disclosure | Add file with response timeline |
+| `Any` everywhere in type hints | Defeats mypy entirely | Use `object` for truly arbitrary values |
+| `Union` return types | Forces every caller to write `isinstance()` checks | Return concrete types; use overloads |
+| `setup.cfg` + `pyproject.toml` both active | Conflicts and confusing for contributors | Migrate everything to `pyproject.toml` |
+| Releasing on untagged commits | Version number is meaningless | Always tag before release |
+| Not testing on all supported Python versions | Breakage discovered by users, not you | Matrix test in CI |
+| `license = {text = "MIT"}` (old form) | Deprecated; PEP 639 uses SPDX strings | `license = "MIT"` |
+| No issue templates | Bug reports are inconsistent | Add `bug_report.md` + `feature_request.md` |
+
+---
+
+## 8. Master Release Checklist
+
+Run through every item before pushing a release tag. CI must be fully green.
+
+### Code Quality
+```
+[ ] ruff check . — zero errors
+[ ] ruff format . --check — zero formatting issues
+[ ] mypy src/your_package/ — zero type errors
+[ ] pytest — all tests pass
+[ ] Coverage >= 80% (fail_under enforced in pyproject.toml)
+[ ] All GitHub Actions CI jobs green (lint + test matrix)
+```
+
+### Project Structure
+```
+[ ] pyproject.toml — name, description, requires-python, license (SPDX string), authors,
+    keywords (10+), classifiers (Python versions + Typing :: Typed), urls (all 5 fields)
+[ ] dynamic = ["version"] set (if using setuptools_scm or hatch-vcs)
+[ ] [tool.setuptools_scm] with local_scheme = "no-local-version"
+[ ] setup.py shim present (if using setuptools_scm)
+[ ] py.typed marker file exists (empty file in package root)
+[ ] py.typed listed in [tool.setuptools.package-data]
+[ ] "Typing :: Typed" classifier in pyproject.toml
+[ ] __init__.py has __all__ listing all public symbols
+[ ] __version__ reads from importlib.metadata (not hardcoded)
+```
+
+### Testing
+```
+[ ] conftest.py has shared fixtures for client and backend
+[ ] Core happy path tested
+[ ] Error conditions and edge cases tested
+[ ] Each backend tested independently in isolation
+[ ] asyncio_mode = "auto" in pyproject.toml (for async tests)
+[ ] fetch-depth: 0 in all CI checkout steps
+```
+
+### CHANGELOG and Docs
+```
+[ ] CHANGELOG.md: [Unreleased] entries moved to [x.y.z] - YYYY-MM-DD
+[ ] README has: description, install commands, quick start, config table, badges
+[ ] All public symbols have Google-style docstrings
+[ ] CONTRIBUTING.md: dev setup, test/lint commands, PR instructions
+[ ] SECURITY.md: supported versions, reporting process with timeline
+```
+
+### Versioning
+```
+[ ] All CI checks pass on the commit you plan to tag
+[ ] CHANGELOG.md updated and committed
+[ ] Git tag follows format v1.2.3 (semver, v prefix)
+[ ] No stale local_scheme suffixes will appear in the built wheel name
+```
+
+### CI/CD
+```
+[ ] ci.yml: lint + mypy + test matrix (all supported Python versions)
+[ ] publish.yml: triggered on v*.*.* tags, uses Trusted Publishing (OIDC)
+[ ] pypi environment created in GitHub repo Settings → Environments
+[ ] No API tokens stored in repository secrets
+```
+
+### The Release Command Sequence
+```bash
+# 1. Run full local validation
+ruff check . ; ruff format . --check ; mypy src/your_package/ ; pytest
+
+# 2. Update CHANGELOG.md — move [Unreleased] to [x.y.z]
+# 3. Commit the changelog
+git add CHANGELOG.md
+git commit -m "chore: prepare release vX.Y.Z"
+
+# 4. Tag and push — this triggers publish.yml automatically
+git tag vX.Y.Z
+git push origin main --tags
+
+# 5. Monitor: https://github.com/<you>/<pkg>/actions
+# 6. Verify: https://pypi.org/project/your-package/
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-pypi-package-builder/references/library-patterns.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-pypi-package-builder/references/library-patterns.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-pypi-package-builder/references/library-patterns.md
+- **SHA256_FINGERPRINT**: `375feb245945ca4062b92af186dcdaf1e2d887883e0216b1496355000a697edc`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.678246+00:00
+---
+
+# Library Core Patterns, OOP/SOLID, and Type Hints
+
+## Table of Contents
+1. [OOP & SOLID Principles](#1-oop--solid-principles)
+2. [Type Hints Best Practices](#2-type-hints-best-practices)
+3. [Core Class Design](#3-core-class-design)
+4. [Factory / Builder Pattern](#4-factory--builder-pattern)
+5. [Configuration Pattern](#5-configuration-pattern)
+6. [`__init__.py` — explicit public API](#6-__init__py--explicit-public-api)
+7. [Optional Backends (Plugin Pattern)](#7-optional-backends-plugin-pattern)
+
+---
+
+## 1. OOP & SOLID Principles
+
+Apply these principles to produce maintainable, testable, extensible packages.
+**Do not over-engineer** — apply the principle that solves a real problem, not all of them
+at once.
+
+### S — Single Responsibility Principle
+
+Each class/module should have **one reason to change**.
+
+```python
+# BAD: one class handles data, validation, AND persistence
+class UserManager:
+    def validate(self, user): ...
+    def save_to_db(self, user): ...
+    def send_email(self, user): ...
+
+# GOOD: split responsibilities
+class UserValidator:
+    def validate(self, user: User) -> None: ...
+
+class UserRepository:
+    def save(self, user: User) -> None: ...
+
+class UserNotifier:
+    def notify(self, user: User) -> None: ...
+```
+
+### O — Open/Closed Principle
+
+Open for extension, closed for modification. Use **protocols or ABCs** as extension points.
+
+```python
+from abc import ABC, abstractmethod
+
+class StorageBackend(ABC):
+    """Define the interface once; never modify it for new implementations."""
+    @abstractmethod
+    def get(self, key: str) -> str | None: ...
+    @abstractmethod
+    def set(self, key: str, value: str) -> None: ...
+
+class MemoryBackend(StorageBackend):    # Extend by subclassing
+    ...
+
+class RedisBackend(StorageBackend):     # Add new impl without touching StorageBackend
+    ...
+```
+
+### L — Liskov Substitution Principle
+
+Subclasses must be substitutable for their base. Never narrow a contract in a subclass.
+
+```python
+class BaseProcessor:
+    def process(self, data: dict) -> dict: ...
+
+# BAD: raises TypeError for valid dicts — breaks substitutability
+class StrictProcessor(BaseProcessor):
+    def process(self, data: dict) -> dict:
+        if not data:
+            raise TypeError("Must have data")  # Base never raised this
+
+# GOOD: accept what base accepts, fulfill the same contract
+class StrictProcessor(BaseProcessor):
+    def process(self, data: dict) -> dict:
+        if not data:
+            return {}   # Graceful — same return type, no new exceptions
+```
+
+### I — Interface Segregation Principle
+
+Prefer **small, focused protocols** over large monolithic ABCs.
+
+```python
+# BAD: forces all implementers to handle read+write+delete+list
+class BigStorage(ABC):
+    @abstractmethod
+    def read(self): ...
+    @abstractmethod
+    def write(self): ...
+    @abstractmethod
+    def delete(self): ...
+    @abstractmethod
+    def list_all(self): ...   # Not every backend needs this
+
+# GOOD: separate protocols — clients depend only on what they need
+from typing import Protocol
+
+class Readable(Protocol):
+    def read(self, key: str) -> str | None: ...
+
+class Writable(Protocol):
+    def write(self, key: str, value: str) -> None: ...
+
+class Deletable(Protocol):
+    def delete(self, key: str) -> None: ...
+```
+
+### D — Dependency Inversion Principle
+
+High-level modules depend on **abstractions** (protocols/ABCs), not concrete implementations.
+Pass dependencies in via `__init__` (constructor injection).
+
+```python
+# BAD: high-level class creates its own dependency
+class ApiClient:
+    def __init__(self) -> None:
+        self._cache = RedisCache()   # Tightly coupled to Redis
+
+# GOOD: depend on the abstraction; inject the concrete at call site
+class ApiClient:
+    def __init__(self, cache: CacheBackend) -> None:  # CacheBackend is a Protocol
+        self._cache = cache
+
+# User code (or tests):
+client = ApiClient(cache=RedisCache())    # Real
+client = ApiClient(cache=MemoryCache())  # Test
+```
+
+### Composition Over Inheritance
+
+Prefer delegating to contained objects over deep inheritance chains.
+
+```python
+# Prefer this (composition):
+class YourClient:
+    def __init__(self, backend: StorageBackend, http: HttpTransport) -> None:
+        self._backend = backend
+        self._http = http
+
+# Avoid this (deep inheritance):
+class YourClient(BaseClient, CacheMixin, RetryMixin, LoggingMixin):
+    ...    # Fragile, hard to test, MRO confusion
+```
+
+### Exception Hierarchy
+
+Always define a base exception for your package; layer specifics below it.
+
+```python
+# your_package/exceptions.py
+class YourPackageError(Exception):
+    """Base exception — catch this to catch any package error."""
+
+class ConfigurationError(YourPackageError):
+    """Raised when package is misconfigured."""
+
+class AuthenticationError(YourPackageError):
+    """Raised on auth failure."""
+
+class RateLimitError(YourPackageError):
+    """Raised when rate limit is exceeded."""
+    def __init__(self, retry_after: int) -> None:
+        self.retry_after = retry_after
+        super().__init__(f"Rate limited. Retry after {retry_after}s.")
+```
+
+---
+
+## 2. Type Hints Best Practices
+
+Follow PEP 484 (type hints), PEP 526 (variable annotations), PEP 544 (protocols),
+PEP 561 (typed packages). These are not optional for a quality library.
+
+```python
+from __future__ import annotations    # Enables PEP 563 deferred evaluation — always add this
+
+# For ARGUMENTS: prefer abstract / protocol types (more flexible for callers)
+from collections.abc import Iterable, Mapping, Sequence, Callable
+
+def process_items(items: Iterable[str]) -> list[int]: ...   # ✓ Accepts any iterable
+def process_items(items: list[str]) -> list[int]: ...       # ✗ Too restrictive
+
+# For RETURN TYPES: prefer concrete types (callers know exactly what they get)
+def get_names() -> list[str]: ...                           # ✓ Concrete
+def get_names() -> Iterable[str]: ...                       # ✗ Caller can't index it
+
+# Use X | Y syntax (Python 3.10+), not Union[X, Y] or Optional[X]
+def find(key: str) -> str | None: ...                       # ✓ Modern
+def find(key: str) -> Optional[str]: ...                    # ✗ Old style
+
+# None should be LAST in unions
+def get(key: str) -> str | int | None: ...                  # ✓
+
+# Avoid Any — it disables type checking entirely
+def process(data: Any) -> Any: ...                          # ✗ Loses all safety
+def process(data: dict[str, object]) -> dict[str, object]:  # ✓
+
+# Use object instead of Any when a param accepts literally anything
+def log(value: object) -> None: ...                         # ✓
+
+# Avoid Union return types — they require isinstance() checks at every call site
+def get_value() -> str | int: ...                           # ✗ Forces callers to branch
+```
+
+### Protocols vs ABCs
+
+```python
+from typing import Protocol, runtime_checkable
+from abc import ABC, abstractmethod
+
+# Use Protocol when you don't control the implementer classes (duck typing)
+@runtime_checkable    # Makes isinstance() checks work at runtime
+class Serializable(Protocol):
+    def to_dict(self) -> dict[str, object]: ...
+
+# Use ABC when you control the class hierarchy and want default implementations
+class BaseBackend(ABC):
+    @abstractmethod
+    async def get(self, key: str) -> str | None: ...
+
+    def get_or_default(self, key: str, default: str) -> str:
+        result = self.get(key)
+        return result if result is not None else default
+```
+
+### TypeVar and Generics
+
+```python
+from typing import TypeVar, Generic
+
+T = TypeVar("T")
+T_co = TypeVar("T_co", covariant=True)   # For read-only containers
+
+class Repository(Generic[T]):
+    """Type-safe generic repository."""
+    def __init__(self, model_class: type[T]) -> None:
+        self._store: list[T] = []
+
+    def add(self, item: T) -> None:
+        self._store.append(item)
+
+    def get_all(self) -> list[T]:
+        return list(self._store)
+```
+
+### dataclasses for data containers
+
+```python
+from dataclasses import dataclass, field
+
+@dataclass(frozen=True)   # frozen=True → immutable, hashable (good for configs/keys)
+class Config:
+    api_key: str
+    timeout: int = 30
+    headers: dict[str, str] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        if not self.api_key:
+            raise ValueError("api_key must not be empty")
+```
+
+### TYPE_CHECKING guard (avoid circular imports)
+
+```python
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from your_package.models import HeavyModel    # Only imported during type checking
+
+def process(model: "HeavyModel") -> None:
+    ...
+```
+
+### Overload for multiple signatures
+
+```python
+from typing import overload
+
+@overload
+def get(key: str, default: None = ...) -> str | None: ...
+@overload
+def get(key: str, default: str) -> str: ...
+def get(key: str, default: str | None = None) -> str | None:
+    ...    # Single implementation handles both
+```
+
+---
+
+## 3. Core Class Design
+
+The main class of your library should have a clear, minimal `__init__`, sensible defaults for all
+parameters, and raise `TypeError` / `ValueError` early for invalid inputs. This prevents confusing
+errors at call time rather than at construction.
+
+```python
+# your_package/core.py
+from __future__ import annotations
+
+from your_package.exceptions import YourPackageError
+
+class YourClient:
+    """
+    Main entry point for <your purpose>.
+
+    Args:
+        api_key: Required authentication credential.
+        timeout: Request timeout in seconds. Defaults to 30.
+        retries: Number of retry attempts. Defaults to 3.
+
+    Raises:
+        ValueError: If api_key is empty or timeout is non-positive.
+
+    Example:
+        >>> from your_package import YourClient
+        >>> client = YourClient(api_key="sk-...")
+        >>> result = client.process(data)
+    """
+
+    def __init__(
+        self,
+        api_key: str,
+        timeout: int = 30,
+        retries: int = 3,
+    ) -> None:
+        if not api_key:
+            raise ValueError("api_key must not be empty")
+        if timeout <= 0:
+            raise ValueError("timeout must be positive")
+        self._api_key = api_key
+        self.timeout = timeout
+        self.retries = retries
+
+    def process(self, data: dict) -> dict:
+        """
+        Process data and return results.
+
+        Args:
+            data: Input dictionary to process.
+
+        Returns:
+            Processed result as a dictionary.
+
+        Raises:
+            YourPackageError: If processing fails.
+        """
+        ...
+```
+
+### Design rules
+
+- Accept all config in `__init__`, not scattered across method calls.
+- Validate at construction time — fail fast with a clear message.
+- Keep `__init__` signatures stable. Adding new **keyword-only** args with defaults is backwards
+  compatible. Removing or reordering positional args is a breaking change.
+
+---
+
+## 4. Factory / Builder Pattern
+
+Use a factory function when users need to create pre-configured instances. This avoids cluttering
+`__init__` with a dozen keyword arguments and keeps the common case simple.
+
+```python
+# your_package/factory.py
+from __future__ import annotations
+
+from your_package.core import YourClient
+from your_package.backends.memory import MemoryBackend
+
+def create_client(
+    api_key: str,
+    *,
+    timeout: int = 30,
+    retries: int = 3,
+    backend: str = "memory",
+    backend_url: str | None = None,
+) -> YourClient:
+    """
+    Factory that returns a configured YourClient.
+
+    Args:
+        api_key: Required API key.
+        timeout: Request timeout in seconds.
+        retries: Number of retry attempts.
+        backend: Storage backend type. One of 'memory' or 'redis'.
+        backend_url: Connection URL for the chosen backend.
+
+    Example:
+        >>> client = create_client(api_key="sk-...", backend="redis", backend_url="redis://localhost")
+    """
+    if backend == "redis":
+        from your_package.backends.redis import RedisBackend
+        _backend = RedisBackend(url=backend_url or "redis://localhost:6379")
+    else:
+        _backend = MemoryBackend()
+
+    return YourClient(api_key=api_key, timeout=timeout, retries=retries, backend=_backend)
+```
+
+**Why a factory, not a class method?** Both work. A standalone factory function is easier to
+mock in tests and avoids coupling the factory logic into the class itself.
+
+---
+
+## 5. Configuration Pattern
+
+Use a dataclass (or Pydantic `BaseModel`) to hold configuration. This gives you free validation,
+helpful error messages, and a single place to document every option.
+
+```python
+# your_package/config.py
+from __future__ import annotations
+from dataclasses import dataclass, field
+
+@dataclass
+class YourSettings:
+    """
+    Configuration for YourClient.
+
+    Attributes:
+        timeout: HTTP timeout in seconds.
+        retries: Number of retry attempts on transient errors.
+        base_url: Base API URL.
+    """
+    timeout: int = 30
+    retries: int = 3
+    base_url: str = "https://api.example.com"
+    extra_headers: dict[str, str] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        if self.timeout <= 0:
+            raise ValueError("timeout must be positive")
+        if self.retries < 0:
+            raise ValueError("retries must be non-negative")
+```
+
+If you need environment variable loading, use `pydantic-settings` as an **optional** dependency —
+declare it in `[project.optional-dependencies]`, not as a required dep.
+
+---
+
+## 6. `__init__.py` — Explicit Public API
+
+A well-defined `__all__` is not just style — it tells users (and IDEs) exactly what's part of your
+public API, and prevents accidental imports of internal helpers as part of your contract.
+
+```python
+# your_package/__init__.py
+"""your-package: <one-line description>."""
+
+from importlib.metadata import version, PackageNotFoundError
+
+try:
+    __version__ = version("your-package")
+except PackageNotFoundError:
+    __version__ = "0.0.0-dev"
+
+from your_package.core import YourClient
+from your_package.config import YourSettings
+from your_package.exceptions import YourPackageError
+
+__all__ = [
+    "YourClient",
+    "YourSettings",
+    "YourPackageError",
+    "__version__",
+]
+```
+
+Rules:
+- Only export what users are supposed to use. Internal helpers go in `_utils.py` or submodules.
+- Keep imports at the top level of `__init__.py` shallow — avoid importing heavy optional deps
+  (like `redis`) at module level. Import them lazily inside the class or function that needs them.
+- `__version__` is always part of the public API — it enables `your_package.__version__` for
+  debugging.
+
+---
+
+## 7. Optional Backends (Plugin Pattern)
+
+This pattern lets your package work out-of-the-box (no extra deps) with an in-memory backend,
+while letting advanced users plug in Redis, a database, or any custom storage.
+
+### 5.1 Abstract base class — defines the interface
+
+```python
+# your_package/backends/__init__.py
+from abc import ABC, abstractmethod
+
+class BaseBackend(ABC):
+    """Abstract storage backend interface.
+
+    Implement this to add a custom backend (database, cache, etc.).
+    """
+
+    @abstractmethod
+    async def get(self, key: str) -> str | None:
+        """Retrieve a value by key. Returns None if not found."""
+        ...
+
+    @abstractmethod
+    async def set(self, key: str, value: str, ttl: int | None = None) -> None:
+        """Store a value. Optional TTL in seconds."""
+        ...
+
+    @abstractmethod
+    async def delete(self, key: str) -> None:
+        """Delete a key."""
+        ...
+```
+
+### 5.2 Memory backend — zero extra deps
+
+```python
+# your_package/backends/memory.py
+from __future__ import annotations
+
+import asyncio
+import time
+from your_package.backends import BaseBackend
+
+class MemoryBackend(BaseBackend):
+    """Thread-safe in-memory backend. Works out of the box — no extra dependencies."""
+
+    def __init__(self) -> None:
+        self._store: dict[str, tuple[str, float | None]] = {}
+        self._lock = asyncio.Lock()
+
+    async def get(self, key: str) -> str | None:
+        async with self._lock:
+            entry = self._store.get(key)
+            if entry is None:
+                return None
+            value, expires_at = entry
+            if expires_at is not None and time.time() > expires_at:
+                del self._store[key]
+                return None
+            return value
+
+    async def set(self, key: str, value: str, ttl: int | None = None) -> None:
+        async with self._lock:
+            expires_at = time.time() + ttl if ttl is not None else None
+            self._store[key] = (value, expires_at)
+
+    async def delete(self, key: str) -> None:
+        async with self._lock:
+            self._store.pop(key, None)
+```
+
+### 5.3 Redis backend — raises clear ImportError if not installed
+
+The key design: import `redis` lazily inside `__init__`, not at module level. This way,
+`import your_package` never fails even if `redis` isn't installed.
+
+```python
+# your_package/backends/redis.py
+from __future__ import annotations
+from your_package.backends import BaseBackend
+
+try:
+    import redis.asyncio as aioredis
+except ImportError as exc:
+    raise ImportError(
+        "Redis backend requires the redis extra:\n"
+        "  pip install your-package[redis]"
+    ) from exc
+
+class RedisBackend(BaseBackend):
+    """Redis-backed storage for distributed/multi-process deployments."""
+
+    def __init__(self, url: str = "redis://localhost:6379") -> None:
+        self._client = aioredis.from_url(url, decode_responses=True)
+
+    async def get(self, key: str) -> str | None:
+        return await self._client.get(key)
+
+    async def set(self, key: str, value: str, ttl: int | None = None) -> None:
+        await self._client.set(key, value, ex=ttl)
+
+    async def delete(self, key: str) -> None:
+        await self._client.delete(key)
+```
+
+### 5.4 How users choose a backend
+
+```python
+# Default: in-memory, no extra deps needed
+from your_package import YourClient
+client = YourClient(api_key="sk-...")
+
+# Redis: pip install your-package[redis]
+from your_package.backends.redis import RedisBackend
+client = YourClient(api_key="sk-...", backend=RedisBackend(url="redis://localhost:6379"))
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-pypi-package-builder/references/pyproject-toml.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-pypi-package-builder/references/pyproject-toml.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-pypi-package-builder/references/pyproject-toml.md
+- **SHA256_FINGERPRINT**: `9cd3c728765dcfd34d45ff523930791a40be332042683f2438f90402aea41479`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.808990+00:00
+---
+
+# pyproject.toml, Backends, Versioning, and Typed Package
+
+## Table of Contents
+1. [Complete pyproject.toml — setuptools + setuptools_scm](#1-complete-pyprojecttoml)
+2. [hatchling (modern, zero-config)](#2-hatchling-modern-zero-config)
+3. [flit (minimal, version from `__version__`)](#3-flit-minimal-version-from-__version__)
+4. [poetry (integrated dep manager)](#4-poetry-integrated-dep-manager)
+5. [Versioning Strategy — PEP 440, semver, dep specifiers](#5-versioning-strategy)
+6. [setuptools_scm — dynamic version from git tags](#6-dynamic-versioning-with-setuptools_scm)
+7. [setup.py shim for legacy editable installs](#7-setuppy-shim)
+8. [PEP 561 typed package (py.typed)](#8-typed-package-pep-561)
+
+---
+
+## 1. Complete pyproject.toml
+
+### setuptools + setuptools_scm (recommended for git-tag versioning)
+
+```toml
+[build-system]
+requires = ["setuptools>=68", "wheel", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "your-package"
+dynamic = ["version"]           # Version comes from git tags via setuptools_scm
+description = "<your description> — <key feature 1>, <key feature 2>"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"                # PEP 639 SPDX expression (string, not {text = "MIT"})
+license-files = ["LICENSE"]
+authors = [
+    {name = "Your Name", email = "you@example.com"},
+]
+maintainers = [
+    {name = "Your Name", email = "you@example.com"},
+]
+keywords = [
+    "python",
+    # Add 10-15 specific keywords that describe your library — they affect PyPI discoverability
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",          # Change to 5 at stable release
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",          # Add this when shipping py.typed
+]
+dependencies = [
+    # List your runtime dependencies here. Keep them minimal.
+    # Example: "httpx>=0.24", "pydantic>=2.0"
+    # Leave empty if your library has no required runtime deps.
+]
+
+[project.optional-dependencies]
+redis = [
+    "redis>=4.2",               # Optional heavy backend
+]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21",
+    "httpx>=0.24",
+    "pytest-cov>=4.0",
+    "ruff>=0.4",
+    "black>=24.0",
+    "isort>=5.13",
+    "mypy>=1.0",
+    "pre-commit>=3.0",
+    "build",
+    "twine",
+]
+
+[project.urls]
+Homepage      = "https://github.com/yourusername/your-package"
+Documentation = "https://github.com/yourusername/your-package#readme"
+Repository    = "https://github.com/yourusername/your-package"
+"Bug Tracker" = "https://github.com/yourusername/your-package/issues"
+Changelog     = "https://github.com/yourusername/your-package/blob/master/CHANGELOG.md"
+
+# --- Setuptools configuration ---
+[tool.setuptools.packages.find]
+include = ["your_package*"]   # flat layout
+# For src/ layout, use:
+# where = ["src"]
+
+[tool.setuptools.package-data]
+your_package = ["py.typed"]  # Ship the py.typed marker in the wheel
+
+# --- setuptools_scm: version from git tags ---
+[tool.setuptools_scm]
+version_scheme = "post-release"
+local_scheme   = "no-local-version"  # Prevents +local suffix breaking PyPI uploads
+
+# --- Ruff (linting) ---
+[tool.ruff]
+target-version = "py310"
+line-length    = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "SIM", "C4", "PTH", "RUF"]
+ignore = ["E501"]   # Line length enforced by formatter
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*"   = ["S101", "ANN"]    # Allow assert and missing annotations in tests
+"scripts/*" = ["T201"]           # Allow print in scripts
+
+[tool.ruff.format]
+quote-style = "double"
+
+# --- Black (formatting) ---
+[tool.black]
+line-length    = 100
+target-version = ["py310", "py311", "py312", "py313"]
+
+# --- isort (import sorting) ---
+[tool.isort]
+profile     = "black"
+line_length = 100
+
+# --- mypy (static type checking) ---
+[tool.mypy]
+python_version         = "3.10"
+warn_return_any        = true
+warn_unused_configs    = true
+warn_unused_ignores    = true
+disallow_untyped_defs  = true
+disallow_any_generics  = true
+ignore_missing_imports = true
+strict                 = false     # Set true for maximum strictness
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false     # Relaxed in tests
+
+# --- pytest ---
+[tool.pytest.ini_options]
+asyncio_mode  = "auto"
+testpaths     = ["tests"]
+pythonpath    = ["."]          # For flat layout; remove for src/
+python_files  = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts       = "-v --tb=short --cov=your_package --cov-report=term-missing"
+
+# --- Coverage ---
+[tool.coverage.run]
+source = ["your_package"]
+omit   = ["tests/*"]
+
+[tool.coverage.report]
+fail_under   = 80
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]
+```
+
+---
+
+## 2. hatchling (Modern, Zero-Config)
+
+Best for new pure-Python projects that don't need C extensions. No `setup.py` needed. Use
+`hatch-vcs` for git-tag versioning, or omit it for manual version bumps.
+
+```toml
+[build-system]
+requires = ["hatchling", "hatch-vcs"]     # hatch-vcs for git-tag versioning
+build-backend = "hatchling.build"
+
+[project]
+name = "your-package"
+dynamic = ["version"]            # Remove and add version = "1.0.0" for manual versioning
+description = "One-line description"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{name = "Your Name", email = "you@example.com"}]
+keywords = ["python"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Typing :: Typed",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.6", "mypy>=1.10"]
+
+[project.urls]
+Homepage  = "https://github.com/yourusername/your-package"
+Changelog = "https://github.com/yourusername/your-package/blob/master/CHANGELOG.md"
+
+# --- Hatchling build config ---
+[tool.hatch.build.targets.wheel]
+packages = ["src/your_package"]    # src/ layout
+# packages = ["your_package"]      # ← flat layout
+
+[tool.hatch.version]
+source = "vcs"                     # git-tag versioning via hatch-vcs
+
+[tool.hatch.version.raw-options]
+local_scheme = "no-local-version"
+
+# ruff, mypy, pytest, coverage sections — same as setuptools template above
+```
+
+---
+
+## 3. flit (Minimal, Version from `__version__`)
+
+Best for very simple, single-module packages. Zero config. Version is read directly from
+`your_package/__init__.py`. Always requires a **static string** for `__version__`.
+
+```toml
+[build-system]
+requires = ["flit_core>=3.9"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "your-package"
+dynamic = ["version", "description"]  # Read from __init__.py __version__ and docstring
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{name = "Your Name", email = "you@example.com"}]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Typing :: Typed",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/yourusername/your-package"
+
+# flit reads __version__ from your_package/__init__.py automatically.
+# Ensure __init__.py has: __version__ = "1.0.0"  (static string — flit does NOT support
+# importlib.metadata for dynamic version discovery)
+```
+
+---
+
+## 4. poetry (Integrated Dependency + Build Manager)
+
+Best for teams that want a single tool to manage deps, build, and publish. Poetry v2+
+supports the standard `[project]` table.
+
+```toml
+[build-system]
+requires = ["poetry-core>=2.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "your-package"
+version = "1.0.0"
+description = "One-line description"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{name = "Your Name", email = "you@example.com"}]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Typing :: Typed",
+]
+dependencies = []   # poetry v2+ uses standard [project] table
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.6", "mypy>=1.10"]
+
+# Optional: use [tool.poetry] only for poetry-specific features
+[tool.poetry.group.dev.dependencies]
+# Poetry-specific group syntax (alternative to [project.optional-dependencies])
+pytest = ">=8.0"
+```
+
+---
+
+## 5. Versioning Strategy
+
+### PEP 440 — The Standard
+
+```
+Canonical form:  N[.N]+[{a|b|rc}N][.postN][.devN]
+
+Examples:
+  1.0.0          Stable release
+  1.0.0a1        Alpha (pre-release)
+  1.0.0b2        Beta
+  1.0.0rc1       Release candidate
+  1.0.0.post1    Post-release (e.g., packaging fix only — no code change)
+  1.0.0.dev1     Development snapshot (NOT for PyPI)
+```
+
+### Semantic Versioning (SemVer) — use this for every library
+
+```
+MAJOR.MINOR.PATCH
+
+MAJOR: Breaking API change (remove/rename public function/class/arg)
+MINOR: New feature, fully backward-compatible
+PATCH: Bug fix, no API change
+```
+
+| Change | What bumps | Example |
+|---|---|---|
+| Remove / rename a public function | MAJOR | `1.2.3 → 2.0.0` |
+| Add new public function | MINOR | `1.2.3 → 1.3.0` |
+| Bug fix, no API change | PATCH | `1.2.3 → 1.2.4` |
+| New pre-release | suffix | `2.0.0a1`, `2.0.0rc1` |
+
+### Version in code — read from package metadata
+
+```python
+# your_package/__init__.py
+from importlib.metadata import version, PackageNotFoundError
+
+try:
+    __version__ = version("your-package")
+except PackageNotFoundError:
+    __version__ = "0.0.0-dev"    # Fallback for uninstalled dev checkouts
+```
+
+Never hardcode `__version__ = "1.0.0"` when using setuptools_scm — it goes stale after the
+first git tag. Use `importlib.metadata` always.
+
+### Version specifier best practices for dependencies
+
+```toml
+# In [project] dependencies — for a LIBRARY:
+"httpx>=0.24"            # Minimum version — PREFERRED for libraries
+"httpx>=0.24,<1.0"       # Upper bound only when a known breaking change exists
+
+# ONLY for applications (never for libraries):
+"httpx==0.27.0"          # Pin exactly — breaks dep resolution in libraries
+
+# NEVER do this in a library:
+# "httpx~=0.24.0"        # Compatible release operator — too tight
+# "httpx==0.27.*"        # Wildcard pin — fragile
+```
+
+---
+
+## 6. Dynamic Versioning with `setuptools_scm`
+
+`setuptools_scm` reads your git tags and sets the package version automatically — no more manually
+editing version strings before each release.
+
+### How it works
+
+```
+git tag v1.0.0        →  package version = 1.0.0
+git tag v1.1.0        →  package version = 1.1.0
+(commits after tag)   →  version = 1.1.0.post1+g<hash>  (stripped for PyPI)
+```
+
+`local_scheme = "no-local-version"` strips the `+g<hash>` suffix so PyPI uploads never fail with
+a "local version label not allowed" error.
+
+### Access version at runtime
+
+```python
+# your_package/__init__.py
+from importlib.metadata import version, PackageNotFoundError
+
+try:
+    __version__ = version("your-package")
+except PackageNotFoundError:
+    __version__ = "0.0.0-dev"  # Fallback for uninstalled dev checkouts
+```
+
+Never hardcode `__version__ = "1.0.0"` when using setuptools_scm — it will go stale after the
+first tag.
+
+### Full release flow (this is it — nothing else needed)
+
+```bash
+git tag v1.2.0
+git push origin master --tags
+# GitHub Actions publish.yml triggers automatically
+```
+
+---
+
+## 7. `setup.py` Shim
+
+Some older tools and IDEs still expect a `setup.py`. Keep it as a three-line shim — all real
+configuration stays in `pyproject.toml`.
+
+```python
+# setup.py — thin shim only. All config lives in pyproject.toml.
+from setuptools import setup
+
+setup()
+```
+
+Never duplicate `name`, `version`, `dependencies`, or any other metadata from `pyproject.toml`
+into `setup.py`. If you copy anything there it will eventually drift and cause confusing conflicts.
+
+---
+
+## 8. Typed Package (PEP 561)
+
+A properly declared typed package means mypy, pyright, and IDEs automatically pick up your type
+hints without any extra configuration from your users.
+
+### Step 1: Create the marker file
+
+```bash
+# The file must exist; its content doesn't matter — its presence is the signal.
+touch your_package/py.typed
+```
+
+### Step 2: Include it in the wheel
+
+Already in the template above:
+
+```toml
+[tool.setuptools.package-data]
+your_package = ["py.typed"]
+```
+
+### Step 3: Add the PyPI classifier
+
+```toml
+classifiers = [
+    ...
+    "Typing :: Typed",
+]
+```
+
+### Step 4: Type-annotate all public functions
+
+```python
+# Good — fully typed
+def process(
+    self,
+    data: dict[str, object],
+    *,
+    timeout: int = 30,
+) -> dict[str, object]:
+    ...
+
+# Bad — mypy will flag this, and IDEs give no completions to users
+def process(self, data, timeout=30):
+    ...
+```
+
+### Step 5: Verify py.typed ships in the wheel
+
+```bash
+python -m build
+unzip -l dist/your_package-*.whl | grep py.typed
+# Must show: your_package/py.typed
+```
+
+If it's missing, check your `[tool.setuptools.package-data]` config.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-pypi-package-builder/references/release-governance.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-pypi-package-builder/references/release-governance.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-pypi-package-builder/references/release-governance.md
+- **SHA256_FINGERPRINT**: `75951fd7c1bcc7d31646e79ece1b1a14bddeca4e9d4b8224712e223f017483d3`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.712248+00:00
+---
+
+# Release Governance — Branching, Protection, OIDC, and Access Control
+
+## Table of Contents
+1. [Branch Strategy](#1-branch-strategy)
+2. [Branch Protection Rules](#2-branch-protection-rules)
+3. [Tag-Based Release Model](#3-tag-based-release-model)
+4. [Role-Based Access Control](#4-role-based-access-control)
+5. [Secure Publishing with OIDC (Trusted Publishing)](#5-secure-publishing-with-oidc-trusted-publishing)
+6. [Validate Tag Author in CI](#6-validate-tag-author-in-ci)
+7. [Prevent Invalid Release Tags](#7-prevent-invalid-release-tags)
+8. [Full `publish.yml` with Governance Gates](#8-full-publishyml-with-governance-gates)
+
+---
+
+## 1. Branch Strategy
+
+Use a clear branch hierarchy to separate development work from releasable code.
+
+```
+main          ← stable; only receives PRs from develop or hotfix/*
+develop       ← integration branch; all feature PRs merge here first
+feature/*     ← new capabilities (e.g., feature/add-redis-backend)
+fix/*         ← bug fixes (e.g., fix/memory-leak-on-close)
+hotfix/*      ← urgent production fixes; PR directly to main + cherry-pick to develop
+release/*     ← (optional) release preparation (e.g., release/v2.0.0)
+```
+
+### Rules
+
+| Rule | Why |
+|---|---|
+| No direct push to `main` | Prevent accidental breakage of the stable branch |
+| All changes via PR | Enforces review + CI before merge |
+| At least one approval required | Second pair of eyes on all changes |
+| CI must pass | Never merge broken code |
+| Only tags trigger releases | No ad-hoc publish from branch pushes |
+
+---
+
+## 2. Branch Protection Rules
+
+Configure these in **GitHub → Settings → Branches → Add rule** for `main` and `develop`.
+
+### For `main`
+
+```yaml
+# Equivalent GitHub branch protection config (for documentation)
+branch: main
+rules:
+  - require_pull_request_reviews:
+      required_approving_review_count: 1
+      dismiss_stale_reviews: true
+  - require_status_checks_to_pass:
+      contexts:
+        - "Lint, Format & Type Check"
+        - "Test (Python 3.11)"   # at minimum; add all matrix versions
+      strict: true               # branch must be up-to-date before merge
+  - restrict_pushes:
+      allowed_actors: []         # nobody — only PR merges
+  - require_linear_history: true # prevents merge commits on main
+```
+
+### For `develop`
+
+```yaml
+branch: develop
+rules:
+  - require_pull_request_reviews:
+      required_approving_review_count: 1
+  - require_status_checks_to_pass:
+      contexts: ["CI"]
+      strict: false   # less strict for the integration branch
+```
+
+### Via GitHub CLI
+
+```bash
+# Protect main (requires gh CLI and admin rights)
+gh api repos/{owner}/{repo}/branches/main/protection \
+  --method PUT \
+  --input - <<'EOF'
+{
+  "required_status_checks": {
+    "strict": true,
+    "contexts": ["Lint, Format & Type Check", "Test (Python 3.11)"]
+  },
+  "enforce_admins": false,
+  "required_pull_request_reviews": {
+    "required_approving_review_count": 1,
+    "dismiss_stale_reviews": true
+  },
+  "restrictions": null
+}
+EOF
+```
+
+---
+
+## 3. Tag-Based Release Model
+
+**Only annotated tags on `main` trigger a release.** Branch pushes and PR merges never publish.
+
+### Tag Naming Convention
+
+```
+vMAJOR.MINOR.PATCH           # Stable:         v1.2.3
+vMAJOR.MINOR.PATCHaN         # Alpha:           v2.0.0a1
+vMAJOR.MINOR.PATCHbN         # Beta:            v2.0.0b1
+vMAJOR.MINOR.PATCHrcN        # Release Candidate: v2.0.0rc1
+```
+
+### Release Workflow
+
+```bash
+# 1. Merge develop → main via PR (reviewed, CI green)
+
+# 2. Update CHANGELOG.md on main
+#    Move [Unreleased] entries to [vX.Y.Z] - YYYY-MM-DD
+
+# 3. Commit the changelog
+git checkout main
+git pull origin main
+git add CHANGELOG.md
+git commit -m "chore: release v1.2.3"
+
+# 4. Create and push an annotated tag
+git tag -a v1.2.3 -m "Release v1.2.3"
+git push origin v1.2.3          # ← ONLY the tag; not --tags (avoids pushing all tags)
+
+# 5. Confirm: GitHub Actions publish.yml triggers automatically
+#    Monitor: Actions tab → publish workflow
+#    Verify:  https://pypi.org/project/your-package/
+```
+
+### Why annotated tags?
+
+Annotated tags (`git tag -a`) carry a tagger identity, date, and message — lightweight tags do
+not. `setuptools_scm` works with both, but annotated tags are safer for release governance because
+they record *who* created the tag.
+
+---
+
+## 4. Role-Based Access Control
+
+| Role | What they can do |
+|---|---|
+| **Maintainer** | Create release tags, approve PRs, manage branch protection |
+| **Contributor** | Open PRs to `develop`; cannot push to `main` or create release tags |
+| **CI (GitHub Actions)** | Publish to PyPI via OIDC; cannot push code or create tags |
+
+### Implement via GitHub Teams
+
+```bash
+# Create a Maintainers team and restrict tag creation to that team
+gh api repos/{owner}/{repo}/tags/protection \
+  --method POST \
+  --field pattern="v*"
+# Then set allowed actors to the Maintainers team only
+```
+
+---
+
+## 5. Secure Publishing with OIDC (Trusted Publishing)
+
+**Never store a PyPI API token as a GitHub secret.** Use Trusted Publishing (OIDC) instead.
+The PyPI project authorises a specific GitHub repository + workflow + environment — no long-lived
+secret is exchanged.
+
+### One-time PyPI Setup
+
+1. Go to https://pypi.org/manage/project/your-package/settings/publishing/
+2. Click **Add a new publisher**
+3. Fill in:
+   - **Owner:** your-github-username
+   - **Repository:** your-repo-name
+   - **Workflow name:** `publish.yml`
+   - **Environment name:** `release` (must match the `environment:` key in the workflow)
+4. Save. No token required.
+
+### GitHub Environment Setup
+
+1. Go to **GitHub → Settings → Environments → New environment** → name it `release`
+2. Add a protection rule: **Required reviewers** (optional but recommended for extra safety)
+3. Add a deployment branch rule: **Only tags matching `v*`**
+
+### Minimal `publish.yml` using OIDC
+
+```yaml
+# .github/workflows/publish.yml
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*"   # Matches v1.0.0, v2.0.0a1, v1.2.3rc1
+
+jobs:
+  publish:
+    name: Build and publish
+    runs-on: ubuntu-latest
+    environment: release       # Must match the PyPI Trusted Publisher environment name
+    permissions:
+      id-token: write          # Required for OIDC — grants a short-lived token to PyPI
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0       # REQUIRED for setuptools_scm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install build
+        run: pip install build
+
+      - name: Build distributions
+        run: python -m build
+
+      - name: Validate distributions
+        run: pip install twine ; twine check dist/*
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        # No `password:` or `user:` needed — OIDC handles authentication
+```
+
+---
+
+## 6. Validate Tag Author in CI
+
+Restrict who can trigger a release by checking `GITHUB_ACTOR` against an allowlist.
+Add this as the **first step** in your publish job to fail fast.
+
+```yaml
+- name: Validate tag author
+  run: |
+    ALLOWED_USERS=("your-github-username" "co-maintainer-username")
+    if [[ ! " ${ALLOWED_USERS[*]} " =~ " ${GITHUB_ACTOR} " ]]; then
+      echo "::error::Release blocked: ${GITHUB_ACTOR} is not an authorised releaser."
+      exit 1
+    fi
+    echo "Release authorised for ${GITHUB_ACTOR}."
+```
+
+### Notes
+
+- `GITHUB_ACTOR` is the GitHub username of the person who pushed the tag.
+- Store the allowlist in a separate file (e.g., `.github/MAINTAINERS`) for maintainability.
+- For teams: replace the username check with a GitHub API call to verify team membership.
+
+---
+
+## 7. Prevent Invalid Release Tags
+
+Reject workflow runs triggered by tags that do not follow your versioning convention.
+This stops accidental publishes from tags like `test`, `backup-old`, or `v1`.
+
+```yaml
+- name: Validate release tag format
+  run: |
+    # Accepts: v1.0.0  v1.0.0a1  v1.0.0b2  v1.0.0rc1  v1.0.0.post1
+    if [[ ! "${GITHUB_REF}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+(a|b|rc|\.post)[0-9]*$ ]] && \
+       [[ ! "${GITHUB_REF}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+      echo "::error::Tag '${GITHUB_REF}' does not match the required format v<MAJOR>.<MINOR>.<PATCH>[pre]."
+      exit 1
+    fi
+    echo "Tag format valid: ${GITHUB_REF}"
+```
+
+### Regex explained
+
+| Pattern | Matches |
+|---|---|
+| `v[0-9]+\.[0-9]+\.[0-9]+` | `v1.0.0`, `v12.3.4` |
+| `(a\|b\|rc)[0-9]*` | `v1.0.0a1`, `v2.0.0rc2` |
+| `\.post[0-9]*` | `v1.0.0.post1` |
+
+---
+
+## 8. Full `publish.yml` with Governance Gates
+
+Complete workflow combining tag validation, author check, TestPyPI gate, and production publish.
+
+```yaml
+# .github/workflows/publish.yml
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*"
+
+jobs:
+  publish:
+    name: Build, validate, and publish
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Validate release tag format
+        run: |
+          if [[ ! "${GITHUB_REF}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+(a[0-9]*|b[0-9]*|rc[0-9]*|\.post[0-9]*)?$ ]]; then
+            echo "::error::Invalid tag format: ${GITHUB_REF}"
+            exit 1
+          fi
+
+      - name: Validate tag author
+        run: |
+          ALLOWED_USERS=("your-github-username")
+          if [[ ! " ${ALLOWED_USERS[*]} " =~ " ${GITHUB_ACTOR} " ]]; then
+            echo "::error::${GITHUB_ACTOR} is not authorised to release."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install build tooling
+        run: pip install build twine
+
+      - name: Build
+        run: python -m build
+
+      - name: Validate distributions
+        run: twine check dist/*
+
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+        continue-on-error: true   # Non-fatal; remove if you always want this to pass
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+```
+
+### Security checklist
+
+- [ ] PyPI Trusted Publishing configured (no API token stored in GitHub)
+- [ ] GitHub `release` environment has branch protection: tags matching `v*` only
+- [ ] Tag format validation step is the first step in the job
+- [ ] Allowed-users list is maintained and reviewed regularly
+- [ ] No secrets printed in logs (check all `echo` and `run` steps)
+- [ ] `permissions:` is scoped to `id-token: write` only — no `write-all`
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-pypi-package-builder/references/testing-quality.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-pypi-package-builder/references/testing-quality.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-pypi-package-builder/references/testing-quality.md
+- **SHA256_FINGERPRINT**: `0e5ccce5be353acfce9e564fad36166d068bf7e33611a37b3f13cf338ab5651a`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.720362+00:00
+---
+
+# Testing and Code Quality
+
+## Table of Contents
+1. [conftest.py](#1-conftestpy)
+2. [Unit tests](#2-unit-tests)
+3. [Backend unit tests](#3-backend-unit-tests)
+4. [Running tests](#4-running-tests)
+5. [Code quality tools](#5-code-quality-tools)
+6. [Pre-commit hooks](#6-pre-commit-hooks)
+
+---
+
+## 1. `conftest.py`
+
+Use `conftest.py` to define shared fixtures. Keep fixtures focused — one fixture per concern.
+For async tests, use `pytest-asyncio` with `asyncio_mode = "auto"` in `pyproject.toml`.
+
+```python
+# tests/conftest.py
+import pytest
+from your_package.core import YourClient
+from your_package.backends.memory import MemoryBackend
+
+@pytest.fixture
+def memory_backend() -> MemoryBackend:
+    return MemoryBackend()
+
+@pytest.fixture
+def client(memory_backend: MemoryBackend) -> YourClient:
+    return YourClient(
+        api_key="test-key",
+        backend=memory_backend,
+    )
+```
+
+---
+
+## 2. Unit Tests
+
+Test both the happy path and the edge cases (e.g. invalid inputs, error conditions).
+
+```python
+# tests/test_core.py
+import pytest
+from your_package import YourClient
+from your_package.exceptions import YourPackageError
+
+def test_client_creates_with_valid_key():
+    client = YourClient(api_key="sk-test")
+    assert client is not None
+
+def test_client_raises_on_empty_key():
+    with pytest.raises(ValueError, match="api_key"):
+        YourClient(api_key="")
+
+def test_client_raises_on_invalid_timeout():
+    with pytest.raises(ValueError, match="timeout"):
+        YourClient(api_key="sk-test", timeout=-1)
+
+@pytest.mark.asyncio
+async def test_process_returns_expected_result(client: YourClient):
+    result = await client.process({"input": "value"})
+    assert "output" in result
+
+@pytest.mark.asyncio
+async def test_process_raises_on_invalid_input(client: YourClient):
+    with pytest.raises(YourPackageError):
+        await client.process({})  # empty input should fail
+```
+
+---
+
+## 3. Backend Unit Tests
+
+Test each backend independently, in isolation from the rest of the library. This makes failures
+easier to diagnose and ensures your abstract interface is actually implemented correctly.
+
+```python
+# tests/test_backends.py
+import pytest
+from your_package.backends.memory import MemoryBackend
+
+@pytest.mark.asyncio
+async def test_set_and_get():
+    backend = MemoryBackend()
+    await backend.set("key1", "value1")
+    result = await backend.get("key1")
+    assert result == "value1"
+
+@pytest.mark.asyncio
+async def test_get_missing_key_returns_none():
+    backend = MemoryBackend()
+    result = await backend.get("nonexistent")
+    assert result is None
+
+@pytest.mark.asyncio
+async def test_delete_removes_key():
+    backend = MemoryBackend()
+    await backend.set("key1", "value1")
+    await backend.delete("key1")
+    result = await backend.get("key1")
+    assert result is None
+
+@pytest.mark.asyncio
+async def test_ttl_expires_entry():
+    import asyncio
+    backend = MemoryBackend()
+    await backend.set("key1", "value1", ttl=1)
+    await asyncio.sleep(1.1)
+    result = await backend.get("key1")
+    assert result is None
+
+@pytest.mark.asyncio
+async def test_different_keys_are_independent():
+    backend = MemoryBackend()
+    await backend.set("key1", "a")
+    await backend.set("key2", "b")
+    assert await backend.get("key1") == "a"
+    assert await backend.get("key2") == "b"
+    await backend.delete("key1")
+    assert await backend.get("key2") == "b"
+```
+
+---
+
+## 4. Running Tests
+
+```bash
+pip install -e ".[dev]"
+pytest                           # All tests
+pytest --cov --cov-report=html   # With HTML coverage report (opens in browser)
+pytest -k "test_middleware"      # Filter by name
+pytest -x                        # Stop on first failure
+pytest -v                        # Verbose output
+```
+
+Coverage config in `pyproject.toml` enforces a minimum threshold (`fail_under = 80`). CI will
+fail if you drop below it, which catches coverage regressions automatically.
+
+---
+
+## 5. Code Quality Tools
+
+### Ruff (linting — replaces flake8, pylint, many others)
+
+```bash
+pip install ruff
+ruff check .           # Check for issues
+ruff check . --fix     # Auto-fix safe issues
+```
+
+Ruff is extremely fast and replaces most of the Python linting ecosystem. Configure it in
+`pyproject.toml` — see `references/pyproject-toml.md` for the full config.
+
+### Black (formatting)
+
+```bash
+pip install black
+black .                # Format all files
+black . --check        # CI mode — reports issues without modifying files
+```
+
+### isort (import sorting)
+
+```bash
+pip install isort
+isort .                # Sort imports
+isort . --check-only   # CI mode
+```
+
+Always set `profile = "black"` in `[tool.isort]` — otherwise black and isort conflict.
+
+### mypy (static type checking)
+
+```bash
+pip install mypy
+mypy your_package/   # Type-check your package source only
+```
+
+Common fixes:
+
+- `ignore_missing_imports = true` — ignore untyped third-party deps
+- `from __future__ import annotations` — enables PEP 563 deferred evaluation (Python 3.9 compat)
+- `pip install types-redis` — type stubs for the redis library
+
+### Run all at once
+
+```bash
+ruff check . && black . --check && isort . --check-only && mypy your_package/
+```
+
+---
+
+## 6. Pre-commit Hooks
+
+Pre-commit runs all quality tools automatically before each commit, so issues never reach CI.
+Install once per clone with `pre-commit install`.
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+      - id: black
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.10.0
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-redis]  # Add stubs for typed dependencies
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: debug-statements
+      - id: no-commit-to-branch
+        args: [--branch, master, --branch, main]
+```
+
+```bash
+pip install pre-commit
+pre-commit install           # Install once per clone
+pre-commit run --all-files   # Run all hooks manually (useful before the first install)
+```
+
+The `no-commit-to-branch` hook prevents accidentally committing directly to `main`/`master`,
+which would bypass CI checks. Always work on a feature branch.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-pypi-package-builder/references/tooling-ruff.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-pypi-package-builder/references/tooling-ruff.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-pypi-package-builder/references/tooling-ruff.md
+- **SHA256_FINGERPRINT**: `b678426c3ab94615e56d362900daa60f846aacc3d1e561ed6b8fcaed01869fb1`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.846242+00:00
+---
+
+# Tooling — Ruff-Only Setup and Code Quality
+
+## Table of Contents
+1. [Use Only Ruff (Replaces black, isort, flake8)](#1-use-only-ruff-replaces-black-isort-flake8)
+2. [Ruff Configuration in pyproject.toml](#2-ruff-configuration-in-pyprojecttoml)
+3. [mypy Configuration](#3-mypy-configuration)
+4. [pre-commit Configuration](#4-pre-commit-configuration)
+5. [pytest and Coverage Configuration](#5-pytest-and-coverage-configuration)
+6. [Dev Dependencies in pyproject.toml](#6-dev-dependencies-in-pyprojecttoml)
+7. [CI Lint Job — Ruff Only](#7-ci-lint-job--ruff-only)
+8. [Migration Guide — Removing black and isort](#8-migration-guide--removing-black-and-isort)
+
+---
+
+## 1. Use Only Ruff (Replaces black, isort, flake8)
+
+**Decision:** Use `ruff` as the single linting and formatting tool. Remove `black` and `isort`.
+
+| Old (avoid) | New (use) | What it does |
+|---|---|---|
+| `black` | `ruff format` | Code formatting |
+| `isort` | `ruff check --select I` | Import sorting |
+| `flake8` | `ruff check` | Style and error linting |
+| `pyupgrade` | `ruff check --select UP` | Upgrade syntax to modern Python |
+| `bandit` | `ruff check --select S` | Security linting |
+| All of the above | `ruff` | One tool, one config section |
+
+**Why ruff?**
+- 10–100× faster than the tools it replaces (written in Rust).
+- Single config section in `pyproject.toml` — no `.flake8`, `.isort.cfg`, `pyproject.toml[tool.black]` sprawl.
+- Actively maintained by Astral; follows the same rules as the tools it replaces.
+- `ruff format` is black-compatible — existing black-formatted code passes without changes.
+
+---
+
+## 2. Ruff Configuration in pyproject.toml
+
+```toml
+[tool.ruff]
+target-version = "py310"        # Minimum supported Python version
+line-length    = 88             # black-compatible default
+src            = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear (opinionated but very useful)
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade (modernise syntax)
+    "SIM", # flake8-simplify
+    "TCH", # flake8-type-checking (move imports to TYPE_CHECKING block)
+    "ANN", # flake8-annotations (enforce type hints — remove if too strict)
+    "S",   # flake8-bandit (security)
+    "N",   # pep8-naming
+]
+ignore = [
+    "ANN101",  # Missing type annotation for `self`
+    "ANN102",  # Missing type annotation for `cls`
+    "S101",    # Use of `assert` — necessary in tests
+    "S603",    # subprocess without shell=True — often intentional
+    "B008",    # Do not perform function calls in default arguments (false positives in FastAPI/Typer)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["your_package"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "ANN", "D"]   # Allow assert and skip annotations/docstrings in tests
+
+[tool.ruff.format]
+quote-style              = "double"   # black-compatible
+indent-style             = "space"
+skip-magic-trailing-comma = false
+line-ending              = "auto"
+```
+
+### Useful ruff commands
+
+```bash
+# Check for lint issues (no changes)
+ruff check .
+
+# Auto-fix fixable issues
+ruff check --fix .
+
+# Format code (replaces black)
+ruff format .
+
+# Check formatting without changing files (CI mode)
+ruff format --check .
+
+# Run both lint and format check in one command (for CI)
+ruff check . && ruff format --check .
+```
+
+---
+
+## 3. mypy Configuration
+
+```toml
+[tool.mypy]
+python_version          = "3.10"
+strict                  = true
+warn_return_any         = true
+warn_unused_ignores     = true
+warn_redundant_casts    = true
+disallow_untyped_defs   = true
+disallow_incomplete_defs = true
+check_untyped_defs      = true
+no_implicit_optional    = true
+show_error_codes        = true
+
+# Ignore missing stubs for third-party packages that don't ship types
+[[tool.mypy.overrides]]
+module = ["redis.*", "pydantic_settings.*"]
+ignore_missing_imports = true
+```
+
+### Running mypy — handle both src and flat layouts
+
+```bash
+# src layout:
+mypy src/your_package/
+
+# flat layout:
+mypy your_package/
+```
+
+In CI, detect layout dynamically:
+
+```yaml
+- name: Run mypy
+  run: |
+    if [ -d "src" ]; then
+        mypy src/
+    else
+        mypy your_package/
+    fi
+```
+
+---
+
+## 4. pre-commit Configuration
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4    # Pin to a specific release; update periodically with `pre-commit autoupdate`
+    hooks:
+      - id: ruff
+        args: [--fix]       # Auto-fix what can be fixed
+      - id: ruff-format     # Format (replaces black hook)
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.10.0
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          - types-requests
+          - types-redis
+          # Add stubs for any typed dependency used in your package
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-toml
+      - id: check-yaml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+```
+
+### ❌ Remove these hooks (replaced by ruff)
+
+```yaml
+# DELETE or never add:
+- repo: https://github.com/psf/black           # replaced by ruff-format
+- repo: https://github.com/PyCQA/isort          # replaced by ruff lint I rules
+- repo: https://github.com/PyCQA/flake8         # replaced by ruff check
+- repo: https://github.com/PyCQA/autoflake      # replaced by ruff check F401
+```
+
+### Setup
+
+```bash
+pip install pre-commit
+pre-commit install     # Installs git hook — runs on every commit
+pre-commit run --all-files  # Run manually on all files
+pre-commit autoupdate  # Update all hooks to latest pinned versions
+```
+
+---
+
+## 5. pytest and Coverage Configuration
+
+```toml
+[tool.pytest.ini_options]
+testpaths    = ["tests"]
+addopts      = "-ra -q --strict-markers --cov=your_package --cov-report=term-missing"
+asyncio_mode = "auto"    # Enables async tests without @pytest.mark.asyncio decorator
+
+[tool.coverage.run]
+source   = ["your_package"]
+branch   = true
+omit     = ["**/__main__.py", "**/cli.py"]  # omit entry points from coverage
+
+[tool.coverage.report]
+show_missing   = true
+skip_covered   = false
+fail_under     = 85        # Fail CI if coverage drops below 85%
+exclude_lines  = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "@abstractmethod",
+]
+```
+
+### asyncio_mode = "auto" — remove @pytest.mark.asyncio
+
+With `asyncio_mode = "auto"` set in `pyproject.toml`, **do not** add `@pytest.mark.asyncio`
+to test functions. The decorator is redundant and will raise a warning in modern pytest-asyncio.
+
+```python
+# WRONG — the decorator is deprecated when asyncio_mode = "auto":
+@pytest.mark.asyncio
+async def test_async_operation():
+    result = await my_async_func()
+    assert result == expected
+
+# CORRECT — just use async def:
+async def test_async_operation():
+    result = await my_async_func()
+    assert result == expected
+```
+
+---
+
+## 6. Dev Dependencies in pyproject.toml
+
+Declare all dev/test tools in an `[extras]` group named `dev`.
+
+```toml
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.23",
+    "pytest-cov>=5",
+    "ruff>=0.4",
+    "mypy>=1.10",
+    "pre-commit>=3.7",
+    "httpx>=0.27",       # If testing HTTP transport
+    "respx>=0.21",       # If mocking httpx in tests
+]
+redis = [
+    "redis>=5",
+]
+docs = [
+    "mkdocs-material>=9",
+    "mkdocstrings[python]>=0.25",
+]
+```
+
+Install dev dependencies:
+
+```bash
+pip install -e ".[dev]"
+pip install -e ".[dev,redis]"   # Include optional extras
+```
+
+---
+
+## 7. CI Lint Job — Ruff Only
+
+Replace the separate `black`, `isort`, and `flake8` steps with a single `ruff` step.
+
+```yaml
+# .github/workflows/ci.yml  — lint job
+lint:
+  name: Lint & Type Check
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install dev dependencies
+      run: pip install -e ".[dev]"
+
+    # Single step: ruff replaces black + isort + flake8
+    - name: ruff lint
+      run: ruff check .
+
+    - name: ruff format check
+      run: ruff format --check .
+
+    - name: mypy
+      run: |
+        if [ -d "src" ]; then
+            mypy src/
+        else
+            mypy $(basename $(ls -d */))/ 2>/dev/null || mypy .
+        fi
+```
+
+---
+
+## 8. Migration Guide — Removing black and isort
+
+If you are converting an existing project that used `black` and `isort`:
+
+```bash
+# 1. Remove black and isort from dev dependencies
+pip uninstall black isort
+
+# 2. Remove black and isort config sections from pyproject.toml
+# [tool.black]  ← delete this section
+# [tool.isort]  ← delete this section
+
+# 3. Add ruff to dev dependencies (see Section 2 for config)
+
+# 4. Run ruff format to confirm existing code is already compatible
+ruff format --check .
+# ruff format is black-compatible; output should be identical
+
+# 5. Update .pre-commit-config.yaml (see Section 4)
+# Remove black and isort hooks; add ruff and ruff-format hooks
+
+# 6. Update CI (see Section 7)
+# Remove black, isort, flake8 steps; add ruff check + ruff format --check
+
+# 7. Reinstall pre-commit hooks
+pre-commit uninstall
+pre-commit install
+pre-commit run --all-files   # Verify clean
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-pypi-package-builder/references/versioning-strategy.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-pypi-package-builder/references/versioning-strategy.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-pypi-package-builder/references/versioning-strategy.md
+- **SHA256_FINGERPRINT**: `cfb0d997b8cadc265beece2d727e5f31e07065729e65d38b1af1e5ce7a60abfa`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.940149+00:00
+---
+
+# Versioning Strategy — PEP 440, SemVer, and Decision Engine
+
+## Table of Contents
+1. [PEP 440 — The Standard](#1-pep-440--the-standard)
+2. [Semantic Versioning (SemVer)](#2-semantic-versioning-semver)
+3. [Pre-release Identifiers](#3-pre-release-identifiers)
+4. [Versioning Decision Engine](#4-versioning-decision-engine)
+5. [Dynamic Versioning — setuptools_scm (Recommended)](#5-dynamic-versioning--setuptools_scm-recommended)
+6. [Hatchling with hatch-vcs Plugin](#6-hatchling-with-hatch-vcs-plugin)
+7. [Static Versioning — flit](#7-static-versioning--flit)
+8. [Static Versioning — hatchling manual](#8-static-versioning--hatchling-manual)
+9. [DO NOT Hardcode Version (except flit)](#9-do-not-hardcode-version-except-flit)
+10. [Dependency Version Specifiers](#10-dependency-version-specifiers)
+11. [PyPA Release Commands](#11-pypa-release-commands)
+
+---
+
+## 1. PEP 440 — The Standard
+
+All Python package versions must comply with [PEP 440](https://peps.python.org/pep-0440/).
+Non-compliant versions (e.g., `1.0-beta`, `2023.1.1.dev`) will be rejected by PyPI.
+
+```
+Canonical form:  N[.N]+[{a|b|rc}N][.postN][.devN]
+
+1.0.0            Stable release
+1.0.0a1          Alpha pre-release
+1.0.0b2          Beta pre-release
+1.0.0rc1         Release candidate
+1.0.0.post1      Post-release (packaging fix; same codebase)
+1.0.0.dev1       Development snapshot — DO NOT upload to PyPI
+2.0.0            Major release (breaking changes)
+```
+
+### Epoch prefix (rare)
+
+```
+1!1.0.0          Epoch 1; used when you need to skip ahead of an old scheme
+```
+
+Use epochs only as a last resort to fix a broken version sequence.
+
+---
+
+## 2. Semantic Versioning (SemVer)
+
+SemVer maps cleanly onto PEP 440. Always use `MAJOR.MINOR.PATCH`:
+
+```
+MAJOR  Increment when you make incompatible API changes (rename, remove, break)
+MINOR  Increment when you add functionality backward-compatibly (new features)
+PATCH  Increment when you make backward-compatible bug fixes
+
+Examples:
+  1.0.0 → 1.0.1   Bug fix, no API change
+  1.0.0 → 1.1.0   New method added; existing API intact
+  1.0.0 → 2.0.0   Public method renamed or removed
+```
+
+### What counts as a breaking change?
+
+| Change | Breaking? |
+|---|---|
+| Rename a public function | YES — `MAJOR` |
+| Remove a parameter | YES — `MAJOR` |
+| Add a required parameter | YES — `MAJOR` |
+| Add an optional parameter with a default | NO — `MINOR` |
+| Add a new function/class | NO — `MINOR` |
+| Fix a bug | NO — `PATCH` |
+| Update a dependency lower bound | NO (usually) — `PATCH` |
+| Update a dependency upper bound (breaking) | YES — `MAJOR` |
+
+---
+
+## 3. Pre-release Identifiers
+
+Use pre-release versions to get user feedback before a stable release.
+Pre-releases are **not** installed by default by pip (`pip install pkg` skips them).
+Users must opt-in: `pip install "pkg==2.0.0a1"` or `pip install --pre pkg`.
+
+```
+1.0.0a1    Alpha-1: very early; expect bugs; API may change
+1.0.0b1    Beta-1:  feature-complete; API stabilising; seek broader feedback
+1.0.0rc1   Release candidate: code-frozen; final testing before stable
+1.0.0      Stable: ready for production
+```
+
+### Increment rule
+
+```
+Start:       1.0.0a1
+More alphas: 1.0.0a2, 1.0.0a3
+Move to beta: 1.0.0b1  (reset counter)
+Move to RC:  1.0.0rc1
+Stable:      1.0.0
+```
+
+---
+
+## 4. Versioning Decision Engine
+
+Use this decision tree to pick the right versioning strategy before writing any code.
+
+```
+Is the project using git and tagging releases with version tags?
+├── YES → setuptools + setuptools_scm  (DEFAULT — best for most projects)
+│         Git tag v1.0.0 becomes the installed version automatically.
+│         Zero manual version bumping.
+│
+└── NO — Is the project a simple, single-module library with infrequent releases?
+          ├── YES → flit
+          │         Set __version__ = "1.0.0" in __init__.py.
+          │         Update manually before each release.
+          │
+          └── NO — Does the team want an integrated build + dep management tool?
+                    ├── YES → poetry
+                    │         Manage version in [tool.poetry] version field.
+                    │
+                    └── NO → hatchling (modern, fast, pure-Python)
+                              Use hatch-vcs plugin for dynamic versioning
+                              or set version manually in [project].
+
+Does the package have C/Cython/Fortran extensions?
+└── YES (always) → setuptools (only backend with native extension support)
+```
+
+### Summary Table
+
+| Backend | Version source | Best for |
+|---|---|---|
+| `setuptools` + `setuptools_scm` | Git tags — fully automatic | DEFAULT for new projects |
+| `hatchling` + `hatch-vcs` | Git tags — automatic via plugin | hatchling users |
+| `flit` | `__version__` in `__init__.py` | Very simple, minimal config |
+| `poetry` | `[tool.poetry] version` field | Integrated dep + build management |
+| `hatchling` manual | `[project] version` field | One-off static versioning |
+
+---
+
+## 5. Dynamic Versioning — setuptools_scm (Recommended)
+
+`setuptools_scm` reads the current git tag and computes the version at build time.
+No separate `__version__` update step — just tag and push.
+
+### `pyproject.toml` configuration
+
+```toml
+[build-system]
+requires      = ["setuptools>=70", "setuptools_scm>=8"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name    = "your-package"
+dynamic = ["version"]
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+local_scheme   = "no-local-version"   # Prevents +g<hash> from breaking PyPI
+```
+
+### `__init__.py` — correct version access
+
+```python
+# your_package/__init__.py
+from importlib.metadata import version, PackageNotFoundError
+
+try:
+    __version__ = version("your-package")
+except PackageNotFoundError:
+    # Package is not installed (running from a source checkout without pip install -e .)
+    __version__ = "0.0.0.dev0"
+
+__all__ = ["__version__"]
+```
+
+### How the version is computed
+
+```
+git tag v1.0.0            →  installed_version = "1.0.0"
+3 commits after v1.0.0    →  installed_version = "1.0.0.post3+g<hash>"  (dev only)
+git tag v1.1.0            →  installed_version = "1.1.0"
+```
+
+With `local_scheme = "no-local-version"`, the `+g<hash>` suffix is stripped for PyPI
+uploads while still being visible locally.
+
+### Critical CI requirement
+
+```yaml
+- uses: actions/checkout@v4
+  with:
+    fetch-depth: 0    # REQUIRED — without this, git has no tag history
+                      # setuptools_scm falls back to 0.0.0+d<date> silently
+```
+
+**Every** CI job that installs or builds the package must have `fetch-depth: 0`.
+
+### Debugging version issues
+
+```bash
+# Check what version setuptools_scm would produce right now:
+python -m setuptools_scm
+
+# If you see 0.0.0+d... it means:
+# 1. No tags reachable from HEAD, OR
+# 2. fetch-depth: 0 was not set in CI
+```
+
+---
+
+## 6. Hatchling with hatch-vcs Plugin
+
+An alternative to setuptools_scm for teams already using hatchling.
+
+```toml
+[build-system]
+requires      = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name    = "your-package"
+dynamic = ["version"]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/your_package/_version.py"
+```
+
+Access the version the same way as setuptools_scm:
+
+```python
+from importlib.metadata import version, PackageNotFoundError
+try:
+    __version__ = version("your-package")
+except PackageNotFoundError:
+    __version__ = "0.0.0.dev0"
+```
+
+---
+
+## 7. Static Versioning — flit
+
+Use flit only for simple, single-module packages where manual version bumping is acceptable.
+
+### `pyproject.toml`
+
+```toml
+[build-system]
+requires      = ["flit_core>=3.9"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name    = "your-package"
+dynamic = ["version", "description"]
+```
+
+### `__init__.py`
+
+```python
+"""your-package — a focused, single-purpose utility."""
+__version__ = "1.2.0"   # flit reads this; update manually before each release
+```
+
+**flit exception:** this is the ONLY case where hardcoding `__version__` is correct.
+flit discovers the version by importing `__init__.py` and reading `__version__`.
+
+### Release flow for flit
+
+```bash
+# 1. Bump __version__ in __init__.py
+# 2. Update CHANGELOG.md
+# 3. Commit
+git add src/your_package/__init__.py CHANGELOG.md
+git commit -m "chore: release v1.2.0"
+# 4. Tag (flit can also publish directly)
+git tag v1.2.0
+git push origin v1.2.0
+# 5. Build and publish
+flit publish
+# OR
+python -m build && twine upload dist/*
+```
+
+---
+
+## 8. Static Versioning — hatchling manual
+
+```toml
+[build-system]
+requires      = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name    = "your-package"
+version = "1.0.0"   # Manual; update before each release
+```
+
+Update `version` in `pyproject.toml` before every release. No `__version__` required
+(access via `importlib.metadata.version()` as usual).
+
+---
+
+## 9. DO NOT Hardcode Version (except flit)
+
+Hardcoding `__version__` in `__init__.py` when **not** using flit creates a dual source of
+truth that diverges over time.
+
+```python
+# BAD — when using setuptools_scm, hatchling, or poetry:
+__version__ = "1.0.0"    # gets stale; diverges from the installed package version
+
+# GOOD — works for all backends except flit:
+from importlib.metadata import version, PackageNotFoundError
+try:
+    __version__ = version("your-package")
+except PackageNotFoundError:
+    __version__ = "0.0.0.dev0"
+```
+
+---
+
+## 10. Dependency Version Specifiers
+
+Pick the right specifier style to avoid poisoning your users' environments.
+
+```toml
+# [project] dependencies — library best practices:
+
+"httpx>=0.24"            # Minimum only — PREFERRED; lets users upgrade freely
+"httpx>=0.24,<2.0"       # Upper bound only when a known breaking change exists in next major
+"requests>=2.28,<3.0"    # Acceptable for well-known major-version breaks
+
+# Application / CLI (pinning is fine):
+"httpx==0.27.2"          # Lock exact version for reproducible deploys
+
+# NEVER in a library:
+# "httpx~=0.24.0"        # Too tight; blocks minor upgrades
+# "httpx==0.27.*"        # Not valid PEP 440
+# "httpx"                # No constraint; fragile against future breakage
+```
+
+---
+
+## 11. PyPA Release Commands
+
+The canonical sequence from code to user install.
+
+```bash
+# Step 1: Tag the release (triggers CI publish.yml automatically if configured)
+git tag -a v1.2.3 -m "Release v1.2.3"
+git push origin v1.2.3
+
+# Step 2 (manual fallback only): Build locally
+python -m build
+# Produces:
+#   dist/your_package-1.2.3.tar.gz   (sdist)
+#   dist/your_package-1.2.3-py3-none-any.whl  (wheel)
+
+# Step 3: Validate
+twine check dist/*
+
+# Step 4: Test on TestPyPI first (first release or major change)
+twine upload --repository testpypi dist/*
+pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ your-package==1.2.3
+
+# Step 5: Publish to production PyPI
+twine upload dist/*
+# OR via GitHub Actions (recommended):
+# push the tag → publish.yml runs → pypa/gh-action-pypi-publish handles upload via OIDC
+
+# Step 6: Verify
+pip install your-package==1.2.3
+python -c "import your_package; print(your_package.__version__)"
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-clients-sdk/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-clients-sdk/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-clients-sdk/SKILL.md
+- **SHA256_FINGERPRINT**: `98038574cd7735ffdd7f709b8a882f48d8e91b4072906424887e01919a426954`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.888836+00:00
+---
+
+**description**: Qdrant provides client SDKs for various programming languages, allowing easy integration with Qdrant deployments.
+
+# Qdrant Clients SDK
+
+Qdrant has the following officially supported client SDKs:
+
+- Python — [qdrant-client](https://github.com/qdrant/qdrant-client) · Installation: `pip install qdrant-client[fastembed]`
+- JavaScript / TypeScript — [qdrant-js](https://github.com/qdrant/qdrant-js) · Installation: `npm install @qdrant/js-client-rest`
+- Rust — [rust-client](https://github.com/qdrant/rust-client) · Installation: `cargo add qdrant-client`
+- Go — [go-client](https://github.com/qdrant/go-client) · Installation: `go get github.com/qdrant/go-client`
+- .NET — [qdrant-dotnet](https://github.com/qdrant/qdrant-dotnet) · Installation: `dotnet add package Qdrant.Client`
+- Java — [java-client](https://github.com/qdrant/java-client) · Available on Maven Central: https://central.sonatype.com/artifact/io.qdrant/client
+
+## API Reference
+
+All interaction with Qdrant can happen through the REST API or gRPC API. We recommend using the REST API if you are using Qdrant for the first time or working on a prototype.
+
+* REST API - [OpenAPI Reference](https://api.qdrant.tech/api-reference) - [GitHub](https://github.com/qdrant/qdrant/blob/master/docs/redoc/master/openapi.json)
+* gRPC API - [gRPC protobuf definitions](https://github.com/qdrant/qdrant/tree/master/lib/api/src/grpc/proto)
+
+## Code examples
+
+To obtain code examples for a specific client and use case, you can send a search request to the library of curated code snippets for the Qdrant client.
+
+```bash
+curl -X GET "https://snippets.qdrant.tech/search?language=python&query=how+to+upload+points"
+```
+
+Available languages: `python`, `typescript`, `rust`, `java`, `go`, `csharp`
+
+Response example:
+
+```markdown
+
+## Snippet 1
+
+*qdrant-client* (vlatest) — https://search.qdrant.tech/md/documentation/manage-data/points/
+
+Uploads multiple vector-embedded points to a Qdrant collection using the Python qdrant_client (PointStruct) with id, payload (e.g., color), and a 3D-like vector for similarity search. It supports parallel uploads (parallel=4) and a retry policy (max_retries=3) for robust indexing. The operation is idempotent: re-uploading with the same id overwrites existing points; if ids aren’t provided, Qdrant auto-generates UUIDs.
+
+client.upload_points(
+    collection_name="{collection_name}",
+    points=[
+        models.PointStruct(
+            id=1,
+            payload={
+                "color": "red",
+            },
+            vector=[0.9, 0.1, 0.1],
+        ),
+        models.PointStruct(
+            id=2,
+            payload={
+                "color": "green",
+            },
+            vector=[0.1, 0.9, 0.1],
+        ),
+    ],
+    parallel=4,
+    max_retries=3,
+)
+```
+
+Default response format is markdown, if snippet output is required in JSON format, you can add `&format=json` to the query string.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-deployment-options/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-deployment-options/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-deployment-options/SKILL.md
+- **SHA256_FINGERPRINT**: `16add82ae044c2d6055628bafa202c6f0baef8f148a27c325338935fbe152695`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.892843+00:00
+---
+
+**description**: Guides Qdrant deployment selection. Use when someone asks 'how to deploy Qdrant', 'Docker vs Cloud', 'local mode', 'embedded Qdrant', 'Qdrant EDGE', 'which deployment option', 'self-hosted vs cloud', or 'need lowest latency deployment'. Also use when choosing between deployment types for a new project.
+
+# Which Qdrant Deployment Do I Need?
+
+Start with what you need: managed ops or full control? Network latency acceptable or not? Production or prototyping? The answer narrows to one of four options.
+
+## Getting Started or Prototyping
+
+Use when: building a prototype, running tests, CI/CD pipelines, or learning Qdrant.
+
+- Use local mode (Python only): zero-dependency, in-memory or disk-persisted, no server needed [Local mode](https://search.qdrant.tech/md/documentation/quickstart/)
+- Local mode data format is NOT compatible with server. Do not use for production or benchmarking.
+- For a real server locally, use Docker [Quick start](https://search.qdrant.tech/md/documentation/quickstart/?s=download-and-run)
+
+## Going to Production (Self-Hosted)
+
+Use when: you need full control over infrastructure, data residency, or custom configuration.
+
+- Docker is the default deployment. Full Qdrant Open Source feature set, minimal setup. [Quick start](https://search.qdrant.tech/md/documentation/quickstart/?s=download-and-run)
+- You own operations: upgrades, backups, scaling, monitoring
+- Must set up distributed mode manually for multi-node clusters [Distributed deployment](https://search.qdrant.tech/md/documentation/operations/distributed_deployment/)
+- Consider Hybrid Cloud if you want Qdrant Cloud management on your infrastructure [Hybrid Cloud](https://search.qdrant.tech/md/documentation/hybrid-cloud/)
+
+## Going to Production (Zero-Ops)
+
+Use when: you want managed infrastructure with zero-downtime updates, automatic backups, and resharding without operating clusters yourself.
+
+- Qdrant Cloud handles upgrades, scaling, backups, and monitoring [Qdrant Cloud](https://search.qdrant.tech/md/documentation/cloud-quickstart/)
+- Supports multi-version upgrades automatically
+- Provides features not available in self-hosted: `/sys_metrics`, managed resharding, pre-configured alerts
+
+## Need Lowest Possible Latency
+
+Use when: network round-trip to a server is unacceptable. Edge devices, in-process search, or latency-critical applications.
+
+- Qdrant EDGE: in-process bindings to Qdrant shard-level functions, no network overhead [Qdrant EDGE](https://search.qdrant.tech/md/documentation/edge/edge-quickstart/)
+- Same data format as server. Can sync with server via shard snapshots.
+- Single-node feature set only. No distributed mode.
+
+## What NOT to Do
+
+- Use local mode for production or benchmarking (not optimized, incompatible data format)
+- Self-host without monitoring and backup strategy (you will lose data or miss outages)
+- Choose EDGE when you need distributed search (single-node only)
+- Pick Hybrid Cloud unless you have data residency requirements (unnecessary Kubernetes complexity when Qdrant Cloud works)
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-model-migration/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-model-migration/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-model-migration/SKILL.md
+- **SHA256_FINGERPRINT**: `0e8096ef985193a2e6383dd66772dbfc4f4cc416260d057bd489b8b0150a09ba`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.920527+00:00
+---
+
+**description**: Guides embedding model migration in Qdrant without downtime. Use when someone asks 'how to switch embedding models', 'how to migrate vectors', 'how to update to a new model', 'zero-downtime model change', 'how to re-embed my data', or 'can I use two models at once'. Also use when upgrading model dimensions, switching providers, or A/B testing models.
+
+# What to Do When Changing Embedding Models
+
+Vectors from different models are incompatible. You cannot mix old and new embeddings in the same vector space. You also cannot add new named vector fields to an existing collection. All named vectors must be defined at collection creation time. Both migration strategies below require creating a new collection.
+
+- Understand collection aliases before choosing a strategy [Collection aliases](https://search.qdrant.tech/md/documentation/manage-data/collections/?s=collection-aliases)
+
+## Can I Avoid Re-embedding?
+
+Use when: looking for shortcuts before committing to full migration.
+
+You MUST re-embed if: changing model provider (OpenAI to Cohere), changing architecture (CLIP to BGE), incompatible dimension counts across different models, or adding sparse vectors to dense-only collection.
+
+You CAN avoid re-embedding if: using Matryoshka models (use `dimensions` parameter to output lower-dimensional embeddings, learn linear transformation from sample data, some recall loss, good for 100M+ datasets). Or changing quantization (binary to scalar): Qdrant re-quantizes automatically. [Quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/)
+
+## Need Zero Downtime (Alias Swap)
+
+Use when: production must stay available. Recommended for model replacement at scale.
+
+- Create a new collection with the new model's dimensions and distance metric
+- Re-embed all data into the new collection in the background
+- Point your application at a collection alias instead of a direct collection name
+- Atomically swap the alias to the new collection [Switch collection](https://search.qdrant.tech/md/documentation/manage-data/collections/?s=switch-collection)
+- Verify search quality, then delete the old collection
+
+Careful, the alias swap only redirects queries. Payloads must be re-uploaded separately.
+
+## Need Both Models Live (Side-by-Side)
+
+Use when: A/B testing models, multi-modal (dense + sparse), or evaluating a new model before committing.
+
+You cannot add a named vector to an existing collection. Create a new collection with both vector fields defined upfront:
+
+- Create new collection with old and new named vectors both defined [Collection with multiple vectors](https://search.qdrant.tech/md/documentation/manage-data/collections/?s=collection-with-multiple-vectors)
+- Migrate data from old collection, preserving existing vectors in the old named field
+- Backfill new model embeddings incrementally using `UpdateVectors` [Update vectors](https://search.qdrant.tech/md/documentation/manage-data/points/?s=update-vectors)
+- Compare quality by querying with `using: "old_model"` vs `using: "new_model"`
+- Swap alias to new collection once satisfied
+
+Co-locating large multi-vectors (especially ColBERT) with dense vectors degrades ALL queries, even those only using dense. At millions of points, users report 13s latency dropping to 2s after removing ColBERT. Put large vectors on disk during side-by-side migration.
+
+If you anticipate future model migrations, define both vector fields upfront at collection creation.
+
+## Dense to Hybrid Search Migration
+
+Use when: adding sparse/BM25 vectors to an existing dense-only collection. Most common migration pattern.
+
+You cannot add sparse vectors to an existing dense-only collection. Must recreate:
+
+- Create new collection with both dense and sparse vector configs defined
+- Re-embed all data with both dense and sparse models
+- Migrate payloads, swap alias
+
+Sparse vectors at chunk level have different TF-IDF characteristics than document level. Test retrieval quality after migration, especially for non-English text without stop-word removal.
+
+## Re-embedding Is Too Slow
+
+Use when: dataset is large and re-embedding is the bottleneck.
+
+- Use `update_mode: insert` (v1.17+) for safe idempotent migration [Update mode](https://search.qdrant.tech/md/documentation/manage-data/points/?s=update-mode)
+- Scroll the old collection with `with_vectors=False`, re-embed in batches, upsert into new collection
+- Upload in parallel batches (64-256 points per request, 2-4 parallel streams) [Bulk upload](https://search.qdrant.tech/md/documentation/tutorials-develop/bulk-upload/)
+- Disable HNSW during bulk load (set `indexing_threshold_kb` very high, restore after)
+- For Qdrant Cloud inference, switching models is a config change, not a pipeline change [Inference docs](https://search.qdrant.tech/md/documentation/inference/)
+
+For 400GB+ datasets, expect days. For small datasets (<25MB), re-indexing from source is faster than using the migration tool.
+
+## What NOT to Do
+
+- Assume you can add named vectors to an existing collection (must be defined at creation time)
+- Delete the old collection before verifying the new one
+- Forget to update the query embedding model in your application code
+- Skip payload migration when using alias swap (aliases redirect queries, they do not copy data)
+- Keep ColBERT vectors co-located with dense vectors during a long migration (I/O cost degrades all queries)
+- Migrate to hybrid search without testing BM25 quality at chunk level
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-monitoring/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-monitoring/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-monitoring/SKILL.md
+- **SHA256_FINGERPRINT**: `39eb306c7a2e2db181ccb5c83d4ada6b63f38b099b74b803faa13f5b4fd7b404`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.038274+00:00
+---
+
+**description**: Guides Qdrant monitoring and observability setup. Use when someone asks 'how to monitor Qdrant', 'what metrics to track', 'is Qdrant healthy', 'optimizer stuck', 'why is memory growing', 'requests are slow', or needs to set up Prometheus, Grafana, or health checks. Also use when debugging production issues that require metric analysis.
+
+# Qdrant Monitoring
+
+Qdrant monitoring allows tracking performance and health of your deployment, and identifying issues before they become outages. First determine whether you need to set up monitoring or diagnose an active issue.
+
+- Understand available metrics [Monitoring docs](https://search.qdrant.tech/md/documentation/operations/monitoring/)
+
+## Monitoring Setup
+
+Prometheus scraping, health probes, Hybrid Cloud specifics, alerting, and log centralization. [Monitoring Setup](setup/SKILL.md)
+
+## Debugging with Metrics
+
+Optimizer stuck, memory growth, slow requests. Using metrics to diagnose active production issues. [Debugging with Metrics](debugging/SKILL.md)
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-monitoring/debugging/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-monitoring/debugging/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-monitoring/debugging/SKILL.md
+- **SHA256_FINGERPRINT**: `fd331436ca5596a0b154ca8d420dee604df67c493c7cb394996486ddee73db15`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.949298+00:00
+---
+
+**description**: Diagnoses Qdrant production issues using metrics and observability tools. Use when someone reports 'optimizer stuck', 'indexing too slow', 'memory too high', 'OOM crash', 'queries are slow', 'latency spike', or 'search was fast now it's slow'. Also use when performance degrades without obvious config changes.
+
+# How to Debug Qdrant with Metrics
+
+First check optimizer status. Most production issues trace back to active optimizations competing for resources. If optimizer is clean, check memory, then request metrics.
+
+## Optimizer Stuck or Too Slow
+
+Use when: optimizer running for hours, not finishing, or showing errors.
+
+- Use `/collections/{collection_name}/optimizations` endpoint (v1.17+) to check status [Optimization monitoring](https://search.qdrant.tech/md/documentation/operations/optimizer/?s=optimization-monitoring)
+- Query with optional detail flags: `?with=queued,completed,idle_segments`
+- Returns: queued optimizations count, active optimizer type, involved segments, progress tracking
+- Web UI has an Optimizations tab with timeline view and per-task duration metrics [Web UI](https://search.qdrant.tech/md/documentation/operations/optimizer/?s=web-ui)
+- If `optimizer_status` shows an error in collection info, check logs for disk full or corrupted segments
+- Large merges and HNSW rebuilds legitimately take hours on big datasets. Check progress before assuming it's stuck.
+
+## Memory Seems Too High
+
+Use when: memory exceeds expectations, node crashes with OOM, or memory keeps growing.
+
+- Process memory metrics available via `/metrics` (RSS, allocated bytes, page faults)
+- Qdrant uses two types of RAM: resident memory (data structures, quantized vectors) and OS page cache (cached disk reads). Page cache filling available RAM is normal. [Memory article](https://qdrant.tech/articles/memory-consumption/)
+- If resident memory (RSSAnon) exceeds 80% of total RAM, investigate
+- Check `/telemetry` for per-collection breakdown of point counts and vector configurations
+- Estimate expected memory: `num_vectors * dimensions * 4 bytes * 1.5` for vectors, plus payload and index overhead [Capacity planning](https://search.qdrant.tech/md/documentation/operations/capacity-planning/)
+- Common causes of unexpected growth: quantized vectors with `always_ram=true`, too many payload indexes, large `max_segment_size` during optimization
+
+## Queries Are Slow
+
+Use when: queries slower than expected and you need to identify the cause.
+
+- Track `rest_responses_avg_duration_seconds` and `rest_responses_max_duration_seconds` per endpoint
+- Use histogram metric `rest_responses_duration_seconds` (v1.8+) for percentile analysis in Grafana
+- Equivalent gRPC metrics with `grpc_responses_` prefix
+- Check optimizer status first. Active optimizations compete for CPU and I/O, degrading search latency.
+- Check segment count via collection info. Too many unmerged segments after bulk upload causes slower search.
+- Compare filtered vs unfiltered query times. Large gap means missing payload index. [Payload index](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=payload-index)
+
+## What NOT to Do
+
+- Ignore optimizer status when debugging slow queries (most common root cause)
+- Assume memory leak when page cache fills RAM (normal OS behavior)
+- Make config changes while optimizer is running (causes cascading re-optimizations)
+- Blame Qdrant before checking if bulk upload just finished (unmerged segments)
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-monitoring/setup/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-monitoring/setup/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-monitoring/setup/SKILL.md
+- **SHA256_FINGERPRINT**: `567d4ee03c316146100d96d1df8a761a007423eb24c3e93ecda160e0d2416839`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.129398+00:00
+---
+
+**description**: Guides Qdrant monitoring setup including Prometheus scraping, health probes, Hybrid Cloud metrics, alerting, and log centralization. Use when someone asks 'how to set up monitoring', 'Prometheus config', 'Grafana dashboard', 'health check endpoints', 'how to scrape Hybrid Cloud', 'what alerts to set', 'how to centralize logs', or 'audit logging'.
+
+# How to Set Up Qdrant Monitoring
+
+Get Prometheus scraping working first, then health probes, then alerting. Do not skip monitoring setup before going to production.
+
+## Prometheus Metrics
+
+Use when: setting up metric collection for the first time or adding a new deployment.
+
+- Node metrics at `/metrics` endpoint [Monitoring docs](https://search.qdrant.tech/md/documentation/operations/monitoring/)
+- Cluster metrics at `/sys_metrics` (Qdrant Cloud only)
+- Prefix customization via `service.metrics_prefix` config or `QDRANT__SERVICE__METRICS_PREFIX` env var
+- Example self-hosted setup with Prometheus + Grafana [prometheus-monitoring repo](https://github.com/qdrant/prometheus-monitoring)
+
+## Hybrid Cloud Scraping
+
+Use when: running Qdrant Hybrid Cloud and need cluster-level visibility.
+
+Do not just scrape Qdrant nodes. In Hybrid Cloud, you manage the Kubernetes data plane. You must also scrape the cluster-exporter and operator pods for full cluster visibility and operator state.
+
+- Hybrid Cloud Prometheus setup tutorial [Hybrid Cloud Prometheus](https://search.qdrant.tech/md/documentation/tutorials-and-examples/hybrid-cloud-prometheus/)
+- Official Grafana dashboards [Grafana dashboard repo](https://github.com/qdrant/qdrant-cloud-grafana-dashboard)
+
+## Liveness and Readiness Probes
+
+Use when: configuring Kubernetes health checks.
+
+- Use `/healthz`, `/livez`, `/readyz` for basic status, liveness, and readiness [Kubernetes health endpoints](https://search.qdrant.tech/md/documentation/operations/monitoring/?s=kubernetes-health-endpoints)
+
+## Alerting
+
+Use when: setting up alerts for production or Hybrid Cloud deployments.
+
+- Hybrid Cloud provides ~11 pre-configured Prometheus alerts out of the box [Cloud cluster monitoring](https://search.qdrant.tech/md/documentation/cloud/cluster-monitoring/)
+- Use AlertmanagerConfig to route alerts to Slack, PagerDuty, or other targets based on labels
+- At minimum, alert on: optimizer errors, node not ready, replication factor below target, disk usage >80%
+
+## Log Centralization and Audit Logging
+
+Use when: enterprise compliance requires centralized logs or audit trails.
+
+- Enable JSON log format for structured analysis: set `logger.format` to `json` in config [Configuration](https://search.qdrant.tech/md/documentation/operations/configuration/)
+- Use FluentD/OpenSearch for log aggregation
+- Audit logs (v1.17+) write to local filesystem (`/qdrant/storage/audit/`), not stdout. Mount a Persistent Volume and deploy a sidecar container to tail these files to stdout so DaemonSets can pick them up. [Audit logging](https://search.qdrant.tech/md/documentation/operations/security/?s=audit-logging)
+
+## What NOT to Do
+
+- Scrape `/sys_metrics` on self-hosted (only available on Qdrant Cloud)
+- Scrape only Qdrant nodes in Hybrid Cloud (miss cluster-exporter and operator metrics)
+- Skip monitoring setup before going to production (you will regret it)
+- Alert on page cache memory usage (it's supposed to fill available RAM, normal OS behavior)
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-performance-optimization/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-performance-optimization/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-performance-optimization/SKILL.md
+- **SHA256_FINGERPRINT**: `f4d1decb0ee0d6a9056f020ec69682e3a4c5759db1003da12d958d672a489c0a`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.057589+00:00
+---
+
+**description**: Different techniques to optimize the performance of Qdrant, including indexing strategies, query optimization, and hardware considerations. Use when you want to improve the speed and efficiency of your Qdrant deployment.
+
+# Qdrant Performance Optimization
+
+There are different aspects of Qdrant performance, this document serves as a navigation hub for different aspects of performance optimization in Qdrant.
+
+## Search Speed Optimization
+
+There are two different criteria for search speed: latency and throughput.
+Latency is the time it takes to get a response for a single query, while throughput is the number of queries that can be processed in a given time frame.
+Depending on your use case, you may want to optimize for one or both of these metrics.
+
+More on search speed optimization can be found in the [Search Speed Optimization](search-speed-optimization/SKILL.md) skill.
+
+## Indexing Performance Optimization
+
+Qdrant needs to build a vector index to perform efficient similarity search. The time it takes to build the index can vary depending on the size of your dataset, hardware, and configuration.
+
+More on indexing performance optimization can be found in the [Indexing Performance Optimization](indexing-performance-optimization/SKILL.md) skill.
+
+## Memory Usage Optimization
+
+Vector search can be memory intensive, especially when dealing with large datasets.
+Qdrant has a flexible memory management system, which allows you to precisely control which parts of storage are kept in memory and which are stored on disk. This can help you optimize memory usage without sacrificing performance.
+
+More on memory usage optimization can be found in the [Memory Usage Optimization](memory-usage-optimization/SKILL.md) skill.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-performance-optimization/indexing-performance-optimization/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-performance-optimization/indexing-performance-optimization/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-performance-optimization/indexing-performance-optimization/SKILL.md
+- **SHA256_FINGERPRINT**: `ec66ccbf9cee7fa091e29621f7375dcd7c29d682621551c25eb63756f7946133`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.102648+00:00
+---
+
+**description**: Diagnoses and fixes slow Qdrant indexing and data ingestion. Use when someone reports 'uploads are slow', 'indexing takes forever', 'optimizer is stuck', 'HNSW build time too long', or 'data uploaded but search is bad'. Also use when optimizer status shows errors, segments won't merge, or indexing threshold questions arise.
+
+# What to Do When Qdrant Indexing Is Too Slow
+
+Qdrant does NOT build HNSW indexes immediately. Small segments use brute-force until they exceed `indexing_threshold_kb` (default: 20 MB). Search during this window is slower by design, not a bug.
+
+- Understand the indexing optimizer [Indexing optimizer](https://search.qdrant.tech/md/documentation/operations/optimizer/?s=indexing-optimizer)
+
+## Uploads/Ingestion Too Slow
+
+Use when: upload or upsert API calls are slow.
+Identify bottleneck: client-side (network, batching) vs server-side (CPU, disk I/O)
+
+For client-side, optimize batching and parallelism:
+
+- Use batch upserts (64-256 points per request) [Points API](https://search.qdrant.tech/md/documentation/manage-data/points/?s=upload-points)
+- Use 2-4 parallel upload streams
+
+For server-side, optimize Qdrant configuration and indexing strategy:
+
+- Create more shards (3-12), each shard has an independent update worker [Sharding](https://search.qdrant.tech/md/documentation/operations/distributed_deployment/?s=sharding)
+- Create payload indexes before HNSW builds (needed for filterable vector index) [Payload index](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=payload-index)
+
+Suitable for initial bulk load of large datasets:
+
+- Disable HNSW during bulk load (set `indexing_threshold_kb` very high, restore after) [Collection params](https://search.qdrant.tech/md/documentation/manage-data/collections/?s=update-collection-parameters)
+- Setting `m=0` to disable HNSW is legacy, use high `indexing_threshold_kb` instead
+
+Careful, fast unindexed upload might temporarily use more RAM and degrade search performance until optimizer catches up.
+
+See https://search.qdrant.tech/md/documentation/tutorials-develop/bulk-upload/
+
+## Optimizer Stuck or Taking Too Long
+
+Use when: optimizer running for hours, not finishing.
+
+- Check actual progress via optimizations endpoint (v1.17+) [Optimization monitoring](https://search.qdrant.tech/md/documentation/operations/optimizer/?s=optimization-monitoring)
+- Large merges and HNSW rebuilds legitimately take hours on big datasets
+- Check CPU and disk I/O (HNSW is CPU-bound, merging is I/O-bound, HDD is not viable)
+- If `optimizer_status` shows an error, check logs for disk full or corrupted segments
+
+## HNSW Build Time Too High
+
+Use when: HNSW index build dominates total indexing time.
+
+- Reduce `m` (default 16, good for most cases, 32+ rarely needed) [HNSW params](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=vector-index)
+- Reduce `ef_construct` (100-200 sufficient) [HNSW config](https://search.qdrant.tech/md/documentation/manage-data/collections/?s=indexing-vectors-in-hnsw)
+- Keep `max_indexing_threads` proportional to CPU cores [Configuration](https://search.qdrant.tech/md/documentation/operations/configuration/)
+- Use GPU for indexing [GPU indexing](https://search.qdrant.tech/md/documentation/operations/running-with-gpu/)
+
+## HNSW index for multi-tenant collections
+
+If you have a multi-tenant use case where all data is split by some payload field (e.g. `tenant_id`), you can avoid building a global HNSW index and instead rely on `payload_m` to build HNSW index only for subsets of data.
+Skipping global HNSW index can significantly reduce indexing time.
+
+See [Multi-tenant collections](https://search.qdrant.tech/md/documentation/manage-data/multitenancy/) for details.
+
+## Additional Payload Indexes Are Too Slow
+
+Qdrant builds extra HNSW links for all payload indexes to ensure that quality of filtered vector search does not degrade.
+Some payload indexes (e.g. `text` fields with long texts) can have a very high number of unique values per point, which can lead to long HNSW build time.
+
+You can disable building extra HNSW links for specific payload index and instead rely on slightly slower query-time strategies like ACORN.
+
+Read more about disabling extra HNSW links in [documentation](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=disable-the-creation-of-extra-edges-for-payload-fields)
+
+Read more about ACORN in [documentation](https://search.qdrant.tech/md/documentation/search/search/?s=acorn-search-algorithm)
+
+## What NOT to Do
+
+- Do not create payload indexes AFTER HNSW is built (breaks filterable vector index)
+- Do not use `m=0` for bulk uploads into an existing collection, it might drop the existing HNSW and cause long reindexing
+- Do not upload one point at a time (per-request overhead dominates)
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-performance-optimization/memory-usage-optimization/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-performance-optimization/memory-usage-optimization/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-performance-optimization/memory-usage-optimization/SKILL.md
+- **SHA256_FINGERPRINT**: `089ea269231f4aaeb6132314e592287d79fd30668d94d0499b463103e21e833f`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.110833+00:00
+---
+
+**description**: Diagnoses and reduces Qdrant memory usage. Use when someone reports 'memory too high', 'RAM keeps growing', 'node crashed', 'out of memory', 'memory leak', or asks 'why is memory usage so high?', 'how to reduce RAM?'. Also use when memory doesn't match calculations, quantization didn't help, or nodes crash during recovery.
+
+# Understanding memory usage
+
+Qdrant operates with two types of memory:
+
+- Resident memory (aka RSSAnon) - memory used for internal data structures like the ID tracker, plus components that must stay in RAM, such as quantized vectors when `always_ram=true` and payload indexes.
+
+- OS page cache - memory used for caching disk reads, which can be released when needed. Original vectors are normally stored in page cache, so the service won't crash if RAM is full, but performance may degrade.
+
+It is normal for the OS page cache to occupy all available RAM, but if resident memory is above 80% of total RAM, it is a sign of a problem.
+
+## Memory usage monitoring
+
+- Qdrant exposes memory usage through the `/metrics` endpoint. See [Monitoring docs](https://search.qdrant.tech/md/documentation/operations/monitoring/).
+
+## How much memory is needed for Qdrant?
+
+Optimal memory usage depends on the use case.
+
+- For regular search scenarios, general guidelines are provided in the [Capacity planning docs](https://search.qdrant.tech/md/documentation/operations/capacity-planning/).
+
+For a detailed breakdown of memory usage at large scale, see [Large scale memory usage example](https://search.qdrant.tech/md/documentation/tutorials-operations/large-scale-search/?s=memory-usage).
+
+Payload indexes and HNSW graph also require memory, along with vectors themselves, so it's important to consider them in calculations.
+
+Additionally, Qdrant requires some extra memory for optimizations. During optimization, optimized segments are fully loaded into RAM, so it is important to leave enough headroom.
+The larger `max_segment_size` is, the more headroom is needed.
+
+### When to put HNSW index on disk
+
+Putting frequently used components (such as HNSW index) on disk might cause significant performance degradation.
+There are some scenarios, however, when it can be a good option:
+
+- Deployments with low latency disks - local NVMe or similar.
+- Multi-tenant deployments, where only a subset of tenants is frequently accessed, so that only a fraction of data & index is loaded in RAM at a time.
+- For deployments with [inline storage](https://search.qdrant.tech/md/documentation/operations/optimize/?s=inline-storage-in-hnsw-index) enabled.
+
+## How to minimize memory footprint
+
+The main challenge is to put on disk those parts of data, which are rarely accessed.
+Here are the main techniques to achieve that:
+
+- Use quantization to store only compressed vectors in RAM [Quantization docs](https://search.qdrant.tech/md/documentation/manage-data/quantization/)
+
+- Use float16 or int8 datatypes to reduce memory usage of vectors by 2x or 4x respectively, with some tradeoff in precision. Read more about vector datatypes in [documentation](https://search.qdrant.tech/md/documentation/manage-data/vectors/?s=datatypes)
+
+- Leverage Matryoshka Representation Learning (MRL) to store only small vectors in RAM while keeping large vectors on disk. Examples of how to use MRL with Qdrant Cloud inference: [MRL docs](https://search.qdrant.tech/md/documentation/inference/?s=reduce-vector-dimensionality-with-matryoshka-models)
+
+- For multi-tenant deployments with small tenants, vectors might be stored on disk because the same tenant's data is stored together [Multitenancy docs](https://search.qdrant.tech/md/documentation/manage-data/multitenancy/?s=calibrate-performance)
+
+- For deployments with fast local storage and relatively low requirements for search throughput, it may be possible to store all components of vector store on disk. Read more about the performance implications of on-disk storage in [the article](https://qdrant.tech/articles/memory-consumption/)
+
+- For low RAM environments, consider `async_scorer` config, which enables support of `io_uring` for parallel disk access, which can significantly improve performance of on-disk storage. Read more about `async_scorer` in [the article](https://qdrant.tech/articles/io_uring/) (only available on Linux with kernel 5.11+)
+
+- Consider storing Sparse Vectors and text payload on disk, as they are usually more disk-friendly than dense vectors.
+- Configure payload indexes to be stored on disk [docs](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=on-disk-payload-index)
+- Configure sparse vectors to be stored on disk [docs](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=sparse-vector-index)
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-performance-optimization/search-speed-optimization/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-performance-optimization/search-speed-optimization/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-performance-optimization/search-speed-optimization/SKILL.md
+- **SHA256_FINGERPRINT**: `0e180f3d56e1e745fd94c3c63f30b9d995c2eb55254df6e4db05530388226409`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.260537+00:00
+---
+
+**description**: Diagnoses and fixes slow Qdrant search. Use when someone reports 'search is slow', 'high latency', 'queries take too long', 'low QPS', 'throughput too low', 'filtered search is slow', or 'search was fast but now it's slow'. Also use when search performance degrades after config changes or data growth.
+
+# Diagnose a problem
+
+There the multiple possible reasons for search performance degradation. The most common ones are:
+
+* Memory pressure: if the working set exceeds available RAM
+* Complex requests (e.g. high `hnsw_ef`, complex filters without payload index)
+* Competing background processes (e.g. optimizer still running after bulk upload)
+* Problem with the cluster (e.g. network issues, hardware degradation)
+
+## Single Query Too Slow (Latency)
+
+Use when: individual queries take too long regardless of load.
+
+### Diagnostic steps:
+
+- Check if second run of the same request is significantly faster (indicates memory pressure)
+- Try the same query with `with_payload: false` and `with_vectors: false` to see if payload retrieval is the bottleneck
+- If request uses filters, try to remove them one by one to identify if a specific filter condition is the bottleneck
+
+### Common fixes:
+
+- Tune HNSW parameters: [Fine-tuning search](https://search.qdrant.tech/md/documentation/operations/optimize/?s=fine-tuning-search-parameters)
+- Enable in-memory quantization: [Scalar quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/?s=scalar-quantization)
+- Reduce Vector Dimensionality with Matryoshka Models: [Matryoshka Models](https://search.qdrant.tech/md/documentation/inference/?s=reduce-vector-dimensionality-with-matryoshka-models)
+- Use oversampling + rescore for high-dimensional vectors [Search with quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/?s=searching-with-quantization)
+- Enable io_uring for disk-heavy workloads on Linux [io_uring](https://qdrant.tech/articles/io_uring/)
+
+## Can't Handle Enough QPS (Throughput)
+
+Use when: system can't serve enough queries per second under load.
+
+- Reduce segment count (`default_segment_number` to 2) [Maximizing throughput](https://search.qdrant.tech/md/documentation/operations/optimize/?s=maximizing-throughput)
+- Use batch search API instead of single queries [Batch search](https://search.qdrant.tech/md/documentation/search/search/?s=batch-search-api)
+- Enable quantization to reduce CPU cost [Scalar quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/?s=scalar-quantization)
+- Add replicas to distribute read load [Replication](https://search.qdrant.tech/md/documentation/operations/distributed_deployment/?s=replication)
+
+## Filtered Search Is Slow
+
+Use when: filtered search is significantly slower than unfiltered. Most common SA complaint after memory.
+
+- Create payload index on the filtered field [Payload index](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=payload-index)
+- Use `is_tenant=true` for primary filtering condition: [Tenant index](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=tenant-index)
+- Try ACORN algorithm for complex filters: [ACORN](https://search.qdrant.tech/md/documentation/search/search/?s=acorn-search-algorithm)
+- Avoid using `nested` filtering conditions as a primary filter. It might force qdrant to read raw payload values instead of using index.
+- If payload index was added after HNSW build, trigger re-index to create filterable subgraph links
+
+## Optimize search performance with parallel updates
+
+### Diagnostic steps
+
+- Try to run the same query with `indexed_only=true` parameter, if the query is significantly faster, it means that the optimizer is still running and has not yet indexed all segments.
+- If CPU or IO usage is high even with no queries, it also indicates that the optimizer is still running.
+
+### Recommended configuration changes
+
+- reduce `optimizer_cpu_budget` to reserve more CPU for queries
+- Use `prevent_unoptimized=true` to prevent creating segments with a large amount of unindexed data for searches. Instead, once a segment reaches the so called indexing_threshold, all additional points will be added in ‘deferred state’.
+
+Learn more [here](https://search.qdrant.tech/md/documentation/search/low-latency-search/?s=query-indexed-data-only)
+
+## What NOT to Do
+
+- Set `always_ram=false` on quantization (disk thrashing on every search)
+- Put HNSW on disk for latency-sensitive production (only for cold storage)
+- Increase segment count for throughput (opposite: fewer = better)
+- Create payload indexes on every field (wastes memory)
+- Blame Qdrant before checking optimizer status
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-scaling/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-scaling/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-scaling/SKILL.md
+- **SHA256_FINGERPRINT**: `93e88a704a652399b689154b99b5e4698047c200cb6fc92998c71e22ca9b410e`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.266452+00:00
+---
+
+**description**: Guides Qdrant scaling decisions. Use when someone asks 'how many nodes do I need', 'data doesn't fit on one node', 'need more throughput', 'cluster is slow', 'too many tenants', 'vertical or horizontal', 'how to shard', or 'need to add capacity'.
+
+# Qdrant Scaling
+
+First determine what you're scaling for:
+
+- data volume
+- query throughput (QPS)
+- query latency
+- query volume
+
+After determining the scaling goal, we can choose scaling strategy based on tradeoffs and assumptions.
+Each pulls toward different strategies. Scaling for throughput and latency are opposite tuning directions.
+
+## Scaling Data Volume
+
+This becomes relevant when volume of the dataset exceeds the capacity of a single node.
+Read more about scaling for data volume in [Scaling Data Volume](scaling-data-volume/SKILL.md)
+
+## Scaling for Query Throughput
+
+If your system needs to handle more parallel queries than a single node can handle,
+ then you need to scale for query throughput.
+
+Read more about scaling for query throughput in [Scaling for Query Throughput](scaling-qps/SKILL.md)
+
+## Scaling for Query Latency
+
+Latency of a single query is determined by the slowest component in the query execution path.
+It is in sometimes correlated with throughput, but not always. It might require different strategies for scaling.
+
+Read more about scaling for query latency in [Scaling for Query Latency](minimize-latency/SKILL.md)
+
+## Scaling for Query Volume
+
+By query volume we understand the amount of results that a single query returns.
+If the query volume is too high, it can cause performance issues and increase latency.
+
+Tuning for query volume is opposite might require special strategies.
+
+Read more about scaling for query volume in [Scaling for Query Volume](scaling-query-volume/SKILL.md)
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-scaling/minimize-latency/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-scaling/minimize-latency/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-scaling/minimize-latency/SKILL.md
+- **SHA256_FINGERPRINT**: `64f00f98bb020ad2a3da46d1fa8e899a1c610b80b15c3d8eef0be70923e2e60d`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.270840+00:00
+---
+
+**description**: Guides Qdrant query latency optimization. Use when someone asks 'search is slow', 'how to reduce latency', 'p99 is too high', 'tail latency', 'single query too slow', 'how to make search faster', or 'latency spikes'.
+
+# Scaling for Query Latency
+
+Latency of a single query is determined by the slowest component in the query execution path. It is sometimes correlated with throughput, but not always — throughput and latency are opposite tuning directions.
+
+Low latency optimization is aimed at utilising maximum resource saturation for a single query, while throughput optimization is aimed at minimizing per-query resource usage to allow more parallel queries.
+
+## Performance Tuning for Lower Latency
+
+- Increase segment count to match CPU cores (`default_segment_number: 16`) [Minimizing latency](https://search.qdrant.tech/md/documentation/operations/optimize/?s=minimizing-latency)
+- Keep quantized vectors and HNSW in RAM (`always_ram=true`)
+- Reduce `hnsw_ef` at query time (trade recall for speed) [Search params](https://search.qdrant.tech/md/documentation/operations/optimize/?s=fine-tuning-search-parameters)
+- Use local NVMe, avoid network-attached storage
+
+## Memory Pressure and Latency
+
+RAM is the most critical resource for latency. If working set exceeds available RAM, OS cache eviction causes severe, sustained latency degradation.
+
+- Vertical scale RAM first. Critical if working set >80%.
+- Use quantization: scalar (4x reduction) or binary (16x reduction) [Quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/)
+- Move payload indexes to disk if filtering is infrequent [On-disk payload index](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=on-disk-payload-index)
+- Set `optimizer_cpu_budget` to limit background optimization CPUs
+- Schedule indexing: set high `indexing_threshold` during peak hours
+
+## Vertical Scaling for Latency
+
+More RAM and faster CPU directly reduce latency. See [Vertical Scaling](../scaling-data-volume/vertical-scaling/SKILL.md) for node sizing guidelines.
+
+## What NOT to Do
+
+- Do not expect to optimize latency and throughput simultaneously on the same node
+- Do not use few large segments for latency-sensitive workloads (each segment takes longer to search)
+- Do not run at >90% RAM (cache eviction causes severe latency degradation that can last days)
+- Do not ignore optimizer status during performance debugging
+- Do not scale down RAM without load testing (cache eviction causes days-long latency incidents)
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-scaling/scaling-data-volume/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-scaling/scaling-data-volume/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-scaling/scaling-data-volume/SKILL.md
+- **SHA256_FINGERPRINT**: `0f03d3b945e0b7506f75e83f80b84febe253c6df8d4b0c997a86666ef178e71d`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.373868+00:00
+---
+
+**description**: Guides Qdrant data volume scaling decisions. Use when someone asks 'data doesn't fit on one node', 'too much data', 'need more storage', 'vertical or horizontal scaling', 'tenant scaling', 'time window rotation', or 'data growth exceeds capacity'.
+
+# Scaling Data Volume
+
+This document covers data volume scaling scenarios,
+where the total size of the dataset exceeds the capacity of a single node.
+
+## Tenant Scaling
+
+If the use case is multi-tenant, meaning that each user only has access to a subset of the data,
+and we never need to query across all the data, then we can use multi-tenancy patterns to scale.
+
+The recommended way is to use multi-tenant workloads with payload partitioning, per-tenant indexes, and tiered multitenancy.
+
+Learn more [Tenant Scaling](tenant-scaling/SKILL.md)
+
+## Sliding Time Window
+
+Some use-cases are based on a sliding time window, where only the most recent data is relevant.
+For example an index for social media posts, where only the last 6 months of data require fast search.
+
+Learn more [Sliding Time Window](sliding-time-window/SKILL.md)
+
+## Global Search
+
+Most general use-cases require global search across all data.
+In these situations, we might need to fall back to vertical scaling,
+and then horizontal scaling when we reach the limits of vertical scaling.
+
+### Vertical Scaling
+
+When data doesn't fit in a single node, the first approach is to scale the node itself — more RAM, better disk, quantization, mmap.
+Exhaust vertical options before going horizontal, as horizontal scaling adds permanent operational complexity.
+
+Learn more [Vertical Scaling](vertical-scaling/SKILL.md)
+
+### Horizontal Scaling
+
+When a single node can't hold the data even with quantization and mmap, distribute data across multiple nodes via sharding.
+
+Learn more [Horizontal Scaling](horizontal-scaling/SKILL.md)
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-scaling/scaling-data-volume/horizontal-scaling/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-scaling/scaling-data-volume/horizontal-scaling/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-scaling/scaling-data-volume/horizontal-scaling/SKILL.md
+- **SHA256_FINGERPRINT**: `4f54f1c282e92ffe574a76612e60cb8ba5d16c54cf39cb3261b5be966058eff0`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.381338+00:00
+---
+
+**description**: Diagnoses and guides Qdrant horizontal scaling decisions. Use when someone asks 'vertical or horizontal?', 'how many nodes?', 'how many shards?', 'how to add nodes', 'resharding', 'data doesn't fit', or 'need more capacity'. Also use when data growth outpaces current deployment.
+
+# What to Do When Qdrant Needs More Capacity
+
+Vertical first: simpler operations, no network overhead, good up to ~100M vectors per node depending on dimensions and quantization. Horizontal when: data exceeds single node capacity, need fault tolerance, need to isolate tenants, or IOPS-bound (more nodes = more independent IOPS).
+
+## Most basic distributed configuration
+
+- 3 nodes, 3 shards with `replication_factor: 2` for zero-downtime scaling
+
+Minimum of 3 nodes is important for consensus and fault tolerance. With 3 nodes, you can lose 1 node without downtime. With 2 nodes, losing 1 node causes downtime for collection operations.
+Replication factor of 2 means each shard has 1 replica, so you have 2 copies of data. This allows for zero-downtime scaling and maintenance. With `replication_factor: 1`, zero-downtime is not guaranteed even for point-level operations, and cluster maintenance requires downtime.
+
+## Choosing number of shards
+
+Shards are the unit of data distribution.
+More shards allows more nodes and better distribution, but adds overhead. Fewer shards reduces overhead but limits horizontal scaling.
+
+For cluster of 3-6 nodes the recommended shard count is 6-12.
+This allows for 2-4 shards per node, which balances distribution and overhead.
+
+## Changing number of shards
+
+Use when: shard count isn't evenly divisible by node count, causing uneven distribution, or need to rebalance.
+
+Resharding is expensive and time-consuming, it should be used as a last resort if regular data distribution is not possible.
+Resharding is designed to be transparent for user operations, updates and searches should still work during resharding with some small performance impact.
+
+But resharding operation itself is time-consuming and requires to move large amounts of data between nodes.
+
+- Available in Qdrant Cloud [Resharding](https://search.qdrant.tech/md/documentation/operations/distributed_deployment/?s=resharding)
+- Resharding is not available for self-hosted deployments.
+
+Better alternatives: over-provision shards initially, or spin up new cluster with correct config and migrate data.
+
+## What NOT to Do
+
+- Do not jump to horizontal before exhausting vertical (adds complexity for no gain)
+- Do not set `shard_number` that isn't a multiple of node count (uneven distribution)
+- Do not use `replication_factor: 1` in production if you need fault tolerance
+- Do not add nodes without rebalancing shards (use shard move API to redistribute)
+- Do not scale down RAM without load testing (cache eviction causes days-long latency incidents)
+- Do not hit the collection limit by using one collection per tenant (use payload partitioning)
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-scaling/scaling-data-volume/sliding-time-window/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-scaling/scaling-data-volume/sliding-time-window/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-scaling/scaling-data-volume/sliding-time-window/SKILL.md
+- **SHA256_FINGERPRINT**: `2d8e65f75743a2533f61ee63b542b075c95c5b00f253629fe3249c9023db0cf3`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.431097+00:00
+---
+
+**description**: Guides sliding time window scaling in Qdrant. Use when someone asks 'only recent data matters', 'how to expire old vectors', 'time-based data rotation', 'delete old data efficiently', 'social media feed search', 'news search', 'log search with retention', or 'how to keep only last N months of data'.
+
+# Scaling with a Sliding Time Window
+
+Use when only recent data needs fast search -- social media posts, news articles, support tickets, logs, job listings. Old data either becomes irrelevant or can tolerate slower access.
+
+Three strategies: **shard rotation** (recommended), **collection rotation** (when per-period config differs), and **filter-and-delete** (simplest, for continuous cleanup).
+
+## Shard Rotation (Recommended)
+
+Use when: data has natural time boundaries (daily, weekly, monthly). Preferred because queries span all time periods in one request without application-level fan-out. [User-defined sharding](https://search.qdrant.tech/md/documentation/operations/distributed_deployment/?s=user-defined-sharding)
+
+1. Create a collection with user-defined sharding enabled
+2. Create one shard key per time period (e.g., `2025-01`, `2025-02`, ..., `2025-06`)
+3. Ingest data into the current period's shard key
+4. When a new period starts, create a new shard key and redirect writes
+5. Delete the oldest shard key outside the retention window
+
+- Deleting a shard key reclaims all resources instantly (no fragmentation, no optimizer overhead)
+- Pre-create the next period's shard key before rotation to avoid write disruption
+- Use `shard_key_selector` at query time to search only specific periods for efficiency
+- Shard keys can be placed on specific nodes for hot/cold tiering
+
+## Collection Rotation (Alias Swap)
+
+Use when: you need per-period collection configuration (e.g., different quantization or storage settings). [Collection aliases](https://search.qdrant.tech/md/documentation/manage-data/collections/?s=collection-aliases)
+
+1. Create one collection per time period, point a write alias at the newest
+2. Query across all active collections in parallel, merge results client-side
+3. When a new period starts, create the new collection and swap the write alias [Switch collection](https://search.qdrant.tech/md/documentation/manage-data/collections/?s=switch-collection)
+4. Drop the oldest collection outside the window
+
+Trade-off vs shard rotation: allows per-collection config differences, but requires application-level fan-out and more operational overhead.
+
+## Filter-and-Delete
+
+Use when: data arrives continuously without clear time boundaries, or you want the simplest setup.
+
+1. Store a `timestamp` payload on every point, create a payload index on it [Payload index](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=payload-index)
+2. Filter to the desired window at query time using `range` condition [Range filter](https://search.qdrant.tech/md/documentation/search/filtering/?s=range)
+3. Periodically delete expired points using delete-by-filter [Delete points](https://search.qdrant.tech/md/documentation/manage-data/points/?s=delete-points)
+
+- Run cleanup during off-peak hours in batches (10k-50k points) to avoid optimizer locks
+- Deletes are not free: tombstoned points degrade search until optimizer compacts segments
+- Does not reclaim disk instantly (compaction is asynchronous)
+
+## Hot/Cold Tiers
+
+Use when: recent data needs fast in-RAM search, older data should remain searchable at lower performance.
+
+- **Shard rotation:** place current shard key on fast-storage nodes, move older shard keys to cheaper nodes via shard placement. All queries still go through a single collection.
+- **Collection rotation:** keep current collection in RAM (`always_ram: true`), move older collections to mmap/on-disk vectors. [Quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/)
+
+## What NOT to Do
+
+- Do not use filter-and-delete for high-volume time-series with millions of daily deletes (use rotation instead)
+- Do not forget to index the timestamp field (range filters without an index cause full scans)
+- Do not use collection rotation when shard rotation would suffice (unnecessary fan-out complexity)
+- Do not drop a shard key or collection before verifying its period is fully outside the retention window
+- Do not skip pre-creating the next period's shard key or collection (write failures during rotation are hard to recover)
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-scaling/scaling-data-volume/tenant-scaling/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-scaling/scaling-data-volume/tenant-scaling/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-scaling/scaling-data-volume/tenant-scaling/SKILL.md
+- **SHA256_FINGERPRINT**: `9209a698f1cff13b7693822fae9ca091a2fc8e171c638d454ae627d8469b71d4`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.328866+00:00
+---
+
+**description**: Guides Qdrant multi-tenant scaling. Use when someone asks 'how to scale tenants', 'one collection per tenant?', 'tenant isolation', 'dedicated shards', or reports tenant performance issues. Also use when multi-tenant workloads outgrow shared infrastructure.
+
+# What to Do When Scaling Multi-Tenant Qdrant
+
+Do not create one collection per tenant. Does not scale past a few hundred and wastes resources. One company hit the 1000 collection limit after a year of collection-per-repo and had to migrate to payload partitioning. Use a shared collection with a tenant key.
+
+- Understand multitenancy patterns [Multitenancy](https://search.qdrant.tech/md/documentation/manage-data/multitenancy/)
+
+Here is a short summary of the patterns:
+
+## Number of Tenants is around 10k
+
+Use the default multitenancy strategy via payload filtering.
+
+Read about [Partition by payload](https://search.qdrant.tech/md/documentation/manage-data/multitenancy/?s=partition-by-payload) and [Calibrate performance](https://search.qdrant.tech/md/documentation/manage-data/multitenancy/?s=calibrate-performance) for best practices on indexing and query performance.
+
+## Number of Tenants is around 100k and more
+
+At this scale, the cluster may consist of several peers.
+To localize tenant data and improve performance, use [custom sharding](https://search.qdrant.tech/md/documentation/operations/distributed_deployment/?s=user-defined-sharding) to assign tenants to specific shards based on tenant ID hash.
+This will localize tenant requests to specific nodes instead of broadcasting them to all nodes, improving performance and reducing load on each node.
+
+## If tenants are unevenly sized
+
+If some tenants are much larger than others, use [tiered multitenancy](https://search.qdrant.tech/md/documentation/manage-data/multitenancy/?s=tiered-multitenancy) to promote large tenants to dedicated shards while keeping small tenants on shared shards. This optimizes resource allocation and performance for tenants of varying sizes.
+
+## Need Strict Tenant Isolation
+
+Use when: legal/compliance requirements demand per-tenant encryption or strict isolation beyond what payload filtering provides.
+
+- Multiple collections may be necessary for per-tenant encryption keys
+- Limit collection count and use payload filtering within each collection
+- This is the exception, not the default. Only use when compliance requires it.
+
+## What NOT to Do
+
+- Do not create one collection per tenant without compliance justification (does not scale past hundreds)
+- Do not skip `is_tenant=true` on the tenant index (kills sequential read performance)
+- Do not build global HNSW for multi-tenant collections (wasteful, use `payload_m` instead)
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-scaling/scaling-data-volume/vertical-scaling/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-scaling/scaling-data-volume/vertical-scaling/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-scaling/scaling-data-volume/vertical-scaling/SKILL.md
+- **SHA256_FINGERPRINT**: `0b976e1ea39aa47862f4dc447d9b8bb29155646afd4c496a922fbc5120f3a0bc`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.457706+00:00
+---
+
+**description**: Guides Qdrant vertical scaling decisions. Use when someone asks 'how to scale up a node', 'need more RAM', 'upgrade node size', 'vertical scaling', 'resize cluster', 'scale up vs scale out', or when memory/CPU is insufficient on current nodes. Also use when someone wants to avoid the complexity of horizontal scaling.
+
+# What to Do When Qdrant Needs to Scale Vertically
+
+Vertical scaling means increasing CPU, RAM, or disk on existing nodes rather than adding more nodes. This is the recommended first step before considering horizontal scaling. Vertical scaling is simpler, avoids distributed system complexity, and is reversible.
+
+- Vertical scaling for Qdrant Cloud is done through the [Qdrant Cloud Console](https://cloud.qdrant.io/)
+- For self-hosted deployments, resize the underlying VM or container resources
+
+## When to Scale Vertically
+
+Use when: current node resources (RAM, CPU, disk) are insufficient, but the workload doesn't yet require distribution.
+
+- RAM usage approaching 80% of available memory (OS page cache eviction starts, severe performance degradation)
+- CPU saturation during query serving or indexing
+- Disk space running low for on-disk vectors and payloads
+- A single node can handle up to ~100M vectors depending on dimensions and quantization
+- For non-production workloads, which are tolerant to single-point-of-failure and don't require high availability
+
+## How to Scale Vertically in Qdrant Cloud
+
+Vertical scaling is managed through the Qdrant Cloud Console.
+
+- Log into [Qdrant Cloud Console](https://cloud.qdrant.io/) or use [CLI tool](https://github.com/qdrant/qcloud-cli)
+- Select the cluster to resize
+- Choose a larger node configuration (more RAM, CPU, or both)
+- The upgrade process involves a rolling restart with no downtime if replication is configured
+- Ensure `replication_factor: 2` or higher before resizing to maintain availability during the rolling restart
+
+**Important:** Scaling up is straightforward. Scaling down requires care -- if the working set no longer fits in RAM after downsizing, performance will degrade severely due to cache eviction. Always load test before scaling down.
+
+## RAM Sizing Guidelines
+
+RAM is the most critical resource for Qdrant performance. Use these guidelines to right-size.
+
+- Exact estimation of RAM usage is difficult; use this simple approximate formula: `num_vectors * dimensions * 4 bytes * 1.5` for full-precision vectors in RAM
+- With scalar quantization: divide by 4 (INT8 reduces each float32 to 1 byte) [Quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/)
+- With binary quantization: divide by 32 [Binary quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/?s=binary-quantization)
+- Add overhead for HNSW index (~20-30% of vector data), payload indexes, and WAL
+- Reserve 20% headroom for optimizer operations and OS cache
+- Monitor actual usage via Grafana/Prometheus before and after resizing [Monitoring](../../../qdrant-monitoring/SKILL.md)
+
+## When Vertical Scaling Is No Longer Enough
+
+Recognize these signals that it's time to go horizontal:
+
+- Data volume exceeds what a single node can hold even with quantization and mmap
+- IOPS are saturated (more nodes = more independent disk I/O)
+- Need fault tolerance (requires replication across nodes)
+- Need tenant isolation via dedicated shards
+- Single-node CPU is maxed and query latency is unacceptable
+- Next vertical scaling step is the largest available node size. You might need to be able to temporarily scale up to the larger node size to do batch operations or recovery. If you are already at the largest node size, you won't be able to do that.
+
+When you hit these limits, see [Horizontal Scaling](../horizontal-scaling/SKILL.md) for guidance on sharding and node planning.
+
+## What NOT to Do
+
+- Do not scale down RAM without load testing first (cache eviction = severe latency degradation that can last days)
+- Do not ignore the 80% RAM threshold (performance cliff, not gradual degradation)
+- Do not skip replication before resizing in Cloud (rolling restart without replicas = downtime)
+- Do not jump to horizontal scaling before exhausting vertical options (adds permanent operational complexity)
+- Do not assume more CPU always helps (IOPS-bound workloads won't improve with more cores)
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-scaling/scaling-qps/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-scaling/scaling-qps/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-scaling/scaling-qps/SKILL.md
+- **SHA256_FINGERPRINT**: `1da1b9761fb7610567e82cf06c8ed343452beab16f0c7daee7805219ac566439`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.567748+00:00
+---
+
+**description**: Guides Qdrant query throughput (QPS) scaling. Use when someone asks 'how to increase QPS', 'need more throughput', 'queries per second too low', 'batch search', 'read replicas', or 'how to handle more concurrent queries'.
+
+# Scaling for Query Throughput (QPS)
+
+Throughput scaling means handling more parallel queries per second.
+This is different from latency - throughput and latency are opposite tuning directions and cannot be optimized simultaneously on the same node.
+
+High throughput favors fewer, larger segments so each query touches less overhead.
+
+## Performance Tuning for Higher RPS
+
+- Use fewer, larger segments (`default_segment_number: 2`) [Maximizing throughput](https://search.qdrant.tech/md/documentation/operations/optimize/?s=maximizing-throughput)
+- Enable quantization with `always_ram=true` to reduce disk IO [Quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/)
+- Use batch search API to amortize overhead [Batch search](https://search.qdrant.tech/md/documentation/search/search/?s=batch-search-api)
+
+## Minimize impact of Update Workloads
+
+- Configure update throughput control (v1.17+) to prevent unoptimized searches degrading reads [Low latency search](https://search.qdrant.tech/md/documentation/search/low-latency-search/)
+- Set `optimizer_cpu_budget` to limit indexing CPUs (e.g. `2` on an 8-CPU node reserves 6 for queries)
+- Configure delayed read fan-out (v1.17+) for tail latency [Delayed fan-outs](https://search.qdrant.tech/md/documentation/search/low-latency-search/?s=use-delayed-fan-outs)
+
+## Horizontal Scaling for Throughput
+
+If a single node is saturated on CPU after applying the tuning above, scale horizontally with read replicas.
+
+- Shard replicas serve queries from replicated shards, distributing read load across nodes
+- Each replica adds independent query capacity without re-sharding
+- Use `replication_factor: 2+` and route reads to replicas [Distributed deployment](https://search.qdrant.tech/md/documentation/operations/distributed_deployment/?s=replication)
+
+See also [Horizontal Scaling](../scaling-data-volume/horizontal-scaling/SKILL.md) for general horizontal scaling guidance.
+
+## Disk I/O Bottlenecks
+
+If it is not possible to keep all vectors in RAM, disk I/O can become the bottleneck for throughput.
+In this case:
+
+- Upgrade to provisioned IOPS or local NVMe first. See impact of disk performance to vector search in [Disk performance article](https://qdrant.tech/articles/memory-consumption/)
+- Use `io_uring` on Linux (kernel 5.11+) [io_uring article](https://qdrant.tech/articles/io_uring/)
+- In case of quantized vectors, prefer global rescoring over per-segment rescoring to reduce disk reads. Example in the [tutorial](https://search.qdrant.tech/md/documentation/tutorials-operations/large-scale-search/?s=search-query)
+- Configure higher number of search threads to parallelize disk reads. Default is `cpu_count - 1`, which is optimal for RAM-based search but may be too low for disk-based search. See [configuration reference](https://search.qdrant.tech/md/documentation/operations/configuration/?s=configuration-options)
+- If still saturated, scale out horizontally (each node adds independent IOPS)
+
+## What NOT to Do
+
+- Do not expect to optimize throughput and latency simultaneously on the same node
+- Do not use many small segments for throughput workloads (increases per-query overhead)
+- Do not scale horizontally when IOPS-bound without also upgrading disk tier
+- Do not run at >90% RAM (OS cache eviction = severe performance degradation)
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-scaling/scaling-query-volume/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-scaling/scaling-query-volume/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-scaling/scaling-query-volume/SKILL.md
+- **SHA256_FINGERPRINT**: `296eecc4cbfe24fd8190fc1c9e2f9cf510a5f7efa1a76404f968690d1de68c5e`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.471322+00:00
+---
+
+**description**: Guides Qdrant query volume scaling. Use when someone asks 'query returns too many results', 'scroll performance', 'large limit values', 'paginating search results', 'fetching many vectors', or 'high cardinality results'.
+
+# Scaling for Query Volume
+
+Problem: When a query has a large limit (e.g. 1000) and there are multiple shards (e.g. 10), naively each shard must return the full 1000 results — totaling 10,000 scored points transferred and merged. This is wasteful since data is randomly distributed across auto-shards.
+
+## Core idea
+
+Instead of asking every shard for the full limit, ask each shard for a smaller limit computed via Poisson distribution statistics, then merge. This is safe because auto-sharding guarantees random, independent data distribution.
+
+## When it activates
+
+- More than 1 shard
+- Auto-sharding is in use (all queried shards share the same shard key)
+- The request's limit + offset >= SHARD_QUERY_SUBSAMPLING_LIMIT (128)
+- The query is not exact
+
+## Key tradeoff
+
+ The strategy trades a small probability of slightly incomplete results for a large reduction in inter-shard data transfer, especially for high-limit queries across many shards. The 1.2x safety factor and the 99.9% Poisson threshold keep the error rate very low — comparable to inaccuracies already introduced by approximate vector indices like HNSW.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-search-quality/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-search-quality/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-search-quality/SKILL.md
+- **SHA256_FINGERPRINT**: `8354b70f0d4844bc9be88bd7ca3fc5bd568aca3cd5e6d8f16cc6f1dcb17894f0`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.581023+00:00
+---
+
+**description**: Diagnoses and improves Qdrant search relevance. Use when someone reports 'search results are bad', 'wrong results', 'low precision', 'low recall', 'irrelevant matches', 'missing expected results', or asks 'how to improve search quality?', 'which embedding model?', 'should I use hybrid search?', 'should I use reranking?'. Also use when search quality degrades after quantization, model change, or data growth.
+
+# Qdrant Search Quality
+
+First determine whether the problem is the embedding model, Qdrant configuration, or the query strategy. Most quality issues come from the model or data, not from Qdrant itself. If search quality is low, inspect how chunks are being passed to Qdrant before tuning any parameters. Splitting mid-sentence can drop quality 30-40%.
+
+- Start by testing with exact search to isolate the problem [Search API](https://search.qdrant.tech/md/documentation/search/search/?s=search-api)
+
+## Diagnosis and Tuning
+
+Isolate the source of quality issues, tune HNSW parameters, and choose the right embedding model. [Diagnosis and Tuning](diagnosis/SKILL.md)
+
+## Search Strategies
+
+Hybrid search, reranking, relevance feedback, and exploration APIs for improving result quality. [Search Strategies](search-strategies/SKILL.md)
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-search-quality/diagnosis/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-search-quality/diagnosis/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-search-quality/diagnosis/SKILL.md
+- **SHA256_FINGERPRINT**: `e79a5466a4d313c69e901e45ace0e433946f82b6cc1b0f928872db2f735bf969`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.648237+00:00
+---
+
+**description**: Diagnoses Qdrant search quality issues. Use when someone reports 'results are bad', 'wrong results', 'not relevant results', 'missing matches', 'recall is low', 'approximate search worse than exact', 'which embedding model', or 'quality dropped after quantization'. Also use when search quality degrades without obvious changes.
+
+# How to Diagnose Bad Search Quality
+
+Before tuning, establish baselines. Use exact KNN as ground truth, compare against approximate HNSW. Target >95% recall@K for production.
+
+## Don't Know What's Wrong Yet
+
+Use when: results are irrelevant or missing expected matches and you need to isolate the cause.
+
+- Test with `exact=true` to bypass HNSW approximation [Search API](https://search.qdrant.tech/md/documentation/tutorials-search-engineering/retrieval-quality/?s=standard-mode-vs-exact-search)
+- Exact search bad = model or search pipeline problem. Exact good, approximate bad = tune HNSW.
+- Check if quantization degrades quality (compare with and without)
+- Check if filters are too restrictive (then you might need to use ACORN)
+- If duplicate results from chunked documents, use Grouping API to deduplicate [Grouping](https://search.qdrant.tech/md/documentation/search/search/?s=grouping-api)
+
+Payload filtering and sparse vector search are different things. Metadata (dates, categories, tags) goes in payload for filtering. Text content goes in sparse vectors for search.
+
+## Approximate Search Worse Than Exact
+
+Use when: exact search returns good results but HNSW approximation misses them.
+
+- Increase `hnsw_ef` at query time [Search params](https://search.qdrant.tech/md/documentation/operations/optimize/?s=fine-tuning-search-parameters)
+- Increase `ef_construct` (200+ for high quality) [HNSW config](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=vector-index)
+- Increase `m` (16 default, 32 for high recall) [HNSW config](https://search.qdrant.tech/md/documentation/manage-data/indexing/?s=vector-index)
+- Enable oversampling + rescore with quantization [Search with quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/?s=searching-with-quantization)
+- ACORN for filtered queries (v1.16+) [ACORN](https://search.qdrant.tech/md/documentation/search/search/?s=acorn-search-algorithm)
+
+Binary quantization requires rescore. Without it, quality loss is severe. Use oversampling (3-5x minimum for binary) to recover recall. Always test quantization impact on your data before production. [Quantization](https://search.qdrant.tech/md/documentation/manage-data/quantization/)
+
+## Wrong Embedding Model
+
+Use when: exact search also returns bad results.
+
+Test top 3 MTEB models on 100-1000 sample queries, measure recall@10. Domain-specific models often outperform general models. [Hosted inference](https://search.qdrant.tech/md/documentation/inference/)
+
+## Unoptimized Search Pipeline
+
+Use when: exact search also returns bad results and model choice is confirmed by user.
+
+Optimize search according to advanced search-strategies skill.
+
+## What NOT to Do
+
+- Tune Qdrant before verifying the model is right for the task (most quality issues are model issues)
+- Use binary quantization without rescore (severe quality loss)
+- Set `hnsw_ef` lower than results requested (guaranteed bad recall)
+- Skip payload indexes on filtered fields then blame quality (HNSW can't traverse filtered-out nodes, and filterable HNSW is built only if payload indexes were set up prior)
+- Deploy without baseline recall or other search relevance metrics (no way to measure regressions)
+- Confuse payload filtering with sparse vector search (different things, different config)
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-search-quality/search-strategies/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-search-quality/search-strategies/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-search-quality/search-strategies/SKILL.md
+- **SHA256_FINGERPRINT**: `5dc95a1d2cd56d505ef5c3b54cbc82c712293531466fa1dce1df799485ec2a9c`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.690894+00:00
+---
+
+**description**: Guides Qdrant search strategy selection. Use when someone asks 'should I use hybrid search?', 'BM25 or sparse vectors?', 'how to rerank?', 'results are not relevant', 'I don't get needed results from my dataset but they're there', 'retrieval quality is not good enough', 'results too similar', 'need diversity', 'MMR', 'relevance feedback', 'recommendation API', 'discovery API', 'ColBERT reranking', or 'missing keyword matches
+
+# How to Improve Search Results with Advanced Strategies
+
+These strategies complement basic vector search. Use them after confirming the embedding model is fitting the task and HNSW config is correct. If exact search returns bad results, verify the selection of the embedding model (retriever) first.
+If the user wants to use a weaker embedding model because it is small, fast, and cheap, use reranking or relevance feedback to improve search quality.
+
+## Missing Obvious Keyword Matches
+
+Use when: pure vector search misses results that contain obvious keyword matches. Domain terminology not in embedding training data, exact keyword matching critical (brand names, SKUs), acronyms common. Skip when: pure semantic queries, all data in training set, latency budget very tight.
+
+- Dense + sparse with `prefetch` and fusion [Hybrid search](https://search.qdrant.tech/md/documentation/search/hybrid-queries/?s=hybrid-search)
+- Prefer learned sparse ([miniCOIL](https://search.qdrant.tech/md/documentation/fastembed/fastembed-minicoil/), SPLADE, GTE) over raw BM25 if applicable (when user needs smart keywords matching and learned sparse models know the vocabulary of the domain)
+- For non-English languages, [configure sparse BM25 parameters accordingly](https://search.qdrant.tech/md/documentation/search/text-search/?s=language-specific-settings)
+- RRF: good default, supports weighted (v1.17+) [RRF](https://search.qdrant.tech/md/documentation/search/hybrid-queries/?s=reciprocal-rank-fusion-rrf)
+- DBSF with asymmetric limits (sparse_limit=250, dense_limit=100) can outperform RRF for technical docs [DBSF](https://search.qdrant.tech/md/documentation/search/hybrid-queries/?s=distribution-based-score-fusion-dbsf)
+- Fusion can also be done through reranking
+
+## Right Documents Found But Wrong Order
+
+Use when: good recall but poor precision (right docs in top-100, not top-10).
+
+- Cross-encoder rerankers via FastEmbed [Rerankers](https://search.qdrant.tech/md/documentation/fastembed/fastembed-rerankers/)
+- See how to use [Multistage queries](https://search.qdrant.tech/md/documentation/search/hybrid-queries/?s=multi-stage-queries) in Qdrant
+- ColBERT and ColPali/ColQwen reranking is especially precise due to late interaction mechanisms, but it is heavy. It is important to configure and store multivectors without building HNSW for them to save resources. See [Multivector representation](https://search.qdrant.tech/md/documentation/tutorials-search-engineering/using-multivector-representations/)
+
+## Right Documents Not Found But They Are There
+
+Use when: basic retrieval is in place but the retriever misses relevant items you know exist in the dataset. Works on any embeddable data (text, images, etc.).
+
+Relevance Feedback (RF) Query uses a feedback model's scores on retrieved results to steer the retriever through the full vector space on subsequent iterations, like reranking the entire collection through the retriever. Complementary to reranking: a reranker sees a limited subset, RF leverages feedback signals collection-wide. Even 3–5 feedback scores are enough. Can run multiple iterations.
+
+A feedback model is anything producing a relevance score per document: a bi-encoder, cross-encoder, late-interaction model, LLM-as-judge. Fuzzy relevance scores work, not just binary (good/bad, relevant/irrelevant), due to the fact that feedback is expressed as a graded relevance score (higher = more relevant).
+
+Skip when: if the retriever already has strong recall, or if retriever and feedback model strongly agree on relevance.
+
+- RF Query is currently based on a [3-parameter naive formula](https://search.qdrant.tech/md/documentation/search/search-relevance/?s=naive-strategy) with no universal defaults, so it must be tuned per dataset, retriever, and feedback model
+- Use [qdrant-relevance-feedback](https://pypi.org/project/qdrant-relevance-feedback/) to tune parameters, evaluate impact with Evaluator, and check retriever-feedback agreement. See README for setup instructions. No GPUs are needed, and the framework also provides predefined retriever and feedback model options.
+- Check the configuration of the [Relevance Feedback Query API](https://search.qdrant.tech/md/documentation/search/search-relevance/?s=relevance-feedback)
+- Use this as a helper end-to-end text retrieval example with parameter tuning and evals to understand how to use the API and run the `qdrant-relevance-feedback` framework: [RF tutorial](https://search.qdrant.tech/md/documentation/tutorials-search-engineering/using-relevance-feedback/)
+
+## Results Too Similar
+
+Use when: top results are redundant, near-duplicates, or lack diversity. Common in dense content domains (academic papers, product catalogs).
+
+- Use MMR (v1.15+) as a query parameter with `diversity` to balance relevance and diversity [MMR](https://search.qdrant.tech/md/documentation/search/search-relevance/?s=maximal-marginal-relevance-mmr)
+- Start with `diversity=0.5`, lower for more precision, higher for more exploration
+- MMR is slower than standard search. Only use when redundancy is an actual problem.
+
+## Know What Good Results Could Look Like But Can't Get Them
+
+Use when: you can provide positive and negative example points to steer search closer to positive and further from negative.
+
+- Recommendation API: positive/negative examples to recommend fitting vectors [Recommendation API](https://search.qdrant.tech/md/documentation/search/explore/?s=recommendation-api)
+  - Best score strategy: better for diverse examples, supports negative-only [Best score](https://search.qdrant.tech/md/documentation/search/explore/?s=best-score-strategy)
+- Discovery API: context pairs (positive/negative) to constrain search regions without a request target [Discovery](https://search.qdrant.tech/md/documentation/search/explore/?s=discovery-api)
+
+## Have Business Logic Behind Relevance
+Use when: results should be additionally ranked according to some business logic based on data, like recency or distance.
+
+Check how to set up in [Score Boosting docs](https://search.qdrant.tech/md/documentation/search/search-relevance/?s=score-boosting)
+
+## What NOT to Do
+
+- Use hybrid search before verifying pure vector quality (adds complexity, may mask model issues)
+- Use BM25 on non-English text without correctly configuring language-specific stop-word removal (severely degraded results)
+- Skip evaluation when adding relevance feedback (it's good to check on real queries that it actually could help)
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/qdrant-version-upgrade/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/qdrant-version-upgrade/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/qdrant-version-upgrade/SKILL.md
+- **SHA256_FINGERPRINT**: `0338702f2b64fcdd2a017f1526c7d2db2c646189c9ba520e5dd04bf0d269c471`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:43.711769+00:00
+---
+
+**description**: Guidance on how to upgrade your Qdrant version without interrupting the availability of your application and ensuring data integrity.
+
+# Qdrant Version Upgrade
+
+Qdrant has the following guarantees about version compatibility:
+
+- Major and minor versions of Qdrant and SDK are expected to match. For example, Qdrant 1.17.x is compatible with SDK 1.17.x.
+
+- Qdrant is tested for backward compatibility between minor versions. For example, Qdrant 1.17.x should be compatible with SDK 1.16.x. Qdrant server 1.16.x is also expected to be compatible with SDK 1.17.x, but only for the subset of features that were available in 1.16.x.
+
+- For migration to the next minor version, it is recommended to first upgrade the SDK to the next minor version and then upgrade the Qdrant server.
+
+- Storage compatibility is only guaranteed for one minor version. For example, data stored with Qdrant 1.16.x is expected to be compatible with Qdrant 1.17.x. If you need to migrate more than one minor version, it is required do the upgrade step by step, one minor version at a time. For example, to migrate from 1.15.x to 1.17.x, you need to first upgrade to 1.16.x and then to 1.17.x. Note: Qdrant Cloud automates this process, so you can directly upgrade from 1.15.x to 1.17.x without intermediate steps.
+
+- A Qdrant cluster with a replication factor of 2 or higher can be upgraded without downtime by performing a rolling upgrade. This means that you can upgrade one node at a time while the other nodes continue to serve requests. This allows you to maintain availability of your application during the upgrade process. More about replication factor: [Replication factor](https://search.qdrant.tech/md/documentation/operations/distributed_deployment/?s=replication-factor)
+
+For managing Qdrant version upgrades in Qdrant Cloud, you can use the [qcloud](https://github.com/qdrant/qcloud-cli) CLI tool.
 
 
 ---
@@ -30602,18 +34763,1790 @@ Sponsoring just {N} people/orgs supports {sponsorable} of your {total} dependenc
 
 
 ---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-4-migration/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/SKILL.md
+- **SHA256_FINGERPRINT**: `87ee88417da8da0ef387cc07da40e8aa8a2bf16f3ef2c1fed67e92214304ca81`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.904798+00:00
+---
+
+**description**: Migrate a Spring Boot 3.x application to Spring Boot 4.0 (Spring Framework 7, Jackson 3, modular starters, JSpecify). Use only for an explicit Boot 3.x to 4 migration, or to fix build or test failures caused by it, or to review one. Not for 3.x patch bumps or 4.0 to 4.1 upgrades; follow the target Boot version release notes and upgrade guide for those. Covers Maven and Gradle (Kotlin DSL, version catalogs).
+
+# Spring Boot 3.x to 4.0 Migration
+
+Step-by-step migration workflow. Topic details live in `references/`; load only the files relevant to the current step.
+
+## Rules
+
+- Never read or print secrets (`.env`, credentials, tokens in properties files).
+- Change one thing per step and run the test suite after each step; commit nothing you cannot build.
+- Pin versions explicitly; never use `latest` or open-ended ranges.
+- Check the official sources when unsure: the Spring Boot 4.0 Migration Guide on the Spring Boot GitHub wiki and the release notes on spring.io.
+
+## Workflow
+
+1. **Detect the current state**
+   - Boot version: `pom.xml` (`spring-boot-starter-parent` / BOM version), `build.gradle(.kts)` (`org.springframework.boot` plugin), or `gradle/libs.versions.toml`.
+   - Build tool: `pom.xml` + `mvnw` means Maven; `build.gradle.kts` / `build.gradle` means Gradle (Kotlin or Groovy DSL). Use the project wrapper (`./mvnw`, `./gradlew`).
+   - Java version (Boot 4 needs Java 17+, Java 25 recommended), Kotlin version, and key libraries (Jackson, Hibernate, Security, Kafka, Elasticsearch, MongoDB).
+   - See [prerequisites](references/01-prerequisites.md).
+2. **Migrate to the latest 3.5.x first.** If the project is older than 3.5, upgrade to the latest 3.5.x, fix deprecation warnings, and get the tests green before touching 4.0. Never jump from 3.2 straight to 4.0.
+3. **Baseline**: run the full build and tests (`./mvnw verify` or `./gradlew build`) and record failures that exist before migration.
+4. **Bump to 4.0.x** (parent/BOM or plugin version) and fix the build in this order, running the build after each item:
+   1. Starters and modules: [starters and removed features](references/02-starters-and-removed-features.md). Choose either the classic starters or the new modular ones; Boot 4 split the auto-configuration into many modules, and each technology now has its own `*-test` starter.
+   2. Build files and third-party dependencies: [build and dependencies](references/05-build-and-dependencies.md) and [Kotlin/Java build config](references/10-kotlin-and-java-build-config.md).
+   3. Jackson 3 (new `tools.jackson` packages): [Jackson 3](references/03-jackson-3.md). A temporary Jackson 2 compatibility module exists; plan to remove it.
+   4. Core framework (JSpecify nullability, package relocations, logging, DevTools, `PropertyMapper`): [core framework](references/04-core-framework.md).
+   5. Configuration properties (MongoDB, Spring Session, persistence, Kafka retry): [configuration properties](references/06-configuration-properties.md). Add `spring-boot-properties-migrator` temporarily to find renamed keys, and remove it afterwards.
+   6. Web and messaging changes (trailing slash matching, `HttpMessageConverters`, Jersey, Kafka, RabbitMQ): [web and messaging](references/07-web-and-messaging.md).
+   7. Tests (Mockito/`@MockBean` replacement, `@SpringBootTest` changes, `@PropertyMapping`): [testing](references/08-testing.md).
+   8. Actuator and observability modules, health probes: [actuator and observability](references/09-actuator-and-observability.md).
+5. **Verify** with the [checklist, pitfalls and resources](references/11-checklist-pitfalls-resources.md): full build, tests, startup, actuator health, a smoke test of the main endpoints, and native image build if used.
+
+## Build tool notes
+
+- **Maven**: change the parent (or `spring-boot-dependencies` BOM) version, then swap starters in `<dependencies>`. Use `./mvnw dependency:tree` to find stale transitive Jackson 2, Undertow, or Spring Retry usage. The reference files show Gradle snippets; translate the coordinates directly to Maven `<dependency>` entries.
+- **Gradle Kotlin DSL**: update the plugin version in `plugins {}` or the version catalog; use `./gradlew dependencies --configuration runtimeClasspath` to inspect resolution.
+- Keep the Spring Boot version in a single place (parent, BOM property, or version catalog entry).
+
+## Reference files
+
+| File | Topic |
+|---|---|
+| [01-prerequisites.md](references/01-prerequisites.md) | Minimum versions, pre-migration steps |
+| [02-starters-and-removed-features.md](references/02-starters-and-removed-features.md) | Modular starters, renamed starters, removed servers/features |
+| [03-jackson-3.md](references/03-jackson-3.md) | Jackson 3 packages, renames, compatibility module |
+| [04-core-framework.md](references/04-core-framework.md) | JSpecify, package moves, logging, DevTools, PropertyMapper |
+| [05-build-and-dependencies.md](references/05-build-and-dependencies.md) | Gradle plugin, Spring Retry, Authorization Server, Elasticsearch, Hibernate |
+| [06-configuration-properties.md](references/06-configuration-properties.md) | Renamed and restructured properties |
+| [07-web-and-messaging.md](references/07-web-and-messaging.md) | Web framework, Kafka, RabbitMQ changes |
+| [08-testing.md](references/08-testing.md) | Test framework changes |
+| [09-actuator-and-observability.md](references/09-actuator-and-observability.md) | Actuator, Micrometer and OpenTelemetry modules |
+| [10-kotlin-and-java-build-config.md](references/10-kotlin-and-java-build-config.md) | Kotlin compiler and Java preview configuration |
+| [11-checklist-pitfalls-resources.md](references/11-checklist-pitfalls-resources.md) | Final checklist, pitfalls, links |
+
+## Automation
+
+Use OpenRewrite (`org.openrewrite.java.spring.boot4.UpgradeSpringBoot_4_0`, <https://docs.openrewrite.org/recipes/java/spring/boot4/upgradespringboot_4_0-community-edition>) when available, review the diff, and always fetch the version-specific official guide before editing.
+
+## Upstream sources (read before migrating)
+
+Fetch the page for the target version; prefer it over this skill when they conflict.
+
+- Boot 4.0 Migration Guide: <https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide>
+- Boot 4.0 Release Notes: <https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Release-Notes>
+- Upgrading Spring Boot (incl. `spring-boot-properties-migrator`): <https://docs.spring.io/spring-boot/upgrading.html>
+- System requirements: <https://docs.spring.io/spring-boot/system-requirements.html>
+- Boot releases: <https://github.com/spring-projects/spring-boot/releases>
+- Spring Framework 7: <https://github.com/spring-projects/spring-framework/wiki/Upgrading-to-Spring-Framework-7.x>, <https://github.com/spring-projects/spring-framework/wiki/What%27s-New-in-Spring-Framework-7.x>
+- Spring Security 7: <https://docs.spring.io/spring-security/reference/migration/index.html>
+- Spring Data 2025.1: <https://github.com/spring-projects/spring-data-commons/wiki/Spring-Data-2025.1-Release-Notes>
+- Spring Batch 6: <https://docs.spring.io/spring-batch/reference/whatsnew.html>
+- Hibernate ORM 7: <https://docs.hibernate.org/orm/7.0/migration-guide/>
+- Jackson 3: <https://github.com/FasterXML/jackson/blob/main/jackson3/MIGRATING_TO_JACKSON_3.md>
+- Micrometer: <https://github.com/micrometer-metrics/micrometer/wiki/Migration-Guide>
+
+For Boot 3.x patch bumps or Boot 4.0 to 4.1 upgrades, go directly to the target Boot version's release notes and upgrade guide using the official links above. These are dependency upgrades, not JDK migrations; do not route them to `java-upgrade`.
+
+Related skills, each only if installed (otherwise use the fallback in parentheses):
+- `spring-security` (Security 7 changes): fall back to the Spring Security 7 migration guide above.
+- `spring-observability`: fall back to [actuator and observability](references/09-actuator-and-observability.md) and the Micrometer guide above.
+- `java-hibernate-jpa`: fall back to the Hibernate ORM 7 migration guide above.
+- `java-upgrade` (only when a JDK upgrade is explicitly requested): fall back to the target JDK's official migration guide.
+- `java-diagnostics` (runtime or startup failures): read the full stack trace and `mvn dependency:tree` / `gradle dependencies` output yourself.
+- `java-testcontainers` (Testcontainers 2.0 tests): see [testing](references/08-testing.md) and the Testcontainers 2 migration notes.
+- `kotlin-springboot` (Kotlin specifics): see [Kotlin and Java build config](references/10-kotlin-and-java-build-config.md).
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-4-migration/references/01-prerequisites.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/01-prerequisites.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/01-prerequisites.md
+- **SHA256_FINGERPRINT**: `11b7b55f71b806eceecd83455cef9bbe6d27e70008a70d09835842be25d96a2c`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.944117+00:00
+---
+
+# Spring Boot 3.x to 4.0 Migration Guide
+
+## Project Context
+
+This guide provides comprehensive GitHub Copilot instructions for upgrading Spring Boot projects from version 3.x to 4.0, with emphasis on Gradle Kotlin DSL, version catalogs (`libs.versions.toml`), and Kotlin-specific considerations.
+
+**Key architectural changes in Spring Boot 4.0:**
+- Modular dependency structure with focused, smaller modules
+- Spring Framework 7.x required
+- Jakarta EE 11 (Servlet 6.1 baseline)
+- Jackson 3.x migration (package namespace changes)
+- Kotlin 2.2+ requirement
+- Comprehensive property reorganization
+
+## System Requirements
+
+### Minimum Versions
+
+- **Java**: 17+ (prefer latest LTS: Java 21 or 25)
+- **Kotlin**: 2.2.0 or later
+- **Spring Framework**: 7.x (managed by Spring Boot 4.0)
+- **Jakarta EE**: 11 (Servlet 6.1 baseline)
+- **GraalVM** (for native images): 25+
+- **Gradle**: 8.14+ (required by the Spring Boot 4 Gradle plugin; also covers Kotlin DSL and version catalogs)
+- **Gradle CycloneDX Plugin**: 3.0.0+
+
+### Verify Compatibility
+
+```bash
+# Check current versions
+./gradlew --version
+./gradlew dependencies --configuration runtimeClasspath
+```
+
+## Pre-Migration Steps
+
+### 1. Upgrade to Latest Spring Boot 3.5.x
+
+Before migrating to 4.0, upgrade to the latest 3.5.x release:
+
+```kotlin
+// libs.versions.toml
+[versions]
+springBoot = "3.5.x" # Latest 3.5 patch before migrating to 4.0 (look up the current one)
+```
+
+### 2. Clean Up Deprecations
+
+Remove all deprecated API usage from Spring Boot 3.x. These will be compilation errors in 4.0:
+
+```bash
+# Build and review warnings
+./gradlew clean build --warning-mode all
+```
+
+### 3. Review Dependency Changes
+
+Compare your dependencies against:
+- [Spring Boot 3.5.x Dependency Versions](https://docs.spring.io/spring-boot/3.5/appendix/dependency-versions/coordinates.html)
+- [Spring Boot 4.0.x Dependency Versions](https://docs.spring.io/spring-boot/4.0/appendix/dependency-versions/coordinates.html)
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-4-migration/references/02-starters-and-removed-features.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/02-starters-and-removed-features.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/02-starters-and-removed-features.md
+- **SHA256_FINGERPRINT**: `ecee594da641adea4238eee5a5e50573787b44e15027c84043d630384ee8c21f`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.929452+00:00
+---
+
+## Module Restructuring and Starter Changes
+
+### Critical: Modular Architecture
+
+Spring Boot 4.0 introduces **smaller, focused modules** replacing large monolithic jars. This requires dependency updates in most projects.
+
+**Important for Library Authors:** Due to the modularization effort and package reorganization, **supporting both Spring Boot 3 and Spring Boot 4 within the same artifact is strongly discouraged**. Library authors should publish separate artifacts for each major version to avoid runtime conflicts and ensure clean dependency management.
+
+### Migration Strategy: Choose One Approach
+
+#### Option 1: Technology-Specific Starters (Recommended for Production)
+
+Most technologies covered by Spring Boot now have **dedicated test starter companions**. This provides fine-grained control.
+
+**Complete Starter Reference:** For comprehensive tables of all available starters (Core, Web, Database, Spring Data, Messaging, Security, Templating, Production-Ready, etc.) and their test companions, refer to the [official Spring Boot 4.0 Migration Guide](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide#starters).
+
+**libs.versions.toml:**
+```toml
+[versions]
+springBoot = "4.0.x" # Target 4.0 patch release
+
+[libraries]
+# Core starters with dedicated test modules
+spring-boot-starter-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc", version.ref = "springBoot" }
+spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test", version.ref = "springBoot" }
+
+spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "springBoot" }
+spring-boot-starter-data-jpa-test = { module = "org.springframework.boot:spring-boot-starter-data-jpa-test", version.ref = "springBoot" }
+
+spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "springBoot" }
+spring-boot-starter-security-test = { module = "org.springframework.boot:spring-boot-starter-security-test", version.ref = "springBoot" }
+```
+
+**build.gradle.kts:**
+```kotlin
+dependencies {
+    implementation(libs.spring.boot.starter.webmvc)
+    implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.spring.boot.starter.security)
+
+    testImplementation(libs.spring.boot.starter.webmvc.test)
+    testImplementation(libs.spring.boot.starter.data.jpa.test)
+    testImplementation(libs.spring.boot.starter.security.test)
+}
+```
+
+#### Option 2: Classic Starters (Quick Migration, Temporary)
+
+The classic starters restore the Boot 3 *module granularity*, not the Boot 3 starters. Verified on Boot 4.x with a migrated JPA + security + web project:
+
+- `spring-boot-starter-classic` = `spring-boot-starter` + `spring-boot-autoconfigure-classic`: all auto-configuration modules, but without their library dependencies.
+- `spring-boot-starter-test-classic` = `spring-boot-starter-test` + all the `*-test` modules (webmvc, data-jpa, security, ...).
+- You still declare the technology starters (`spring-boot-starter-webmvc`, `-data-jpa`, `-security`, ...): with only the classic starters the build fails on missing `jakarta.persistence`, Spring Security and Jackson classes.
+- They do **not** bring back the old packages or `@MockBean`: the test/auto-configuration imports must still be migrated (see the testing reference).
+- `spring-boot-starter-web` itself still resolves in Boot 4.x as a deprecated alias of `spring-boot-starter-webmvc`.
+
+**libs.versions.toml:**
+```toml
+[libraries]
+spring-boot-starter-classic = { module = "org.springframework.boot:spring-boot-starter-classic", version.ref = "springBoot" }
+spring-boot-starter-test-classic = { module = "org.springframework.boot:spring-boot-starter-test-classic", version.ref = "springBoot" }
+```
+
+**build.gradle.kts:**
+```kotlin
+dependencies {
+    implementation(libs.spring.boot.starter.classic)
+    implementation(libs.spring.boot.starter.webmvc) // technology starters are still required
+    testImplementation(libs.spring.boot.starter.test.classic)
+}
+```
+
+**Note**: the Spring Boot migration guide recommends eventually migrating away from the classic starters (whether and when they are removed is not stated there). Plan migration to technology-specific starters.
+
+#### Option 3: Direct Module Dependencies (Advanced)
+
+For explicit control over transitive dependencies:
+
+**libs.versions.toml:**
+```toml
+[libraries]
+spring-boot-webmvc = { module = "org.springframework.boot:spring-boot-webmvc", version.ref = "springBoot" }
+spring-boot-webmvc-test = { module = "org.springframework.boot:spring-boot-webmvc-test", version.ref = "springBoot" }
+```
+
+### Renamed Starters (Breaking Changes)
+
+Update these starter names in your `libs.versions.toml`:
+
+| Spring Boot 3.x | Spring Boot 4.0 | Notes |
+|----------------|-----------------|-------|
+| `spring-boot-starter-web` | `spring-boot-starter-webmvc` | Explicit naming |
+| `spring-boot-starter-web-services` | `spring-boot-starter-webservices` | Hyphen removed |
+| `spring-boot-starter-aop` | `spring-boot-starter-aspectj` | Only needed if using `org.aspectj.lang.annotation` |
+| `spring-boot-starter-oauth2-authorization-server` | `spring-boot-starter-security-oauth2-authorization-server` | Security namespace |
+| `spring-boot-starter-oauth2-client` | `spring-boot-starter-security-oauth2-client` | Security namespace |
+| `spring-boot-starter-oauth2-resource-server` | `spring-boot-starter-security-oauth2-resource-server` | Security namespace |
+
+**Migration Example (libs.versions.toml):**
+```toml
+[libraries]
+# Old (Spring Boot 3.x)
+# spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "springBoot" }
+# spring-boot-starter-oauth2-client = { module = "org.springframework.boot:spring-boot-starter-oauth2-client", version.ref = "springBoot" }
+
+# New (Spring Boot 4.0)
+spring-boot-starter-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc", version.ref = "springBoot" }
+spring-boot-starter-security-oauth2-client = { module = "org.springframework.boot:spring-boot-starter-security-oauth2-client", version.ref = "springBoot" }
+```
+
+### AspectJ Starter Clarification
+
+Only include `spring-boot-starter-aspectj` if you're **actually using AspectJ annotations**:
+
+```kotlin
+// Only needed if code uses org.aspectj.lang.annotation package
+import org.aspectj.lang.annotation.Aspect
+import org.aspectj.lang.annotation.Before
+
+@Aspect
+class MyAspect {
+    @Before("execution(* com.example..*(..))")
+    fun beforeAdvice() { }
+}
+```
+
+If not using AspectJ, remove the dependency.
+
+## Removed Features and Alternatives
+
+### Embedded Servers
+
+#### Undertow Removed
+
+**Undertow is completely removed** - not compatible with Servlet 6.1 baseline.
+
+**Migration:**
+- Use **Tomcat** (default) or **Jetty**
+- Do **not** deploy Spring Boot 4.0 apps to non-Servlet 6.1 containers
+
+**libs.versions.toml:**
+```toml
+[libraries]
+# Remove Undertow
+# spring-boot-starter-undertow = { module = "org.springframework.boot:spring-boot-starter-undertow", version.ref = "springBoot" }
+
+# Use Tomcat (default) or Jetty
+spring-boot-starter-jetty = { module = "org.springframework.boot:spring-boot-starter-jetty", version.ref = "springBoot" }
+```
+
+**build.gradle.kts:**
+```kotlin
+dependencies {
+    implementation(libs.spring.boot.starter.webmvc) {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
+    }
+    implementation(libs.spring.boot.starter.jetty) // Alternative to Tomcat
+}
+```
+
+### Session Management
+
+#### Spring Session Hazelcast and MongoDB Removed
+
+**Maintained by respective teams**, no longer in Spring Boot dependency management.
+
+**Migration (libs.versions.toml):**
+```toml
+[versions]
+hazelcast-spring-session = "3.x.x" # Check Hazelcast documentation
+mongodb-spring-session = "4.x.x"   # Check MongoDB documentation
+
+[libraries]
+# Explicit versions required
+spring-session-hazelcast = { module = "com.hazelcast:spring-session-hazelcast", version.ref = "hazelcast-spring-session" }
+spring-session-mongodb = { module = "org.springframework.session:spring-session-data-mongodb", version.ref = "mongodb-spring-session" }
+```
+
+### Reactive Messaging
+
+#### Pulsar Reactive Removed
+
+Spring Pulsar dropped Reactor support - reactive Pulsar client removed.
+
+**Migration:**
+- Use imperative Pulsar client
+- Or migrate to alternative reactive messaging (Kafka, RabbitMQ)
+
+### Testing
+
+#### Spock Framework Removed
+
+**Spock does not yet support Groovy 5** (required for Spring Boot 4.0).
+
+**Migration:**
+- Use JUnit 5 with Kotlin
+- Or wait for Spock Groovy 5 compatibility
+
+### Build Features
+
+#### Executable Jar Launch Scripts Removed
+
+Embedded launch scripts for "fully executable" jars removed (Unix-specific, limited use).
+
+**build.gradle.kts (remove):**
+```kotlin
+// Remove this configuration
+tasks.bootJar {
+    launchScript() // No longer supported
+}
+```
+
+**Alternatives:**
+- Use `java -jar app.jar` directly
+- Use Gradle Application Plugin for native launchers
+- Use systemd service files
+
+#### Classic Uber-Jar Loader Removed
+
+The classic uber-jar loader has been removed. Remove any loader implementation configuration from your build.
+
+**Maven (pom.xml) - remove:**
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <loaderImplementation>CLASSIC</loaderImplementation>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+```
+
+**Gradle (build.gradle.kts) - remove:**
+```kotlin
+tasks.bootJar {
+    loaderImplementation = org.springframework.boot.loader.tools.LoaderImplementation.CLASSIC // REMOVE THIS
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-4-migration/references/03-jackson-3.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/03-jackson-3.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/03-jackson-3.md
+- **SHA256_FINGERPRINT**: `28a80219010a49d423f45169e418d7fac14cdfbc09d0cd80243939a51c0a3c2b`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.935241+00:00
+---
+
+## Jackson 3 Migration
+
+### Major Breaking Change: Package Namespace
+
+Jackson 3 changes **group ID and package names**:
+
+| Component | Old (Jackson 2) | New (Jackson 3) |
+|-----------|----------------|-----------------|
+| Group ID | `com.fasterxml.jackson` | `tools.jackson` |
+| Packages | `com.fasterxml.jackson.*` | `tools.jackson.*` |
+| Exception | `jackson-annotations` | Still uses `com.fasterxml.jackson.core` group |
+
+**libs.versions.toml:**
+```toml
+[versions]
+jackson = "3.1.5" # Managed by Spring Boot 4.x; use the version from your Boot BOM
+
+[libraries]
+# Jackson 3 uses new group ID
+jackson-databind = { module = "tools.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-module-kotlin = { module = "tools.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
+
+# Exception: annotations still use old group
+# (its version stays 2.x, e.g. 2.22; do not reuse the Jackson 3 version; omit the version when the Boot BOM manages it)
+jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations" }
+```
+
+### Class and Annotation Renames
+
+Update imports and annotations:
+
+| Spring Boot 3.x | Spring Boot 4.0 |
+|----------------|-----------------|
+| `Jackson2ObjectMapperBuilderCustomizer` | `JsonMapperBuilderCustomizer` |
+| `JsonObjectSerializer` | `ObjectValueSerializer` |
+| `JsonObjectDeserializer` | `ObjectValueDeserializer` |
+| `@JsonComponent` | `@JacksonComponent` |
+| `@JsonMixin` | `@JacksonMixin` |
+
+**Migration Example:**
+```kotlin
+// Old (Spring Boot 3.x)
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
+import org.springframework.boot.jackson.JsonComponent
+
+@JsonComponent
+class CustomSerializer : JsonSerializer<MyType>() { }
+
+@Configuration
+class JacksonConfig {
+    @Bean
+    fun customizer(): Jackson2ObjectMapperBuilderCustomizer {
+        return Jackson2ObjectMapperBuilderCustomizer { builder ->
+            builder.simpleDateFormat("yyyy-MM-dd")
+        }
+    }
+}
+
+// New (Spring Boot 4.0)
+import tools.jackson.databind.ObjectMapper
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer
+import org.springframework.boot.jackson.JacksonComponent
+import tools.jackson.databind.ValueSerializer
+
+@JacksonComponent
+class CustomSerializer : ValueSerializer<MyType>() { }
+
+@Configuration
+class JacksonConfig {
+    @Bean
+    fun customizer(): JsonMapperBuilderCustomizer {
+        return JsonMapperBuilderCustomizer { builder ->
+            builder.defaultDateFormat(SimpleDateFormat("yyyy-MM-dd"))
+        }
+    }
+}
+```
+
+### Configuration Property Changes
+
+**application.yml migration:**
+```yaml
+# Old (Spring Boot 3.x)
+spring:
+  jackson:
+    deserialization:
+      read-enums-using-to-string: true
+    serialization:
+      write-dates-as-timestamps: false
+
+# New (Spring Boot 4.0)
+spring:
+  jackson:
+    datatype:
+      enum:
+        read-enums-using-to-string: true
+      datetime:
+        write-dates-as-timestamps: false
+```
+
+### Jackson 2 Compatibility Module (Temporary)
+
+For gradual migration, use the **temporary compatibility module** (deprecated, will be removed):
+
+**libs.versions.toml:**
+```toml
+[libraries]
+spring-boot-jackson2 = { module = "org.springframework.boot:spring-boot-jackson2", version.ref = "springBoot" }
+```
+
+**build.gradle.kts:**
+```kotlin
+dependencies {
+    implementation(libs.spring.boot.jackson2)
+}
+```
+
+**application.yml (select the Jackson 2 mapper for MVC and imperative HTTP clients):**
+```yaml
+spring:
+  http:
+    converters:
+      preferred-json-mapper: jackson2
+```
+
+For WebFlux and reactive HTTP clients, use `spring.http.codecs.preferred-json-mapper=jackson2` instead. Configure both properties if the application uses both converter and codec stacks.
+
+Configure the compatibility mapper under `spring.jackson2.*`. Verify that its Jackson 2 modules and custom serializers are applied to HTTP request/response bodies.
+
+This is different from `spring.jackson.use-jackson2-defaults=true`: that property keeps the Jackson 3 `JsonMapper` but aligns its defaults with Jackson 2 behavior. It does not select the Jackson 2 compatibility mapper or make Jackson 2 modules work with Jackson 3.
+
+**Plan migration away from this module** - it will be removed in future versions.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-4-migration/references/04-core-framework.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/04-core-framework.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/04-core-framework.md
+- **SHA256_FINGERPRINT**: `2380cc8670cfd4bd9f9e05bf7097bdbc398f939adda35d158abae24ca71947fb`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:37.952816+00:00
+---
+
+## Core Framework Changes
+
+### Nullability Annotations: JSpecify
+
+Spring Boot 4.0 adds **JSpecify nullability annotations** throughout the codebase.
+
+**Impact:**
+- Kotlin null-safety may flag new warnings/errors
+- Null checkers (SpotBugs, NullAway) may report new issues
+- **RestClient methods like `body()` are now explicitly marked as nullable** - always check for null or use `Objects.requireNonNull()`
+
+**Migration for Kotlin:**
+```kotlin
+// Explicit nullable types may be required
+fun processUser(id: String?): User? {
+    val nonNullId = id ?: return null // findById now requires a non-null ID
+    return userRepository.findById(nonNullId).orElse(null) // Optional<User> -> User?
+}
+
+// RestClient body() can return null
+val body: String? = restClient.get()
+    .uri("https://api.example.com/data")
+    .retrieve()
+    .body(String::class.java) // Nullable - handle appropriately
+
+if (body != null) {
+    println(body.length)
+}
+```
+
+**Actuator endpoint parameters:**
+- Cannot use `javax.annotations.NonNull` or `org.springframework.lang.Nullable`
+- Use `org.jspecify.annotations.Nullable` instead
+
+**libs.versions.toml:**
+```toml
+[libraries]
+jspecify = { module = "org.jspecify:jspecify", version = "1.0.0" }
+```
+
+### Package Relocations
+
+#### BootstrapRegistry
+
+**Old import:**
+```kotlin
+import org.springframework.boot.BootstrapRegistry
+```
+
+**New import:**
+```kotlin
+import org.springframework.boot.bootstrap.BootstrapRegistry
+```
+
+#### EnvironmentPostProcessor
+
+**Old import:**
+```kotlin
+import org.springframework.boot.env.EnvironmentPostProcessor
+```
+
+**New import:**
+```kotlin
+import org.springframework.boot.EnvironmentPostProcessor
+```
+
+**Update `META-INF/spring.factories`:**
+```properties
+# Old
+org.springframework.boot.env.EnvironmentPostProcessor=com.example.MyPostProcessor
+
+# New
+org.springframework.boot.EnvironmentPostProcessor=com.example.MyPostProcessor
+```
+
+**Note:** Deprecated form still available temporarily but will be removed.
+
+#### Entity Scan
+
+**Old import:**
+```kotlin
+import org.springframework.boot.autoconfigure.domain.EntityScan
+```
+
+**New import:**
+```kotlin
+import org.springframework.boot.persistence.autoconfigure.EntityScan
+```
+
+### Logging Changes
+
+#### Logback Default Charset
+
+Log files now default to **UTF-8** (harmonized with Log4j2):
+
+**logback-spring.xml (explicit configuration):**
+```xml
+<configuration>
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>app.log</file>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+        </encoder>
+    </appender>
+</configuration>
+```
+
+**Console logging:** Uses `Console#charset()` if available (Java 17+), otherwise falls back to UTF-8. This provides better platform compatibility while maintaining consistent encoding.
+
+### DevTools Changes
+
+#### Live Reload Disabled by Default
+
+**application.yml:**
+```yaml
+spring:
+  devtools:
+    livereload:
+      enabled: true # Must explicitly enable in 4.0
+```
+
+**libs.versions.toml:**
+```toml
+[libraries]
+spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools", version.ref = "springBoot" }
+```
+
+**build.gradle.kts:**
+```kotlin
+dependencies {
+    developmentOnly(libs.spring.boot.devtools)
+}
+```
+
+### PropertyMapper API Behavioral Change
+
+**Breaking change:** No longer calls adapter/predicate methods by default when source is `null`.
+
+**Migration pattern:**
+```kotlin
+// Old behavior (Spring Boot 3.x)
+map.from(source::method).to(destination::method)
+// Calls destination.method(null) if source returns null
+
+// New behavior (Spring Boot 4.0)
+map.from(source::method).to(destination::method)
+// Skips call if source returns null
+
+// Explicit null handling (new)
+map.from(source::method).always().to(destination::method)
+// Always calls destination.method(value), even if null
+```
+
+**Removed method:** `alwaysApplyingNotNull()` - remove this configuration: Boot 4 skips null source values by default. Do not replace it with `always()`, which explicitly passes nulls through; reserve `always()` for mappings that intentionally accept null.
+
+**Migration example:** Review [Spring Boot commit 239f384ac0](https://github.com/spring-projects/spring-boot/commit/239f384ac0893d151b89f204886874c6adb00001) to see how Spring Boot itself adapted to the new API.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-4-migration/references/05-build-and-dependencies.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/05-build-and-dependencies.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/05-build-and-dependencies.md
+- **SHA256_FINGERPRINT**: `bd28809a92898fbf5c72cc37a1eb2e121b44cacaa3c40dde94be828f15871dfa`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.037304+00:00
+---
+
+## Dependency and Build Changes
+
+### Gradle Plugin Updates
+
+**build.gradle.kts:**
+```kotlin
+plugins {
+    kotlin("jvm") version "2.2.0" // Minimum 2.2.0
+    kotlin("plugin.spring") version "2.2.0"
+    id("org.springframework.boot") version "4.0.x" // use the current 4.0 patch
+    id("io.spring.dependency-management") version "1.1.7"
+    id("org.cyclonedx.bom") version "3.0.0" // Minimum 3.0.0
+}
+```
+
+Verified: Boot 3.5 -> 4.x with Kotlin 2.2.0 builds (Groovy and Kotlin DSL, Gradle 9.8.1). Boot 4.x manages a newer Kotlin than Boot 3.5 (1.9.25), so with the dependency-management/BOM the Kotlin plugin version should ideally follow it. Run Gradle on JDK 21 or 25: the Kotlin 1.9 compiler fails with `IllegalArgumentException: 27` under JDK 27.
+
+### Optional Dependencies in Gradle
+
+Optional dependencies are **no longer included in uber jars by default**. Gradle has no Maven-style `optional` scope and `BootJar` has no `includeOptional` property, so control packaging through the dependency configuration instead:
+
+```kotlin
+dependencies {
+    implementation("group:artifact")   // compile and runtime classpath, packaged in the jar
+    runtimeOnly("group:artifact")      // runtime only, packaged in the jar
+    compileOnly("group:artifact")      // compile time only, not packaged
+}
+```
+
+If a dependency that used to be optional is now missing at runtime, move it to `implementation` or `runtimeOnly`.
+
+### Spring Retry → Spring Framework Core Retry
+
+Spring Boot 4.0 removes dependency management for **Spring Retry** (portfolio migrating to Spring Framework 7.0 core retry).
+
+**Migration Option 1: Use Spring Framework Core Retry (Recommended)**
+
+```kotlin
+// Use built-in Spring Framework retry
+import org.springframework.core.retry.RetryTemplate
+import org.springframework.core.retry.RetryPolicy
+import java.time.Duration
+
+@Configuration
+class RetryConfig {
+    @Bean
+    fun retryTemplate(): RetryTemplate {
+        val policy = RetryPolicy.builder()
+            .maxRetries(3)
+            .delay(Duration.ofMillis(1000))
+            .build()
+        return RetryTemplate(policy)
+    }
+}
+```
+
+**Migration Option 2: Explicit Spring Retry Version (Temporary)**
+
+**libs.versions.toml:**
+```toml
+[versions]
+spring-retry = "2.0.5" # Explicit version required
+
+[libraries]
+spring-retry = { module = "org.springframework.retry:spring-retry", version.ref = "spring-retry" }
+```
+
+**Plan migration to Spring Framework core retry.**
+
+### Spring Authorization Server
+
+Now part of Spring Security - explicit version management removed.
+
+**libs.versions.toml (before - Spring Boot 3.x):**
+```toml
+[versions]
+spring-authorization-server = "1.3.0" # No longer works
+
+[libraries]
+spring-security-oauth2-authorization-server = { module = "org.springframework.security:spring-security-oauth2-authorization-server", version.ref = "spring-authorization-server" }
+```
+
+**Migration (Spring Boot 4.0):**
+```toml
+[versions]
+spring-security = "7.0.0" # Use Spring Security version instead
+
+[libraries]
+# Managed by spring-security.version property, not separate
+spring-security-oauth2-authorization-server = { module = "org.springframework.security:spring-security-oauth2-authorization-server", version.ref = "spring-security" }
+```
+
+Or rely on Spring Boot dependency management (recommended):
+```kotlin
+dependencies {
+    implementation("org.springframework.security:spring-security-oauth2-authorization-server")
+    // Version managed by Spring Boot 4.0
+}
+```
+
+### Elasticsearch Client Changes
+
+#### Low-Level Client Replacement
+
+**Deprecated low-level `RestClient` → new `Rest5Client`:**
+
+**Note:** Higher-level clients (`ElasticsearchClient` and Spring Data's `ReactiveElasticsearchClient`) **remain unchanged** and have been updated internally to use the new low-level client.
+
+**Imports:**
+```kotlin
+// Old (Spring Boot 3.x)
+import org.elasticsearch.client.RestClient
+import org.elasticsearch.client.RestClientBuilder
+import org.springframework.boot.autoconfigure.elasticsearch.RestClientBuilderCustomizer
+
+// New (Spring Boot 4.0)
+import co.elastic.clients.transport.rest5_client.low_level.Rest5Client
+import co.elastic.clients.transport.rest5_client.low_level.Rest5ClientBuilder
+import org.springframework.boot.elasticsearch.autoconfigure.Rest5ClientBuilderCustomizer
+import org.apache.hc.client5.http.config.ConnectionConfig
+import org.apache.hc.core5.util.Timeout
+```
+
+**Configuration:**
+```kotlin
+@Configuration
+class ElasticsearchConfig {
+
+    // Old
+    // @Bean
+    // fun restClientCustomizer(): RestClientBuilderCustomizer {
+    //     return RestClientBuilderCustomizer { builder ->
+    //         builder.setRequestConfigCallback { config ->
+    //             config.setConnectTimeout(5000)
+    //         }
+    //     }
+    // }
+
+    // New
+    @Bean
+    fun rest5ClientCustomizer(): Rest5ClientBuilderCustomizer {
+        return object : Rest5ClientBuilderCustomizer {
+            override fun customize(builder: Rest5ClientBuilder) {}
+
+            // Dedicated callbacks replace setRequestConfigCallback
+            override fun customize(builder: ConnectionConfig.Builder) {
+                builder.setConnectTimeout(Timeout.ofSeconds(5))
+            }
+        }
+    }
+}
+```
+
+**Dependency Consolidation:**
+
+Sniffer now included in `co.elastic.clients:elasticsearch-java` module.
+
+**libs.versions.toml:**
+```toml
+[libraries]
+# Remove these - no longer managed
+# elasticsearch-rest-client = { module = "org.elasticsearch.client:elasticsearch-rest-client", version = "..." }
+# elasticsearch-rest-client-sniffer = { module = "org.elasticsearch.client:elasticsearch-rest-client-sniffer", version = "..." }
+
+# Use single dependency (includes sniffer); let the Boot BOM select the compatible client
+elasticsearch-java = { module = "co.elastic.clients:elasticsearch-java" }
+```
+
+### Hibernate Dependency Changes
+
+**libs.versions.toml:**
+```toml
+[libraries]
+# Renamed module (hibernate-jpamodelgen replaced by hibernate-processor)
+hibernate-processor = { module = "org.hibernate.orm:hibernate-processor", version.ref = "hibernate" }
+
+# These artifacts are NO LONGER PUBLISHED by Hibernate:
+# hibernate-proxool - discontinued by Hibernate project
+# hibernate-vibur - discontinued by Hibernate project
+# Remove any dependencies on these modules
+```
+
+**Note:** `hibernate-jpamodelgen` artifact still exists but is deprecated. Use `hibernate-processor` going forward.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-4-migration/references/06-configuration-properties.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/06-configuration-properties.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/06-configuration-properties.md
+- **SHA256_FINGERPRINT**: `5f7c1cd5700006c840a702199d7e556219c3d54bf8b536467e1eeb02d0ceabe8`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.046200+00:00
+---
+
+## Configuration Property Changes
+
+### MongoDB Property Restructuring
+
+**Major reorganization:** Non-Spring Data properties moved to `spring.mongodb.*`:
+
+**application.yml migration:**
+```yaml
+# Old (Spring Boot 3.x)
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/mydb
+      database: mydb
+      host: localhost
+      port: 27017
+      username: user
+      password: pass
+      authentication-database: admin
+      replica-set-name: rs0
+      additional-hosts:
+        - host1:27017
+        - host2:27017
+      ssl:
+        enabled: true
+        bundle: my-bundle
+      representation:
+        uuid: STANDARD
+
+management:
+  health:
+    mongo:
+      enabled: true
+  metrics:
+    mongo:
+      command:
+        enabled: true
+      connectionpool:
+        enabled: true
+
+# New (Spring Boot 4.0)
+spring:
+  mongodb:
+    uri: mongodb://localhost:27017/mydb
+    database: mydb
+    host: localhost
+    port: 27017
+    username: user
+    password: pass
+    authentication-database: admin
+    replica-set-name: rs0
+    additional-hosts:
+      - host1:27017
+      - host2:27017
+    ssl:
+      enabled: true
+      bundle: my-bundle
+    representation:
+      uuid: STANDARD # Explicit configuration now required
+
+  data:
+    mongodb:
+      # Spring Data-specific properties remain here
+      auto-index-creation: true
+      field-naming-strategy: org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy
+      gridfs:
+        bucket: fs
+        database: gridfs-db
+      repositories:
+        type: auto
+      representation:
+        big-decimal: DECIMAL128 # Explicit configuration now required
+
+management:
+  health:
+    mongodb: # Renamed from "mongo"
+      enabled: true
+  metrics:
+    mongodb: # Renamed from "mongo"
+      command:
+        enabled: true
+      connectionpool:
+        enabled: true
+```
+
+**Key changes:**
+- **UUID representation**: **MANDATORY** - No default provided, must explicitly configure `spring.mongodb.representation.uuid` (e.g., `STANDARD`, `JAVA_LEGACY`, `PYTHON_LEGACY`, `C_SHARP_LEGACY`)
+- **BigDecimal representation**: **MANDATORY** - No default provided, must explicitly configure `spring.data.mongodb.representation.big-decimal` (e.g., `DECIMAL128`, `STRING`)
+- **Management properties**: `mongo` → `mongodb`
+- **Failure to configure these will result in runtime errors when persisting UUID or BigDecimal values**
+
+### Spring Session Property Renames
+
+**application.yml migration:**
+```yaml
+# Old (Spring Boot 3.x)
+spring:
+  session:
+    redis:
+      namespace: myapp:session
+      flush-mode: on-save
+    mongodb:
+      collection-name: sessions
+
+# New (Spring Boot 4.0)
+spring:
+  session:
+    data:
+      redis:
+        namespace: myapp:session
+        flush-mode: on-save
+      mongodb:
+        collection-name: sessions
+```
+
+### Persistence Module Property Change
+
+**application.yml migration:**
+```yaml
+# Old (Spring Boot 3.x)
+spring:
+  dao:
+    exceptiontranslation:
+      enabled: true
+
+# New (Spring Boot 4.0)
+spring:
+  persistence:
+    exceptiontranslation:
+      enabled: true
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-4-migration/references/07-web-and-messaging.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/07-web-and-messaging.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/07-web-and-messaging.md
+- **SHA256_FINGERPRINT**: `66fca3b137d735eadcaa2ec23d402cfc2ec86592fcf574671bdff9fbbfc2ee65`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.098672+00:00
+---
+
+## Web Framework Changes
+
+### Static Resource Locations
+
+`PathRequest#toStaticResources()` now includes `/fonts/**` by default.
+
+**Security configuration (exclude fonts if needed):**
+```kotlin
+import org.springframework.boot.security.autoconfigure.web.StaticResourceLocation
+import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest
+
+@Configuration
+@EnableWebSecurity
+class SecurityConfig {
+
+    @Bean
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        http {
+            authorizeHttpRequests {
+                // Exclude fonts if needed
+                authorize(PathRequest.toStaticResources()
+                    .atCommonLocations()
+                    .excluding(StaticResourceLocation.FONTS), permitAll)
+                authorize(anyRequest, authenticated)
+            }
+        }
+        return http.build()
+    }
+}
+```
+
+### HttpMessageConverters Deprecation
+
+`HttpMessageConverters` deprecated due to framework improvements (conflated client/server converters).
+
+**Migration:**
+```kotlin
+// Old (Spring Boot 3.x)
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters
+import org.springframework.context.annotation.Bean
+
+@Configuration
+class WebConfig {
+    @Bean
+    fun customConverters(): HttpMessageConverters {
+        return HttpMessageConverters(MyCustomConverter())
+    }
+}
+
+// New (Spring Boot 4.0)
+import org.springframework.boot.http.converter.autoconfigure.ClientHttpMessageConvertersCustomizer
+import org.springframework.boot.http.converter.autoconfigure.ServerHttpMessageConvertersCustomizer
+
+@Configuration
+class WebConfig {
+
+    // Separate client and server converters
+    @Bean
+    fun clientConvertersCustomizer(): ClientHttpMessageConvertersCustomizer {
+        return ClientHttpMessageConvertersCustomizer { builder ->
+            builder.addCustomConverter(MyCustomClientConverter())
+        }
+    }
+
+    @Bean
+    fun serverConvertersCustomizer(): ServerHttpMessageConvertersCustomizer {
+        return ServerHttpMessageConvertersCustomizer { builder ->
+            builder.addCustomConverter(MyCustomServerConverter())
+        }
+    }
+}
+```
+
+### Trailing Slash URL Matching Removed
+
+`PathMatchConfigurer#setUseTrailingSlashMatch(true)` is **removed** in Spring Framework 7 / Spring Boot 4.
+There is no replacement configuration knob — `/foo` and `/foo/` are no longer treated as the same route.
+
+**Migration:** register Spring Framework's `UrlHandlerFilter` as a
+`FilterRegistrationBean` so it runs ahead of the security chain. `wrapRequest()` makes it forward transparently (no
+redirect), preserving the old behavior end-to-end:
+
+```java
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.web.filter.UrlHandlerFilter;
+
+@Configuration
+class WebConfig {
+
+    // After ForwardedHeaderFilter, before ServletRequestPathFilter and security filters.
+    private static final int BEFORE_SECURITY_FILTER_ORDER = -101;
+
+    @Bean
+    FilterRegistrationBean<UrlHandlerFilter> trailingSlashHandlerFilter() {
+        UrlHandlerFilter filter = UrlHandlerFilter.trailingSlashHandler("/**").wrapRequest().build();
+        FilterRegistrationBean<UrlHandlerFilter> registration = new FilterRegistrationBean<>(filter);
+        registration.setOrder(BEFORE_SECURITY_FILTER_ORDER);
+        return registration;
+    }
+}
+```
+
+### Jersey and Jackson 3 Incompatibility
+
+**Jersey 4.0 limitation:** Spring Boot 4.0 supports Jersey 4.0, which **does not yet support Jackson 3**.
+
+**Solution:** Use `spring-boot-jackson2` compatibility module **either in place of or alongside** `spring-boot-jackson`:
+
+**libs.versions.toml:**
+```toml
+[libraries]
+spring-boot-starter-jersey = { module = "org.springframework.boot:spring-boot-starter-jersey", version.ref = "springBoot" }
+spring-boot-jackson2 = { module = "org.springframework.boot:spring-boot-jackson2", version.ref = "springBoot" }
+# Optional: Keep Jackson 3 for non-Jersey parts of application
+spring-boot-jackson = { module = "org.springframework.boot:spring-boot-jackson", version.ref = "springBoot" }
+```
+
+**build.gradle.kts:**
+```kotlin
+dependencies {
+    implementation(libs.spring.boot.starter.jersey)
+    implementation(libs.spring.boot.jackson2) // Required for Jersey JSON processing
+    // Optional: Use Jackson 3 elsewhere in application
+    // implementation(libs.spring.boot.jackson)
+}
+```
+
+**Note:** If using only Jersey in your application, you can replace Jackson 3 entirely with Jackson 2 compatibility module.
+
+## Messaging Framework Changes
+
+### Kafka Streams Customizer Replacement
+
+**Deprecated `StreamsBuilderFactoryBeanCustomizer` → `StreamsBuilderFactoryBeanConfigurer`:**
+
+```kotlin
+// Old (Spring Boot 3.x)
+import org.springframework.boot.autoconfigure.kafka.StreamsBuilderFactoryBeanCustomizer
+
+@Configuration
+class KafkaStreamsConfig {
+    @Bean
+    fun streamsCustomizer(): StreamsBuilderFactoryBeanCustomizer {
+        return StreamsBuilderFactoryBeanCustomizer { factoryBean ->
+            factoryBean.setKafkaStreamsCustomizer { streams ->
+                // Custom config
+            }
+        }
+    }
+}
+
+// New (Spring Boot 4.0)
+import org.springframework.kafka.config.StreamsBuilderFactoryBeanConfigurer
+
+@Configuration
+class KafkaStreamsConfig {
+    @Bean
+    fun streamsConfigurer(): StreamsBuilderFactoryBeanConfigurer {
+        return StreamsBuilderFactoryBeanConfigurer { factoryBean ->
+            factoryBean.setKafkaStreamsCustomizer { streams ->
+                // Custom config
+            }
+        }
+    }
+}
+```
+
+**Note:** New configurer implements `Ordered` with default value `0`.
+
+### Kafka Retry Property Change
+
+**application.yml migration:**
+```yaml
+# Old (Spring Boot 3.x)
+spring:
+  kafka:
+    retry:
+      topic:
+        backoff:
+          random: true
+
+# New (Spring Boot 4.0)
+spring:
+  kafka:
+    retry:
+      topic:
+        backoff:
+          jitter: 0.5 # More flexible than boolean
+```
+
+### RabbitMQ Retry Customizer Split
+
+**Spring AMQP moved from Spring Retry → Spring Framework core retry**, with customizer split:
+
+```kotlin
+// Old (Spring Boot 3.x)
+import org.springframework.boot.autoconfigure.amqp.RabbitRetryTemplateCustomizer
+
+@Configuration
+class RabbitConfig {
+    @Bean
+    fun retryCustomizer(): RabbitRetryTemplateCustomizer {
+        return RabbitRetryTemplateCustomizer { template ->
+            // Applies to both RabbitTemplate and listeners
+        }
+    }
+}
+
+// New (Spring Boot 4.0)
+import org.springframework.boot.amqp.autoconfigure.RabbitTemplateRetrySettingsCustomizer
+import org.springframework.boot.amqp.autoconfigure.RabbitListenerRetrySettingsCustomizer
+
+@Configuration
+class RabbitConfig {
+
+    // For RabbitTemplate operations
+    @Bean
+    fun templateRetryCustomizer(): RabbitTemplateRetrySettingsCustomizer {
+        return RabbitTemplateRetrySettingsCustomizer { settings ->
+            settings.retryPolicySettings.maxRetries = 5L
+        }
+    }
+
+    // For message listeners
+    @Bean
+    fun listenerRetryCustomizer(): RabbitListenerRetrySettingsCustomizer {
+        return RabbitListenerRetrySettingsCustomizer { settings ->
+            settings.retryPolicySettings.maxRetries = 3L
+        }
+    }
+}
+```
+
+These customizers exist since Spring Boot 4.0.0 (`maxRetries` counts retries after the first attempt, unlike the old `maxAttempts`). In Spring Boot 4.2+ they moved to the `org.springframework.boot.rabbitmq.autoconfigure` package; adjust the imports when upgrading to 4.2.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-4-migration/references/08-testing.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/08-testing.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/08-testing.md
+- **SHA256_FINGERPRINT**: `8d897c22f82e4db921fa565f13dd87c6463b6f4ffe043fff0ac982d7b5d0a300`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.090554+00:00
+---
+
+This is the canonical testing migration reference. For Boot 4 test-writing patterns (Testcontainers 2.0, RestTestClient, JUnit 6), see the `spring-boot-testing` skill (`references/sb4-migration.md`).
+
+## Testing Framework Changes
+
+### Mockito Integration Removed
+
+`MockitoTestExecutionListener` removed (deprecated in 3.4).
+
+**Migration to MockitoExtension:**
+```kotlin
+// Old (Spring Boot 3.x)
+import org.springframework.boot.test.context.SpringBootTest
+import org.mockito.Mock
+import org.mockito.Captor
+
+@SpringBootTest
+class MyServiceTest {
+    @Mock
+    private lateinit var repository: MyRepository
+
+    @Captor
+    private lateinit var captor: ArgumentCaptor<String>
+}
+
+// New (Spring Boot 4.0)
+import org.springframework.boot.test.context.SpringBootTest
+import org.mockito.Mock
+import org.mockito.Captor
+import org.mockito.junit.jupiter.MockitoExtension
+import org.junit.jupiter.api.extension.ExtendWith
+
+@SpringBootTest
+@ExtendWith(MockitoExtension::class) // Explicit extension required
+class MyServiceTest {
+    @Mock
+    private lateinit var repository: MyRepository
+
+    @Captor
+    private lateinit var captor: ArgumentCaptor<String>
+}
+```
+
+### @MockBean and @SpyBean removed
+
+Replace `org.springframework.boot.test.mock.mockito.MockBean`/`SpyBean` with `org.springframework.test.context.bean.override.mockito.MockitoBean`/`MockitoSpyBean` (Spring Framework 6.2+, so this can be done on Boot 3.5 first). Slice and `@AutoConfigure*` annotations moved to per-technology packages, for example `org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest`/`AutoConfigureMockMvc` and `org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest`; each needs its `spring-boot-starter-*-test` dependency.
+
+### @SpringBootTest Changes
+
+`@SpringBootTest` no longer provides **WebTestClient** or **TestRestTemplate** automatically. **MockMVC** already required `@AutoConfigureMockMvc` on Boot 3; only its package changed.
+
+#### MockMVC Configuration
+
+```kotlin
+// Old (Spring Boot 3.x)
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
+class ControllerTest {
+    @Autowired
+    private lateinit var mockMvc: MockMvc
+}
+
+// New (Spring Boot 4.0)
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc.HtmlUnit
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc // New package
+class ControllerTest {
+    @Autowired
+    private lateinit var mockMvc: MockMvc
+}
+
+// HtmlUnit configuration moved to annotation attribute
+@AutoConfigureMockMvc(
+    htmlUnit = HtmlUnit(webClient = false, webDriver = false)
+)
+```
+
+#### WebTestClient Configuration
+
+```kotlin
+// Old (Spring Boot 3.x)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class WebFluxTest {
+    @Autowired
+    private lateinit var webTestClient: WebTestClient // Available automatically
+}
+
+// New (Spring Boot 4.0)
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureWebTestClient // Explicit annotation required
+class WebFluxTest {
+    @Autowired
+    private lateinit var webTestClient: WebTestClient
+}
+```
+
+#### TestRestTemplate → RestTestClient (Recommended)
+
+**Spring Boot 4.0 introduces `RestTestClient`** as modern replacement for `TestRestTemplate`.
+
+```kotlin
+// Old approach (still works with annotation)
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate
+import org.springframework.boot.resttestclient.TestRestTemplate
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestRestTemplate // Required in 4.0
+class RestApiTest {
+    @Autowired
+    private lateinit var testRestTemplate: TestRestTemplate
+}
+
+// New recommended approach
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient
+import org.springframework.test.web.servlet.client.RestTestClient
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureRestTestClient // New annotation
+class RestApiTest {
+    @Autowired
+    private lateinit var restTestClient: RestTestClient
+
+    @Test
+    fun testEndpoint() {
+        restTestClient.get()
+            .uri("/api/users")
+            .exchange()
+            .expectStatus().isOk()
+            .expectBodyList(User::class.java)
+    }
+}
+```
+
+**TestRestTemplate package change (if still using):**
+
+**IMPORTANT:** If continuing to use `TestRestTemplate`, you must:
+1. Add the `spring-boot-resttestclient` test dependency plus `spring-boot-starter-restclient` (verified: without it the context fails with `NoClassDefFoundError: org/springframework/boot/restclient/RestTemplateBuilder`)
+2. **Update the package import** (class moved to new package)
+
+**libs.versions.toml:**
+```toml
+[libraries]
+spring-boot-resttestclient = { module = "org.springframework.boot:spring-boot-resttestclient", version.ref = "springBoot" }
+spring-boot-starter-restclient = { module = "org.springframework.boot:spring-boot-starter-restclient", version.ref = "springBoot" }
+```
+
+**build.gradle.kts:**
+```kotlin
+dependencies {
+    testImplementation(libs.spring.boot.resttestclient)
+    testImplementation(libs.spring.boot.starter.restclient) // provides RestTemplateBuilder
+}
+```
+
+**Update package import (required):**
+```kotlin
+// Old package import - will cause compilation failure
+// import org.springframework.boot.test.web.client.TestRestTemplate
+
+// New package import - required in Spring Boot 4.0
+import org.springframework.boot.resttestclient.TestRestTemplate
+```
+
+### @PropertyMapping Annotation Relocation
+
+```kotlin
+// Old (Spring Boot 3.x)
+import org.springframework.boot.test.autoconfigure.properties.PropertyMapping
+import org.springframework.boot.test.autoconfigure.properties.Skip
+
+// New (Spring Boot 4.0)
+import org.springframework.boot.test.context.PropertyMapping
+import org.springframework.boot.test.context.PropertyMapping.Skip
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-4-migration/references/09-actuator-and-observability.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/09-actuator-and-observability.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/09-actuator-and-observability.md
+- **SHA256_FINGERPRINT**: `35c997cb457915c85ddb72cde71da1d48222bdc901d58e5fb515f7864059d98c`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.098034+00:00
+---
+
+## Production-Ready Features and Modules
+
+### Health, Metrics, and Observability Modules
+
+Spring Boot 4.0 modularizes production-ready features into focused modules:
+
+**libs.versions.toml:**
+```toml
+[libraries]
+# Health monitoring
+spring-boot-health = { module = "org.springframework.boot:spring-boot-health", version.ref = "springBoot" }
+
+# Micrometer metrics
+spring-boot-micrometer-metrics = { module = "org.springframework.boot:spring-boot-micrometer-metrics", version.ref = "springBoot" }
+spring-boot-micrometer-metrics-test = { module = "org.springframework.boot:spring-boot-micrometer-metrics-test", version.ref = "springBoot" }
+
+# Micrometer observation
+spring-boot-micrometer-observation = { module = "org.springframework.boot:spring-boot-micrometer-observation", version.ref = "springBoot" }
+
+# Distributed tracing
+spring-boot-micrometer-tracing = { module = "org.springframework.boot:spring-boot-micrometer-tracing", version.ref = "springBoot" }
+spring-boot-micrometer-tracing-test = { module = "org.springframework.boot:spring-boot-micrometer-tracing-test", version.ref = "springBoot" }
+spring-boot-micrometer-tracing-brave = { module = "org.springframework.boot:spring-boot-micrometer-tracing-brave", version.ref = "springBoot" }
+spring-boot-micrometer-tracing-opentelemetry = { module = "org.springframework.boot:spring-boot-micrometer-tracing-opentelemetry", version.ref = "springBoot" }
+
+# OpenTelemetry integration
+spring-boot-opentelemetry = { module = "org.springframework.boot:spring-boot-opentelemetry", version.ref = "springBoot" }
+
+# Zipkin reporter
+spring-boot-zipkin = { module = "org.springframework.boot:spring-boot-zipkin", version.ref = "springBoot" }
+```
+
+**build.gradle.kts (example observability stack):**
+```kotlin
+dependencies {
+    // Actuator with metrics and tracing
+    implementation(libs.spring.boot.starter.actuator)
+    implementation(libs.spring.boot.micrometer.observation)
+    implementation(libs.spring.boot.micrometer.tracing.opentelemetry)
+    implementation(libs.spring.boot.opentelemetry)
+
+    // Test support
+    testImplementation(libs.spring.boot.micrometer.metrics.test)
+    testImplementation(libs.spring.boot.micrometer.tracing.test)
+}
+```
+
+**Note:** Most applications using starters (e.g., `spring-boot-starter-actuator`) won't need to declare these modules directly. Use direct module dependencies for fine-grained control.
+
+## Actuator Changes
+
+### Health Probes Enabled by Default
+
+Liveness and readiness probes now **enabled by default**.
+
+**application.yml (disable if needed):**
+```yaml
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: false # Disable if not using Kubernetes probes
+```
+
+**Automatically exposes:**
+- `/actuator/health/liveness`
+- `/actuator/health/readiness`
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-4-migration/references/10-kotlin-and-java-build-config.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/10-kotlin-and-java-build-config.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/10-kotlin-and-java-build-config.md
+- **SHA256_FINGERPRINT**: `1b92b236584ea3cda26fc11772302294f2a74d65591a13d95a1f350b6403592b`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.109586+00:00
+---
+
+## Build Configuration
+
+### Kotlin Compiler Configuration
+
+**build.gradle.kts:**
+```kotlin
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+    kotlin("jvm") version "2.2.0" // Minimum 2.2.0
+    kotlin("plugin.spring") version "2.2.0"
+    kotlin("plugin.jpa") version "2.2.0"
+    id("org.springframework.boot") version "4.0.0"
+    id("io.spring.dependency-management") version "1.1.7"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21) // Or 17, 25
+    }
+}
+
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-Xjsr305=strict", // Strict null-safety
+            "-Xemit-jvm-type-annotations" // Emit type annotations
+        )
+    }
+}
+
+// Do not use kotlinOptions { jvmTarget = ... }: it is an error with Kotlin 2.2+ (verified). The Java toolchain sets the JVM target;
+// to set it explicitly use kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21) } }.
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+```
+
+### Java Preview Features (if using Java 25)
+
+**build.gradle.kts:**
+```kotlin
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add("--enable-preview")
+}
+
+tasks.withType<Test> {
+    jvmArgs("--enable-preview")
+}
+
+tasks.withType<JavaExec> {
+    jvmArgs("--enable-preview")
+}
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-4-migration/references/11-checklist-pitfalls-resources.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-4-migration/references/11-checklist-pitfalls-resources.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-4-migration/references/11-checklist-pitfalls-resources.md
+- **SHA256_FINGERPRINT**: `855947d2bde793288fea82234ca4bea11bac210e92aed5ef451f7a572c19416d`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.098387+00:00
+---
+
+## Migration Checklist
+
+### Pre-Migration
+
+- [ ] Upgrade to latest Spring Boot 3.5.x
+- [ ] Review and fix all deprecation warnings
+- [ ] Document current dependency versions
+- [ ] Run full test suite and verify green build
+- [ ] Review [Spring Boot 3.5.x → 4.0 dependency changes](https://docs.spring.io/spring-boot/4.0/appendix/dependency-versions/coordinates.html)
+
+### Core Migration
+
+- [ ] Update `libs.versions.toml` with the selected current Spring Boot 4.0.x patch
+- [ ] Update Kotlin version to 2.2.0+
+- [ ] Rename starters: `spring-boot-starter-web` → `spring-boot-starter-webmvc`, etc.
+- [ ] Add technology-specific test starters (or use classic starters temporarily)
+- [ ] Remove Undertow dependency if present (switch to Tomcat/Jetty)
+- [ ] Remove `spring-session-hazelcast` / `spring-session-mongodb` or add explicit versions
+
+### Jackson 3 Migration
+
+- [ ] Update imports: `com.fasterxml.jackson` → `tools.jackson`
+- [ ] Update exception: `jackson-annotations` still uses `com.fasterxml.jackson.core`
+- [ ] Rename: `@JsonComponent` → `@JacksonComponent`
+- [ ] Rename: `Jackson2ObjectMapperBuilderCustomizer` → `JsonMapperBuilderCustomizer`
+- [ ] Review Boot 3 `spring.jackson.parser.*` / `spring.jackson.generator.*` settings against Jackson 3's `spring.jackson.json.read.*` / `spring.jackson.json.write.*` features; verify each feature name and behavior rather than mechanically replacing prefixes
+- [ ] Review databind settings separately: `spring.jackson.deserialization.*` / `spring.jackson.serialization.*` may move to `spring.jackson.datatype.enum.*` or `spring.jackson.datatype.datetime.*` (see `03-jackson-3.md`)
+- [ ] Consider temporary `spring-boot-jackson2` module if needed
+
+### Property Updates
+
+- [ ] MongoDB: `spring.data.mongodb.*` → `spring.mongodb.*` (for non-Spring Data properties)
+- [ ] Session: `spring.session.redis.*` → `spring.session.data.redis.*`
+- [ ] Persistence: `spring.dao.exceptiontranslation` → `spring.persistence.exceptiontranslation`
+- [ ] Kafka retry: `backoff.random` → `backoff.jitter`
+
+### Code Updates
+
+- [ ] Update package: `BootstrapRegistry` → `org.springframework.boot.bootstrap.BootstrapRegistry`
+- [ ] Update package: `EnvironmentPostProcessor` → `org.springframework.boot.EnvironmentPostProcessor`
+- [ ] Update package: `EntityScan` → `org.springframework.boot.persistence.autoconfigure.EntityScan`
+- [ ] Update: `RestClient` → `Rest5Client` (Elasticsearch)
+- [ ] Update: `StreamsBuilderFactoryBeanCustomizer` → `StreamsBuilderFactoryBeanConfigurer` (Kafka)
+- [ ] Split: `RabbitRetryTemplateCustomizer` → `RabbitTemplateRetrySettingsCustomizer` / `RabbitListenerRetrySettingsCustomizer`
+- [ ] Replace: `HttpMessageConverters` → `ClientHttpMessageConvertersCustomizer` / `ServerHttpMessageConvertersCustomizer`
+- [ ] Update: `PropertyMapper` usage with `.always()` if null handling needed
+
+### Testing Updates
+
+- [ ] Add `@ExtendWith(MockitoExtension::class)` to tests using `@Mock` / `@Captor`
+- [ ] Add `@AutoConfigureMockMvc` to tests using `MockMvc`
+- [ ] Add `@AutoConfigureWebTestClient` to tests using `WebTestClient`
+- [ ] Migrate `TestRestTemplate` → `RestTestClient` (or add `@AutoConfigureTestRestTemplate`)
+- [ ] Update: `@PropertyMapping` imports → `org.springframework.boot.test.context`
+
+### Build Configuration
+
+- [ ] Update Gradle to 8.14+
+- [ ] Update Gradle CycloneDX plugin to 3.0.0+
+- [ ] Review optional dependency inclusion in uber jars
+- [ ] Remove `loaderImplementation = CLASSIC` if present
+- [ ] Remove `launchScript()` configuration if present
+
+### Verification
+
+- [ ] Run `./gradlew clean build`
+- [ ] Run full test suite
+- [ ] Verify integration tests with TestContainers
+- [ ] Check for new Kotlin null-safety warnings
+- [ ] Test Spring Boot Actuator endpoints
+- [ ] Verify health probes (`/actuator/health/liveness`, `/actuator/health/readiness`)
+- [ ] Performance test with new defaults
+
+### Post-Migration
+
+- [ ] Review Spring Boot 4.0 release notes for additional features
+- [ ] Consider adopting new Spring Framework 7.0 features
+- [ ] Plan migration away from classic starters (if used)
+- [ ] Plan migration away from `spring-boot-jackson2` module (if used)
+- [ ] Update CI/CD pipelines for Java 17+ requirement
+- [ ] Update deployment manifests (Servlet 6.1 containers)
+
+## Common Pitfalls
+
+1. **Classic starters**: Remember these are deprecated - plan migration to technology-specific starters
+2. **Undertow**: Completely removed, no workaround - must use Tomcat or Jetty
+3. **Jackson 3 packages**: Easy to miss `jackson-annotations` still using old group ID
+4. **MongoDB properties**: Many moved to `spring.mongodb.*` but some remain in `spring.data.mongodb.*`
+5. **Test configuration**: `@SpringBootTest` no longer auto-configures MockMVC/WebTestClient/TestRestTemplate
+6. **Kotlin 2.2**: Required minimum - older versions won't work
+7. **Null-safety**: JSpecify annotations may surface new warnings in Kotlin
+8. **PropertyMapper**: Behavioral change with null handling - review usage
+9. **Jersey + Jackson 3**: Incompatible - use `spring-boot-jackson2` module
+10. **Health probes**: Now enabled by default - may affect non-Kubernetes deployments
+
+## Performance Considerations
+
+- **Modular starters**: Smaller JARs and faster startup with technology-specific starters
+- **Spring Framework 7**: Performance improvements in core framework
+- **Jackson 3**: Improved JSON processing performance
+- **Virtual threads**: Consider enabling with Java 21+ (`spring.threads.virtual.enabled=true`)
+
+## Resources
+
+- [Spring Boot 4.0 Migration Guide](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide)
+- [Spring Boot 4.0 Release Notes](https://github.com/spring-projects/spring-boot/releases)
+- [Spring Framework 7.0 Documentation](https://docs.spring.io/spring-framework/reference/)
+- [Jackson 3 Migration Guide](https://github.com/FasterXML/jackson/blob/main/jackson3/MIGRATING_TO_JACKSON_3.md)
+- [Kotlin 2.2 Release Notes](https://kotlinlang.org/docs/whatsnew22.html)
+
+---
+
+
+---
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-testing/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-testing/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-testing/SKILL.md
-- **SHA256_FINGERPRINT**: `c4e06ed52ac6636bb205d97dabbcb27ef4b0f045a37e41acc8b14e5905dfd97e`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:49.815428+00:00
+- **SHA256_FINGERPRINT**: `6c3a071e151f16d77a3111138a361c9c82ca3ca6cc7ceb0418fdff045e84b7ab`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.099353+00:00
 ---
 
-**description**: Expert Spring Boot 4 testing specialist that selects the best Spring Boot testing techniques for your situation with Junit 6 and AssertJ.
+**description**: Expert Spring Boot testing specialist that selects the best testing techniques for your situation: test slices, Testcontainers with @ServiceConnection, Failsafe integration tests, MockitoBean, JUnit and AssertJ. Written for Spring Boot 4 with notes for Boot 3.
 
 # Spring Boot Testing
 
-This skill provides expert guide for testing Spring Boot 4 applications with modern patterns and best practices.
+This skill provides expert guidance for testing Spring Boot applications with modern patterns and best practices. Examples target Spring Boot 4; see the compatibility note below for Boot 3.
+
+## Compatibility: detect first
+
+Read the project's Spring Boot version and test dependencies before writing tests, and do not upgrade them implicitly.
+
+| | Spring Boot 3.x | Spring Boot 4.x |
+|--|-----------------|-----------------|
+| JUnit | 5 (Jupiter) | 6 by default (same `org.junit.jupiter.api` annotations; JUnit 5 tests keep working) |
+| Mock beans | `@MockitoBean` / `@MockitoSpyBean` from 3.4 (Spring Framework 6.2); `@MockBean` / `@SpyBean` are deprecated | `@MockitoBean` replaces `@MockBean` (do not use the old ones) |
+| Test starters | `spring-boot-starter-test` covers everything | modular: add `spring-boot-starter-webmvc-test`, `spring-boot-starter-data-jpa-test`, ... |
+| Slice imports | `org.springframework.boot.test.autoconfigure...` | moved, e.g. `org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest` |
+| Testcontainers | 1.x names | 2.x names (`testcontainers-postgresql`) |
+
+Details: [references/sb4-migration.md](references/sb4-migration.md), [references/mockitobean.md](references/mockitobean.md).
 
 ## Core Principles
 
@@ -30651,9 +36584,12 @@ This skill provides expert guide for testing Spring Boot 4 applications with mod
 - [references/assertj-basics.md](references/assertj-basics.md) - Scalars, strings, booleans, dates
 - [references/assertj-collections.md](references/assertj-collections.md) - Lists, Sets, Maps, arrays
 
-## Testcontainers
+## Testcontainers and integration tests
 
-- [references/testcontainers-jdbc.md](references/testcontainers-jdbc.md) - PostgreSQL, MySQL, etc.
+- [references/testcontainers-jdbc.md](references/testcontainers-jdbc.md) - `@ServiceConnection` quickstart, PostgreSQL, MySQL, etc.
+- [references/failsafe-integration-tests.md](references/failsafe-integration-tests.md) - `*IT` classes silently skipped unless Failsafe is bound; run `./mvnw verify`
+
+> **Maven gotcha:** Failsafe declared only in `<pluginManagement>` means `*IT` tests never run. Declare it in `<build><plugins>` with the `integration-test` and `verify` goals and run `./mvnw verify`.
 
 ## Test Data Generation
 
@@ -30772,6 +36708,8 @@ Use Jacoco maven plugin for coverage reporting and tracking.
 4. Integration points (external APIs, databases)
 
 ## Dependencies (Spring Boot 4)
+
+See also: <https://docs.spring.io/spring-boot/reference/testing/spring-boot-applications.html> and <https://docs.spring.io/spring-boot/reference/features/dev-services.html>.
 
 ```xml
 <dependency>
@@ -31333,8 +37271,8 @@ void testThatModifiesBeanDefinitions() { }
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-testing/references/datajpatest.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-testing/references/datajpatest.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-testing/references/datajpatest.md
-- **SHA256_FINGERPRINT**: `00692c6e21535f362fea76a86345515307e6da8187ff956fec01fab4f80e21b8`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:49.942156+00:00
+- **SHA256_FINGERPRINT**: `5c045f25d39b04eb4f92d431d630253e687cd2769f4f63d60a2deff3daed5161`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.179261+00:00
 ---
 
 # @DataJpaTest
@@ -31351,7 +37289,8 @@ class OrderRepositoryTest {
 
   @Container
   @ServiceConnection
-  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18");
+  // Testcontainers 2.x: org.testcontainers.postgresql.PostgreSQLContainer (non-generic); 1.x: PostgreSQLContainer<?> in org.testcontainers.containers
+  static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:18");
 
   @Autowired
   private OrderRepository orderRepository;
@@ -31508,7 +37447,7 @@ class OrderRepositoryH2Test {
 class OrderRepositoryPostgresTest {
   @Container
   @ServiceConnection
-  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18");
+  static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:18");
 }
 ```
 
@@ -31537,11 +37476,87 @@ void shouldPersistData() {
 
 
 ---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-testing/references/failsafe-integration-tests.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-testing/references/failsafe-integration-tests.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-testing/references/failsafe-integration-tests.md
+- **SHA256_FINGERPRINT**: `5dc80c1069bb73ebeecdd2ab9e84ed34a2a18f10713ffa8c79e58110c616732e`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.195146+00:00
+---
+
+# Failsafe: running `*IT` integration tests (Maven)
+
+## The gotcha
+
+Surefire runs `*Test`, `Test*`, `*Tests`, `*TestCase`. Classes named `*IT` / `IT*` / `*ITCase` are run by **maven-failsafe-plugin**. If Failsafe is only declared in `<pluginManagement>` (or not at all), it is never bound to the lifecycle: `*IT` classes compile but **silently never run**, and `./mvnw test` or `./mvnw package` still reports success.
+
+Spring Boot's parent POM configures Failsafe in `<pluginManagement>` (with the `integration-test` and `verify` goals) but does **not** activate it.
+
+## Fix
+
+Declare the plugin in `<build><plugins>` and bind the goals:
+
+```xml
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-failsafe-plugin</artifactId>
+      <executions>
+        <execution>
+          <goals>
+            <goal>integration-test</goal>
+            <goal>verify</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
+  </plugins>
+</build>
+```
+
+The version is managed by `spring-boot-starter-parent`; if the project does not use it, pin one explicitly.
+
+## Run and verify
+
+```bash
+./mvnw verify
+```
+
+`verify` runs `integration-test` and then `verify` (which fails the build on IT failures). Do not use `./mvnw test` or `package` for ITs, and do not use `integration-test` alone: failures would not fail the build.
+
+Confirm they ran: the output must contain a `failsafe:<version>:integration-test` line (Maven 3.10 prints `--- failsafe:3.5.6:integration-test (default)`; older Maven prints `maven-failsafe-plugin:...`) and `Tests run: N` for your `*IT` classes (also look in `target/failsafe-reports/`). If N is 0 or the plugin line is missing, the binding is absent.
+
+## Alternatives
+
+- Name integration tests `*Test` and run them with Surefire (simplest; no split).
+- Gradle has no such issue: put them in `test`, or define a separate suite (JVM Test Suite plugin, verified with Boot 4.1; sources in `src/integrationTest/java`, a failing test fails `./gradlew build`):
+
+```groovy
+plugins { id 'jvm-test-suite' }
+
+testing {
+    suites {
+        integrationTest(JvmTestSuite) {
+            useJUnitJupiter()
+            dependencies {
+                implementation project()
+                implementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+            }
+            targets { all { testTask.configure { shouldRunAfter(test) } } }
+        }
+    }
+}
+
+tasks.named('check') { dependsOn testing.suites.integrationTest }
+```
+
+
+---
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-testing/references/instancio.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-testing/references/instancio.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-testing/references/instancio.md
-- **SHA256_FINGERPRINT**: `4f2cc53cb171a6dc4e9830fb1b1b88d3dc2788277d62391228233e89811943e1`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:49.971031+00:00
+- **SHA256_FINGERPRINT**: `5602c7e7d4eea5c9900f530e2cc59e4351f3417a1a6203932d7d9d026b612385`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.245221+00:00
 ---
 
 # Instancio
@@ -31640,7 +37655,8 @@ class OrderRepositoryTest {
 
   @Container
   @ServiceConnection
-  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18");
+  // Testcontainers 2.x: org.testcontainers.postgresql.PostgreSQLContainer (non-generic); 1.x: PostgreSQLContainer<?> in org.testcontainers.containers
+  static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:18");
 
   @Autowired
   private OrderRepository orderRepository;
@@ -33084,13 +39100,13 @@ void shouldGetOrder() {
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-testing/references/sb4-migration.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-testing/references/sb4-migration.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-testing/references/sb4-migration.md
-- **SHA256_FINGERPRINT**: `4fa030772592552bbc452450a3c417c9e1a91e28239252c41d8e5a3e0e689bb7`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:50.283055+00:00
+- **SHA256_FINGERPRINT**: `56e78030f67c8c33b5ba756e0f9ae21ccdd2b3cf2a007264dabf81528e489af1`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.256071+00:00
 ---
 
 # Spring Boot 4.0 Migration
 
-Key testing changes when migrating from Spring Boot 3.x to 4.0.
+Key testing changes when migrating from Spring Boot 3.x to 4.0. For the full migration workflow (annotations, packages, `@SpringBootTest` changes, `TestRestTemplate`), use the `spring-boot-4-migration` skill (`references/08-testing.md`).
 
 ## Dependency Changes
 
@@ -33130,37 +39146,7 @@ Spring Boot 4.0 introduces modular test starters:
 
 ## Annotation Migration
 
-### @MockBean → @MockitoBean
-
-**Deprecated (3.x):**
-
-```java
-@MockBean
-private OrderService orderService;
-```
-
-**New (4.0):**
-
-```java
-@MockitoBean
-private OrderService orderService;
-```
-
-### @SpyBean → @MockitoSpyBean
-
-**Deprecated (3.x):**
-
-```java
-@SpyBean
-private PaymentGatewayClient paymentClient;
-```
-
-**New (4.0):**
-
-```java
-@MockitoSpyBean
-private PaymentGatewayClient paymentClient;
-```
+`@MockBean`/`@SpyBean` are replaced by `@MockitoBean`/`@MockitoSpyBean`; see `spring-boot-4-migration` (`references/08-testing.md`) for the package changes.
 
 ## New Testing Features
 
@@ -33258,25 +39244,15 @@ class OrderTest {
 
 ## Backward Compatibility
 
-Use "classic" starters for gradual migration:
-
-```xml
-<dependency>
-  <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-starter-test-classic</artifactId>
-  <scope>test</scope>
-</dependency>
-```
-
-This provides old behavior while you migrate incrementally.
+The classic starters (for example `spring-boot-starter-test-classic`) are a temporary aid that restores the Boot 3 module granularity only. They do not restore old packages or `@MockBean`/`@SpyBean`, and you still declare the technology starters. See the `spring-boot-4-migration` skill (`references/02-starters-and-removed-features.md`).
 
 
 ---
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-testing/references/test-slices-overview.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-testing/references/test-slices-overview.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-testing/references/test-slices-overview.md
-- **SHA256_FINGERPRINT**: `0436bc4c95031b864bcd0e8d45aaac7e84bafac384592b8ed06c591b4504fca6`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:50.240398+00:00
+- **SHA256_FINGERPRINT**: `a72f9834922aebc68e9729ed846d9e6f4dc43819464431a971d1e0215d98d532`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.239416+00:00
 ---
 
 # Test Slices Overview
@@ -33338,7 +39314,8 @@ class OrderControllerTest {
 @Testcontainers
 class OrderRepositoryTest {
   @Container
-  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18");
+  // Testcontainers 2.x: org.testcontainers.postgresql.PostgreSQLContainer (non-generic); 1.x: PostgreSQLContainer<?> in org.testcontainers.containers
+  static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:18");
 }
 ```
 
@@ -33485,8 +39462,8 @@ void shouldReturnOrdersInSequence() {
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-boot-testing/references/testcontainers-jdbc.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-boot-testing/references/testcontainers-jdbc.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-boot-testing/references/testcontainers-jdbc.md
-- **SHA256_FINGERPRINT**: `0fc50f36533c8740e0724d59b2707e488b9754e3ee196b21793c539972c23381`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:50.412794+00:00
+- **SHA256_FINGERPRINT**: `5fe7378cb6c65bfd9a9744f147fe280b44906915b41b8b9558b30ce944cbb034`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.257228+00:00
 ---
 
 # Testcontainers JDBC
@@ -33497,9 +39474,19 @@ Testing JPA repositories with real databases using Testcontainers.
 
 Testcontainers provides real database instances in Docker containers for integration testing. More reliable than H2 for production parity.
 
-## PostgreSQL Setup
+## Quickstart: `@ServiceConnection` (PostgreSQL)
 
-### Dependencies
+Check the project's versions first. Testcontainers 2.x (Spring Boot 4) and 1.x (Spring Boot 3) differ in artifact and package names:
+
+| | Testcontainers 2.x (Boot 4) | Testcontainers 1.x (Boot 3.1+) |
+|--|-----------------------------|--------------------------------|
+| PostgreSQL artifact | `testcontainers-postgresql` | `postgresql` |
+| JUnit 5 integration | `testcontainers-junit-jupiter` | `junit-jupiter` |
+| Container class | `org.testcontainers.postgresql.PostgreSQLContainer` | `org.testcontainers.containers.PostgreSQLContainer` |
+
+`@ServiceConnection` (Spring Boot 3.1+) replaces `@DynamicPropertySource` boilerplate. Versions of these artifacts are managed by the Spring Boot BOM.
+
+### Dependencies (Boot 4 / Testcontainers 2.x)
 
 ```xml
 <dependency>
@@ -33512,9 +39499,34 @@ Testcontainers provides real database instances in Docker containers for integra
   <artifactId>testcontainers-postgresql</artifactId>
   <scope>test</scope>
 </dependency>
+<dependency>
+  <groupId>org.testcontainers</groupId>
+  <artifactId>testcontainers-junit-jupiter</artifactId>
+  <scope>test</scope>
+</dependency>
 ```
 
-### Basic Test
+### Option A: shared configuration (recommended, reusable across tests)
+
+```java
+@TestConfiguration(proxyBeanMethods = false)
+public class TestcontainersConfiguration { // public: tests in sub-packages import it
+
+  @Bean
+  @ServiceConnection
+  PostgreSQLContainer postgresContainer() {
+    return new PostgreSQLContainer("postgres:18-alpine");
+  }
+}
+
+@SpringBootTest
+@Import(TestcontainersConfiguration.class)
+class OrderIT { }
+```
+
+Starting the app against the same container for local development: `SpringApplication.from(Application::main).with(TestcontainersConfiguration.class).run(args)`.
+
+### Option B: per-class container
 
 ```java
 @DataJpaTest
@@ -33524,7 +39536,7 @@ class OrderRepositoryPostgresTest {
 
   @Container
   @ServiceConnection
-  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18");
+  static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:18");
 
   @Autowired
   private OrderRepository orderRepository;
@@ -33533,6 +39545,8 @@ class OrderRepositoryPostgresTest {
   private TestEntityManager entityManager;
 }
 ```
+
+Note: `Order` is a reserved word in SQL; an entity named `Order` needs `@Table(name = "orders")` or PostgreSQL fails with `syntax error at or near "order"` (verified).
 
 ## MySQL Setup
 
@@ -33545,10 +39559,14 @@ class OrderRepositoryPostgresTest {
 ```
 
 ```java
+import org.testcontainers.mysql.MySQLContainer; // 2.x
+
 @Container
 @ServiceConnection
-static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.4");
+static MySQLContainer mysql = new MySQLContainer("mysql:8.4");
 ```
+
+Testcontainers 1.x (Boot 3) variant: `org.testcontainers.containers.MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.4")` with the `mysql` artifact.
 
 ## Multiple Databases
 
@@ -33560,30 +39578,29 @@ class MultiDatabaseTest {
 
   @Container
   @ServiceConnection(name = "primary")
-  static PostgreSQLContainer<?> primaryDb = new PostgreSQLContainer<>("postgres:18");
+  static PostgreSQLContainer primaryDb = new PostgreSQLContainer("postgres:18");
 
   @Container
   @ServiceConnection(name = "analytics")
-  static PostgreSQLContainer<?> analyticsDb = new PostgreSQLContainer<>("postgres:18");
+  static PostgreSQLContainer analyticsDb = new PostgreSQLContainer("postgres:18");
 }
 ```
 
 ## Container Reuse (Speed Optimization)
 
-Add to `~/.testcontainers.properties`:
-
-```properties
-testcontainers.reuse.enable=true
-```
-
-Then enable reuse in code:
+Cross-run reuse is local-dev only. Opt in with `testcontainers.reuse.enable=true` in `~/.testcontainers.properties`. `@Container` does not give cross-run reuse because the extension stops the container after the tests. Start the container manually, without extension-managed shutdown:
 
 ```java
-@Container
 @ServiceConnection
-static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18")
+static final PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:18")
   .withReuse(true);
+
+static {
+  postgres.start();
+}
 ```
+
+For the generic lifecycle, singleton and reuse rules, use the `java-testcontainers` skill.
 
 ## Database Initialization
 
@@ -33592,7 +39609,7 @@ static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18"
 ```java
 @Container
 @ServiceConnection
-static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18")
+static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:18")
   .withInitScript("schema.sql");
 ```
 
@@ -33606,7 +39623,7 @@ class MigrationTest {
 
   @Container
   @ServiceConnection
-  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18");
+  static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:18");
 
   @Autowired
   private Flyway flyway;
@@ -33626,7 +39643,7 @@ class MigrationTest {
 ```java
 @Container
 @ServiceConnection
-static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18")
+static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:18")
   .withDatabaseName("testdb")
   .withUsername("testuser")
   .withPassword("testpass")
@@ -33637,7 +39654,7 @@ static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18"
 
 ```java
 @Container
-static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18")
+static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:18")
   .waitingFor(Wait.forLogMessage(".*database system is ready.*", 1));
 ```
 
@@ -33651,7 +39668,7 @@ class OrderRepositoryTest {
 
   @Container
   @ServiceConnection
-  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18");
+  static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:18");
 
   @Autowired
   private OrderRepository orderRepository;
@@ -33694,7 +39711,7 @@ If not using @ServiceConnection:
 class OrderServiceTest {
 
   @Container
-  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18");
+  static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:18");
 
   @DynamicPropertySource
   static void configureProperties(DynamicPropertyRegistry registry) {
@@ -33707,6 +39724,8 @@ class OrderServiceTest {
 
 ## Supported Databases
 
+Container classes (2.x) live in `org.testcontainers.<module>` and are non-generic (e.g. `org.testcontainers.mysql.MySQLContainer`).
+
 | Database | Container Class | Maven Artifact |
 | -------- | --------------- | -------------- |
 | PostgreSQL | PostgreSQLContainer | testcontainers-postgresql |
@@ -33715,6 +39734,10 @@ class OrderServiceTest {
 | SQL Server | MSSQLServerContainer | testcontainers-mssqlserver |
 | Oracle | OracleContainer | testcontainers-oracle-free |
 | MongoDB | MongoDBContainer | testcontainers-mongodb |
+
+## Running `*IT` classes
+
+Integration tests named `*IT` run in Maven's Failsafe, not Surefire; see [failsafe-integration-tests.md](failsafe-integration-tests.md) or they will silently not run.
 
 ## Best Practices
 
@@ -33910,6 +39933,821 @@ class OrderControllerWithoutSecurityTest {
 4. Verify service method calls when side effects matter
 5. Don't test business logic here - that's for unit tests
 6. Leverage Java 25 text blocks for JSON payloads
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-observability/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-observability/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-observability/SKILL.md
+- **SHA256_FINGERPRINT**: `2acfa47151cadda3ae66bacfbcd507d14f16fee5f0a66db4502958bef5597c8c`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.236800+00:00
+---
+
+**description**: Add and review observability in Spring Boot 3/4 apps: Actuator exposure and health probes, Micrometer metrics, Observation API, OpenTelemetry tracing and OTLP/Prometheus export, structured logging with correlation ids, and safe use of heapdump/threaddump. Use when instrumenting, monitoring or troubleshooting a Spring Boot service.
+
+# Spring Boot observability
+
+Covers Actuator, Micrometer, the Observation API, tracing, and logging. Details in `references/`. For JDK-level diagnosis (thread dumps, JFR, heap analysis) see the `java-diagnostics` skill; for securing endpoints see `spring-security`.
+
+## Safety rules
+
+- Never read or print secrets (`.env`, credentials, tokens) while inspecting configuration or `/actuator/env`.
+- Never expose `heapdump` or `threaddump` over public HTTP. The only exception is a temporary, user-consented window with authentication, TLS and network restriction, removed afterwards (same policy in `java-diagnostics`).
+- Never expose `env`, `configprops`, `loggers`, or `shutdown` in production without authentication and network restrictions.
+- Pin dependency versions via the Boot BOM; do not add explicit versions for Boot-managed artifacts.
+
+## Detect first
+
+Check the Boot version (3.x or 4.x) and what is already present (`spring-boot-starter-actuator`, `micrometer-registry-*`, tracing/OTel dependencies, `logback-spring.xml`). Boot 4 modularized observability (`spring-boot-micrometer-*`, `spring-boot-opentelemetry`) but starters still bring them in.
+
+## Quick start
+
+```xml
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+
+```yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus   # allow-list, never "*" in production
+  endpoint:
+    health:
+      probes:
+        enabled: true                     # /actuator/health/liveness and /readiness
+      show-details: when-authorized
+```
+
+## Topics
+
+- [Actuator, health groups and probes, endpoint exposure](references/actuator.md)
+- [Micrometer metrics and Prometheus/OTLP export](references/metrics.md)
+- [Observation API and tracing with OpenTelemetry](references/tracing-observation.md)
+- [Structured logging and correlation ids](references/logging.md)
+- [Heapdump/threaddump caveats and runtime diagnosis](references/dumps-and-diagnostics.md)
+
+## Checklist
+
+- [ ] Only needed endpoints exposed and secured; separate management port if possible.
+- [ ] Liveness/readiness probes configured for the platform (Kubernetes); readiness group includes critical dependencies only.
+- [ ] Metrics exported to the chosen backend; common tags (`application`, `env`) set; no high-cardinality tags (user ids, URLs with ids).
+- [ ] Tracing sampling probability set deliberately (Boot default 10%).
+- [ ] Logs carry trace/span ids; JSON structured logs in production.
+- [ ] Custom observations/metrics have tests.
+
+## Local runtime insights (optional)
+
+For a local-only developer console (and an opt-in MCP server) that shows a running Spring Boot or Quarkus app's runtime state, see BootUI: https://github.com/jdubois/boot-ui and https://www.julien-dubois.com/boot-ui/. Its agent skill can be installed with `gh skill install jdubois/boot-ui skills/bootui`.
+
+- Ask the user for consent before adding any dependency.
+- Use it only in a dev/local profile (for example a Maven/Gradle profile or `developmentOnly` configuration); never ship it to production.
+- Follow BootUI's own documentation for coordinates and setup rather than copying them here.
+
+See also: <https://docs.spring.io/spring-boot/reference/actuator/observability.html> and <https://docs.micrometer.io/micrometer/reference/>.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-observability/references/actuator.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-observability/references/actuator.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-observability/references/actuator.md
+- **SHA256_FINGERPRINT**: `c13fb5671172d3c24c7a08866bff22acbfb62db2ff9557b62c9addd1d7d61138`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.261105+00:00
+---
+
+# Actuator
+
+Dependency: `spring-boot-starter-actuator`.
+
+## Exposure
+
+- Web exposure defaults to `health` only (Boot 3/4). Allow-list explicitly: `management.endpoints.web.exposure.include=health,info,metrics,prometheus`.
+- Disable the rest: `management.endpoints.access.default=none` then enable chosen ones (`management.endpoint.<id>.access=read-only`) on Boot 3.4+; older `management.endpoint.<id>.enabled` still works on 3.3 and earlier.
+- Move to an internal port: `management.server.port=9090` (and `management.server.address`).
+- Secure with Spring Security: see `spring-security` skill, `references/actuator-protection.md` in that skill.
+- Info: `management.info.env.enabled=true`, `management.info.git.mode=simple`, `management.info.build` via the build plugin's `build-info` goal.
+
+## Health
+
+```yaml
+management:
+  endpoint:
+    health:
+      show-details: when-authorized
+      roles: ACTUATOR_ADMIN
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState,db
+        liveness:
+          include: livenessState
+```
+
+- Probes (`/actuator/health/liveness`, `/readiness`) are enabled automatically on Kubernetes; enabling them elsewhere requires `probes.enabled=true` (Boot 4 enables them by default).
+- Liveness must not depend on external systems (a failing DB must not restart the pod). Put DB, broker, etc. only in readiness if at all.
+- Custom indicators: implement `HealthIndicator` (or `ReactiveHealthIndicator`); keep checks fast with timeouts.
+- Graceful shutdown: `server.shutdown=graceful` and `spring.lifecycle.timeout-per-shutdown-phase=30s`.
+
+## Other useful endpoints
+
+`metrics`, `prometheus`, `loggers` (change levels at runtime; protect), `httpexchanges` (needs an `HttpExchangeRepository` bean), `scheduledtasks`, `caches`, `startup` (needs `BufferingApplicationStartup`). Treat `env`, `configprops`, `beans`, `mappings` as sensitive.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-observability/references/dumps-and-diagnostics.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-observability/references/dumps-and-diagnostics.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-observability/references/dumps-and-diagnostics.md
+- **SHA256_FINGERPRINT**: `155b8d80c77967d336b0ac9dcd807f198360114ebcbcbefba84a4c54e8b143fa`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.344208+00:00
+---
+
+# Heapdump, threaddump and runtime diagnosis
+
+## Caveats
+
+- `/actuator/heapdump` returns an HPROF file containing everything in memory: credentials, tokens, personal data. It also pauses the JVM and can be several GB.
+- `/actuator/threaddump` reveals class names, thread states and sometimes parameters; it is a reconnaissance aid for attackers.
+- Policy (shared with `java-diagnostics`): never expose either over public HTTP. The only exception is a temporary, user-consented window with authentication (admin role), TLS, and network restriction (separate management port, internal only), removed afterwards.
+- Treat downloaded dumps as sensitive data; store encrypted, delete after analysis, never attach to public tickets.
+- Boot 3.x/4.x can restrict access with `management.endpoint.heapdump.access=none` (Boot 3.4+); on older versions use `enabled=false`.
+
+## Using them safely
+
+```yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,threaddump     # heapdump only when needed
+  endpoint:
+    threaddump:
+      access: read-only
+```
+
+Pair with a Spring Security chain restricting `EndpointRequest.to("heapdump","threaddump")` to an admin role (see `spring-security`).
+
+## Going deeper
+
+For JDK tools (`jcmd`, `jstack`, `jfr`, `jmap`, Eclipse MAT, JFR recording and analysis), use the `java-diagnostics` skill. Actuator metrics (`jvm.memory.used`, `jvm.gc.pause`, `hikaricp.connections.*`, `executor.*`) usually tell you which tool to reach for.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-observability/references/logging.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-observability/references/logging.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-observability/references/logging.md
+- **SHA256_FINGERPRINT**: `5f40495c0041110a56cb1d08c1404f917ea080360b55fed56d75904521ec7dd7`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.354561+00:00
+---
+
+# Logging
+
+## Structured logging (Boot 3.4+)
+
+Built in; no extra dependency for ECS, Logstash and GELF formats.
+
+```yaml
+logging:
+  structured:
+    format:
+      console: ecs        # also: logstash, gelf
+      file: ecs
+    ecs:
+      service:
+        name: orders
+        version: 1.4.0
+        environment: prod
+```
+
+- Customize JSON with `logging.structured.json.include/exclude/rename/add.*`. For code-based customization, implement `StructuredLoggingJsonMembersCustomizer` and register its fully qualified class name with `logging.structured.json.customizer`, or list the implementation under `org.springframework.boot.logging.structured.StructuredLoggingJsonMembersCustomizer` in `META-INF/spring.factories`. A Spring `@Bean` alone is not discovered: logging initializes before the application context.
+- Custom format: implement `StructuredLogFormatter<E>` and set `logging.structured.format.console` to its class name.
+- Use plain text locally and JSON in production profiles (`application-prod.yml`).
+- Stack trace shaping: `logging.structured.json.stacktrace.*`.
+
+## Correlation ids
+
+- With tracing on the classpath, `traceId` and `spanId` are put in the MDC and appear in the default log pattern and in structured output.
+- Without tracing, set a correlation id yourself (servlet filter putting a header value into `MDC`, cleared in `finally`).
+- Customize the pattern: `logging.pattern.correlation=[%X{traceId:-},%X{spanId:-}] `; include with `logging.include-application-name`/`logging.include-application-group` (Boot 3.4+).
+- Propagate the id to downstream calls (automatic for tracing-enabled clients).
+
+## Practices
+
+- Never log secrets, tokens, passwords, or full personal data.
+- Change levels at runtime only via a secured `loggers` endpoint.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-observability/references/metrics.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-observability/references/metrics.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-observability/references/metrics.md
+- **SHA256_FINGERPRINT**: `70297f3b73273696813068bd9123918ed7aeafb88f87e9f094944a85ee5882a2`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.401416+00:00
+---
+
+# Micrometer metrics
+
+Boot auto-configures a composite `MeterRegistry` plus a registry for each `micrometer-registry-*` found on the classpath.
+
+## Export
+
+- Prometheus scrape: add `io.micrometer:micrometer-registry-prometheus` (version managed by Boot) and expose `prometheus`. Endpoint: `/actuator/prometheus`.
+- OTLP push: `io.micrometer:micrometer-registry-otlp`, then `management.otlp.metrics.export.url=http://collector:4318/v1/metrics`. With Boot 4 `spring-boot-starter-opentelemetry` also provides OTLP export of metrics, traces and logs, check the Boot reference for current properties.
+- Disable all exporters in tests: `management.defaults.metrics.export.enabled=false`.
+
+## Common tags
+
+```java
+@Bean
+MeterRegistryCustomizer<MeterRegistry> commonTags(@Value("${spring.application.name}") String app) {
+    return r -> r.config().commonTags("application", app);
+}
+```
+
+(Package: Boot 3.x `org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer`; Boot 4.x `org.springframework.boot.micrometer.metrics.autoconfigure.MeterRegistryCustomizer`.) Alternatively `management.metrics.tags.application=${spring.application.name}`.
+
+## Custom metrics
+
+```java
+Counter.builder("orders.created").tag("channel", "web").register(registry).increment();
+Timer.builder("orders.processing").publishPercentileHistogram().register(registry).record(() -> process());
+Gauge.builder("orders.queue.size", queue, Queue::size).register(registry);
+```
+
+- Use `@Timed`/`@Counted` only with the `TimedAspect`/`CountedAspect` beans and AOP present.
+- Keep tag cardinality bounded (never user ids, raw URLs, exception messages).
+- HTTP server metrics: `http.server.requests` is on by default; enable histograms with `management.metrics.distribution.percentiles-histogram.http.server.requests=true`.
+- JVM, DB pool (HikariCP), cache, Kafka and executor metrics are automatic when present.
+
+## Testing
+
+Use `SimpleMeterRegistry` in unit tests, and `@AutoConfigureObservability` (or enable export explicitly) in slices that disable metrics by default.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-observability/references/tracing-observation.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-observability/references/tracing-observation.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-observability/references/tracing-observation.md
+- **SHA256_FINGERPRINT**: `5f1ffe75e9f2d350424a4d62d71218f68208e258f6676053335de263b03c30a3`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.397413+00:00
+---
+
+# Observation API and tracing
+
+## Observation API
+
+One instrumentation point produces metrics and traces (Micrometer Observation).
+
+```java
+@Service
+class OrderService {
+    private final ObservationRegistry registry;
+    OrderService(ObservationRegistry registry) { this.registry = registry; }
+
+    Order place(Order o) {
+        return Observation.createNotStarted("order.place", registry)
+            .lowCardinalityKeyValue("channel", o.channel())      // metric + span tag
+            .highCardinalityKeyValue("order.id", o.id())         // span tag only
+            .observe(() -> doPlace(o));
+    }
+}
+```
+
+Or annotate with `@Observed(name = "order.place")` and register an `ObservedAspect` bean (needs `spring-boot-starter-aop`/AspectJ on the classpath; Boot 4 names it `spring-boot-starter-aspectj`). Customize via `ObservationFilter`, `ObservationPredicate`, and `ObservationConvention` beans.
+
+## Tracing with OpenTelemetry
+
+Boot 3.x (bridge to the OTel SDK):
+
+- `io.micrometer:micrometer-tracing-bridge-otel` and `io.opentelemetry:opentelemetry-exporter-otlp` (versions managed by Boot).
+
+Boot 4.x:
+
+- `org.springframework.boot:spring-boot-starter-opentelemetry` (documented as the OpenTelemetry starter for traces, metrics, logs via OTLP). Zipkin: `spring-boot-starter-zipkin`.
+- Modular artifacts exist (`spring-boot-micrometer-tracing-opentelemetry`, `spring-boot-opentelemetry`), but prefer starters. Verify names against your Boot version's reference docs.
+
+```yaml
+management:
+  tracing:
+    sampling:
+      probability: 1.0        # default 0.1; use 1.0 only in dev/test
+  # Boot 3.5:
+  otlp:
+    tracing:
+      endpoint: http://localhost:4318/v1/traces
+  # Boot 4.0 (replaces the block above):
+  # opentelemetry:
+  #   tracing:
+  #     export:
+  #       otlp:
+  #         endpoint: http://localhost:4318/v1/traces
+spring:
+  application:
+    name: orders               # becomes service.name
+```
+
+- Propagation defaults to W3C `traceparent`; `management.tracing.propagation.type` can add B3.
+- Auto-instrumented: Spring MVC/WebFlux and `RestClient`, `RestTemplate`, `WebClient` built from the injected builders. JDBC needs additional instrumentation such as datasource-micrometer.
+- Messaging observations require an explicit opt-in. For Kafka, enable both `spring.kafka.template.observation-enabled=true` and `spring.kafka.listener.observation-enabled=true` (both default to false) to create producer/listener spans and propagate tracing context. For RabbitMQ or another messaging technology, check its version-specific template/listener observation settings rather than assuming tracing dependencies enable them.
+- Local backends: Zipkin, Jaeger, or Grafana LGTM via Testcontainers/`spring-boot-docker-compose` in dev only.
+- Do not put PII or secrets in span attributes.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-security/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-security/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-security/SKILL.md
+- **SHA256_FINGERPRINT**: `2ba0d72e27bb8c40ee34acffd1bf393c5db0ca3e254df9d86f5a3504ef708445`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.403337+00:00
+---
+
+**description**: Configure, test and review Spring Security 6/7 in Spring Boot 3/4 apps: SecurityFilterChain lambda DSL, method security, OAuth2 resource server with JWT, OIDC login, CSRF/CORS, password encoding, headers, actuator protection, and MockMvc security tests. Use when adding or auditing authentication and authorization.
+
+# Spring Security
+
+Practical guidance for Spring Security 6.x (Spring Boot 3.x) and 7.x (Spring Boot 4.x). Details per topic are in `references/`.
+
+## Safety rules
+
+- Never read, print, or commit secrets: `.env`, `application-*.properties` with credentials, client secrets, private keys, JWT signing keys. Reference them via environment variables or a secret manager.
+- Never disable security (`permitAll()` on everything, `csrf.disable()` for browser apps) just to make a test or demo pass.
+
+## First: detect the version
+
+1. Find the Boot version (`pom.xml` parent/BOM, `build.gradle(.kts)`, `libs.versions.toml`) and run `./mvnw dependency:tree -Dincludes=org.springframework.security` or `./gradlew dependencies --configuration runtimeClasspath` to see the Spring Security version.
+2. Boot 3.x -> Security 6.x; Boot 4.x -> Security 7.x. Do not mix guidance: in 7.x, APIs deprecated in 6.x are removed (for example `and()` chaining, `authorizeRequests`, `AntPathRequestMatcher`/`MvcRequestMatcher` style matchers; use the lambda DSL and `requestMatchers(...)`). Check the "What's New" and migration pages on docs.spring.io/spring-security when upgrading.
+3. Identify the app type: servlet MVC (`SecurityFilterChain`) or WebFlux (`SecurityWebFilterChain`, `@EnableWebFluxSecurity`); browser app with sessions, or stateless API.
+
+## Core configuration
+
+Declare a `SecurityFilterChain` bean. `WebSecurityConfigurerAdapter` no longer exists.
+
+```java
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+class SecurityConfig {
+
+    @Bean
+    SecurityFilterChain api(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/actuator/health/**", "/public/**").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated())
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .csrf(csrf -> csrf.disable()); // only for stateless token APIs without cookies
+        return http.build();
+    }
+}
+```
+
+Rules of thumb:
+
+- Rules are evaluated in order; put specific matchers first and end with `anyRequest().authenticated()` (deny by default).
+- Use multiple `SecurityFilterChain` beans with `securityMatcher(...)` and `@Order` when the app mixes an API and a browser UI.
+- Add `@EnableMethodSecurity` and use `@PreAuthorize`/`@PostAuthorize` on services for fine-grained rules; see [method security](references/method-security.md).
+- Authentication choices: [OAuth2 resource server and JWT](references/oauth2-resource-server-jwt.md), [OIDC login and OAuth2 client](references/oidc-login-oauth2-client.md).
+- Session vs stateless, CSRF, CORS, headers: [web protections](references/csrf-cors-sessions-headers.md).
+- Passwords and users: [password encoding](references/password-encoding.md).
+- Actuator endpoints: [actuator protection](references/actuator-protection.md) (see also the `spring-observability` skill if installed).
+- Tests: [testing security](references/testing-security.md).
+- Review: [common mistakes checklist](references/review-checklist.md).
+
+## Decision guide
+
+| Situation | Approach |
+|---|---|
+| REST API called by SPA/mobile/services with bearer tokens | Resource server + JWT, stateless, CSRF off (no cookie auth) |
+| Server-rendered app or SPA with same-site cookie session | Form login or OIDC login, sessions, CSRF on |
+| SPA using BFF pattern | OIDC login in the backend, session cookie to browser, CSRF token via cookie repository |
+| Internal service-to-service | Client credentials grant, resource server on the receiving side |
+
+## Dependencies (pin through the Boot BOM, no explicit versions)
+
+- `spring-boot-starter-security`, plus `spring-boot-starter-oauth2-resource-server` or `spring-boot-starter-oauth2-client` on Boot 3.x. Boot 4.x names: `spring-boot-starter-security-oauth2-resource-server` / `spring-boot-starter-security-oauth2-client` (the old names remain as deprecated aliases).
+- Tests: add `spring-security-test` (test scope) on Boot 3.x; on Boot 4.x use `spring-boot-starter-security-test` (plus `spring-boot-starter-security-oauth2-resource-server-test` / `-client-test` when those starters are used) together with modular test starters such as `spring-boot-starter-webmvc-test`.
+
+## Verify
+
+Run the app's tests plus security-specific tests (401 without credentials, 403 with insufficient role, 200 with the right one, CSRF rejection on state-changing browser requests). Confirm no endpoint was accidentally left open by listing the mappings and checking each against the filter chain.
+
+See also (prefer over this skill for the version in use): Spring Security reference <https://docs.spring.io/spring-security/reference/index.html> and migration chapter <https://docs.spring.io/spring-security/reference/migration/index.html>.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-security/references/actuator-protection.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-security/references/actuator-protection.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-security/references/actuator-protection.md
+- **SHA256_FINGERPRINT**: `d16531a059c3c1924cf6b72636ceb03b3f802df7164a80be43cfe1d81a07119d`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.400245+00:00
+---
+
+# Protecting Actuator endpoints
+
+Actuator endpoints can leak configuration, environment, heap contents, and allow shutdown. Treat them as admin surface.
+
+- Expose the minimum: `management.endpoints.web.exposure.include=health,info` (add `prometheus`/`metrics` only for the scraper).
+- Use `EndpointRequest` for rules (import: Boot 3.x `org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest`; Boot 4.x `org.springframework.boot.security.autoconfigure.actuate.web.servlet.EndpointRequest`; both verified to compile):
+
+```java
+@Bean
+@Order(1)
+SecurityFilterChain actuator(HttpSecurity http) throws Exception {
+    http.securityMatcher(EndpointRequest.toAnyEndpoint())
+        .authorizeHttpRequests(a -> a
+            .requestMatchers(EndpointRequest.to("health", "info")).permitAll()
+            .anyRequest().hasRole("ACTUATOR_ADMIN"))
+        .httpBasic(Customizer.withDefaults());
+    return http.build();
+}
+```
+
+- Defining any `SecurityFilterChain` makes Boot's default chain back off, and the chain above matches only Actuator requests. Always add a lower-priority catch-all chain (with your chosen authentication mechanism), otherwise every non-Actuator request matches no chain and is left unsecured:
+
+```java
+@Bean
+@Order(2)
+SecurityFilterChain application(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests(a -> a.anyRequest().authenticated())
+        .httpBasic(Customizer.withDefaults()); // or formLogin / oauth2ResourceServer / oauth2Login
+    return http.build();
+}
+```
+
+- Never expose `env`, `configprops`, `heapdump`, `threaddump`, `loggers`, `shutdown`, `mappings`, `beans` publicly. `heapdump` can contain secrets and personal data.
+- Consider a separate management port (`management.server.port`) not reachable from the internet.
+- `management.endpoint.health.show-details=when-authorized` with `show-components` and roles configured.
+- Sanitization of `env`/`configprops` values is on by default, but do not rely on it.
+
+See the `spring-observability` skill for health probes, metrics, and tracing.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-security/references/csrf-cors-sessions-headers.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-security/references/csrf-cors-sessions-headers.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-security/references/csrf-cors-sessions-headers.md
+- **SHA256_FINGERPRINT**: `cd8f51194cefe022463d2ebc237cf6fa9d38b5abc029d7b49f5f13d57a709c87`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.403918+00:00
+---
+
+# Sessions, CSRF, CORS, headers
+
+## Session vs stateless
+
+- Browser apps: default session-based (`IF_REQUIRED`), session fixation protection is on. Limit concurrent sessions via `sessionManagement(s -> s.maximumSessions(1))` if required. Use Spring Session (Redis/JDBC) for multi-instance deployments.
+- Token APIs: `SessionCreationPolicy.STATELESS`; no `JSESSIONID`, no cookie auth.
+- Cookies: `server.servlet.session.cookie.secure=true`, `http-only=true`, `same-site=lax` (or `strict`).
+
+## CSRF
+
+- Keep CSRF **enabled** for any app that authenticates with cookies/sessions (form login, OIDC login).
+- Disable only for stateless bearer-token APIs: `csrf(csrf -> csrf.disable())`, or ignore specific paths with `csrf.ignoringRequestMatchers("/webhooks/**")` (and authenticate those another way, e.g. HMAC signature).
+- SPA with cookie session: use the **complete SPA configuration for the installed Spring Security version** from the [CSRF reference](https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#csrf-integration-javascript-spa). With `CookieCsrfTokenRepository.withHttpOnlyFalse()`, the setup must both materialize the deferred token so the `XSRF-TOKEN` cookie is written and accept its raw value in `X-XSRF-TOKEN` while retaining BREACH protection for rendered tokens. A plain `CsrfTokenRequestAttributeHandler` alone does not load the deferred token; do not present it as a complete SPA setup.
+- Alternatively, keep session-based CSRF and expose a token-fetch endpoint such as `GET /csrf` returning the resolved `CsrfToken` (including `token` and `headerName`). Permit that endpoint before login if needed and have the client fetch it on initialization and again after login/logout clears the previous token. Send the returned token in the returned header name on unsafe requests; do not substitute a raw cookie token for the BREACH-protected response token.
+- Verify the token lifecycle: missing/invalid token rejects an unsafe request with 403, and fetching a fresh token allows an otherwise authorized request before and after authentication changes.
+- Never allow state-changing GET requests.
+
+## CORS
+
+Configure CORS in Spring Security so preflight requests are handled before authorization:
+
+```java
+http.cors(Customizer.withDefaults());
+
+@Bean
+CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration c = new CorsConfiguration();
+    c.setAllowedOrigins(List.of("https://app.example.com"));
+    c.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+    c.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+    c.setMaxAge(3600L);
+    UrlBasedCorsConfigurationSource s = new UrlBasedCorsConfigurationSource();
+    s.registerCorsConfiguration("/api/**", c);
+    return s;
+}
+```
+
+- Never combine `allowedOrigins("*")` with `allowCredentials(true)`.
+- List explicit origins, read from configuration per environment.
+
+## Security headers
+
+Defaults already send `X-Content-Type-Options`, `Cache-Control` for secured responses, `X-Frame-Options: DENY`, and HSTS (over HTTPS). Tighten as needed:
+
+```java
+http.headers(h -> h
+    .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; frame-ancestors 'none'"))
+    .referrerPolicy(r -> r.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER))
+    .httpStrictTransportSecurity(hsts -> hsts.includeSubDomains(true).maxAgeInSeconds(31536000)));
+```
+
+Do not call `headers.disable()`. Enforce HTTPS at the proxy; set `server.forward-headers-strategy` when behind one.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-security/references/method-security.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-security/references/method-security.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-security/references/method-security.md
+- **SHA256_FINGERPRINT**: `8740ca7177018483f4cc10f16cad2b6773367289d405724e2c245f2d29aaab11`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.400496+00:00
+---
+
+# Method security
+
+Enable with `@EnableMethodSecurity` on a `@Configuration` class (replaces `@EnableGlobalMethodSecurity`). `@PreAuthorize`, `@PostAuthorize`, `@PreFilter`, `@PostFilter` are on by default; `@Secured` and JSR-250 need `securedEnabled = true` / `jsr250Enabled = true`.
+
+```java
+@Service
+class DocumentService {
+
+    @PreAuthorize("hasRole('ADMIN') or #owner == authentication.name")
+    List<Document> findByOwner(String owner) { ... }
+
+    @PreAuthorize("hasAuthority('SCOPE_documents.write')")
+    void save(Document d) { ... }
+
+    @PostAuthorize("returnObject.owner == authentication.name")
+    Document load(Long id) { ... }
+}
+```
+
+Guidance:
+
+- `hasRole('ADMIN')` checks authority `ROLE_ADMIN`; `hasAuthority('SCOPE_x')` checks the exact string. JWT scopes become `SCOPE_` authorities by default.
+- Put annotations on service-layer methods (or controllers), never on private methods or on self-invoked calls: they rely on proxies and are bypassed.
+- Prefer a custom bean for complex rules: `@PreAuthorize("@documentAuth.canEdit(#id, authentication)")`.
+- Meta-annotations keep rules readable: `@Target(METHOD) @Retention(RUNTIME) @PreAuthorize("hasRole('ADMIN')") @interface IsAdmin {}`.
+- Method security complements, not replaces, URL rules: keep a deny-by-default filter chain.
+- Test with `@WithMockUser` (see [testing](testing-security.md)); a missing proxy shows up as a test passing with no authentication.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-security/references/oauth2-resource-server-jwt.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-security/references/oauth2-resource-server-jwt.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-security/references/oauth2-resource-server-jwt.md
+- **SHA256_FINGERPRINT**: `692ea4087ae9df7a737b5b85714e65cee76dce1d3d8e60268bbb310a31fe0507`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.511790+00:00
+---
+
+# OAuth2 resource server with JWT
+
+Dependency: `spring-boot-starter-oauth2-resource-server` (Boot 3.x) or `spring-boot-starter-security-oauth2-resource-server` (Boot 4.x; test companion `spring-boot-starter-security-oauth2-resource-server-test`).
+
+## Minimal configuration
+
+```yaml
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://issuer.example.com/realms/demo   # discovers JWKS, validates iss
+          # or: jwk-set-uri: https://issuer.example.com/.well-known/jwks.json
+          audiences: my-api                                    # validates aud (Boot 3.x+)
+```
+
+```java
+http.oauth2ResourceServer(o -> o.jwt(Customizer.withDefaults()));
+```
+
+Use `issuer-uri` whenever possible: it validates the issuer and the signature. Keys and secrets come from the identity provider or environment variables, never from the repository.
+
+## Custom JwtDecoder
+
+```java
+@Bean
+JwtDecoder jwtDecoder(OAuth2TokenValidator<Jwt> validator) {
+    NimbusJwtDecoder decoder = JwtDecoders.fromIssuerLocation("https://issuer.example.com/realms/demo");
+    decoder.setJwtValidator(validator);
+    return decoder;
+}
+
+@Bean
+OAuth2TokenValidator<Jwt> validator() {
+    return new DelegatingOAuth2TokenValidator<>(
+        JwtValidators.createDefaultWithIssuer("https://issuer.example.com/realms/demo"),
+        new JwtClaimValidator<List<String>>("aud", aud -> aud != null && aud.contains("my-api")));
+}
+```
+
+Always validate expiry (default), issuer, and audience. Do not accept `alg: none` or symmetric keys unless deliberately designed.
+
+## Mapping roles and scopes
+
+By default `scope`/`scp` claims map to `SCOPE_*` authorities. For roles in a custom claim:
+
+```java
+@Bean
+JwtAuthenticationConverter jwtAuthenticationConverter() {
+    JwtGrantedAuthoritiesConverter scopes = new JwtGrantedAuthoritiesConverter();
+    JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+    converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+        Collection<GrantedAuthority> authorities = new ArrayList<>(scopes.convert(jwt));
+        List<String> roles = jwt.getClaimAsStringList("roles");
+        if (roles != null) roles.forEach(r -> authorities.add(new SimpleGrantedAuthority("ROLE_" + r)));
+        return authorities;
+    });
+    return converter;
+}
+```
+
+Register it: `.oauth2ResourceServer(o -> o.jwt(j -> j.jwtAuthenticationConverter(converter)))`. Provider-specific claim locations (for example Keycloak `realm_access.roles`) need explicit extraction.
+
+## Opaque tokens
+
+Use `.oauth2ResourceServer(o -> o.opaqueToken(Customizer.withDefaults()))` with `spring.security.oauth2.resourceserver.opaquetoken.introspection-uri`, `client-id`, and `client-secret` (from environment) when tokens are not JWTs.
+
+## Notes
+
+- Stateless: pair with `SessionCreationPolicy.STATELESS`.
+- 401 vs 403: missing/invalid token gives 401 with `WWW-Authenticate`; valid token lacking authority gives 403.
+- Short token lifetimes; never log tokens.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-security/references/oidc-login-oauth2-client.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-security/references/oidc-login-oauth2-client.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-security/references/oidc-login-oauth2-client.md
+- **SHA256_FINGERPRINT**: `6091dddd3e4620a768e0b44d879ce5adfaecccf62c1ce7fe5ee76cefc0284925`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.505728+00:00
+---
+
+# OIDC login and OAuth2 client
+
+Dependency: `spring-boot-starter-oauth2-client` (Boot 3.x) or `spring-boot-starter-security-oauth2-client` (Boot 4.x; test companion `spring-boot-starter-security-oauth2-client-test`).
+
+## Login with an OIDC provider
+
+```yaml
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: ${OIDC_CLIENT_ID}
+            client-secret: ${OIDC_CLIENT_SECRET}
+            scope: openid,profile,email
+        provider:
+          keycloak:
+            issuer-uri: https://issuer.example.com/realms/demo
+```
+
+```java
+http
+    .authorizeHttpRequests(a -> a.anyRequest().authenticated())
+    .oauth2Login(Customizer.withDefaults())
+    .logout(l -> l.logoutSuccessHandler(oidcLogoutHandler));
+```
+
+- Client id/secret come from environment variables or a secret store; never hard-code or print them.
+- Common providers (Google, GitHub, Facebook) need only `client-id`/`client-secret`; Okta and other OIDC providers also need the `issuer-uri`.
+- Use `OidcClientInitiatedLogoutSuccessHandler` for RP-initiated logout.
+- Authorization Code with PKCE is the default for public clients; do not use the implicit or password grants.
+
+## Mapping authorities
+
+Customize with a `GrantedAuthoritiesMapper` bean or an `OAuth2UserService`/`OidcUserService` to turn provider claims (groups, roles) into `ROLE_*` authorities.
+
+## Calling other APIs (OAuth2 client)
+
+- Servlet apps: configure `OAuth2AuthorizedClientManager` and use `RestClient` with an `OAuth2ClientHttpRequestInterceptor`, or `WebClient` with `ServletOAuth2AuthorizedClientExchangeFilterFunction` (`ServerOAuth2AuthorizedClientExchangeFilterFunction` is for WebFlux only).
+- Service-to-service uses `authorization-grant-type: client_credentials`.
+- Check the Spring Security reference for the exact `RestClient` support available in your version.
+
+## Sessions and BFF
+
+OIDC login produces an HTTP session; keep CSRF enabled and configure cookies (`SameSite`, `Secure`, `HttpOnly`) as described in [web protections](csrf-cors-sessions-headers.md).
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-security/references/password-encoding.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-security/references/password-encoding.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-security/references/password-encoding.md
+- **SHA256_FINGERPRINT**: `6b9416b860990f7d31b86c6c144de7022628b0a342540490a68e94bffa600900`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.958793+00:00
+---
+
+# Password encoding
+
+Expose a `PasswordEncoder` bean: `PasswordEncoderFactories.createDelegatingPasswordEncoder()` (stores `{id}hash`, defaults to bcrypt, verifies older formats; `upgradeEncoding`/`UserDetailsPasswordService` migrate hashes over time).
+
+- bcrypt truncates input at 72 bytes; consider Argon2 (needs Bouncy Castle `bcprov`) for long passphrases. Pick a cost of roughly 100-500 ms on production hardware.
+- `User.withDefaultPasswordEncoder()` and `InMemoryUserDetailsManager` are for demos and tests only; back `UserDetailsService` with a database.
+- Rate-limit login endpoints and use generic error messages to avoid user enumeration.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-security/references/review-checklist.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-security/references/review-checklist.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-security/references/review-checklist.md
+- **SHA256_FINGERPRINT**: `d211e93c91d82535e98484bba00c3d628fdb91335b2766a1a23277483a515c2f`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.555419+00:00
+---
+
+# Security review checklist (common mistakes)
+
+- [ ] Lambda DSL and `requestMatchers` only; no `WebSecurityConfigurerAdapter`, `authorizeRequests`, `antMatchers`, `and()`.
+- [ ] Deny by default (`anyRequest().authenticated()`), specific matchers first, narrow `permitAll`.
+- [ ] CSRF stays on for cookie-authenticated apps; CORS lists explicit origins (no `*` with credentials).
+- [ ] JWT issuer, audience and expiry validated; roles/scopes mapped intentionally.
+- [ ] Actuator limited and secured (no public `env`, `heapdump`, `threaddump`, `shutdown`, `loggers`).
+- [ ] `@PreAuthorize` only on proxied, non-self-invoked methods; `@EnableMethodSecurity` present.
+- [ ] Tests cover 401, 403, success, and CSRF for new endpoints.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/spring-security/references/testing-security.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/spring-security/references/testing-security.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/spring-security/references/testing-security.md
+- **SHA256_FINGERPRINT**: `a65dc3cd9b7b141e8e4eb58d0b367c3dede74751e67da609b3b7136f667e4c68`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:38.544815+00:00
+---
+
+# Testing Spring Security
+
+Dependencies: `org.springframework.security:spring-security-test` (test scope, version managed by Boot). With Boot 4, use the modular test starters (`spring-boot-starter-webmvc-test`, `spring-boot-starter-security-test`).
+
+`@WebMvcTest` package: Boot 3.x `org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest`; Boot 4.x `org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest`. Replace `@MockBean` with `@MockitoBean` (Spring Framework 6.2+/7).
+
+## Slice test (stateless API configuration)
+
+These tests use the stateless resource-server configuration (`SecurityConfig`: `csrf.disable()`, `SessionCreationPolicy.STATELESS`), so no CSRF token is needed. Mock `JwtDecoder` (`org.springframework.security.oauth2.jwt.JwtDecoder`) so the filter chain can initialize without production issuer configuration or an external identity provider. `@WithMockUser` supplies authentication for authorization assertions; it does not provide a decoder or test JWT decoding.
+
+```java
+@WebMvcTest(AccountController.class)
+@Import(SecurityConfig.class)   // the slice does not pick up your config unless imported
+class AccountControllerTest {
+
+    @Autowired MockMvc mvc;
+    @MockitoBean AccountService service;
+    @MockitoBean JwtDecoder jwtDecoder;
+
+    @Test void anonymousGets401() throws Exception {
+        mvc.perform(get("/accounts")).andExpect(status().isUnauthorized());
+    }
+
+    @Test @WithMockUser(roles = "USER")
+    void userGets403OnAdmin() throws Exception {
+        mvc.perform(get("/admin/accounts")).andExpect(status().isForbidden());
+    }
+
+    @Test @WithMockUser(roles = "ADMIN")
+    void adminOk() throws Exception {
+        mvc.perform(get("/admin/accounts")).andExpect(status().isOk());
+    }
+
+    @Test @WithMockUser
+    void postWithoutCsrfTokenIsAllowed() throws Exception {
+        mvc.perform(post("/accounts")).andExpect(status().isCreated());
+    }
+}
+```
+
+## CSRF test (session/browser configuration)
+
+CSRF applies whenever the browser attaches credentials automatically (session cookies, HTTP Basic, client certificates); it does not apply to explicit bearer tokens sent in headers. Test it against a separate configuration that keeps CSRF enabled (the default), never against the stateless `SecurityConfig` above:
+
+```java
+@Configuration
+@EnableWebSecurity
+class BrowserSecurityConfig {
+    @Bean
+    SecurityFilterChain browser(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(a -> a.anyRequest().authenticated())
+            .formLogin(Customizer.withDefaults()); // CSRF protection stays enabled
+        return http.build();
+    }
+}
+
+@WebMvcTest(AccountController.class)
+@Import(BrowserSecurityConfig.class)   // not SecurityConfig
+class AccountControllerCsrfTest {
+
+    @Autowired MockMvc mvc;
+    @MockitoBean AccountService service;
+
+    @Test @WithMockUser
+    void postNeedsCsrf() throws Exception {
+        mvc.perform(post("/accounts")).andExpect(status().isForbidden());
+        mvc.perform(post("/accounts").with(csrf())).andExpect(status().isCreated());
+    }
+}
+```
+
+## Post processors
+
+- JWT resource server: `mvc.perform(get("/api/me").with(jwt().authorities(new SimpleGrantedAuthority("SCOPE_read"))))` or `jwt().jwt(j -> j.claim("roles", List.of("admin")))`.
+- OIDC login: `.with(oidcLogin().idToken(t -> t.claim("email", "a@b.c")))`; OAuth2 login: `oauth2Login()`.
+- Opaque token: `opaqueToken()`; basic auth: `httpBasic("user", "pw")`; arbitrary user: `user("u").roles("X")`.
+- Method security: `@WithMockUser(roles = "ADMIN")` on service tests, or `@WithUserDetails` to load a real user.
+- Full-stack tests: `@SpringBootTest @AutoConfigureMockMvc` (Boot 4 package `org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc`). With `MockMvcTester` (AssertJ), use `.with(...)` similarly.
+- Test the denied paths as much as the allowed ones; failing to authenticate is the most important behavior.
 
 
 ---

@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-10-30T17:51:52.931120+00:00
-- **Total Palabras**: 20,165 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-02T05:12:42.942337+00:00
+- **Total Palabras**: 20,199 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1529,8 +1529,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_345227
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/345227
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/345227
-- **SHA256_FINGERPRINT**: `37c17a66f0af13b3298602df5b90ab4708cd1ac01c14041b0985c4e5ae27cab6`
-- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:52.729025+00:00
+- **SHA256_FINGERPRINT**: `843e7825077e9c1deb3dbddb742f8ab961755261b4a3f65adb9aff4c555aab20`
+- **LAST_VERIFIED_UTC**: 2026-11-02T05:12:42.741320+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.145.0 Endgame
@@ -1555,17 +1555,22 @@ We really appreciate people trying our new features as soon as they are ready, s
 `@endgame-champ`:
 - [x] Unpin the previous endgame plan from the [VS Code issue tracker](https://github.com/microsoft/vscode/issues)
 - [x] Pin this endgame plan in the [VS Code issue tracker](https://github.com/microsoft/vscode/issues)
-- [ ] Assign TPIs
-  - [ ] Create TPI's for all verification needed bugs. Visit `Testing and Verification` on tools site, and generate groupings, then create TPIs. The TPI section below  will update with all of the generated items.
+- [x] Assign TPIs
+  - [x] Create TPI's for all verification needed bugs. Visit `Testing and Verification` on tools site, and generate groupings, then create TPIs. The TPI section below  will update with all of the generated items.
 - [ ] Pause automatic releases (this also ensures chat-pre-release isn't released) after 10am. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=383))
-- [ ] Run the [Start Endgame](https://github.com/microsoft/vscode-engineering/actions/workflows/start-endgame.yml) workflow
+- [x] Run the [Start Endgame](https://github.com/microsoft/vscode-engineering/actions/workflows/start-endgame.yml) workflow
+
+  - PRs opened with auto-merge enabled — ensure they get reviewed and merged Monday morning so Insiders picks up the next milestone version:
+    - [x] Version bump (`microsoft/vscode`): https://github.com/microsoft/vscode/pull/345477
+    - [x] Endgame notebook milestone bump (`microsoft/vscode`): https://github.com/microsoft/vscode/pull/345476
+
   - If you need to run these steps manually, see the [Branching guide](https://github.com/microsoft/vscode-internalbacklog/blob/main/guidelines/endgame-guide.md#branching).
 - [ ] In absence of the tech writer, follow the steps in the [website endgame issue](https://github.com/microsoft/vscode-website/wiki#performing-a-weekly-release)
 
 # Monday morning (Redmond and Zurich)
 
 `@team`:
-- [Test plan items](https://github.com/issues?q=org%3Amicrosoft%20milestone%3A%221.112.0%22%20is%3Aissue%20is%3Aopen%20label%3Atestplan-item). All TPIs must be finished by noon. This includes verification TPIs.
+- [Test plan items](https://github.com/issues?q=org%3Amicrosoft%20milestone%3A%221.145.0%22%20is%3Aissue%20is%3Aopen%20label%3Atestplan-item). All TPIs must be finished by noon. This includes verification TPIs.
 - Make sure your TPIs are being tested and ping folks if to confirm they will finish by noon.
 
 # Monday afternoon (Redmond and Zurich)
@@ -1577,7 +1582,7 @@ We really appreciate people trying our new features as soon as they are ready, s
 # Monday EOD Redmond time
 
 `@team`:
-- All issues including late fixes, are verified ([query](https://github.com/issues?q=org%3Amicrosoft+milestone%3A%221.112.0%22+is%3Aissue+is%3Aclosed+reason%3Acompleted++label%3Abug+-label%3Averified+-label%3Aon-testplan+-label%3A*duplicate+-label%3Aduplicate+-label%3Ainvalid+-label%3A*as-designed+-label%3Aerror-telemetry+-label%3Averification-steps-needed+-label%3Az-author-verified+-label%3Aunreleased+-label%3A*not-reproducible+-label%3A*out-of-scope+sort%3Aupdated-asc))
+- All issues including late fixes, are verified ([query](https://github.com/issues?q=org%3Amicrosoft+milestone%3A%221.145.0%22+is%3Aissue+is%3Aclosed+reason%3Acompleted++label%3Abug+-label%3Averified+-label%3Aon-testplan+-label%3A*duplicate+-label%3Aduplicate+-label%3Ainvalid+-label%3A*as-designed+-label%3Aerror-telemetry+-label%3Averification-steps-needed+-label%3Az-author-verified+-label%3Aunreleased+-label%3A*not-reproducible+-label%3A*out-of-scope+sort%3Aupdated-asc))
 - Release notes written
 
 `@endgame-champ`:

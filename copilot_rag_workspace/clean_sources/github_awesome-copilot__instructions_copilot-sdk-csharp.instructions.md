@@ -1,4 +1,6 @@
-**description**: This file provides guidance on building C# applications using GitHub Copilot SDK.
+**description**: This file provides guidance on building C# applications using the Microsoft Copilot SDK.
+
+The Microsoft Copilot SDK is transitioning from the GitHub Copilot SDK in phases. No immediate changes are required; package names and examples below use the currently published identifiers. See the [official transition announcement](https://github.blog/changelog/2026-10-28-github-copilot-sdk-is-becoming-microsoft-copilot-sdk/).
 
 ## Core Principles
 
