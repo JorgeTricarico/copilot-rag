@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-11-02T21:33:01.617048+00:00
-- **Total Palabras**: 152,584 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-03T19:17:08.637058+00:00
+- **Total Palabras**: 152,834 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -273,8 +273,8 @@ For a complete list of slash commands for Copilot CLI, see [Cli Command Referenc
 # DOCUMENT_SOURCE: github_docs::content/copilot/reference/copilot-cli-reference/cli-command-reference.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-command-reference.md
-- **SHA256_FINGERPRINT**: `a1427923bcd9cff7a5bcb4a4b45434f857ddac26164c566865a5c72fe3418125`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:39.180541+00:00
+- **SHA256_FINGERPRINT**: `6fa9d0689be4c2700c8e6fc7456ee00808910ac56e8caa934c6e6aad264abd12`
+- **LAST_VERIFIED_UTC**: 2026-11-03T19:17:01.258647+00:00
 ---
 
 **title**: GitHub Copilot CLI command reference
@@ -820,7 +820,7 @@ These are the slash commands you can use from within an interactive CLI session.
 
 | Command                                             | Purpose |
 |-----------------------------------------------------|---------|
-| `/add-dir PATH`                                     | Allow file access to a directory and load its `.github/skills` and `.github/agents` as trusted configurations. When sandboxing is enabled, also grants the sandbox access to the directory for the current session. |
+| `/add-dir PATH`                                     | Allow file access to a directory and load its skills (`.github/`, `.agents/`, `.claude/`) and agents (`.github/`, `.claude/`) as trusted configurations. When sandboxing is enabled, also grants the sandbox access to the directory for the current session. |
 | `/after [DELAY PROMPT]`, `/after`                 | Schedule a non-recurring prompt, skill, or schedulable slash command for the current session (for example, `/after 30m remind me the time` or `/after 1h /chronicle standup`). With no arguments the schedule manager is displayed.  |
 | `/agent`                                            | Browse and select from available agents (if any). See [Custom Agents](https://docs.github.com/en/copilot/concepts/customizations/custom-agents). |
 | `/app`                                              | Open the current session in the GitHub Copilot app (requires version 1.1.3 or later), or show the download URL if the app is not installed. |
@@ -880,7 +880,7 @@ These are the slash commands you can use from within an interactive CLI session.
 | `/rename [NAME]`                                    | Rename the current session (auto-generates a name if omitted; alias for `/session rename`). |
 | `/research TOPIC`                                   | Run a deep research investigation using GitHub search and web sources. See [Research With Copilot Cli](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/research-with-copilot-cli). |
 | `/reset-allowed-tools`                              | Reset permissions for the current session. This clears session tool approvals, returns the permission mode to manual (turning off allow-all or [copilot.assisted_permissions] if either is on), and clears the approvals saved for the current location. Explicit startup rules, such as `--allow-tool`, `--deny-tool`, `--allow-url`, and `--deny-url`, remain part of the session's baseline. |
-| `/restart`                                          | Restart the CLI, restoring all of the current process's live sessions, not only the foreground one. If the target CLI version can't restore multiple sessions, you're prompted to continue with only the foreground session or cancel. |
+| `/restart`                                          | Restart the CLI, restoring all of the current process's live sessions, not only the foreground one. If the target CLI version can't restore multiple sessions, you're prompted to continue with only the foreground session or cancel. Sessions started in a Git worktree with `-w` or `--worktree` resume in that same worktree. The model selected with `/model` is preserved. |
 | `/resume [SESSION-ID]`, `/continue [SESSION-ID]`    | Switch to a different session by choosing from a list (optionally specify a session ID). |
 | `/review [PROMPT]`                                  | Run the code review agent to analyze changes. See [Agentic Code Review](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/agentic-code-review). |
 | `/rubber-duck [PROMPT]`                             | Consult the rubber duck agent for a second opinion on plans, code, and tests. See [Getting A Second Opinion](https://docs.github.com/en/copilot/concepts/agent-capabilities/choosing-and-delegating-agent-work/getting-a-second-opinion). |
@@ -945,7 +945,7 @@ Use `/collect-debug-logs [file|gist|share] [PATH]` to gather debug logs for trou
 
 | Option                             | Purpose                                  |
 |------------------------------------|------------------------------------------|
-| `--add-dir=PATH`                   | Allow file access to a directory and load its `.github/skills` and `.github/agents` as trusted configurations (can be used multiple times). A relative path resolves against the session working directory (the `--resume`, `--worktree`, or `-C` directory), regardless of option order. The path must be an existing directory—a missing path or a regular file fails startup immediately with a flag-specific error, the same way in every mode. |
+| `--add-dir=PATH`                   | Allow file access to a directory and load its skills (`.github/`, `.agents/`, `.claude/`) and agents (`.github/`, `.claude/`) as trusted configurations (can be used multiple times). A relative path resolves against the session working directory (the `--resume`, `--worktree`, or `-C` directory), regardless of option order. The path must be an existing directory—a missing path or a regular file fails startup immediately with a flag-specific error, the same way in every mode. |
 | `--add-github-mcp-tool=TOOL`       | Add a tool to enable for the GitHub MCP server, instead of the default CLI subset (can be used multiple times). Use `*` for all tools. |
 | `--add-github-mcp-toolset=TOOLSET` | Add a toolset to enable for the GitHub MCP server, instead of the default CLI subset (can be used multiple times). Use `all` for all toolsets. |
 | `--additional-mcp-config=JSON`     | Add an MCP server for this session only. The server configuration can be supplied as a JSON string or a file path (prefix with `@`). A relative `@file` path resolves against the session working directory (the `--resume`, `--worktree`, or `-C` directory), regardless of option order. Augments the configuration from `~/.copilot/mcp-config.json`. Overrides any installed MCP server configuration with the same name. See [Add Mcp Servers](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers). |
@@ -986,7 +986,7 @@ Use `/collect-debug-logs [file|gist|share] [PATH]` to gather debug logs for trou
 | `--fleet`                          | Run the prompt in fleet mode (parallel subagent orchestration). Combine with `-i`, `-p`, or piped standard input. This requires a prompt from one of those sources, and has no effect on its own. This is equivalent to prefixing an interactive prompt with the `/fleet` slash command. With `-p` or piped input it dispatches the same fleet orchestration non-interactively. See [Speed Up Task Completion](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/speed-up-task-completion). |
 | `-h`, `--help`                     | Display help. |
 | `-i PROMPT`, `--interactive=PROMPT`  | Start an interactive session and automatically execute this prompt. |
-| `--log-dir=DIRECTORY`              | Set the log file directory (default: `~/.copilot/logs/`). |
+| `--log-dir=DIRECTORY`              | Set the log file directory (default: `~/.copilot/logs/`). A leading `~` expands to your home directory. |
 | `--log-level=LEVEL`                | Set the log level (choices: `none`, `error`, `warning`, `info`, `debug`, `all`, `default`). |
 | `--max-ai-credits=CREDITS`         | Set a soft maximum for AI Credits allowed for each response. The limit resets per user message and can be adjusted mid-session with `/limits`. See [Set Session Limit](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/set-session-limit). |
 | `--max-autopilot-continues=COUNT`  | Maximum number of continuation messages in autopilot mode (default: unlimited). Must be a non-negative integer. Malformed values (`NaN`, negative, fractional, or scientific notation) are rejected. See [Use Autopilot Mode](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/use-autopilot-mode). |
@@ -1004,7 +1004,7 @@ Use `/collect-debug-logs [file|gist|share] [PATH]` to gather debug logs for trou
 | `--no-remote`                      | Removed. Use `/remote off` during an interactive session to end its remote connection. |
 | `--no-remote-export`               | Renamed to `--sync-session=off`. |
 | `--output-format=FORMAT`           | FORMAT can be `text` (default) or `json` (outputs JSONL: one JSON object per line). |
-| `-p PROMPT`, `--prompt=PROMPT`     | Execute a prompt programmatically (exits after completion). The exit summary includes a `copilot --resume=SESSION-ID` hint for continuing the session. See [Run Cli Programmatically](https://docs.github.com/en/copilot/how-tos/copilot-cli/automate-copilot-cli/run-cli-programmatically). |
+| `-p PROMPT`, `--prompt=PROMPT`     | Execute a prompt programmatically (exits after completion, or with a nonzero status if the run is interrupted). The exit summary includes a `copilot --resume=SESSION-ID` hint for continuing the session. See [Run Cli Programmatically](https://docs.github.com/en/copilot/how-tos/copilot-cli/automate-copilot-cli/run-cli-programmatically). |
 | `--plan`                           | Start in plan mode. Shorthand for `--mode plan`. Cannot be combined with `--autopilot`. Can be combined with `--mode autopilot` for plan-then-autopilot; any other `--mode` value is rejected. |
 | `--plain-diff`                     | Disable rich diff rendering (syntax highlighting via the diff tool specified by your Git config). |
 | `--plugin-dir=DIRECTORY`           | Load a plugin from a local directory (can be used multiple times). A relative path resolves against the session working directory (the `--resume`, `--worktree`, or `-C` directory), regardless of option order. Agents contributed by a `--plugin-dir` plugin are available in server-mode (`--server`) sessions as well as interactive and `-p` sessions. |
@@ -1021,7 +1021,7 @@ Use `/collect-debug-logs [file|gist|share] [PATH]` to gather debug logs for trou
 | `--share=PATH`                     | Share a session to a Markdown file after completion of a programmatic session (default path: `./copilot-session-<ID>.md`). |
 | `--share-gist`                     | Share a session to a secret GitHub gist after completion of a programmatic session. |
 | `--stream=MODE`                    | Enable or disable streaming mode, which displays Copilot's response progressively as it is generated rather than waiting for the full response to arrive (mode choices: `on` or `off`, default: `on`).
-| `--sync-session[=on\|off]`         | Enable or disable read-only session history syncing for this run. Without a value, enables syncing. Does not enable remote control. If omitted, uses your settings and the default behavior. |
+| `--sync-session[=on\|off]`         | Enable or disable read-only session history syncing for this run. Without a value, enables syncing. Does not enable remote control. If omitted, uses your settings and the default behavior. Syncing is refused when your organization's cloud session storage policy is off or can't be determined. |
 | `-v`, `--version`                  | Show version information. |
 | `-w`, `--worktree[=NAME]`          | Create or reuse an isolated Git worktree under `<repo>.worktrees/` by default and start the session inside it. Use the `worktreePathTemplate` setting to configure the location. `NAME` is optional—omit it to auto-generate a branch name. By default, branches off the current checkout (`HEAD`); set the `worktreeBaseRef` setting to `"defaultBranch"` to branch off the remote default branch instead. Conflicts with `--resume`, `--continue`, and `--connect`. |
 | `--yolo`                           | Enable all permissions (equivalent to `--allow-all`). |
@@ -1103,6 +1103,7 @@ Use `--model=MODEL` or the `COPILOT_MODEL` environment variable to select the AI
 |-------|----------|
 | `claude-sonnet-5.5` | General-purpose coding (default) |
 | `gpt-6.1-sol` | Recommended, opt-in (not the automatic default) |
+| `gpt-6.1-terra` | Recommended, opt-in (not the automatic default) |
 | `gpt-6-astra` | Recommended, opt-in (not the automatic default) |
 | `gpt-6-luna` | Recommended, opt-in (not the automatic default) |
 | `claude-opus-5.5` | Recommended, high-capability complex tasks |
@@ -1474,6 +1475,7 @@ The CLI includes built-in MCP servers that are available without additional setu
 | `playwright` | Browser automation: navigate, click, type, screenshot, and form handling. |
 | `fetch` | HTTP requests via the `fetch` tool. |
 | `time` | Time utilities: `get_current_time` and `convert_time`. |
+| `computer-use` | Screen capture and mouse and keyboard control. Disabled by default. Enable it for a session with `/mcp enable computer-use`. |
 
 Use `--disable-builtin-mcps` to disable all built-in servers, or `--disable-mcp-server SERVER-NAME` to disable a specific one.
 
@@ -1612,7 +1614,7 @@ Skills are loaded from these locations in priority order (first found wins for d
 | `~/.agents/skills/` | Personal | Agent skills shared across all projects. |
 | Plugin directories | Plugin | Skills from installed plugins. |
 | `COPILOT_SKILLS_DIRS` | Custom | Additional directories (comma-separated). |
-| `--add-dir <path>` | Added root | `.github/skills/` under directories added with `--add-dir`, `/add-dir`, or the SDK's `additionalDirectories`. This is a trust decision: added skills run with the same trust as project skills. |
+| `--add-dir <path>` | Added root | `.github/skills/`, `.agents/skills/`, and `.claude/skills/` under directories added with `--add-dir`, `/add-dir`, or the SDK's `additionalDirectories`. This is a trust decision: added skills run with the same trust as project skills. |
 | (bundled with CLI) | Built-in | Skills shipped with the CLI. Lowest priority—overridable by any other source. |
 | (org/enterprise) | Remote | Skills hosted by your organization or enterprise, projected via the AHP relay. Content is fetched on demand when the skill is invoked. |
 
@@ -1724,7 +1726,7 @@ The CLI loads custom agents in the following priority order. When agents have th
 | 1 (highest) | User | `~/.copilot/agents/` |
 | 2 | Project | `.github/agents/`, from the current working directory upward to the Git root |
 | 3 | Project | `.claude/agents/`, from the current working directory upward to the Git root |
-| 4 | Added root | `.github/agents/` under a directory added with `--add-dir`, `/add-dir`, or the SDK's `additionalDirectories`. Adding the directory is a trust decision: its agents are loaded as trusted configuration. |
+| 4 | Added root | `.github/agents/` and `.claude/agents/` under a directory added with `--add-dir`, `/add-dir`, or the SDK's `additionalDirectories`. Adding the directory is a trust decision: its agents are loaded as trusted configuration. |
 | 5 | Plugin | `<plugin>/agents/` |
 | 6 (lowest) | Remote | Organization or enterprise agents |
 
@@ -1913,6 +1915,8 @@ When the full dialog is shown, you can also choose from these options:
 | Always | Permanent | Config file |
 
 The **This location** option appears when the CLI can determine a location key (Git root or current directory). It persists the approval to disk so the same permission is automatically granted the next time you work in that directory without prompting again.
+
+When a shell command needs tool approval and access to paths outside the allowed directories, the CLI can combine both approvals in one prompt. Approving once grants path access for that run only. Approving for the session or location also grants path access for the rest of the session.
 
 Use `/reset-allowed-tools` to clear session approvals for the current session.
 
@@ -2267,8 +2271,8 @@ When content capture is enabled, the following attributes are populated.
 # DOCUMENT_SOURCE: github_docs::content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md
-- **SHA256_FINGERPRINT**: `51c9aa45a84a933434131d8e4036f62675a2002cd2cd9836640352ab8811ff83`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:39.151172+00:00
+- **SHA256_FINGERPRINT**: `92db6847c1bd72d60f52f9483b3786ebd5948692e00c7566b0ef6d90496e792a`
+- **LAST_VERIFIED_UTC**: 2026-11-03T19:17:01.222173+00:00
 ---
 
 **title**: GitHub Copilot CLI configuration directory
@@ -3012,7 +3016,7 @@ These settings apply across all your sessions and repositories. You can use the 
 | `ide.openDiffOnEdit` | `boolean` | `true` | Open file edit diffs in the connected IDE for approval. When `false`, file edit approvals are shown only in the terminal. |
 | `ignoredSkillsLocations` | `string[]` | `[]` | Skill directories (and their descendants) excluded from discovery, regardless of which location would otherwise surface them. Supports `~`-relative paths. See [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#skill-locations). |
 | `includeCoAuthoredBy` | `boolean` | `true` | Add a `Co-authored-by` trailer to git commits made by the agent. |
-| `inlineImages` | `boolean` | `true` | Render images inline using the Kitty graphics protocol. Requires a supported terminal (Ghostty, kitty, or WezTerm). When disabled, image attachments show a text placeholder. |
+| `inlineImages` | `boolean` | `true` | Render images inline using the Kitty graphics protocol. Requires a supported terminal (Ghostty, kitty, WezTerm, or a herdr pane whose graphics renderer is enabled, which is detected automatically). When disabled, image attachments show a text placeholder. |
 | `keepAlive` | `"on"` \| `"off"` \| `"busy"` | `"off"` | Keep-alive mode applied at CLI startup. `"on"` always prevents the system from sleeping, `"busy"` prevents sleeping only while the agent is running, and `"off"` disables keep-alive. Also configurable with the `/keep-alive` slash command. |
 | `logLevel` | `"none"` \| `"error"` \| `"warning"` \| `"info"` \| `"debug"` \| `"all"` \| `"default"` | `"default"` | Logging verbosity. |
 | `mergeStrategy` | `"rebase"` \| `"merge"` | — | Conflict resolution strategy for `/pr fix conflicts`. When set to `"rebase"`, conflicts are resolved by rebasing onto the base branch. When set to `"merge"`, the base branch is merged into the feature branch. If not configured, a picker dialog is shown. |
@@ -3022,11 +3026,11 @@ These settings apply across all your sessions and repositories. You can use the 
 | `pinnedPrompts` | `boolean` | `true` | Pin the current section's user prompt just below the top bar while scrolling the timeline, so it stays clear which request the visible output belongs to. CLI UI only—has no effect on prompts sent to the model. |
 | `powershellFlags` | `string[]` | `["-NoProfile", "-NoLogo"]` | Flags passed to PowerShell on startup. On Windows, the CLI prefers PowerShell 7+ (`pwsh`) and falls back to Windows PowerShell (`powershell.exe`) when `pwsh` is unavailable. Windows only. |
 | `proxyKerberosServicePrincipal` | `string` | unset | Service principal name (SPN) for Kerberos/Negotiate proxy authentication, overriding the derived `HTTP/<proxy-host>`. |
-| `proxyUrl` | `string` | unset | Proxy URL for HTTP(S) requests (for example, `http://proxy.corp.example:3128`). Overridden by the `HTTP_PROXY` or `HTTPS_PROXY` environment variables (any casing). |
+| `proxyUrl` | `string` | unset | Proxy URL for HTTP(S) requests (for example, `http://proxy.corp.example:3128`). Must use an `http`, `https`, or SOCKS scheme, include a host, and use a port from 1 to 65535. Invalid values are rejected when saved. Overridden by the `HTTP_PROXY` or `HTTPS_PROXY` environment variables (any casing). |
 | `remoteSessions` | `boolean` | `false` | Enable remote control by default for interactive sessions when remote control is available. Use `/remote on` or `/remote off` to change remote control for the current session. This is separate from the `remoteExport` setting for session syncing. |
 | `renderHexColors` | `boolean` | `true` | Show six-digit hex color codes written as inline code (for example, `` `#FF0000` ``) as color swatches. |
 | `renderMarkdown` | `boolean` | `true` | Render Markdown in terminal output. |
-| `remoteExport` | `boolean` | `true` | Sync session history to your account when session sync is available. Set to `false` to opt out by default. Enabling remote control with `remoteSessions: true` also enables export, regardless of this setting. Syncing history does not itself enable remote control. Use `--sync-session=on` or `--sync-session=off` to override history syncing for a run. |
+| `remoteExport` | `boolean` | `true` | Sync session history to your account when session sync is available. Set to `false` to opt out by default. Enabling remote control with `remoteSessions: true` also enables export, regardless of this setting. Syncing history does not itself enable remote control. Use `--sync-session=on` or `--sync-session=off` to override history syncing for a run. Syncing is refused when your organization's cloud session storage policy is off or can't be determined. |
 | `respectGitignore` | `boolean` | `true` | Exclude gitignored files from the `@` file mention picker. When `false`, the picker includes files normally excluded by `.gitignore`. |
 | `sandbox.allowBypass` | `boolean` | `true` | Allow sandboxed commands to request a bypass for specific operations (displays a permission prompt), so tools like `grep` and `glob` keep working when the sandbox would otherwise block them. The prompt also lets you disable sandboxing for the rest of the current session if the effective policy permits bypass. Set to `false` to opt out. |
 | `sandbox.enabled` | `boolean` | `false` | Restrict shell commands, MCP/LSP servers, and built-in file/web tools to a sandboxed environment with limited file system and network access. Enable it from the `/sandbox` dialog or with `/sandbox enable`. |
@@ -3198,6 +3202,7 @@ Only the following keys are supported in MDM managed settings.
 |-----|-------------|
 | `allowedMcpServers` | Allowlist of MCP servers users may load, matched by `serverUrl`, `serverCommand`, or `serverName`. Trusted first-party servers (for example, the built-in GitHub MCP server) are always exempt. Leaving this key unset allows all non-default servers; an empty array denies all of them. See [Managed MCP server allow/deny list](#managed-mcp-server-allowdeny-list). |
 | `autoTier` | Set a default Auto routing tier (`"efficiency"`, `"balance"`, or `"intelligence"`) for sessions with `model` set to `auto`. A bare string strictly locks the tier, overriding user and repository settings and hiding it from `/settings`. Use `{"overridable": "TIER"}` instead to set an organization default that users and repositories may still override. `"fast"` is no longer selectable and falls back to `"balance"` with a warning. |
+| `communication.support.url` | Absolute `http` or `https` URL of an organization help page. Informational only. Clients can link to it wherever they would otherwise tell users to contact their administrator. The whole `communication` block is taken from the highest-priority channel that supplies it. |
 | `deniedMcpServers` | Denylist of MCP servers that must never load, matched the same way as `allowedMcpServers`. A matching non-default server is blocked regardless of the allowlist—deny always wins. See [Managed MCP server allow/deny list](#managed-mcp-server-allowdeny-list). |
 | `enabledPlugins` | Enable or disable specific plugins |
 | `extraKnownMarketplaces` | Add trusted plugin marketplaces |

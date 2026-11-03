@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-02T21:33:01.625294+00:00
-- **Total Palabras**: 20,729 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-03T19:17:08.642390+00:00
+- **Total Palabras**: 20,719 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1572,8 +1572,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_345227
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/345227
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/345227
-- **SHA256_FINGERPRINT**: `d0d692b9ff5ca7d2c007806f058e911cd156ee20806c14abddc365b610080b2b`
-- **LAST_VERIFIED_UTC**: 2026-11-02T21:33:01.421759+00:00
+- **SHA256_FINGERPRINT**: `d0bc91568776ee2d7ea6a9fc7f296b582903b25615198227a88360228b03cf30`
+- **LAST_VERIFIED_UTC**: 2026-11-03T19:17:08.635056+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.145.0 Endgame
@@ -1629,8 +1629,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 - Release notes written
 
 `@endgame-champ`:
-- [ ] Build and release Insiders from `release/<x.y>` branch so we can finish verification. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
-- [ ] Build stable from `release/<x.y>` branch (do not release) so that the Zurich team would have a build to release given no candidates. ([Pipline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
+- [x] Build and release Insiders from `release/<x.y>` branch so we can finish verification. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
+- [x] Build stable from `release/<x.y>` branch (do not release) so that the Zurich team would have a build to release given no candidates. ([Pipline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
 
 # Tuesday by noon CET
 
@@ -1639,13 +1639,13 @@ We really appreciate people trying our new features as soon as they are ready, s
 - Release notes
 
 `@endgame-champ`:
-- [ ] Generate "Thank you" section of the release notes in the `vnext` branch of the `vscode-docs` repo.
-    - [ ] [Acknowledge third-party pull requests](https://tools.code.visualstudio.com/acknowledgement) in release notes.
-    - [ ] Acknowledge [issue trackers](https://github.com/microsoft/vscode-internalbacklog/wiki/Community-Triage---Credits#community-triage---role-based) from the community (do the copy-paste variant) -
+- [x] Generate "Thank you" section of the release notes in the `vnext` branch of the `vscode-docs` repo.
+    - [x] [Acknowledge third-party pull requests](https://tools.code.visualstudio.com/acknowledgement) in release notes.
+    - [x] Acknowledge [issue trackers](https://github.com/microsoft/vscode-internalbacklog/wiki/Community-Triage---Credits#community-triage---role-based) from the community (do the copy-paste variant) -
 - [ ] If this is not Patch Tuesday only:
-  - [ ] Build and release insiders from release/<x.y> (if there have been newer changes since last release)
-  - [ ] Build stable from release/<x.y> and release to MSFT folks
-  - [ ] Reenable automatic releases
+  - [x] Build and release insiders from release/<x.y> (if there have been newer changes since last release)
+  - [x] Build stable from release/<x.y> and release to MSFT folks
+  - [x] Reenable automatic releases
     - A build is scheduled for 7:00 PM Zurich time (`19:00 GMT+2`); make sure automatic releases are reenabled before then so we get an Insiders build from `main` on Tuesday evening.
 
 # Tuesday afternoon/Wednesday morning
@@ -1677,8 +1677,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::iteration-plan_271045
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/271045
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/271045
-- **SHA256_FINGERPRINT**: `bbdddf50563f89ff6fe83c256dd8fc3fed39f9c052d47a2307e7330078484e8c`
-- **LAST_VERIFIED_UTC**: 2026-10-21T19:55:00.166362+00:00
+- **SHA256_FINGERPRINT**: `c052b7684ca85ac366b4fd1620f565afa70efe0494eeed1a9cac40f9efc62120`
+- **LAST_VERIFIED_UTC**: 2026-11-03T19:17:08.634501+00:00
 ---
 
 # VS Code Insiders Roadmap: Iteration Plan for October 2025
@@ -1795,7 +1795,7 @@ Legend of annotations:
 - [ ] :runner: Explore UX for next cursor location or cross-file next edits [vscode#271133](https://github.com/microsoft/vscode/issues/271133) @benibenj @hediet @mrleemurray
 - [x] Create an npm package which contains NES as a library [vscode-copilot-chat#216](https://github.com/microsoft/vscode-copilot-chat/pull/216) @chrmarti
 - [ ] :runner: Explore Optimistic Next Edit Suggestions [vscode-copilot-chat#222](https://github.com/microsoft/vscode-copilot-chat/pull/222) @chrmarti
-- [ ] :runner: Revive TypeScript context provider experiment [vscode#255373](https://github.com/microsoft/vscode/issues/255373) @dbaeumer
+- [ ] :runner: Revive TypeScript context provider experiment [vscode#255373](https://github.com/microsoft/vscode-internalbacklog/issues/10579) @dbaeumer
 
 #### Integrations
 - [ ] :runner: Improve GH Coding Agent (aka Padawan) integration [vscode#270856](https://github.com/microsoft/vscode/issues/270856) @osortega @rebornix
@@ -1857,8 +1857,8 @@ Legend of annotations:
 # DOCUMENT_SOURCE: vscode_insiders::iteration-plan_277757
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/277757
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/277757
-- **SHA256_FINGERPRINT**: `30a907360593dc7ddc58c4e9cdb47fe6977124644bb2cf1554c85ae860ebc2f7`
-- **LAST_VERIFIED_UTC**: 2026-10-21T19:55:00.164423+00:00
+- **SHA256_FINGERPRINT**: `01f228c810b1f6d4b96e10c1ef718c4f1d648e9de012ba05213e3d122b0e962e`
+- **LAST_VERIFIED_UTC**: 2026-11-03T19:17:08.633751+00:00
 ---
 
 # VS Code Insiders Roadmap: Iteration Plan for November 2025
@@ -1951,7 +1951,7 @@ Legend of annotations:
 - [x] Explore rendering cross-file next edits [vscode#271133](https://github.com/microsoft/vscode/issues/271133) @benibenj @hediet @mrleemurray
 - [x] Render NES / Completions model information in the status bar [vscode#277826](https://github.com/microsoft/vscode/issues/277826) @hediet
 - [x] Explore invoking semantic rename with NES [vscode#277818](https://github.com/microsoft/vscode/issues/277818) @dbaeumer
-- [x] Revive TypeScript context provider experiment [vscode#255373](https://github.com/microsoft/vscode/issues/255373) @dbaeumer
+- [x] Revive TypeScript context provider experiment [vscode#255373](https://github.com/microsoft/vscode-internalbacklog/issues/10579) @dbaeumer
 - [x] Include diagnostics in NES prompts [vscode#277809](https://github.com/microsoft/vscode/issues/277809) @benibenj @ulugbekna
 - [x] Register a single `InlineCompletionItemProvider` [vscode#277831](https://github.com/microsoft/vscode/issues/277831) @hediet @benibenj @chrmarti
 - [ ] :muscle: Allow running simulation tests that include the completions model [vscode#280344](https://github.com/microsoft/vscode/issues/280344) @ulugbekna @benibenj
@@ -2305,11 +2305,18 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `df6d9f56a665b864d8e6c2c707489f36d99441f5aa9068952d3026d5fd2bedb1`
-- **LAST_VERIFIED_UTC**: 2026-10-30T05:00:18.385311+00:00
+- **SHA256_FINGERPRINT**: `c9419a658cfcbd2e6dcfc4b7f2ce757754275b36521a66c0f76947fe027297be`
+- **LAST_VERIFIED_UTC**: 2026-11-03T19:17:04.383947+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
+
+## GitHub Copilot is now available in JetBrains Air
+- **Date**: Tue, 03 Nov 2026 15:11:46 +0000
+- **URL**: https://github.blog/changelog/2026-11-03-github-copilot-is-now-available-in-jetbrains-air
+
+You can now delegate coding tasks, guide execution, and review results with GitHub Copilot in JetBrains Air. The integration uses the Agent Client Protocol (ACP) and supports tasks in your...
+The post GitHub Copilot is now available in JetBrains Air appeared first on The GitHub Blog .
 
 ## Route and orchestrate models with GitHub Copilot Fusion
 - **Date**: Wed, 28 Oct 2026 16:00:00 +0000
@@ -2373,10 +2380,3 @@ The post Repository plugin defaults and enterprise plugin controls generally ava
 
 You can now generate and edit images using natural language in GitHub Copilot. When you ask for an image, your selected reasoning model calls a dedicated image-generation tool powered by...
 The post Generate and edit images directly in Copilot appeared first on The GitHub Blog .
-
-## GitHub Copilot Fusion now supports selection of local models
-- **Date**: Wed, 28 Oct 2026 15:30:42 +0000
-- **URL**: https://github.blog/changelog/2026-10-28-github-copilot-fusion-now-supports-selection-of-local-models
-
-Today we are shipping intelligent routing for local models into experimental preview. GitHub Copilot Fusion can now choose between supported on-device models and cloud models, enabling intelligent local model routing...
-The post GitHub Copilot Fusion now supports selection of local models appeared first on The GitHub Blog .

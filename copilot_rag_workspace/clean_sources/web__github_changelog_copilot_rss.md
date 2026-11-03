@@ -1,5 +1,12 @@
 # GitHub Copilot Official Changelog Feed
 
+## GitHub Copilot is now available in JetBrains Air
+- **Date**: Tue, 03 Nov 2026 15:11:46 +0000
+- **URL**: https://github.blog/changelog/2026-11-03-github-copilot-is-now-available-in-jetbrains-air
+
+You can now delegate coding tasks, guide execution, and review results with GitHub Copilot in JetBrains Air. The integration uses the Agent Client Protocol (ACP) and supports tasks in your...
+The post GitHub Copilot is now available in JetBrains Air appeared first on The GitHub Blog .
+
 ## Route and orchestrate models with GitHub Copilot Fusion
 - **Date**: Wed, 28 Oct 2026 16:00:00 +0000
 - **URL**: https://github.blog/changelog/2026-10-28-route-and-orchestrate-models-with-github-copilot-fusion
@@ -62,10 +69,3 @@ The post Repository plugin defaults and enterprise plugin controls generally ava
 
 You can now generate and edit images using natural language in GitHub Copilot. When you ask for an image, your selected reasoning model calls a dedicated image-generation tool powered by...
 The post Generate and edit images directly in Copilot appeared first on The GitHub Blog .
-
-## GitHub Copilot Fusion now supports selection of local models
-- **Date**: Wed, 28 Oct 2026 15:30:42 +0000
-- **URL**: https://github.blog/changelog/2026-10-28-github-copilot-fusion-now-supports-selection-of-local-models
-
-Today we are shipping intelligent routing for local models into experimental preview. GitHub Copilot Fusion can now choose between supported on-device models and cloud models, enabling intelligent local model routing...
-The post GitHub Copilot Fusion now supports selection of local models appeared first on The GitHub Blog .
