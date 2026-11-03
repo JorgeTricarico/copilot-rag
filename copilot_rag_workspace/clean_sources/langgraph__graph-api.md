@@ -71,7 +71,7 @@ It is also possible to define explicit input and output schemas for a graph. In 
 
 Let's look at an example:
 
-```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from typing import TypedDict
 
 from langgraph.graph import END, START, StateGraph
@@ -146,7 +146,7 @@ There are two subtle and important points to note here:
 >
 > When you stream with `stream_mode="values"`, the graph emits **all** of its state channels by default, including private ones, because values streaming defaults to the full set of state channels rather than the output schema. This is why a private channel like `bar` is hidden by `invoke` but visible while streaming:
 >
-> ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+> ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 > stream = graph.stream_events({"user_input": "My"}, version="v3")
 > for snapshot in stream.values:
 >     print(snapshot)
@@ -194,7 +194,7 @@ new_value = reducer(left=current_state[key], right=node_update[key])
 
 The left argument always comes from accumulated state. The right argument always comes from the latest node update. The following example names both arguments explicitly:
 
-```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from typing import Annotated
 
 from typing_extensions import TypedDict
@@ -209,7 +209,7 @@ class State(TypedDict):
 
 Suppose the state is `{"tags": ["draft"]}` and a node returns `{"tags": ["review"]}`. LangGraph calls:
 
-```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 append_strings(left=["draft"], right=["review"])  # returns ["draft", "review"]
 ```
 
@@ -221,7 +221,7 @@ Custom reducers combine the left and right arguments. The [default reducer](#def
 
 The default reducer ignores the left argument and replaces the state value with the right argument. This example shows how to use the default reducer:
 
-```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from typing_extensions import TypedDict
 
 class State(TypedDict):
@@ -237,7 +237,7 @@ In this example, no reducer functions are specified for any key. Let's assume th
 
 A custom reducer combines the left and right arguments instead of replacing the state value, which is useful for accumulating values, such as appending updates to a list. This example shows how to specify a custom reducer:
 
-```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from operator import add
 from typing import Annotated
 
@@ -262,7 +262,7 @@ A common source of confusion with reducers: with a merging reducer, returning an
 
 This pattern matters for error buffers or retry counters that must be cleared between retry attempts:
 
-```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from operator import add
 from typing import Annotated
 
@@ -278,7 +278,7 @@ class State(TypedDict):
 
 To clear the field while keeping a merging reducer, wrap the update with [`Overwrite`](https://reference.langchain.com/python/langgraph/types/):
 
-```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from operator import add
 from typing import Annotated
 
@@ -338,108 +338,6 @@ const State = new StateSchema({
 > [!WARNING]
 >
 > Don't use `UntrackedValue` for data you need to persist across interrupts or time travel. Use regular state fields or `ReducedValue` for persistent data.
-
-### Type utilities
-
-LangGraph provides several type utilities for better TypeScript type safety when defining nodes and conditional edges.
-
-#### `GraphNode`
-
-Use `GraphNode` to type node functions defined outside the graph builder:
-
-```typescript theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
-import { GraphNode, StateSchema, Command } from "@langchain/langgraph";
-import { z } from "zod/v4";
-
-const State = new StateSchema({
-  count: z.number().default(0),
-  result: z.string(),
-});
-
-// Basic node - receives state, returns partial update
-const incrementNode: GraphNode<typeof State> = (state) => {
-  return { count: state.count + 1 };
-};
-
-// Async node
-const fetchNode: GraphNode<typeof State> = async (state, config) => {
-  const response = await fetch(`/api/data/${state.count}`);
-  return { result: await response.text() };
-};
-
-// Node with Command routing - specify valid destinations
-const routerNode: GraphNode<{ InputSchema: typeof State; Nodes: "process" | "done" }> = (state) => {
-  if (state.count >= 10) {
-    return new Command({ goto: "done" });
-  }
-  return new Command({
-    update: { count: state.count + 1 },
-    goto: "process"
-  });
-};
-```
-
-#### `State.Node` shorthand
-
-Each `StateSchema` instance has a `Node` property that provides a shorthand for typing nodes:
-
-```typescript theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
-const State = new StateSchema({
-  messages: MessagesValue,
-  step: z.string(),
-});
-
-// These are equivalent:
-const myNode1: GraphNode<typeof State> = (state) => ({ step: "done" });
-const myNode2: typeof State.Node = (state) => ({ step: "done" });
-```
-
-#### `ConditionalEdgeRouter`
-
-Use `ConditionalEdgeRouter` for routing functions in conditional edges (no state updates, just routing):
-
-```typescript theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
-import { ConditionalEdgeRouter, END } from "@langchain/langgraph";
-
-const State = new StateSchema({
-  shouldContinue: z.boolean(),
-  step: z.string(),
-});
-
-// Router returns node name(s) or END
-const router: ConditionalEdgeRouter<{ InputSchema: typeof State; Nodes: "process" | "summarize" }> = (state) => {
-  if (!state.shouldContinue) {
-    return END;
-  }
-  return state.step === "initial" ? "process" : "summarize";
-};
-
-// Use in graph
-graph.addConditionalEdges("check", router);
-```
-
-#### `StateSchema.State` and `StateSchema.Update`
-
-Extract the state and update types from a schema for use in custom type definitions:
-
-```typescript theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
-import { StateSchema } from "@langchain/langgraph";
-
-const MyStateSchema = new StateSchema({
-  messages: MessagesValue,
-  count: z.number().default(0),
-});
-
-// Extract the full state type
-type MyState = typeof MyStateSchema.State;
-// { messages: BaseMessage[], count: number }
-
-// Extract the update type (partial, with reducer input types)
-type MyUpdate = typeof MyStateSchema.Update;
-// { messages?: Messages, count?: number }
-```
-
-:::
 
 ### Working with messages in graph state
 
@@ -563,7 +461,7 @@ If a [node](#nodes) contains multiple operations, you may find it easier to impl
 
 > [tab] Original
 >
-> ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+> ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 > from typing import NotRequired
 >
 > import requests
@@ -604,7 +502,7 @@ If a [node](#nodes) contains multiple operations, you may find it easier to impl
 
 > [tab] With task
 >
-> ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+> ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 > from typing import NotRequired
 >
 > import requests
@@ -907,7 +805,7 @@ This is particularly useful when implementing [multi-agent handoffs](https://doc
 
 Use `Command(resume=...)` to provide a value and resume graph execution after an [interrupt](https://docs.langchain.com/oss/python/langgraph/interrupts.md). The value passed to `resume` becomes the return value of the `interrupt()` call inside the paused node:
 
-```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}} theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
 from typing import TypedDict
 
 from langgraph.checkpoint.memory import InMemorySaver

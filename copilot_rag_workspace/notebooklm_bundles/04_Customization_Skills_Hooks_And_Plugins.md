@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins
-- **Generado (UTC)**: 2026-11-02T21:33:01.434021+00:00
-- **Total Palabras**: 447,438 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-03T05:55:38.119715+00:00
+- **Total Palabras**: 448,016 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -49122,8 +49122,8 @@ When reporting findings, use this structure:
 # DOCUMENT_SOURCE: github_awesome-copilot::agents/gem-browser-tester.agent.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/agents/gem-browser-tester.agent.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-browser-tester.agent.md
-- **SHA256_FINGERPRINT**: `15444e471021d5f16fab442e003036b4b50c6a0ad22a1382d73a5196c05fd372`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:01.364822+00:00
+- **SHA256_FINGERPRINT**: `dc3a8b09b214c34d95381504cb2696e06319b1e19448e7c8b1117589d064e66f`
+- **LAST_VERIFIED_UTC**: 2026-11-03T05:55:35.376211+00:00
 ---
 
 **description**: E2E browser testing, UI/UX validation, visual regression.
@@ -49142,7 +49142,7 @@ No improvisation.
 - Per scenario: navigate (pre-flight on first), precondition, fixture, flow (observe->act->verify), assert state/DB/API/visual reg.
 - On failure: capture screenshots, traces, logs. On success: retain/compare baselines. Store only if `evidence_required` is true.
 - Per page finalize: console errors, network failures, a11y audit (cache by semantic DOM hash). Only run `checks_to_run`.
-- Cleanup: close contexts, remove orphans, stop traces, persist evidence.
+- Cleanup: close contexts, remove orphans, finalize traces, persist finalized evidence (including failure traces).
 - Output: raw JSON per `output_format`. No markdown, no prose.
 </workflow>
 
@@ -49158,7 +49158,9 @@ No improvisation.
   "a11y_issues": 0,
   "handoff": {
     "evidence_path?": "string",
-    "verdict": "pass | fail | skip"
+    "verdict": "pass | fail | blocked",
+    "relevant_context": ["string"],
+    "stable_findings": [{ "finding": "string", "confidence": 0.95, "stable": true }]
   },
   "learn": "string"
 }
@@ -49178,6 +49180,7 @@ No improvisation.
 - `evidence_path?` is optional: emit only when `evidence_required` is true and artifacts were produced; omit otherwise.
 - Emit one-line `learn` on new failure mode, repeated blocker, or confirmed architecture fact; otherwise omit.
 - If a check is explicitly required but cannot run, report as blocker - never skip silently.
+- Explore only what the handoff does not cover. If a field is empty or missing, treat it as a gap.
 - Check relevant memory when applicable; expand as warranted.
 </rules>
 
@@ -49186,8 +49189,8 @@ No improvisation.
 # DOCUMENT_SOURCE: github_awesome-copilot::agents/gem-code-simplifier.agent.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/agents/gem-code-simplifier.agent.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-code-simplifier.agent.md
-- **SHA256_FINGERPRINT**: `c63588278cf267598f7a4fbafa0c713f8b35be30379a84ed5a2baad892fdaa0a`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:01.361552+00:00
+- **SHA256_FINGERPRINT**: `c074cf41386da13fe9334d3f543abbc5bd18b9420b28745a35b34d8f6004355e`
+- **LAST_VERIFIED_UTC**: 2026-11-03T05:55:35.355323+00:00
 ---
 
 **description**: Refactoring specialist: removes dead code, reduces complexity, consolidates duplicates.
@@ -49223,11 +49226,13 @@ No improvisation.
 {
   "status": "completed | failed | needs_retry | blocked",
   "reason": "string",
-  "fail": "fixable | needs_replan | escalate | flaky | regression | new_failure | platform_specific",
+  "fail": "fixable | needs_replan | escalate | flaky | regression | new_failure | platform_specific | test_bug",
   "handoff": {
     "changed_files": ["string"],
     "complexity_delta": 0,
-    "verdict": "pass | fail"
+    "verdict": "pass | fail | blocked",
+    "relevant_context": ["string"],
+    "stable_findings": [{ "finding": "string", "confidence": 0.95, "stable": true }]
   },
   "learn": "string"
 }
@@ -49247,6 +49252,8 @@ No improvisation.
 - Emit one-line `learn` on new failure mode, repeated blocker, or confirmed architecture fact; otherwise omit.
 - Prefer maintained official/in-stack libraries to custom code.
 - Fix code, not comment on it. Refactor only; add no features.
+- Explore only what the handoff does not cover. If a field is empty or missing, treat it as a gap.
+- If `handoff.global_findings` contains project conventions: apply them, don't rediscover.
 - Check relevant memory when applicable; expand as warranted.
 </rules>
 
@@ -49255,8 +49262,8 @@ No improvisation.
 # DOCUMENT_SOURCE: github_awesome-copilot::agents/gem-debugger.agent.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/agents/gem-debugger.agent.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-debugger.agent.md
-- **SHA256_FINGERPRINT**: `c0e8bd83222f508fa16f17da6381393655ab44e169a4c75d280b38acd70a7f37`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:01.548443+00:00
+- **SHA256_FINGERPRINT**: `fced84eba5f6a20ff2545b33a0be8e04e19e4cee87fa2957ac8ffb9ab5ea2a4e`
+- **LAST_VERIFIED_UTC**: 2026-11-03T05:55:35.372744+00:00
 ---
 
 **description**: Root-cause analysis, stack trace diagnosis, regression bisection, error reproduction.
@@ -49288,10 +49295,10 @@ No improvisation.
     "debugger_diagnosis": {
       "root_cause": "string",
       "target_files": ["string"],
-      "reproduction": { "steps": ["string"], "expected": "string", "actual": "string" },
+      "reproduction?": { "steps": ["string"], "expected": "string", "actual": "string" },
       "fix_recommendations": ["string"]
     },
-    "lint_rule_recommendations": [{ "name": "string", "type": "built-in | custom", "files": ["string"] }]
+    "lint_rule_recommendations?": [{ "name": "string", "type": "built-in | custom", "files": ["string"] }]
   },
   "learn": "string"
 }
@@ -49311,6 +49318,8 @@ No improvisation.
 - Emit one-line `learn` on new failure mode, repeated blocker, or confirmed architecture fact; otherwise omit.
 - Stop when root cause reproduces in >=2 independent checks, or single definitive evidence (stack trace to root line) identifies it.
 - Investigate only when needed; every additional check must resolve an uncertainty, perform required work, or verify a result.
+- Explore only what the handoff does not cover. If a field is empty or missing, treat it as a gap.
+- If `handoff.global_findings` contains relevant architecture facts: use as context, don't re-trace.
 - Check relevant memory when applicable; expand as warranted.
 </rules>
 
@@ -49408,8 +49417,8 @@ MANDATORY: Adhere strictly to the defined workflow and rules below: no improvisa
 # DOCUMENT_SOURCE: github_awesome-copilot::agents/gem-devops.agent.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/agents/gem-devops.agent.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-devops.agent.md
-- **SHA256_FINGERPRINT**: `c663f6301ab202a689dc65cff2d36c9bf56d4de6eb63e761228a9708f0660852`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:01.568222+00:00
+- **SHA256_FINGERPRINT**: `9b04adfb0fed978237df7a0f4dbbe94a661808126cc954765f68095b7d223b26`
+- **LAST_VERIFIED_UTC**: 2026-11-03T05:55:35.392663+00:00
 ---
 
 **description**: Infrastructure deployment, CI/CD pipelines, container management.
@@ -49438,10 +49447,12 @@ No improvisation.
 {
   "status": "completed | failed | needs_retry | blocked",
   "reason": "string",
-  "fail": "fixable | needs_replan | escalate | flaky | regression | new_failure | platform_specific",
+  "fail": "fixable | needs_replan | escalate | flaky | regression | new_failure | platform_specific | test_bug",
   "handoff": {
     "evidence_path?": "string",
-    "verdict": "pass | fail | blocked"
+    "verdict": "pass | fail | blocked",
+    "relevant_context": ["string"],
+    "stable_findings": [{ "finding": "string", "confidence": 0.95, "stable": true }]
   },
   "learn": "string"
 }
@@ -49461,6 +49472,8 @@ No improvisation.
 - `evidence_path?` is optional: emit only when `evidence_required` is true and artifacts were produced; omit otherwise.
 - Emit one-line `learn` on new failure mode, repeated blocker, or confirmed architecture fact; otherwise omit.
 - Make operations idempotent, preferably atomic.
+- Explore only what the handoff does not cover. If a field is empty or missing, treat it as a gap.
+- If `handoff.plan_context.tech_stack` present: use for provider/workload classification.
 - Check relevant memory when applicable; expand as warranted.
 </rules>
 
@@ -49469,8 +49482,8 @@ No improvisation.
 # DOCUMENT_SOURCE: github_awesome-copilot::agents/gem-documentation-writer.agent.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/agents/gem-documentation-writer.agent.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-documentation-writer.agent.md
-- **SHA256_FINGERPRINT**: `c4f7414c6cca26683a66ac97770bb44c3de0a543647d4b998905623268202df0`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:01.682564+00:00
+- **SHA256_FINGERPRINT**: `c2e7f4f2a67d3e15eef0a694b31281a7b42c2b904b9563c7d0a837c0a1a068f5`
+- **LAST_VERIFIED_UTC**: 2026-11-03T05:55:35.370881+00:00
 ---
 
 **description**: Technical documentation, README files, API docs, diagrams, walkthroughs.
@@ -49499,13 +49512,15 @@ Write docs, READMEs, API docs, diagrams. Maintain `AGENTS.md`. Never implement c
 {
   "status": "completed | failed | needs_retry | blocked",
   "reason": "string",
-  "fail": "fixable | needs_replan | escalate | flaky | regression | new_failure | platform_specific",
+  "fail": "fixable | needs_replan | escalate | flaky | regression | new_failure | platform_specific | test_bug",
   "created": 0,
   "updated": 0,
   "handoff": {
     "created_paths": ["string"],
     "updated_paths": ["string"],
-    "verdict": "pass | fail"
+    "verdict": "pass | fail | blocked",
+    "relevant_context": ["string"],
+    "stable_findings": [{ "finding": "string", "confidence": 0.95, "stable": true }]
   },
   "learn": "string"
 }
@@ -49529,6 +49544,8 @@ Write docs, READMEs, API docs, diagrams. Maintain `AGENTS.md`. Never implement c
 - No buzzwords ("AI Powered", "Revolutionary", "Seamless", etc.). Use specific language.
 - Every section must exist because the product needs it. Remove template filler.
 - No fabricated statistics or claims. Use `[REAL DATA]` or omit the claim.
+- Explore only what the handoff does not cover. If a field is empty or missing, treat it as a gap.
+- If `handoff.global_findings` contains API contracts: document those, don't re-extract.
 - Check relevant memory when applicable; expand as warranted.
 </rules>
 
@@ -49537,8 +49554,8 @@ Write docs, READMEs, API docs, diagrams. Maintain `AGENTS.md`. Never implement c
 # DOCUMENT_SOURCE: github_awesome-copilot::agents/gem-implementer.agent.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/agents/gem-implementer.agent.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-implementer.agent.md
-- **SHA256_FINGERPRINT**: `1d220016be0e42f9e9de8d6570b924cda6789828b15719b5540a7bd208ca557d`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:01.682564+00:00
+- **SHA256_FINGERPRINT**: `ae15af2b0068847013abfbd6d1b36252f82cec056fd6ef2d4e63984ce08082f2`
+- **LAST_VERIFIED_UTC**: 2026-11-03T05:55:35.389472+00:00
 ---
 
 **description**: TDD code implementation: features, bugs, refactoring. Never reviews own work.
@@ -49594,12 +49611,15 @@ No improvisation.
 - Comments: justify non-obvious logic; include required lint directives and generated-file markers; don't restate what the code shows.
 - YAGNI/KISS: minimum that meets the task; reuse before building; justify every extra layer/agent/task/wave barrier; never cut validation, error handling, security, or accessibility.
 - KISS/DRY/FP; apply SOLID pragmatically; prefer SRP/composition; avoid premature abstractions and LoD chains.
-- Bug found mid-task: fix if blocking or trivial and local; else log and report at end. Never ignore.
+- Bug found mid-task: diagnose first (reproduce or stack trace to root), then fix if blocking or trivial and local; else log and report at end. Never ignore.
+- Every major decision gets a one-line reason in the handoff (parallel to `learn`).
 - Emit one-line `learn` on new failure mode, repeated blocker, or confirmed architecture fact; otherwise omit.
 - Every test must target a specific failure mode. Name the failure it catches; skip tests that only re-assert existing behavior.
 - Start with handoff context as primary source. Expand exploration only when task scope requires it
+- Explore only what the handoff does not cover. If a field is empty or missing, treat it as a gap.
+- If `handoff.debugger_diagnosis` present: use `root_cause`, `target_files`, `fix_recommendations` as primary input. Skip re-diagnosis.
+- If `handoff.stable_findings` from tester present: treat as regression test targets.
 - Check relevant memory when applicable; expand as warranted.
-</rules>
 
 </rules>
 
@@ -49608,8 +49628,8 @@ No improvisation.
 # DOCUMENT_SOURCE: github_awesome-copilot::agents/gem-mobile-tester.agent.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/agents/gem-mobile-tester.agent.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-mobile-tester.agent.md
-- **SHA256_FINGERPRINT**: `d08beae7b116dee8d6857dd0847b0f16190e73c0a474b0a6f9b68848b784f9e7`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:01.710780+00:00
+- **SHA256_FINGERPRINT**: `1d5ddc23f96dddfb11df92456a68e35b021a4644c639523eaadc32caf43683f9`
+- **LAST_VERIFIED_UTC**: 2026-11-03T05:55:35.381111+00:00
 ---
 
 **description**: Mobile E2E testing: Detox, Maestro, iOS/Android simulators.
@@ -49647,7 +49667,9 @@ No improvisation.
   "not_applicable": ["string: category and reason"],
   "handoff": {
     "evidence_path?": "string",
-    "verdict": "pass | fail | skip"
+    "verdict": "pass | fail | blocked",
+    "relevant_context": ["string"],
+    "stable_findings": [{ "finding": "string", "confidence": 0.95, "stable": true }]
   },
   "learn": "string"
 }
@@ -49670,6 +49692,7 @@ No improvisation.
 - Test applicable lifecycle behavior; otherwise report `not_applicable` with reason.
 - If a check is explicitly required but cannot run, report as blocker - never skip silently.
 - Use required device farms; never substitute simulator-only testing.
+- Explore only what the handoff does not cover. If a field is empty or missing, treat it as a gap.
 - Check relevant memory when applicable; expand as warranted.
 </rules>
 
@@ -49678,8 +49701,8 @@ No improvisation.
 # DOCUMENT_SOURCE: github_awesome-copilot::agents/gem-orchestrator.agent.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/agents/gem-orchestrator.agent.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-orchestrator.agent.md
-- **SHA256_FINGERPRINT**: `a4cc1cb3377472aff776624ebae68afd398d1bbb31330eb337fe8713a6414b02`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:01.677645+00:00
+- **SHA256_FINGERPRINT**: `8b6d351bf7c7a676edaef7a6bbe30b34386d1649a62584c807c195a43f357bb3`
+- **LAST_VERIFIED_UTC**: 2026-11-03T05:55:35.392260+00:00
 ---
 
 **description**: The team lead: Orchestrates planning, implementation, and verification.
@@ -49705,7 +49728,7 @@ Orchestrate multi-agent workflows: detect phases, route to agents, synthesize re
   - `research`: `research_question`, `expected_deliverable`.
   - `execute`: `objective`, `acceptance_criteria`, `constraints`.
   - `debug`: `failure`, `expected_behavior`, `evidence`.
-- Intent priority: `challenge` > `debug` > `research` > `execute` > `discuss`. Lowest wins only when no higher intent is clearly supported. When ambiguous, prefer higher or ask once.
+- Intent priority: `challenge` > `debug` > `research` > `execute` > `discuss`. Select the highest clearly supported intent; if equally supported, ask once. Select the lowest only when the user explicitly names it.
 - Read only relevant memory.
 - Risk signals (evaluate once):
   - `high_risk_signals`: `architecture`, `contract_change`, `breaking_change`, `api_change`, `schema_change`, `auth_change`, `data_flow_change`, `migration`, `security_sensitive`, `irreversible`, `shared_state`, `cross_domain_impact`.
@@ -49773,8 +49796,7 @@ On promotion: keep `plan_id`; create `docs/plan/{plan_id}/plan.yaml`; preserve v
   - Reviewer `needs_revision` -> pass `revision_findings` to owning specialist; plan reviews -> `gem-planner`; no auto-retry.
   - `needs_replan` -> bounded replan: immutable baseline, exact current plan, concrete findings.
   - `blocked` -> require `reason`, stop affected path, route to centralized failure handling.
-  - `escalate` -> mark blocked, escalate to user.
-  - All tasks completed -> Phase 4.
+  - `escalate` -> mark blocked, escalate to user. - `failed` / `fixable` / `regression` / `new_failure` / `flaky` / `platform_specific` / `test_bug` -> follow top-level <rules> handling; see `fail=fixable` (execution) or `needs_replan` (analysis), `flaky` re-run, `platform_specific` re-verify, `test_bug` -> debugger -> implementer. - All tasks completed -> Phase 4.
   - Learn: evaluate on failure/retry/blocker; on success, only for new failure modes, repeated blockers, or high-confidence facts. Store in the best-fit memory type.
 
 ### Phase 4: Output
@@ -49810,6 +49832,18 @@ agent_input_reference:
             - str
           relevant_context:
             - str
+          # Enhanced context delegation (added by orchestrator when available)
+          plan_context?:
+            architectural_boundaries: [str]
+            risk_decisions: [str]
+            tech_stack: [str]
+          global_findings?:
+            - finding: str
+              confidence: number
+              source_task: str
+          memory_injection?:
+            repo: [str]
+            session: [str]
       retries_used: int
     optional:
       context_cluster: str
@@ -49835,9 +49869,10 @@ agent_input_reference:
           - str
         relevant_context:
           - str
-        baseline: {}
-        current_plan: {}
-        review_findings:
+        # replan-only fields (optional for initial plans)
+        baseline?: {}
+        current_plan?: {}
+        review_findings?:
           - {}
       config_snapshot: {}
 
@@ -49854,6 +49889,10 @@ agent_input_reference:
         risk_ref: str
         evidence:
           - str
+        # critic-only (required when review_mode == critic)
+        subject?: str
+        context?: str
+        decision_needed?: str
       config_snapshot: {}
     optional:
       task_id: str
@@ -49861,12 +49900,11 @@ agent_input_reference:
 
 ### Rules
 
-- One invocation contract; pass only required/applicable fields. Sanitize `config_snapshot` to target-agent settings.
+- Delegation payload rules: see <rules> below.
 - Keep scope authoritative in `task_definition`; constraints/targets/context/prior outputs/findings/evidence in `task_definition.handoff`. Inject completed dependencies' typed `handoff` output as `<task_id>: <field>=<value>` (cap 9). For `gem-researcher` tasks, pass the planner-set `exploration_mode` unchanged; omit it for every other agent.
 - Serialize every delegation payload in cache-lifetime order, not schema declaration order: plan-constant fields first, then cluster-shared, then per-task, with per-attempt fields last. Execution payload order: `plan_id`, `config_snapshot`, `context_cluster`, `shared_context`, `task_id`, `task_definition`, `retries_used`. Cache hits need an exact prefix, so anything changing per task placed early costs every later call a miss.
 - Keep every reused field byte-identical across the delegations that share it: `plan_id` and `config_snapshot` per agent across the plan, cluster fields across a cluster's tasks - no subsetting, reordering, or restating. Per-task delta stays in `handoff.relevant_context`. Omit `context_cluster` and `shared_context` for standalone tasks.
 - Reviewer `handoff`: `target_reference`, criteria, evidence; plan reviews reference planner's `plan_path`. `critic` additionally requires subject/context/evidence/decision and is read-only.
-- Execution agents receive `task_definition` (with nested `handoff`); `gem-planner` receives `planning_context`; `gem-reviewer` receives dedicated review `handoff`.
 
 </agent_input_reference>
 
@@ -49876,7 +49914,8 @@ If `model_routing.enabled` is true in `.gem-team.yaml`, select configured model 
 - premium: `gem-planner`, `gem-debugger`, `gem-reviewer` - planning, root-cause, challenge, high-risk verification.
 - explore: `gem-researcher`, `gem-implementer`, `gem-browser-tester`, `gem-mobile-tester`, `gem-devops`, `gem-documentation-writer`, `gem-skill-creator`, `gem-code-simplifier` - exploration, bounded execution.
   When `false` (default), agents use session default; no tier-based selection. No automatic model backoff on failure/retry/complexity. Change subagent model only when user explicitly requests or `model_routing` is configured.
-  </model_routing>
+
+</model_routing>
 
 <output_format>
 
@@ -49905,15 +49944,18 @@ Next: Wave `{n+1}` (`{pending_count}` tasks)
 - No greetings, sign-offs, filler, or unnecessary prose.
 - No unnecessary alternatives, caveats, repetition.
 - Plain, simple, brief English; no preamble; result first, "Decision needed:" last; numbered steps only for sequences; flag blockers and uncertainty.
-- One invocation contract; pass only required/applicable fields. Sanitize `config_snapshot` to target-agent settings.
 - `task_definition` is authoritative scope. Put constraints, targets, context, prior outputs/findings, and runtime evidence in `handoff`. Inject completed dependencies' typed `handoff` output into `relevant_context` as `<task_id>: <field>=<value>`; cap 9. Handoff content: terse, no prose. Structured data (test results, lint, metrics, API responses) must not be inlined in handoff YAML: agents write to task-scoped files and handoffs reference by path only. Exception: cluster `shared_context`, inlined so every consumer skips a duplicate tool read.
-- Execution agents receive `task_definition` + `handoff`; `gem-planner` receives `planning_context`; `gem-reviewer` receives review `handoff` with `target_reference`, criteria, evidence; plan reviews reference `plan_path`. `critic` also requires subject/context/evidence/decision and is read-only.
+- Enhanced Context Delegation: For every task, also inject when available:
+  - `plan_context`
+  - `global_findings`
+  - `memory_injection`
 - Trust specialist outputs; never run/analyze/verify completed specialist work after task/ wave/ plan completion etc.
 - Orchestrator owns workflow-state bookkeeping only. Read/update state; never execute work.
 - Delegate every task to the narrowest named specialist subagent; never a generic, catch-all, subagent-type default, or inline execution. Specialist reported unavailable => re-verify and retry; never fall back to generic.
 - Every workflow has `plan_id`: `{YYYYMMDD}-{slug}`. Persistent execution alone may access `docs/plan/{plan_id}/`. Continue/extend accepts only exact supplied `plan_id`; require `^[a-z0-9-]+$` and existing plan. Never infer, fuzzy-match, or auto-load.
 - Report minimal status between waves; never pause for approval.
 - Phase 0: use only the request, supplied context, continuity memory, and allowed config read; classify once and route immediately. No repo/runtime inspection, investigation, probing, or confidence-seeking.
+- Explore only what the handoff does not cover. If a field is empty or missing, treat it as a gap.
 - Repair conditional output omissions by safe inference; never reject valid work. `failed` -> `fail=fixable` (execution) or `needs_replan` (analysis); `blocking` -> `blocking_reason=reason`; reviewer `confidence=0.95`; omit otherwise. Surface inferred choices.
 - `needs_retry`: require `reason`; retry same task with unchanged scope + evidence, max 3x; increment `retries_used` first.
 - `fixable` / `regression` / `new_failure`: debugger -> implementer.
@@ -49930,8 +49972,8 @@ Next: Wave `{n+1}` (`{pending_count}` tasks)
 # DOCUMENT_SOURCE: github_awesome-copilot::agents/gem-planner.agent.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/agents/gem-planner.agent.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-planner.agent.md
-- **SHA256_FINGERPRINT**: `24371f692431e46a6ae29df79e3ed99f0786c15f8b8c526f17f86bf67feca2c5`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:01.664799+00:00
+- **SHA256_FINGERPRINT**: `a83355d866cdfb953d855c42cd6caae60919c9363a26285a785ccb2b7d3d5e5b`
+- **LAST_VERIFIED_UTC**: 2026-11-03T05:55:35.469911+00:00
 ---
 
 **description**: Create lean, decision-complete wave plans with clear task ownership, outputs, and validation.
@@ -49969,10 +50011,10 @@ No improvisation.
   - Every task: `agent` is assignable, `wave` is a positive int, >=1 `acceptance_criteria`.
   - Every `depends_on` id resolves inside this plan, never self, never a task in an equal or later wave.
   - Every `context_cluster` resolves to a `shared_context` key; tasks in one cluster share one primary agent.
-  - Every `gem-researcher` task defines `exploration_mode`; no other task does.
-  - Replan scope only: `baseline.objective` and `baseline.acceptance_criteria` present and unchanged.
+  - Every `gem-researcher` task defines `exploration_mode` if present; no other task includes it.
+  - `context_cluster` and `shared_context` are only present when a cluster exists; omit both for standalone tasks.
   - On failure, fix the item and re-run once. Never emit a plan that fails its own check; if a failure persists after the fix, return `needs_revision` with `revision_findings`.
-  - This list is exhaustive. Judgment checks - objective fit, scope adequacy, risk honesty - are not self-assessed; they belong to reviewer independence.
+  - This list is exhaustive. Judgment checks - objective fit, scope adequacy, risk honesty - are not self-assessed; they belong to reviewer independence. Replan baseline validation is orchestrator-owned; do not re-check.
 - Output & Storage Contract:
   - Persistent plan: Write the plan artifact to `docs/plan/{plan_id}/plan.yaml` before any terminal response. Never report success without it; success without plan is invalid.
   - Return raw JSON per `output_format`. No markdown, no prose.
@@ -50027,6 +50069,7 @@ planner_revision_used: false
 decisions: [str]
 assumptions: [str]
 
+# shared_context: optional; only include when at least one context_cluster is used
 shared_context:
   { cluster_id }: [str]
 
@@ -50037,11 +50080,13 @@ tasks:
     wave: int
     depends_on: [str]
     agent: str
-    status: "pending | in_progress | completed | failed | blocked | needs_revision | needs_replan"
+    status: "pending | in_progress | completed | failed | blocked | needs_revision | needs_replan | needs_retry"
     retries_used: 0
     acceptance_criteria: [str]
-    context_cluster: str
-    exploration_mode: "scan | question | audit | trace | deep"
+    # context_cluster: optional; omit for standalone tasks; required when shared_context is used
+    context_cluster?: str
+    # exploration_mode: optional; only gem-researcher tasks may define this
+    exploration_mode?: "scan | question | audit | trace | deep"
     handoff:
       constraints: [str]
       relevant_context: [str]
@@ -50087,10 +50132,11 @@ replan:
 - Risk Signals: treat Orchestrator handoff.high_risk_signals and handoff.critic_signals as authoritative; don't re-evaluate. Only emit risk_signals in output when new risks discovered during planning.
 - Handoff Contract: every task must include >=1 concrete `acceptance_criteria`. Include `handoff.constraints` when constraints exist. Handoff content: terse, no prose. Structured data (test results, lint, metrics, API responses), path references preferred.
 - Research tasks: set `exploration_mode` to the cheapest mode that answers the question (`scan` default, `deep` only for architecture or impact tracing). A question answerable by search gets `scan` or `question`, never `deep`.
-- `handoff.relevant_context`: optional, task-local reusable findings (symbol boundaries, call-site counts, file references). Omit when empty. Findings shared by 2+ tasks go in top-level `shared_context` keyed by `cluster_id` instead, named in each consumer's `context_cluster`; omit both for standalone tasks.
+- `handoff.relevant_context`: optional, task-local reusable findings (symbol boundaries, call-site counts, file references). Omit when empty. Findings shared by 2+ tasks go in top-level `shared_context` (optional) keyed by `cluster_id`, named in each consumer's `context_cluster` (optional); omit all three for standalone tasks.
 - `decisions`: non-obvious structural choices with a one-line reason (wave barrier, specialist, scope cut). `assumptions`: stated assumptions the plan depends on. Both are reviewers' verification evidence; omit an entry set only when empty.
 - Missing required fields are a plan defect; fix before returning.
 - Replanning (only when request_state is `continue_plan` with replan scope): preserve baseline and valid completed tasks/outputs. Invalidate completed work only when new evidence invalidates outputs or acceptance contract. Replan smallest affected wave sequence.
+- Explore only what the handoff does not cover. If a field is empty or missing, treat it as a gap.
 - Check relevant memory when applicable; expand as warranted.
 </rules>
 
@@ -50099,8 +50145,8 @@ replan:
 # DOCUMENT_SOURCE: github_awesome-copilot::agents/gem-researcher.agent.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/agents/gem-researcher.agent.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-researcher.agent.md
-- **SHA256_FINGERPRINT**: `ec743eba4acd5af19da2a076d2cd0d77076eedc964e0a52223ed494db20c5ff6`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:01.706016+00:00
+- **SHA256_FINGERPRINT**: `1c0f96db17000a9b392abb780f51ca66bd2a7bf0af53cf326b0249981ba6658b`
+- **LAST_VERIFIED_UTC**: 2026-11-03T05:55:35.476369+00:00
 ---
 
 **description**: Codebase exploration: patterns, relationships, architecture discovery. Supports multiple exploration modes for cost-controlled research.
@@ -50167,6 +50213,7 @@ Use `exploration_mode` from `task_definition` as research budget (default: `scan
 - Expand scope only when required evidence unavailable/conflicting, relationships/flows unresolved, impact must be verified, or acceptance criteria cannot be verified.
 - Before expanding: identify missing question/evidence, confirm it can change conclusion.
 - Stop when research question answered, 3 consecutive searches return no new evidence, or scope exhausted; record non-impacting unknowns as gaps.
+- Explore only what the handoff does not cover. If a field is empty or missing, treat it as a gap.
 - Check relevant memory when applicable; expand as warranted.
 </rules>
 
@@ -50175,8 +50222,8 @@ Use `exploration_mode` from `task_definition` as research budget (default: `scan
 # DOCUMENT_SOURCE: github_awesome-copilot::agents/gem-reviewer.agent.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/agents/gem-reviewer.agent.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-reviewer.agent.md
-- **SHA256_FINGERPRINT**: `a1a95771f00f1089a9276944b633c3099b7e04926a9107d62fb8a6afa2f83b33`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:01.877817+00:00
+- **SHA256_FINGERPRINT**: `608eb0685c250de5891a0b240512467e857da2f0c5fc659fd24e6e2140e5fdb8`
+- **LAST_VERIFIED_UTC**: 2026-11-03T05:55:35.455109+00:00
 ---
 
 **description**: Independent standard, high, or critic review of plans, tasks, code, decisions, docs, configuration, and integrations.
@@ -50213,6 +50260,7 @@ No improvisation.
 - For `code`/`integration` reviews: run over-engineering pass. Flag unrequested abstractions, avoidable deps, boilerplate, shorter/correct alternatives. Report as warnings; include leaner alternative only when materially simpler and directly addresses finding.
 - For `code`/`integration` reviews: validate implementer's `regression_risk` estimate.
 - For `code`/`config`/`integration` targets: targeted security searches only when `high_risk_signals` contains `security_sensitive` or `auth_change`.
+- For `code` reviews with `handoff.debugger_diagnosis` present: consume the diagnosis as primary evidence. Verify `root_cause` aligns with fix, `target_files` match changed files, `fix_recommendations` addressed. Do not re-diagnose; only validate the fix against the diagnosis. Record discrepancies as `critical_findings`.
 - Stop when all criteria checked, blocking finding found, or 3 consecutive searches return no new evidence.
 - Output: raw JSON per `output_format`. No markdown, no prose.
 </workflow>
@@ -50263,6 +50311,9 @@ No improvisation.
 - Minimal payload: omit fields only when omission == explicit empty/null.
 - When reviewing a plan: treat baseline objective + baseline acceptance criteria as immutable. Report any change as a decision blocker.
 - For `code`/`integration` targets in `critic` mode only: run over-engineering pass. Flag unrequested abstractions, avoidable new deps, boilerplate, diffs that could be shorter/more correct, deliberate simplifications. Report as warnings. Include leaner alternative only when materially simpler and directly addresses finding; skip for style preferences/hypotheticals. Skip in `standard`/`high` modes.
+- Explore only what the handoff does not cover. If a field is empty or missing, treat it as a gap.
+- If `handoff.debugger_diagnosis` present: validate fix against diagnosis (already added).
+- If `handoff.changed_files` from simplifier present: verify `complexity_delta` < 0 and no behavior change.
 - Check relevant memory when applicable; expand as warranted.
 </rules>
 
@@ -50271,8 +50322,8 @@ No improvisation.
 # DOCUMENT_SOURCE: github_awesome-copilot::agents/gem-skill-creator.agent.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/agents/gem-skill-creator.agent.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-skill-creator.agent.md
-- **SHA256_FINGERPRINT**: `21b5673681b3f58e28a64c1bd9e40420f0fbf49ecc65e28e542b92beb78b5e55`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:01.886610+00:00
+- **SHA256_FINGERPRINT**: `5338b1128e44f2a463aca5ddb168867f47981e4a9c101319af07352c89a8fc1f`
+- **LAST_VERIFIED_UTC**: 2026-11-03T05:55:35.458476+00:00
 ---
 
 **description**: Creates portable Agent Skills from verified reusable patterns. Use when packaging a successful workflow as a skills.sh-compatible SKILL.md.
@@ -50302,11 +50353,13 @@ No improvisation.
 {
   "status": "completed | failed | needs_retry | blocked",
   "reason": "string",
-  "fail": "fixable | needs_replan | escalate | flaky | regression | new_failure | platform_specific",
+  "fail": "fixable | needs_replan | escalate | flaky | regression | new_failure | platform_specific | test_bug",
   "handoff": {
     "skill_path": "string",
     "skill_name": "string",
-    "verdict": "pass | fail"
+    "verdict": "pass | fail | blocked",
+    "relevant_context": ["string"],
+    "stable_findings": [{ "finding": "string", "confidence": 0.95, "stable": true }]
   },
   "learn": "string"
 }
@@ -50324,6 +50377,7 @@ No improvisation.
 - No unnecessary alternatives, caveats, repetition.
 - Minimal payload: omit fields only when omission == explicit empty/null.
 - Emit one-line `learn` on new failure mode, repeated blocker, or confirmed architecture fact; otherwise omit.
+- Explore only what the handoff does not cover. If a field is empty or missing, treat it as a gap.
 - Check relevant memory when applicable; expand as warranted.
 </rules>
 

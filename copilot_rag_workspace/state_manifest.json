@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-02T21:33:01.639359+00:00",
+  "last_sync_utc": "2026-11-03T05:55:38.327988+00:00",
   "total_documents": 2067,
   "documents": {
     "anthropics_skills::README.md": {
@@ -2406,10 +2406,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-browser-tester.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-browser-tester.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "60d86eb25afa2f562055563dbd5a36c65820bb52",
-      "content_sha256": "15444e471021d5f16fab442e003036b4b50c6a0ad22a1382d73a5196c05fd372",
-      "word_count": 324,
-      "last_updated_utc": "2026-10-21T03:45:01.364822+00:00",
+      "git_blob_sha": "0356dbfa4221d8e04355412605ef6010078f4007",
+      "content_sha256": "dc3a8b09b214c34d95381504cb2696e06319b1e19448e7c8b1117589d064e66f",
+      "word_count": 360,
+      "last_updated_utc": "2026-11-03T05:55:35.376211+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-browser-tester.agent.md"
     },
     "github_awesome-copilot::agents/gem-code-simplifier.agent.md": {
@@ -2417,10 +2417,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-code-simplifier.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-code-simplifier.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "fc19fafcadad95422b8be9399c7115bc418e3132",
-      "content_sha256": "c63588278cf267598f7a4fbafa0c713f8b35be30379a84ed5a2baad892fdaa0a",
-      "word_count": 358,
-      "last_updated_utc": "2026-10-21T03:45:01.361552+00:00",
+      "git_blob_sha": "9ad7f3bbda4f43b73dbdbc9b4a223fb46fcd1dc0",
+      "content_sha256": "c074cf41386da13fe9334d3f543abbc5bd18b9420b28745a35b34d8f6004355e",
+      "word_count": 404,
+      "last_updated_utc": "2026-11-03T05:55:35.355323+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-code-simplifier.agent.md"
     },
     "github_awesome-copilot::agents/gem-debugger.agent.md": {
@@ -2428,10 +2428,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-debugger.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-debugger.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "342378e6986dc979c5ee3efebbe3c6864f8cc86c",
-      "content_sha256": "c0e8bd83222f508fa16f17da6381393655ab44e169a4c75d280b38acd70a7f37",
-      "word_count": 387,
-      "last_updated_utc": "2026-10-21T03:45:01.548443+00:00",
+      "git_blob_sha": "b3bf38ec1c55cad414f61d97c6d8bac257a3c939",
+      "content_sha256": "fced84eba5f6a20ff2545b33a0be8e04e19e4cee87fa2957ac8ffb9ab5ea2a4e",
+      "word_count": 420,
+      "last_updated_utc": "2026-11-03T05:55:35.372744+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-debugger.agent.md"
     },
     "github_awesome-copilot::agents/gem-designer.agent.md": {
@@ -2450,10 +2450,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-devops.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-devops.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "e00dfa166343a12e9d99532c6f8e943624269b91",
-      "content_sha256": "c663f6301ab202a689dc65cff2d36c9bf56d4de6eb63e761228a9708f0660852",
-      "word_count": 326,
-      "last_updated_utc": "2026-10-21T03:45:01.568222+00:00",
+      "git_blob_sha": "f2e2a6b6522ab06981280592c2f39d1989c4a130",
+      "content_sha256": "9b04adfb0fed978237df7a0f4dbbe94a661808126cc954765f68095b7d223b26",
+      "word_count": 368,
+      "last_updated_utc": "2026-11-03T05:55:35.392663+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-devops.agent.md"
     },
     "github_awesome-copilot::agents/gem-documentation-writer.agent.md": {
@@ -2461,10 +2461,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-documentation-writer.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-documentation-writer.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "aa4531770b30cb098cb47d339e89bf02b71af90a",
-      "content_sha256": "c4f7414c6cca26683a66ac97770bb44c3de0a543647d4b998905623268202df0",
-      "word_count": 345,
-      "last_updated_utc": "2026-10-21T03:45:01.682564+00:00",
+      "git_blob_sha": "9fc4caf46fc168060ef38a88e77aec440e37db3f",
+      "content_sha256": "c2e7f4f2a67d3e15eef0a694b31281a7b42c2b904b9563c7d0a837c0a1a068f5",
+      "word_count": 391,
+      "last_updated_utc": "2026-11-03T05:55:35.370881+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-documentation-writer.agent.md"
     },
     "github_awesome-copilot::agents/gem-implementer.agent.md": {
@@ -2472,10 +2472,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-implementer.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-implementer.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "4d81dca54c08fb53215a9407985a70319854a146",
-      "content_sha256": "1d220016be0e42f9e9de8d6570b924cda6789828b15719b5540a7bd208ca557d",
-      "word_count": 431,
-      "last_updated_utc": "2026-10-21T03:45:01.682564+00:00",
+      "git_blob_sha": "0ae7eb5161473ef213d108cf33d665faf3fa25fd",
+      "content_sha256": "ae15af2b0068847013abfbd6d1b36252f82cec056fd6ef2d4e63984ce08082f2",
+      "word_count": 498,
+      "last_updated_utc": "2026-11-03T05:55:35.389472+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-implementer.agent.md"
     },
     "github_awesome-copilot::agents/gem-mobile-tester.agent.md": {
@@ -2483,10 +2483,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-mobile-tester.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-mobile-tester.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "c0c283536f5d31ab2354f59c8a0d47263f5e2827",
-      "content_sha256": "d08beae7b116dee8d6857dd0847b0f16190e73c0a474b0a6f9b68848b784f9e7",
-      "word_count": 395,
-      "last_updated_utc": "2026-10-21T03:45:01.710780+00:00",
+      "git_blob_sha": "debd8e0c5cfbd12105574f0b02f2df1453823aff",
+      "content_sha256": "1d5ddc23f96dddfb11df92456a68e35b021a4644c639523eaadc32caf43683f9",
+      "word_count": 427,
+      "last_updated_utc": "2026-11-03T05:55:35.381111+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-mobile-tester.agent.md"
     },
     "github_awesome-copilot::agents/gem-orchestrator.agent.md": {
@@ -2494,10 +2494,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-orchestrator.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-orchestrator.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "4498938c06ef0c99755d38868a4ffd8afedff34c",
-      "content_sha256": "a4cc1cb3377472aff776624ebae68afd398d1bbb31330eb337fe8713a6414b02",
-      "word_count": 1815,
-      "last_updated_utc": "2026-10-21T03:45:01.677645+00:00",
+      "git_blob_sha": "d17ea0f32ef7a92a6a96f44dc042854ef38575b8",
+      "content_sha256": "8b6d351bf7c7a676edaef7a6bbe30b34386d1649a62584c807c195a43f357bb3",
+      "word_count": 1876,
+      "last_updated_utc": "2026-11-03T05:55:35.392260+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-orchestrator.agent.md"
     },
     "github_awesome-copilot::agents/gem-planner.agent.md": {
@@ -2505,10 +2505,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-planner.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-planner.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "e6fb5276d7e722ff59497df429f404fbeec88e4d",
-      "content_sha256": "24371f692431e46a6ae29df79e3ed99f0786c15f8b8c526f17f86bf67feca2c5",
-      "word_count": 1171,
-      "last_updated_utc": "2026-10-21T03:45:01.664799+00:00",
+      "git_blob_sha": "319a8b8fd28bab9dc38664c90db3925d2f23f883",
+      "content_sha256": "a83355d866cdfb953d855c42cd6caae60919c9363a26285a785ccb2b7d3d5e5b",
+      "word_count": 1246,
+      "last_updated_utc": "2026-11-03T05:55:35.469911+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-planner.agent.md"
     },
     "github_awesome-copilot::agents/gem-researcher.agent.md": {
@@ -2516,10 +2516,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-researcher.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-researcher.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "c088779a781c47338c9814b5d8906603f23926e7",
-      "content_sha256": "ec743eba4acd5af19da2a076d2cd0d77076eedc964e0a52223ed494db20c5ff6",
-      "word_count": 536,
-      "last_updated_utc": "2026-10-21T03:45:01.706016+00:00",
+      "git_blob_sha": "6ad2759300526576ff3096d7ac37891b59df2019",
+      "content_sha256": "1c0f96db17000a9b392abb780f51ca66bd2a7bf0af53cf326b0249981ba6658b",
+      "word_count": 557,
+      "last_updated_utc": "2026-11-03T05:55:35.476369+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-researcher.agent.md"
     },
     "github_awesome-copilot::agents/gem-reviewer.agent.md": {
@@ -2527,10 +2527,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-reviewer.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-reviewer.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "98f9728916deed34cdcf240ce702002f8d96fc6f",
-      "content_sha256": "a1a95771f00f1089a9276944b633c3099b7e04926a9107d62fb8a6afa2f83b33",
-      "word_count": 706,
-      "last_updated_utc": "2026-10-21T03:45:01.877817+00:00",
+      "git_blob_sha": "0b0821413fbccece43d2f38340204ff2338effc2",
+      "content_sha256": "608eb0685c250de5891a0b240512467e857da2f0c5fc659fd24e6e2140e5fdb8",
+      "word_count": 789,
+      "last_updated_utc": "2026-11-03T05:55:35.455109+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-reviewer.agent.md"
     },
     "github_awesome-copilot::agents/gem-skill-creator.agent.md": {
@@ -2538,10 +2538,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-skill-creator.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-skill-creator.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "088895e4f5580fd1de6449c74a270e326c33bbfe",
-      "content_sha256": "21b5673681b3f58e28a64c1bd9e40420f0fbf49ecc65e28e542b92beb78b5e55",
-      "word_count": 328,
-      "last_updated_utc": "2026-10-21T03:45:01.886610+00:00",
+      "git_blob_sha": "0e3835e70787139f7e3d35653f72b4085f9ce50e",
+      "content_sha256": "5338b1128e44f2a463aca5ddb168867f47981e4a9c101319af07352c89a8fc1f",
+      "word_count": 364,
+      "last_updated_utc": "2026-11-03T05:55:35.458476+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-skill-creator.agent.md"
     },
     "github_awesome-copilot::agents/gilfoyle.agent.md": {
@@ -11844,10 +11844,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/gem-devops-guidelines/SKILL.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/gem-devops-guidelines/SKILL.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "25720075c7a75594be7f014948d085257816717c",
-      "content_sha256": "ede09ef49b4afc50d81d732ff989257de3c0fce9d0ea1080e884e73cef72854d",
-      "word_count": 385,
-      "last_updated_utc": "2026-10-21T03:45:29.579121+00:00",
+      "git_blob_sha": "9e3778aa9e55d5870484f7bcdb893f6aeebda198",
+      "content_sha256": "34ebc577af926db7263649311d25ee5c9311e4938c65a7ba6a92ed744df5cedb",
+      "word_count": 594,
+      "last_updated_utc": "2026-11-03T05:55:35.462891+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_gem-devops-guidelines_SKILL.md"
     },
     "github_awesome-copilot::skills/gen-specs-as-issues/SKILL.md": {
@@ -20755,9 +20755,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "698276b720e1ad78447f01894aadf3dfe69c639ede360f887ddbcac5fc2ee4ae",
+      "content_sha256": "28b211bf78305a58d29ba1e0aae587c27625ddc52d2326091fd6c79a70bc73ab",
       "word_count": 25139,
-      "last_updated_utc": "2026-11-02T21:32:59.521621+00:00",
+      "last_updated_utc": "2026-11-03T05:55:37.366707+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -20766,9 +20766,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "698276b720e1ad78447f01894aadf3dfe69c639ede360f887ddbcac5fc2ee4ae",
+      "content_sha256": "28b211bf78305a58d29ba1e0aae587c27625ddc52d2326091fd6c79a70bc73ab",
       "word_count": 25139,
-      "last_updated_utc": "2026-11-02T21:32:59.463423+00:00",
+      "last_updated_utc": "2026-11-03T05:55:37.314513+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -20942,9 +20942,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/graph-api",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "0898a79d53188b9ce274987ac3b0b0b2fd21e3aaa9981a12736bfdc1b91f440c",
-      "word_count": 7155,
-      "last_updated_utc": "2026-11-02T21:32:59.683041+00:00",
+      "content_sha256": "904b791846c4b23650c95b2f928c5c4f7d01185d376870ac64873e5af11fd507",
+      "word_count": 6805,
+      "last_updated_utc": "2026-11-03T05:55:37.377513+00:00",
       "local_clean_path": "clean_sources/langgraph__graph-api.md"
     },
     "langgraph::install": {
