@@ -1723,7 +1723,7 @@ terminal/title/context
 testing/item/context
 - testing/item/gutter - menu for a gutter decoration for a test item
 testing/item/gutter
-- timeline/title - Timeline view title menu bar
+- timeline/title - Timeline view title menu
 timeline/title
 - timeline/item/context - Timeline view item context menu
 timeline/item/context
@@ -1748,6 +1748,8 @@ vscode.commands.registerCommand
 | explorer/context | The Uri of the file or folder on which you opened the context menu, followed by an array of selected resource URIs. If the target is part of a multiple selection, the array contains that selection. Otherwise, it contains only the target resource. |
 | editor/title | The editor's resource Uri , followed by an editor context object containing groupId . |
 | editor/title/context | The target editor's resource Uri , followed by an editor context object containing groupId and editorIndex . |
+| timeline/title | The Uri of the file or folder whose timeline is shown, or undefined for the workspace timeline. |
+| timeline/item/context | The TimelineItem , the timeline's resource Uri (or undefined for the workspace timeline), the provider ID, and the selected items from that provider when the target belongs to a multi-selection. Otherwise, the fourth argument is undefined . |
 
 The editor context identifies an editor group and, for a tab context menu, the editor's index in that group. A groupId is an internal group identifier, not a ViewColumn . Prefer the resource URI when your command operates on a document. For editors without a resource URI, the context object is the first argument.
 groupId
@@ -1767,6 +1769,8 @@ Other menus supply context specific to their feature. For example, view/item/con
 view/item/context
 TreeDataProvider
 undefined
+Timeline item commands receive the provider extension's original items when handled by that extension. Other extensions receive read-only copies without the command property. See Timeline actions for examples and selection context keys.
+command
 These menu arguments are not automatically supplied when you invoke the same command from the Command Palette or a keyboard shortcut. See Command handler arguments for the other invocation methods and an example that handles a missing resource.
 
 ### menu example

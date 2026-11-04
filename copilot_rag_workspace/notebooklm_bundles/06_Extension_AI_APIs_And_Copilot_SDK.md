@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
-- **Generado (UTC)**: 2026-10-30T17:51:52.927512+00:00
-- **Total Palabras**: 124,358 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-04T19:33:34.474284+00:00
+- **Total Palabras**: 124,737 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -17962,8 +17962,8 @@ Once you have created your AI extension, you can publish your extension to the V
 # DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/mcp.md
 - **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/mcp
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/mcp.md
-- **SHA256_FINGERPRINT**: `168f29d0ae5c0af6f12494d2b7ebcfbbcf50497ff6af37033a8f68cb7f38cc1e`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.372976+00:00
+- **SHA256_FINGERPRINT**: `74dcd54945c261ae4a1fa7b2608482a5a0df168e57b66a45a3d66812656f7784`
+- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:25.275344+00:00
 ---
 
 **MetaDescription**: A comprehensive guide for developers building MCP servers that work with Visual Studio Code.
@@ -18220,18 +18220,69 @@ Right-click on an MCP server or select the gear icon to perform different manage
 >
 > ![MCP server configuration with lenses to manage server.](../images/ai/mcp/mcp-server-config-lenses.png)
 
-## Create an MCP installation URL
+## Create an MCP installation or lookup URL
 
-VS Code provides a URL handler for installing an MCP server from a link: `vscode:mcp/install?{json-configuration}` (Insiders: `vscode-insiders:mcp/install?{json-configuration}`).
+VS Code provides URL handlers for installing an MCP server directly from configuration or looking it up in an active MCP registry or gallery.
+
+### Install an MCP server from configuration
+
+Use `vscode:mcp/install?{json-configuration}` (Insiders: `vscode-insiders:mcp/install?{json-configuration}`) to prompt the user to add an MCP server configured with JSON:
 
 Provide the JSON server configuration in the form `{\"name\":\"server-name\",\"command\":...}` and then perform a JSON-stringify and URL encode on it. For example, use the following logic to create the installation URL:
 
 ```typescript
-// For Insiders, use `vscode-insiders` instead of `code`
+// For Insiders, use `vscode-insiders` instead of `vscode`
 const link = `vscode:mcp/install?${encodeURIComponent(JSON.stringify(obj))}`;
 ```
 
-This link can be used in a browser, or opened on the command line, for example via `xdg-open $LINK` on Linux.
+This link opens the MCP server details editor in VS Code so the user can review the configuration before choosing to install.
+
+### Open an MCP server from a registry or gallery
+
+If your MCP server is listed in an active MCP registry or gallery, you can provide deep links that resolve the server against the gallery and open its details view in VS Code:
+
+* **Lookup by name:**
+
+  ```text
+  vscode:mcp/by-name/<registry-server-name>
+  ```
+
+  Resolves the exact registry name against the active MCP gallery and opens the server details page for user review. For example, GitHub's server uses the registry name `io.github.github/github-mcp-server`:
+
+  ```text
+  vscode:mcp/by-name/io.github.github/github-mcp-server
+  ```
+
+* **Lookup by gallery metadata URL:**
+
+  ```text
+  vscode:mcp/<https-server-url-without-scheme>
+  ```
+
+  Opens a server using its HTTPS metadata URL in the active MCP gallery (omitting the `https://` prefix). The URL must be within the configured gallery's origin and path; it is not the server's MCP connection endpoint or an arbitrary project website. For example, for a gallery hosted at `https://example.com/mcp`, a server metadata resource might be:
+
+  ```text
+  vscode:mcp/example.com/mcp/server
+  ```
+
+Both lookup routes open the server details page in VS Code so the user can review tools and permissions before choosing to install; they do not silently install the server or execute tools.
+
+### Shareable web badges and redirect wrapper
+
+To embed installation or lookup links on websites or documentation badges, use the HTTPS redirect wrapper:
+
+```text
+https://vscode.dev/redirect?url=<url-encoded-vscode-URL>
+```
+
+For example, to link to the GitHub server by its exact registry name:
+
+```text
+https://vscode.dev/redirect?url=vscode%3Amcp%2Fby-name%2Fio.github.github%2Fgithub-mcp-server
+```
+
+> [!NOTE]
+> For VS Code Insiders, use the `vscode-insiders:` scheme prefix (for example, `vscode-insiders:mcp/by-name/<registry-server-name>`). For more information about URL schemes across extensions, plugins, and workspaces, see [URL handling](/docs/configure/command-line.md#url-handling).
 
 ## Register an MCP server in your extension
 
@@ -25496,8 +25547,8 @@ declare module 'vscode' {
 # DOCUMENT_SOURCE: web::vscode_api_contribution_points
 - **CANONICAL_URL**: https://code.visualstudio.com/api/references/contribution-points
 - **RAW_SOURCE_URL**: https://code.visualstudio.com/api/references/contribution-points
-- **SHA256_FINGERPRINT**: `e5a2d69ed864dafeff4f2262e1104a307c122c56d364207fe2658c7f3bb8f9b2`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:35.559779+00:00
+- **SHA256_FINGERPRINT**: `758a3f9db59a037a6d3a6309bb41c12b633f6b755c028ee3831abb908c37cf8b`
+- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:30.217262+00:00
 ---
 
 # Contribution Points
@@ -27225,7 +27276,7 @@ terminal/title/context
 testing/item/context
 - testing/item/gutter - menu for a gutter decoration for a test item
 testing/item/gutter
-- timeline/title - Timeline view title menu bar
+- timeline/title - Timeline view title menu
 timeline/title
 - timeline/item/context - Timeline view item context menu
 timeline/item/context
@@ -27250,6 +27301,8 @@ vscode.commands.registerCommand
 | explorer/context | The Uri of the file or folder on which you opened the context menu, followed by an array of selected resource URIs. If the target is part of a multiple selection, the array contains that selection. Otherwise, it contains only the target resource. |
 | editor/title | The editor's resource Uri , followed by an editor context object containing groupId . |
 | editor/title/context | The target editor's resource Uri , followed by an editor context object containing groupId and editorIndex . |
+| timeline/title | The Uri of the file or folder whose timeline is shown, or undefined for the workspace timeline. |
+| timeline/item/context | The TimelineItem , the timeline's resource Uri (or undefined for the workspace timeline), the provider ID, and the selected items from that provider when the target belongs to a multi-selection. Otherwise, the fourth argument is undefined . |
 
 The editor context identifies an editor group and, for a tab context menu, the editor's index in that group. A groupId is an internal group identifier, not a ViewColumn . Prefer the resource URI when your command operates on a document. For editors without a resource URI, the context object is the first argument.
 groupId
@@ -27269,6 +27322,8 @@ Other menus supply context specific to their feature. For example, view/item/con
 view/item/context
 TreeDataProvider
 undefined
+Timeline item commands receive the provider extension's original items when handled by that extension. Other extensions receive read-only copies without the command property. See Timeline actions for examples and selection context keys.
+command
 These menu arguments are not automatically supplied when you invoke the same command from the Command Palette or a keyboard shortcut. See Command handler arguments for the other invocation methods and an example that handles a missing resource.
 
 ### menu example

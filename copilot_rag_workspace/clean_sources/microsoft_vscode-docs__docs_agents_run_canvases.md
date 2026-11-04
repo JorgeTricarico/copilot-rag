@@ -10,7 +10,9 @@ Every canvas is provided by a canvas extension. This guide shows you how to find
 
 ## Prerequisites
 
-Canvases work in the VS Code desktop app in local sessions that use the Copilot harness. You can use them in both the [Chat view](/docs/agents/run/chat-view.md) and the [Agents window](/docs/agents/run/agents-window.md).
+Canvases currently require an agent session and can't be opened independently of one.
+
+Canvases work in the VS Code desktop app in sessions that use the Copilot harness. For sessions hosted on your machine, you can use them in both the [Chat view](/docs/agents/run/chat-view.md) and the [Agents window](/docs/agents/run/agents-window.md). The Agents window also supports [canvases on remote agent hosts](#use-canvases-on-a-remote-agent-host).
 
 1. Turn on ``chat.canvases.enabled``.
 
@@ -19,7 +21,17 @@ Canvases work in the VS Code desktop app in local sessions that use the Copilot 
 1. Send your first message to initialize the session before opening the canvas menus or managing canvas extensions.
 
 > [!NOTE]
-> Canvases aren't supported in Claude, Codex, extension-host Local sessions, remote Agent Host sessions, browser clients, or auxiliary windows.
+> Canvases aren't supported in Claude, Codex, Local harness sessions, browser clients, or auxiliary windows.
+
+### Use canvases on a remote agent host
+
+In the Agents window, you can open canvases hosted by a connected remote Agent Host:
+
+1. Turn on ``chat.canvases.enabled`` and ``workbench.browser.enableRemoteProxy`` in VS Code.
+1. [Connect to the remote host](/docs/agents/run/remote-agent-sessions.md#choose-how-to-connect), start a new Copilot harness session, and send a message.
+1. Ask the agent to open a canvas provided by an extension available on that host.
+
+The canvas connects through the remote host. For related browser behavior, see [test apps on remote agent hosts](/docs/agents/run/browser-tools.md#test-apps-on-remote-agent-hosts).
 
 ## Get a canvas
 
@@ -98,7 +110,7 @@ When you turn off an extension, its last-known canvas entries might remain visib
 
 | Problem | What to check |
 |---------|---------------|
-| A canvas menu doesn't appear | Check that ``chat.canvases.enabled`` is on, start a new local Copilot session, and send a message. Install a canvas extension if none are available. |
+| A canvas menu doesn't appear | Check that ``chat.canvases.enabled`` is on, start a new Copilot session, and send a message. Install a canvas extension if none are available. For a remote host, also check ``workbench.browser.enableRemoteProxy``. |
 | **Canvases are only available inside a session** appears | Select an active local Copilot session, then reopen the Agent Customizations editor. |
 | A canvas is marked **Requires Input** | Ask the agent to open it and provide the required information. It can't be opened directly from the list. |
 | An extension is listed but its canvases won't open | Check whether the extension is turned off. Last-known entries can remain visible after an extension is turned off. |

@@ -46,6 +46,23 @@ A thread's current and historical state can be retrieved. To persist state, a th
 
 The checkpointer uses `thread_id` as the primary key for storing and retrieving checkpoints. Without it, the checkpointer cannot save state or resume execution after an [interrupt](https://docs.langchain.com/oss/python/langgraph/interrupts.md), since the checkpointer uses `thread_id` to load the saved state.
 
+#### Choose how to continue a thread
+
+The `thread_id` identifies saved state. The input and `checkpoint_id` determine whether an invocation starts new work, resumes unfinished work, or replays history. Reusing a thread ID alone does not mean that execution resumes.
+
+With a checkpointer and an existing thread, choose the invocation for your goal:
+
+| Goal | Invocation | Execution |
+| - | - | - |
+| Submit new input | `graph.invoke(input, config)` | Applies the input to saved state and starts from the entry point. |
+| Continue after an error | `graph.invoke(None, config)` | Loads the latest checkpoint and retries unfinished work. Omit `checkpoint_id`. |
+| Answer an `interrupt()` | `graph.invoke(Command(resume=answer), config)` | Supplies the interrupt's return value. The interrupted node starts again from its beginning. |
+| Replay history | `graph.invoke(None, snapshot.config)` | Uses a snapshot from `get_state_history()` and re-executes nodes after that checkpoint. |
+
+New input does not clear the thread. LangGraph applies it using the state's [reducers](https://docs.langchain.com/oss/python/langgraph/graph-api.md#reducers). Use a new `thread_id` to start with empty state.
+
+Resume returns the saved result without running nodes when the latest checkpoint has no unfinished work. For runnable examples, see [Functional API error recovery](https://docs.langchain.com/oss/python/langgraph/functional-api-tasks.md#resume-after-an-error), [resuming interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts.md#resuming-interrupts), and [replaying history](https://docs.langchain.com/oss/python/langgraph/use-time-travel.md#replay).
+
 ### Checkpoints
 
 The state of a thread at a particular point in time is called a checkpoint. A checkpoint is a snapshot of the graph state saved at each [super-step](#super-steps) and is represented by a `StateSnapshot` object (see [StateSnapshot fields](#statesnapshot-fields) for the full field reference).

@@ -105,6 +105,7 @@ You can still combine both APIs in one application when a linear Functional API 
 * [Build checklist for the Graph API](https://docs.langchain.com/oss/python/langgraph/use-graph-api.md)
 * [Thinking in the Graph API](https://docs.langchain.com/oss/python/langgraph/thinking-in-graph-api.md)
 * [Graph API overview](https://docs.langchain.com/oss/python/langgraph/graph-api.md)
+* [Choose the unit of work](https://docs.langchain.com/oss/python/langgraph/graph-api.md#choose-the-unit-of-work)
 * [Deploy other frameworks](https://docs.langchain.com/langsmith/deploy-other-frameworks.md)
 * [Functional API overview](https://docs.langchain.com/oss/python/langgraph/functional-api.md)
 

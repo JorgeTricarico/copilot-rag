@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-11-04T05:32:35.229690+00:00
-- **Total Palabras**: 411,518 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-04T19:33:34.443750+00:00
+- **Total Palabras**: 412,281 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -61789,8 +61789,8 @@ Behavior depends on where you set the flag:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/agent-plugins.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/agent-plugins
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-plugins.md
-- **SHA256_FINGERPRINT**: `dfba3ad68f6316b36259d4553a6bddd5ffe0c919761c78374c6e3736f41c85a2`
-- **LAST_VERIFIED_UTC**: 2026-11-02T21:32:53.085504+00:00
+- **SHA256_FINGERPRINT**: `1d96dbc94aa112a90f043fdde13e762b45a0a81b46e8a094926387007f352935`
+- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:25.498236+00:00
 ---
 
 **MetaDescription**: Find, install, and manage agent plugins from marketplaces in VS Code.
@@ -61887,6 +61887,62 @@ The workflow succeeds when you can trace your browser comment back to the agent'
 
 After the trial, close the review tab and remove `plugin-review.md` if you don't need it. You can [uninstall the plugin](#uninstall-plugins) if you don't want to keep the workflow.
 
+### Share and install plugins with deep links
+
+Plugin providers can create shareable deep links to help users register a marketplace or install a specific named plugin directly in VS Code.
+
+> [!IMPORTANT]
+> Agent plugins are distinct from VS Code extensions. To install an extension from the [product.prodname_vs_marketplace], use `vscode:extension/<publisher>.<extensionName>` as described in [URL handling](/docs/configure/command-line.md#url-handling).
+
+#### Install a specific plugin
+
+Use the `chat-plugin/install` route to add a marketplace (if not already registered) and install a specific named plugin:
+
+```text
+vscode://chat-plugin/install?source=<url-encoded-source>&plugin=<url-encoded-plugin-name>
+```
+
+Parameters:
+
+* **`source`** (required): The remote marketplace source (for example, `owner/repo` or a Git repository URL).
+* **`plugin`** (required): The exact plugin name declared in the plugin manifest (`plugin.json`). Do not include the `@marketplace` qualifier used by the CLI.
+
+URL-encode parameter values (for example, `/` as `%2F`).
+
+**Example:**
+
+```text
+vscode://chat-plugin/install?source=owner%2Frepo&plugin=plugin-name
+```
+
+When opened, VS Code asks the user to confirm adding the marketplace and installing the plugin. If confirmed, VS Code registers the marketplace, locates the plugin by name, installs it into the Copilot Agent Host session, and opens the Agent Customizations editor filtered to the plugin.
+
+#### Add a plugin marketplace
+
+To register a marketplace without installing any plugins, use the `chat-plugin/add-marketplace` route:
+
+```text
+vscode://chat-plugin/add-marketplace?ref=<url-encoded-source>
+```
+
+**Example:**
+
+```text
+vscode://chat-plugin/add-marketplace?ref=owner%2Frepo
+```
+
+When opened, VS Code prompts the user to confirm adding the marketplace. Adding a marketplace alone makes its plugins discoverable, but does not install any plugins automatically.
+
+#### Deep link requirements and security
+
+* **Consent and security:** Plugins can execute code via hooks or MCP servers. Deep links always prompt for explicit user confirmation before registering a marketplace or installing a plugin, and cannot bypass trust dialogs, workspace trust, or enterprise policies.
+* **Prerequisites:** Plugin deep links require ``chat.plugins.enabled`` to be enabled and Copilot Agent Host support to be available. If no suitable session exists, VS Code prompts the user to create one.
+* **Insiders and web redirect:** For VS Code Insiders, use the `vscode-insiders://` scheme. To publish links on web pages or markdown badges, use the HTTPS redirect wrapper:
+
+  ```text
+  https://vscode.dev/redirect?url=vscode%3A%2F%2Fchat-plugin%2Finstall%3Fsource%3Downer%252Frepo%26plugin%3Dplugin-name
+  ```
+
 ### Plugins installed by GitHub Copilot CLI
 
 VS Code automatically discovers plugins that you install with the [GitHub Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/plugins-finding-installing) to enable you to use them also in VS Code. Discovered plugins from `~/.copilot/installed-plugins/` appear on the **Plugins** page of the Agent Customizations editor.
@@ -61930,6 +61986,8 @@ When a plugin is disabled, its skills, agents, hooks, MCP servers, slash command
 
 In the Agent Customizations editor, select **Plugins**, open the plugin's details, and select **Uninstall**.
 
+You can't uninstall a plugin required by your organization, including through its bundled skills, prompts, or other customizations.
+
 Plugins installed from an external source (such as npm, PyPI, or an external Git repository) are removed from disk. Plugins that are inlined in a marketplace repository remain on disk but are no longer active.
 
 ## Configure plugin marketplaces
@@ -61961,6 +62019,22 @@ You can discover plugins from marketplaces such as [copilot-plugins](https://git
 To install a plugin from a local folder, use [Install a plugin from source](#install-a-plugin-from-source) in the Agent Customizations editor.
 
 If you're developing a plugin or need to register an existing directory without installing it, follow [local plugin registration](/docs/agents/reference/agent-plugin-reference.md#local-plugin-registration) with the Experimental ``chat.pluginLocations`` setting.
+
+## Use plugins in remote windows
+
+You can use plugins stored on a remote machine when you work with Remote - SSH, WSL, Dev Containers, or Remote - Tunnels. The **Copilot** harness runs in the remote environment, where it loads the plugin's custom agents, skills, and hooks.
+
+In the connected window, use the Agent Customizations editor's **Plugins** page to [view and manage installed plugins](#view-installed-plugins).
+
+To register an existing plugin directory on the remote machine without installing a copy:
+
+1. Run **Preferences: Open Remote Settings (JSON)** from the Command Palette in the remote window.
+
+1. Add ``chat.pluginLocations`` (Experimental) with the plugin's path on the remote filesystem. For the configuration syntax, see [local plugin registration](/docs/agents/reference/agent-plugin-reference.md#local-plugin-registration).
+
+1. Start a new chat with the **Copilot** harness and [verify the plugin's components](#verify-a-plugin-after-installation).
+
+Hooks run on the remote machine or inside the container. Install their required runtimes and tools, such as Node.js, there rather than only on your local computer.
 
 ## Update plugins
 
@@ -63260,8 +63334,8 @@ For an old Local setup, **Chat: Configure Hooks** lists its files, and the **Git
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/language-models.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/language-models
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/language-models.md
-- **SHA256_FINGERPRINT**: `367516b2ab6dd0334ca6f6b7939835e209eca6fff7188da634a425d12723ec7a`
-- **LAST_VERIFIED_UTC**: 2026-11-02T21:32:53.165217+00:00
+- **SHA256_FINGERPRINT**: `ccc3e763664e60161864654af58ec0a0192590767585be6ec9525621aba3a20b`
+- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:25.661325+00:00
 ---
 
 **MetaDescription**: Configure chat, inline, and voice models in VS Code. Use your own API key or run models on your device.
@@ -63359,7 +63433,7 @@ You can see which model is used for generating a response by hovering over the c
 
 Copilot Fusion chooses models and a workflow to complete your task, so you don't need to select a model for each step. For background on how Fusion differs from Auto and when to use it, see [Copilot Fusion concepts](/docs/agents/concepts/language-models.md#copilot-fusion).
 
-For details about orchestration, tiers, availability, and AI credit usage, see [Copilot model orchestration](https://docs.github.com/en/early-access/copilot/hydrafusion) in the GitHub documentation.
+For details about orchestration, effort levels, availability, and AI credit usage, see [GitHub Copilot Fusion](https://docs.github.com/en/copilot/concepts/models/copilot-fusion) in the GitHub documentation.
 
 To use Copilot Fusion:
 
@@ -63893,8 +63967,8 @@ Yes, you can use BYOK models, including local models, without a Copilot plan and
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/migrate-customizations.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/migrate-customizations
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/migrate-customizations.md
-- **SHA256_FINGERPRINT**: `24e9f95bc7cfe367e6a2ae0953d9de75d5851f4d681224b13e4f0c70b3f5f2bd`
-- **LAST_VERIFIED_UTC**: 2026-11-02T21:32:53.216898+00:00
+- **SHA256_FINGERPRINT**: `b12f386e16eafa942d98b0bb07a1de782c3fb83eda8b14066aaf0fedb54d9752`
+- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:25.871509+00:00
 ---
 
 **MetaDescription**: Migrate agent customizations and resolve harness compatibility gaps in VS Code.
@@ -63904,6 +63978,8 @@ Yes, you can use BYOK models, including local models, without a Copilot plan and
 Move your existing Local customizations to the Copilot harness without losing the workflows you rely on. Use the migration list for supported file moves and conversions, then verify the result with a representative task before retiring the original setup.
 
 Start with the path for your customization below. You don't need to complete every migration in this article. For answers about keeping Local available, MCP secrets, custom discovery paths, and agent tool names, see the [migration FAQ](#frequently-asked-questions).
+
+For the broader workflow transition, including session continuity, organization rollout, and policy verification, follow [Move from Local to the Copilot harness](/docs/agents/run/move-to-copilot.md).
 
 > [!NOTE]
 > This article covers migration to the Copilot harness. For the Claude or Codex harness, use the locations and formats in the provider documentation.
@@ -64496,11 +64572,11 @@ If you maintain the participant implementation, follow the separate [publisher g
 
 ## Frequently asked questions
 
-### Can I keep using Local while adapting my customizations?
+### Can I keep using the Local harness while adapting my customizations?
 
-Yes. In the editor's Chat view, start a new session and select **Local** as the **Session Target**. Local availability and automatic Copilot selection depend on your settings and organization policies. See [Keep Local available while migrating](/docs/agents/run/agent-harnesses.md#can-i-keep-local-available-while-migrating).
+Yes, when organization controls permit it. In the editor's Chat view, start a new session and select **Local** as the **Session Target**. Local harness availability and automatic Copilot harness selection depend on your settings and organization policies. See [Keep the Local harness available while migrating](/docs/agents/run/agent-harnesses.md#can-i-keep-local-available-while-migrating).
 
-Administrators can use the temporary `vscode.temporaryDefaultToLocalHarness` enterprise-managed setting, available from version 1.142. It keeps Local available and suppresses automatic Copilot routing, but Local does not enforce Copilot runtime-only sandbox and permission rules. Review the [administrator guidance and security caveat](/docs/enterprise/manage-ai-settings.md#keep-local-harness-as-default).
+Administrators can use the temporary `vscode.temporaryDefaultToLocalHarness` enterprise-managed setting, available from version 1.142. It keeps the Local harness available and suppresses automatic Copilot routing, but the Local harness does not enforce Copilot runtime-only sandbox and permission rules. It does not override `vscode.temporaryAllowLocalHarness: false`, available from version 1.143. Review the [administrator guidance and security caveat](/docs/enterprise/manage-ai-settings.md#keep-local-harness-as-default).
 
 ### Why are MCP servers with input prompts missing?
 
@@ -64617,8 +64693,8 @@ With a plugin named `code-tutor`, users invoke this skill as `/code-tutor:teach-
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/overview.md
-- **SHA256_FINGERPRINT**: `5f390abc7a2e40baba3a80ee133cd13439bf834881cdd406678fcd3d6ab5e394`
-- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:43.990498+00:00
+- **SHA256_FINGERPRINT**: `019afc3c42753f69b3353511b652cd75bb074da56350383a5fc4ad981948ff2b`
+- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:25.657081+00:00
 ---
 
 **MetaDescription**: Find and reuse agent customizations from marketplaces in VS Code, or create project guidance.
@@ -64700,6 +64776,53 @@ The experimental **Extensions** section also lets you [choose which installed ex
 In the Chat view, select **Open Customizations** in the title bar, or run **Chat: Open Customizations** from the Command Palette (``Shortcut: workbench.action.showCommands``).
 
 ![Screenshot showing the Agent Customizations editor with customization categories in the sidebar and custom agents in the main view.](images/customization/chat-customizations-editor-2.png)
+
+### Open customization pages with deep links
+
+You can also use `chat-customizations/open` URLs to navigate directly to a specific section in the Agent Customizations editor:
+
+```text
+vscode://chat-customizations/open?page=<page>&search=<query>
+```
+
+Parameters:
+
+* **`page`** (required): The customization section to open. Supported values include:
+  * `discover`: Opens the Customization Marketplace (**Browse** page). Requires ``chat.customizations.marketplace.enabled``.
+  * `agents`: Opens the Custom Agents section.
+  * `skills`: Opens the Agent Skills section.
+  * `instructions`: Opens the Custom Instructions section.
+  * `hooks`: Opens the Hooks section.
+  * `mcp-servers`: Opens the MCP Servers section (also accepts `mcp-server`).
+  * `plugins`: Opens the Agent Plugins section.
+  * `tools`: Opens the Tools section.
+  * `migrations`: Opens the Migrations review view.
+* **`search`** (optional): A search query to pre-populate in the section's search field. URL-encode query values.
+
+These links navigate within the selected harness context; they do not install customizations or bypass consent, workspace trust, or enterprise policies.
+
+**Examples:**
+
+* Open the plugins section:
+
+  ```text
+  vscode://chat-customizations/open?page=plugins
+  ```
+
+* Open skills filtered to "python":
+
+  ```text
+  vscode://chat-customizations/open?page=skills&search=python
+  ```
+
+* Open the Discover marketplace:
+
+  ```text
+  vscode://chat-customizations/open?page=discover
+  ```
+
+> [!NOTE]
+> For VS Code Insiders, use the `vscode-insiders://` scheme instead of `vscode://`. To share links on web pages or markdown badges, use the HTTPS redirect wrapper: `https://vscode.dev/redirect?url=<url-encoded-vscode-URL>`. For more information on URL handlers, see [URL handling](/docs/configure/command-line.md#url-handling).
 
 ## Discover and install existing customizations (Preview)
 

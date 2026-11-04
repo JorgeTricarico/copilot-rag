@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 03_MCP_Servers_And_Tools_Execution
-- **Generado (UTC)**: 2026-11-02T21:33:01.424191+00:00
-- **Total Palabras**: 8,621 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-04T19:33:34.305399+00:00
+- **Total Palabras**: 8,628 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -624,8 +624,8 @@ For a full list of VS Code AI settings, see the [AI Settings Reference](/docs/ag
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/tools.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/tools
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/tools.md
-- **SHA256_FINGERPRINT**: `6708372203a8e2bc023f7c291e518ce91137ad685efd21dfac2e57644d680780`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:38.298129+00:00
+- **SHA256_FINGERPRINT**: `5520aa13ad7acebe54ce01ed0d73b7625cbb8d3f12d3fc8246d71e99660e6d5e`
+- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:27.379055+00:00
 ---
 
 **MetaDescription**: Use agent tools in VS Code to inspect code, run commands, control desktop apps, and manage approvals.
@@ -661,7 +661,7 @@ To complete a request with tools:
     Find the cause of the failing tests in this project, fix it, and run the relevant tests to verify the change.
     ```
 
-1. Review each tool call as the agent works. If an approval prompt appears, expand the tool details to review its inputs, and then select **Allow** to run it.
+1. Review each tool call as the agent works. If an approval prompt appears, expand the tool details to review its inputs, and then select the one-time approval option, such as **Allow Once**, to run it.
 
 1. Expand a tool summary in the conversation to inspect the call and its output. When the task is complete, review the agent's response, code changes, and validation results.
 

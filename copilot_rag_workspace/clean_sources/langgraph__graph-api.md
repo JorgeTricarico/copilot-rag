@@ -270,6 +270,21 @@ You can add or remove nodes and edges without breaking resume for existing threa
 
 If a node calls [tasks](https://docs.langchain.com/oss/python/langgraph/functional-api.md#task) or [`interrupt`](https://reference.langchain.com/python/langgraph/types/interrupt), stricter [determinism](https://docs.langchain.com/oss/python/langgraph/functional-api.md#determinism) rules apply on resume. Completed task results are restored from the checkpointer. Changing task or interrupt order before the resume point can mismatch cached values. See [Idempotency](https://docs.langchain.com/oss/python/langgraph/functional-api.md#idempotency).
 
+### Choose the unit of work
+
+A [node](#nodes) is a checkpoint and retry boundary. It is also where the graph can take a different path. Deterministic work such as parsing, retrieval, or a fixed tool chain does not need its own node unless you want that boundary.
+
+Ask whether the step decides what happens next, or executes something already decided. Then pick the primitive that matches the recovery behavior you need:
+
+| Primitive | Own checkpoint | On resume or retry | Choose when |
+| - | - | - | - |
+| Plain function inside a node | No. It runs inside the node's [super-step](#super-steps). | Re-runs whenever the node re-runs. | No routing fork after the step, and repeating it with the rest of the node is acceptable. |
+| [Task](https://docs.langchain.com/oss/python/langgraph/functional-api.md#task) | No new graph checkpoint. The result is stored with the running entrypoint or parent checkpoint. | The enclosing entrypoint or node replays from the start. Completed tasks return stored results. | The step has a side effect or is expensive, and must not repeat on resume. |
+| [Subgraph](https://docs.langchain.com/oss/python/langgraph/use-subgraphs.md) | Yes for stateful modes: nodes checkpoint under a namespace of the parent thread. Compile with `checkpointer=False` for no subgraph checkpoints. | Stateful modes resume inside the subgraph at the interrupted or failed node. | The unit has its own routing or state schema, or more than one parent graph reuses it. |
+| Graph node | Yes. A checkpoint follows the [super-step](#super-steps) it runs in. | Resume starts at that node. Earlier nodes do not re-run. | A routing fork is possible after the step, or you need an interrupt, resume, or [time travel](https://docs.langchain.com/oss/python/langgraph/use-time-travel.md) boundary. |
+
+For side effects under retries, see [Retry boundaries and idempotency](https://docs.langchain.com/oss/python/langgraph/fault-tolerance.md#retry-boundaries-and-idempotency). For task retries and timeouts, see [Tasks](https://docs.langchain.com/oss/python/langgraph/functional-api-tasks.md).
+
 ### Using tasks in nodes
 
 When one node runs several operations that should checkpoint independently, wrap each operation in a [task](https://docs.langchain.com/oss/python/langgraph/functional-api.md#task) instead of splitting the work across nodes. With a checkpointer, completed task results are saved, so a resumed thread can skip finished work inside the node. For patterns and examples, see [Tasks](https://docs.langchain.com/oss/python/langgraph/functional-api-tasks.md) and [Common pitfalls](https://docs.langchain.com/oss/python/langgraph/functional-api.md#common-pitfalls).
