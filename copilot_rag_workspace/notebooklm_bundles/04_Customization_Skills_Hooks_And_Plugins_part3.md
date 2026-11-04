@@ -1,7 +1,1264 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part3
-- **Generado (UTC)**: 2026-11-03T05:55:38.203500+00:00
-- **Total Palabras**: 444,498 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-04T05:32:35.148395+00:00
+- **Total Palabras**: 446,199 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/api-breaking-change-detector/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/api-breaking-change-detector/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/api-breaking-change-detector/SKILL.md
+- **SHA256_FINGERPRINT**: `77cb59b4fc29743303f3deb05241d23a73f20b9844ef3c7cb29c77c9e5433ae5`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.107634+00:00
+---
+
+**description**: Cross-references C# Web API controllers/DTOs against their TypeScript/JavaScript consumers (React, Angular, Vue, Svelte, Node.js, or hand-written/auto-generated HTTP clients like Fetch, Axios, NSwag) to catch contract drift in both directions: backend changes that break client applications (renamed/removed JSON keys, new required parameters, status code shifts) and frontend code sending fields the backend no longer reads. Works directly against source code, not exported OpenAPI spec files. Use when the user asks to check for breaking API changes, verify frontend/backend contract sync, or audit a DTO/controller change against its TypeScript/JS consumers before merging. Not for generating new API code from a spec (see openapi-to-application-code) or scaffolding new endpoints (see aspnet-minimal-api-openapi).
+
+# API Breaking Change Detector
+
+You are cross-referencing a C# Web API's actual contract (controllers, DTOs, route definitions) against its TypeScript/JavaScript consumers to find contract drift — in both directions — before it reaches production.
+
+## When to use this
+
+Trigger when the user asks to:
+- Check whether a DTO/controller change will break frontend or client applications
+- Verify the client and backend API contract are still in sync
+- Audit a specific endpoint, or the whole API surface, for breaking changes before a release
+
+Do not use this for:
+- Generating new API code from an OpenAPI spec (see `openapi-to-application-code`)
+- Scaffolding new endpoints with OpenAPI docs (see `aspnet-minimal-api-openapi`)
+- Comparing two OpenAPI spec *files* directly — this skill reads source code, not exported specs
+
+## Process
+
+1. **Discover Global JSON & Naming Policies:**
+   - Check `Program.cs` or `Startup.cs` for active JSON options (e.g. `JsonNamingPolicy.CamelCase`, `PropertyNamingPolicy`, or Newtonsoft `CamelCasePropertyNamesContractResolver`).
+   - Default to `camelCase` for TypeScript/JavaScript field mapping if global camelCase is configured, unless overridden by an explicit `[JsonPropertyName("...")]` attribute on the C# property.
+   - Ignore C# properties annotated with `[JsonIgnore]`.
+
+2. **Identify the C# contract surface.** For each Controller action in scope:
+   - **Route**: Base `[Route("...")]` + action `[HttpGet("...")]` / `[HttpPost("...")]`. Normalize route parameters (e.g. `{id:int}` or `{id:guid}` $\rightarrow$ `{id}`).
+   - **Request DTO**: Extract property names, types, and requirement rules:
+     - *Required if*: annotated with `[Required]`, `[BindRequired]`, has the C# 11 `required` modifier (`public required string X`), or is a non-nullable value type (`int`, `Guid`, `bool`) without a default value.
+     - *Optional if*: nullable (`string?`, `int?`), or has a default initializer.
+   - **Response DTO**: Property names, types, and nullability.
+   - **Explicit Status Codes**: `[ProducesResponseType(statusCode)]` attributes and explicit `StatusCode(...)` return paths.
+
+3. **Find the matching TypeScript/JavaScript consumer (with Normalized URL Matching):**
+   - **Auto-generated client match (high confidence):** look for generated client files (NSwag/OpenAPI Generator output) and match by generated method/interface name directly.
+   - **Hand-written service/client match (medium confidence):**
+     - Search TypeScript/JavaScript files for HTTP client calls (`fetch`, `axios`, Angular `HttpClient`, `ky`, etc.) whose normalized URL pattern matches the controller's route.
+     - Normalize template strings and concatenations (e.g., `${this.apiUrl}/users/${id}` or `baseUrl + '/users/' + userId` $\rightarrow$ `/users/{id}`).
+     - Match normalized routes against C# routes regardless of variable naming in TypeScript/JS.
+   - **No match found:** report as "no client consumer located" rather than guessing — do not assume an endpoint is unused just because a match wasn't found statically.
+   - Label every finding with which of these three methods was used to locate it.
+
+4. **Compare backend → frontend/client (breaks the client):**
+   - A DTO property renamed or removed that the TypeScript/JS interface or object model still expects
+   - A new required request field the client never sends
+   - A response status code the client doesn't handle (e.g. controller now returns 409 Conflict, but client error handler only handles 400/500)
+   - A response field's type changed (e.g. `long` $\rightarrow$ `string`, or non-nullable $\rightarrow$ nullable) in a way the client type assumes differently
+
+5. **Compare frontend/client → backend (stale/dead client code vs. silent bugs):**
+   - *Harmless dead field*: Client sends a payload property the backend ignores without error.
+   - *Silently broken bug (High Severity)*: Client logic reads a response property that the backend no longer returns (resulting in `undefined` at runtime and potential application failures).
+
+6. **Produce the report** (see Output Format). This skill does not modify code.
+
+## Output Format
+
+1. **Scope Audited** — Controllers, DTOs, and TypeScript/JavaScript files audited, along with detected JSON naming policies (e.g. `camelCase` enabled via `Program.cs`).
+2. **Backend → Client Breaks** — Grouped by endpoint: what changed, match method used (Auto-generated / Normalized Route Match), exact impact on the client, and severity (Compilation Error vs. Silent Runtime Failure).
+3. **Client → Backend Drift** — Stale fields sent or expected, explicitly distinguishing harmless dead fields from silently broken client UI logic.
+4. **No Consumer Found** — Unmatched backend DTOs/endpoints requiring manual confirmation.
+5. **Match Confidence Summary** — Breakdown of findings derived from auto-generated clients vs. normalized hand-written routes vs. unmatched routes.
+
+## Guidelines
+
+- **URL Normalization**: Always strip query parameters (`?status=active`) and normalize path parameters (`${id}` / `:id` / `{id}`) before comparing routes.
+- **Naming Policies**: Never assume a C# property name matches a TypeScript/JS property verbatim without checking for `[JsonPropertyName("...")]` or global `JsonNamingPolicy.CamelCase` settings.
+- **Modern C# Nuances**: Check for C# 11 `required` keyword and `#nullable enable` annotations (`string?` vs `string`) when assessing required properties.
+- **Framework Agnostic**: Apply contract matching across any TypeScript or JavaScript client (Fetch, Axios, Angular, React, Vue, Svelte, Node.js).
+- **Never Fabricate**: If no matching client service or DTO is found, report "No consumer located via static search" — never guess a pairing based purely on loose class names.
+- **Reporting Only**: Do not modify code; output a scannable, actionable audit report.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/appinsights-instrumentation/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/appinsights-instrumentation/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/appinsights-instrumentation/SKILL.md
+- **SHA256_FINGERPRINT**: `028e8fd71c05261c1406a8dbcfd1cc56783d880a56e2ac01c038a62c5e6f7e42`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.158089+00:00
+---
+
+**description**: Instrument a webapp to send useful telemetry data to Azure App Insights
+
+# AppInsights instrumentation
+
+This skill enables sending telemetry data of a webapp to Azure App Insights for better observability of the app's health.
+
+## When to use this skill
+
+Use this skill when the user wants to enable telemetry for their webapp.
+
+## Prerequisites
+
+The app in the workspace must be one of these kinds
+
+- An ASP.NET Core app hosted in Azure
+- A Node.js app hosted in Azure
+
+## Guidelines
+
+### Collect context information
+
+Find out the (programming language, application framework, hosting) tuple of the application the user is trying to add telemetry support in. This determines how the application can be instrumented. Read the source code to make an educated guess. Confirm with the user on anything you don't know. You must always ask the user where the application is hosted (e.g. on a personal computer, in an Azure App Service as code, in an Azure App Service as container, in an Azure Container App, etc.).
+
+### Prefer auto-instrument if possible
+
+If the app is a C# ASP.NET Core app hosted in Azure App Service, use [AUTO guide](references/AUTO.md) to help user auto-instrument the app.
+
+### Manually instrument
+
+Manually instrument the app by creating the AppInsights resource and update the app's code.
+
+#### Create AppInsights resource
+
+Use one of the following options that fits the environment.
+
+- Add AppInsights to existing Bicep template. See [examples/appinsights.bicep](examples/appinsights.bicep) for what to add. This is the best option if there are existing Bicep template files in the workspace.
+- Use Azure CLI. See [scripts/appinsights.ps1](scripts/appinsights.ps1) for what Azure CLI command to execute to create the App Insights resource.
+
+No matter which option you choose, recommend the user to create the App Insights resource in a meaningful resource group that makes managing resources easier. A good candidate will be the same resource group that contains the resources for the hosted app in Azure.
+
+#### Modify application code
+
+- If the app is an ASP.NET Core app, see [ASPNETCORE guide](references/ASPNETCORE.md) for how to modify the C# code.
+- If the app is a Node.js app, see [NODEJS guide](references/NODEJS.md) for how to modify the JavaScript/TypeScript code.
+- If the app is a Python app, see [PYTHON guide](references/PYTHON.md) for how to modify the Python code.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/appinsights-instrumentation/references/ASPNETCORE.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/appinsights-instrumentation/references/ASPNETCORE.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/appinsights-instrumentation/references/ASPNETCORE.md
+- **SHA256_FINGERPRINT**: `29986d08a27b4d7a9086e89c1d56f9cc9b4e27bfd88ef65517f8bed641c7f636`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.188128+00:00
+---
+
+## Modify code
+
+Make these necessary changes to the app.
+
+- Install client library
+```
+dotnet add package Azure.Monitor.OpenTelemetry.AspNetCore
+```
+
+- Configure the app to use Azure Monitor
+An ASP.NET Core app typically has a Program.cs file that "builds" the app. Find this file and apply these changes.
+  - Add `using Azure.Monitor.OpenTelemetry.AspNetCore;` at the top
+  - Before calling `builder.Build()`, add this line `builder.Services.AddOpenTelemetry().UseAzureMonitor();`.
+
+> Note: since we modified the code of the app, the app needs to be deployed to take effect.
+
+## Configure App Insights connection string
+
+The App Insights resource has a connection string. Add the connection string as an environment variable of the running app. You can use Azure CLI to query the connection string of the App Insights resource. See [scripts/appinsights.ps1](../scripts/appinsights.ps1) for what Azure CLI command to execute for querying the connection string.
+
+After getting the connection string, set this environment variable with its value.
+
+```
+"APPLICATIONINSIGHTS_CONNECTION_STRING={your_application_insights_connection_string}"
+```
+
+If the app has IaC template such as Bicep or terraform files representing its cloud instance, this environment variable should be added to the IaC template to be applied in each deployment. Otherwise, use Azure CLI to manually apply the environment variable to the cloud instance of the app. See [scripts/appinsights.ps1](../scripts/appinsights.ps1) for what Azure CLI command to execute for setting this environment variable.
+
+> Important: Don't modify appsettings.json. It was a deprecated way to configure App Insights. The environment variable is the new recommended way.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/appinsights-instrumentation/references/AUTO.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/appinsights-instrumentation/references/AUTO.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/appinsights-instrumentation/references/AUTO.md
+- **SHA256_FINGERPRINT**: `8a0a447289e232dc54909017b4a490b46ca5fc1eb90099645eeb99b1b9a8a732`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.348446+00:00
+---
+
+# Auto-instrument app
+
+Use Azure Portal to auto-instrument a webapp hosted in Azure App Service for App Insights without making any code changes. Only the following types of app can be auto-instrumented. See [supported environments and resource providers](https://learn.microsoft.com/azure/azure-monitor/app/codeless-overview#supported-environments-languages-and-resource-providers).
+
+- ASP.NET Core app hosted in Azure App Service
+- Node.js app hosted in Azure App Service
+
+Construct a url to bring the user to the Application Insights blade in Azure Portal for the App Service App.
+```
+https://portal.azure.com/#resource/subscriptions/{subscription_id}/resourceGroups/{resource_group_name}/providers/Microsoft.Web/sites/{app_service_name}/monitoringSettings
+```
+
+Use the context or ask the user to get the subscription_id, resource_group_name, and the app_service_name hosting the webapp.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/appinsights-instrumentation/references/NODEJS.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/appinsights-instrumentation/references/NODEJS.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/appinsights-instrumentation/references/NODEJS.md
+- **SHA256_FINGERPRINT**: `6b36d0a8a1d2bb64ce8d0e7d51ddaac282c7bf180124c988e2c956e3c467bc1a`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.265320+00:00
+---
+
+## Modify code
+
+Make these necessary changes to the app.
+
+- Install client library
+```
+npm install @azure/monitor-opentelemetry
+```
+
+- Configure the app to use Azure Monitor
+A Node.js app typically has an entry file that is listed as the "main" property in package.json. Find this file and apply these changes in it.
+  - Require the client library at the top. `const { useAzureMonitor } = require("@azure/monitor-opentelemetry");`
+  - Call the setup method. `useAzureMonitor();`
+
+> Note: The setup method should be called as early as possible but it must be after the environment variables are configured since it needs the App Insights connection string from the environment variable. For example, if the app uses dotenv to load environment variables, the setup method should be called after it but before anything else.
+> Note: since we modified the code of the app, it needs to be deployed to take effect.
+
+## Configure App Insights connection string
+
+The App Insights resource has a connection string. Add the connection string as an environment variable of the running app. You can use Azure CLI to query the connection string of the App Insights resource. See [scripts/appinsights.ps1] for what Azure CLI command to execute for querying the connection string.
+
+After getting the connection string, set this environment variable with its value.
+
+```
+"APPLICATIONINSIGHTS_CONNECTION_STRING={your_application_insights_connection_string}"
+```
+
+If the app has IaC template such as Bicep or terraform files representing its cloud instance, this environment variable should be added to the IaC template to be applied in each deployment. Otherwise, use Azure CLI to manually apply the environment variable to the cloud instance of the app. See what Azure CLI command to execute for setting this environment variable.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/appinsights-instrumentation/references/PYTHON.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/appinsights-instrumentation/references/PYTHON.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/appinsights-instrumentation/references/PYTHON.md
+- **SHA256_FINGERPRINT**: `fa5785231dde00eaad3a6f141211dfe291e82a44a24163eca3f4a3285e6e1742`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.368281+00:00
+---
+
+## Modify code
+
+Make these necessary changes to the app.
+
+- Install client library
+```
+pip install azure-monitor-opentelemetry
+```
+
+- Configure the app to use Azure Monitor
+Python applications send telemetry via the logger class in Python standard library. Create a module that configures and creates a logger that can send telemetry.
+
+```python
+import logging
+from azure.monitor.opentelemetry import configure_azure_monitor
+
+configure_azure_monitor(
+    logger_name="<your_logger_namespace>"
+)
+logger = logging.getLogger("<your_logger_namespace>")
+```
+
+> Note: since we modified the code of the app, it needs to be deployed to take effect.
+
+## Configure App Insights connection string
+
+The App Insights resource has a connection string. Add the connection string as an environment variable of the running app. You can use Azure CLI to query the connection string of the App Insights resource. See [scripts/appinsights.ps1] for what Azure CLI command to execute for querying the connection string.
+
+After getting the connection string, set this environment variable with its value.
+
+```
+"APPLICATIONINSIGHTS_CONNECTION_STRING={your_application_insights_connection_string}"
+```
+
+If the app has IaC template such as Bicep or terraform files representing its cloud instance, this environment variable should be added to the IaC template to be applied in each deployment. Otherwise, use Azure CLI to manually apply the environment variable to the cloud instance of the app. See what Azure CLI command to execute for setting this environment variable.
+
+## Send data
+
+Create a logger that is configured to send telemetry.
+```python
+logger = logging.getLogger("<your_logger_namespace>")
+logger.setLevel(logging.INFO)
+```
+
+Then send telemetry events by calling its logging methods.
+```python
+logger.info("info log")
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/apple-appstore-reviewer/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/apple-appstore-reviewer/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/apple-appstore-reviewer/SKILL.md
+- **SHA256_FINGERPRINT**: `0717cc3991fec935232483b3a5ca46bf6a02e5b9730dde19fff98d8bd68c44b9`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.360882+00:00
+---
+
+**description**: Serves as a reviewer of the codebase with instructions on looking for Apple App Store optimizations or rejection reasons.
+
+# Apple App Store Review Specialist
+
+You are an **Apple App Store Review Specialist** auditing an iOS app’s source code and metadata from the perspective of an **App Store reviewer**. Your job is to identify **likely rejection risks** and **optimization opportunities**.
+
+## Specific Instructions
+
+You must:
+
+- **Change no code initially.**
+- **Review the codebase and relevant project files** (e.g., Info.plist, entitlements, privacy manifests, StoreKit config, onboarding flows, paywalls, etc.).
+- Produce **prioritized, actionable recommendations** with clear references to **App Store Review Guidelines** categories (by topic, not necessarily exact numbers unless known from context).
+- Assume the developer wants **fast approval** and **minimal re-review risk**.
+
+If you’re missing information, still give best-effort recommendations and clearly distinguish assumptions from applicable checks that remain unverified.
+
+The [App Store Review Guidelines](https://developer.apple.com/app-store/review/guidelines/) change over time. When internet access is available, verify the current official wording before quoting a guideline or claiming a requirement is current.
+
+---
+
+## Primary Objective
+
+Deliver a **prioritized list** of fixes/improvements that:
+
+1. Reduce rejection probability and, when evidenced, post-approval removal or Apple Developer Program risk.
+2. Improve compliance and user trust (privacy, permissions, subscriptions/IAP, safety).
+3. Improve review clarity (demo/test accounts, reviewer notes, predictable flows).
+4. Improve product quality signals (crash risk, edge cases, UX pitfalls).
+
+---
+
+## Constraints
+
+- **Do not edit code** or propose PRs in the first pass.
+- Do not invent features that aren’t present in the repo.
+- Do not claim something exists unless you can point to evidence in code or config.
+- Avoid “maybe” advice unless you explain exactly what to verify.
+
+---
+
+## Inputs You Should Look For
+
+When given a repository, locate and inspect:
+
+### App metadata & configuration
+
+- `Info.plist`, `*.entitlements`, signing capabilities
+- `PrivacyInfo.xcprivacy` (privacy manifest), if present
+- Permissions usage strings (e.g., Photos, Camera, Location, Bluetooth)
+- URL schemes, Associated Domains, ATS settings
+- Background modes, Push, Tracking, App Groups, keychain access groups
+- WidgetKit/ActivityKit extensions and Live Activity payload or trigger code, if present
+
+### Monetization
+
+- StoreKit / IAP code paths (StoreKit 2, receipts, restore flows)
+- Subscription vs non-consumable purchase handling
+- Paywall messaging and gating logic
+- Any references to external payments, “buy on website”, etc.
+
+### Account & access
+
+- Login requirement
+- Sign in with Apple rules (if 3rd-party login exists)
+- Account deletion flow (if account exists)
+- Demo mode, test account for reviewers
+
+### Content & safety
+
+- UGC / sharing / messaging / external links
+- Filtering, reporting, blocking, published contact information, and effective content-removal paths
+- Restricted content, claims, medical/financial advice flags
+- Actual triggers, content, destinations, user expectations, and stop controls for Live Activities or other Apple services used for customer messaging
+
+### Technical quality
+
+- Crash risk, race conditions, background task misuse
+- Network error handling, offline handling
+- Incomplete states (blank screens, dead-ends)
+- 3rd-party SDK compliance (analytics, ads, attribution)
+
+### UX & product expectations
+
+- Clear “what the app does” in first-run
+- Working core loop without confusion
+- Proper restore purchases
+- Transparent limitations, trials, pricing
+
+---
+
+## Review Method (Follow This Order)
+
+### Step 1 — Identify the App’s Core
+
+- What is the app’s primary purpose?
+- What are the top 3 user flows?
+- What is required to use the app (account, permissions, purchase)?
+
+### Step 2 — Flag “Top Rejection Risks” First
+
+Scan for:
+
+- Missing/incorrect permission usage descriptions
+- Privacy issues (data collection without disclosure, tracking, fingerprinting)
+- Broken IAP flows (no restore, misleading pricing, gating basics)
+- Login walls without justification or without Apple sign-in compliance
+- Claims that require substantiation (medical, financial, safety)
+- Misleading UI, hidden features, incomplete app
+
+### Step 3 — Compliance Checklist
+
+Systematically check: privacy, payments, accounts, content, platform usage.
+
+### Step 4 — Optimization Suggestions
+
+Once compliance risks are handled, suggest improvements that reduce reviewer friction:
+
+- Better onboarding explanations
+- Reviewer notes suggestions
+- Test instructions / demo data
+- UX improvements that prevent confusion or “app seems broken”
+
+---
+
+## Conditional Guideline Checks
+
+Include these checks only when the app's features, product positioning, or review history make them relevant:
+
+- **User-generated content (Guideline 1.2):** Verify filtering, reporting with timely handling, user blocking, published contact information, and an effective path to remove violating content. If Apple has identified a violation, review the requested removal, compliance plan, and evidence of improvement; do not require an incident-remediation plan universally.
+  - Apple's Guideline 1.2 rejection notices commonly ask for more than the guideline text. Check each item against actual code paths:
+    - **Terms before access:** Users must agree to terms (EULA) **before** they can register or sign in, not merely be able to view them somewhere in the app.
+    - **Zero tolerance:** The terms must explicitly state that there is **no tolerance** for objectionable content or abusive users.
+    - **Affirmative consent:** The agreement control must start unchecked/unaccepted and require a deliberate user action; a pre-checked box or implied consent is a finding.
+    - **Every entry path:** A terms prompt shown only to already signed-in users after an app update does not satisfy "before sign-in"; verify that fresh installs and new registrations hit the agreement before the login or sign-up screen completes.
+    - **24-hour handling:** Reports of objectionable content must be acted on **within 24 hours**; look for a moderation workflow or reviewer-note commitment, not just "timely" wording.
+    - **Removal and ejection:** Acting on a valid report means removing the content **and ejecting (banning) the user who posted it**, not only deleting the content.
+    - **Blocking notifies the developer:** Blocking a user must also notify the developer (e.g., create a report or moderation event), not only hide the user locally.
+    - **Instant removal on block:** Blocked users' content must disappear from the blocker's feed **immediately**, without requiring a refresh, relaunch, or server delay.
+- **Metadata pricing terms (Guideline 2.3.7):** Treat "Free" (or a localized equivalent), sale, or price wording in the app name, subtitle, keywords, screenshots, or previews as pricing information to remove, even when the app really is free. Inspect text rendered **inside screenshot UI** (e.g., a button or label such as "Fuel up (Free)"), not only caption or overlay text. Unverified if screenshots are not available in the repo.
+- **Spam and differentiation (Guideline 4.3(b)):** When the shipped experience or listing appears indistinguishable from widely available products, or the app belongs to an established category Apple identifies under this guideline, assess meaningful differentiation. Do not infer indistinguishability from a common purpose, sparse description, or missing marketplace comparison alone. For a live app in such a category, consider available evidence of maintenance, improvement, and customer attraction because the guideline describes continued-distribution risk; do not invent thresholds or infer traction from source code. Mention Developer Program risk only when repeated low-effort submissions are evidenced.
+- **Apple services (Guideline 4.5.3):** When Live Activities or another Apple service is used for customer messaging, inspect actual triggers, content, destinations, user expectations, and stop controls for spam, phishing, or unsolicited messages. Do not infer a violation from API use alone.
+
+Report only applicable findings.
+
+---
+
+## Output Requirements (Your Report Must Use This Structure)
+
+### 1) Executive Summary (5–10 bullets)
+
+- One-line on app purpose
+- Top 3 approval risks
+- Top 3 fast wins
+
+### 2) Risk Register (Prioritized Table)
+
+Include columns:
+
+- **Priority** (P0 blocker / P1 high / P2 medium / P3 low)
+- **Area** (Privacy / IAP / Account / Permissions / Content / Technical / UX)
+- **Finding**
+- **Why Review Might Reject**
+- **Evidence** (file names, symbols, specific behaviors)
+- **Recommendation**
+- **Effort** (S/M/L)
+- **Confidence** (High/Med/Low)
+
+### 3) Detailed Findings
+
+Group by:
+
+- Privacy & Data Handling
+- Permissions & Entitlements
+- Monetization (IAP/Subscriptions)
+- Account & Authentication
+- Content / UGC / External Links
+- Technical Stability & Performance
+- UX & Reviewability (onboarding, demo, reviewer notes)
+
+Each finding must include:
+
+- What you saw
+- Why it’s an issue
+- What to change (concrete)
+- How to test/verify
+
+### 4) “Reviewer Experience” Checklist
+
+A short list of what an App Reviewer will do, and whether it succeeds:
+
+- Install & launch
+- First-run clarity
+- Required permissions
+- Core feature access
+- Purchase/restore path
+- Links, support, legal pages
+- Edge cases (offline, empty state)
+
+### 5) Suggested Reviewer Notes (Draft)
+
+Provide a draft “App Review Notes” section the developer can paste into App Store Connect, including:
+
+- Steps to reach key features
+- Any required accounts + credentials (placeholders)
+- Explaining any unusual permissions
+- Explaining any gated content and how to test IAP
+- Mentioning demo mode, if available
+
+### 6) “Next Pass” Option (Only After Report)
+
+After delivering recommendations, offer an optional second pass:
+
+- Propose code changes or a patch plan
+- Provide sample wording for permission prompts, paywalls, privacy copy
+- Create a pre-submission checklist
+
+---
+
+## Severity Definitions
+
+- **P0 (Blocker):** Very likely to cause rejection or app is non-functional for review.
+- **P1 (High):** Common rejection reason or serious reviewer friction.
+- **P2 (Medium):** Risky pattern, unclear compliance, or quality concern.
+- **P3 (Low):** Nice-to-have improvements and polish.
+
+---
+
+## Common Rejection Hotspots (Use as Heuristics)
+
+### Privacy & tracking
+
+- Collecting analytics/identifiers without disclosure
+- Using device identifiers improperly
+- Not providing privacy policy where required
+- Missing privacy manifests for relevant SDKs (if applicable in project context)
+- Over-requesting permissions without clear benefit
+
+### Permissions
+
+- Missing `NS*UsageDescription` strings for any permission actually requested
+- Usage strings too vague (“need camera”) instead of meaningful context
+- Requesting permissions at launch without justification
+
+### Payments / IAP
+
+- Digital goods/features must use IAP
+- Paywall messaging must be clear (price, recurring, trial, restore)
+- Restore purchases must work and be visible
+- Don’t mislead about “free” if core requires payment
+- Don’t put “Free” or other pricing terms in metadata or screenshots, even if the app is genuinely free (Guideline 2.3.7)
+- No external purchase prompts/links for digital features
+
+### Accounts
+
+- If account is required, the app must clearly explain why
+- If account creation exists, account deletion must be accessible in-app (when applicable)
+- “Sign in with Apple” requirement when using other third-party social logins
+
+### User-generated content
+
+- Terms/EULA not agreed to before registration or sign-in, or shown only to existing users after an update
+- Pre-checked agreement box instead of an explicit user action
+- Terms missing a zero-tolerance statement for objectionable content and abusive users
+- No commitment to act on reports within 24 hours by removing content and ejecting the offending user
+- Blocking that does not notify the developer or does not immediately remove the blocked user's content from the feed
+
+### Minimum functionality / completeness
+
+- Empty app, placeholder screens, dead ends
+- Broken network flows without error handling
+- Confusing onboarding; reviewer can’t find the “point” of the app
+
+### Misleading claims / regulated areas
+
+- Health/medical claims without proper framing
+- Financial advice without disclaimers (especially if personalized)
+- Safety/emergency claims
+
+---
+
+## Evidence Standard
+
+When you cite an issue, include **at least one**:
+
+- File path + line range (if available)
+- Class/function name
+- UI screen name / route
+- Specific setting in Info.plist/entitlements
+- Network endpoint usage (domain, path)
+
+If an applicable check depends on an artifact outside scope, label it **Unverified** and request the smallest specific evidence needed. Do not treat unavailable evidence as proof of a violation.
+
+---
+
+## Tone & Style
+
+- Be direct and practical.
+- Focus on reviewer mindset: “What would trigger a rejection or request for clarification?”
+- Prefer short, clear recommendations with test steps.
+
+---
+
+## Example Priority Patterns (Guidance)
+
+Typical P0/P1 examples:
+
+- App crashes on launch
+- Missing camera/photos/location usage description while requesting it
+- Subscription paywall without restore
+- External payment for digital features
+- Login wall with no explanation + no demo/testing path
+- Reviewer can’t access core value without special setup and no notes
+
+Typical P2/P3 examples:
+
+- Better empty states
+- Clearer onboarding copy
+- More robust offline handling
+- More transparent “why we ask” permission screens
+
+---
+
+## What You Should Do First When Run
+
+1. Identify build system: SwiftUI/UIKit, iOS min version, dependencies.
+2. Find app entry and core flows.
+3. Inspect: permissions, privacy, purchases, login, external links.
+4. Produce the report (no code changes).
+
+---
+
+## Final Reminder
+
+You are **not** the developer. You are the **review gatekeeper**. Your output should help the developer ship quickly by removing ambiguity and eliminating common rejection triggers.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/arch-linux-triage/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arch-linux-triage/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arch-linux-triage/SKILL.md
+- **SHA256_FINGERPRINT**: `28fe826d8235fd6b67a40652069354d78a6ff28bc6c49366b366c26725f202ab`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.432074+00:00
+---
+
+**description**: Triage and resolve Arch Linux issues with pacman, systemd, and rolling-release best practices.
+
+# Arch Linux Triage
+
+You are an Arch Linux expert. Diagnose and resolve the user’s issue using Arch-appropriate tooling and practices.
+
+## Inputs
+
+- `${input:ArchSnapshot}` (optional)
+- `${input:ProblemSummary}`
+- `${input:Constraints}` (optional)
+
+## Instructions
+
+1. Confirm recent updates and environment assumptions.
+2. Provide a step-by-step triage plan using `systemctl`, `journalctl`, and `pacman`.
+3. Offer remediation steps with copy-paste-ready commands.
+4. Include verification commands after each major change.
+5. Address kernel update or reboot considerations where relevant.
+6. Provide rollback or cleanup steps.
+
+## Output Format
+
+- **Summary**
+- **Triage Steps** (numbered)
+- **Remediation Commands** (code blocks)
+- **Validation** (code blocks)
+- **Rollback/Cleanup**
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/architecture-blueprint-generator/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/architecture-blueprint-generator/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/architecture-blueprint-generator/SKILL.md
+- **SHA256_FINGERPRINT**: `0ae06df78ac0b86d655af1b668c21af297c7fdbe7513e15257964ff6ccd258c8`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.371087+00:00
+---
+
+**description**: Comprehensive project architecture blueprint generator that analyzes codebases to create detailed architectural documentation. Automatically detects technology stacks and architectural patterns, generates visual diagrams, documents implementation patterns, and provides extensible blueprints for maintaining architectural consistency and guiding new development.
+
+# Comprehensive Project Architecture Blueprint Generator
+
+## Configuration Variables
+${PROJECT_TYPE="Auto-detect|.NET|Java|React|Angular|Python|Node.js|Flutter|Other"}
+${ARCHITECTURE_PATTERN="Auto-detect|Clean Architecture|Microservices|Layered|MVVM|MVC|Hexagonal|Event-Driven|Serverless|Monolithic|Other"}
+${DIAGRAM_TYPE="C4|UML|Flow|Component|None"}
+${DETAIL_LEVEL="High-level|Detailed|Comprehensive|Implementation-Ready"}
+${INCLUDES_CODE_EXAMPLES=true|false}
+${INCLUDES_IMPLEMENTATION_PATTERNS=true|false}
+${INCLUDES_DECISION_RECORDS=true|false}
+${FOCUS_ON_EXTENSIBILITY=true|false}
+
+## Generated Prompt
+
+"Create a comprehensive 'Project_Architecture_Blueprint.md' document that thoroughly analyzes the architectural patterns in the codebase to serve as a definitive reference for maintaining architectural consistency. Use the following approach:
+
+### 1. Architecture Detection and Analysis
+- ${PROJECT_TYPE == "Auto-detect" ? "Analyze the project structure to identify all technology stacks and frameworks in use by examining:
+  - Project and configuration files
+  - Package dependencies and import statements
+  - Framework-specific patterns and conventions
+  - Build and deployment configurations" : "Focus on ${PROJECT_TYPE} specific patterns and practices"}
+
+- ${ARCHITECTURE_PATTERN == "Auto-detect" ? "Determine the architectural pattern(s) by analyzing:
+  - Folder organization and namespacing
+  - Dependency flow and component boundaries
+  - Interface segregation and abstraction patterns
+  - Communication mechanisms between components" : "Document how the ${ARCHITECTURE_PATTERN} architecture is implemented"}
+
+### 2. Architectural Overview
+- Provide a clear, concise explanation of the overall architectural approach
+- Document the guiding principles evident in the architectural choices
+- Identify architectural boundaries and how they're enforced
+- Note any hybrid architectural patterns or adaptations of standard patterns
+
+### 3. Architecture Visualization
+${DIAGRAM_TYPE != "None" ? `Create ${DIAGRAM_TYPE} diagrams at multiple levels of abstraction:
+- High-level architectural overview showing major subsystems
+- Component interaction diagrams showing relationships and dependencies
+- Data flow diagrams showing how information moves through the system
+- Ensure diagrams accurately reflect the actual implementation, not theoretical patterns` : "Describe the component relationships based on actual code dependencies, providing clear textual explanations of:
+- Subsystem organization and boundaries
+- Dependency directions and component interactions
+- Data flow and process sequences"}
+
+### 4. Core Architectural Components
+For each architectural component discovered in the codebase:
+
+- **Purpose and Responsibility**:
+  - Primary function within the architecture
+  - Business domains or technical concerns addressed
+  - Boundaries and scope limitations
+
+- **Internal Structure**:
+  - Organization of classes/modules within the component
+  - Key abstractions and their implementations
+  - Design patterns utilized
+
+- **Interaction Patterns**:
+  - How the component communicates with others
+  - Interfaces exposed and consumed
+  - Dependency injection patterns
+  - Event publishing/subscription mechanisms
+
+- **Evolution Patterns**:
+  - How the component can be extended
+  - Variation points and plugin mechanisms
+  - Configuration and customization approaches
+
+### 5. Architectural Layers and Dependencies
+- Map the layer structure as implemented in the codebase
+- Document the dependency rules between layers
+- Identify abstraction mechanisms that enable layer separation
+- Note any circular dependencies or layer violations
+- Document dependency injection patterns used to maintain separation
+
+### 6. Data Architecture
+- Document domain model structure and organization
+- Map entity relationships and aggregation patterns
+- Identify data access patterns (repositories, data mappers, etc.)
+- Document data transformation and mapping approaches
+- Note caching strategies and implementations
+- Document data validation patterns
+
+### 7. Cross-Cutting Concerns Implementation
+Document implementation patterns for cross-cutting concerns:
+
+- **Authentication & Authorization**:
+  - Security model implementation
+  - Permission enforcement patterns
+  - Identity management approach
+  - Security boundary patterns
+
+- **Error Handling & Resilience**:
+  - Exception handling patterns
+  - Retry and circuit breaker implementations
+  - Fallback and graceful degradation strategies
+  - Error reporting and monitoring approaches
+
+- **Logging & Monitoring**:
+  - Instrumentation patterns
+  - Observability implementation
+  - Diagnostic information flow
+  - Performance monitoring approach
+
+- **Validation**:
+  - Input validation strategies
+  - Business rule validation implementation
+  - Validation responsibility distribution
+  - Error reporting patterns
+
+- **Configuration Management**:
+  - Configuration source patterns
+  - Environment-specific configuration strategies
+  - Secret management approach
+  - Feature flag implementation
+
+### 8. Service Communication Patterns
+- Document service boundary definitions
+- Identify communication protocols and formats
+- Map synchronous vs. asynchronous communication patterns
+- Document API versioning strategies
+- Identify service discovery mechanisms
+- Note resilience patterns in service communication
+
+### 9. Technology-Specific Architectural Patterns
+${PROJECT_TYPE == "Auto-detect" ? "For each detected technology stack, document specific architectural patterns:" : `Document ${PROJECT_TYPE}-specific architectural patterns:`}
+
+${(PROJECT_TYPE == ".NET" || PROJECT_TYPE == "Auto-detect") ?
+"#### .NET Architectural Patterns (if detected)
+- Host and application model implementation
+- Middleware pipeline organization
+- Framework service integration patterns
+- ORM and data access approaches
+- API implementation patterns (controllers, minimal APIs, etc.)
+- Dependency injection container configuration" : ""}
+
+${(PROJECT_TYPE == "Java" || PROJECT_TYPE == "Auto-detect") ?
+"#### Java Architectural Patterns (if detected)
+- Application container and bootstrap process
+- Dependency injection framework usage (Spring, CDI, etc.)
+- AOP implementation patterns
+- Transaction boundary management
+- ORM configuration and usage patterns
+- Service implementation patterns" : ""}
+
+${(PROJECT_TYPE == "React" || PROJECT_TYPE == "Auto-detect") ?
+"#### React Architectural Patterns (if detected)
+- Component composition and reuse strategies
+- State management architecture
+- Side effect handling patterns
+- Routing and navigation approach
+- Data fetching and caching patterns
+- Rendering optimization strategies" : ""}
+
+${(PROJECT_TYPE == "Angular" || PROJECT_TYPE == "Auto-detect") ?
+"#### Angular Architectural Patterns (if detected)
+- Module organization strategy
+- Component hierarchy design
+- Service and dependency injection patterns
+- State management approach
+- Reactive programming patterns
+- Route guard implementation" : ""}
+
+${(PROJECT_TYPE == "Python" || PROJECT_TYPE == "Auto-detect") ?
+"#### Python Architectural Patterns (if detected)
+- Module organization approach
+- Dependency management strategy
+- OOP vs. functional implementation patterns
+- Framework integration patterns
+- Asynchronous programming approach" : ""}
+
+### 10. Implementation Patterns
+${INCLUDES_IMPLEMENTATION_PATTERNS ?
+"Document concrete implementation patterns for key architectural components:
+
+- **Interface Design Patterns**:
+  - Interface segregation approaches
+  - Abstraction level decisions
+  - Generic vs. specific interface patterns
+  - Default implementation patterns
+
+- **Service Implementation Patterns**:
+  - Service lifetime management
+  - Service composition patterns
+  - Operation implementation templates
+  - Error handling within services
+
+- **Repository Implementation Patterns**:
+  - Query pattern implementations
+  - Transaction management
+  - Concurrency handling
+  - Bulk operation patterns
+
+- **Controller/API Implementation Patterns**:
+  - Request handling patterns
+  - Response formatting approaches
+  - Parameter validation
+  - API versioning implementation
+
+- **Domain Model Implementation**:
+  - Entity implementation patterns
+  - Value object patterns
+  - Domain event implementation
+  - Business rule enforcement" : "Mention that detailed implementation patterns vary across the codebase."}
+
+### 11. Testing Architecture
+- Document testing strategies aligned with the architecture
+- Identify test boundary patterns (unit, integration, system)
+- Map test doubles and mocking approaches
+- Document test data strategies
+- Note testing tools and frameworks integration
+
+### 12. Deployment Architecture
+- Document deployment topology derived from configuration
+- Identify environment-specific architectural adaptations
+- Map runtime dependency resolution patterns
+- Document configuration management across environments
+- Identify containerization and orchestration approaches
+- Note cloud service integration patterns
+
+### 13. Extension and Evolution Patterns
+${FOCUS_ON_EXTENSIBILITY ?
+"Provide detailed guidance for extending the architecture:
+
+- **Feature Addition Patterns**:
+  - How to add new features while preserving architectural integrity
+  - Where to place new components by type
+  - Dependency introduction guidelines
+  - Configuration extension patterns
+
+- **Modification Patterns**:
+  - How to safely modify existing components
+  - Strategies for maintaining backward compatibility
+  - Deprecation patterns
+  - Migration approaches
+
+- **Integration Patterns**:
+  - How to integrate new external systems
+  - Adapter implementation patterns
+  - Anti-corruption layer patterns
+  - Service facade implementation" : "Document key extension points in the architecture."}
+
+${INCLUDES_CODE_EXAMPLES ?
+"### 14. Architectural Pattern Examples
+Extract representative code examples that illustrate key architectural patterns:
+
+- **Layer Separation Examples**:
+  - Interface definition and implementation separation
+  - Cross-layer communication patterns
+  - Dependency injection examples
+
+- **Component Communication Examples**:
+  - Service invocation patterns
+  - Event publication and handling
+  - Message passing implementation
+
+- **Extension Point Examples**:
+  - Plugin registration and discovery
+  - Extension interface implementations
+  - Configuration-driven extension patterns
+
+Include enough context with each example to show the pattern clearly, but keep examples concise and focused on architectural concepts." : ""}
+
+${INCLUDES_DECISION_RECORDS ?
+"### 15. Architectural Decision Records
+Document key architectural decisions evident in the codebase:
+
+- **Architectural Style Decisions**:
+  - Why the current architectural pattern was chosen
+  - Alternatives considered (based on code evolution)
+  - Constraints that influenced the decision
+
+- **Technology Selection Decisions**:
+  - Key technology choices and their architectural impact
+  - Framework selection rationales
+  - Custom vs. off-the-shelf component decisions
+
+- **Implementation Approach Decisions**:
+  - Specific implementation patterns chosen
+  - Standard pattern adaptations
+  - Performance vs. maintainability tradeoffs
+
+For each decision, note:
+- Context that made the decision necessary
+- Factors considered in making the decision
+- Resulting consequences (positive and negative)
+- Future flexibility or limitations introduced" : ""}
+
+### ${INCLUDES_DECISION_RECORDS ? "16" : INCLUDES_CODE_EXAMPLES ? "15" : "14"}. Architecture Governance
+- Document how architectural consistency is maintained
+- Identify automated checks for architectural compliance
+- Note architectural review processes evident in the codebase
+- Document architectural documentation practices
+
+### ${INCLUDES_DECISION_RECORDS ? "17" : INCLUDES_CODE_EXAMPLES ? "16" : "15"}. Blueprint for New Development
+Create a clear architectural guide for implementing new features:
+
+- **Development Workflow**:
+  - Starting points for different feature types
+  - Component creation sequence
+  - Integration steps with existing architecture
+  - Testing approach by architectural layer
+
+- **Implementation Templates**:
+  - Base class/interface templates for key architectural components
+  - Standard file organization for new components
+  - Dependency declaration patterns
+  - Documentation requirements
+
+- **Common Pitfalls**:
+  - Architecture violations to avoid
+  - Common architectural mistakes
+  - Performance considerations
+  - Testing blind spots
+
+Include information about when this blueprint was generated and recommendations for keeping it updated as the architecture evolves."
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/arduino-azure-iot-edge-integration/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arduino-azure-iot-edge-integration/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arduino-azure-iot-edge-integration/SKILL.md
+- **SHA256_FINGERPRINT**: `64d57cb8f9d2c57fe1be0d83d38cd21b0790772851780b420995c851f6847d95`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.479343+00:00
+---
+
+**description**: Design and implement Arduino integration with Azure IoT Hub and IoT Edge, including secure provisioning, resilient telemetry, command handling, and production guardrails.
+
+# Arduino Azure IoT Edge Integration
+
+Use this skill when the user needs to connect Arduino-class devices to Azure IoT, especially in edge-heavy scenarios (gateways, intermittent networks, offline buffering, and local actuation).
+
+## When to use it
+
+Use this skill for requests such as:
+
+- "I want to connect Arduino sensors to Azure"
+- "How do I send MQTT telemetry to IoT Hub?"
+- "I need an edge gateway for field devices"
+- "I want cloud-to-device commands and OTA configuration updates"
+
+## Mandatory documentation review
+
+Before recommending an IoT Edge topology or runtime behavior, review:
+
+- https://learn.microsoft.com/azure/iot-edge/
+
+If documentation cannot be consulted, proceed with explicit assumptions and highlight them in a dedicated section.
+
+## Official Arduino references and best practices (required)
+
+Before proposing firmware, wiring, or communication implementation details, consult official Arduino sources first:
+
+- https://www.arduino.cc/en/Guide
+- https://docs.arduino.cc/
+- https://docs.arduino.cc/language-reference/
+- references/arduino-official-best-practices.md
+
+When choosing between implementation alternatives, prioritize official Arduino guidance over community snippets unless there is a clear technical reason to deviate.
+
+## Objectives
+
+- Produce a secure end-to-end reference path from the Arduino device to cloud insights.
+- Handle unstable links (store-and-forward, retries, idempotency).
+- Define an actionable device and cloud backlog.
+
+## Integration patterns
+
+### Pattern A: Arduino direct to IoT Hub
+
+Use when connectivity is stable and cloud latency is acceptable.
+
+- Protocol: MQTT over TLS.
+- Identity: per-device credentials (SAS or X.509).
+- Telemetry payload: compact JSON with timestamp, device ID, metrics, and optional quality flags.
+
+### Pattern B: Arduino to local gateway, then IoT Edge
+
+Use when links are constrained, local control is required, or batching improves cost/reliability.
+
+- Arduino communicates with a local gateway (serial, BLE, local MQTT, RS-485, Modbus bridge).
+- The gateway publishes upstream through the IoT Edge runtime and routes data to IoT Hub.
+- Local modules can filter, aggregate, and trigger actions even during cloud outages.
+
+## Design flow
+
+### 1) Device contract
+
+Define:
+
+- Sensor catalog and units.
+- Sampling frequency and expected throughput.
+- Message schema versioning strategy.
+- Desired/reported device twin properties to control runtime behavior.
+
+### 2) Security baseline
+
+Require:
+
+- Unique identity per device.
+- No hardcoded secrets in source code or firmware artifacts.
+- Credential rotation strategy.
+- Signed firmware and a controlled update process when possible.
+
+### 3) Reliability and offline behavior
+
+Plan and document:
+
+- Backoff with jitter.
+- Local queue/buffer strategy with bounded size.
+- Duplicate suppression or downstream idempotent processing.
+- Fallback to last-known-good configuration.
+
+### 4) Cloud and edge routing
+
+Define routes for:
+
+- Raw telemetry to cold storage.
+- Curated telemetry to hot analytics.
+- Alerts to operations channels.
+- Commands and configuration back to edge/device.
+
+### 5) Observability
+
+Specify minimum operations telemetry:
+
+- Device heartbeat and firmware version.
+- Connectivity state transitions.
+- Message send success/error counters.
+- Gateway module health and restart reasons.
+
+## Reuse other skills
+
+When relevant, combine with:
+
+- `azure-smart-city-iot-solution-builder` for city-wide architecture and phased rollout.
+- `azure-resource-visualizer` for relationship diagrams.
+- `appinsights-instrumentation` for app and service telemetry patterns.
+
+Also use `references/arduino-official-best-practices.md` as a quality baseline for firmware and hardware recommendations, and `references/arduino-iot-checklist.md` before finalizing architecture or implementation guidance.
+
+## Required output
+
+Always provide:
+
+1. Chosen connectivity pattern and rationale.
+2. Message contract (fields, units, sample payload).
+3. Security checklist for identity/credentials/updates.
+4. Reliability plan (retry, buffering, dedupe).
+5. Implementation backlog (firmware, gateway, cloud).
+
+## Output template
+
+1. Scenario and assumptions
+2. Recommended architecture
+3. Device and gateway contract
+4. Security and reliability controls
+5. Deployment plan and validation tests
+
+## Guidelines
+
+- Do not propose production deployments with shared credentials across devices.
+- Do not assume always-on connectivity in field deployments.
+- Do not omit command authorization and auditing in actuator scenarios.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/arduino-azure-iot-edge-integration/references/arduino-iot-checklist.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arduino-azure-iot-edge-integration/references/arduino-iot-checklist.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arduino-azure-iot-edge-integration/references/arduino-iot-checklist.md
+- **SHA256_FINGERPRINT**: `e5073d99f72681cfa707d4a5c4829cf9b19c47a998a16fb6bfbf59a218cd7793`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.526593+00:00
+---
+
+# Arduino Azure IoT Checklist
+
+Use this checklist before finalizing architecture or implementation guidance.
+
+## 0) Official Arduino Baseline
+
+- Official references reviewed from <https://www.arduino.cc/en/Guide> and <https://docs.arduino.cc/>.
+- Language/API calls validated against <https://docs.arduino.cc/language-reference/>.
+- Best practices reviewed from `references/arduino-official-best-practices.md`.
+
+## 1) Device Profile
+
+- MCU model and memory constraints documented.
+- Sensor list and sampling strategy defined.
+- Power model documented (mains, battery, sleep cycles).
+
+## 2) Connectivity
+
+- Selected transport documented (MQTT over TLS preferred).
+- Network failure behavior defined.
+- Local timestamp strategy defined if device lacks RTC sync.
+
+## 3) Security
+
+- Unique identity per device.
+- No secrets in source control.
+- Credential rotation plan documented.
+- Firmware update and rollback plan documented.
+
+## 4) Edge and Cloud Flow
+
+- Routing from edge to IoT Hub documented.
+- Offline buffering limits defined.
+- Duplicate handling strategy documented.
+- Alerting thresholds and destinations defined.
+
+## 5) Validation
+
+- Connectivity soak test scenario.
+- Packet loss and reconnection test.
+- Command authorization test.
+- Firmware version and health reporting verification.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/arduino-azure-iot-edge-integration/references/arduino-official-best-practices.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/arduino-azure-iot-edge-integration/references/arduino-official-best-practices.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/arduino-azure-iot-edge-integration/references/arduino-official-best-practices.md
+- **SHA256_FINGERPRINT**: `10cb10a1a461752e20fc9923f15d429a4683dedbefbdcaa48b7138eedef5ec5d`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.503825+00:00
+---
+
+# Arduino Official References and Best Practices
+
+Use these official Arduino resources before finalizing firmware or hardware guidance.
+
+## Official References
+
+- Arduino main guide: <https://www.arduino.cc/en/Guide>
+- Arduino docs home: <https://docs.arduino.cc/>
+- Getting started path: <https://docs.arduino.cc/learn/starting-guide/getting-started-arduino/>
+- Arduino IDE usage: <https://docs.arduino.cc/learn/starting-guide/the-arduino-software-ide/>
+- Arduino language reference: <https://docs.arduino.cc/language-reference/>
+- Arduino programming reference overview: <https://docs.arduino.cc/learn/programming/reference/>
+- Arduino memory guide: <https://docs.arduino.cc/learn/programming/memory-guide/>
+- Arduino debugging fundamentals: <https://docs.arduino.cc/learn/microcontrollers/debugging/>
+- Arduino low-power design guide: <https://docs.arduino.cc/learn/electronics/low-power/>
+- Arduino communication protocols index: <https://docs.arduino.cc/learn/communication/>
+- Arduino style guide for libraries: <https://docs.arduino.cc/learn/contributions/arduino-library-style-guide/>
+
+## Firmware Best Practices
+
+- Keep the `loop()` non-blocking; avoid long `delay()` usage in production logic.
+- Use `millis()`-based scheduling for periodic tasks.
+- Budget SRAM explicitly and avoid dynamic allocation in hot paths.
+- Validate sensor ranges and provide safe defaults for invalid readings.
+- Add startup self-checks and periodic health heartbeat messages.
+- Version the payload schema and firmware version in every telemetry stream.
+- Implement retry with exponential backoff and jitter for network operations.
+- Store credentials outside source code and rotate them according to policy.
+
+## Hardware and Power Best Practices
+
+- Document voltage levels, pin mapping, and current limits per peripheral.
+- Design for brownout and power fluctuation scenarios.
+- Use watchdog and safe recovery behavior where available.
+- Plan low-power modes for battery deployments and validate wake cycles.
+
+## Integration Best Practices for Azure IoT
+
+- Prefer secure transports (MQTT over TLS) and per-device identity.
+- Define idempotent upstream processing for duplicate message scenarios.
+- Include device health metrics (uptime, reset reason, RSSI where applicable).
+- Validate offline buffering bounds to avoid uncontrolled memory growth.
 
 
 ---
@@ -49991,6 +51248,340 @@ Adapt based on:
 
 
 ---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/diagnose-ci-gate/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/diagnose-ci-gate/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/diagnose-ci-gate/SKILL.md
+- **SHA256_FINGERPRINT**: `6b410c35fcfb470e7b189b9f76cd6497b301c9ea17364bef7099daaa17382810`
+- **LAST_VERIFIED_UTC**: 2026-11-04T05:32:32.471115+00:00
+---
+
+**description**: Determine whether a failing CI check was caused by the current change, then recommend exactly one action. Use when a required check fails on a pull request, when asked "is this failure mine?", when a job passes locally but fails in CI, or before retrying a red build. Covers fetching the real log, reading the first error instead of the tail, classifying bug / flaky / environment / pipeline, comparing against the base branch and recent runs, reproducing with CI versions, and fixing a flaky test rather than re-running it forever.
+
+# Diagnose CI Gate
+
+A red check is a claim, not a diagnosis. Before you change code or press
+re-run, establish three things from evidence: what actually failed, which class
+of failure it is, and whether this change caused it.
+
+This skill is for a failing required check on a pull request or a branch. For
+cutting CI cost in general, use the `github-actions-efficiency` skill. For a
+domain-specific flaky suite, use the skill for that tool (for example
+`cypress-flake-fixer`) after this triage.
+
+## When to Use This Skill
+
+- A required check fails on a pull request and you need to know if it is yours
+- A job passes locally but fails in CI, or fails on only some runs
+- Someone says "that failure is unrelated, just re-run it"
+- A build has been retried several times and keeps failing
+- You are about to edit a workflow file to make a check pass
+
+## Prerequisites
+
+- `gh` CLI authenticated, or the raw logs pasted by the user
+- Read access to the base branch and its recent runs
+- The commands in the failing step, so they can be reproduced
+
+If logs are truncated, partial, or only a summary, stop and ask for the full
+log. Do not diagnose from the last few lines of a summarized check.
+
+## Workflow
+
+### 1. Get the failing job, not the check summary
+
+```bash
+gh pr checks <pr-number>                     # which check, which state
+gh run list --branch <branch> --limit 10     # current and recent runs
+gh run view <run-id> --log-failed            # only the failing steps
+gh run view <run-id> --job <job-id> --log    # one job, full log
+```
+
+Record the commit SHA under test, the runner image, and the time. A failure on
+an older SHA is a different problem from a failure on the current head.
+
+### 2. Read from the first error
+
+Read the top of the failing step, not the bottom. The first error is usually
+the cause; everything after it is fallout from that cause or from the runner
+giving up.
+
+Quote the exact lines, and name the command that produced them. If the log
+shows only a summary line (`Process completed with exit code 1`), find the step
+that emitted it and read that step's output.
+
+### 3. Classify the failure
+
+| Class | Signal | Confirm by |
+| --- | --- | --- |
+| **Bug** | Same failure every run, deterministic input | Re-running fails identically at the same assertion |
+| **Flaky** | Passes sometimes, timing/ordering/network/shared state | At least one green run of the same job on the same SHA, or a local loop that fails intermittently |
+| **Environment** | Tool version, missing secret, runner image, cache, disk or memory | Version in CI differs from local, or the step fails before any project code runs |
+| **Pipeline** | The workflow itself is wrong: bad path filter, wrong working directory, missing dependency install, YAML error, or a check that asserts a target the pull request cannot produce (such as a production URL for a page that is not merged yet) | The command succeeds against the pull request's own build, and the workflow line or its target is demonstrably wrong |
+
+Write the class and the evidence for it in one sentence each. A failure that
+cannot be classified is not ready for a fix.
+
+### 4. Decide whether this change caused it
+
+Compare with the base branch before claiming anything about ownership:
+
+```bash
+gh run list --branch main --limit 10
+git merge-base HEAD origin/main
+```
+
+If the same job fails on the base branch, or on recent runs of the base branch,
+it is pre-existing. Say so and link the run.
+
+Some jobs only run on pull requests, so no base-branch run exists. In that case,
+say that instead of implying you compared, and use the diff to establish what
+the change added.
+
+To test the base directly without disturbing the worktree, create a unique
+throwaway worktree and remove it when done:
+
+```bash
+base_dir="$(mktemp -d)"
+git worktree add "$base_dir" "$(git merge-base HEAD origin/main)"
+( cd "$base_dir" && <failing command> )
+git worktree remove --force "$base_dir"
+```
+
+`mktemp -d` returns a fresh path, so concurrent runs cannot collide. `--force` is
+safe here because the directory was created for this check and the failing
+command may have written build output into it. Never point this at a path that
+holds work, and remove the worktree with `git worktree remove` instead of
+deleting the directory by hand. If a directory was deleted by hand, run
+`git worktree prune`.
+
+This example is POSIX shell. On Windows, run it from Git Bash, or use
+PowerShell:
+
+```powershell
+$baseDir = Join-Path $env:TEMP ("ci-base-" + [guid]::NewGuid())
+git worktree add $baseDir (git merge-base HEAD origin/main)
+Push-Location $baseDir; <failing command>; Pop-Location
+git worktree remove --force $baseDir
+```
+
+If it passes on the base and fails on the head, name the commit and the file and
+line that introduced it. If the change is a dependency bump, check the lockfile
+diff and the tool version, not only the source diff.
+
+### 5. Reproduce with CI's versions
+
+Run the failing command with the versions CI used, from the same working
+directory, with the same environment variables and the same install step. Read
+the versions from the log, not from your local machine.
+
+If you cannot reproduce it, say so and name every difference you found: OS,
+runtime version, dependency resolution, environment variable, timezone,
+parallelism, cached state. "Cannot reproduce" is a finding, not a failure.
+
+### 6. Choose exactly one action
+
+- **Retry** - only when you already have evidence the failure is flaky. Name
+  the green run of the same job on the same SHA.
+- **Fix the code** - name the file, line, and change. This is the default for a
+  deterministic bug.
+- **Fix the pipeline** - name the workflow file and line. This is for pipeline
+  faults, not for hiding a real failure.
+
+For a flaky test, do the follow-up work instead of re-running forever:
+
+1. Run it repeatedly and record the failure rate: `for i in $(seq 1 20); do <command>; done`
+2. Find the shared state, timing assumption, or ordering dependency behind it
+3. Fix or quarantine it with an owner and a removal date, and say which
+
+### 7. Verify and report
+
+Re-run the check after the fix and show the result. For a flaky test, show the
+repeated runs.
+
+Report in this shape:
+
+```text
+Check:      <name> on <SHA>
+First error: <quoted line> (<step>, <command>)
+Class:      bug | flaky | environment | pipeline
+Ownership:  introduced by <commit/file:line> | pre-existing (<run link>)
+Reproduced: yes (<command>) | no (<differences>)
+Action:     retry | fix code | fix pipeline
+Result:     <run link, or the repeated-run tally>
+```
+
+## Verification Checklist
+
+- [ ] The quoted error comes from the real log, with the step and command named
+- [ ] The failure is classified, with the evidence for that class
+- [ ] The base branch and recent runs were checked before claiming ownership
+- [ ] The failure was reproduced with CI versions, or the differences are listed
+- [ ] The recommended action is one of retry, fix code, or fix pipeline, with a reason
+- [ ] The check was re-run after the fix, and the result is shown
+
+## Rules
+
+- Never recommend re-running without evidence that the failure is flaky
+- Never call a failure unrelated without comparing against the base branch
+- Never skip, delete, or weaken a failing test to make a check pass
+- Never add `continue-on-error`, `if: always()`, or a path filter to hide a real failure
+- Never treat a passing retry as proof the root cause is gone; say what changed
+- Never diagnose from a summary line when the full log is available
+
+## Validation
+
+[`references/validation.md`](references/validation.md) records this skill applied
+to real failed checks on a public repository: the job log, the classification,
+the ownership evidence, the reproduction attempt, and the recommended action.
+
+The first scenario is a transcript from GitHub Copilot CLI, prompted only with
+the failing job log, in a checkout where the failing command passes. It returned
+the report format below, classified the failure as pipeline, and attributed it to
+the parent commit rather than the change under test. Both findings were confirmed
+afterwards, and a depth-1 checkout reproduces the failure. The scenario exists to
+show the report surviving a green local run instead of collapsing into "cannot
+reproduce, probably flaky".
+
+## Limitations
+
+- Log access depends on permissions. Without it, ask for the log instead of guessing
+- Private runners and self-hosted infrastructure can fail for reasons the log does not show
+- A failure that only reproduces under load or on real hardware may need production-like infrastructure
+- This skill diagnoses and recommends. It does not decide whether a check is allowed to be bypassed; that is a policy decision for the repository owner
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/diagnose-ci-gate/references/validation.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/diagnose-ci-gate/references/validation.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/diagnose-ci-gate/references/validation.md
+- **SHA256_FINGERPRINT**: `405112870cd2364e3714a09c50365720c59976b453640e79b90d1109b9b66abf`
+- **LAST_VERIFIED_UTC**: 2026-11-04T05:32:32.471471+00:00
+---
+
+# Validation
+
+Two recorded applications of this skill to real failed jobs in a public
+repository. Every run ID, SHA, and command below is public, so each can be
+replayed or checked.
+
+## Origin
+
+The seven steps, the four failure classes, the verification checklist, and the
+rules are the [`ci-gate-diagnosis` prompt](https://github.com/shauryagangrade/awesome-ai-prompts/blob/main/devops-deploy/ci-gate-diagnosis-prompt.md),
+published in `shauryagangrade/awesome-ai-prompts` on 2026-10-24, before this
+skill existed. This skill packages that workflow for Copilot and adds the fixed
+report block, the base-branch worktree recipe, the `pull_request`-only caveat,
+and the validation below.
+
+## Scenario 1: a green local run, a red CI run
+
+This is a run inside GitHub Copilot CLI, on a checkout of the failing commit.
+CLI 1.0.105, model `gpt-6-luna` (the CLI's default selection, recorded in its
+own usage log), 8 model requests, 2026-11-03. The worktree was a full clone, so
+the failing command passed locally before the run started.
+
+**Check:** `Docs structure + em dashes`, run
+[40202831763](https://github.com/shauryagangrade/awesome-ai-prompts/actions/runs/40202831763),
+head `3ba8bf96`, push to `main`, 2026-10-25 14:33 UTC.
+
+**Log**, trimmed to the failing step:
+
+```text
+Job:    Docs structure + em dashes
+Step:   Build all-prompts page (deterministic + in sync)
+Run:    https://github.com/shauryagangrade/awesome-ai-prompts/actions/runs/40202831763
+Commit: 3ba8bf965671e6db8cb05ed089fe3127de9007ad
+
+##[group]Run python3 scripts/build-all.py --check
+python3 scripts/build-all.py --check
+shell: /usr/bin/bash -e {0}
+##[endgroup]
+FAIL stale: website/sitemap.xml
+run: python3 scripts/build-all.py to regenerate, or delete removed pages
+##[error]Process completed with exit code 1.
+```
+
+**Prompt:**
+
+```text
+A CI check is failing on this repository and I need to know whether my change caused it.
+
+The failed job log is in ./ci-log.txt. Use the diagnose-ci-gate skill in .github/skills/diagnose-ci-gate/SKILL.md and follow it.
+
+Give me the skill's report, in its format. Do not change any files: I want the diagnosis, not a fix.
+```
+
+**Reply**, verbatim:
+
+````text
+I’ll use the supplied job log first, then compare its SHA and failure against the base branch and recent CI evidence.
+
+The run is a `main` push at the checked-out SHA, not a PR check; I’m checking the exact job log and nearby `main` runs now, including whether the generated sitemap was already stale before this commit.
+
+```text
+Check:       Docs structure + em dashes on 3ba8bf965671e6db8cb05ed089fe3127de9007ad
+First error: FAIL stale: website/sitemap.xml (Build all-prompts page, `python3 scripts/build-all.py --check`)
+Class:       pipeline — the generator reads Git history for sitemap dates, but CI’s default checkout is shallow.
+Ownership:   pre-existing to 3ba8: the same failure occurred on main at 1c981e9 ([run](https://github.com/shauryagangrade/awesome-ai-prompts/actions/runs/40202231365)); that commit introduced the Git-history dependency in `scripts/build-all.py:753-768`. 3ba8 changed only `.markdownlint-cli2.jsonc`.
+Reproduced:  no — it passes locally on macOS with Python 3.14.7 and full Git history; CI used Ubuntu 24.04, and its Python version is not in the log.
+Action:      fix pipeline — fetch the history the generator requires. The later revert at 64aae52 removed that dependency.
+Result:      the check passed on the subsequent main run ([40203292949](https://github.com/shauryagangrade/awesome-ai-prompts/actions/runs/40203292949)); no files changed.
+```
+````
+
+**Checked after the fact:**
+
+- `get_git_lastmod()` is added in `1c981e9` and removed in `64aae52`. The
+  commit under test, `3ba8bf96`, changes only `.markdownlint-cli2.jsonc`.
+- The parent commit `1c981e9` failed the same job in run
+  [40202231365](https://github.com/shauryagangrade/awesome-ai-prompts/actions/runs/40202231365),
+  so ownership is pre-existing, as reported.
+- A full clone at `3ba8bf96` passes: `OK (144 prompts, 162 files deterministic
+  and in sync)`. A depth-1 fetch of the same commit, which is what CI's default
+  checkout does, fails with `FAIL stale: website/sitemap.xml`.
+- Run
+  [40203292949](https://github.com/shauryagangrade/awesome-ai-prompts/actions/runs/40203292949)
+  at `64aae52` passed.
+
+The report is right on all five points, and the classification is the useful
+part: the local check was green, so the skill had to explain the difference
+instead of reporting "cannot reproduce, probably flaky". Its own note that it
+could not see the CI Python version is also the right level of caution, since
+the reproduction was done on macOS.
+
+## Scenario 2: a 404 that re-running cannot fix
+
+Run [40091680340](https://github.com/shauryagangrade/awesome-ai-prompts/actions/runs/40091680340),
+job `New external links (PR only)`, head `5ea9cff6`, 2026-10-24 11:53 UTC. The
+job checks URLs added by a pull request:
+
+```text
+Checking 18 URL(s) added in `git diff origin/main...5ea9cff6`
+[X] https://awesome-ai-prompts.vercel.app/prompt/security-performance/secrets-scanning-response (status 404)
+17 of 18 links healthy
+##[error]Process completed with exit code 1.
+```
+
+- **Class:** pipeline. The page was generated correctly in the pull request, but
+  the URL points at the production deployment, which serves `main`; the page
+  reached `main` 66 minutes after the run. A pull request cannot make a
+  production URL exist, so no retry and no edit to the link can turn this green.
+- **Ownership:** the URL is new in the pull request. This job only runs on
+  `pull_request`, so there is no base-branch run to compare against, and the diff
+  quoted in the log is the ownership evidence.
+- **Reproduced:** not as a 404, because the page has since deployed. The
+  deterministic evidence is that the generated page exists in `5ea9cff6` but not
+  in `main` before `c283b32`, while the production host serves `main`.
+- **Action:** fix the check's target, not the link. Keep the live check on the
+  scheduled run; on pull requests, resolve the project's own host against the
+  build output, or skip self-hosted URLs added by the diff.
+
+This scenario is why Step 4 handles jobs that only run on `pull_request`, and why
+the pipeline row includes checks that assert a target a pull request cannot
+produce.
+
+
+---
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/diagnose/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/diagnose/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/diagnose/SKILL.md
@@ -78409,2188 +80000,3 @@ update() {
 | `this.load.audio(key, paths[])` | Load audio with format fallbacks |
 | `this.game.add.audio(key)` | Instantiate audio object |
 | `this.time.events.loop(interval, cb, ctx)` | Create repeating timer |
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/game-engine/assets/2d-platform-game.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/game-engine/assets/2d-platform-game.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/game-engine/assets/2d-platform-game.md
-- **SHA256_FINGERPRINT**: `6d9ad5969d5d094f0887d916bd3068db9fc57c01d62a02bcf83cd07b18e21484`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:28.867282+00:00
----
-
-# 2D Platform Game Template
-
-A complete step-by-step guide for building a 2D platformer game using Phaser (v2.x / Phaser CE) with Arcade Physics. This template walks through every stage of development: setting up the project, creating platforms from JSON level data, adding a hero with physics-based movement and jumping, collectible coins, walking enemies, death and stomp mechanics, a scoreboard, sprite animations, win conditions with a door/key system, and multi-level progression.
-
-**What you will build:** A classic side-scrolling platformer where a hero navigates platforms, collects coins, avoids or stomps on spider enemies, finds a key to unlock a door, and progresses through multiple levels -- with score tracking, animations, and physics.
-
-**Prerequisites:** Basic to intermediate JavaScript knowledge, familiarity with HTML, and a local web server for development (e.g., browser-sync, live-server, or Python's SimpleHTTPServer).
-
-**Source:** Based on the [Mozilla HTML5 Games Workshop - Platformer](https://mozdevs.github.io/html5-games-workshop/en/guides/platformer/start-here/). Project starter files available at the workshop repository.
-
----
-
-## Start Here
-
-This tutorial builds a 2D platformer using the **Phaser** framework. Phaser handles rendering, physics, input, audio, and asset loading so you can focus on game logic.
-
-### What You Will Build
-
-The finished game features:
-
-- A hero character the player controls with the keyboard
-- Platforms the hero can walk and jump on
-- Collectible coins that increase the score
-- Walking spider enemies that kill the hero on contact (but can be stomped from above)
-- A key and door system: the hero must pick up a key to unlock the door and complete the level
-- Multiple levels loaded from JSON data files
-- A scoreboard showing collected coins
-- Sprite animations for the hero (idle, running, jumping, falling)
-
-### Project Structure
-
-```
-project/
-  index.html
-  js/
-    phaser.min.js        (Phaser 2.6.2 or Phaser CE)
-    main.js              (all game code goes here)
-  audio/
-    sfx/
-      jump.wav
-      coin.wav
-      stomp.wav
-      key.wav
-      door.wav
-  images/
-    background.png
-    ground.png
-    grass:8x1.png        (platform tile images in various sizes)
-    grass:6x1.png
-    grass:4x1.png
-    grass:2x1.png
-    grass:1x1.png
-    hero.png             (hero spritesheet: 36x42 per frame)
-    hero_stopped.png     (single frame for initial steps)
-    coin_animated.png    (coin spritesheet)
-    spider.png           (spider spritesheet)
-    invisible_wall.png   (invisible boundary for enemy AI)
-    key.png              (key spritesheet)
-    door.png             (door spritesheet)
-    key_icon.png         (HUD icon for key)
-    font:numbers.png     (bitmap font for score)
-  data/
-    level00.json
-    level01.json
-```
-
-### Level Data Format
-
-Each level is defined in a JSON file. The JSON structure describes positions of every entity:
-
-```json
-{
-    "hero": { "x": 21, "y": 525 },
-    "door": { "x": 169, "y": 546 },
-    "key": { "x": 750, "y": 524 },
-    "platforms": [
-        { "image": "ground", "x": 0, "y": 546 },
-        { "image": "grass:8x1", "x": 208, "y": 420 },
-        { "image": "grass:4x1", "x": 420, "y": 336 },
-        { "image": "grass:2x1", "x": 680, "y": 252 }
-    ],
-    "coins": [
-        { "x": 147, "y": 525 },
-        { "x": 189, "y": 525 },
-        { "x": 399, "y": 399 },
-        { "x": 441, "y": 336 }
-    ],
-    "spiders": [
-        { "x": 121, "y": 399 }
-    ],
-    "decoration": {
-        "grass": [
-            { "x": 84, "y": 504, "frame": 0 },
-            { "x": 420, "y": 504, "frame": 1 }
-        ]
-    }
-}
-```
-
-Each entity type (hero, door, key, platforms, coins, spiders) has `x` and `y` coordinates. Platforms also specify which `image` asset to use for that platform tile.
-
----
-
-## Initialise Phaser
-
-The first step is setting up the HTML file and creating the Phaser game instance.
-
-### HTML Entry Point
-
-Create an `index.html` file that loads Phaser and your game script:
-
-```html
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Platformer Game</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            background: #000;
-        }
-    </style>
-    <script src="js/phaser.min.js"></script>
-    <script src="js/main.js"></script>
-</head>
-<body>
-    <div id="game"></div>
-</body>
-</html>
-```
-
-- The `<div id="game">` is the container where Phaser will insert the game canvas.
-- Phaser is loaded first, then your game script.
-
-### Creating the Game Instance
-
-In `js/main.js`, create the Phaser game object and register a game state:
-
-```javascript
-// Create a Phaser game instance
-// Parameters: width, height, renderer, DOM element ID
-window.onload = function () {
-    let game = new Phaser.Game(960, 600, Phaser.AUTO, 'game');
-
-    // Add and start the play state
-    game.state.add('play', PlayState);
-    game.state.start('play');
-};
-```
-
-- `960, 600` sets the game canvas dimensions in pixels.
-- `Phaser.AUTO` lets Phaser choose between WebGL and Canvas rendering automatically.
-- `'game'` is the ID of the DOM element that will contain the canvas.
-
-### The PlayState Object
-
-Define the game state as an object with lifecycle methods:
-
-```javascript
-PlayState = {};
-
-PlayState.init = function () {
-    // Called first when the state starts
-};
-
-PlayState.preload = function () {
-    // Load all assets here
-};
-
-PlayState.create = function () {
-    // Create game entities and set up the world
-};
-
-PlayState.update = function () {
-    // Called every frame (~60 times per second)
-    // Handle game logic, input, collisions here
-};
-```
-
-- `init` -- runs first; used for configuration and receiving parameters.
-- `preload` -- used to load all assets (images, audio, JSON) before the game starts.
-- `create` -- called once after assets are loaded; used to create sprites, groups, and game objects.
-- `update` -- called every frame at ~60fps; used for input handling, physics checks, and game logic.
-
-At this point you should see an empty black canvas rendered on the page.
-
----
-
-## The Game Loop
-
-Phaser uses a game loop architecture. Every frame, Phaser calls `update()`, which is where you handle input, move sprites, and check collisions. Before the loop starts, `preload()` loads assets and `create()` sets up the initial game state.
-
-### Loading and Displaying the Background
-
-Start by loading and displaying a background image to verify the game loop is working:
-
-```javascript
-PlayState.preload = function () {
-    this.game.load.image('background', 'images/background.png');
-};
-
-PlayState.create = function () {
-    // Add the background image at position (0, 0)
-    this.game.add.image(0, 0, 'background');
-};
-```
-
-- `this.game.load.image(key, path)` loads an image and assigns it a key for later reference.
-- `this.game.add.image(x, y, key)` creates a static image at the given position.
-
-You should now see the background image rendered in the game canvas.
-
-### Understanding the Frame Cycle
-
-```
-preload() -> [assets loaded] -> create() -> update() -> update() -> update() -> ...
-```
-
-Each call to `update()` represents one frame. The game targets 60 frames per second. All movement, input reading, and collision detection happen inside `update()`.
-
----
-
-## Creating Platforms
-
-Platforms are the surfaces the hero walks and jumps on. They are loaded from the level JSON data and created as physics-enabled sprites arranged in a group.
-
-### Loading Platform Assets
-
-Load the level JSON data and all platform tile images in `preload`:
-
-```javascript
-PlayState.preload = function () {
-    this.game.load.image('background', 'images/background.png');
-
-    // Load level data
-    this.game.load.json('level:1', 'data/level01.json');
-
-    // Load platform images
-    this.game.load.image('ground', 'images/ground.png');
-    this.game.load.image('grass:8x1', 'images/grass_8x1.png');
-    this.game.load.image('grass:6x1', 'images/grass_6x1.png');
-    this.game.load.image('grass:4x1', 'images/grass_4x1.png');
-    this.game.load.image('grass:2x1', 'images/grass_2x1.png');
-    this.game.load.image('grass:1x1', 'images/grass_1x1.png');
-};
-```
-
-### Spawning Platforms from Level Data
-
-Create a method to load the level and spawn each platform as a sprite inside a physics group:
-
-```javascript
-PlayState.create = function () {
-    // Add the background
-    this.game.add.image(0, 0, 'background');
-
-    // Load level data and spawn entities
-    this._loadLevel(this.game.cache.getJSON('level:1'));
-};
-
-PlayState._loadLevel = function (data) {
-    // Create a group for platforms
-    this.platforms = this.game.add.group();
-
-    // Spawn each platform from the level data
-    data.platforms.forEach(this._spawnPlatform, this);
-};
-
-PlayState._spawnPlatform = function (platform) {
-    // Add a sprite at the platform's position using the specified image
-    let sprite = this.platforms.create(platform.x, platform.y, platform.image);
-
-    // Enable physics on this platform
-    this.game.physics.enable(sprite);
-
-    // Make platform immovable so it doesn't get pushed by the hero
-    sprite.body.allowGravity = false;
-    sprite.body.immovable = true;
-};
-```
-
-- `this.game.add.group()` creates a Phaser group -- a container for related sprites that enables batch operations and collision detection.
-- `this.platforms.create(x, y, key)` creates a sprite inside the group.
-- `sprite.body.immovable = true` prevents the platform from being pushed by other physics bodies.
-- `sprite.body.allowGravity = false` prevents platforms from falling due to gravity.
-
-You should now see the ground and grass platform tiles rendered on the screen.
-
----
-
-## The Main Character Sprite
-
-Now add the hero character that the player will control.
-
-### Loading the Hero Image
-
-Add the hero image to `preload`. Initially we use a single static image; we will switch to a spritesheet later for animations:
-
-```javascript
-// In PlayState.preload:
-this.game.load.image('hero', 'images/hero_stopped.png');
-```
-
-### Spawning the Hero
-
-Add the hero to `_loadLevel` and create a spawn method:
-
-```javascript
-PlayState._loadLevel = function (data) {
-    this.platforms = this.game.add.group();
-    data.platforms.forEach(this._spawnPlatform, this);
-
-    // Spawn the hero at the position defined in level data
-    this._spawnCharacters({ hero: data.hero });
-};
-
-PlayState._spawnCharacters = function (data) {
-    // Create the hero sprite
-    this.hero = this.game.add.sprite(data.hero.x, data.hero.y, 'hero');
-
-    // Set the anchor to the bottom-center for easier positioning
-    this.hero.anchor.set(0.5, 1);
-};
-```
-
-- `anchor.set(0.5, 1)` sets the sprite's origin point to the horizontal center and vertical bottom. This makes it easier to position the hero on top of platforms, since the `y` position refers to the hero's feet rather than the top-left corner.
-
----
-
-## Keyboard Controls
-
-Capture keyboard input so the player can move the hero left, right, and jump.
-
-### Setting Up Input Keys
-
-In `init`, configure the keyboard controls:
-
-```javascript
-PlayState.init = function () {
-    // Force integer rendering for pixel-art crispness
-    this.game.renderer.renderSession.roundPixels = true;
-
-    // Capture arrow keys
-    this.keys = this.game.input.keyboard.addKeys({
-        left: Phaser.KeyCode.LEFT,
-        right: Phaser.KeyCode.RIGHT,
-        up: Phaser.KeyCode.UP
-    });
-};
-```
-
-- `addKeys()` captures the specified keys and returns an object with key state references.
-- `Phaser.KeyCode.LEFT`, `RIGHT`, `UP` correspond to the arrow keys.
-- `renderSession.roundPixels = true` prevents pixel-art sprites from appearing blurry due to sub-pixel rendering.
-
-### Reading Input in Update
-
-Handle the key states in `update`. For now, just log the direction; the next step adds physics-based movement:
-
-```javascript
-PlayState.update = function () {
-    this._handleInput();
-};
-
-PlayState._handleInput = function () {
-    if (this.keys.left.isDown) {
-        // Move hero left
-    } else if (this.keys.right.isDown) {
-        // Move hero right
-    } else {
-        // Stop (no key held)
-    }
-};
-```
-
-- `this.keys.left.isDown` returns `true` while the left arrow key is held down.
-- The `else` clause handles the case where neither left nor right is pressed (the hero should stop).
-
----
-
-## Moving Sprites with Physics
-
-Enable Arcade Physics so the hero can move with velocity and interact with platforms through collisions.
-
-### Enabling the Physics Engine
-
-Enable Arcade Physics in `init`:
-
-```javascript
-PlayState.init = function () {
-    this.game.renderer.renderSession.roundPixels = true;
-
-    this.keys = this.game.input.keyboard.addKeys({
-        left: Phaser.KeyCode.LEFT,
-        right: Phaser.KeyCode.RIGHT,
-        up: Phaser.KeyCode.UP
-    });
-
-    // Enable Arcade Physics
-    this.game.physics.startSystem(Phaser.Physics.ARCADE);
-};
-```
-
-### Adding a Physics Body to the Hero
-
-Enable physics on the hero sprite in `_spawnCharacters`:
-
-```javascript
-PlayState._spawnCharacters = function (data) {
-    this.hero = this.game.add.sprite(data.hero.x, data.hero.y, 'hero');
-    this.hero.anchor.set(0.5, 1);
-
-    // Enable physics body on the hero
-    this.game.physics.enable(this.hero);
-};
-```
-
-### Moving with Velocity
-
-Now update `_handleInput` to set the hero's velocity based on key presses:
-
-```javascript
-const SPEED = 200; // pixels per second
-
-PlayState._handleInput = function () {
-    if (this.keys.left.isDown) {
-        this.hero.body.velocity.x = -SPEED;
-    } else if (this.keys.right.isDown) {
-        this.hero.body.velocity.x = SPEED;
-    } else {
-        this.hero.body.velocity.x = 0;
-    }
-};
-```
-
-- `body.velocity.x` sets the horizontal speed in pixels per second.
-- A negative value moves the sprite left; positive moves it right.
-- Setting velocity to `0` when no keys are pressed makes the hero stop immediately.
-
-The hero can now move left and right, but will fall through platforms and off the screen because there is no gravity or collision handling yet.
-
----
-
-## Gravity
-
-Add gravity so the hero falls downward and collides with platforms.
-
-### Setting Global Gravity
-
-Enable gravity for the entire physics world in `init`:
-
-```javascript
-PlayState.init = function () {
-    this.game.renderer.renderSession.roundPixels = true;
-
-    this.keys = this.game.input.keyboard.addKeys({
-        left: Phaser.KeyCode.LEFT,
-        right: Phaser.KeyCode.RIGHT,
-        up: Phaser.KeyCode.UP
-    });
-
-    this.game.physics.startSystem(Phaser.Physics.ARCADE);
-
-    // Set global gravity
-    this.game.physics.arcade.gravity.y = 1200;
-};
-```
-
-- `gravity.y = 1200` applies a downward acceleration of 1200 pixels per second squared to all physics-enabled sprites (unless they opt out with `allowGravity = false`).
-
-### Collision Detection Between Hero and Platforms
-
-Add collision detection in `update` so the hero lands on platforms instead of falling through:
-
-```javascript
-PlayState.update = function () {
-    this._handleCollisions();
-    this._handleInput();
-};
-
-PlayState._handleCollisions = function () {
-    // Make the hero collide with the platform group
-    this.game.physics.arcade.collide(this.hero, this.platforms);
-};
-```
-
-- `arcade.collide(spriteA, groupB)` checks for physics collisions between the hero and every sprite in the platforms group. When the hero lands on a platform, the physics engine prevents it from passing through and resolves the overlap.
-- It is important to call `_handleCollisions()` before `_handleInput()` so collision data (like whether the hero is touching the ground) is up to date when we process input.
-
-The hero now falls due to gravity and lands on the platforms. You can walk left and right on the platforms.
-
----
-
-## Jumps
-
-Allow the hero to jump when the up arrow key is pressed -- but only when standing on a platform (no mid-air jumps).
-
-### Implementing the Jump Mechanic
-
-Add a jump constant and update `_handleInput`:
-
-```javascript
-const SPEED = 200;
-const JUMP_SPEED = 600;
-
-PlayState._handleInput = function () {
-    if (this.keys.left.isDown) {
-        this.hero.body.velocity.x = -SPEED;
-    } else if (this.keys.right.isDown) {
-        this.hero.body.velocity.x = SPEED;
-    } else {
-        this.hero.body.velocity.x = 0;
-    }
-
-    // Handle jumping
-    if (this.keys.up.isDown) {
-        this._jump();
-    }
-};
-
-PlayState._jump = function () {
-    let canJump = this.hero.body.touching.down;
-
-    if (canJump) {
-        this.hero.body.velocity.y = -JUMP_SPEED;
-    }
-
-    return canJump;
-};
-```
-
-- `this.hero.body.touching.down` is `true` when the hero's physics body is touching another body on its underside -- meaning the hero is standing on something.
-- Setting `velocity.y` to a negative value launches the hero upward (the y-axis points downward in screen coordinates).
-- The `canJump` check prevents the hero from jumping while already in the air, enforcing single-jump behavior.
-- The method returns whether the jump was performed, which is useful later for playing sound effects.
-
-### Adding a Jump Sound Effect
-
-Load a jump sound and play it on successful jumps:
-
-```javascript
-// In PlayState.preload:
-this.game.load.audio('sfx:jump', 'audio/sfx/jump.wav');
-
-// In PlayState.create:
-this.sfx = {
-    jump: this.game.add.audio('sfx:jump')
-};
-
-// In PlayState._jump, after setting velocity:
-PlayState._jump = function () {
-    let canJump = this.hero.body.touching.down;
-
-    if (canJump) {
-        this.hero.body.velocity.y = -JUMP_SPEED;
-        this.sfx.jump.play();
-    }
-
-    return canJump;
-};
-```
-
----
-
-## Pickable Coins
-
-Add collectible coins that the player can pick up to increase their score.
-
-### Loading Coin Assets
-
-Load the coin spritesheet and coin sound effect in `preload`:
-
-```javascript
-// In PlayState.preload:
-this.game.load.spritesheet('coin', 'images/coin_animated.png', 22, 22);
-this.game.load.audio('sfx:coin', 'audio/sfx/coin.wav');
-```
-
-- `load.spritesheet(key, path, frameWidth, frameHeight)` loads a spritesheet and slices it into individual frames of 22x22 pixels for animation.
-
-### Spawning Coins from Level Data
-
-Update `_loadLevel` to create a coins group and spawn each coin:
-
-```javascript
-PlayState._loadLevel = function (data) {
-    this.platforms = this.game.add.group();
-    this.coins = this.game.add.group();
-
-    data.platforms.forEach(this._spawnPlatform, this);
-    data.coins.forEach(this._spawnCoin, this);
-
-    this._spawnCharacters({ hero: data.hero });
-};
-
-PlayState._spawnCoin = function (coin) {
-    let sprite = this.coins.create(coin.x, coin.y, 'coin');
-    sprite.anchor.set(0.5, 0.5);
-
-    // Add a tween animation to make the coin bob up and down
-    this.game.physics.enable(sprite);
-    sprite.body.allowGravity = false;
-
-    // Coin bobbing animation with a tween
-    sprite.animations.add('rotate', [0, 1, 2, 1], 6, true); // 6fps, looping
-    sprite.animations.play('rotate');
-};
-```
-
-- Each coin is created inside the `coins` group for easy collision detection.
-- `allowGravity = false` prevents coins from falling.
-- The `animations.add` creates a frame animation using the spritesheet frames 0, 1, 2, 1 at 6fps, looping continuously.
-
-### Collecting Coins
-
-Add the coin sound to the sfx object and detect overlap between the hero and coins:
-
-```javascript
-// In PlayState.create, add to the sfx object:
-this.sfx = {
-    jump: this.game.add.audio('sfx:jump'),
-    coin: this.game.add.audio('sfx:coin')
-};
-
-// In PlayState._handleCollisions:
-PlayState._handleCollisions = function () {
-    this.game.physics.arcade.collide(this.hero, this.platforms);
-
-    // Detect overlap between hero and coins (no physical collision, just overlap)
-    this.game.physics.arcade.overlap(
-        this.hero, this.coins, this._onHeroVsCoin, null, this
-    );
-};
-
-PlayState._onHeroVsCoin = function (hero, coin) {
-    this.sfx.coin.play();
-    coin.kill();  // Remove the coin from the game
-    this.coinPickupCount++;
-};
-```
-
-- `arcade.overlap()` checks if two sprites/groups overlap without resolving collisions physically. When an overlap is detected, it calls the callback function (`_onHeroVsCoin`).
-- `coin.kill()` removes the coin sprite from the game world.
-- `this.coinPickupCount` tracks the number of coins collected (initialize it in `_loadLevel`).
-
-### Initializing the Coin Counter
-
-```javascript
-PlayState._loadLevel = function (data) {
-    this.platforms = this.game.add.group();
-    this.coins = this.game.add.group();
-
-    data.platforms.forEach(this._spawnPlatform, this);
-    data.coins.forEach(this._spawnCoin, this);
-
-    this._spawnCharacters({ hero: data.hero });
-
-    // Initialize coin counter
-    this.coinPickupCount = 0;
-};
-```
-
----
-
-## Walking Enemies
-
-Add spider enemies that walk back and forth on platforms. The hero can stomp on them from above but dies if touching them from the side.
-
-### Loading Enemy Assets
-
-```javascript
-// In PlayState.preload:
-this.game.load.spritesheet('spider', 'images/spider.png', 42, 32);
-this.game.load.image('invisible-wall', 'images/invisible_wall.png');
-this.game.load.audio('sfx:stomp', 'audio/sfx/stomp.wav');
-```
-
-- The spider spritsheet has frames for a crawling animation.
-- Invisible walls are placed at platform edges to keep spiders from walking off -- they are not rendered visually but have physics bodies.
-
-### Spawning Enemies
-
-Update `_loadLevel` and add a spawn method for spiders:
-
-```javascript
-PlayState._loadLevel = function (data) {
-    this.platforms = this.game.add.group();
-    this.coins = this.game.add.group();
-    this.spiders = this.game.add.group();
-    this.enemyWalls = this.game.add.group();
-
-    data.platforms.forEach(this._spawnPlatform, this);
-    data.coins.forEach(this._spawnCoin, this);
-    data.spiders.forEach(this._spawnSpider, this);
-
-    this._spawnCharacters({ hero: data.hero });
-
-    // Make enemy walls invisible
-    this.enemyWalls.visible = false;
-
-    this.coinPickupCount = 0;
-};
-```
-
-### Creating Invisible Walls on Platforms
-
-Modify `_spawnPlatform` to add invisible walls at both edges of each platform:
-
-```javascript
-PlayState._spawnPlatform = function (platform) {
-    let sprite = this.platforms.create(platform.x, platform.y, platform.image);
-    this.game.physics.enable(sprite);
-    sprite.body.allowGravity = false;
-    sprite.body.immovable = true;
-
-    // Spawn invisible walls at the left and right edges of this platform
-    this._spawnEnemyWall(platform.x, platform.y, 'left');
-    this._spawnEnemyWall(platform.x + sprite.width, platform.y, 'right');
-};
-
-PlayState._spawnEnemyWall = function (x, y, side) {
-    let sprite = this.enemyWalls.create(x, y, 'invisible-wall');
-
-    // Anchor to the bottom of the wall and adjust position based on side
-    sprite.anchor.set(side === 'left' ? 1 : 0, 1);
-
-    this.game.physics.enable(sprite);
-    sprite.body.immovable = true;
-    sprite.body.allowGravity = false;
-};
-```
-
-- Each platform gets two invisible walls, one at each edge.
-- The walls act as barriers that prevent spiders from walking off the edge.
-- The anchor is set so the wall aligns to the correct side of the platform.
-
-### Spawning and Animating Spiders
-
-```javascript
-PlayState._spawnSpider = function (spider) {
-    let sprite = this.spiders.create(spider.x, spider.y, 'spider');
-    sprite.anchor.set(0.5, 1);
-
-    // Add the crawl animation
-    sprite.animations.add('crawl', [0, 1, 2], 8, true);
-    sprite.animations.add('die', [0, 4, 0, 4, 0, 4, 3, 3, 3, 3, 3, 3], 12);
-    sprite.animations.play('crawl');
-
-    // Enable physics
-    this.game.physics.enable(sprite);
-
-    // Set initial movement speed
-    sprite.body.velocity.x = Spider.SPEED;
-};
-
-// Spider speed constant
-const Spider = { SPEED: 100 };
-```
-
-- Spiders have two animations: `crawl` (looping) and `die` (played once on death).
-- `velocity.x = 100` starts the spider moving to the right at 100 pixels per second.
-
-### Making Spiders Bounce Off Walls
-
-Add collision handling so spiders reverse direction when hitting invisible walls or platform edges:
-
-```javascript
-// In PlayState._handleCollisions:
-PlayState._handleCollisions = function () {
-    this.game.physics.arcade.collide(this.hero, this.platforms);
-    this.game.physics.arcade.collide(this.spiders, this.platforms);
-    this.game.physics.arcade.collide(this.spiders, this.enemyWalls);
-
-    this.game.physics.arcade.overlap(
-        this.hero, this.coins, this._onHeroVsCoin, null, this
-    );
-    this.game.physics.arcade.overlap(
-        this.hero, this.spiders, this._onHeroVsEnemy, null, this
-    );
-};
-```
-
-To make spiders reverse direction when colliding with walls, check their velocity each frame and flip them:
-
-```javascript
-// In PlayState.update, after collision handling, update spider directions:
-PlayState.update = function () {
-    this._handleCollisions();
-    this._handleInput();
-
-    // Update spider facing direction based on velocity
-    this.spiders.forEach(function (spider) {
-        if (spider.body.touching.right || spider.body.blocked.right) {
-            spider.body.velocity.x = -Spider.SPEED; // Turn left
-        } else if (spider.body.touching.left || spider.body.blocked.left) {
-            spider.body.velocity.x = Spider.SPEED; // Turn right
-        }
-    }, this);
-};
-```
-
-- When a spider touches a wall on its right side, it reverses to move left, and vice versa.
-- `body.touching` is set by Phaser after collision resolution.
-
----
-
-## Death
-
-Implement hero death when touching enemies and the stomp mechanic for killing enemies.
-
-### Hero vs Enemy: Stomp or Die
-
-When the hero overlaps with a spider, check if the hero is falling (stomping) or not:
-
-```javascript
-PlayState._onHeroVsEnemy = function (hero, enemy) {
-    if (hero.body.velocity.y > 0) {
-        // Hero is falling -> stomp the enemy
-        enemy.body.velocity.x = 0; // Stop enemy movement
-        enemy.body.enable = false; // Disable enemy physics
-
-        // Play die animation then remove the enemy
-        enemy.animations.play('die');
-        enemy.events.onAnimationComplete.addOnce(function () {
-            enemy.kill();
-        });
-
-        // Bounce the hero up after stomping
-        hero.body.velocity.y = -JUMP_SPEED / 2;
-
-        this.sfx.stomp.play();
-    } else {
-        // Hero touched enemy from side or below -> die
-        this._killHero();
-    }
-};
-
-PlayState._killHero = function () {
-    this.hero.kill();
-    // Restart the level after a short delay
-    this.game.time.events.add(500, function () {
-        this.game.state.restart(true, false, { level: this.level });
-    }, this);
-};
-```
-
-- If `hero.body.velocity.y > 0`, the hero is moving downward (falling), indicating a stomp.
-- On stomp: the enemy stops, plays its death animation, and is removed. The hero bounces up.
-- If the hero is not falling, the hero dies. `this.hero.kill()` removes the hero from the game.
-- After 500ms, the entire state is restarted, effectively reloading the level.
-
-### Add Stomp Sound
-
-```javascript
-// In PlayState.create, add to sfx:
-this.sfx = {
-    jump: this.game.add.audio('sfx:jump'),
-    coin: this.game.add.audio('sfx:coin'),
-    stomp: this.game.add.audio('sfx:stomp')
-};
-```
-
-### Adding a Death Animation for the Hero
-
-Make the hero flash and fall off the screen when dying:
-
-```javascript
-PlayState._killHero = function () {
-    this.hero.alive = false;
-
-    // Play a "dying" visual: the hero jumps up and falls off screen
-    this.hero.body.velocity.y = -JUMP_SPEED / 2;
-    this.hero.body.velocity.x = 0;
-    this.hero.body.allowGravity = true;
-
-    // Disable collisions so the hero falls through platforms
-    this.hero.body.collideWorldBounds = false;
-
-    // Restart after a delay
-    this.game.time.events.add(1000, function () {
-        this.game.state.restart(true, false, { level: this.level });
-    }, this);
-};
-```
-
-### Guarding Input When Dead
-
-Prevent input from controlling the hero after death:
-
-```javascript
-PlayState._handleInput = function () {
-    if (!this.hero.alive) { return; }
-
-    if (this.keys.left.isDown) {
-        this.hero.body.velocity.x = -SPEED;
-    } else if (this.keys.right.isDown) {
-        this.hero.body.velocity.x = SPEED;
-    } else {
-        this.hero.body.velocity.x = 0;
-    }
-
-    if (this.keys.up.isDown) {
-        this._jump();
-    }
-};
-```
-
-- `this.hero.alive` is set to `false` in `_killHero`, so input is ignored after death and the hero falls off screen naturally.
-
----
-
-## Scoreboard
-
-Display the number of collected coins on screen using a bitmap font.
-
-### Loading the Bitmap Font
-
-```javascript
-// In PlayState.preload:
-this.game.load.image('font:numbers', 'images/numbers.png');
-this.game.load.image('icon:coin', 'images/coin_icon.png');
-```
-
-### Creating the HUD
-
-Create a fixed HUD (heads-up display) that shows the coin icon and count:
-
-```javascript
-PlayState._createHud = function () {
-    let coinIcon = this.game.make.image(0, 0, 'icon:coin');
-
-    // Create a dynamic text label for the coin count
-    this.hud = this.game.add.group();
-
-    // Use a retroFont or a regular text object for the score
-    let scoreStyle = {
-        font: '30px monospace',
-        fill: '#fff'
-    };
-    this.coinFont = this.game.add.text(
-        coinIcon.width + 7, 0, 'x0', scoreStyle
-    );
-
-    this.hud.add(coinIcon);
-    this.hud.add(this.coinFont);
-
-    this.hud.position.set(10, 10);
-    this.hud.fixedToCamera = true;
-};
-```
-
-Alternatively, using Phaser's `RetroFont` for pixel-art number rendering:
-
-```javascript
-PlayState._createHud = function () {
-    // Bitmap-based number rendering using RetroFont
-    this.coinFont = this.game.add.retroFont(
-        'font:numbers', 20, 26,
-        '0123456789X ', 6
-    );
-
-    let coinIcon = this.game.make.image(0, 0, 'icon:coin');
-
-    let coinScoreImg = this.game.make.image(
-        coinIcon.x + coinIcon.width + 7, 0, this.coinFont
-    );
-
-    this.hud = this.game.add.group();
-    this.hud.add(coinIcon);
-    this.hud.add(coinScoreImg);
-    this.hud.position.set(10, 10);
-    this.hud.fixedToCamera = true;
-};
-```
-
-- `retroFont` creates a bitmap font from a spritesheet containing character glyphs.
-- Parameters: image key, character width, character height, character set string, number of characters per row.
-
-### Calling createHud in create
-
-```javascript
-PlayState.create = function () {
-    this.game.add.image(0, 0, 'background');
-
-    this._loadLevel(this.game.cache.getJSON('level:1'));
-
-    // Create the HUD
-    this._createHud();
-};
-```
-
-### Updating the Score Display
-
-Update the score text whenever a coin is collected:
-
-```javascript
-PlayState._onHeroVsCoin = function (hero, coin) {
-    this.sfx.coin.play();
-    coin.kill();
-    this.coinPickupCount++;
-
-    // Update the HUD
-    this.coinFont.text = 'x' + this.coinPickupCount;
-};
-```
-
----
-
-## Animations for the Main Character
-
-Replace the static hero image with a spritesheet and add animations for different states: idle (stopped), running, jumping, and falling.
-
-### Loading the Hero Spritesheet
-
-Replace the single image load with a spritesheet in `preload`:
-
-```javascript
-// Replace: this.game.load.image('hero', 'images/hero_stopped.png');
-// With:
-this.game.load.spritesheet('hero', 'images/hero.png', 36, 42);
-```
-
-- The hero spritesheet is 36 pixels wide and 42 pixels tall per frame.
-- Frames include idle, walk cycle, jump, and fall poses.
-
-### Defining Animations
-
-In `_spawnCharacters`, add animation definitions after creating the hero sprite:
-
-```javascript
-PlayState._spawnCharacters = function (data) {
-    this.hero = this.game.add.sprite(data.hero.x, data.hero.y, 'hero');
-    this.hero.anchor.set(0.5, 1);
-    this.game.physics.enable(this.hero);
-
-    // Define animations
-    this.hero.animations.add('stop', [0]);               // Single frame: idle
-    this.hero.animations.add('run', [1, 2], 8, true);    // 2 frames at 8fps, looping
-    this.hero.animations.add('jump', [3]);                // Single frame: jumping up
-    this.hero.animations.add('fall', [4]);                // Single frame: falling down
-};
-```
-
-- `animations.add(name, frames, fps, loop)` registers an animation with the given name.
-- Single-frame animations like `stop`, `jump`, and `fall` effectively set a static pose.
-- The `run` animation alternates between frames 1 and 2 at 8fps.
-
-### Playing the Correct Animation
-
-Add a method to determine and play the right animation based on the hero's current state:
-
-```javascript
-PlayState._getAnimationName = function () {
-    let name = 'stop'; // Default: standing still
-
-    if (!this.hero.alive) {
-        name = 'stop'; // Use idle frame when dead
-    } else if (this.hero.body.velocity.y < 0) {
-        name = 'jump'; // Moving upward
-    } else if (this.hero.body.velocity.y > 0 && !this.hero.body.touching.down) {
-        name = 'fall'; // Moving downward and not on ground
-    } else if (this.hero.body.velocity.x !== 0 && this.hero.body.touching.down) {
-        name = 'run';  // Moving horizontally on the ground
-    }
-
-    return name;
-};
-```
-
-### Flipping the Sprite Based on Direction
-
-Update the hero's facing direction and play the animation in `update`:
-
-```javascript
-PlayState.update = function () {
-    this._handleCollisions();
-    this._handleInput();
-
-    // Flip sprite based on movement direction
-    if (this.hero.body.velocity.x < 0) {
-        this.hero.scale.x = -1; // Face left
-    } else if (this.hero.body.velocity.x > 0) {
-        this.hero.scale.x = 1;  // Face right
-    }
-
-    // Play the appropriate animation
-    this.hero.animations.play(this._getAnimationName());
-
-    // Update spider directions
-    this.spiders.forEach(function (spider) {
-        if (spider.body.touching.right || spider.body.blocked.right) {
-            spider.body.velocity.x = -Spider.SPEED;
-        } else if (spider.body.touching.left || spider.body.blocked.left) {
-            spider.body.velocity.x = Spider.SPEED;
-        }
-    }, this);
-};
-```
-
-- `this.hero.scale.x = -1` flips the sprite horizontally to face left. Setting it to `1` faces right. Because the anchor is at `(0.5, 1)`, the flip looks natural.
-- `animations.play()` only restarts the animation if the name changes, so calling it every frame is safe and efficient.
-
----
-
-## Win Condition
-
-Add a door and key mechanic: the hero must collect a key, then reach the door to complete the level.
-
-### Loading Door and Key Assets
-
-```javascript
-// In PlayState.preload:
-this.game.load.spritesheet('door', 'images/door.png', 42, 66);
-this.game.load.spritesheet('key', 'images/key.png', 20, 22);  // Key bobbing animation
-this.game.load.image('icon:key', 'images/key_icon.png');
-
-this.game.load.audio('sfx:key', 'audio/sfx/key.wav');
-this.game.load.audio('sfx:door', 'audio/sfx/door.wav');
-```
-
-### Spawning the Door and Key
-
-Update `_loadLevel` and `_spawnCharacters`:
-
-```javascript
-PlayState._loadLevel = function (data) {
-    this.platforms = this.game.add.group();
-    this.coins = this.game.add.group();
-    this.spiders = this.game.add.group();
-    this.enemyWalls = this.game.add.group();
-    this.bgDecoration = this.game.add.group();
-
-    // Must spawn decorations first (background layer)
-    // Spawn door before hero so it renders behind the hero
-    data.platforms.forEach(this._spawnPlatform, this);
-    data.coins.forEach(this._spawnCoin, this);
-    data.spiders.forEach(this._spawnSpider, this);
-
-    this._spawnDoor(data.door.x, data.door.y);
-    this._spawnKey(data.key.x, data.key.y);
-    this._spawnCharacters({ hero: data.hero });
-
-    this.enemyWalls.visible = false;
-
-    this.coinPickupCount = 0;
-    this.hasKey = false;
-};
-
-PlayState._spawnDoor = function (x, y) {
-    this.door = this.bgDecoration.create(x, y, 'door');
-    this.door.anchor.setTo(0.5, 1);
-
-    this.game.physics.enable(this.door);
-    this.door.body.allowGravity = false;
-};
-
-PlayState._spawnKey = function (x, y) {
-    this.key = this.bgDecoration.create(x, y, 'key');
-    this.key.anchor.set(0.5, 0.5);
-
-    this.game.physics.enable(this.key);
-    this.key.body.allowGravity = false;
-
-    // Add a bobbing up-and-down tween to the key
-    this.key.y -= 3;
-    this.game.add.tween(this.key)
-        .to({ y: this.key.y + 6 }, 800, Phaser.Easing.Sinusoidal.InOut)
-        .yoyo(true)
-        .loop()
-        .start();
-};
-```
-
-- The door is placed in a background decoration group so it renders behind the hero.
-- The key has a sinusoidal bobbing tween that moves it 6 pixels up and down over 800ms, looping forever.
-
-### Collecting the Key and Opening the Door
-
-Add key and door sound effects to the sfx object:
-
-```javascript
-// In PlayState.create sfx:
-this.sfx = {
-    jump: this.game.add.audio('sfx:jump'),
-    coin: this.game.add.audio('sfx:coin'),
-    stomp: this.game.add.audio('sfx:stomp'),
-    key: this.game.add.audio('sfx:key'),
-    door: this.game.add.audio('sfx:door')
-};
-```
-
-Add overlap detection for the key and door in `_handleCollisions`:
-
-```javascript
-PlayState._handleCollisions = function () {
-    this.game.physics.arcade.collide(this.hero, this.platforms);
-    this.game.physics.arcade.collide(this.spiders, this.platforms);
-    this.game.physics.arcade.collide(this.spiders, this.enemyWalls);
-
-    this.game.physics.arcade.overlap(
-        this.hero, this.coins, this._onHeroVsCoin, null, this
-    );
-    this.game.physics.arcade.overlap(
-        this.hero, this.spiders, this._onHeroVsEnemy, null, this
-    );
-    this.game.physics.arcade.overlap(
-        this.hero, this.key, this._onHeroVsKey, null, this
-    );
-    this.game.physics.arcade.overlap(
-        this.hero, this.door, this._onHeroVsDoor,
-        // Only trigger if the hero has the key
-        function (hero, door) {
-            return this.hasKey && hero.body.touching.down;
-        }, this
-    );
-};
-```
-
-- The door overlap has a **process callback** (the fourth argument) that only triggers the overlap callback when `this.hasKey` is true and the hero is standing on something. This prevents the hero from entering the door while falling or without the key.
-
-### Key and Door Callbacks
-
-```javascript
-PlayState._onHeroVsKey = function (hero, key) {
-    this.sfx.key.play();
-    key.kill();
-    this.hasKey = true;
-};
-
-PlayState._onHeroVsDoor = function (hero, door) {
-    this.sfx.door.play();
-
-    // Freeze the hero and play the door opening animation
-    hero.body.velocity.x = 0;
-    hero.body.velocity.y = 0;
-    hero.body.enable = false;
-
-    // Play door open animation (transition from closed to open frame)
-    door.frame = 1; // Switch to "open" frame
-
-    // Advance to the next level after a short delay
-    this.game.time.events.add(500, this._goToNextLevel, this);
-};
-
-PlayState._goToNextLevel = function () {
-    this.camera.fade('#000');
-    this.camera.onFadeComplete.addOnce(function () {
-        this.game.state.restart(true, false, {
-            level: this.level + 1
-        });
-    }, this);
-};
-```
-
-- When the hero touches the key, the key is removed and `hasKey` is set to `true`.
-- When the hero reaches the door (with the key), the hero freezes, the door opens, and after a delay the game transitions to the next level.
-- `camera.fade()` creates a fade-to-black transition for a polished level switch.
-
-### Showing the Key Icon in the HUD
-
-Update `_createHud` to show whether the hero has collected the key:
-
-```javascript
-PlayState._createHud = function () {
-    this.keyIcon = this.game.make.image(0, 19, 'icon:key');
-    this.keyIcon.anchor.set(0, 0.5);
-
-    // ... existing coin HUD code ...
-
-    this.hud.add(this.keyIcon);
-    this.hud.add(coinIcon);
-    this.hud.add(coinScoreImg);
-    this.hud.position.set(10, 10);
-    this.hud.fixedToCamera = true;
-};
-```
-
-Update the key icon appearance each frame in `update`:
-
-```javascript
-// In PlayState.update, add:
-this.keyIcon.frame = this.hasKey ? 1 : 0;
-```
-
-- Frame 0 shows a grayed-out key icon; frame 1 shows the collected key icon.
-
----
-
-## Switching Levels
-
-Support multiple levels by loading different JSON files based on a level index.
-
-### Passing Level Number Through init
-
-Modify `init` to accept a level parameter:
-
-```javascript
-PlayState.init = function (data) {
-    this.game.renderer.renderSession.roundPixels = true;
-
-    this.keys = this.game.input.keyboard.addKeys({
-        left: Phaser.KeyCode.LEFT,
-        right: Phaser.KeyCode.RIGHT,
-        up: Phaser.KeyCode.UP
-    });
-
-    this.game.physics.startSystem(Phaser.Physics.ARCADE);
-    this.game.physics.arcade.gravity.y = 1200;
-
-    // Store the current level number (default to 0)
-    this.level = (data.level || 0) % LEVEL_COUNT;
-};
-
-const LEVEL_COUNT = 2; // Total number of levels
-```
-
-- `data` is an object passed from `game.state.start()` or `game.state.restart()`.
-- The modulo operation (`% LEVEL_COUNT`) wraps around to level 0 after the last level, creating an infinite loop of levels.
-
-### Loading Level Data Dynamically
-
-Update `preload` to load the correct level based on `this.level`:
-
-```javascript
-PlayState.preload = function () {
-    this.game.load.image('background', 'images/background.png');
-
-    // Load the current level's JSON data
-    this.game.load.json('level:0', 'data/level00.json');
-    this.game.load.json('level:1', 'data/level01.json');
-
-    // ... load all other assets ...
-};
-```
-
-Update `create` to use the correct level data:
-
-```javascript
-PlayState.create = function () {
-    this.sfx = {
-        jump: this.game.add.audio('sfx:jump'),
-        coin: this.game.add.audio('sfx:coin'),
-        stomp: this.game.add.audio('sfx:stomp'),
-        key: this.game.add.audio('sfx:key'),
-        door: this.game.add.audio('sfx:door')
-    };
-
-    this.game.add.image(0, 0, 'background');
-
-    // Load level data based on current level number
-    this._loadLevel(this.game.cache.getJSON('level:' + this.level));
-
-    this._createHud();
-};
-```
-
-### Starting the Game at Level 0
-
-Update the initial state start to pass level 0:
-
-```javascript
-window.onload = function () {
-    let game = new Phaser.Game(960, 600, Phaser.AUTO, 'game');
-    game.state.add('play', PlayState);
-    game.state.start('play', true, false, { level: 0 });
-};
-```
-
-- The third and fourth `start` arguments control world/cache clearing. `true, false` keeps the cache between restarts (so assets do not need to be reloaded) but clears the world.
-- `{ level: 0 }` is passed to `init` as the `data` parameter.
-
-### Level Transition Flow
-
-The complete level flow is:
-
-1. Hero collects key -> `hasKey = true`
-2. Hero reaches door -> `_onHeroVsDoor` fires
-3. Camera fades to black -> `_goToNextLevel` fires
-4. State restarts with `{ level: this.level + 1 }`
-5. `init` receives the new level number
-6. The correct level JSON is loaded and the game continues
-
----
-
-## Moving Forward
-
-Congratulations -- you have built a complete 2D platformer. Here are ideas for extending the game further:
-
-### Suggested Improvements
-
-- **Mobile / touch controls:** Add on-screen buttons or swipe gestures using `game.input.onDown` for touch-enabled devices.
-- **More levels:** Create additional JSON level files with new platform layouts, coin placements, and enemy configurations.
-- **Menu screen:** Add a `MenuState` with a title screen and start button before entering `PlayState`.
-- **Game over screen:** Instead of instantly restarting, show a "Game Over" screen with the score.
-- **Lives system:** Give the hero multiple lives instead of instant restart.
-- **Power-ups:** Add items like speed boosts, double jump, or invincibility.
-- **Moving platforms:** Create platforms that travel along a path using tweens.
-- **Different enemy types:** Add flying enemies, enemies that shoot projectiles, or enemies with different movement patterns.
-- **Parallax scrolling:** Add multiple background layers that scroll at different speeds for depth.
-- **Camera scrolling:** For levels wider than the screen, use `game.camera.follow(this.hero)` to scroll with the hero.
-- **Sound and music:** Add background music and additional sound effects for a more polished experience.
-- **Particle effects:** Use Phaser's particle emitter for coin collection sparkles, enemy death effects, or dust when landing.
-
-### Full Game Source Reference
-
-Below is the complete `main.js` file combining all steps for reference. This represents the final state of the game with all features:
-
-```javascript
-// =============================================================================
-// Constants
-// =============================================================================
-
-const SPEED = 200;
-const JUMP_SPEED = 600;
-const LEVEL_COUNT = 2;
-const Spider = { SPEED: 100 };
-
-// =============================================================================
-// Game State: PlayState
-// =============================================================================
-
-PlayState = {};
-
-// -----------------------------------------------------------------------------
-// init
-// -----------------------------------------------------------------------------
-
-PlayState.init = function (data) {
-    this.game.renderer.renderSession.roundPixels = true;
-
-    this.keys = this.game.input.keyboard.addKeys({
-        left: Phaser.KeyCode.LEFT,
-        right: Phaser.KeyCode.RIGHT,
-        up: Phaser.KeyCode.UP
-    });
-
-    this.game.physics.startSystem(Phaser.Physics.ARCADE);
-    this.game.physics.arcade.gravity.y = 1200;
-
-    this.level = (data.level || 0) % LEVEL_COUNT;
-};
-
-// -----------------------------------------------------------------------------
-// preload
-// -----------------------------------------------------------------------------
-
-PlayState.preload = function () {
-    // Background
-    this.game.load.image('background', 'images/background.png');
-
-    // Level data
-    this.game.load.json('level:0', 'data/level00.json');
-    this.game.load.json('level:1', 'data/level01.json');
-
-    // Platform tiles
-    this.game.load.image('ground', 'images/ground.png');
-    this.game.load.image('grass:8x1', 'images/grass_8x1.png');
-    this.game.load.image('grass:6x1', 'images/grass_6x1.png');
-    this.game.load.image('grass:4x1', 'images/grass_4x1.png');
-    this.game.load.image('grass:2x1', 'images/grass_2x1.png');
-    this.game.load.image('grass:1x1', 'images/grass_1x1.png');
-
-    // Characters
-    this.game.load.spritesheet('hero', 'images/hero.png', 36, 42);
-    this.game.load.spritesheet('spider', 'images/spider.png', 42, 32);
-    this.game.load.image('invisible-wall', 'images/invisible_wall.png');
-
-    // Collectibles
-    this.game.load.spritesheet('coin', 'images/coin_animated.png', 22, 22);
-    this.game.load.spritesheet('key', 'images/key.png', 20, 22);
-    this.game.load.spritesheet('door', 'images/door.png', 42, 66);
-
-    // HUD
-    this.game.load.image('icon:coin', 'images/coin_icon.png');
-    this.game.load.image('icon:key', 'images/key_icon.png');
-    this.game.load.image('font:numbers', 'images/numbers.png');
-
-    // Audio
-    this.game.load.audio('sfx:jump', 'audio/sfx/jump.wav');
-    this.game.load.audio('sfx:coin', 'audio/sfx/coin.wav');
-    this.game.load.audio('sfx:stomp', 'audio/sfx/stomp.wav');
-    this.game.load.audio('sfx:key', 'audio/sfx/key.wav');
-    this.game.load.audio('sfx:door', 'audio/sfx/door.wav');
-};
-
-// -----------------------------------------------------------------------------
-// create
-// -----------------------------------------------------------------------------
-
-PlayState.create = function () {
-    // Sound effects
-    this.sfx = {
-        jump: this.game.add.audio('sfx:jump'),
-        coin: this.game.add.audio('sfx:coin'),
-        stomp: this.game.add.audio('sfx:stomp'),
-        key: this.game.add.audio('sfx:key'),
-        door: this.game.add.audio('sfx:door')
-    };
-
-    // Background
-    this.game.add.image(0, 0, 'background');
-
-    // Load level
-    this._loadLevel(this.game.cache.getJSON('level:' + this.level));
-
-    // HUD
-    this._createHud();
-};
-
-// -----------------------------------------------------------------------------
-// update
-// -----------------------------------------------------------------------------
-
-PlayState.update = function () {
-    this._handleCollisions();
-    this._handleInput();
-
-    // Update hero sprite direction and animation
-    if (this.hero.body.velocity.x < 0) {
-        this.hero.scale.x = -1;
-    } else if (this.hero.body.velocity.x > 0) {
-        this.hero.scale.x = 1;
-    }
-    this.hero.animations.play(this._getAnimationName());
-
-    // Update spider directions when hitting walls
-    this.spiders.forEach(function (spider) {
-        if (spider.body.touching.right || spider.body.blocked.right) {
-            spider.body.velocity.x = -Spider.SPEED;
-        } else if (spider.body.touching.left || spider.body.blocked.left) {
-            spider.body.velocity.x = Spider.SPEED;
-        }
-    }, this);
-
-    // Update key icon in HUD
-    this.keyIcon.frame = this.hasKey ? 1 : 0;
-};
-
-// -----------------------------------------------------------------------------
-// Level Loading
-// -----------------------------------------------------------------------------
-
-PlayState._loadLevel = function (data) {
-    // Create groups (order matters for rendering layers)
-    this.bgDecoration = this.game.add.group();
-    this.platforms = this.game.add.group();
-    this.coins = this.game.add.group();
-    this.spiders = this.game.add.group();
-    this.enemyWalls = this.game.add.group();
-
-    // Spawn entities from level data
-    data.platforms.forEach(this._spawnPlatform, this);
-    data.coins.forEach(this._spawnCoin, this);
-    data.spiders.forEach(this._spawnSpider, this);
-
-    this._spawnDoor(data.door.x, data.door.y);
-    this._spawnKey(data.key.x, data.key.y);
-    this._spawnCharacters({ hero: data.hero });
-
-    // Hide invisible walls
-    this.enemyWalls.visible = false;
-
-    // Initialize game state
-    this.coinPickupCount = 0;
-    this.hasKey = false;
-};
-
-// -----------------------------------------------------------------------------
-// Spawn Methods
-// -----------------------------------------------------------------------------
-
-PlayState._spawnPlatform = function (platform) {
-    let sprite = this.platforms.create(platform.x, platform.y, platform.image);
-    this.game.physics.enable(sprite);
-    sprite.body.allowGravity = false;
-    sprite.body.immovable = true;
-
-    // Add invisible walls at both edges for enemy AI
-    this._spawnEnemyWall(platform.x, platform.y, 'left');
-    this._spawnEnemyWall(platform.x + sprite.width, platform.y, 'right');
-};
-
-PlayState._spawnEnemyWall = function (x, y, side) {
-    let sprite = this.enemyWalls.create(x, y, 'invisible-wall');
-    sprite.anchor.set(side === 'left' ? 1 : 0, 1);
-    this.game.physics.enable(sprite);
-    sprite.body.immovable = true;
-    sprite.body.allowGravity = false;
-};
-
-PlayState._spawnCharacters = function (data) {
-    this.hero = this.game.add.sprite(data.hero.x, data.hero.y, 'hero');
-    this.hero.anchor.set(0.5, 1);
-    this.game.physics.enable(this.hero);
-    this.hero.body.collideWorldBounds = true;
-
-    // Hero animations
-    this.hero.animations.add('stop', [0]);
-    this.hero.animations.add('run', [1, 2], 8, true);
-    this.hero.animations.add('jump', [3]);
-    this.hero.animations.add('fall', [4]);
-};
-
-PlayState._spawnCoin = function (coin) {
-    let sprite = this.coins.create(coin.x, coin.y, 'coin');
-    sprite.anchor.set(0.5, 0.5);
-    this.game.physics.enable(sprite);
-    sprite.body.allowGravity = false;
-
-    sprite.animations.add('rotate', [0, 1, 2, 1], 6, true);
-    sprite.animations.play('rotate');
-};
-
-PlayState._spawnSpider = function (spider) {
-    let sprite = this.spiders.create(spider.x, spider.y, 'spider');
-    sprite.anchor.set(0.5, 1);
-    this.game.physics.enable(sprite);
-
-    sprite.animations.add('crawl', [0, 1, 2], 8, true);
-    sprite.animations.add('die', [0, 4, 0, 4, 0, 4, 3, 3, 3, 3, 3, 3], 12);
-    sprite.animations.play('crawl');
-
-    sprite.body.velocity.x = Spider.SPEED;
-};
-
-PlayState._spawnDoor = function (x, y) {
-    this.door = this.bgDecoration.create(x, y, 'door');
-    this.door.anchor.setTo(0.5, 1);
-    this.game.physics.enable(this.door);
-    this.door.body.allowGravity = false;
-};
-
-PlayState._spawnKey = function (x, y) {
-    this.key = this.bgDecoration.create(x, y, 'key');
-    this.key.anchor.set(0.5, 0.5);
-    this.game.physics.enable(this.key);
-    this.key.body.allowGravity = false;
-
-    // Bobbing tween
-    this.key.y -= 3;
-    this.game.add.tween(this.key)
-        .to({ y: this.key.y + 6 }, 800, Phaser.Easing.Sinusoidal.InOut)
-        .yoyo(true)
-        .loop()
-        .start();
-};
-
-// -----------------------------------------------------------------------------
-// Input
-// -----------------------------------------------------------------------------
-
-PlayState._handleInput = function () {
-    if (!this.hero.alive) { return; }
-
-    if (this.keys.left.isDown) {
-        this.hero.body.velocity.x = -SPEED;
-    } else if (this.keys.right.isDown) {
-        this.hero.body.velocity.x = SPEED;
-    } else {
-        this.hero.body.velocity.x = 0;
-    }
-
-    if (this.keys.up.isDown) {
-        this._jump();
-    }
-};
-
-PlayState._jump = function () {
-    let canJump = this.hero.body.touching.down;
-    if (canJump) {
-        this.hero.body.velocity.y = -JUMP_SPEED;
-        this.sfx.jump.play();
-    }
-    return canJump;
-};
-
-// -----------------------------------------------------------------------------
-// Collisions
-// -----------------------------------------------------------------------------
-
-PlayState._handleCollisions = function () {
-    // Physical collisions
-    this.game.physics.arcade.collide(this.hero, this.platforms);
-    this.game.physics.arcade.collide(this.spiders, this.platforms);
-    this.game.physics.arcade.collide(this.spiders, this.enemyWalls);
-
-    // Overlap detection (no physical push)
-    this.game.physics.arcade.overlap(
-        this.hero, this.coins, this._onHeroVsCoin, null, this
-    );
-    this.game.physics.arcade.overlap(
-        this.hero, this.spiders, this._onHeroVsEnemy, null, this
-    );
-    this.game.physics.arcade.overlap(
-        this.hero, this.key, this._onHeroVsKey, null, this
-    );
-    this.game.physics.arcade.overlap(
-        this.hero, this.door, this._onHeroVsDoor,
-        function (hero, door) {
-            return this.hasKey && hero.body.touching.down;
-        }, this
-    );
-};
-
-// -----------------------------------------------------------------------------
-// Collision Callbacks
-// -----------------------------------------------------------------------------
-
-PlayState._onHeroVsCoin = function (hero, coin) {
-    this.sfx.coin.play();
-    coin.kill();
-    this.coinPickupCount++;
-    this.coinFont.text = 'x' + this.coinPickupCount;
-};
-
-PlayState._onHeroVsEnemy = function (hero, enemy) {
-    if (hero.body.velocity.y > 0) {
-        // Stomp: hero is falling onto the enemy
-        enemy.body.velocity.x = 0;
-        enemy.body.enable = false;
-        enemy.animations.play('die');
-        enemy.events.onAnimationComplete.addOnce(function () {
-            enemy.kill();
-        });
-        hero.body.velocity.y = -JUMP_SPEED / 2;
-        this.sfx.stomp.play();
-    } else {
-        // Hero dies
-        this._killHero();
-    }
-};
-
-PlayState._onHeroVsKey = function (hero, key) {
-    this.sfx.key.play();
-    key.kill();
-    this.hasKey = true;
-};
-
-PlayState._onHeroVsDoor = function (hero, door) {
-    this.sfx.door.play();
-    hero.body.velocity.x = 0;
-    hero.body.velocity.y = 0;
-    hero.body.enable = false;
-
-    door.frame = 1; // Open door
-
-    this.game.time.events.add(500, this._goToNextLevel, this);
-};
-
-// -----------------------------------------------------------------------------
-// Death and Level Transitions
-// -----------------------------------------------------------------------------
-
-PlayState._killHero = function () {
-    this.hero.alive = false;
-    this.hero.body.velocity.y = -JUMP_SPEED / 2;
-    this.hero.body.velocity.x = 0;
-    this.hero.body.allowGravity = true;
-    this.hero.body.collideWorldBounds = false;
-
-    this.game.time.events.add(1000, function () {
-        this.game.state.restart(true, false, { level: this.level });
-    }, this);
-};
-
-PlayState._goToNextLevel = function () {
-    this.camera.fade('#000');
-    this.camera.onFadeComplete.addOnce(function () {
-        this.game.state.restart(true, false, {
-            level: this.level + 1
-        });
-    }, this);
-};
-
-// -----------------------------------------------------------------------------
-// Animations
-// -----------------------------------------------------------------------------
-
-PlayState._getAnimationName = function () {
-    let name = 'stop';
-
-    if (!this.hero.alive) {
-        name = 'stop';
-    } else if (this.hero.body.velocity.y < 0) {
-        name = 'jump';
-    } else if (this.hero.body.velocity.y > 0 && !this.hero.body.touching.down) {
-        name = 'fall';
-    } else if (this.hero.body.velocity.x !== 0 && this.hero.body.touching.down) {
-        name = 'run';
-    }
-
-    return name;
-};
-
-// -----------------------------------------------------------------------------
-// HUD
-// -----------------------------------------------------------------------------
-
-PlayState._createHud = function () {
-    this.keyIcon = this.game.make.image(0, 19, 'icon:key');
-    this.keyIcon.anchor.set(0, 0.5);
-
-    let coinIcon = this.game.make.image(
-        this.keyIcon.width + 7, 0, 'icon:coin'
-    );
-
-    let scoreStyle = { font: '24px monospace', fill: '#fff' };
-    this.coinFont = this.game.add.text(
-        coinIcon.x + coinIcon.width + 7, 0, 'x0', scoreStyle
-    );
-
-    this.hud = this.game.add.group();
-    this.hud.add(this.keyIcon);
-    this.hud.add(coinIcon);
-    this.hud.add(this.coinFont);
-    this.hud.position.set(10, 10);
-    this.hud.fixedToCamera = true;
-};
-
-// =============================================================================
-// Entry Point
-// =============================================================================
-
-window.onload = function () {
-    let game = new Phaser.Game(960, 600, Phaser.AUTO, 'game');
-    game.state.add('play', PlayState);
-    game.state.start('play', true, false, { level: 0 });
-};
-```
-
-### Key Concepts Summary
-
-| Concept | Phaser API | Purpose |
-|---------|-----------|---------|
-| Game instance | `new Phaser.Game(w, h, renderer, container)` | Creates the game canvas and engine |
-| Game states | `game.state.add()` / `game.state.start()` | Organizes code into init/preload/create/update lifecycle |
-| Loading images | `game.load.image(key, path)` | Loads a static image asset |
-| Loading spritesheets | `game.load.spritesheet(key, path, fw, fh)` | Loads an animated spritesheet |
-| Loading JSON | `game.load.json(key, path)` | Loads JSON data (level definitions) |
-| Loading audio | `game.load.audio(key, path)` | Loads a sound effect |
-| Sprite groups | `game.add.group()` | Container for related sprites; enables batch collision detection |
-| Physics bodies | `game.physics.enable(sprite)` | Adds an Arcade Physics body to a sprite |
-| Gravity | `game.physics.arcade.gravity.y` | Global downward acceleration |
-| Collision | `arcade.collide(a, b)` | Physical collision resolution (sprites push each other) |
-| Overlap | `arcade.overlap(a, b, callback)` | Detection without physical push (for pickups) |
-| Velocity | `sprite.body.velocity.x/y` | Movement speed in pixels per second |
-| Immovable | `sprite.body.immovable = true` | Prevents sprite from being pushed by collisions |
-| Animations | `sprite.animations.add(name, frames, fps, loop)` | Defines a frame animation |
-| Tweens | `game.add.tween(target).to(props, duration, easing)` | Smooth property animation |
-| Keyboard input | `game.input.keyboard.addKeys({...})` | Captures specific keyboard keys |
-| Camera | `this.camera.fade()` | Screen transition effects |
-| Anchor | `sprite.anchor.set(x, y)` | Sets the origin point for positioning and rotation |
-| Sprite flipping | `sprite.scale.x = -1` | Horizontally mirrors the sprite |
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/game-engine/assets/gameBase-template-repo.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/game-engine/assets/gameBase-template-repo.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/game-engine/assets/gameBase-template-repo.md
-- **SHA256_FINGERPRINT**: `054e44636f13787022ffa518eeec448dce55ae646fa46ae8320463d7fbd68354`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:29.094571+00:00
----
-
-# GameBase Template Repository
-
-A feature-rich, opinionated starter template for 2D game projects built with **Haxe** and the **Heaps** game engine. Created and maintained by **Sebastien Benard** (deepnight), the lead developer behind *Dead Cells*. GameBase provides a production-tested foundation with entity management, level integration via LDtk, rendering pipeline, and a game loop architecture -- all designed to let developers skip boilerplate and jump straight into game-specific logic.
-
-**Repository:** [github.com/deepnight/gameBase](https://github.com/deepnight/gameBase)
-**Author:** [Sebastien Benard / deepnight](https://deepnight.net)
-**Technology:** Haxe + Heaps (HashLink or JS targets)
-**Level editor integration:** [LDtk](https://ldtk.io)
-
----
-
-## Purpose
-
-GameBase exists to solve the "blank project" problem. Instead of setting up rendering, entity systems, camera controls, debug overlays, and level loading from scratch, developers clone this repository and begin implementing game-specific mechanics immediately. It reflects patterns refined through commercial game development, particularly from the development of *Dead Cells*.
-
-Key benefits:
-- Pre-built entity system with grid-based positioning and sub-pixel precision
-- LDtk level editor integration for visual level design
-- Built-in debug tools and overlays
-- Frame-rate independent game loop with fixed-step updates
-- Camera system with follow, shake, zoom, and clamp
-- Configurable Controller/input management
-- Scalable rendering pipeline with Heaps
-
----
-
-## Repository Structure
-
-```
-gameBase/
-  src/
-    game/
-      App.hx              -- Application entry point and initialization
-      Game.hx             -- Main game process, holds level and entities
-      Entity.hx           -- Base entity class with grid coords, velocity, animation
-      Level.hx            -- Level loading and collision map from LDtk
-      Camera.hx           -- Camera follow, shake, zoom, clamping
-      Fx.hx               -- Visual effects (particles, flashes, etc.)
-      Types.hx            -- Enums, typedefs, and constants
-      en/
-        Hero.hx            -- Player entity (example implementation)
-        Mob.hx             -- Enemy entity (example implementation)
-    import.hx             -- Global imports (available everywhere)
-  res/
-    atlas/                 -- Sprite sheets and texture atlases
-    levels/                -- LDtk level project files
-    fonts/                 -- Bitmap fonts
-  .ldtk                   -- LDtk project file (root)
-  build.hxml              -- Haxe compiler configuration
-  Makefile                -- Build/run shortcuts
-  README.md
-```
-
----
-
-## Key Files and Their Roles
-
-### `src/game/App.hx` -- Application Entry Point
-
-The main application class that extends `dn.Process`. Handles:
-- Window/display initialization
-- Scene management (root scene graph)
-- Global input controller setup
-- Debug toggle and console
-
-```haxe
-class App extends dn.Process {
-  public static var ME : App;
-
-  override function init() {
-    ME = this;
-    // Initialize rendering, controller, assets
-    new Game();
-  }
-}
-```
-
-### `src/game/Game.hx` -- Game Process
-
-Manages the active game session:
-- Holds reference to the current `Level`
-- Manages all active `Entity` instances (via a global linked list)
-- Handles pause, game-over, and restart logic
-- Coordinates camera and effects
-
-```haxe
-class Game extends dn.Process {
-  public var level : Level;
-  public var hero : en.Hero;
-  public var fx : Fx;
-  public var camera : Camera;
-
-  public function new() {
-    super(App.ME);
-    level = new Level();
-    fx = new Fx();
-    camera = new Camera();
-    hero = new en.Hero();
-  }
-}
-```
-
-### `src/game/Entity.hx` -- Base Entity
-
-The core entity class featuring:
-- **Grid-based positioning:** `cx`, `cy` (integer cell coordinates) plus `xr`, `yr` (sub-cell ratio 0.0 to 1.0) for smooth sub-pixel movement
-- **Velocity and friction:** `dx`, `dy` (velocity) with configurable `frictX`, `frictY`
-- **Gravity:** Optional per-entity gravity
-- **Sprite management:** Animated sprite via Heaps `h2d.Anim` or `dn.heaps.HSprite`
-- **Lifecycle:** `update()`, `fixedUpdate()`, `postUpdate()`, `dispose()`
-- **Collision helpers:** `hasCollision(cx, cy)` check against the level collision map
-
-```haxe
-class Entity {
-  // Grid position
-  public var cx : Int = 0;   // Cell X
-  public var cy : Int = 0;   // Cell Y
-  public var xr : Float = 0.5; // X ratio within cell (0..1)
-  public var yr : Float = 1.0; // Y ratio within cell (0..1)
-
-  // Velocity
-  public var dx : Float = 0;
-  public var dy : Float = 0;
-
-  // Pixel position (computed)
-  public var attachX(get,never) : Float;
-  inline function get_attachX() return (cx + xr) * Const.GRID;
-  public var attachY(get,never) : Float;
-  inline function get_attachY() return (cy + yr) * Const.GRID;
-
-  // Physics step
-  public function fixedUpdate() {
-    xr += dx;
-    dx *= frictX;
-
-    // X collision
-    if (xr > 1) { cx++; xr--; }
-    if (xr < 0) { cx--; xr++; }
-
-    yr += dy;
-    dy *= frictY;
-
-    // Y collision
-    if (yr > 1) { cy++; yr--; }
-    if (yr < 0) { cy--; yr++; }
-  }
-}
-```
-
-### `src/game/Level.hx` -- Level Management
-
-Loads and manages level data from LDtk project files:
-- Parses tile layers, entity layers, and int grid layers
-- Builds a collision grid (`hasCollision(cx, cy)`)
-- Provides helper methods to query the level structure
-
-```haxe
-class Level {
-  var data : ldtk.Level;
-  var collisions : Map<Int, Bool>;
-
-  public function new(ldtkLevel) {
-    data = ldtkLevel;
-    // Parse IntGrid layer for collision marks
-    for (cy in 0...data.l_Collisions.cHei)
-      for (cx in 0...data.l_Collisions.cWid)
-        if (data.l_Collisions.getInt(cx, cy) == 1)
-          collisions.set(coordId(cx, cy), true);
-  }
-
-  public inline function hasCollision(cx:Int, cy:Int) : Bool {
-    return collisions.exists(coordId(cx, cy));
-  }
-}
-```
-
-### `src/game/Camera.hx` -- Camera System
-
-Provides:
-- **Target tracking:** Follow an entity smoothly with configurable dead zones
-- **Shake:** Screen shake with decay
-- **Zoom:** Dynamic zoom in/out
-- **Clamping:** Keep the camera within level bounds
-
-### `src/game/Fx.hx` -- Effects System
-
-Particle and visual effect management:
-- Particle pools
-- Screen flash
-- Slow-motion helpers
-- Color overlay effects
-
----
-
-## Technology Stack
-
-### Haxe
-
-A cross-platform, high-level programming language that compiles to multiple targets:
-- **HashLink (HL):** Native bytecode VM for desktop (primary dev target)
-- **JavaScript (JS):** Browser/web target
-- **C/C++:** Via HXCPP for native builds
-
-### Heaps (Heaps.io)
-
-A high-performance, cross-platform 2D/3D game engine:
-- GPU-accelerated rendering via OpenGL/DirectX/WebGL
-- Scene graph architecture with `h2d.Object` hierarchy
-- Sprite batching and texture atlases
-- Bitmap font rendering
-- Input abstraction
-
-### LDtk
-
-A modern, open-source 2D level editor created by Sebastien Benard:
-- Visual, tile-based level design
-- IntGrid layers for collision and metadata
-- Entity layers for game object placement
-- Auto-tiling rules
-- Haxe API auto-generated from the project file
-
----
-
-## Setup Instructions
-
-### Prerequisites
-
-1. **Install Haxe** (4.0+): [haxe.org](https://haxe.org/download/)
-2. **Install HashLink** (for desktop target): [hashlink.haxe.org](https://hashlink.haxe.org/)
-3. **Install LDtk** (for level editing): [ldtk.io](https://ldtk.io/)
-
-### Getting Started
-
-```bash
-# Clone the repository
-git clone https://github.com/deepnight/gameBase.git my-game
-cd my-game
-
-# Install Haxe dependencies
-haxelib install heaps
-haxelib install deepnightLibs
-haxelib install ldtk-haxe-api
-
-# Build and run (HashLink target)
-haxe build.hxml
-hl bin/client.hl
-
-# Or use the Makefile (if available)
-make run
-```
-
-### Using as a Starting Point
-
-1. **Clone or use the template** -- Do not fork; clone into a new directory with your game's name.
-2. **Rename the package** -- Update `src/game/` package declarations and project references to match your game.
-3. **Edit `build.hxml`** -- Adjust the main class, output path, and target as needed.
-4. **Design levels in LDtk** -- Open the `.ldtk` file, define your layers and entities, and export.
-5. **Implement entities** -- Create new entity classes in `src/game/en/` extending `Entity`.
-6. **Iterate** -- Use the debug console (toggle in-game) for live inspection and tuning.
-
----
-
-## Build Targets
-
-| Target | Command | Output | Use Case |
-|--------|---------|--------|----------|
-| HashLink | `haxe build.hxml` | `bin/client.hl` | Development, desktop release |
-| JavaScript | `haxe build.js.hxml` | `bin/client.js` | Web/browser builds |
-| DirectX/OpenGL | Via HL native | Native executable | Production desktop release |
-
----
-
-## Debug Features
-
-GameBase includes built-in debug tooling:
-- **Debug overlay:** Toggle with a key to show entity bounds, grid, velocities, collision map
-- **Console:** In-game command console for toggling flags, teleporting, spawning entities
-- **FPS counter:** Visible frame-rate and update-rate monitor
-- **Process inspector:** View active processes and their hierarchy
-
----
-
-## Game Loop Architecture
-
-GameBase uses a fixed-timestep game loop pattern:
-
-```
-Each frame:
-  1. preUpdate()    -- Input polling, pre-frame logic
-  2. fixedUpdate()  -- Physics, movement, collisions (fixed timestep)
-     - May run 0-N times per frame to catch up
-  3. update()       -- General per-frame logic
-  4. postUpdate()   -- Sprite position sync, camera update, rendering prep
-```
-
-This ensures physics behavior is consistent regardless of frame rate, while rendering and visual updates remain smooth.
-
----
-
-## Entity Lifecycle
-
-```
-Constructor  -->  init()  -->  [game loop: fixedUpdate/update/postUpdate]  -->  dispose()
-```
-
-- **Constructor:** Set initial position, create sprite, register in global entity list
-- **fixedUpdate():** Physics step (velocity, friction, gravity, collision)
-- **update():** AI, state machine, animation triggers
-- **postUpdate():** Sync sprite position to grid coordinates, apply visual effects
-- **dispose():** Remove from entity list, destroy sprite, clean up references

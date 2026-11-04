@@ -1,7 +1,1647 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-11-03T05:55:38.284939+00:00
-- **Total Palabras**: 403,916 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-04T05:32:35.229690+00:00
+- **Total Palabras**: 411,518 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/publish-to-pages/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/publish-to-pages/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/publish-to-pages/SKILL.md
+- **SHA256_FINGERPRINT**: `456662669630eb1a95189e0e64ab3c9fec3218bc7d54004e19ba39bf96ead0a9`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.223882+00:00
+---
+
+**description**: Publish presentations and web content to GitHub Pages. Converts PPTX, PDF, HTML, or Google Slides to a live GitHub Pages URL. Handles repo creation, file conversion, Pages enablement, and returns the live URL. Use when the user wants to publish, deploy, or share a presentation or HTML file via GitHub Pages.
+
+# publish-to-pages
+
+Publish any presentation or web content to GitHub Pages in one shot.
+
+## 1. Prerequisites Check
+
+Run these silently. Only surface errors:
+
+```bash
+command -v gh >/dev/null || echo "MISSING: gh CLI — install from https://cli.github.com"
+gh auth status &>/dev/null || echo "MISSING: gh not authenticated — run 'gh auth login'"
+command -v python3 >/dev/null || echo "MISSING: python3 (needed for PPTX conversion)"
+```
+
+`poppler-utils` is optional (PDF conversion via `pdftoppm`). Don't block on it.
+
+## 2. Input Detection
+
+Determine input type from what the user provides:
+
+| Input | Detection |
+|-------|-----------|
+| HTML file | Extension `.html` or `.htm` |
+| PPTX file | Extension `.pptx` |
+| PDF file | Extension `.pdf` |
+| Google Slides URL | URL contains `docs.google.com/presentation` |
+
+Ask the user for a **repo name** if not provided. Default: filename without extension.
+
+## 3. Conversion
+
+### Large File Handling
+
+Both conversion scripts automatically detect large files and switch to **external assets mode**:
+- **PPTX:** Files >20MB or with >50 images → images saved as separate files in `assets/`
+- **PDF:** Files >20MB or with >50 pages → page PNGs saved in `assets/`
+- Files >150MB print a warning (PPTX suggests PDF path instead)
+
+This keeps individual files well under GitHub's 100MB limit. Small files still produce a single self-contained HTML.
+
+You can force the behavior with `--external-assets` or `--no-external-assets`.
+
+### HTML
+No conversion needed. Use the file directly as `index.html`.
+
+### PPTX
+Run the conversion script:
+```bash
+python3 SKILL_DIR/scripts/convert-pptx.py INPUT_FILE /tmp/output.html
+# For large files, force external assets:
+python3 SKILL_DIR/scripts/convert-pptx.py INPUT_FILE /tmp/output.html --external-assets
+```
+If `python-pptx` is missing, tell the user: `pip install python-pptx`
+
+### PDF
+Convert with the included script (requires `poppler-utils` for `pdftoppm`):
+```bash
+python3 SKILL_DIR/scripts/convert-pdf.py INPUT_FILE /tmp/output.html
+# For large files, force external assets:
+python3 SKILL_DIR/scripts/convert-pdf.py INPUT_FILE /tmp/output.html --external-assets
+```
+Each page is rendered as a PNG and embedded into HTML with slide navigation.
+If `pdftoppm` is missing, tell the user: `apt install poppler-utils` (or `brew install poppler` on macOS).
+
+### Google Slides
+1. Extract the presentation ID from the URL (the long string between `/d/` and `/`)
+2. Download as PPTX:
+```bash
+curl -L "https://docs.google.com/presentation/d/PRESENTATION_ID/export/pptx" -o /tmp/slides.pptx
+```
+3. Then convert the PPTX using the convert script above.
+
+## 4. Publishing
+
+### Visibility
+Repos are created **public** by default. If the user specifies `private` (or wants a private repo), use `--private` — but note that GitHub Pages on private repos requires a Pro, Team, or Enterprise plan.
+
+### Publish
+```bash
+bash SKILL_DIR/scripts/publish.sh /path/to/index.html REPO_NAME public "Description"
+```
+
+Pass `private` instead of `public` if the user requests it.
+
+The script creates the repo, pushes `index.html` (plus `assets/` if present), and enables GitHub Pages.
+
+**Note:** When external assets mode is used, the output HTML references files in `assets/`. The publish script automatically detects and copies the `assets/` directory alongside the HTML file. Make sure the HTML file and its `assets/` directory are in the same parent directory.
+
+## 5. Output
+
+Tell the user:
+- **Repository:** `https://github.com/USERNAME/REPO_NAME`
+- **Live URL:** `https://USERNAME.github.io/REPO_NAME/`
+- **Note:** Pages takes 1-2 minutes to go live.
+
+## Error Handling
+
+- **Repo already exists:** Suggest appending a number (`my-slides-2`) or a date (`my-slides-2026`).
+- **Pages enablement fails:** Still return the repo URL. User can enable Pages manually in repo Settings.
+- **PPTX conversion fails:** Tell user to run `pip install python-pptx`.
+- **PDF conversion fails:** Suggest installing `poppler-utils` (`apt install poppler-utils` or `brew install poppler`).
+- **Google Slides download fails:** The presentation may not be publicly accessible. Ask user to make it viewable or download the PPTX manually.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/pytest-coverage/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/pytest-coverage/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/pytest-coverage/SKILL.md
+- **SHA256_FINGERPRINT**: `5cc7b9610fd2e7a5213deab5e58adc87fdcd7d8790900d355644cc38c75c18ad`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.365887+00:00
+---
+
+**description**: Run pytest tests with coverage, discover lines missing coverage, and increase coverage to 100%.
+
+The goal is for the tests to cover all lines of code.
+
+Generate a coverage report with:
+
+pytest --cov --cov-report=annotate:cov_annotate
+
+If you are checking for coverage of a specific module, you can specify it like this:
+
+pytest --cov=your_module_name --cov-report=annotate:cov_annotate
+
+You can also specify specific tests to run, for example:
+
+pytest tests/test_your_module.py --cov=your_module_name --cov-report=annotate:cov_annotate
+
+Open the cov_annotate directory to view the annotated source code.
+There will be one file per source file. If a file has 100% source coverage, it means all lines are covered by tests, so you do not need to open the file.
+
+For each file that has less than 100% test coverage, find the matching file in cov_annotate and review the file.
+
+If a line starts with a ! (exclamation mark), it means that the line is not covered by tests.
+Add tests to cover the missing lines.
+
+Keep running the tests and improving coverage until all lines are covered.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-azure-iot-edge-modules/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-azure-iot-edge-modules/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-azure-iot-edge-modules/SKILL.md
+- **SHA256_FINGERPRINT**: `eedaeb1b3a1c16f3e70ac898745a92abfbbd3106b1fb4f2d81e44be51f3a2aa1`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.455524+00:00
+---
+
+**description**: Build and operate Python Azure IoT Edge modules with robust messaging, deployment manifests, observability, and production readiness checks.
+
+# Python Azure IoT Edge Modules
+
+Use this skill to design, implement, and validate Python-based IoT Edge modules for telemetry processing, local inference, protocol translation, and edge-to-cloud integration.
+
+## When To Use
+
+Use this skill for requests like:
+
+- "quiero crear un modulo Python para IoT Edge"
+- "como despliego modulos edge con manifest"
+- "necesito filtrar/agregar telemetria antes de subirla"
+- "como manejo desconexiones y reintentos en edge"
+
+## Mandatory Docs Review
+
+Before recommending runtime behavior or deployment decisions, review:
+
+- https://learn.microsoft.com/azure/iot-edge/
+- https://learn.microsoft.com/es-es/azure/iot-edge/
+
+Minimum checks:
+
+- Runtime architecture and module lifecycle.
+- Supported host OS and versions.
+- Deployment model and configuration flow.
+- Current release/version guidance.
+
+If documentation cannot be fetched, proceed with explicit assumptions and flag them clearly.
+
+## Python Official References and Best Practices (Required)
+
+Before proposing Python implementation details, consult official Python sources:
+
+- https://www.python.org/
+- https://docs.python.org/3/
+- https://docs.python.org/3/reference/
+- https://docs.python.org/3/library/
+- references/python-official-best-practices.md
+
+Prefer official docs over community snippets unless there is a specific compatibility reason to deviate.
+
+## Goals
+
+- Deliver module architecture and implementation plan that is production-focused.
+- Ensure reliable edge messaging under network variability.
+- Provide deployment, observability, and validation artifacts.
+
+## Module Use Cases
+
+- Protocol adapter (serial/Modbus/OPC-UA to IoT message format).
+- Telemetry enrichment and normalization.
+- Local anomaly detection or inference.
+- Command orchestration and local actuator control.
+
+## Delivery Workflow
+
+### 1) Contract and Interfaces
+
+Define:
+
+- Module inputs and outputs.
+- Message schema and versioning policy.
+- Routes and priorities for normal vs critical telemetry.
+- Desired properties used for dynamic configuration.
+
+### 2) Runtime and Packaging
+
+Specify:
+
+- Python runtime version target.
+- Container image strategy (base image, slim footprint, CVE hygiene).
+- Resource profile (CPU/memory bounds).
+- Startup and health checks.
+
+### 3) Reliability Design
+
+Implement and validate:
+
+- Retries with exponential backoff and jitter.
+- Graceful degradation on upstream failures.
+- Local queueing strategy where needed.
+- Idempotent processing for replayed messages.
+
+### 4) Security Controls
+
+Require:
+
+- No plaintext secrets in code or manifest.
+- Least-privilege module behavior.
+- Secure transport and trusted cert chain handling.
+- Traceability for command handling and state changes.
+
+### 5) Deployment and Operations
+
+Define:
+
+- Environment-specific deployment manifests.
+- Rollout strategy (pilot, staged, broad).
+- Rollback criteria.
+- SLOs and alerting conditions.
+
+## Reuse Other Skills
+
+When relevant, combine with:
+
+- `azure-smart-city-iot-solution-builder` for platform-level architecture.
+- `appinsights-instrumentation` for telemetry instrumentation approaches.
+- `azure-resource-visualizer` for architecture diagrams and dependency mapping.
+
+Also use `references/python-official-best-practices.md` as baseline quality criteria for module design and implementation guidance.
+
+## Required Output
+
+Always provide:
+
+1. Module design brief (purpose, inputs, outputs).
+2. Deployment model (image, manifest, env settings).
+3. Reliability and error-handling strategy.
+4. Security and operations checklist.
+5. Test matrix (functional, chaos, performance, rollback).
+
+## Output Template
+
+Use `references/python-edge-module-template.md` to structure implementation proposals and reviews.
+
+1. Context and assumptions
+2. Module architecture
+3. Deployment and configuration
+4. Reliability, security, observability
+5. Validation and rollout plan
+
+## Guardrails
+
+- Do not recommend direct production rollout without pilot stage.
+- Do not embed secrets in Dockerfiles, source, or manifests.
+- Do not omit health probes, restart behavior, and rollback criteria.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-azure-iot-edge-modules/references/python-edge-module-template.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-azure-iot-edge-modules/references/python-edge-module-template.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-azure-iot-edge-modules/references/python-edge-module-template.md
+- **SHA256_FINGERPRINT**: `f8d0042028cf3ad60395d6c67fcca1f0dc95a69ac8faef0908bc7725a8b062db`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.483483+00:00
+---
+
+# Python IoT Edge Module Template
+
+Use this template to structure implementation proposals and reviews.
+
+## 0) Official Python Baseline
+
+- Official references reviewed from <https://www.python.org/> and <https://docs.python.org/3/>.
+- Language and stdlib usage validated against <https://docs.python.org/3/reference/> and <https://docs.python.org/3/library/>.
+- Best practices reviewed from `references/python-official-best-practices.md`.
+
+## 1) Module Summary
+
+- Module name:
+- Business capability:
+- Inputs:
+- Outputs:
+- Trigger conditions:
+
+## 2) Message Contract
+
+- Schema version:
+- Required fields:
+- Optional fields:
+- Error payload contract:
+
+## 3) Runtime Configuration
+
+- Python version:
+- Base image:
+- Environment variables:
+- Desired properties:
+- Resource limits:
+
+## 4) Resilience
+
+- Retry policy:
+- Backoff policy:
+- Queueing strategy:
+- Idempotency approach:
+- Timeout and circuit-breaker behavior:
+
+## 5) Security
+
+- Secret source (never inline):
+- Identity and permissions:
+- Command authorization model:
+- Audit log requirements:
+
+## 6) Observability
+
+- Health signals:
+- Business metrics:
+- Error metrics:
+- Correlation/trace requirements:
+- Alert thresholds:
+
+## 7) Validation Matrix
+
+- Happy path tests:
+- Malformed payload tests:
+- Network interruption tests:
+- Throughput and latency tests:
+- Rollback validation:
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-azure-iot-edge-modules/references/python-official-best-practices.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-azure-iot-edge-modules/references/python-official-best-practices.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-azure-iot-edge-modules/references/python-official-best-practices.md
+- **SHA256_FINGERPRINT**: `9522a7e4c66da1feae0221a7cf1f9239cb47965073154e510be5276b4dc31962`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.480527+00:00
+---
+
+# Python Official References and Best Practices
+
+Use these official Python resources before finalizing module architecture or implementation details.
+
+## Official References
+
+- Python home: <https://www.python.org/>
+- Python documentation portal: <https://docs.python.org/3/>
+- Python tutorial: <https://docs.python.org/3/tutorial/>
+- Python language reference: <https://docs.python.org/3/reference/>
+- Python standard library reference: <https://docs.python.org/3/library/>
+- Python HOWTOs: <https://docs.python.org/3/howto/>
+- Installing modules: <https://docs.python.org/3/installing/>
+- Distributing modules: <https://docs.python.org/3/distributing/>
+- PEP index: <https://peps.python.org/>
+- PyPA packaging guide: <https://packaging.python.org/>
+
+## Coding Best Practices
+
+- Target and pin an explicit Python major/minor runtime for each deployment.
+- Prefer explicit, readable code paths over clever compact logic.
+- Use type hints for public interfaces and critical data transformations.
+- Keep module responsibilities focused; separate protocol, business logic, and transport.
+- Validate and sanitize external inputs at boundaries.
+- Use structured exceptions with actionable error messages.
+- Log with enough context for incident triage (correlation id, module id, message id).
+
+## Reliability and Performance Best Practices
+
+- Avoid blocking operations in high-frequency message paths.
+- Enforce timeouts and bounded retries with exponential backoff and jitter.
+- Design idempotent handlers for replay and duplicate deliveries.
+- Use resource limits and monitor memory growth to prevent edge instability.
+- Define graceful shutdown behavior to flush buffered state safely.
+
+## Dependency and Supply Chain Best Practices
+
+- Pin dependencies and document upgrade cadence.
+- Prefer actively maintained libraries with clear release history.
+- Track vulnerabilities and update dependencies regularly.
+- Keep container images minimal and patched.
+
+## Testing Best Practices
+
+- Unit test parsing, validation, and routing logic.
+- Add integration tests for module I/O boundaries.
+- Add chaos tests for network loss, slow upstream, and restart scenarios.
+- Verify rollback behavior and state recovery in deployment tests.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-mcp-server-generator/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-mcp-server-generator/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-mcp-server-generator/SKILL.md
+- **SHA256_FINGERPRINT**: `747c437f0018e1c7788bb395e4cbecfcde7003fafce8814af56312e8b60f6f79`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.363670+00:00
+---
+
+**description**: Use this skill when the user wants to create a new Model Context Protocol (MCP) server in Python. Also use it to expose Python functions, an API, or a database to AI clients as MCP tools. The skill makes a uv project with the MCP Python SDK v2 (MCPServer), typed tools, in-memory tests, and client configuration. Do not use it for an MCP client or for a server in another language.
+
+# Python MCP Server Generator
+
+Create a Model Context Protocol (MCP) server in Python with the official [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk) v2. SDK v2 supports the MCP specification revision [2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28). The same server also serves clients that use earlier revisions.
+
+## Workflow
+
+Copy this checklist and track your progress:
+
+- [ ] Step 1: Create the project.
+- [ ] Step 2: Write the server.
+- [ ] Step 3: Write the tests.
+- [ ] Step 4: Run the tests until they pass.
+- [ ] Step 5: Configure the client.
+
+### Step 1: Create the project
+
+Run these commands:
+
+```bash
+uv init --app --no-package project-name
+cd project-name
+uv add "mcp[cli]>=2,<3"
+uv add --dev pytest
+```
+
+Then delete `main.py`. The server goes in `server.py`.
+
+- Without `--no-package`, uv makes a `src/` package layout, and the tests cannot import `server.py`.
+- `uv init` makes the `.gitignore` file. Do not write a different one.
+
+### Step 2: Write the server
+
+Start from this template:
+
+```python
+from mcp.server import MCPServer
+from mcp.server.mcpserver.exceptions import ToolError
+
+mcp = MCPServer("Demo", version="0.1.0")
+
+@mcp.tool()
+def divide(a: float, b: float) -> float:
+    """Divide a by b."""
+    if b == 0:
+        raise ToolError("b must not be zero.")
+    return a / b
+
+if __name__ == "__main__":
+    mcp.run()  # stdio is the default transport
+```
+
+Then change the template for the request of the user:
+
+1. Replace `divide` with the tools that the user needs.
+2. Give each tool full type hints and a docstring. The SDK makes the input schema from the type hints. The docstring becomes the tool description.
+3. Return a Pydantic model or a `TypedDict` when the client needs machine-readable data. The SDK makes the output schema from the return type.
+4. Use `async def` for I/O. The SDK runs a sync tool on a worker thread.
+5. Mark a read-only tool with `@mcp.tool(annotations=ToolAnnotations(read_only_hint=True))` (from `mcp.types`). Use `destructive_hint=True` for a destructive tool.
+6. Add resources (`@mcp.resource("users://{user_id}")`) and prompts (`@mcp.prompt()`) only when the user asks for them.
+
+Use stdio by default. Read [references/streamable-http.md](references/streamable-http.md) only when the user asks for a remote server or an HTTP server.
+
+### Step 3: Write the tests
+
+Put `test_server.py` next to `server.py`. Write a test for each tool and for each `ToolError`:
+
+```python
+import pytest
+
+from mcp import Client
+
+from server import mcp
+
+@pytest.mark.anyio
+async def test_divide():
+    async with Client(mcp) as client:
+        result = await client.call_tool("divide", {"a": 6, "b": 3})
+        assert result.structured_content == {"result": 2.0}
+
+@pytest.mark.anyio
+async def test_divide_by_zero():
+    async with Client(mcp) as client:
+        result = await client.call_tool("divide", {"a": 1, "b": 0})
+        assert result.is_error
+        assert "must not be zero" in result.content[0].text
+```
+
+- The in-memory `Client` needs no subprocess and no port. It connects with the 2026-07-28 revision.
+- The `mcp` package installs `anyio`, which supplies the `anyio` marker. Do not add `pytest-asyncio`.
+
+### Step 4: Run the tests until they pass
+
+1. Run `uv run pytest`.
+2. If a test fails, read the error. Fix the server or the test.
+3. Run `uv run pytest` again.
+4. Continue only when all tests pass.
+
+### Step 5: Configure the client
+
+For VS Code, write `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "demo": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["--directory", "/absolute/path/to/project", "run", "server.py"]
+    }
+  }
+}
+```
+
+For Claude Desktop, run `uv run mcp install server.py`.
+
+Tell the user these commands:
+
+- `uv run server.py` starts the stdio server. The server waits for a host on stdin and prints nothing.
+- `uv run mcp dev server.py` opens the MCP Inspector. The Inspector needs Node.js.
+
+## Gotchas
+
+SDK v2 and the 2026-07-28 revision changed many SDK v1 patterns. Do not copy SDK v1 examples.
+
+- SDK v2 removed `FastMCP` and `mcp.server.fastmcp`. Import the server class with `from mcp.server import MCPServer`.
+- Import `Context`, `Image`, `Audio`, `Resolve`, `Elicit`, `ElicitationResult`, `AcceptedElicitation`, `Message`, `UserMessage`, and `AssistantMessage` from `mcp.server.mcpserver`.
+- Give the server name as the first `MCPServer` argument. Give all other constructor arguments as keyword arguments. Their positional order changed in SDK v2.
+- Set `version`. If you do not set it, the server reports an empty version.
+- Give the transport options (`transport`, `host`, `port`, `json_response`, `stateless_http`, `transport_security`) to `run()`, not to `MCPServer(...)`.
+- The SDK v2 types use snake_case fields, for example `read_only_hint`, `structured_content`, and `is_error`.
+- Raise `ToolError` for an error that the model must read. For other exceptions, the model gets only a generic error message.
+- Do not raise `MCPError` for a tool failure. The client gets a protocol error, not a tool result with `is_error`. Many hosts do not show this error to the model.
+- In a stdio server, stdout is the protocol channel. Do not call `print()`. Log to stderr with the `logging` module.
+- Do not use `ctx.elicit()`. It fails on a 2026-07-28 connection. For user input during a tool call, annotate a parameter with `Resolve(fn)`. Return `Elicit(message, Model)` from `fn`.
+- Send list change notifications with `await ctx.notify_tools_changed()`. A 2026-07-28 connection drops `ctx.session.send_tool_list_changed()`.
+- For stdio and HTTP, the lifespan runs one time, when the server starts. Each in-memory `Client(mcp)` in a test runs the lifespan again. Read its object with `ctx.request_context.lifespan_context`.
+- The 2026-07-28 revision deprecates these features ([SEP-2577](https://github.com/modelcontextprotocol/modelcontextprotocol/pull/2577)). Do not add them to a new server:
+  - **Sampling** (`ctx.session.create_message()`): Call the LLM provider API directly.
+  - **Protocol logging** (`ctx.log()`, `ctx.info()`, and similar methods): Use the standard `logging` module.
+  - **Roots** (`ctx.session.list_roots()`): Get paths from tool parameters, resource URIs, or the server configuration.
+- The 2026-07-28 revision has no SSE transport. Use Streamable HTTP.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-mcp-server-generator/references/streamable-http.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-mcp-server-generator/references/streamable-http.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-mcp-server-generator/references/streamable-http.md
+- **SHA256_FINGERPRINT**: `9843510f9bad6561f2f47a906524fd20889dd5664484dc8374c02706dba884bf`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.457412+00:00
+---
+
+# Streamable HTTP Servers
+
+Use this transport only for a remote server. A local server uses stdio.
+
+## Run the server
+
+Replace `mcp.run()` in `server.py`:
+
+```python
+import os
+
+if __name__ == "__main__":
+    mcp.run(
+        transport="streamable-http",
+        host=os.environ.get("HOST", "127.0.0.1"),
+        port=int(os.environ.get("PORT", "8000")),
+    )
+```
+
+Clients connect to `http://HOST:PORT/mcp`. For VS Code, write `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "demo": {
+      "type": "http",
+      "url": "http://localhost:8000/mcp"
+    }
+  }
+}
+```
+
+## Mount the server in an ASGI app
+
+1. Use `mcp.streamable_http_app()` to mount the server in a Starlette or FastAPI app.
+2. Give the transport options to `streamable_http_app()`. This method has no `port` option.
+3. Make the lifespan of the host app enter `mcp.session_manager.run()`.
+
+## Gotchas
+
+- Requests on the 2026-07-28 revision have no session. Any replica can answer a request.
+- `stateless_http=True` changes only how the server serves clients of earlier revisions.
+- `json_response=True` sends one JSON body for each request. In this mode, the server cannot send progress notifications during the request.
+- If you do not set `transport_security`, the SDK checks the `Host` and `Origin` headers only when the host is `127.0.0.1`, `localhost`, or `::1`. For all other hosts, for example `0.0.0.0` or a public host name, the server does no check. For these hosts, give `transport_security=TransportSecuritySettings(allowed_hosts=[...], allowed_origins=[...])` (from `mcp.server.transport_security`) to `run()` or `streamable_http_app()`.
+- For browser clients, add CORS to the host app. Allow the `Mcp-*` request headers. Expose the `Mcp-Session-Id` response header.
+- For more than one worker, set `request_state_security=RequestStateSecurity(keys=[...])` (from `mcp.server.mcpserver`) on `MCPServer`. Use the same keys and the same server name on all workers.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-pypi-package-builder/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-pypi-package-builder/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-pypi-package-builder/SKILL.md
+- **SHA256_FINGERPRINT**: `30d55bff4032f582f448dd4293de807764484e79fd8eea71db1f4e2e57a15d1e`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.441455+00:00
+---
+
+**description**: End-to-end skill for building, testing, linting, versioning, and publishing a production-grade Python library to PyPI. Covers all four build backends (setuptools+setuptools_scm, hatchling, flit, poetry), PEP 440 versioning, semantic versioning, dynamic git-tag versioning, OOP/SOLID design, type hints (PEP 484/526/544/561), Trusted Publishing (OIDC), and the full PyPA packaging flow. Use for: creating Python packages, pip-installable SDKs, CLI tools, framework plugins, pyproject.toml setup, py.typed, setuptools_scm, semver, mypy, pre-commit, GitHub Actions CI/CD, or PyPI publishing.
+
+# Python PyPI Package Builder Skill
+
+A complete, battle-tested guide for building, testing, linting, versioning, typing, and
+publishing a production-grade Python library to PyPI — from first commit to community-ready
+release.
+
+> **AI Agent Instruction:** Read this entire file before writing a single line of code or
+> creating any file. Every decision — layout, backend, versioning strategy, patterns, CI —
+> has a decision rule here. Follow the decision trees in order. This skill applies to any
+> Python package type (utility, SDK, CLI, plugin, data library). Do not skip sections.
+
+---
+
+## Quick Navigation
+
+| Section in this file | What it covers |
+|---|---|
+| [1. Skill Trigger](#1-skill-trigger) | When to load this skill |
+| [2. Package Type Decision](#2-package-type-decision) | Identify what you are building |
+| [3. Folder Structure Decision](#3-folder-structure-decision) | src/ vs flat vs monorepo |
+| [4. Build Backend Decision](#4-build-backend-decision) | setuptools / hatchling / flit / poetry |
+| [5. PyPA Packaging Flow](#5-pypa-packaging-flow) | The canonical publish pipeline |
+| [6. Project Structure Templates](#6-project-structure-templates) | Full layouts for every option |
+| [7. Versioning Strategy](#7-versioning-strategy) | PEP 440, semver, dynamic vs static |
+
+| Reference file | What it covers |
+|---|---|
+| `references/pyproject-toml.md` | All four backend templates, `setuptools_scm`, `py.typed`, tool configs |
+| `references/library-patterns.md` | OOP/SOLID, type hints, core class design, factory, protocols, CLI |
+| `references/testing-quality.md` | `conftest.py`, unit/backend/async tests, ruff/mypy/pre-commit |
+| `references/ci-publishing.md` | `ci.yml`, `publish.yml`, Trusted Publishing, TestPyPI, CHANGELOG, release checklist |
+| `references/community-docs.md` | README, docstrings, CONTRIBUTING, SECURITY, anti-patterns, master checklist |
+| `references/architecture-patterns.md` | Backend system (plugin/strategy), config layer, transport layer, CLI, backend injection |
+| `references/versioning-strategy.md` | PEP 440, SemVer, pre-release, setuptools_scm deep-dive, flit static, decision engine |
+| `references/release-governance.md` | Branch strategy, branch protection, OIDC, tag author validation, prevent invalid tags |
+| `references/tooling-ruff.md` | Ruff-only setup (replaces black/isort), mypy config, pre-commit, asyncio_mode=auto |
+
+**Scaffold script:** run `python skills/python-pypi-package-builder/scripts/scaffold.py --name your-package-name`
+to generate the entire directory layout, stub files, and `pyproject.toml` in one command.
+
+---
+
+## 1. Skill Trigger
+
+Load this skill whenever the user wants to:
+
+- Create, scaffold, or publish a Python package or library to PyPI
+- Build a pip-installable SDK, utility, CLI tool, or framework extension
+- Set up `pyproject.toml`, linting, mypy, pre-commit, or GitHub Actions for a Python project
+- Understand versioning (`setuptools_scm`, PEP 440, semver, static versioning)
+- Understand PyPA specs: `py.typed`, `MANIFEST.in`, `RECORD`, classifiers
+- Publish to PyPI using Trusted Publishing (OIDC) or API tokens
+- Refactor an existing package to follow modern Python packaging standards
+- Add type hints, protocols, ABCs, or dataclasses to a Python library
+- Apply OOP/SOLID design patterns to a Python package
+- Choose between build backends (setuptools, hatchling, flit, poetry)
+
+**Also trigger for phrases like:** "build a Python SDK", "publish my library", "set up PyPI CI",
+"create a pip package", "how do I publish to PyPI", "pyproject.toml help", "PEP 561 typed",
+"setuptools_scm version", "semver Python", "PEP 440", "git tag release", "Trusted Publishing".
+
+---
+
+## 2. Package Type Decision
+
+Identify what the user is building **before** writing any code. Each type has distinct patterns.
+
+### Decision Table
+
+| Type | Core Pattern | Entry Point | Key Deps | Example Packages |
+|---|---|---|---|---|
+| **Utility library** | Module of pure functions + helpers | Import API only | Minimal | `arrow`, `humanize`, `boltons`, `more-itertools` |
+| **API client / SDK** | Class with methods, auth, retry logic | Import API only | `httpx` or `requests` | `boto3`, `stripe-python`, `openai` |
+| **CLI tool** | Command functions + argument parser | `[project.scripts]` or `[project.entry-points]` | `click` or `typer` | `black`, `ruff`, `httpie`, `rich` |
+| **Framework plugin** | Plugin class, hook registration | `[project.entry-points."framework.plugin"]` | Framework dep | `pytest-*`, `django-*`, `flask-*` |
+| **Data processing library** | Classes + functional pipeline | Import API only | Optional: `numpy`, `pandas` | `pydantic`, `marshmallow`, `cerberus` |
+| **Mixed / generic** | Combination of above | Varies | Varies | Many real-world packages |
+
+**Decision Rule:** Ask the user if unclear. A package can combine types (e.g., SDK with a CLI
+entry point) — use the primary type for structural decisions and add secondary type patterns on top.
+
+For implementation patterns of each type, see `references/library-patterns.md`.
+
+### Package Naming Rules
+
+- PyPI name: all lowercase, hyphens — `my-python-library`
+- Python import name: underscores — `my_python_library`
+- Check availability: https://pypi.org/search/ before starting
+- Avoid shadowing popular packages (verify `pip install <name>` fails first)
+
+---
+
+## 3. Folder Structure Decision
+
+### Decision Tree
+
+```
+Does the package have 5+ internal modules OR multiple contributors OR complex sub-packages?
+├── YES → Use src/ layout
+│         Reason: prevents accidental import of uninstalled code during development;
+│         separates source from project root files; PyPA-recommended for large projects.
+│
+├── NO → Is it a single-module, focused package (e.g., one file + helpers)?
+│         ├── YES → Use flat layout
+│         └── NO (medium complexity) → Use flat layout, migrate to src/ if it grows
+│
+└── Is it multiple related packages under one namespace (e.g., myorg.http, myorg.db)?
+          └── YES → Use namespace/monorepo layout
+```
+
+### Quick Rule Summary
+
+| Situation | Use |
+|---|---|
+| New project, unknown future size | `src/` layout (safest default) |
+| Single-purpose, 1–4 modules | Flat layout |
+| Large library, many contributors | `src/` layout |
+| Multiple packages in one repo | Namespace / monorepo |
+| Migrating old flat project | Keep flat; migrate to `src/` at next major version |
+
+---
+
+## 4. Build Backend Decision
+
+### Decision Tree
+
+```
+Does the user need version derived automatically from git tags?
+├── YES → Use setuptools + setuptools_scm
+│         (git tag v1.0.0 → that IS your release workflow)
+│
+└── NO → Does the user want an all-in-one tool (deps + build + publish)?
+          ├── YES → Use poetry (v2+ supports standard [project] table)
+          │
+          └── NO → Is the package pure Python with no C extensions?
+                    ├── YES, minimal config preferred → Use flit
+                    │   (zero config, auto-discovers version from __version__)
+                    │
+                    └── YES, modern & fast preferred → Use hatchling
+                        (zero-config, plugin system, no setup.py needed)
+
+Does the package have C/Cython/Fortran extensions?
+└── YES → MUST use setuptools (only backend with full native extension support)
+```
+
+### Backend Comparison
+
+| Backend | Version source | Config | C extensions | Best for |
+|---|---|---|---|---|
+| `setuptools` + `setuptools_scm` | git tags (automatic) | `pyproject.toml` + optional `setup.py` shim | Yes | Projects with git-tag releases; any complexity |
+| `hatchling` | manual or plugin | `pyproject.toml` only | No | New pure-Python projects; fast, modern |
+| `flit` | `__version__` in `__init__.py` | `pyproject.toml` only | No | Very simple, single-module packages |
+| `poetry` | `pyproject.toml` field | `pyproject.toml` only | No | Teams wanting integrated dep management |
+
+For all four complete `pyproject.toml` templates, see `references/pyproject-toml.md`.
+
+---
+
+## 5. PyPA Packaging Flow
+
+This is the canonical end-to-end flow from source code to user install.
+**Every step must be understood before publishing.**
+
+```
+1. SOURCE TREE
+   Your code in version control (git)
+   └── pyproject.toml describes metadata + build system
+
+2. BUILD
+   python -m build
+   └── Produces two artifacts in dist/:
+       ├── *.tar.gz   → source distribution (sdist)
+       └── *.whl      → built distribution (wheel) — preferred by pip
+
+3. VALIDATE
+   twine check dist/*
+   └── Checks metadata, README rendering, and PyPI compatibility
+
+4. TEST PUBLISH (first release only)
+   twine upload --repository testpypi dist/*
+   └── Verify: pip install --index-url https://test.pypi.org/simple/ your-package
+
+5. PUBLISH
+   twine upload dist/*          ← manual fallback
+   OR GitHub Actions publish.yml  ← recommended (Trusted Publishing / OIDC)
+
+6. USER INSTALL
+   pip install your-package
+   pip install "your-package[extra]"
+```
+
+### Key PyPA Concepts
+
+| Concept | What it means |
+|---|---|
+| **sdist** | Source distribution — your source + metadata; used when no wheel is available |
+| **wheel (.whl)** | Pre-built binary — pip extracts directly into site-packages; no build step |
+| **PEP 517/518** | Standard build system interface via `pyproject.toml [build-system]` table |
+| **PEP 621** | Standard `[project]` table in `pyproject.toml`; all modern backends support it |
+| **PEP 639** | `license` key as SPDX string (e.g., `"MIT"`, `"Apache-2.0"`) — not `{text = "MIT"}` |
+| **PEP 561** | `py.typed` empty marker file — tells mypy/IDEs this package ships type information |
+
+For complete CI workflow and publishing setup, see `references/ci-publishing.md`.
+
+---
+
+## 6. Project Structure Templates
+
+### A. src/ Layout (Recommended default for new projects)
+
+```
+your-package/
+├── src/
+│   └── your_package/
+│       ├── __init__.py           # Public API: __all__, __version__
+│       ├── py.typed              # PEP 561 marker — EMPTY FILE
+│       ├── core.py               # Primary implementation
+│       ├── client.py             # (API client type) or remove
+│       ├── cli.py                # (CLI type) click/typer commands, or remove
+│       ├── config.py             # Settings / configuration dataclass
+│       ├── exceptions.py         # Custom exception hierarchy
+│       ├── models.py             # Data classes, Pydantic models, TypedDicts
+│       ├── utils.py              # Internal helpers (prefix _utils if private)
+│       ├── types.py              # Shared type aliases and TypeVars
+│       └── backends/             # (Plugin pattern) — remove if not needed
+│           ├── __init__.py       # Protocol / ABC interface definition
+│           ├── memory.py         # Default zero-dep implementation
+│           └── redis.py          # Optional heavy implementation
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py               # Shared fixtures
+│   ├── unit/
+│   │   ├── __init__.py
+│   │   ├── test_core.py
+│   │   ├── test_config.py
+│   │   └── test_models.py
+│   ├── integration/
+│   │   ├── __init__.py
+│   │   └── test_backends.py
+│   └── e2e/                      # Optional: end-to-end tests
+│       └── __init__.py
+├── docs/                         # Optional: mkdocs or sphinx
+├── scripts/
+│   └── scaffold.py
+├── .github/
+│   ├── workflows/
+│   │   ├── ci.yml
+│   │   └── publish.yml
+│   └── ISSUE_TEMPLATE/
+│       ├── bug_report.md
+│       └── feature_request.md
+├── .pre-commit-config.yaml
+├── pyproject.toml
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── SECURITY.md
+├── LICENSE
+├── README.md
+└── .gitignore
+```
+
+### B. Flat Layout (Small / focused packages)
+
+```
+your-package/
+├── your_package/         # ← at root, not inside src/
+│   ├── __init__.py
+│   ├── py.typed
+│   └── ... (same internal structure)
+├── tests/
+└── ... (same top-level files)
+```
+
+### C. Namespace / Monorepo Layout (Multiple related packages)
+
+```
+your-org/
+├── packages/
+│   ├── your-org-core/
+│   │   ├── src/your_org/core/
+│   │   └── pyproject.toml
+│   ├── your-org-http/
+│   │   ├── src/your_org/http/
+│   │   └── pyproject.toml
+│   └── your-org-cli/
+│       ├── src/your_org/cli/
+│       └── pyproject.toml
+├── .github/workflows/
+└── README.md
+```
+
+Each sub-package has its own `pyproject.toml`. They share the `your_org` namespace via PEP 420
+implicit namespace packages (no `__init__.py` in the namespace root).
+
+### Internal Module Guidelines
+
+| File | Purpose | When to include |
+|---|---|---|
+| `__init__.py` | Public API surface; re-exports; `__version__` | Always |
+| `py.typed` | PEP 561 typed-package marker (empty) | Always |
+| `core.py` | Primary class / main logic | Always |
+| `config.py` | Settings dataclass or Pydantic model | When configurable |
+| `exceptions.py` | Exception hierarchy (`YourBaseError` → specifics) | Always |
+| `models.py` | Data models / DTOs / TypedDicts | When data-heavy |
+| `utils.py` | Internal helpers (not part of public API) | As needed |
+| `types.py` | Shared `TypeVar`, `TypeAlias`, `Protocol` definitions | When complex typing |
+| `cli.py` | CLI entry points (click/typer) | CLI type only |
+| `backends/` | Plugin/strategy pattern | When swappable implementations |
+| `_compat.py` | Python version compatibility shims | When 3.9–3.13 compat needed |
+
+---
+
+## 7. Versioning Strategy
+
+### PEP 440 — The Standard
+
+```
+Canonical form:  N[.N]+[{a|b|rc}N][.postN][.devN]
+
+Examples:
+  1.0.0          Stable release
+  1.0.0a1        Alpha (pre-release)
+  1.0.0b2        Beta
+  1.0.0rc1       Release candidate
+  1.0.0.post1    Post-release (e.g., packaging fix only)
+  1.0.0.dev1     Development snapshot (not for PyPI)
+```
+
+### Semantic Versioning (recommended)
+
+```
+MAJOR.MINOR.PATCH
+
+MAJOR: Breaking API change (remove/rename public function/class/arg)
+MINOR: New feature, fully backward-compatible
+PATCH: Bug fix, no API change
+```
+
+### Dynamic versioning with setuptools_scm (recommended for git-tag workflows)
+
+```bash
+# How it works:
+git tag v1.0.0          →  installed version = 1.0.0
+git tag v1.1.0          →  installed version = 1.1.0
+(commits after tag)     →  version = 1.1.0.post1  (suffix stripped for PyPI)
+
+# In code — NEVER hardcode when using setuptools_scm:
+from importlib.metadata import version, PackageNotFoundError
+try:
+    __version__ = version("your-package")
+except PackageNotFoundError:
+    __version__ = "0.0.0-dev"    # Fallback for uninstalled dev checkouts
+```
+
+Required `pyproject.toml` config:
+```toml
+[tool.setuptools_scm]
+version_scheme = "post-release"
+local_scheme   = "no-local-version"   # Prevents +g<hash> from breaking PyPI uploads
+```
+
+**Critical:** always set `fetch-depth: 0` in every CI checkout step. Without full git history,
+`setuptools_scm` cannot find tags and the build version silently falls back to `0.0.0+dev`.
+
+### Static versioning (flit, hatchling manual, poetry)
+
+```python
+# your_package/__init__.py
+__version__ = "1.0.0"    # Update this before every release
+```
+
+### Version specifier best practices for dependencies
+
+```toml
+# In [project] dependencies:
+"httpx>=0.24"            # Minimum version — PREFERRED for libraries
+"httpx>=0.24,<1.0"       # Upper bound only when a known breaking change exists
+"httpx==0.27.0"          # Pin exactly ONLY in applications, NOT libraries
+
+# NEVER do this in a library — it breaks dependency resolution for users:
+# "httpx~=0.24.0"        # Too tight
+# "httpx==0.27.*"        # Fragile
+```
+
+### Version bump → release flow
+
+```bash
+# 1. Update CHANGELOG.md — move [Unreleased] entries to [x.y.z] - YYYY-MM-DD
+# 2. Commit the changelog
+git add CHANGELOG.md
+git commit -m "chore: prepare release vX.Y.Z"
+# 3. Tag and push — this triggers publish.yml automatically
+git tag vX.Y.Z
+git push origin main --tags
+# 4. Monitor GitHub Actions → verify on https://pypi.org/project/your-package/
+```
+
+For complete pyproject.toml templates for all four backends, see `references/pyproject-toml.md`.
+
+---
+
+## Where to Go Next
+
+After understanding decisions and structure:
+
+1. **Set up `pyproject.toml`** → `references/pyproject-toml.md`
+   All four backend templates (setuptools+scm, hatchling, flit, poetry), full tool configs,
+   `py.typed` setup, versioning config.
+
+2. **Write your library code** → `references/library-patterns.md`
+   OOP/SOLID principles, type hints (PEP 484/526/544/561), core class design, factory functions,
+   `__init__.py`, plugin/backend pattern, CLI entry point.
+
+3. **Add tests and code quality** → `references/testing-quality.md`
+   `conftest.py`, unit/backend/async tests, parametrize, ruff/mypy/pre-commit setup.
+
+4. **Set up CI/CD and publish** → `references/ci-publishing.md`
+   `ci.yml`, `publish.yml` with Trusted Publishing (OIDC, no API tokens), CHANGELOG format,
+   release checklist.
+
+5. **Polish for community/OSS** → `references/community-docs.md`
+   README sections, docstring format, CONTRIBUTING, SECURITY, issue templates, anti-patterns
+   table, and master release checklist.
+
+6. **Design backends, config, transport, CLI** → `references/architecture-patterns.md`
+   Backend system (plugin/strategy pattern), Settings dataclass, HTTP transport layer,
+   CLI with click/typer, backend injection rules.
+
+7. **Choose and implement a versioning strategy** → `references/versioning-strategy.md`
+   PEP 440 canonical forms, SemVer rules, pre-release identifiers, setuptools_scm deep-dive,
+   flit static versioning, decision engine (DEFAULT/BEGINNER/MINIMAL).
+
+8. **Govern releases and secure the publish pipeline** → `references/release-governance.md`
+   Branch strategy, branch protection rules, OIDC Trusted Publishing setup, tag author
+   validation in CI, tag format enforcement, full governed `publish.yml`.
+
+9. **Simplify tooling with Ruff** → `references/tooling-ruff.md`
+   Ruff-only setup replacing black/isort/flake8, mypy config, pre-commit hooks,
+   asyncio_mode=auto (remove @pytest.mark.asyncio), migration guide.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/python-pypi-package-builder/references/architecture-patterns.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/python-pypi-package-builder/references/architecture-patterns.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/python-pypi-package-builder/references/architecture-patterns.md
+- **SHA256_FINGERPRINT**: `46b6c6e51098cde80ac0e32a68a7c301633dc682b0b07bf4a516db06808fa424`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.696557+00:00
+---
+
+# Architecture Patterns — Backend System, Config, Transport, CLI
+
+## Table of Contents
+1. [Backend System (Plugin/Strategy Pattern)](#1-backend-system-pluginstrategy-pattern)
+2. [Config Layer (Settings Dataclass)](#2-config-layer-settings-dataclass)
+3. [Transport Layer (HTTP Client Abstraction)](#3-transport-layer-http-client-abstraction)
+4. [CLI Support](#4-cli-support)
+5. [Backend Injection in Core Client](#5-backend-injection-in-core-client)
+6. [Decision Rules](#6-decision-rules)
+
+---
+
+## 1. Backend System (Plugin/Strategy Pattern)
+
+Structure your `backends/` sub-package with a clear base protocol, a zero-dependency default
+implementation, and optional heavy implementations behind extras.
+
+### Directory Layout
+
+```
+your_package/
+  backends/
+    __init__.py    # Exports BaseBackend + factory; holds the Protocol/ABC
+    base.py        # Abstract base class (ABC) or Protocol definition
+    memory.py      # Default, zero-dependency in-memory implementation
+    redis.py       # Optional, heavier implementation (guarded by extras)
+```
+
+### `backends/base.py` — Abstract Interface
+
+```python
+# your_package/backends/base.py
+from __future__ import annotations
+
+from abc import ABC, abstractmethod
+
+class BaseBackend(ABC):
+    """Abstract storage/processing backend.
+
+    All concrete backends must implement these methods.
+    Never import heavy dependencies at module level — guard them inside the class.
+    """
+
+    @abstractmethod
+    def get(self, key: str) -> str | None:
+        """Retrieve a value by key. Return None when the key does not exist."""
+        ...
+
+    @abstractmethod
+    def set(self, key: str, value: str, ttl: int | None = None) -> None:
+        """Store a value with an optional TTL (seconds)."""
+        ...
+
+    @abstractmethod
+    def delete(self, key: str) -> None:
+        """Remove a key. No-op when the key does not exist."""
+        ...
+
+    def close(self) -> None:  # noqa: B027  (intentionally non-abstract)
+        """Optional cleanup hook. Override in backends that hold connections."""
+```
+
+### `backends/memory.py` — Default Zero-Dep Implementation
+
+```python
+# your_package/backends/memory.py
+from __future__ import annotations
+
+import time
+from collections.abc import Iterator
+from contextlib import contextmanager
+from threading import Lock
+
+from .base import BaseBackend
+
+class MemoryBackend(BaseBackend):
+    """Thread-safe in-memory backend. No external dependencies required."""
+
+    def __init__(self) -> None:
+        self._store: dict[str, tuple[str, float | None]] = {}
+        self._lock = Lock()
+
+    def get(self, key: str) -> str | None:
+        with self._lock:
+            entry = self._store.get(key)
+            if entry is None:
+                return None
+            value, expires_at = entry
+            if expires_at is not None and time.monotonic() > expires_at:
+                del self._store[key]
+                return None
+            return value
+
+    def set(self, key: str, value: str, ttl: int | None = None) -> None:
+        expires_at = time.monotonic() + ttl if ttl is not None else None
+        with self._lock:
+            self._store[key] = (value, expires_at)
+
+    def delete(self, key: str) -> None:
+        with self._lock:
+            self._store.pop(key, None)
+```
+
+### `backends/redis.py` — Optional Heavy Implementation
+
+```python
+# your_package/backends/redis.py
+from __future__ import annotations
+
+from .base import BaseBackend
+
+class RedisBackend(BaseBackend):
+    """Redis-backed implementation. Requires: pip install your-package[redis]"""
+
+    def __init__(self, url: str = "redis://localhost:6379/0") -> None:
+        try:
+            import redis as _redis
+        except ImportError as exc:
+            raise ImportError(
+                "RedisBackend requires redis. "
+                "Install it with: pip install your-package[redis]"
+            ) from exc
+        self._client = _redis.from_url(url, decode_responses=True)
+
+    def get(self, key: str) -> str | None:
+        return self._client.get(key)  # type: ignore[return-value]
+
+    def set(self, key: str, value: str, ttl: int | None = None) -> None:
+        if ttl is not None:
+            self._client.setex(key, ttl, value)
+        else:
+            self._client.set(key, value)
+
+    def delete(self, key: str) -> None:
+        self._client.delete(key)
+
+    def close(self) -> None:
+        self._client.close()
+```
+
+### `backends/__init__.py` — Public API + Factory
+
+```python
+# your_package/backends/__init__.py
+from __future__ import annotations
+
+from .base import BaseBackend
+from .memory import MemoryBackend
+
+__all__ = ["BaseBackend", "MemoryBackend", "get_backend"]
+
+def get_backend(backend_type: str = "memory", **kwargs: object) -> BaseBackend:
+    """Factory: return the requested backend instance.
+
+    Args:
+        backend_type: "memory" (default) or "redis".
+        **kwargs: Forwarded to the backend constructor.
+    """
+    if backend_type == "memory":
+        return MemoryBackend()
+    if backend_type == "redis":
+        from .redis import RedisBackend  # Late import — redis is optional
+        return RedisBackend(**kwargs)  # type: ignore[arg-type]
+    raise ValueError(f"Unknown backend type: {backend_type!r}")
+```
+
+---
+
+## 2. Config Layer (Settings Dataclass)
+
+Centralise all configuration in one `config.py` module. Avoid scattering magic values and
+`os.environ` calls across the codebase.
+
+### `config.py`
+
+```python
+# your_package/config.py
+from __future__ import annotations
+
+import os
+from dataclasses import dataclass, field
+
+@dataclass
+class Settings:
+    """All runtime configuration for your package.
+
+    Attributes:
+        api_key:  Authentication credential. Never log or expose this.
+        timeout:  HTTP request timeout in seconds.
+        retries:  Maximum number of retry attempts on transient failures.
+        base_url: API base URL. Override in tests with a local server.
+    """
+
+    api_key: str
+    timeout: int = 30
+    retries: int = 3
+    base_url: str = "https://api.example.com/v1"
+
+    def __post_init__(self) -> None:
+        if not self.api_key:
+            raise ValueError("api_key must not be empty")
+        if self.timeout < 1:
+            raise ValueError("timeout must be >= 1")
+        if self.retries < 0:
+            raise ValueError("retries must be >= 0")
+
+    @classmethod
+    def from_env(cls) -> "Settings":
+        """Construct Settings from environment variables.
+
+        Required env var: YOUR_PACKAGE_API_KEY
+        Optional env vars: YOUR_PACKAGE_TIMEOUT, YOUR_PACKAGE_RETRIES
+        """
+        api_key = os.environ.get("YOUR_PACKAGE_API_KEY", "")
+        timeout = int(os.environ.get("YOUR_PACKAGE_TIMEOUT", "30"))
+        retries = int(os.environ.get("YOUR_PACKAGE_RETRIES", "3"))
+        return cls(api_key=api_key, timeout=timeout, retries=retries)
+```
+
+### Using Pydantic (optional, for larger projects)
+
+```python
+# your_package/config.py  — Pydantic v2 variant
+from __future__ import annotations
+
+from pydantic import Field
+from pydantic_settings import BaseSettings
+
+class Settings(BaseSettings):
+    api_key: str = Field(..., min_length=1)
+    timeout: int = Field(30, ge=1)
+    retries: int = Field(3, ge=0)
+    base_url: str = "https://api.example.com/v1"
+
+    model_config = {"env_prefix": "YOUR_PACKAGE_"}
+```
+
+---
+
+## 3. Transport Layer (HTTP Client Abstraction)
+
+Isolate all HTTP concerns — headers, retries, timeouts, error parsing — in a dedicated
+`transport/` sub-package. The core client depends on the transport abstraction, not on `httpx`
+or `requests` directly.
+
+### Directory Layout
+
+```
+your_package/
+  transport/
+    __init__.py    # Re-exports HttpTransport
+    http.py        # Concrete httpx-based transport
+```
+
+### `transport/http.py`
+
+```python
+# your_package/transport/http.py
+from __future__ import annotations
+
+from typing import Any
+
+import httpx
+
+from ..config import Settings
+from ..exceptions import YourPackageError, RateLimitError, AuthenticationError
+
+class HttpTransport:
+    """Thin httpx wrapper that centralises auth, retries, and error mapping."""
+
+    def __init__(self, settings: Settings) -> None:
+        self._settings = settings
+        self._client = httpx.Client(
+            base_url=settings.base_url,
+            timeout=settings.timeout,
+            headers={"Authorization": f"Bearer {settings.api_key}"},
+        )
+
+    def request(
+        self,
+        method: str,
+        path: str,
+        *,
+        json: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Send an HTTP request and return the parsed JSON body.
+
+        Raises:
+            AuthenticationError: on 401.
+            RateLimitError: on 429.
+            YourPackageError: on all other non-2xx responses.
+        """
+        response = self._client.request(method, path, json=json, params=params)
+        self._raise_for_status(response)
+        return response.json()
+
+    def _raise_for_status(self, response: httpx.Response) -> None:
+        if response.status_code == 401:
+            raise AuthenticationError("Invalid or expired API key.")
+        if response.status_code == 429:
+            raise RateLimitError("Rate limit exceeded. Back off and retry.")
+        if response.is_error:
+            raise YourPackageError(
+                f"API error {response.status_code}: {response.text[:200]}"
+            )
+
+    def close(self) -> None:
+        self._client.close()
+
+    def __enter__(self) -> "HttpTransport":
+        return self
+
+    def __exit__(self, *args: object) -> None:
+        self.close()
+```
+
+### Async variant
+
+```python
+# your_package/transport/async_http.py
+from __future__ import annotations
+
+from typing import Any
+
+import httpx
+
+from ..config import Settings
+from ..exceptions import YourPackageError, RateLimitError, AuthenticationError
+
+class AsyncHttpTransport:
+    """Async httpx wrapper. Use with `async with AsyncHttpTransport(...) as t:`."""
+
+    def __init__(self, settings: Settings) -> None:
+        self._settings = settings
+        self._client = httpx.AsyncClient(
+            base_url=settings.base_url,
+            timeout=settings.timeout,
+            headers={"Authorization": f"Bearer {settings.api_key}"},
+        )
+
+    async def request(
+        self,
+        method: str,
+        path: str,
+        *,
+        json: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        response = await self._client.request(method, path, json=json, params=params)
+        self._raise_for_status(response)
+        return response.json()
+
+    def _raise_for_status(self, response: httpx.Response) -> None:
+        if response.status_code == 401:
+            raise AuthenticationError("Invalid or expired API key.")
+        if response.status_code == 429:
+            raise RateLimitError("Rate limit exceeded. Back off and retry.")
+        if response.is_error:
+            raise YourPackageError(
+                f"API error {response.status_code}: {response.text[:200]}"
+            )
+
+    async def aclose(self) -> None:
+        await self._client.aclose()
+
+    async def __aenter__(self) -> "AsyncHttpTransport":
+        return self
+
+    async def __aexit__(self, *args: object) -> None:
+        await self.aclose()
+```
+
+---
+
+## 4. CLI Support
+
+Add a CLI entry point via `[project.scripts]` in `pyproject.toml`.
+
+### `pyproject.toml` entry
+
+```toml
+[project.scripts]
+your-cli = "your_package.cli:main"
+```
+
+After installation, the user can run `your-cli --help` directly from the terminal.
+
+### `cli.py` — Using Click
+
+```python
+# your_package/cli.py
+from __future__ import annotations
+
+import sys
+
+import click
+
+from .config import Settings
+from .core import YourClient
+
+@click.group()
+@click.version_option()
+def main() -> None:
+    """your-package CLI — interact with the API from the command line."""
+
+@main.command()
+@click.option("--api-key", envvar="YOUR_PACKAGE_API_KEY", required=True, help="API key.")
+@click.option("--timeout", default=30, show_default=True, help="Request timeout (s).")
+@click.argument("query")
+def search(api_key: str, timeout: int, query: str) -> None:
+    """Search the API and print results."""
+    settings = Settings(api_key=api_key, timeout=timeout)
+    client = YourClient(settings=settings)
+    try:
+        results = client.search(query)
+        for item in results:
+            click.echo(item)
+    except Exception as exc:
+        click.echo(f"Error: {exc}", err=True)
+        sys.exit(1)
+```
+
+### `cli.py` — Using Typer (modern alternative)
+
+```python
+# your_package/cli.py
+from __future__ import annotations
+
+import typer
+
+from .config import Settings
+from .core import YourClient
+
+app = typer.Typer(help="your-package CLI.")
+
+@app.command()
+def search(
+    query: str = typer.Argument(..., help="Search query."),
+    api_key: str = typer.Option(..., envvar="YOUR_PACKAGE_API_KEY"),
+    timeout: int = typer.Option(30, help="Request timeout (s)."),
+) -> None:
+    """Search the API and print results."""
+    settings = Settings(api_key=api_key, timeout=timeout)
+    client = YourClient(settings=settings)
+    results = client.search(query)
+    for item in results:
+        typer.echo(item)
+
+def main() -> None:
+    app()
+```
+
+---
+
+## 5. Backend Injection in Core Client
+
+**Critical:** always accept `backend` as a constructor argument. Never instantiate the backend
+inside the constructor without a fallback parameter — that makes testing impossible.
+
+```python
+# your_package/core.py
+from __future__ import annotations
+
+from .backends.base import BaseBackend
+from .backends.memory import MemoryBackend
+from .config import Settings
+
+class YourClient:
+    """Primary client. Accepts an injected backend for testability.
+
+    Args:
+        settings: Resolved configuration. Use Settings.from_env() for production.
+        backend:  Storage/processing backend. Defaults to MemoryBackend when None.
+        timeout:  Deprecated — pass a Settings object instead.
+        retries:  Deprecated — pass a Settings object instead.
+    """
+
+    def __init__(
+        self,
+        api_key: str | None = None,
+        *,
+        settings: Settings | None = None,
+        backend: BaseBackend | None = None,
+        timeout: int = 30,
+        retries: int = 3,
+    ) -> None:
+        if settings is None:
+            if api_key is None:
+                raise ValueError("Provide either 'api_key' or 'settings'.")
+            settings = Settings(api_key=api_key, timeout=timeout, retries=retries)
+        self._settings = settings
+        # CORRECT — default injected, not hardcoded
+        self.backend: BaseBackend = backend if backend is not None else MemoryBackend()
+
+    # ... methods
+```
+
+### Anti-Pattern — Never Do This
+
+```python
+# BAD: hardcodes the backend; impossible to swap in tests
+class YourClient:
+    def __init__(self, api_key: str) -> None:
+        self.backend = MemoryBackend()          # ← no injection possible
+
+# BAD: hardcodes the package name literal in imports
+from your_package.backends.memory import MemoryBackend   # only fine in your_package itself
+# use relative imports inside the package:
+from .backends.memory import MemoryBackend               # ← correct
+```
+
+---
+
+## 6. Decision Rules
+
+```
+Does the package interact with external state (cache, DB, queue)?
+├── YES → Add backends/ with BaseBackend + MemoryBackend
+│         Add optional heavy backends behind extras_require
+│
+└── NO → Skip backends/ entirely; keep core.py simple
+
+Does the package call an external HTTP API?
+├── YES → Add transport/http.py; inject via Settings
+│
+└── NO → Skip transport/
+
+Does the package need a command-line interface?
+├── YES, simple (1–3 commands) → Use argparse or click
+│   Add [project.scripts] in pyproject.toml
+│
+├── YES, complex (sub-commands, plugins) → Use click or typer
+│
+└── NO → Skip cli.py
+
+Does runtime behaviour depend on user-supplied config?
+├── YES → Add config.py with Settings dataclass
+│   Expose Settings.from_env() for production use
+│
+└── NO → Accept params directly in the constructor
+```
 
 
 ---

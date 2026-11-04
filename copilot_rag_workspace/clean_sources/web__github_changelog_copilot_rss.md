@@ -1,5 +1,12 @@
 # GitHub Copilot Official Changelog Feed
 
+## BYOK and enterprise custom models in the Copilot usage API
+- **Date**: Wed, 04 Nov 2026 00:32:19 +0000
+- **URL**: https://github.blog/changelog/2026-11-03-byok-and-enterprise-custom-models-in-the-copilot-usage-api
+
+The Copilot usage metrics API now shows bring your own key (BYOK) usage across GitHub Copilot, so you can separate it from Copilot-hosted model usage. Reports cover two kinds of...
+The post BYOK and enterprise custom models in the Copilot usage API appeared first on The GitHub Blog .
+
 ## GitHub Copilot is now available in JetBrains Air
 - **Date**: Tue, 03 Nov 2026 15:11:46 +0000
 - **URL**: https://github.blog/changelog/2026-11-03-github-copilot-is-now-available-in-jetbrains-air
@@ -62,10 +69,3 @@ The post GitHub Copilot in VS Code, Universe releases appeared first on The GitH
 
 Repository plugin defaults and enterprise-managed plugin controls are now generally available in VS Code, Copilot CLI, and the GitHub Copilot app. Trusted repositories can install and enable default plugins for...
 The post Repository plugin defaults and enterprise plugin controls generally available appeared first on The GitHub Blog .
-
-## Generate and edit images directly in Copilot
-- **Date**: Wed, 28 Oct 2026 15:30:55 +0000
-- **URL**: https://github.blog/changelog/2026-10-28-generate-and-edit-images-directly-in-copilot
-
-You can now generate and edit images using natural language in GitHub Copilot. When you ask for an image, your selected reasoning model calls a dedicated image-generation tool powered by...
-The post Generate and edit images directly in Copilot appeared first on The GitHub Blog .

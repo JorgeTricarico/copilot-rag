@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-03T19:17:08.642390+00:00
-- **Total Palabras**: 20,719 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-04T05:32:35.262663+00:00
+- **Total Palabras**: 20,717 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1572,8 +1572,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_345227
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/345227
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/345227
-- **SHA256_FINGERPRINT**: `d0bc91568776ee2d7ea6a9fc7f296b582903b25615198227a88360228b03cf30`
-- **LAST_VERIFIED_UTC**: 2026-11-03T19:17:08.635056+00:00
+- **SHA256_FINGERPRINT**: `a9851bc5179ba2e2f6eb514ba51710fdd9aad3b3eaf75d168b54cac59edb3517`
+- **LAST_VERIFIED_UTC**: 2026-11-04T05:32:35.051698+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.145.0 Endgame
@@ -1651,25 +1651,25 @@ We really appreciate people trying our new features as soon as they are ready, s
 # Tuesday afternoon/Wednesday morning
 
 - In extreme cases, accept candidate changes
-    - [ ] Build stable from `release/<x.y>`. Do *not* bump the VS Code version.
-    - [ ] Release stable to MSFT folks
+    - [x] Build stable from `release/<x.y>`. Do *not* bump the VS Code version.
+    - [x] Release stable to MSFT folks
 
 # Wednesday
 `@endgame-champ`:
 - [ ] Publish website so that in-product release notes are ready
 - [ ] Start Stable rollout to everyone (start percentage: `20%`, end time UTC: `6AM next Wednesday`)
 - [ ] Deploy vscode.dev
-  - [ ] Verify the [release candidate](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) `release/x.y` passed the sanity tests in the last step
+  - [x] Verify the [release candidate](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) `release/x.y` passed the sanity tests in the last step
   - [ ] [Kick off deploy](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) (Branch `release/x.y`, Deployment Target `prod`, needs peer approval)
 - [ ] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `auto`; the release pipeline job requires two approvals)
 - [ ] Publish socials (ping Cynthia)
-- [ ] [Publish @types/vscode](https://github.com/microsoft/vscode/wiki/Publish-vscode-types) if you find type diffs after running the steps
+- [x] [Publish @types/vscode](https://github.com/microsoft/vscode/wiki/Publish-vscode-types) if you find type diffs after running the steps
 - [ ] Create an official release
-  - [ ] Create a tag (make sure you pull the release branch first): `git tag <x.y.z>`
-  - [ ] Push the tag: `git push origin <x.y.z>`
+  - [x] Create a tag (make sure you pull the release branch first): `git tag <x.y.z>`
+  - [x] Push the tag: `git push origin <x.y.z>`
   - [ ] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right ... > Create Release. Use the version as title <x.y.z> and use the release link `https://code.visualstudio.com/updates/v<x_y>` for the description
-- [ ] Close milestone (**do not** delete it): https://github.com/microsoft/vscode/milestones
-- [ ] Move all remaining issues to "On Deck"
+- [x] Close milestone (**do not** delete it): https://github.com/microsoft/vscode/milestones
+- [x] Move all remaining issues to "On Deck"
 - [ ] Ensure that the latest Insiders release from main has succeeded
 
 
@@ -2305,11 +2305,18 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `c9419a658cfcbd2e6dcfc4b7f2ce757754275b36521a66c0f76947fe027297be`
-- **LAST_VERIFIED_UTC**: 2026-11-03T19:17:04.383947+00:00
+- **SHA256_FINGERPRINT**: `06a4f0e52c8c6e96ea3cfb59fff522fec71e3db138a40bd5707185e01c1e5723`
+- **LAST_VERIFIED_UTC**: 2026-11-04T05:32:33.599994+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
+
+## BYOK and enterprise custom models in the Copilot usage API
+- **Date**: Wed, 04 Nov 2026 00:32:19 +0000
+- **URL**: https://github.blog/changelog/2026-11-03-byok-and-enterprise-custom-models-in-the-copilot-usage-api
+
+The Copilot usage metrics API now shows bring your own key (BYOK) usage across GitHub Copilot, so you can separate it from Copilot-hosted model usage. Reports cover two kinds of...
+The post BYOK and enterprise custom models in the Copilot usage API appeared first on The GitHub Blog .
 
 ## GitHub Copilot is now available in JetBrains Air
 - **Date**: Tue, 03 Nov 2026 15:11:46 +0000
@@ -2373,10 +2380,3 @@ The post GitHub Copilot in VS Code, Universe releases appeared first on The GitH
 
 Repository plugin defaults and enterprise-managed plugin controls are now generally available in VS Code, Copilot CLI, and the GitHub Copilot app. Trusted repositories can install and enable default plugins for...
 The post Repository plugin defaults and enterprise plugin controls generally available appeared first on The GitHub Blog .
-
-## Generate and edit images directly in Copilot
-- **Date**: Wed, 28 Oct 2026 15:30:55 +0000
-- **URL**: https://github.blog/changelog/2026-10-28-generate-and-edit-images-directly-in-copilot
-
-You can now generate and edit images using natural language in GitHub Copilot. When you ask for an image, your selected reasoning model calls a dedicated image-generation tool powered by...
-The post Generate and edit images directly in Copilot appeared first on The GitHub Blog .

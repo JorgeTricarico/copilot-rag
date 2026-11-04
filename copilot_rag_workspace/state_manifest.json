@@ -1,7 +1,7 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-03T19:17:08.653083+00:00",
-  "total_documents": 2067,
+  "last_sync_utc": "2026-11-04T05:32:35.275616+00:00",
+  "total_documents": 2075,
   "documents": {
     "anthropics_skills::README.md": {
       "doc_id": "anthropics_skills::README.md",
@@ -1586,6 +1586,17 @@
       "word_count": 192,
       "last_updated_utc": "2026-10-21T03:44:58.785882+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_address-comments.agent.md"
+    },
+    "github_awesome-copilot::agents/adobe-creative-cloud.agent.md": {
+      "doc_id": "github_awesome-copilot::agents/adobe-creative-cloud.agent.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/adobe-creative-cloud.agent.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/adobe-creative-cloud.agent.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "5ae014d93ed42717a57e13ed1927688118e07a7d",
+      "content_sha256": "01b2109b274e1b5aa5150a9c94f754e123c2013518cfe7cab5d7fc87992213fb",
+      "word_count": 2458,
+      "last_updated_utc": "2026-11-04T05:32:32.379376+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__agents_adobe-creative-cloud.agent.md"
     },
     "github_awesome-copilot::agents/adr-generator.agent.md": {
       "doc_id": "github_awesome-copilot::agents/adr-generator.agent.md",
@@ -6273,6 +6284,61 @@
       "last_updated_utc": "2026-10-21T03:45:13.674473+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_add-educational-comments_SKILL.md"
     },
+    "github_awesome-copilot::skills/adobe-illustrator-integrations/SKILL.md": {
+      "doc_id": "github_awesome-copilot::skills/adobe-illustrator-integrations/SKILL.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/adobe-illustrator-integrations/SKILL.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/adobe-illustrator-integrations/SKILL.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "15522431a7d031b90787bdb1c60b02b2b621a632",
+      "content_sha256": "ec93c6cac6f981ea12bdc177490c9942eddb085ebe09b37bf4316c051a9963be",
+      "word_count": 1461,
+      "last_updated_utc": "2026-11-04T05:32:32.476708+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_adobe-illustrator-integrations_SKILL.md"
+    },
+    "github_awesome-copilot::skills/adobe-illustrator-integrations/references/automation-and-mcp.md": {
+      "doc_id": "github_awesome-copilot::skills/adobe-illustrator-integrations/references/automation-and-mcp.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/adobe-illustrator-integrations/references/automation-and-mcp.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/adobe-illustrator-integrations/references/automation-and-mcp.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "96bad1e5ba7427d0ba36fac0a96d8f9414e19f23",
+      "content_sha256": "a8886f05bf443a0072afe150a4e082d4a383c01650ffffdacd32da8c5b7000ab",
+      "word_count": 1510,
+      "last_updated_utc": "2026-11-04T05:32:32.470754+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_adobe-illustrator-integrations_references_automation-and-mcp.md"
+    },
+    "github_awesome-copilot::skills/adobe-illustrator-integrations/references/cep-extensions.md": {
+      "doc_id": "github_awesome-copilot::skills/adobe-illustrator-integrations/references/cep-extensions.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/adobe-illustrator-integrations/references/cep-extensions.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/adobe-illustrator-integrations/references/cep-extensions.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "a0269bd9411128331a950725651a8bec302abbb6",
+      "content_sha256": "1e531ed96aba1254cc0a0e9a8d713609ad0de5cf89e42d050f9b6cf667107bdf",
+      "word_count": 1320,
+      "last_updated_utc": "2026-11-04T05:32:32.438028+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_adobe-illustrator-integrations_references_cep-extensions.md"
+    },
+    "github_awesome-copilot::skills/adobe-illustrator-integrations/references/cpp-plugins.md": {
+      "doc_id": "github_awesome-copilot::skills/adobe-illustrator-integrations/references/cpp-plugins.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/adobe-illustrator-integrations/references/cpp-plugins.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/adobe-illustrator-integrations/references/cpp-plugins.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "c4f9b7468f5159cec0855bd14742c7ad3a8c0cf0",
+      "content_sha256": "4c65e3770869ab2ca73329e73f86eeec3ec8a63cc5ccc118bf41cdcf12cedbbc",
+      "word_count": 825,
+      "last_updated_utc": "2026-11-04T05:32:32.458462+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_adobe-illustrator-integrations_references_cpp-plugins.md"
+    },
+    "github_awesome-copilot::skills/adobe-illustrator-integrations/references/publishing-docs.md": {
+      "doc_id": "github_awesome-copilot::skills/adobe-illustrator-integrations/references/publishing-docs.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/adobe-illustrator-integrations/references/publishing-docs.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/adobe-illustrator-integrations/references/publishing-docs.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "ed54bbfe4f4c11905cec6b472f84021afd82d39f",
+      "content_sha256": "6b54c31abf27a23d1d981cab4bfa8992a4663af7d45c4bb6f55faaecb1c1f9e3",
+      "word_count": 677,
+      "last_updated_utc": "2026-11-04T05:32:32.477987+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_adobe-illustrator-integrations_references_publishing-docs.md"
+    },
     "github_awesome-copilot::skills/adobe-illustrator-scripting/SKILL.md": {
       "doc_id": "github_awesome-copilot::skills/adobe-illustrator-scripting/SKILL.md",
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/adobe-illustrator-scripting/SKILL.md",
@@ -9924,6 +9990,28 @@
       "word_count": 515,
       "last_updated_utc": "2026-10-21T03:45:24.889077+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_devops-rollout-plan_SKILL.md"
+    },
+    "github_awesome-copilot::skills/diagnose-ci-gate/SKILL.md": {
+      "doc_id": "github_awesome-copilot::skills/diagnose-ci-gate/SKILL.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/diagnose-ci-gate/SKILL.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/diagnose-ci-gate/SKILL.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "2dab16a48f7c7012954b6e2b3fd885f472f5f9c2",
+      "content_sha256": "6b410c35fcfb470e7b189b9f76cd6497b301c9ea17364bef7099daaa17382810",
+      "word_count": 1586,
+      "last_updated_utc": "2026-11-04T05:32:32.471115+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_diagnose-ci-gate_SKILL.md"
+    },
+    "github_awesome-copilot::skills/diagnose-ci-gate/references/validation.md": {
+      "doc_id": "github_awesome-copilot::skills/diagnose-ci-gate/references/validation.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/diagnose-ci-gate/references/validation.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/diagnose-ci-gate/references/validation.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "5718fac581e4c0adbb37f604b2a4b016fefca32b",
+      "content_sha256": "405112870cd2364e3714a09c50365720c59976b453640e79b90d1109b9b66abf",
+      "word_count": 845,
+      "last_updated_utc": "2026-11-04T05:32:32.471471+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_diagnose-ci-gate_references_validation.md"
     },
     "github_awesome-copilot::skills/diagnose/SKILL.md": {
       "doc_id": "github_awesome-copilot::skills/diagnose/SKILL.md",
@@ -20633,10 +20721,10 @@
       "source_url": "https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-command-reference.md",
       "canonical_web_url": "https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "de1e4570f5e543c7a594eec5371f7a58a87069ad",
-      "content_sha256": "6fa9d0689be4c2700c8e6fc7456ee00808910ac56e8caa934c6e6aad264abd12",
-      "word_count": 24394,
-      "last_updated_utc": "2026-11-03T19:17:01.258647+00:00",
+      "git_blob_sha": "e9369816d44c5051d9408da506464a0cab4655ee",
+      "content_sha256": "e3fe3428fa0119a1094c8b0b0a9223fc7e06704e13168dee2bd2a4b79e562635",
+      "word_count": 24396,
+      "last_updated_utc": "2026-11-04T05:32:31.250014+00:00",
       "local_clean_path": "clean_sources/github_docs__content_copilot_reference_copilot-cli-reference_cli-command-reference.md"
     },
     "github_docs::content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md": {
@@ -20755,9 +20843,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "7f7bec09aeafb06b7de6d88db07e1497af6bb9c209e3be62c7342eb160bde21f",
+      "content_sha256": "9092fe556711adf53c9c78a3b4d3edeecf382723d24506a2cc09d8d9bf4c125e",
       "word_count": 25303,
-      "last_updated_utc": "2026-11-03T19:17:05.492705+00:00",
+      "last_updated_utc": "2026-11-04T05:32:34.418721+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -20766,9 +20854,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "7f7bec09aeafb06b7de6d88db07e1497af6bb9c209e3be62c7342eb160bde21f",
+      "content_sha256": "9092fe556711adf53c9c78a3b4d3edeecf382723d24506a2cc09d8d9bf4c125e",
       "word_count": 25303,
-      "last_updated_utc": "2026-11-03T19:17:05.458565+00:00",
+      "last_updated_utc": "2026-11-04T05:32:34.363533+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -22647,9 +22735,9 @@
       "canonical_web_url": "https://github.com/microsoft/vscode/issues/345227",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
       "git_blob_sha": null,
-      "content_sha256": "d0bc91568776ee2d7ea6a9fc7f296b582903b25615198227a88360228b03cf30",
-      "word_count": 724,
-      "last_updated_utc": "2026-11-03T19:17:08.635056+00:00",
+      "content_sha256": "a9851bc5179ba2e2f6eb514ba51710fdd9aad3b3eaf75d168b54cac59edb3517",
+      "word_count": 716,
+      "last_updated_utc": "2026-11-04T05:32:35.051698+00:00",
       "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_345227.md"
     },
     "vscode_insiders::iteration-plan_271045": {
@@ -22724,9 +22812,9 @@
       "canonical_web_url": "https://github.blog/changelog/label/copilot/feed/",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
       "git_blob_sha": null,
-      "content_sha256": "c9419a658cfcbd2e6dcfc4b7f2ce757754275b36521a66c0f76947fe027297be",
-      "word_count": 672,
-      "last_updated_utc": "2026-11-03T19:17:04.383947+00:00",
+      "content_sha256": "06a4f0e52c8c6e96ea3cfb59fff522fec71e3db138a40bd5707185e01c1e5723",
+      "word_count": 678,
+      "last_updated_utc": "2026-11-04T05:32:33.599994+00:00",
       "local_clean_path": "clean_sources/web__github_changelog_copilot_rss.md"
     },
     "web::vscode_api_contribution_points": {

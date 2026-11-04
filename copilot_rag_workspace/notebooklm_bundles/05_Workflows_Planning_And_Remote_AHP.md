@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-11-03T19:17:08.637058+00:00
-- **Total Palabras**: 152,834 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-04T05:32:35.254446+00:00
+- **Total Palabras**: 152,836 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -273,8 +273,8 @@ For a complete list of slash commands for Copilot CLI, see [Cli Command Referenc
 # DOCUMENT_SOURCE: github_docs::content/copilot/reference/copilot-cli-reference/cli-command-reference.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-command-reference.md
-- **SHA256_FINGERPRINT**: `6fa9d0689be4c2700c8e6fc7456ee00808910ac56e8caa934c6e6aad264abd12`
-- **LAST_VERIFIED_UTC**: 2026-11-03T19:17:01.258647+00:00
+- **SHA256_FINGERPRINT**: `e3fe3428fa0119a1094c8b0b0a9223fc7e06704e13168dee2bd2a4b79e562635`
+- **LAST_VERIFIED_UTC**: 2026-11-04T05:32:31.250014+00:00
 ---
 
 **title**: GitHub Copilot CLI command reference
@@ -989,7 +989,7 @@ Use `/collect-debug-logs [file|gist|share] [PATH]` to gather debug logs for trou
 | `--log-dir=DIRECTORY`              | Set the log file directory (default: `~/.copilot/logs/`). A leading `~` expands to your home directory. |
 | `--log-level=LEVEL`                | Set the log level (choices: `none`, `error`, `warning`, `info`, `debug`, `all`, `default`). |
 | `--max-ai-credits=CREDITS`         | Set a soft maximum for AI Credits allowed for each response. The limit resets per user message and can be adjusted mid-session with `/limits`. See [Set Session Limit](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/set-session-limit). |
-| `--max-autopilot-continues=COUNT`  | Maximum number of continuation messages in autopilot mode (default: unlimited). Must be a non-negative integer. Malformed values (`NaN`, negative, fractional, or scientific notation) are rejected. See [Use Autopilot Mode](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/use-autopilot-mode). |
+| `--max-autopilot-continues=COUNT`  | Maximum number of automatic continuations outside an active autopilot objective (default: 5). Must be a non-negative integer. Malformed values (`NaN`, negative, fractional, or scientific notation) are rejected. See [Use Autopilot Mode](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/use-autopilot-mode). |
 | `--mode=MODE`                      | Set the initial agent mode (choices: `interactive`, `plan`, `autopilot`). Combine with `--plan` (as `--plan --mode autopilot`) for plan-then-autopilot: the session starts in plan mode and automatically progresses to autopilot mode once the plan is ready, instead of waiting for a human to approve it. Any other `--plan --mode MODE` pairing is rejected. |
 | `--model=MODEL`                    | Set the AI model you want to use. Pass `auto` as the value to let Copilot pick the best available model automatically. See [Auto Model Selection](https://docs.github.com/en/copilot/concepts/models/auto-model-selection). |
 | `--mouse[=VALUE]`                  | Enable or disable mouse support in the interactive interface. VALUE can be `on` (default) or `off`. When enabled, the CLI captures mouse events—scroll wheel, clicks, and so on—to navigate its own interface, such as scrolling the timeline or clicking tabs. When disabled, the terminal's native mouse behavior, such as text selection and scrollback, is preserved. When you set this option explicitly, the value is persisted to your configuration file. |
