@@ -1,5 +1,5 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-04T19:33:34.477645+00:00
+- **Generado (UTC)**: 2026-11-05T05:53:07.316435+00:00
 - **Total Palabras**: 19,088 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
@@ -2156,11 +2156,18 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `06a4f0e52c8c6e96ea3cfb59fff522fec71e3db138a40bd5707185e01c1e5723`
-- **LAST_VERIFIED_UTC**: 2026-11-04T05:32:33.599994+00:00
+- **SHA256_FINGERPRINT**: `f604d8639172240565fe7982bf6f2ef00fb942e77db35b98981bfe3e9cc55770`
+- **LAST_VERIFIED_UTC**: 2026-11-05T05:53:04.711211+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
+
+## GitHub Copilot is now available in Xcode’s coding assistant
+- **Date**: Wed, 04 Nov 2026 19:10:40 +0000
+- **URL**: https://github.blog/changelog/2026-11-04-github-copilot-is-now-available-in-xcodes-coding-assistant
+
+You can now work with GitHub Copilot directly in Xcode’s built-in coding assistant, bringing Copilot into your native Xcode workflow. The integration is now in public preview, available starting with...
+The post GitHub Copilot is now available in Xcode’s coding assistant appeared first on The GitHub Blog .
 
 ## BYOK and enterprise custom models in the Copilot usage API
 - **Date**: Wed, 04 Nov 2026 00:32:19 +0000
@@ -2224,10 +2231,3 @@ The post Build shared workflows for your team with Copilot Automations appeared 
 
 This year, we focused on giving you more choice in how you work with GitHub Copilot in Visual Studio Code: which models you use, where your agents run, and how...
 The post GitHub Copilot in VS Code, Universe releases appeared first on The GitHub Blog .
-
-## Repository plugin defaults and enterprise plugin controls generally available
-- **Date**: Wed, 28 Oct 2026 15:33:00 +0000
-- **URL**: https://github.blog/changelog/2026-10-28-repository-plugin-defaults-and-enterprise-plugin-controls-generally-available
-
-Repository plugin defaults and enterprise-managed plugin controls are now generally available in VS Code, Copilot CLI, and the GitHub Copilot app. Trusted repositories can install and enable default plugins for...
-The post Repository plugin defaults and enterprise plugin controls generally available appeared first on The GitHub Blog .

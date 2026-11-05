@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part3
-- **Generado (UTC)**: 2026-11-04T19:33:34.380012+00:00
-- **Total Palabras**: 446,199 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-05T05:53:07.228263+00:00
+- **Total Palabras**: 446,250 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -49596,8 +49596,8 @@ model MyAgent {
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/dependabot/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/dependabot/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/dependabot/SKILL.md
-- **SHA256_FINGERPRINT**: `cd6a35f88e5181fe0731a693b5c4ba06ee133de64bcafa719a8da7800002ab4e`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:24.696308+00:00
+- **SHA256_FINGERPRINT**: `dec51cc97716518d448f6b778bef3d25606f7f267bf71f5ad87f10cda0913e08`
+- **LAST_VERIFIED_UTC**: 2026-11-05T05:53:03.199124+00:00
 ---
 
 **description**: Comprehensive guide for configuring and managing GitHub Dependabot. Use this skill when users ask about creating or optimizing dependabot.yml files, managing Dependabot pull requests, configuring dependency update strategies, setting up grouped updates, monorepo patterns, multi-ecosystem groups, security update configuration, auto-triage rules, or any GitHub Advanced Security (GHAS) supply chain security topic related to Dependabot. For pre-commit dependency vulnerability scanning in AI coding agents via the GitHub MCP Server, this skill references the Advanced Security plugin (`advanced-security@copilot-plugins`). Use this skill when an agent needs to scan dependencies for known vulnerabilities before committing.
@@ -49972,7 +49972,7 @@ Controls how Dependabot edits version constraints:
 rebase-strategy: "disabled"  # stop auto-rebasing
 ```
 
-Allow rebase over extra commits by including `[dependabot skip]` in commit messages.
+Dependabot stops rebasing a PR once anyone else pushes a commit to its branch. A `[dependabot skip]` in that commit's message lifts that stop (it does not override `rebase-strategy: "disabled"`): the next rebase force-pushes over the branch, which discards the commit. Leave the marker out to keep your commit.
 
 ### Open PR Limit
 
@@ -50854,8 +50854,8 @@ Note: Security updates always target the default branch regardless of `target-br
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/dependabot/references/pr-commands.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/dependabot/references/pr-commands.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/dependabot/references/pr-commands.md
-- **SHA256_FINGERPRINT**: `471a786456c798364d13c0da554c12c712c581986b7f4a1de95d8b3638fd21cb`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:24.953823+00:00
+- **SHA256_FINGERPRINT**: `7d25bdfce5693c94a8095c10ab032736f8995ffa58752466700672fbdc1a8518`
+- **LAST_VERIFIED_UTC**: 2026-11-05T05:53:03.197997+00:00
 ---
 
 # Dependabot PR Comment Commands
@@ -50944,7 +50944,7 @@ Clears only the specified version range ignore for `express`.
 ## Tips
 
 - **Rebase vs Recreate**: Use `rebase` to resolve conflicts while keeping your review state. Use `recreate` to start fresh if the PR has diverged significantly.
-- **Force push over extra commits**: If you've pushed commits to a Dependabot branch and want Dependabot to rebase over them, include `[dependabot skip]` in your commit message.
+- **Force push over extra commits**: Dependabot stops rebasing once you push commits to its branch. Include `[dependabot skip]` in your commit message to lift that stop (unless `rebase-strategy` is `disabled`); its next rebase force-pushes over the branch and discards your commits.
 - **Persistent ignores**: Ignore commands via PR comments are stored centrally. For transparency in team repos, prefer using `ignore` in `dependabot.yml` instead.
 - **Merging Dependabot PRs**: Use GitHub's native auto-merge feature, the CLI (`gh pr merge`), or the web UI. The old `@dependabot merge` commands were deprecated in January 2026.
 - **Closing/Reopening**: Use the GitHub UI or CLI. The old `@dependabot close` and `@dependabot reopen` commands were deprecated in January 2026.
