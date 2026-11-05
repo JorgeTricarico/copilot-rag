@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-05T05:53:07.316435+00:00
-- **Total Palabras**: 19,088 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-05T19:43:10.097187+00:00
+- **Total Palabras**: 19,637 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -594,13 +594,15 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_145.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_145
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_145.md
-- **SHA256_FINGERPRINT**: `c97cadedb6ccd001a8539cfa7b7f56caada4c0363a7132e6165dc5eff919f823`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:27.516493+00:00
+- **SHA256_FINGERPRINT**: `7c43581bafa8e2ef93d52f2a781a2f9b7aadf0b7192b14af6ccfe4251f4d6894`
+- **LAST_VERIFIED_UTC**: 2026-11-05T19:43:04.565625+00:00
 ---
 
 **MetaDescription**: Learn what's new in Visual Studio Code 1.145
 
 # Visual Studio Code 1.145
+
+**Update 1.145.1**: The update addresses these [issues](https://github.com/microsoft/vscode/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.145.1).
 
 ## Release highlights
 
@@ -952,8 +954,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_146.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_146
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_146.md
-- **SHA256_FINGERPRINT**: `a34cec9b4e5038792b94840a4df0cd5a56118d13d17c8557af82dd29a0fd4247`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:27.523943+00:00
+- **SHA256_FINGERPRINT**: `4111fece40f4e0338f38e938155c9babc723e3a186f22e83751656c074d287a4`
+- **LAST_VERIFIED_UTC**: 2026-11-05T19:43:04.532437+00:00
 ---
 
 **MetaDescription**: Learn what's new in Visual Studio Code 1.146 (Insiders)
@@ -964,7 +966,7 @@ Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://
 
 ---
 
-_Last updated: November 4, 2026_
+_Last updated: November 5, 2026_
 
 Welcome to the 1.146  release of Visual Studio Code.
 
@@ -972,9 +974,21 @@ Happy Coding!
 
 ---
 
+## November 5, 2026
+
+* Add support for previewing Markdown descriptions in the Issue Reporter. _[#265509: Issue Reporter has no Markdown preview](https://github.com/microsoft/vscode/issues/265509)_
+
 ## November 4, 2026
 
-* Support using Agent Skills served by MCP servers in new Copilot agent host sessions. _[#338300: Support the MCP Skills Extension (SEP-2640) in GitHub Copilot](https://github.com/microsoft/vscode/issues/338300)_
+* Add support for Agent Skills served by MCP servers in Copilot agent sessions. _[#338300: Support the MCP Skills Extension (SEP-2640) in GitHub Copilot](https://github.com/microsoft/vscode/issues/338300)_
+
+* Organize related model comparison sessions into groups in the Agents window. _[#346059: Compare Models: Support grouping comparison sessions into collections](https://github.com/microsoft/vscode/issues/346059)_
+
+* Add support for agents to launch model comparisons across two to ten configurations. _[#346057: Compare Models: Allow agents to create comparison sessions through tools](https://github.com/microsoft/vscode/issues/346057)_
+
+* Add support for agents to read comparison results, judge evaluations, and provider-supplied conversation histories. _[#346058: Compare Models: Make results, trajectories, and judge evaluations accessible to agents](https://github.com/microsoft/vscode/issues/346058)_
+
+* Add a one-time introduction to **Compare Models** in eligible model pickers. _[#345917: Add an experimental spotlight introducing Compare Models](https://github.com/microsoft/vscode/issues/345917)_
 
 ## November 3, 2026
 
@@ -1522,6 +1536,47 @@ We really appreciate people trying our new features as soon as they are ready, s
 - [x] Close milestone (**do not** delete it): https://github.com/microsoft/vscode/milestones
 - [x] Move all remaining issues to "On Deck"
 - [x] Ensure that the latest Insiders release from main has succeeded
+
+
+---
+# DOCUMENT_SOURCE: vscode_insiders::endgame-plan_346279
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/346279
+- **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/346279
+- **SHA256_FINGERPRINT**: `6706547dc21112de42db3dc317da80baca03e9087a41a50346ee677ecce832da`
+- **LAST_VERIFIED_UTC**: 2026-11-05T19:43:10.096257+00:00
+---
+
+# VS Code Insiders Roadmap: 1.145.1 Endgame
+- **Issue Number**: #346279
+- **Category**: `endgame-plan`
+- **State**: open
+- **Source Issue**: https://github.com/microsoft/vscode/issues/346279
+
+- [x] Create a milestone `1.145.1` **@deepak1556**
+- [ ] Bump the version number & run `npm i` to bump `package-lock.json` as well. Ensure there are no other `package-lock.json` changes. **@deepak1556**
+- [ ] [🔖candidate issues](https://github.com/issues?q=org%3Amicrosoft%20is%3Aissue%20milestone%3A%221.145.1%22%20label%3Acandidate)
+- [ ] Assign candidate issues to the recovery milestone **team**
+- [ ] Review the `candidate` issues, and if they pass the review assign them to the recovery milestone **team**
+- [ ] All `candidate` fixes are peer reviewed and pushed to `main` and then cherry-picked into the release branch **team**
+- [ ] Initiate `insiders` build from `main`
+- [ ] Issues are tested in the `insiders` **team**
+- [ ] Build and manually release Insider from main branch for vscode.dev (if there were vscode.dev candidates)
+  - [ ] Issues are tested in the `insiders` **team**
+- [ ] Build `stable` for all platforms from release branch **@deepak1556**
+- [ ] Issues are verified on `stable` build and the `verified` label is added **@deepak1556**
+- [ ] Check `https://github.com/Microsoft/vscode/compare/release/<x.y>` to ensure no other commits have been made in the release branch **@deepak1556**
+- [ ] The `insiders` build with all candidate fixes needs to be in the wild for 24 hours before recovery release, unless explicitly approved by @kieferrm
+- [ ] Update the release notes and include a link to a query for the fixed issues @ntrogh
+- [ ] Publish website @ntrogh
+- [ ] Publish stable build **@deepak1556**
+- [ ] (if there were vscode.dev candidates) Trigger the [vscode.dev Deploy pipeline](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) for `release/x.y` for the `prod` deployment target. **@deepak1556**
+  - [ ] Request approval from another team member at the necessary step to deploy the vscode.dev build. **@deepak1556**
+- [ ] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `patch`; the release pipeline job requires two approvals) **@deepak1556**
+- [ ] Create an official release **@deepak1556**
+  - [ ] Create a tag (make sure you pull the release branch first): `git tag <x.y.z> release/<x.y>`
+  - [ ] Push the tag: `git push origin <x.y.z>`
+  - [ ] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right `... > Create Release`. Use the correct title and description from our release notes. [Example](https://github.com/microsoft/vscode/releases/tag/1.81.1)
+- [ ] Close the milestone on [GitHub](https://github.com/microsoft/vscode/milestones) **@deepak1556**
 
 
 ---

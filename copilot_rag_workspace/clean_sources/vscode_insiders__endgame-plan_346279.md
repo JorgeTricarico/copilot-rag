@@ -1,0 +1,31 @@
+# VS Code Insiders Roadmap: 1.145.1 Endgame
+- **Issue Number**: #346279
+- **Category**: `endgame-plan`
+- **State**: open
+- **Source Issue**: https://github.com/microsoft/vscode/issues/346279
+
+- [x] Create a milestone `1.145.1` **@deepak1556**
+- [ ] Bump the version number & run `npm i` to bump `package-lock.json` as well. Ensure there are no other `package-lock.json` changes. **@deepak1556**
+- [ ] [🔖candidate issues](https://github.com/issues?q=org%3Amicrosoft%20is%3Aissue%20milestone%3A%221.145.1%22%20label%3Acandidate)
+- [ ] Assign candidate issues to the recovery milestone **team**
+- [ ] Review the `candidate` issues, and if they pass the review assign them to the recovery milestone **team**
+- [ ] All `candidate` fixes are peer reviewed and pushed to `main` and then cherry-picked into the release branch **team**
+- [ ] Initiate `insiders` build from `main`
+- [ ] Issues are tested in the `insiders` **team**
+- [ ] Build and manually release Insider from main branch for vscode.dev (if there were vscode.dev candidates)
+  - [ ] Issues are tested in the `insiders` **team**
+- [ ] Build `stable` for all platforms from release branch **@deepak1556**
+- [ ] Issues are verified on `stable` build and the `verified` label is added **@deepak1556**
+- [ ] Check `https://github.com/Microsoft/vscode/compare/release/<x.y>` to ensure no other commits have been made in the release branch **@deepak1556**
+- [ ] The `insiders` build with all candidate fixes needs to be in the wild for 24 hours before recovery release, unless explicitly approved by @kieferrm
+- [ ] Update the release notes and include a link to a query for the fixed issues @ntrogh
+- [ ] Publish website @ntrogh
+- [ ] Publish stable build **@deepak1556**
+- [ ] (if there were vscode.dev candidates) Trigger the [vscode.dev Deploy pipeline](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) for `release/x.y` for the `prod` deployment target. **@deepak1556**
+  - [ ] Request approval from another team member at the necessary step to deploy the vscode.dev build. **@deepak1556**
+- [ ] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `patch`; the release pipeline job requires two approvals) **@deepak1556**
+- [ ] Create an official release **@deepak1556**
+  - [ ] Create a tag (make sure you pull the release branch first): `git tag <x.y.z> release/<x.y>`
+  - [ ] Push the tag: `git push origin <x.y.z>`
+  - [ ] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right `... > Create Release`. Use the correct title and description from our release notes. [Example](https://github.com/microsoft/vscode/releases/tag/1.81.1)
+- [ ] Close the milestone on [GitHub](https://github.com/microsoft/vscode/milestones) **@deepak1556**

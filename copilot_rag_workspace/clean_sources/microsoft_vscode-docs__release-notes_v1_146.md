@@ -6,7 +6,7 @@ Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://
 
 ---
 
-_Last updated: November 4, 2026_
+_Last updated: November 5, 2026_
 
 Welcome to the 1.146  release of Visual Studio Code.
 
@@ -14,9 +14,21 @@ Happy Coding!
 
 ---
 
+## November 5, 2026
+
+* Add support for previewing Markdown descriptions in the Issue Reporter. _[#265509: Issue Reporter has no Markdown preview](https://github.com/microsoft/vscode/issues/265509)_
+
 ## November 4, 2026
 
-* Support using Agent Skills served by MCP servers in new Copilot agent host sessions. _[#338300: Support the MCP Skills Extension (SEP-2640) in GitHub Copilot](https://github.com/microsoft/vscode/issues/338300)_
+* Add support for Agent Skills served by MCP servers in Copilot agent sessions. _[#338300: Support the MCP Skills Extension (SEP-2640) in GitHub Copilot](https://github.com/microsoft/vscode/issues/338300)_
+
+* Organize related model comparison sessions into groups in the Agents window. _[#346059: Compare Models: Support grouping comparison sessions into collections](https://github.com/microsoft/vscode/issues/346059)_
+
+* Add support for agents to launch model comparisons across two to ten configurations. _[#346057: Compare Models: Allow agents to create comparison sessions through tools](https://github.com/microsoft/vscode/issues/346057)_
+
+* Add support for agents to read comparison results, judge evaluations, and provider-supplied conversation histories. _[#346058: Compare Models: Make results, trajectories, and judge evaluations accessible to agents](https://github.com/microsoft/vscode/issues/346058)_
+
+* Add a one-time introduction to **Compare Models** in eligible model pickers. _[#345917: Add an experimental spotlight introducing Compare Models](https://github.com/microsoft/vscode/issues/345917)_
 
 ## November 3, 2026
 

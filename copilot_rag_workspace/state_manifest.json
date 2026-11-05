@@ -1,7 +1,7 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-05T05:53:07.332825+00:00",
-  "total_documents": 2076,
+  "last_sync_utc": "2026-11-05T19:43:10.113038+00:00",
+  "total_documents": 2077,
   "documents": {
     "anthropics_skills::README.md": {
       "doc_id": "anthropics_skills::README.md",
@@ -20843,9 +20843,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "0da715ab71b131cee1575be54407beb3cf3f1252ed1e7892177bb497ddf26629",
+      "content_sha256": "96779d71b3cbace893acf6e514a8c0dd3082dd6db3bde918f3170ccf58d505e2",
       "word_count": 25576,
-      "last_updated_utc": "2026-11-05T05:53:06.073204+00:00",
+      "last_updated_utc": "2026-11-05T19:43:08.500867+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -20854,9 +20854,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "0da715ab71b131cee1575be54407beb3cf3f1252ed1e7892177bb497ddf26629",
+      "content_sha256": "96779d71b3cbace893acf6e514a8c0dd3082dd6db3bde918f3170ccf58d505e2",
       "word_count": 25576,
-      "last_updated_utc": "2026-11-05T05:53:06.049386+00:00",
+      "last_updated_utc": "2026-11-05T19:43:08.432220+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -22283,7 +22283,7 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_144.md",
       "canonical_web_url": "https://code.visualstudio.com/updates/v1_144",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
-      "git_blob_sha": "b348173a5269158000bad78050ecd2eb66944c30",
+      "git_blob_sha": "d34fcd73749f7e89ba59d5b00aa2a843a83f2caa",
       "content_sha256": "0880f151659ff6f9537bcce30513e98f9d0ff381497f7c171a69a1e8af1217ef",
       "word_count": 6222,
       "last_updated_utc": "2026-11-02T21:32:53.405474+00:00",
@@ -22294,10 +22294,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_145.md",
       "canonical_web_url": "https://code.visualstudio.com/updates/v1_145",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
-      "git_blob_sha": "6b61cda949059c3bb4f7ec41c18d99e89852d7a4",
-      "content_sha256": "c97cadedb6ccd001a8539cfa7b7f56caada4c0363a7132e6165dc5eff919f823",
-      "word_count": 3398,
-      "last_updated_utc": "2026-11-04T19:33:27.516493+00:00",
+      "git_blob_sha": "15d36feec49278dc82a1d693ce45b341432dcee2",
+      "content_sha256": "7c43581bafa8e2ef93d52f2a781a2f9b7aadf0b7192b14af6ccfe4251f4d6894",
+      "word_count": 3405,
+      "last_updated_utc": "2026-11-05T19:43:04.565625+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__release-notes_v1_145.md"
     },
     "microsoft_vscode-docs::release-notes/v1_146.md": {
@@ -22305,10 +22305,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_146.md",
       "canonical_web_url": "https://code.visualstudio.com/updates/v1_146",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
-      "git_blob_sha": "862b9cc8166e89946f37dda0c09699b430696db8",
-      "content_sha256": "a34cec9b4e5038792b94840a4df0cd5a56118d13d17c8557af82dd29a0fd4247",
-      "word_count": 138,
-      "last_updated_utc": "2026-11-04T19:33:27.523943+00:00",
+      "git_blob_sha": "4295f160be6f7ed6c243f1a8a3a2e60a99ac9145",
+      "content_sha256": "4111fece40f4e0338f38e938155c9babc723e3a186f22e83751656c074d287a4",
+      "word_count": 252,
+      "last_updated_utc": "2026-11-05T19:43:04.532437+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__release-notes_v1_146.md"
     },
     "microsoft_vscode::extensions/copilot/.agents/skills/github-copilot-upgrader/SKILL.md": {
@@ -22750,6 +22750,17 @@
       "word_count": 707,
       "last_updated_utc": "2026-11-04T19:33:34.300959+00:00",
       "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_345227.md"
+    },
+    "vscode_insiders::endgame-plan_346279": {
+      "doc_id": "vscode_insiders::endgame-plan_346279",
+      "source_url": "https://github.com/microsoft/vscode/issues/346279",
+      "canonical_web_url": "https://github.com/microsoft/vscode/issues/346279",
+      "bundle_name": "07_Release_Notes_And_Changelog_Radar",
+      "git_blob_sha": null,
+      "content_sha256": "6706547dc21112de42db3dc317da80baca03e9087a41a50346ee677ecce832da",
+      "word_count": 393,
+      "last_updated_utc": "2026-11-05T19:43:10.096257+00:00",
+      "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_346279.md"
     },
     "vscode_insiders::iteration-plan_271045": {
       "doc_id": "vscode_insiders::iteration-plan_271045",
