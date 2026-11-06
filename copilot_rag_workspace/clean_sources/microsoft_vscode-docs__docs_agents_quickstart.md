@@ -206,7 +206,7 @@ The Agents window and Chat view share your Copilot session, so you can switch be
 
 * Select **Open in Agents** in the application title bar, then select your existing Copilot session from the sessions list.
 
-For other applications, terminal options, or access from another device, see [Continue an existing session](/docs/agents/run/sessions/manage-sessions.md#continue-an-existing-session). That guide covers the supported routes and their requirements.
+For other applications, terminal options, or access from another device, see [Continue an existing session](/docs/agents/run/sessions/manage-sessions.md#continue-between-the-chat-view-and-agents-window). That guide covers the supported routes and their requirements.
 
 ## Clean up resources
 

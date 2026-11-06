@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-11-04T19:33:34.303727+00:00
-- **Total Palabras**: 26,152 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-06T19:05:39.544960+00:00
+- **Total Palabras**: 26,239 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -571,8 +571,8 @@ The process boundary also affects how you review edits, configure the agent, and
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/agents.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/agents
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/agents.md
-- **SHA256_FINGERPRINT**: `caa76052aef4a21f387e0194bc1ad4930a0097553d26ecb0a0c971897f90ad88`
-- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:44.017339+00:00
+- **SHA256_FINGERPRINT**: `ad98c4df0b9727c798acc4268b5bf170e292c5e5dc3461487985bc5b3a9f6ead`
+- **LAST_VERIFIED_UTC**: 2026-11-06T19:05:32.186177+00:00
 ---
 
 **MetaDescription**: Understand how agents in VS Code use models, context, and tools to complete coding tasks.
@@ -603,6 +603,8 @@ The core concepts work together each time you send a request:
 1. **Review:** When the task is complete, you review the response, code changes, and validation results.
 
 The repeated reasoning, action, and validation steps form the **agent loop**. A [session](/docs/agents/concepts/sessions.md) keeps the conversation and task state together. An [agent harness](/docs/agents/concepts/agent-harnesses.md) coordinates the loop, while the execution environment determines where tools run and code changes are made.
+
+![Diagram showing a client connected to an Agent Host that maintains session state while a harness loops through context preparation, model requests, permission checks, and tool calls. Tools act on the workspace, independently of where the model runs. Deployment examples show local IPC and AHP connections to remote machines and managed cloud environments.](../images/concepts/agent-execution.svg)
 
 ## Agent loop
 
@@ -2036,8 +2038,8 @@ observation, or a user-facing interruption classification.
 # DOCUMENT_SOURCE: microsoft_vscode::src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md
-- **SHA256_FINGERPRINT**: `7b428083fd0e8d0455e85446753d58f7dfef99f49ef07d6b4349baa54f0de19e`
-- **LAST_VERIFIED_UTC**: 2026-10-23T04:01:45.350568+00:00
+- **SHA256_FINGERPRINT**: `9b11e1cf853bd54ce742feea17f85c94c67aac0ab915d58b52406a11b5c67667`
+- **LAST_VERIFIED_UTC**: 2026-11-06T19:05:33.558748+00:00
 ---
 
 # Agent Plugins Architecture
@@ -2229,13 +2231,13 @@ Unpinned marketplace repositories use `<cacheRoot>/<host>/<path>`. Ref-specific 
 The managed customization controls are complementary:
 
 - `strictKnownMarketplaces` restricts which marketplace sources may provide plugins.
-- `strictPluginOnlyCustomization` blocks standalone user and workspace skills, agents, hooks, instructions, and MCP servers. Eligible plugin contributions remain available.
+- `strictPluginOnlyCustomization` blocks standalone user and workspace skills, agents, hooks, instructions, and MCP servers, plus executable Copilot extensions from user, workspace/project, and session directories. Eligible plugin contributions remain available.
 - `allowManagedMcpServersOnly` makes the managed MCP allowlist authoritative; lower-layer allow entries cannot broaden it and deny entries remain restrictive.
 - `allowManagedHooksOnly` permits plugin hooks only when managed `enabledPlugins` force-enables the plugin. User/workspace hooks and hooks from otherwise user-enabled plugins do not load.
 
 `strictPluginOnlyCustomization` does not replace strict marketplace enforcement. Hardened deployments apply both controls when plugin source and standalone customization provenance must both be constrained.
 
-In Copilot Agent Host sessions, the runtime reads `strictPluginOnlyCustomization` from Copilot managed settings, including its array form, and applies it to the customizations it discovers. The user and workspace skills and agents that VS Code forwards (for example, from configured skill locations), and every MCP server it forwards (for example, from VS Code's `mcp.json` or an extension), are bundled separately from other synced content. The host passes them through the SDK's `skillDirectories`, `customAgents`, and session `mcpServers` instead of `pluginDirectories`, so the runtime treats them as standalone customizations rather than plugin content. Extension and built-in skills and agents stay in the synced plugin, matching the workbench lockdown, which blocks only standalone prompt files.
+In Copilot Agent Host sessions, the runtime reads `strictPluginOnlyCustomization` from Copilot managed settings, including its array form, and applies it to the customizations it discovers. The user and workspace skills and agents that VS Code forwards (for example, from configured skill locations), and every MCP server it forwards (for example, from VS Code's `mcp.json` or an extension), are bundled separately from other synced content. The host passes them through the SDK's `skillDirectories`, `customAgents`, and session `mcpServers` instead of `pluginDirectories`, so the runtime treats them as standalone customizations rather than plugin content. Extension and built-in skills and agents stay in the synced plugin, matching the workbench lockdown, which blocks only standalone prompt files. Executable Copilot extensions remain runtime-owned: the runtime filters standalone roots, verifies eligible plugin provenance, and enforces current policy before invoking VS Code's launch resolver.
 
 ### Storage (ApplicationScope, MachineTarget)
 | Key | Description |

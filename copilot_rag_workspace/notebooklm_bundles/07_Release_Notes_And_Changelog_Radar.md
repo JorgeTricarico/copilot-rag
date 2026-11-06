@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-06T05:48:44.132998+00:00
-- **Total Palabras**: 20,359 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-06T19:05:39.556438+00:00
+- **Total Palabras**: 20,354 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -594,8 +594,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_145.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_145
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_145.md
-- **SHA256_FINGERPRINT**: `7c43581bafa8e2ef93d52f2a781a2f9b7aadf0b7192b14af6ccfe4251f4d6894`
-- **LAST_VERIFIED_UTC**: 2026-11-05T19:43:04.565625+00:00
+- **SHA256_FINGERPRINT**: `55d855e2764a8b5ddff40df460267d65e20ee83ebf6e59cd677eaf00f20919e1`
+- **LAST_VERIFIED_UTC**: 2026-11-06T19:05:32.184313+00:00
 ---
 
 **MetaDescription**: Learn what's new in Visual Studio Code 1.145
@@ -603,6 +603,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # Visual Studio Code 1.145
 
 **Update 1.145.1**: The update addresses these [issues](https://github.com/microsoft/vscode/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.145.1).
+
+**Update 1.145.2**: The update addresses these [issues](https://github.com/microsoft/vscode/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.145.2).
 
 ## Release highlights
 
@@ -1596,14 +1598,14 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_346427
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/346427
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/346427
-- **SHA256_FINGERPRINT**: `34be1201c547ddc23d55ddc0e1fffc9aec0e9730c4efc767bef3dcd98d123ba0`
-- **LAST_VERIFIED_UTC**: 2026-11-06T05:48:43.970883+00:00
+- **SHA256_FINGERPRINT**: `7eed945f870c1d4b1ae8867df6056882b837a38fa9bf9f0dcfc1d9adaead9d93`
+- **LAST_VERIFIED_UTC**: 2026-11-06T19:05:39.543045+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.145.2 Endgame
 - **Issue Number**: #346427
 - **Category**: `endgame-plan`
-- **State**: open
+- **State**: closed
 - **Source Issue**: https://github.com/microsoft/vscode/issues/346427
 
 - [x] Create a milestone `1.145.2` **@deepak1556**
@@ -1613,24 +1615,24 @@ We really appreciate people trying our new features as soon as they are ready, s
 - [x] Review the `candidate` issues, and if they pass the review assign them to the recovery milestone **team**
 - [x] All `candidate` fixes are peer reviewed and pushed to `main` and then cherry-picked into the release branch **team**
 - [x] Initiate `insiders` build from `main`
-- [ ] Issues are tested in the `insiders` **team**
+- [x] Issues are tested in the `insiders` **team**
 - [ ] Build and manually release Insider from main branch for vscode.dev (if there were vscode.dev candidates)
   - [ ] Issues are tested in the `insiders` **team**
 - [x] Build `stable` for all platforms from release branch **@deepak1556**
-- [ ] Issues are verified on `stable` build and the `verified` label is added **@deepak1556**
+- [x] Issues are verified on `stable` build and the `verified` label is added **@deepak1556**
 - [x] Check `https://github.com/Microsoft/vscode/compare/release/<x.y>` to ensure no other commits have been made in the release branch **@deepak1556**
-- [ ] The `insiders` build with all candidate fixes needs to be in the wild for 24 hours before recovery release, unless explicitly approved by @kieferrm
-- [ ] Update the release notes and include a link to a query for the fixed issues @ntrogh
-- [ ] Publish website @ntrogh
-- [ ] Publish stable build **@deepak1556**
+- [x] The `insiders` build with all candidate fixes needs to be in the wild for 24 hours before recovery release, unless explicitly approved by @kieferrm
+- [x] Update the release notes and include a link to a query for the fixed issues @ntrogh
+- [x] Publish website @ntrogh
+- [x] Publish stable build **@deepak1556**
 - [ ] (if there were vscode.dev candidates) Trigger the [vscode.dev Deploy pipeline](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) for `release/x.y` for the `prod` deployment target. **@deepak1556**
   - [ ] Request approval from another team member at the necessary step to deploy the vscode.dev build. **@deepak1556**
-- [ ] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `patch`; the release pipeline job requires two approvals) **@deepak1556**
-- [ ] Create an official release **@deepak1556**
-  - [ ] Create a tag (make sure you pull the release branch first): `git tag <x.y.z> release/<x.y>`
-  - [ ] Push the tag: `git push origin <x.y.z>`
-  - [ ] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right `... > Create Release`. Use the correct title and description from our release notes. [Example](https://github.com/microsoft/vscode/releases/tag/1.81.1)
-- [ ] Close the milestone on [GitHub](https://github.com/microsoft/vscode/milestones) **@deepak1556**
+- [x] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `patch`; the release pipeline job requires two approvals) **@deepak1556**
+- [x] Create an official release **@deepak1556**
+  - [x] Create a tag (make sure you pull the release branch first): `git tag <x.y.z> release/<x.y>`
+  - [x] Push the tag: `git push origin <x.y.z>`
+  - [x] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right `... > Create Release`. Use the correct title and description from our release notes. [Example](https://github.com/microsoft/vscode/releases/tag/1.81.1)
+- [x] Close the milestone on [GitHub](https://github.com/microsoft/vscode/milestones) **@deepak1556**
 
 
 ---

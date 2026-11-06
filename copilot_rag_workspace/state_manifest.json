@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-06T05:48:44.143274+00:00",
+  "last_sync_utc": "2026-11-06T19:05:39.573760+00:00",
   "total_documents": 2078,
   "documents": {
     "anthropics_skills::README.md": {
@@ -20843,9 +20843,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "f34736cb3217f6018f2744e571a2a6716cd575c8deb4071d0782edc2973aeb30",
+      "content_sha256": "4e00523d108b22730ec856fd902770943345f5876c384f2a143fd86c82467688",
       "word_count": 25576,
-      "last_updated_utc": "2026-11-06T05:48:43.165853+00:00",
+      "last_updated_utc": "2026-11-06T19:05:37.747679+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -20854,9 +20854,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "f34736cb3217f6018f2744e571a2a6716cd575c8deb4071d0782edc2973aeb30",
+      "content_sha256": "4e00523d108b22730ec856fd902770943345f5876c384f2a143fd86c82467688",
       "word_count": 25576,
-      "last_updated_utc": "2026-11-06T05:48:43.188622+00:00",
+      "last_updated_utc": "2026-11-06T19:05:37.798270+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -21601,10 +21601,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/agents.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/concepts/agents",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "19c5d0a1e81efca3551e23498bb4ad681bc0bb20",
-      "content_sha256": "caa76052aef4a21f387e0194bc1ad4930a0097553d26ecb0a0c971897f90ad88",
-      "word_count": 1309,
-      "last_updated_utc": "2026-10-31T04:48:44.017339+00:00",
+      "git_blob_sha": "70dafb7a122439b8b53879f82a0a9fb154a7784b",
+      "content_sha256": "ad98c4df0b9727c798acc4268b5bf170e292c5e5dc3461487985bc5b3a9f6ead",
+      "word_count": 1362,
+      "last_updated_utc": "2026-11-06T19:05:32.186177+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_concepts_agents.md"
     },
     "microsoft_vscode-docs::docs/agents/concepts/context.md": {
@@ -21865,10 +21865,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/quickstart.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/quickstart",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "1b6b781aa125e560de2699be6b7fa9940a8b7bcf",
-      "content_sha256": "98d47b347d8b304016cbf5bb787a1ddbc3012c3d44eda0f4cd0987ac2ded8b20",
+      "git_blob_sha": "baab1a6c92f047c7ae6b60ee3786cf6accd1227e",
+      "content_sha256": "23f36e770bc55853aef0a50eb5ef37f3613a22c3b197bcc44cbbdb70c9dd5e4f",
       "word_count": 1970,
-      "last_updated_utc": "2026-10-28T18:07:36.871940+00:00",
+      "last_updated_utc": "2026-11-06T19:05:32.183118+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_quickstart.md"
     },
     "microsoft_vscode-docs::docs/agents/reference/agent-plugin-reference.md": {
@@ -22294,10 +22294,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_145.md",
       "canonical_web_url": "https://code.visualstudio.com/updates/v1_145",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
-      "git_blob_sha": "15d36feec49278dc82a1d693ce45b341432dcee2",
-      "content_sha256": "7c43581bafa8e2ef93d52f2a781a2f9b7aadf0b7192b14af6ccfe4251f4d6894",
-      "word_count": 3405,
-      "last_updated_utc": "2026-11-05T19:43:04.565625+00:00",
+      "git_blob_sha": "296ea0637fa36bc2e58115d1b616233f3f6409cf",
+      "content_sha256": "55d855e2764a8b5ddff40df460267d65e20ee83ebf6e59cd677eaf00f20919e1",
+      "word_count": 3412,
+      "last_updated_utc": "2026-11-06T19:05:32.184313+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__release-notes_v1_145.md"
     },
     "microsoft_vscode-docs::release-notes/v1_146.md": {
@@ -22360,10 +22360,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md",
       "canonical_web_url": "https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "9ea70ce3577854d907d51f04b4bf712a583a93fa",
-      "content_sha256": "7b428083fd0e8d0455e85446753d58f7dfef99f49ef07d6b4349baa54f0de19e",
-      "word_count": 2555,
-      "last_updated_utc": "2026-10-23T04:01:45.350568+00:00",
+      "git_blob_sha": "0f75c01a317f24d43f066eba48a1203be3e0fcc3",
+      "content_sha256": "9b11e1cf853bd54ce742feea17f85c94c67aac0ab915d58b52406a11b5c67667",
+      "word_count": 2589,
+      "last_updated_utc": "2026-11-06T19:05:33.558748+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode__src_vs_workbench_contrib_chat_common_plugins_AGENTS_PLUGINS.md"
     },
     "microsoft_vscode::src/vscode-dts/vscode.proposed.agentEditorComments.d.ts": {
@@ -22768,9 +22768,9 @@
       "canonical_web_url": "https://github.com/microsoft/vscode/issues/346427",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
       "git_blob_sha": null,
-      "content_sha256": "34be1201c547ddc23d55ddc0e1fffc9aec0e9730c4efc767bef3dcd98d123ba0",
-      "word_count": 385,
-      "last_updated_utc": "2026-11-06T05:48:43.970883+00:00",
+      "content_sha256": "7eed945f870c1d4b1ae8867df6056882b837a38fa9bf9f0dcfc1d9adaead9d93",
+      "word_count": 373,
+      "last_updated_utc": "2026-11-06T19:05:39.543045+00:00",
       "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_346427.md"
     },
     "vscode_insiders::iteration-plan_271045": {

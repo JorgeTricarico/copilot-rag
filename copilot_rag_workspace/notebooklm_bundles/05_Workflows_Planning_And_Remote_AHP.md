@@ -1,5 +1,5 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-11-06T05:48:44.121748+00:00
+- **Generado (UTC)**: 2026-11-06T19:05:39.548280+00:00
 - **Total Palabras**: 157,116 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
@@ -8557,8 +8557,8 @@ Learn more about testing and AI customization in VS Code:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/quickstart.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/quickstart
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/quickstart.md
-- **SHA256_FINGERPRINT**: `98d47b347d8b304016cbf5bb787a1ddbc3012c3d44eda0f4cd0987ac2ded8b20`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:36.871940+00:00
+- **SHA256_FINGERPRINT**: `23f36e770bc55853aef0a50eb5ef37f3613a22c3b197bcc44cbbdb70c9dd5e4f`
+- **LAST_VERIFIED_UTC**: 2026-11-06T19:05:32.183118+00:00
 ---
 
 **MetaDescription**: Build and validate a web app with an AI agent in VS Code, then review and recover changes.
@@ -8769,7 +8769,7 @@ The Agents window and Chat view share your Copilot session, so you can switch be
 
 * Select **Open in Agents** in the application title bar, then select your existing Copilot session from the sessions list.
 
-For other applications, terminal options, or access from another device, see [Continue an existing session](/docs/agents/run/sessions/manage-sessions.md#continue-an-existing-session). That guide covers the supported routes and their requirements.
+For other applications, terminal options, or access from another device, see [Continue an existing session](/docs/agents/run/sessions/manage-sessions.md#continue-between-the-chat-view-and-agents-window). That guide covers the supported routes and their requirements.
 
 ## Clean up resources
 
