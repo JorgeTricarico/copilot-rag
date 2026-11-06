@@ -1,7 +1,123 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-11-05T05:53:07.295060+00:00
-- **Total Palabras**: 412,281 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-06T05:48:44.102182+00:00
+- **Total Palabras**: 413,327 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/protobuf-grpc-api-review/references/protobuf-compatibility.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/protobuf-grpc-api-review/references/protobuf-compatibility.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/protobuf-grpc-api-review/references/protobuf-compatibility.md
+- **SHA256_FINGERPRINT**: `2ceec7688859882d010fdc45c88520427b071c698e60a197d141092d2ed0476d`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.342573+00:00
+---
+
+# Protobuf Compatibility Rules
+
+Use this reference when a review changes messages, fields, enums, serialization, or generated APIs. Apply it to the actual encoding and runtimes in scope.
+
+## Classify the Change
+
+### Binary wire-unsafe
+
+Treat these as breaking unless all serialized data and every reader/writer can be migrated atomically:
+
+- changing an existing field number
+- reusing a deleted or previously shipped field number
+- reusing a deleted enum number
+- moving fields into an existing `oneof`
+- changing between types with different wire encodings, such as `string` and an integer
+
+Never rely on an apparently unused tag having no historical data. Old binaries, logs, queues, and rollback artifacts may still contain it.
+
+### Binary wire-safe, with other dimensions still to review
+
+- adding a field with a new number
+- removing a field while permanently reserving its number; reserve its name when name reuse is also unsafe
+- adding an enum value with a new number
+- moving one explicit-presence field into a new `oneof`
+- changing a single-field `oneof` to an explicit-presence field
+- changing a field to an extension with the same number and type
+
+These can still break source code, business logic, JSON consumers, validation, or exhaustive enum handling.
+
+### Binary-compatible but rollout-dependent
+
+These pairs can parse the same wire representation but may change values or lose data. Prefer adding a new field. If a migration is unavoidable, keep writers within the old domain until every reader has upgraded and rollback is closed.
+
+| Change | Required constraint or risk |
+| --- | --- |
+| `int32`, `uint32`, `int64`, `uint64`, `bool` | Old readers may truncate or reinterpret values; boolean semantics are especially risky. |
+| `sint32` <-> `sint64` | Values outside the narrower range change when read as `sint32`. These are not compatible with ordinary integer encodings. |
+| `fixed32` <-> `sfixed32`; `fixed64` <-> `sfixed64` | Signedness changes application meaning. |
+| `string` <-> `bytes` | Bytes must remain valid UTF-8 for `string` readers. Generated APIs change. |
+| embedded message <-> `bytes` | Bytes must always contain that message encoding; generated APIs change. |
+| enum <-> integer types | Unknown-enum representation and generated behavior vary by language. |
+| singular <-> repeated for strings, bytes, or messages | A singular reader keeps the last primitive value or merges messages; information can be lost. |
+| map <-> its repeated entry message | Map readers may reorder entries and discard duplicate keys. |
+
+Numeric repeated fields are normally packed and are not safely interchangeable with singular fields. Treat any cardinality change as a data migration rather than a cleanup.
+
+## Deletion and Replacement Pattern
+
+For a shipped field that must change type or meaning:
+
+1. Add a new field with a new number and a distinct name.
+2. Deploy readers that understand both fields.
+3. Deploy writers that populate the new field, and dual-write if rollback requires it.
+4. Backfill persisted data where needed.
+5. Stop reading and writing the old field only after old binaries and rollback are gone.
+6. Remove the old field and reserve its number and name.
+
+Do not reserve the old number while the field is still declared. Do not reuse the old number for the replacement.
+
+## Presence, Defaults, and `oneof`
+
+- Changing implicit scalar presence to explicit `optional` presence is wire-compatible but changes generated APIs and the meaning of default values. Check merge, patch, equality, and serialization behavior.
+- An implicit-presence scalar cannot distinguish "unset" from its default value. If zero, empty, or false is meaningful in an update API, use explicit presence or a field mask.
+- Adding a field to a `oneof` is generally parseable, but old clients can clear an unknown member when they set a known member and reserialize. Review read-modify-write paths.
+- Removing a `oneof` member makes it impossible for a new reader to know which removed member had been set. Preserve the number and plan the migration.
+- Never add a required field. Older writers cannot populate it, and partial rollout or rollback becomes unsafe.
+- Do not change explicit defaults in proto2; version-skewed readers can interpret the same absent field differently.
+
+## Enums
+
+- Keep a zero-valued `*_UNSPECIFIED` first value unless the established contract deliberately uses another zero value.
+- Adding a value is binary-safe but may break exhaustive switches or older business logic. Search generated-language consumers.
+- When deleting a value, reserve both its number and, where names are part of the contract, its name.
+- For aliases, add the new alias after the old one. A safe rename requires staged parser and serializer rollout before removing the old name.
+
+## ProtoJSON and Other Named Formats
+
+Review name-based formats separately from the binary wire format:
+
+- field and enum names can be serialized contract data, so renaming may break readers
+- ProtoJSON does not preserve unknown fields, narrowing forward compatibility
+- adding fields or enum values can fail older parsers that reject unknown names
+- changing `json_name`, integer/string representation, bytes encoding, or `oneof` shape can alter the public JSON schema
+- HTTP transcoding can expose message fields and enum names even when the internal transport is binary gRPC
+
+Ask whether stored JSON exists. If it does, include historical payloads in compatibility tests.
+
+## Verification Matrix
+
+Use real generated runtimes where behavior can vary by language:
+
+| Writer | Reader | What to assert |
+| --- | --- | --- |
+| old | new | Values, presence, enum handling, and validation remain correct. |
+| new | old | Unknown data is tolerated and known values are not reinterpreted. |
+| old | new -> modify -> serialize -> old | Unknown fields survive and known fields are not cleared. |
+| new | old -> modify -> serialize -> new | New fields or `oneof` members are not silently lost. |
+
+Also compile descriptors, run the repository's breaking-change checker, test boundary values for widened/narrowed numeric domains, and round-trip any supported JSON representation.
+
+## Primary References
+
+- [Proto3: Updating a Message Type](https://protobuf.dev/programming-guides/proto3/#updating)
+- [Proto Best Practices](https://protobuf.dev/best-practices/dos-donts/)
+- [ProtoJSON wire safety](https://protobuf.dev/programming-guides/json/#json-wire-safety)
+- [Field presence](https://protobuf.dev/programming-guides/field_presence/)
 
 
 ---
@@ -63334,8 +63450,8 @@ For an old Local setup, **Chat: Configure Hooks** lists its files, and the **Git
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/language-models.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/language-models
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/language-models.md
-- **SHA256_FINGERPRINT**: `ccc3e763664e60161864654af58ec0a0192590767585be6ec9525621aba3a20b`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:25.661325+00:00
+- **SHA256_FINGERPRINT**: `485f6a5833448afd3f09905cfca0f06ff66746bfb753f71c68b1b5c002d75903`
+- **LAST_VERIFIED_UTC**: 2026-11-06T05:48:21.542227+00:00
 ---
 
 **MetaDescription**: Configure chat, inline, and voice models in VS Code. Use your own API key or run models on your device.
@@ -63596,7 +63712,7 @@ Bring Your Own Key (BYOK) lets you connect to any compatible model provider whil
 In [Local harness sessions](/docs/agents/run/agent-harnesses.md#local), BYOK models work without signing into a GitHub account and without a Copilot plan. This lets you use AI chat features with your own models, including offline scenarios with local models such as Ollama.
 
 > [!NOTE]
-> To use supported BYOK models in Copilot harness sessions in the Chat view or [Agents window](/docs/agents/run/agents-window.md), enable ``chat.agentHost.byokModels.enabled`` `feature(agent-host-byok-models)`. Using the desktop Agents window without GitHub sign-in also requires the separate experimental [signed-out access option](/docs/agents/run/agents-window-configuration.md#manage-ai-providers-and-accounts).
+> To use supported BYOK models in Copilot harness sessions in the Chat view or [Agents window](/docs/agents/run/agents-window.md), enable ``chat.agentHost.byokModels.enabled`` `feature(agent-host-byok-models)`. For sign-in requirements, see [Agents window accounts and provider credentials](/docs/agents/run/agents-window-configuration.md#manage-ai-providers-and-accounts).
 
 To use provider credentials with the [product.prodname_anthropic_claude] or [product.prodname_openai_codex] harness instead, follow that [harness's setup requirements](/docs/agents/run/agent-harnesses.md#requirements-and-setup). Adding a model here does not configure authentication for every harness.
 

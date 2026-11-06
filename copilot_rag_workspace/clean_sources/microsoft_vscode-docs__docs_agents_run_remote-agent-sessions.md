@@ -36,7 +36,7 @@ Remote environment management requires ``sessions.chat.experimental.environmentP
 
 Run **Agents: Manage Remote Environments** from the Command Palette (``Shortcut: workbench.action.showCommands``), or select **Manage Remote Environments** from the sessions list **More Actions** (`...`) menu.
 
-If the experimental new-session composer layout is enabled (``sessions.chat.experimental.newSessionComposerLayout``), you can also open the editor from the **Environment** picker:
+You can also open the editor from the **Environment** picker:
 
 1. Create a new chat or session in the Agents window.
 

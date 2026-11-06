@@ -256,7 +256,7 @@ Bring Your Own Key (BYOK) lets you connect to any compatible model provider whil
 In [Local harness sessions](/docs/agents/run/agent-harnesses.md#local), BYOK models work without signing into a GitHub account and without a Copilot plan. This lets you use AI chat features with your own models, including offline scenarios with local models such as Ollama.
 
 > [!NOTE]
-> To use supported BYOK models in Copilot harness sessions in the Chat view or [Agents window](/docs/agents/run/agents-window.md), enable ``chat.agentHost.byokModels.enabled`` `feature(agent-host-byok-models)`. Using the desktop Agents window without GitHub sign-in also requires the separate experimental [signed-out access option](/docs/agents/run/agents-window-configuration.md#manage-ai-providers-and-accounts).
+> To use supported BYOK models in Copilot harness sessions in the Chat view or [Agents window](/docs/agents/run/agents-window.md), enable ``chat.agentHost.byokModels.enabled`` `feature(agent-host-byok-models)`. For sign-in requirements, see [Agents window accounts and provider credentials](/docs/agents/run/agents-window-configuration.md#manage-ai-providers-and-accounts).
 
 To use provider credentials with the [product.prodname_anthropic_claude] or [product.prodname_openai_codex] harness instead, follow that [harness's setup requirements](/docs/agents/run/agent-harnesses.md#requirements-and-setup). Adding a model here does not configure authentication for every harness.
 

@@ -40,15 +40,9 @@ On files that don't belong to any chat session, ``Shortcut: inlinechat.start`` a
 When you select text in the editor, VS Code can display a visual hint to help you start inline chat for the selected code. Use the ``inlineChat.affordance`` setting to control how this hint appears:
 
 * `off`: no hint is shown when you select text
-* `gutter`: the hint appears in the line number area next to your selection
 * `editor`: the hint appears at the cursor position within your selection, integrated with the lightbulb for code actions
 
-![Screenshot showing the inline chat hint in the gutter when text is selected in the editor.](images/copilot-chat/inline-chat-hint-gutter.png)
-
 The hint displays an inline chat input box and actions for adding the selection to chat, explaining the code, and starting a code review of the selection.
-
-> [!NOTE]
-> This feature is experimental and works with the ``inlineChat.renderMode`` setting set to `hover`.
 
 ## Use terminal inline chat
 

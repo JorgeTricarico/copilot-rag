@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part4
-- **Generado (UTC)**: 2026-11-05T05:53:07.262571+00:00
-- **Total Palabras**: 449,569 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-06T05:48:44.073209+00:00
+- **Total Palabras**: 449,016 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -12936,8 +12936,8 @@ gh attach download "$URL" -O "$FILE"
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/git-commit/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/git-commit/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/git-commit/SKILL.md
-- **SHA256_FINGERPRINT**: `b1a344c79746b5a1277f6954b83ba066c4919eefa2bcf3a75c64c1f9d7215404`
-- **LAST_VERIFIED_UTC**: 2026-10-22T03:58:26.602303+00:00
+- **SHA256_FINGERPRINT**: `9771a0716862a6ed09a65afe73e60ccff913ff73cba11d26807c2a866be6bee3`
+- **LAST_VERIFIED_UTC**: 2026-11-06T05:48:22.983521+00:00
 ---
 
 **description**: Use this skill when the user wants to make a Git commit or split changes into more than one commit. Also use it when the user types "/commit" or asks for a conventional commit. The skill examines the diff, stages the related files, writes a Conventional Commits message, and runs git commit. Do not use it when the user wants only a commit message and no commit. Do not use it to push, open a pull request, rebase, or change the commit history.
@@ -13010,11 +13010,44 @@ git diff --staged
 git diff
 ```
 
-If there are no changes, tell the user. Do not make an empty commit.
+If there are no changes, run the checks at the start of step 3. If they find `MERGE_HEAD`, continue. If not, tell the user what `git status --long` shows. Do not make an empty commit.
 
 ### 3. Stage the files
 
-Put one logical change in each commit. If the staged files contain more than one change, first unstage the files of the other changes. Then stage the files for this change:
+First, check for an operation in progress. Run each command alone. Do not chain them with `&&`. In a subdirectory, run every command in this step as `git -C <root> ...`. `git rev-parse --show-toplevel` prints the root.
+
+```bash
+git rev-parse -q --verify --symbolic-full-name MERGE_HEAD
+git rev-parse -q --verify --symbolic-full-name CHERRY_PICK_HEAD
+git rev-parse -q --verify --symbolic-full-name REVERT_HEAD
+git diff --name-only --diff-filter=U --no-relative
+git status --long
+```
+
+A `rev-parse` command prints a ref name if its operation is in progress. If not, the command prints nothing and exits with status 1. The `git diff` command lists unmerged files. It finds conflicts that have no ref, for example from `git stash pop`. `git status --long` shows the other cases.
+
+**If an operation is in progress or there are unmerged files**, do not unstage files. Do not split the commit. The index holds the result of the operation. If you unstage a file, Git drops the changes of the other side or removes a conflict entry.
+
+- Stop and tell the user if `git status --long` shows "rebase in progress", "You are in the middle of an am session", "Cherry-pick currently in progress", or "Revert currently in progress".
+- Run `git status --porcelain=v2`. A line that starts with `u` shows an unmerged file. You can resolve the file only if all these conditions are true:
+  - The line starts with `u UU N...` or `u AA N...`.
+  - Each mode on the line is `100644`, `100755`, or `000000`.
+  - `git diff --no-relative` does not show `Binary files differ` for the file.
+- Ask the user how to resolve all other unmerged files. Git cannot find conflict markers in these files. `git add --resolved` and the checks below stage these files without a warning. Stage each of these files only after the user resolves it: `git add -- <path>`.
+- With Git 2.56 or later, stage the files that you can resolve with `git add --resolved -- <paths>`.
+- With older Git, check those files and stage them:
+
+```bash
+git diff --check -- path/to/file1 path/to/file2
+git add -- path/to/file1 path/to/file2
+```
+
+- Stage the files only if `git diff --check` finds no "leftover conflict marker" line. Ignore whitespace warnings from the other branch.
+- Then, with any Git version, run `git diff --name-only --no-relative` and `git ls-files --others --exclude-standard`. They list edits in other files. Skip the files that are still unmerged.
+- Show these paths to the user. Ask if they belong to the commit. Stage only the approved paths with `git add -- <paths>`.
+- Git quotes some paths, for example paths with non-ASCII characters. `git add` fails for a quoted path. Ask the user about these files.
+
+**If there is no operation and no unmerged file**, put one logical change in each commit. If the staged files contain more than one change, first unstage the files of the other changes. Then stage the files for this change:
 
 ```bash
 git reset -q -- path/to/other-file1 path/to/other-file2
@@ -13025,7 +13058,6 @@ git add -- src/components/
 
 - Put a glob in quotes. Without quotes, the shell expands the glob and does not find the files in subdirectories.
 - Do not use `git add -p` or `git add -i`. These commands wait for input from a person.
-- After you resolve a merge conflict, use `git add --resolved`. This command stages only the resolved files. If a file still has conflict markers, the command stops.
 - Examine the list of staged files with `git diff --staged --name-only`. Do not commit secrets, for example `.env` files, `credentials.json`, or private keys.
 
 ### 4. Write the message
@@ -13037,6 +13069,10 @@ Get each part from the diff:
 - **Summary**: What changed, in one line.
 
 ### 5. Commit
+
+When step 3 finds `MERGE_HEAD`, `CHERRY_PICK_HEAD`, or `REVERT_HEAD`, run `git commit --no-edit` with no paths and no `--cleanup` option. This keeps the message that Git prepared. Do not write a new `-m` message. The message can keep the `Conflicts:` comment lines from Git. Do not remove them.
+
+In all other cases:
 
 Give each paragraph with a different `-m` option. Git puts a blank line between the paragraphs. This command works in Bash, PowerShell, and other shells.
 
@@ -13050,7 +13086,7 @@ For a long message, write the message to a temporary file. Then run `git commit 
 ### 6. Make sure that the commit is correct
 
 ```bash
-git log -1 --stat
+git log -1 --stat --first-parent
 git status --porcelain
 ```
 
@@ -87611,119 +87647,3 @@ For a behavioral change, require documentation and tests that cover old clients 
 - [gRPC retry](https://grpc.io/docs/guides/retry/)
 - [gRPC status codes](https://grpc.io/docs/guides/status-codes/)
 - [gRPC authentication](https://grpc.io/docs/guides/auth/)
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/protobuf-grpc-api-review/references/protobuf-compatibility.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/protobuf-grpc-api-review/references/protobuf-compatibility.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/protobuf-grpc-api-review/references/protobuf-compatibility.md
-- **SHA256_FINGERPRINT**: `2ceec7688859882d010fdc45c88520427b071c698e60a197d141092d2ed0476d`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.342573+00:00
----
-
-# Protobuf Compatibility Rules
-
-Use this reference when a review changes messages, fields, enums, serialization, or generated APIs. Apply it to the actual encoding and runtimes in scope.
-
-## Classify the Change
-
-### Binary wire-unsafe
-
-Treat these as breaking unless all serialized data and every reader/writer can be migrated atomically:
-
-- changing an existing field number
-- reusing a deleted or previously shipped field number
-- reusing a deleted enum number
-- moving fields into an existing `oneof`
-- changing between types with different wire encodings, such as `string` and an integer
-
-Never rely on an apparently unused tag having no historical data. Old binaries, logs, queues, and rollback artifacts may still contain it.
-
-### Binary wire-safe, with other dimensions still to review
-
-- adding a field with a new number
-- removing a field while permanently reserving its number; reserve its name when name reuse is also unsafe
-- adding an enum value with a new number
-- moving one explicit-presence field into a new `oneof`
-- changing a single-field `oneof` to an explicit-presence field
-- changing a field to an extension with the same number and type
-
-These can still break source code, business logic, JSON consumers, validation, or exhaustive enum handling.
-
-### Binary-compatible but rollout-dependent
-
-These pairs can parse the same wire representation but may change values or lose data. Prefer adding a new field. If a migration is unavoidable, keep writers within the old domain until every reader has upgraded and rollback is closed.
-
-| Change | Required constraint or risk |
-| --- | --- |
-| `int32`, `uint32`, `int64`, `uint64`, `bool` | Old readers may truncate or reinterpret values; boolean semantics are especially risky. |
-| `sint32` <-> `sint64` | Values outside the narrower range change when read as `sint32`. These are not compatible with ordinary integer encodings. |
-| `fixed32` <-> `sfixed32`; `fixed64` <-> `sfixed64` | Signedness changes application meaning. |
-| `string` <-> `bytes` | Bytes must remain valid UTF-8 for `string` readers. Generated APIs change. |
-| embedded message <-> `bytes` | Bytes must always contain that message encoding; generated APIs change. |
-| enum <-> integer types | Unknown-enum representation and generated behavior vary by language. |
-| singular <-> repeated for strings, bytes, or messages | A singular reader keeps the last primitive value or merges messages; information can be lost. |
-| map <-> its repeated entry message | Map readers may reorder entries and discard duplicate keys. |
-
-Numeric repeated fields are normally packed and are not safely interchangeable with singular fields. Treat any cardinality change as a data migration rather than a cleanup.
-
-## Deletion and Replacement Pattern
-
-For a shipped field that must change type or meaning:
-
-1. Add a new field with a new number and a distinct name.
-2. Deploy readers that understand both fields.
-3. Deploy writers that populate the new field, and dual-write if rollback requires it.
-4. Backfill persisted data where needed.
-5. Stop reading and writing the old field only after old binaries and rollback are gone.
-6. Remove the old field and reserve its number and name.
-
-Do not reserve the old number while the field is still declared. Do not reuse the old number for the replacement.
-
-## Presence, Defaults, and `oneof`
-
-- Changing implicit scalar presence to explicit `optional` presence is wire-compatible but changes generated APIs and the meaning of default values. Check merge, patch, equality, and serialization behavior.
-- An implicit-presence scalar cannot distinguish "unset" from its default value. If zero, empty, or false is meaningful in an update API, use explicit presence or a field mask.
-- Adding a field to a `oneof` is generally parseable, but old clients can clear an unknown member when they set a known member and reserialize. Review read-modify-write paths.
-- Removing a `oneof` member makes it impossible for a new reader to know which removed member had been set. Preserve the number and plan the migration.
-- Never add a required field. Older writers cannot populate it, and partial rollout or rollback becomes unsafe.
-- Do not change explicit defaults in proto2; version-skewed readers can interpret the same absent field differently.
-
-## Enums
-
-- Keep a zero-valued `*_UNSPECIFIED` first value unless the established contract deliberately uses another zero value.
-- Adding a value is binary-safe but may break exhaustive switches or older business logic. Search generated-language consumers.
-- When deleting a value, reserve both its number and, where names are part of the contract, its name.
-- For aliases, add the new alias after the old one. A safe rename requires staged parser and serializer rollout before removing the old name.
-
-## ProtoJSON and Other Named Formats
-
-Review name-based formats separately from the binary wire format:
-
-- field and enum names can be serialized contract data, so renaming may break readers
-- ProtoJSON does not preserve unknown fields, narrowing forward compatibility
-- adding fields or enum values can fail older parsers that reject unknown names
-- changing `json_name`, integer/string representation, bytes encoding, or `oneof` shape can alter the public JSON schema
-- HTTP transcoding can expose message fields and enum names even when the internal transport is binary gRPC
-
-Ask whether stored JSON exists. If it does, include historical payloads in compatibility tests.
-
-## Verification Matrix
-
-Use real generated runtimes where behavior can vary by language:
-
-| Writer | Reader | What to assert |
-| --- | --- | --- |
-| old | new | Values, presence, enum handling, and validation remain correct. |
-| new | old | Unknown data is tolerated and known values are not reinterpreted. |
-| old | new -> modify -> serialize -> old | Unknown fields survive and known fields are not cleared. |
-| new | old -> modify -> serialize -> new | New fields or `oneof` members are not silently lost. |
-
-Also compile descriptors, run the repository's breaking-change checker, test boundary values for widened/narrowed numeric domains, and round-trip any supported JSON representation.
-
-## Primary References
-
-- [Proto3: Updating a Message Type](https://protobuf.dev/programming-guides/proto3/#updating)
-- [Proto Best Practices](https://protobuf.dev/best-practices/dos-donts/)
-- [ProtoJSON wire safety](https://protobuf.dev/programming-guides/json/#json-wire-safety)
-- [Field presence](https://protobuf.dev/programming-guides/field_presence/)

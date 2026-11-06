@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 02_Context_Memory_And_Compaction
-- **Generado (UTC)**: 2026-11-04T19:33:34.304963+00:00
-- **Total Palabras**: 6,730 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-06T05:48:43.972846+00:00
+- **Total Palabras**: 6,684 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -567,8 +567,8 @@ Learn how to [add browser context to chat](/docs/debugtest/integrated-browser.md
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/chat/inline-chat.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/chat/inline-chat
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/chat/inline-chat.md
-- **SHA256_FINGERPRINT**: `69a4359742e1bd4d47734194818faede2dccc8513a39900b9ceb8c2de21bbd6d`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:31.878285+00:00
+- **SHA256_FINGERPRINT**: `36b64551898ac8fe6c0f9f61531b6216fbe4f5987a68e3c976a9162d9ea42f28`
+- **LAST_VERIFIED_UTC**: 2026-11-06T05:48:21.526889+00:00
 ---
 
 **MetaDescription**: Use inline chat and Quick Chat in Visual Studio Code for focused edits, terminal help, and short AI conversations.
@@ -613,15 +613,9 @@ On files that don't belong to any chat session, ``Shortcut: inlinechat.start`` a
 When you select text in the editor, VS Code can display a visual hint to help you start inline chat for the selected code. Use the ``inlineChat.affordance`` setting to control how this hint appears:
 
 * `off`: no hint is shown when you select text
-* `gutter`: the hint appears in the line number area next to your selection
 * `editor`: the hint appears at the cursor position within your selection, integrated with the lightbulb for code actions
 
-![Screenshot showing the inline chat hint in the gutter when text is selected in the editor.](images/copilot-chat/inline-chat-hint-gutter.png)
-
 The hint displays an inline chat input box and actions for adding the selection to chat, explaining the code, and starting a code review of the selection.
-
-> [!NOTE]
-> This feature is experimental and works with the ``inlineChat.renderMode`` setting set to `hover`.
 
 ## Use terminal inline chat
 

@@ -1,5 +1,19 @@
 # GitHub Copilot Official Changelog Feed
 
+## Usage metrics API adds code review details and addressed rate
+- **Date**: Fri, 06 Nov 2026 00:19:07 +0000
+- **URL**: https://github.blog/changelog/2026-11-05-usage-metrics-api-adds-code-review-details-and-addressed-rate
+
+The enterprise and organization repository-level Copilot usage metrics reports now show what happens to Copilot code review feedback. A new copilot_code_review object on each repos-1-day row reports how many Copilot-reviewed...
+The post Usage metrics API adds code review details and addressed rate appeared first on The GitHub Blog .
+
+## Usage metrics API flags telemetry and version gaps
+- **Date**: Fri, 06 Nov 2026 00:08:31 +0000
+- **URL**: https://github.blog/changelog/2026-11-05-usage-metrics-api-flags-telemetry-and-version-gaps
+
+The Copilot usage metrics API now shows which users are missing client telemetry or are running IDE or extension versions below the usage metrics minimums. New per-user fields appear in...
+The post Usage metrics API flags telemetry and version gaps appeared first on The GitHub Blog .
+
 ## GitHub Copilot is now available in Xcode’s coding assistant
 - **Date**: Wed, 04 Nov 2026 19:10:40 +0000
 - **URL**: https://github.blog/changelog/2026-11-04-github-copilot-is-now-available-in-xcodes-coding-assistant
@@ -55,17 +69,3 @@ The post Security extension for the GitHub Copilot app appeared first on The Git
 
 Agents should understand more than your codebase—they should understand how your team works. Your preferences, repository conventions, skills, and custom instructions guide how changes should be made, while code in...
 The post GitHub intelligence puts your code, context, and history to work appeared first on The GitHub Blog .
-
-## Build shared workflows for your team with Copilot Automations
-- **Date**: Wed, 28 Oct 2026 15:35:00 +0000
-- **URL**: https://github.blog/changelog/2026-10-28-build-shared-workflows-for-your-team-with-copilot-automations
-
-Shared Copilot Automations are rolling out, enabling teams to build and maintain AI-powered workflows together. With Copilot Automations, you can combine prompts, triggers, and tools to design workflows around the...
-The post Build shared workflows for your team with Copilot Automations appeared first on The GitHub Blog .
-
-## GitHub Copilot in VS Code, Universe releases
-- **Date**: Wed, 28 Oct 2026 15:33:00 +0000
-- **URL**: https://github.blog/changelog/2026-10-28-github-copilot-in-vs-code-universe-releases
-
-This year, we focused on giving you more choice in how you work with GitHub Copilot in Visual Studio Code: which models you use, where your agents run, and how...
-The post GitHub Copilot in VS Code, Universe releases appeared first on The GitHub Blog .

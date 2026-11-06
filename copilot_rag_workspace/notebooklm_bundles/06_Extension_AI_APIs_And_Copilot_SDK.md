@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
-- **Generado (UTC)**: 2026-11-04T19:33:34.474284+00:00
-- **Total Palabras**: 124,737 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-06T05:48:44.130214+00:00
+- **Total Palabras**: 124,990 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -25547,8 +25547,8 @@ declare module 'vscode' {
 # DOCUMENT_SOURCE: web::vscode_api_contribution_points
 - **CANONICAL_URL**: https://code.visualstudio.com/api/references/contribution-points
 - **RAW_SOURCE_URL**: https://code.visualstudio.com/api/references/contribution-points
-- **SHA256_FINGERPRINT**: `758a3f9db59a037a6d3a6309bb41c12b633f6b755c028ee3831abb908c37cf8b`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:30.217262+00:00
+- **SHA256_FINGERPRINT**: `728e58937afa6eacb3a3336e311ce33a6ab177c126678e4de28ff3814fda56e3`
+- **LAST_VERIFIED_UTC**: 2026-11-06T05:48:41.662421+00:00
 ---
 
 # Contribution Points
@@ -26352,6 +26352,9 @@ For more details on these and other features, see the JSON Schema Reference .
 
 #### scope
 
+Configuration scopes determine when a setting is available to the user through the Settings editor and whether the setting is applicable. If no scope is declared, the default is window .
+scope
+window
 A configuration setting can have one of the following possible scopes:
 - application - Settings that apply to all instances of VS Code and can only be configured in user settings.
 application
@@ -26365,9 +26368,25 @@ window
 resource
 - language-overridable - Resource settings that can be overridable at a language level.
 language-overridable
-Configuration scopes determine when a setting is available to the user through the Settings editor and whether the setting is applicable. If no scope is declared, the default is window .
-scope
-window
+The following table summarizes how each scope behaves with respect to overrides, multi-root workspaces, remote environments, and language-specific configuration:
+| Scope | Overridable in workspace | Overridable in workspace folder (multiroot) | Remote inherits local user settings | Overridable remotely | Overridable at language level |
+| application | No | No | Yes | No | No |
+| machine | No | No | No | Yes (implicitly, as not inherited) | No |
+| machine-overridable | Yes | Yes | No | Yes (implicitly, as not inherited) | No |
+| window | Yes | No | Yes | Yes | No |
+| resource | Yes | Yes | Yes | Yes | No |
+| language-overridable | Yes | Yes | Yes | Yes | Yes |
+
+Column details:
+- Overridable in workspace: Whether the setting can be configured or overridden in workspace settings (or in folder settings for single-root workspaces).
+- Overridable in workspace folder (multiroot): Whether the setting can be customized per folder in a multi-root workspace scenario.
+- Remote inherits local user settings: Whether a remote window inherits the local user settings value when no remote value is set.
+- Overridable remotely: Whether the setting can be configured in remote settings.
+- Overridable at language level: Whether the setting supports language-specific overrides (for example, "[typescript]": { ... } ).
+"[typescript]": { ... }
+- Settings Sync: Settings marked with machine or machine-overridable scope are machine specific and excluded from Settings Sync by default.
+machine
+machine-overridable
 Below are example configuration scopes from the built-in Git extension:
 
 ```
