@@ -4,27 +4,25 @@
 
 # Functional API overview
 
-> Learn Functional API entrypoints and tasks, how checkpointing and replay work, and how to avoid common resume pitfalls.
+> Wrap other frameworks with entrypoints and tasks for LangSmith Deployment. Covers checkpointing, resume rules, and common pitfalls.
 
-The **Functional API** adds LangGraph features ([persistence](https://docs.langchain.com/oss/python/langgraph/persistence.md), [memory](https://docs.langchain.com/oss/python/langgraph/add-memory.md), [human-in-the-loop](https://docs.langchain.com/oss/python/langgraph/interrupts.md), and [streaming](https://docs.langchain.com/oss/python/langgraph/streaming.md)) to ordinary functions. Use standard language control flow (`if` / `else`, loops, and function calls) instead of declaring a graph of nodes and edges.
+The **Functional API** wraps ordinary functions with LangGraph runtime features ([persistence](https://docs.langchain.com/oss/python/langgraph/persistence.md), [memory](https://docs.langchain.com/oss/python/langgraph/add-memory.md), [human-in-the-loop](https://docs.langchain.com/oss/python/langgraph/interrupts.md), and [streaming](https://docs.langchain.com/oss/python/langgraph/streaming.md)). Use it when you already have existing code or are using a different framework and want to [deploy it on LangSmith](https://docs.langchain.com/langsmith/deploy-other-frameworks.md) without rewriting that agent as a graph. Prefer the [Graph API](https://docs.langchain.com/oss/python/langgraph/graph-api.md) for building new agents.
 
-This page is the concept reference for entrypoints, tasks, checkpointing, and resume rules. For a design walkthrough, see [Thinking in the Functional API](https://docs.langchain.com/oss/python/langgraph/thinking-in-functional-api.md). For an ordered build path, see the [Build checklist for the Functional API](https://docs.langchain.com/oss/python/langgraph/use-functional-api.md).
+This page is the concept reference for entrypoints, tasks, checkpointing, and resume rules. For the wrap-and-deploy how-to, see [Deploy other frameworks](https://docs.langchain.com/langsmith/deploy-other-frameworks.md).
 
 The Functional API uses two building blocks:
 
 * **`@entrypoint`**: Marks a function as the start of a workflow. It manages execution, interrupts, and checkpointing.
 * **`@task`**: Marks a discrete unit of work (for example, an API call). Tasks return a future-like object that you can await or resolve with `.result()`.
 
-## Functional API vs. Graph API
+## When to use the Functional API
 
-This comparison is optional if you already chose the Functional API. For a side-by-side decision guide, see [Choosing between Graph and Functional APIs](https://docs.langchain.com/oss/python/langgraph/choosing-apis.md). Both APIs share the same underlying runtime, so you can use them together in the same application.
+| Build | Use |
+| - | - |
+| New LangGraph agents and workflows | [Graph API](https://docs.langchain.com/oss/python/langgraph/graph-api.md) |
+| Existing agent in another framework (Claude Agent SDK, Strands, CrewAI, AutoGen, and similar) that you want on LangSmith Deployment | Functional API via [Deploy other frameworks](https://docs.langchain.com/langsmith/deploy-other-frameworks.md) |
 
-High-level differences:
-
-* **Control flow**: The Functional API uses standard language constructs. The [Graph API](https://docs.langchain.com/oss/python/langgraph/graph-api.md) uses nodes and edges.
-* **State**: The Graph API requires declaring [state](https://docs.langchain.com/oss/python/langgraph/graph-api.md#state) and often [reducers](https://docs.langchain.com/oss/python/langgraph/graph-api.md#reducers). The Functional API keeps state scoped to the function: tasks pass values as return values, with no shared state schema.
-* **Checkpointing**: The Graph API checkpoints after each [super-step](https://docs.langchain.com/oss/python/langgraph/graph-api.md#super-steps). The Functional API saves task results to the entrypoint checkpoint.
-* **Visualization**: The Graph API supports graph diagrams. The Functional API does not, because the graph is built at runtime.
+Compared with the Graph API, the Functional API uses ordinary language control flow (`if` / `else`, loops, and calls), keeps values scoped to the entrypoint and tasks instead of a shared [state](https://docs.langchain.com/oss/python/langgraph/graph-api.md#state) schema, saves task results on the entrypoint checkpoint rather than after each [super-step](https://docs.langchain.com/oss/python/langgraph/graph-api.md#super-steps), and has no static graph visualization.
 
 ## Entrypoint
 
@@ -85,32 +83,30 @@ Decorating the function produces a workflow object (a [`Pregel`](https://referen
 
 ### Run and resume
 
-Call `invoke` or `ainvoke` for a final result. For streams, see [Stream with the Functional API](https://docs.langchain.com/oss/python/langgraph/functional-api-streaming.md).
+Call `invoke` or `ainvoke` for a final result. For streams, see [Streaming](https://docs.langchain.com/oss/python/langgraph/streaming.md).
 
-Resume after [`interrupt`](https://reference.langchain.com/python/langgraph/types/interrupt) by passing a resume value in [`Command`](https://reference.langchain.com/python/langgraph/types/Command). For recipes, see [Add human-in-the-loop with the Functional API](https://docs.langchain.com/oss/python/langgraph/functional-api-human-in-the-loop.md).
+Resume after [`interrupt`](https://reference.langchain.com/python/langgraph/types/interrupt) by passing a resume value in [`Command`](https://reference.langchain.com/python/langgraph/types/Command). For recipes, see [Interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts.md).
 
-After an error, resume the same `thread_id` with `None`. See [Resume after an error](https://docs.langchain.com/oss/python/langgraph/functional-api-tasks.md#resume-after-an-error).
+After an error, resume the same `thread_id` with `None`.
 
 ### Short-term memory
 
 When an `entrypoint` has a `checkpointer`, successive invocations on the same **thread id** store state in [checkpoints](https://docs.langchain.com/oss/python/langgraph/checkpointers.md#checkpoints).
 
-Add a keyword-only `previous` parameter. LangGraph sets it to the last value saved on this thread. On the first run it is `None`. To save a different value for the next run, use [`entrypoint.final`](https://reference.langchain.com/python/langgraph/func/entrypoint/final). See [Return a different saved value](https://docs.langchain.com/oss/python/langgraph/functional-api-memory.md#return-a-different-saved-value).
-
-For accumulate and inspecting checkpoints, see [Save state on a thread](https://docs.langchain.com/oss/python/langgraph/functional-api-memory.md#save-state-on-a-thread).
+Add a keyword-only `previous` parameter. LangGraph sets it to the last value saved on this thread. On the first run it is `None`. To save a different value for the next run, use [`entrypoint.final`](https://reference.langchain.com/python/langgraph/func/entrypoint/final).
 
 ### Injectable parameters
 
-You can skip this until you add [memory](https://docs.langchain.com/oss/python/langgraph/functional-api-memory.md) or [custom streaming](https://docs.langchain.com/oss/python/langgraph/functional-api-streaming.md).
+You can skip this until you add [memory](https://docs.langchain.com/oss/python/langgraph/add-memory.md) or [custom streaming](https://docs.langchain.com/oss/python/langgraph/streaming.md).
 
 When declaring an `entrypoint`, you can request additional parameters that LangGraph injects at runtime:
 
 | Parameter | Description |
 | - | - |
-| **previous** | The return value from the previous invocation on the same thread (requires a checkpointer). See [short-term memory](https://docs.langchain.com/oss/python/langgraph/functional-api-memory.md#save-state-on-a-thread). |
+| **previous** | The return value from the previous invocation on the same thread (requires a checkpointer). See [short-term memory](#short-term-memory). |
 | **config** | A [`RunnableConfig`](https://reference.langchain.com/python/langchain-core/runnables/config/RunnableConfig) object with run-time configuration values. |
-| **store** | A [`BaseStore`](https://reference.langchain.com/python/langchain-core/stores/BaseStore) instance for [long-term memory](https://docs.langchain.com/oss/python/langgraph/functional-api-memory.md#save-facts-across-threads). Also available as `runtime.store`. |
-| **writer** | A `StreamWriter` for custom streaming. Also available as `runtime.stream_writer`. See [Stream with the Functional API](https://docs.langchain.com/oss/python/langgraph/functional-api-streaming.md). |
+| **store** | A [`BaseStore`](https://reference.langchain.com/python/langchain-core/stores/BaseStore) instance for [long-term memory](https://docs.langchain.com/oss/python/langgraph/add-memory.md). Also available as `runtime.store`. |
+| **writer** | A `StreamWriter` for custom streaming. Also available as `runtime.stream_writer`. See [Streaming](https://docs.langchain.com/oss/python/langgraph/streaming.md). |
 | **runtime** | A [`Runtime`](https://reference.langchain.com/python/langgraph/runtime/Runtime) object for the current run, including context, store, and writer. |
 
 > [!WARNING]
@@ -231,7 +227,7 @@ Use **tasks** when you need:
 * **Human-in-the-loop**: Wrap work you should not redo after a pause in a task, for example an LLM call. Resume after an [interrupt](https://docs.langchain.com/oss/python/langgraph/interrupts.md) restores the result. For randomness, see [Determinism](#determinism).
 * **Parallel execution**: Run independent I/O-bound work concurrently.
 * **Observability**: Track discrete steps in [LangSmith](https://docs.langchain.com/langsmith/observability.md).
-* **Retries**: Apply retry policies to discrete units of work. See [Configure Functional API tasks](https://docs.langchain.com/oss/python/langgraph/functional-api-tasks.md).
+* **Retries**: Apply retry policies to discrete units of work. See [Fault tolerance](https://docs.langchain.com/oss/python/langgraph/fault-tolerance.md).
 
 ## Resume and checkpointing
 
@@ -307,7 +303,7 @@ Invoke with a topic such as `"cat"`. The run writes the essay, then pauses at `i
 
 The `write_essay` task result is restored, not recomputed.
 
-For stream, resume, and tool-call review, see [Add human-in-the-loop with the Functional API](https://docs.langchain.com/oss/python/langgraph/functional-api-human-in-the-loop.md).
+For stream, resume, and tool-call review, see [Interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts.md).
 
 ## Common pitfalls
 
@@ -441,15 +437,12 @@ With multiple [`interrupt`](https://reference.langchain.com/python/langgraph/typ
 
 ## Learn more
 
-* [Thinking in the Functional API](https://docs.langchain.com/oss/python/langgraph/thinking-in-functional-api.md)
-* [Build checklist for the Functional API](https://docs.langchain.com/oss/python/langgraph/use-functional-api.md)
-* [Compose Functional API workflows](https://docs.langchain.com/oss/python/langgraph/functional-api-workflows.md)
-* [Configure Functional API tasks](https://docs.langchain.com/oss/python/langgraph/functional-api-tasks.md)
-* [Stream with the Functional API](https://docs.langchain.com/oss/python/langgraph/functional-api-streaming.md)
-* [Add human-in-the-loop with the Functional API](https://docs.langchain.com/oss/python/langgraph/functional-api-human-in-the-loop.md)
-* [Add memory with the Functional API](https://docs.langchain.com/oss/python/langgraph/functional-api-memory.md)
+* [Deploy other frameworks](https://docs.langchain.com/langsmith/deploy-other-frameworks.md)
 * [Graph API overview](https://docs.langchain.com/oss/python/langgraph/graph-api.md)
-* [Choosing between Graph and Functional APIs](https://docs.langchain.com/oss/python/langgraph/choosing-apis.md)
+* [Interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts.md)
+* [Streaming](https://docs.langchain.com/oss/python/langgraph/streaming.md)
+* [Fault tolerance](https://docs.langchain.com/oss/python/langgraph/fault-tolerance.md)
+* [Memory](https://docs.langchain.com/oss/python/langgraph/add-memory.md)
 
 ***
 

@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins
-- **Generado (UTC)**: 2026-11-06T05:48:43.981157+00:00
-- **Total Palabras**: 448,056 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-07T05:19:31.496714+00:00
+- **Total Palabras**: 448,057 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -8,8 +8,8 @@
 # DOCUMENT_SOURCE: anthropics_skills::README.md
 - **CANONICAL_URL**: https://github.com/anthropics/skills/blob/main/README.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/anthropics/skills/main/README.md
-- **SHA256_FINGERPRINT**: `f4744c8b4b5c4e401eaf5f0c9b443ba218a1be1433a04ab6865c391de8e766d0`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:54.252100+00:00
+- **SHA256_FINGERPRINT**: `af427daabaed69441f13c31e13c0829ca555053a733d435d92706791dd8545a5`
+- **LAST_VERIFIED_UTC**: 2026-11-07T05:19:27.188004+00:00
 ---
 
 > **Note:** This repository contains Anthropic's implementation of skills for Claude. For information about the Agent Skills standard, see [agentskills.io](http://agentskills.io).
@@ -31,7 +31,7 @@ This repository contains skills that demonstrate what's possible with Claude's s
 
 Each skill is self-contained in its own folder with a `SKILL.md` file containing the instructions and metadata that Claude uses. Browse through these skills to get inspiration for your own skills or to understand different patterns and approaches.
 
-Many skills in this repo are open source (Apache 2.0). We've also included the document creation & editing skills that power [Claude's document capabilities](https://www.anthropic.com/news/create-files) under the hood in the [`skills/docx`](./skills/docx), [`skills/pdf`](./skills/pdf), [`skills/pptx`](./skills/pptx), and [`skills/xlsx`](./skills/xlsx) subfolders. These are source-available, not open source, but we wanted to share these with developers as a reference for more complex skills that are actively used in a production AI application.
+Many skills in this repo are open source (Apache 2.0). We've also included the document creation & editing skills that power [Claude's document capabilities](https://www.anthropic.com/news/create-files) under the hood in the [`skills/docx`](./skills/docx), [`skills/pdf`](./skills/pdf), [`skills/pptx`](./skills/pptx), and [`skills/xlsx`](./skills/xlsx) subfolders. These are also open source (Apache 2.0), and we wanted to share them with developers as a reference for more complex skills that are actively used in a production AI application.
 
 ## Disclaimer
 

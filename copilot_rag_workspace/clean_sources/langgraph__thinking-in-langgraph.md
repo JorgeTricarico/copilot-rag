@@ -8,7 +8,7 @@
 
 When you build an agent with the [Graph API](https://docs.langchain.com/oss/python/langgraph/graph-api.md), you break the process into discrete steps called **nodes**. Then you describe the decisions and transitions from each node. Finally, you connect nodes through a shared **state** that each node can read from and write to.
 
-This walkthrough builds a customer support email agent with the Graph API. For the same scenario with the Functional API, see [Thinking in the Functional API](https://docs.langchain.com/oss/python/langgraph/thinking-in-functional-api.md). To choose between the APIs, see [Choosing between Graph and Functional APIs](https://docs.langchain.com/oss/python/langgraph/choosing-apis.md).
+This walkthrough builds a customer support email agent with the Graph API.
 
 ## Start with the process you want to automate
 
@@ -483,10 +483,6 @@ This walkthrough introduces Graph API design. Extend it with the how-tos and rel
 > [card] [Configure nodes](https://docs.langchain.com/oss/python/langgraph/graph-api-nodes.md)
 >
 > Retries, timeouts, runtime context, and caching
-
-> [card] [Thinking in the Functional API](https://docs.langchain.com/oss/python/langgraph/thinking-in-functional-api.md)
->
-> The same email agent with entrypoints and tasks
 
 > [card] [Human-in-the-loop patterns](https://docs.langchain.com/oss/python/langgraph/interrupts.md)
 >

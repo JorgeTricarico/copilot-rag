@@ -1,5 +1,33 @@
 # GitHub Copilot Official Changelog Feed
 
+## Copilot code review: API management and review overview updates
+- **Date**: Sat, 07 Nov 2026 00:27:19 +0000
+- **URL**: https://github.blog/changelog/2026-11-06-copilot-code-review-api-management-and-review-overview-updates
+
+You can now manage GitHub Copilot code review settings through the REST and GraphQL APIs, from enterprise policy down to individual repositories. Copilot’s review overview comment is now more compact,...
+The post Copilot code review: API management and review overview updates appeared first on The GitHub Blog .
+
+## Copilot impact dashboard adds chat and VS Code agent usage
+- **Date**: Fri, 06 Nov 2026 22:17:28 +0000
+- **URL**: https://github.blog/changelog/2026-11-06-copilot-impact-dashboard-adds-chat-and-vs-code-agent-usage
+
+The Agent adoption chart in the Copilot impact dashboard now includes Copilot Chat and the VS Code Agents window, so you can see engagement across nine Copilot experiences. The adoption...
+The post Copilot impact dashboard adds chat and VS Code agent usage appeared first on The GitHub Blog .
+
+## GitHub Copilot weekly releases — November 2
+- **Date**: Fri, 06 Nov 2026 21:00:26 +0000
+- **URL**: https://github.blog/changelog/2026-11-06-github-copilot-weekly-releases-november-2
+
+This week, Copilot comes to JetBrains Air and Xcode’s coding assistant, with updates to help you manage pull requests, settings, and agent sessions. GitHub Copilot app Set up Agent Merge...
+The post GitHub Copilot weekly releases — November 2 appeared first on The GitHub Blog .
+
+## @GitHub in Slack and Teams is generally available and more
+- **Date**: Fri, 06 Nov 2026 20:31:08 +0000
+- **URL**: https://github.blog/changelog/2026-11-06-github-copilot-in-slack-and-teams-is-generally-available
+
+Turn conversations into code with @GitHub in Slack and Teams! Investigate bugs, create issues, implement changes, and open pull requests—all without leaving your conversation. What’s new Build and review together...
+The post @GitHub in Slack and Teams is generally available and more appeared first on The GitHub Blog .
+
 ## Usage metrics API adds code review details and addressed rate
 - **Date**: Fri, 06 Nov 2026 00:19:07 +0000
 - **URL**: https://github.blog/changelog/2026-11-05-usage-metrics-api-adds-code-review-details-and-addressed-rate
@@ -41,31 +69,3 @@ The post GitHub Copilot is now available in JetBrains Air appeared first on The 
 
 GitHub Copilot Fusion is generally available. Instead of picking a model for each task, choose Copilot Fusion and let Copilot intelligently route and orchestrate which models it uses for you....
 The post Route and orchestrate models with GitHub Copilot Fusion appeared first on The GitHub Blog .
-
-## GitHub Copilot app, Universe releases
-- **Date**: Wed, 28 Oct 2026 15:55:00 +0000
-- **URL**: https://github.blog/changelog/2026-10-28-github-copilot-app-universe-releases
-
-Work doesn’t always fit in a single repository or session. A feature can span several repositories. A launch plan can pull in specs, designs, and assets without touching a repository...
-The post GitHub Copilot app, Universe releases appeared first on The GitHub Blog .
-
-## GitHub Enterprise now includes access to GitHub Copilot
-- **Date**: Wed, 28 Oct 2026 15:50:00 +0000
-- **URL**: https://github.blog/changelog/2026-10-28-github-enterprise-now-includes-access-to-github-copilot
-
-Enterprises working with a GitHub or Microsoft account team can now get Copilot included with GitHub Enterprise for every licensed user. Previously, you had to manage two things: how many...
-The post GitHub Enterprise now includes access to GitHub Copilot appeared first on The GitHub Blog .
-
-## Security extension for the GitHub Copilot app
-- **Date**: Wed, 28 Oct 2026 15:45:00 +0000
-- **URL**: https://github.blog/changelog/2026-10-28-security-extension-for-the-github-copilot-app
-
-You can now work through your repository’s GitHub code scanning alerts without leaving the GitHub Copilot app. The new GitHub security extension, now in public preview, lets you find the...
-The post Security extension for the GitHub Copilot app appeared first on The GitHub Blog .
-
-## GitHub intelligence puts your code, context, and history to work
-- **Date**: Wed, 28 Oct 2026 15:40:00 +0000
-- **URL**: https://github.blog/changelog/2026-10-28-github-intelligence-puts-your-code-context-and-history-to-work
-
-Agents should understand more than your codebase—they should understand how your team works. Your preferences, repository conventions, skills, and custom instructions guide how changes should be made, while code in...
-The post GitHub intelligence puts your code, context, and history to work appeared first on The GitHub Blog .

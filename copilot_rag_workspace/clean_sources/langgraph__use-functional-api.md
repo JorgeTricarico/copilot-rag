@@ -2,70 +2,450 @@
 > Fetch the complete documentation index at: https://docs.langchain.com/llms.txt
 > Use this file to discover all available pages before exploring further.
 
-# Build checklist for the Functional API
+# Functional API overview
 
-> Decide how to compose entrypoints, tasks, streaming, interrupts, and memory with the Functional API.
+> Wrap other frameworks with entrypoints and tasks for LangSmith Deployment. Covers checkpointing, resume rules, and common pitfalls.
 
-This guide walks through the decisions you make when building with the Functional API. For install and an end-to-end agent example, see the [LangGraph quickstart](https://docs.langchain.com/oss/python/langgraph/quickstart.md). For a design walkthrough, see [Thinking in the Functional API](https://docs.langchain.com/oss/python/langgraph/thinking-in-functional-api.md). For concepts, see the [Functional API overview](https://docs.langchain.com/oss/python/langgraph/functional-api.md). To choose between the Graph API and the Functional API, see [Choosing between Graph and Functional APIs](https://docs.langchain.com/oss/python/langgraph/choosing-apis.md).
+The **Functional API** wraps ordinary functions with LangGraph runtime features ([persistence](https://docs.langchain.com/oss/python/langgraph/persistence.md), [memory](https://docs.langchain.com/oss/python/langgraph/add-memory.md), [human-in-the-loop](https://docs.langchain.com/oss/python/langgraph/interrupts.md), and [streaming](https://docs.langchain.com/oss/python/langgraph/streaming.md)). Use it when you already have existing code or are using a different framework and want to [deploy it on LangSmith](https://docs.langchain.com/langsmith/deploy-other-frameworks.md) without rewriting that agent as a graph. Prefer the [Graph API](https://docs.langchain.com/oss/python/langgraph/graph-api.md) for building new agents.
 
-## Build your workflow
+This page is the concept reference for entrypoints, tasks, checkpointing, and resume rules. For the wrap-and-deploy how-to, see [Deploy other frameworks](https://docs.langchain.com/langsmith/deploy-other-frameworks.md).
 
-Work through these decisions in order. Each step links to the how-to for full recipes.
+The Functional API uses two building blocks:
 
-**1. Compose the workflow**
+* **`@entrypoint`**: Marks a function as the start of a workflow. It manages execution, interrupts, and checkpointing.
+* **`@task`**: Marks a discrete unit of work (for example, an API call). Tasks return a future-like object that you can await or resolve with `.result()`.
 
-Define an entrypoint, wrap units of work in tasks, and choose how steps connect.
+## When to use the Functional API
 
-* Start from a single entrypoint and pass inputs as one argument (often a dict).
-* Use tasks for discrete work that should checkpoint and retry independently.
-* Fan out with parallel tasks when steps are independent.
-* Call a compiled [Graph API](https://docs.langchain.com/oss/python/langgraph/graph-api.md) graph or another entrypoint when you need composition.
+| Build | Use |
+| - | - |
+| New LangGraph agents and workflows | [Graph API](https://docs.langchain.com/oss/python/langgraph/graph-api.md) |
+| Existing agent in another framework (Claude Agent SDK, Strands, CrewAI, AutoGen, and similar) that you want on LangSmith Deployment | Functional API via [Deploy other frameworks](https://docs.langchain.com/langsmith/deploy-other-frameworks.md) |
 
-See [Compose Functional API workflows](https://docs.langchain.com/oss/python/langgraph/functional-api-workflows.md).
+Compared with the Graph API, the Functional API uses ordinary language control flow (`if` / `else`, loops, and calls), keeps values scoped to the entrypoint and tasks instead of a shared [state](https://docs.langchain.com/oss/python/langgraph/graph-api.md#state) schema, saves task results on the entrypoint checkpoint rather than after each [super-step](https://docs.langchain.com/oss/python/langgraph/graph-api.md#super-steps), and has no static graph visualization.
 
-**2. Configure tasks**
+## Entrypoint
 
-Add reliability controls when steps can fail, hang, or repeat.
+The `@entrypoint` decorator creates a workflow from a function. It manages long-running work and [interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts.md).
 
-* Retries for transient failures
-* Timeouts for slow tasks or entrypoints
-* Caching for expensive repeated work
-* Resume after an error without redoing completed tasks
+### Definition
 
-See [Configure Functional API tasks](https://docs.langchain.com/oss/python/langgraph/functional-api-tasks.md).
+Pass a [checkpointer](https://docs.langchain.com/oss/python/langgraph/persistence.md) when you need persistence or human-in-the-loop. Identify each run with a `thread_id` in config. A thread is the durable identity for one conversation or workflow run.
 
-**3. Stream progress**
+An **entrypoint** is a function decorated with `@entrypoint`.
 
-Stream updates, model tokens, or custom data while the workflow runs.
+The function **must accept a single positional argument** as the workflow input. To pass multiple values, use a dictionary (or similar) as that argument.
 
-See [Stream with the Functional API](https://docs.langchain.com/oss/python/langgraph/functional-api-streaming.md).
+Decorating the function produces a workflow object (a [`Pregel`](https://reference.langchain.com/python/langgraph/pregel/#langgraph.pregel.Pregel.stream) instance). Call `invoke` or `ainvoke` to run it.
 
-**4. Add human-in-the-loop**
+> [tab] Sync
+>
+> ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+> from langgraph.checkpoint.memory import InMemorySaver
+> from langgraph.func import entrypoint
+>
+> checkpointer = InMemorySaver()
+>
+>
+> @entrypoint(checkpointer=checkpointer)
+> def my_workflow(name: str) -> str:
+>     return f"Hello, {name}"
+>
+>
+> config = {"configurable": {"thread_id": "1"}}
+> my_workflow.invoke("Alice", config)  # "Hello, Alice"
+> ```
 
-Pause for approval or tool-call review with interrupts, then resume with `Command`.
+> [tab] Async
+>
+> ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+> import asyncio
+>
+> from langgraph.checkpoint.memory import InMemorySaver
+> from langgraph.func import entrypoint
+>
+> checkpointer = InMemorySaver()
+>
+>
+> @entrypoint(checkpointer=checkpointer)
+> async def my_workflow(name: str) -> str:
+>     return f"Hello, {name}"
+>
+>
+> config = {"configurable": {"thread_id": "1"}}
+> asyncio.run(my_workflow.ainvoke("Alice", config))  # "Hello, Alice"
+> ```
 
-See [Add human-in-the-loop with the Functional API](https://docs.langchain.com/oss/python/langgraph/functional-api-human-in-the-loop.md).
+> [!WARNING]
+>
+> **Serialization**
+> Entrypoint **inputs** and **outputs** must be JSON-serializable when a checkpointer is configured. See [Serialization](#serialization).
 
-**5. Add memory**
+### Run and resume
 
-Keep short-term thread state with a checkpointer, and long-term data with a store.
+Call `invoke` or `ainvoke` for a final result. For streams, see [Streaming](https://docs.langchain.com/oss/python/langgraph/streaming.md).
 
-See [Add memory with the Functional API](https://docs.langchain.com/oss/python/langgraph/functional-api-memory.md).
+Resume after [`interrupt`](https://reference.langchain.com/python/langgraph/types/interrupt) by passing a resume value in [`Command`](https://reference.langchain.com/python/langgraph/types/Command). For recipes, see [Interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts.md).
 
-## Next steps
+After an error, resume the same `thread_id` with `None`.
 
-* [Thinking in the Functional API](https://docs.langchain.com/oss/python/langgraph/thinking-in-functional-api.md)
-* [Functional API overview](https://docs.langchain.com/oss/python/langgraph/functional-api.md)
-* [Compose Functional API workflows](https://docs.langchain.com/oss/python/langgraph/functional-api-workflows.md)
-* [Configure Functional API tasks](https://docs.langchain.com/oss/python/langgraph/functional-api-tasks.md)
-* [Stream with the Functional API](https://docs.langchain.com/oss/python/langgraph/functional-api-streaming.md)
-* [Add human-in-the-loop with the Functional API](https://docs.langchain.com/oss/python/langgraph/functional-api-human-in-the-loop.md)
-* [Add memory with the Functional API](https://docs.langchain.com/oss/python/langgraph/functional-api-memory.md)
-* [LangGraph quickstart](https://docs.langchain.com/oss/python/langgraph/quickstart.md)
-* [Choosing between Graph and Functional APIs](https://docs.langchain.com/oss/python/langgraph/choosing-apis.md)
+### Short-term memory
+
+When an `entrypoint` has a `checkpointer`, successive invocations on the same **thread id** store state in [checkpoints](https://docs.langchain.com/oss/python/langgraph/checkpointers.md#checkpoints).
+
+Add a keyword-only `previous` parameter. LangGraph sets it to the last value saved on this thread. On the first run it is `None`. To save a different value for the next run, use [`entrypoint.final`](https://reference.langchain.com/python/langgraph/func/entrypoint/final).
+
+### Injectable parameters
+
+You can skip this until you add [memory](https://docs.langchain.com/oss/python/langgraph/add-memory.md) or [custom streaming](https://docs.langchain.com/oss/python/langgraph/streaming.md).
+
+When declaring an `entrypoint`, you can request additional parameters that LangGraph injects at runtime:
+
+| Parameter | Description |
+| - | - |
+| **previous** | The return value from the previous invocation on the same thread (requires a checkpointer). See [short-term memory](#short-term-memory). |
+| **config** | A [`RunnableConfig`](https://reference.langchain.com/python/langchain-core/runnables/config/RunnableConfig) object with run-time configuration values. |
+| **store** | A [`BaseStore`](https://reference.langchain.com/python/langchain-core/stores/BaseStore) instance for [long-term memory](https://docs.langchain.com/oss/python/langgraph/add-memory.md). Also available as `runtime.store`. |
+| **writer** | A `StreamWriter` for custom streaming. Also available as `runtime.stream_writer`. See [Streaming](https://docs.langchain.com/oss/python/langgraph/streaming.md). |
+| **runtime** | A [`Runtime`](https://reference.langchain.com/python/langgraph/runtime/Runtime) object for the current run, including context, store, and writer. |
+
+> [!WARNING]
+>
+> Declare injectable parameters with the appropriate name and type annotation.
+
+> [accordion] Requesting injectable parameters
+>
+> ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+> from typing import Any
+>
+> from langchain_core.runnables import RunnableConfig
+> from langgraph.checkpoint.memory import InMemorySaver
+> from langgraph.func import entrypoint
+> from langgraph.runtime import Runtime
+> from langgraph.store.memory import InMemoryStore
+>
+> checkpointer = InMemorySaver()
+> store = InMemoryStore()
+>
+>
+> @entrypoint(
+>     checkpointer=checkpointer,
+>     store=store,
+> )
+> def my_workflow(
+>     some_input: dict,  # The input (for example, passed via `invoke`)
+>     *,
+>     previous: Any = None,  # Short-term memory from the previous invocation
+>     config: RunnableConfig,  # Run-time configuration
+>     runtime: Runtime,  # Context, store, and writer for the current run
+> ) -> dict:
+>     memory_store = runtime.store
+>     writer = runtime.stream_writer
+>     return {
+>         "previous": previous,
+>         "some_input": some_input,
+>         "has_store": memory_store is not None,
+>         "has_writer": writer is not None,
+>         "thread_id": config["configurable"]["thread_id"],
+>     }
+> ```
+
+## Task
+
+A **task** is a discrete unit of work (for example, an API call or data step). Tasks have two key properties:
+
+* **Concurrent execution**: Calling a task starts it immediately. The entrypoint blocks only when you wait for the result, so independent tasks can overlap.
+* **Checkpointing**: Task results are saved so resume can restore them. See [persistence](https://docs.langchain.com/oss/python/langgraph/persistence.md).
+
+### Definition
+
+Define tasks with the `@task` decorator:
+
+```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+from langgraph.func import task
+
+@task
+def slow_computation(input_value: int) -> int:
+    # Long-running or side-effecting work
+    return input_value * 2
+```
+
+> [!WARNING]
+>
+> **Serialization**: Task **outputs** must be JSON-serializable to support checkpointing.
+
+### Execution
+
+Call **tasks** only from an **entrypoint**, another **task**, or a [Graph API node](https://docs.langchain.com/oss/python/langgraph/graph-api.md#nodes). Do not call them from application code outside the workflow.
+
+Calling a task returns a future immediately. Resolve it with `.result()` (sync) or `await` (async).
+
+> [tab] Sync
+>
+> ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+> from langgraph.checkpoint.memory import InMemorySaver
+> from langgraph.func import entrypoint, task
+>
+> checkpointer = InMemorySaver()
+>
+>
+> @task
+> def slow_computation(input_value: int) -> int:
+>     return input_value * 2
+>
+>
+> @entrypoint(checkpointer=checkpointer)
+> def my_workflow(some_input: int) -> int:
+>     future = slow_computation(some_input)
+>     return future.result()
+> ```
+
+> [tab] Async
+>
+> ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+> from langgraph.checkpoint.memory import InMemorySaver
+> from langgraph.func import entrypoint, task
+>
+> checkpointer = InMemorySaver()
+>
+>
+> @task
+> async def slow_computation(input_value: int) -> int:
+>     return input_value * 2
+>
+>
+> @entrypoint(checkpointer=checkpointer)
+> async def my_workflow(some_input: int) -> int:
+>     return await slow_computation(some_input)
+> ```
+
+### When to use a task
+
+Use **tasks** when you need:
+
+* **Checkpointing**: Save a long-running result so resume does not recompute it.
+* **Human-in-the-loop**: Wrap work you should not redo after a pause in a task, for example an LLM call. Resume after an [interrupt](https://docs.langchain.com/oss/python/langgraph/interrupts.md) restores the result. For randomness, see [Determinism](#determinism).
+* **Parallel execution**: Run independent I/O-bound work concurrently.
+* **Observability**: Track discrete steps in [LangSmith](https://docs.langchain.com/langsmith/observability.md).
+* **Retries**: Apply retry policies to discrete units of work. See [Fault tolerance](https://docs.langchain.com/oss/python/langgraph/fault-tolerance.md).
+
+## Resume and checkpointing
+
+Resume replay depends on serialization, determinism, and idempotency.
+
+### Serialization
+
+Two rules apply when a checkpointer is configured:
+
+1. `entrypoint` inputs and outputs must be JSON-serializable.
+2. `task` outputs must be JSON-serializable.
+
+Use Python primitives such as dictionaries, lists, strings, numbers, and booleans.
+
+Serialization is what makes task results and intermediate values restorable for human-in-the-loop, fault tolerance, and parallel execution. Non-serializable values raise a runtime error when a checkpointer is configured.
+
+### Determinism
+
+Resume does **not** continue from the exact line where execution stopped. Execution returns to a checkpoint boundary and **replays** forward until it hits the pause again.
+
+For the Functional API, replay starts at the beginning of the **entrypoint**. LangGraph restores completed [**task**](#task) and [**subgraph**](https://docs.langchain.com/oss/python/langgraph/use-subgraphs.md) results from the checkpointer instead of recomputing them. That preserves step order across pauses, including for long-running or non-deterministic **task** outputs.
+
+For **human-in-the-loop**, put non-deterministic work (for example, random values) and side effects (for example, file writes or API calls) in [**tasks**](#task).
+
+Different runs can produce different results. Resuming a **specific** thread should replay the same persisted **task** and **subgraph** results.
+
+Guidelines:
+
+* **Avoid repeating work**: Give each side effect in an entrypoint its own **task** so resume restores outputs instead of re-running them.
+* **Encapsulate non-deterministic operations**: Keep values that change between attempts (random numbers, wall-clock time) inside **tasks**.
+* **Use idempotent operations**: For partial failures and retries, see [Idempotency](#idempotency).
+
+### Idempotency
+
+Idempotency means running the same operation more than once has the same effect as running it once. Place API calls and other writes inside **tasks**, and design those tasks to be safe if they run again.
+
+On resume, LangGraph restores completed **task** results. A **task** that started but did not finish may run again, so use idempotency keys or check existing results before writing.
+
+## Pause for human review
+
+This workflow writes an essay and [interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts.md) for human review:
+
+```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+import time
+
+from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.func import entrypoint, task
+from langgraph.types import interrupt
+
+@task
+def write_essay(topic: str) -> str:
+    """Write an essay about the given topic."""
+    time.sleep(1)  # Placeholder for a long-running task.
+    return f"An essay about topic: {topic}"
+
+@entrypoint(checkpointer=InMemorySaver())
+def workflow(topic: str) -> dict:
+    """Write an essay and pause for review."""
+    essay = write_essay(topic).result()
+    is_approved = interrupt({
+        # Any JSON-serializable payload. Surfaces as an Interrupt when streaming.
+        "essay": essay,
+        "action": "Please approve/reject the essay",
+    })
+
+    return {
+        "essay": essay,
+        "is_approved": is_approved,
+    }
+```
+
+Invoke with a topic such as `"cat"`. The run writes the essay, then pauses at `interrupt`. The pause can last indefinitely. Resume starts at the beginning of the entrypoint.
+
+The `write_essay` task result is restored, not recomputed.
+
+For stream, resume, and tool-call review, see [Interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts.md).
+
+## Common pitfalls
+
+### Handling side effects
+
+Put side effects (writing a file, sending an email) in tasks so resume does not run them again.
+
+> [tab] Incorrect
+>
+> The file write runs in the entrypoint, so resume executes it a second time.
+>
+> ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+> from langgraph.checkpoint.memory import InMemorySaver
+> from langgraph.func import entrypoint
+> from langgraph.types import interrupt
+>
+> checkpointer = InMemorySaver()
+>
+> @entrypoint(checkpointer=checkpointer)
+> def my_workflow(inputs: dict) -> int:
+>     # Runs again on resume.
+>     with open("output.txt", "w") as f:  # [!code highlight]
+>         f.write("Side effect executed")  # [!code highlight]
+>     value = interrupt("question")
+>     return value
+> ```
+
+> [tab] Correct
+>
+> The side effect lives in a task, so resume restores the checkpointed result.
+>
+> ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+> from langgraph.checkpoint.memory import InMemorySaver
+> from langgraph.func import entrypoint, task
+> from langgraph.types import interrupt
+>
+> checkpointer = InMemorySaver()
+>
+> @task  # [!code highlight]
+> def write_to_file() -> None:  # [!code highlight]
+>     with open("output.txt", "w") as f:
+>         f.write("Side effect executed")
+>
+> @entrypoint(checkpointer=checkpointer)
+> def my_workflow(inputs: dict) -> int:
+>     write_to_file().result()
+>     value = interrupt("question")
+>     return value
+> ```
+
+### Non-deterministic control flow
+
+Encapsulate time and randomness in tasks so resume returns the same values.
+
+* In a task: Get random number (5) → interrupt → resume → (returns 5 again) → ...
+* Not in a task: Get random number (5) → interrupt → resume → get new random number (7) → ...
+
+With multiple [`interrupt`](https://reference.langchain.com/python/langgraph/types/interrupt) calls, LangGraph matches resume values **by index** to each interrupt. If resume changes the order of interrupts, a resume value can attach to the wrong interrupt. See [Determinism](#determinism).
+
+> [tab] Incorrect
+>
+> Reading the clock in the entrypoint can change which branch runs on resume.
+>
+> ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+> import time
+>
+> from langgraph.checkpoint.memory import InMemorySaver
+> from langgraph.func import entrypoint, task
+> from langgraph.types import interrupt
+>
+> checkpointer = InMemorySaver()
+>
+> @task
+> def slow_task(x: int) -> int:
+>     return x
+>
+> @entrypoint(checkpointer=checkpointer)
+> def my_workflow(inputs: dict) -> dict:
+>     t0 = inputs["t0"]
+>     t1 = time.time()  # [!code highlight]
+>
+>     delta_t = t1 - t0
+>
+>     if delta_t > 1:
+>         result = slow_task(1).result()
+>         value = interrupt("question")
+>     else:
+>         result = slow_task(2).result()
+>         value = interrupt("question")
+>
+>     return {"result": result, "value": value}
+> ```
+
+> [tab] Correct
+>
+> Read the clock inside a task so resume restores the same timestamp and branch.
+>
+> ```python theme={"theme":{"light":"catppuccin-latte","dark":"catppuccin-mocha"}}
+> import time
+>
+> from langgraph.checkpoint.memory import InMemorySaver
+> from langgraph.func import entrypoint, task
+> from langgraph.types import interrupt
+>
+> checkpointer = InMemorySaver()
+>
+> @task
+> def slow_task(x: int) -> int:
+>     return x
+>
+> @task  # [!code highlight]
+> def get_time() -> float:  # [!code highlight]
+>     return time.time()
+>
+> @entrypoint(checkpointer=checkpointer)
+> def my_workflow(inputs: dict) -> dict:
+>     t0 = inputs["t0"]
+>     t1 = get_time().result()  # [!code highlight]
+>
+>     delta_t = t1 - t0
+>
+>     if delta_t > 1:
+>         result = slow_task(1).result()
+>         value = interrupt("question")
+>     else:
+>         result = slow_task(2).result()
+>         value = interrupt("question")
+>
+>     return {"result": result, "value": value}
+> ```
+
+## Learn more
+
+* [Deploy other frameworks](https://docs.langchain.com/langsmith/deploy-other-frameworks.md)
+* [Graph API overview](https://docs.langchain.com/oss/python/langgraph/graph-api.md)
+* [Interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts.md)
+* [Streaming](https://docs.langchain.com/oss/python/langgraph/streaming.md)
+* [Fault tolerance](https://docs.langchain.com/oss/python/langgraph/fault-tolerance.md)
+* [Memory](https://docs.langchain.com/oss/python/langgraph/add-memory.md)
 
 ***
 
 [Connect these docs](https://docs.langchain.com/use-these-docs.md) to your agent of choice via MCP for real-time answers.
 
-[Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/use-functional-api.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).
+[Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/oss/langgraph/functional-api.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).
