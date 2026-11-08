@@ -15,7 +15,7 @@ Explore your own private repository in a cloud session, then continue the same c
 | Option | Choose it when |
 |--------|----------------|
 | **Cloud session** | You want to keep agent tools and changes off your local machine, or work on managed cloud compute without maintaining a host or keeping your own machine online. Reconnect to the existing session to continue the task. |
-| **[GitHub Environments (Preview)](/docs/agents/run/remote-agent-sessions.md#github-environments-preview)** | You want to access sessions on your existing development machine across supported Copilot clients. That machine and its Agent Host must remain running. |
+| **[[copilot.github_environments]](/docs/agents/run/remote-agent-sessions.md#github-environments)** `feature(github-environments)` | You want to access sessions on your existing development machine across supported Copilot clients. That machine and its Agent Host must remain running. |
 | **[SSH or dev tunnels](/docs/agents/run/remote-agent-sessions.md#choose-how-to-connect)** | You want VS Code-specific access to an agent host on another machine. |
 
 Cloud execution separates agent activity from your local machine, but the agent can still affect the cloud workspace and services it has permission to access. See [cloud session security considerations](/docs/agents/run/security.md#cloud-sessions).

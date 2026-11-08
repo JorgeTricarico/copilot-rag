@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-11-06T19:05:39.548280+00:00
-- **Total Palabras**: 157,116 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-08T05:16:52.532925+00:00
+- **Total Palabras**: 157,693 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -4310,8 +4310,8 @@ If the evidence does not change, restore the previous configuration and investig
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/agent-troubleshooting/faq.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/agent-troubleshooting/faq
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/agent-troubleshooting/faq.md
-- **SHA256_FINGERPRINT**: `76014052ed521e9669814791898623089d06de436d12135a5234bd49c722a70e`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:35.970717+00:00
+- **SHA256_FINGERPRINT**: `a247fd8b442222305001e03b4b91fe7bc190e4b5e849d92c5100d3f4e8f93c78`
+- **LAST_VERIFIED_UTC**: 2026-11-08T05:16:47.680244+00:00
 ---
 
 **MetaDescription**: Find answers about GitHub Copilot access, usage, chat, agents, inline suggestions, and troubleshooting in Visual Studio Code.
@@ -4519,7 +4519,7 @@ No. When a session supports both interfaces, opening it in either one keeps the 
 
 ### Is picking up a session the same as syncing its history?
 
-No, [local session discovery](/docs/agents/run/sessions/manage-sessions.md#view-sessions-from-other-applications) lets you continue supported sessions from another application on your machine, while [history sync](/docs/agents/run/sessions/session-history.md) makes recorded session data available through your [product.prodname_github] account. Sync is subject to your settings and organization policies and does not by itself provide control over a running agent. For live access from another device, use [GitHub Environments (Preview), SSH, or dev tunnels](/docs/agents/run/remote-agent-sessions.md#choose-how-to-connect). The session's host must remain running and reachable.
+No, [local session discovery](/docs/agents/run/sessions/manage-sessions.md#view-sessions-from-other-applications) lets you continue supported sessions from another application on your machine, while [history sync](/docs/agents/run/sessions/session-history.md) makes recorded session data available through your [product.prodname_github] account. Sync is subject to your settings and organization policies and does not by itself provide control over a running agent. For live access from another device, use [[copilot.github_environments]](/docs/agents/run/remote-agent-sessions.md#github-environments) `feature(github-environments)` or [SSH or dev tunnels](/docs/agents/run/remote-agent-sessions.md#choose-how-to-connect). The session's host must remain running and reachable.
 
 ## Troubleshooting and feedback
 
@@ -4540,8 +4540,8 @@ See [Report an unresolved issue](/docs/agents/agent-troubleshooting/troubleshoot
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/agent-troubleshooting/troubleshooting.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/agent-troubleshooting/troubleshooting
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/agent-troubleshooting/troubleshooting.md
-- **SHA256_FINGERPRINT**: `e69859deb9dd91fb9b6092737f52500bc965ac4d11dfa54263ac2de9b27871e7`
-- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:44.844368+00:00
+- **SHA256_FINGERPRINT**: `cb18bf7adec3c4352802b082c3a5f988db042f4e0a7563f5427c3467feb31cf5`
+- **LAST_VERIFIED_UTC**: 2026-11-08T05:16:47.664967+00:00
 ---
 
 **MetaDescription**: Diagnose GitHub Copilot and agent issues in Visual Studio Code with targeted checks, logs, and network diagnostics.
@@ -4557,7 +4557,7 @@ When chat, agents, or inline suggestions do not behave as expected, start with t
 | Chat or agents are unavailable | Check [chat and agent requirements](/docs/agents/agent-troubleshooting/faq.md#chat-features-arent-working-for-me). | Confirm your account, plan, settings, and organization policies. |
 | Inline suggestions do not appear | Check the [inline suggestion requirements](/docs/agents/agent-troubleshooting/faq.md#inline-suggestions-are-not-working-in-the-editor). | Inspect the Copilot logs if the requirements are met. |
 | Copilot cannot connect or sign in | [Collect network diagnostics](#collect-network-diagnostics). | Check your firewall, proxy, or VPN configuration. |
-| A GitHub Environment or its sessions are missing, offline, or disconnected | [Troubleshoot GitHub Environments](/docs/agents/run/remote-agent-sessions.md#troubleshoot-github-environments). | Check feature availability, account, host sharing, connection status, and session filters. |
+| A [copilot.github_environment] or its sessions are missing, offline, or disconnected | [Troubleshoot [copilot.github_environments]](/docs/agents/run/remote-agent-sessions.md#troubleshoot-github-environments). | Check feature availability, account, host sharing, connection status, and session filters. |
 | A cloud session won't start or an existing cloud session is read-only | [Troubleshoot cloud sessions](/docs/agents/run/cloud-sandbox-sessions.md#troubleshoot-cloud-sessions). | Check feature settings, service and repository access, and the environment's connection state. |
 | A cloud automation is unavailable, won't run, or continues after controls are hidden | [Troubleshoot cloud automations](/docs/agents/run/automations.md#troubleshoot-cloud-automations). | Check account and repository eligibility, trigger type, enabled state, and the automation's configuration on GitHub. |
 | Instructions are ignored | [Check customization diagnostics](#check-customization-diagnostics). | Inspect the session to verify which instructions reached the model. |
@@ -9302,8 +9302,8 @@ For marketplace schemas and distribution details, see the [Agent Plugins specifi
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/ai-features-cheat-sheet.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/ai-features-cheat-sheet
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/ai-features-cheat-sheet.md
-- **SHA256_FINGERPRINT**: `f13dd28588b05dabb04a9198866dc02ed48018f09b70b80a07b7cbc955691f12`
-- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:44.052797+00:00
+- **SHA256_FINGERPRINT**: `1c0a4865acda715be33ee564d5359540e561f862d36904b0296cdff25e6f7f10`
+- **LAST_VERIFIED_UTC**: 2026-11-08T05:16:47.691638+00:00
 ---
 
 **MetaDescription**: Choose AI features in VS Code for coding, planning, testing, and reviewing changes.
@@ -9324,7 +9324,7 @@ New to agents? [Complete your first task with an agent](/docs/agents/quickstart.
 | Make a focused edit | [Inline chat](/docs/chat/inline-chat.md) | Select code in the editor and describe the change. |
 | Get help while typing and editing | [Inline suggestions](/docs/editing/ai-powered-suggestions.md) | Accept ghost text to complete code, or use next edit suggestions to navigate to and apply a related edit. |
 | Manage independent tasks across projects | [Agents window](/docs/agents/run/agents-window.md) | Select **Open in Agents** in the title bar, then start and monitor sessions. |
-| Continue agent work across apps and devices | [GitHub Environments (Preview)](/docs/agents/run/remote-agent-sessions.md#github-environments-preview) | Register your development machine from **Remote Connections**, then connect from a supported Copilot client. For VS Code-specific access, use [SSH or dev tunnels](/docs/agents/run/remote-agent-sessions.md#choose-how-to-connect). |
+| Continue agent work across apps and devices | [[copilot.github_environments]](/docs/agents/run/remote-agent-sessions.md#github-environments) `feature(github-environments)` | Register your development machine from **Remote Connections**, then connect from a supported Copilot client. For VS Code-specific access, use [SSH or dev tunnels](/docs/agents/run/remote-agent-sessions.md#choose-how-to-connect). |
 | Run and continue interactive work without keeping my machine online | [Cloud sessions](/docs/agents/run/cloud-sandbox-sessions.md) `feature(cloud-sessions)` | Turn on cloud session support, select **Cloud**, and choose a repository. Reopen the existing session to continue. |
 | Check a web app's behavior | [Browser tools](/docs/agents/run/browser-tools.md) | Ask the agent to open the app, test a user flow, and report the result. |
 | Repeat routine work on a schedule or repository event | [Automations](/docs/agents/run/automations.md) | Save a prompt and configuration in the Agents window. Check a manual run first. Cloud automations `feature(cloud-automations)` also support service-advertised issue and pull request triggers. |
@@ -9476,8 +9476,8 @@ Chat participants are not supported in the Copilot harness. Ask the agent direct
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/ai-settings.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/ai-settings
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/ai-settings.md
-- **SHA256_FINGERPRINT**: `6bf183eae7f19c24f3d11da1f50eaa3a231f50d1fcd927e65448c4be69e73d36`
-- **LAST_VERIFIED_UTC**: 2026-11-06T05:48:21.503431+00:00
+- **SHA256_FINGERPRINT**: `47a740614dbb3d4e3aa2ab8b6edefd687ab01be07f92c531b06a49b1292f17ac`
+- **LAST_VERIFIED_UTC**: 2026-11-08T05:16:47.695686+00:00
 ---
 
 **MetaDescription**: Configure AI features and agents in Visual Studio Code, including chat, agent sessions, dictation, and accessibility settings.
@@ -9734,9 +9734,10 @@ Use the [session lists](/docs/agents/run/sessions/manage-sessions.md#sessions-li
 | ``sessions.useWorktree`` _(Insiders)_<br/>Control whether **New Worktree** is selected when no previous code-isolation choice has been saved. After you start a session, the saved choice applies across workspaces instead. | `true` |
 | ``chat.automations.enabled``<br/>Show [Automations](/docs/agents/run/automations.md) in the Agents window and dispatch local scheduled tasks. Turning this off hides entry points and stops local dispatch, not active triggers on GitHub. | `true` |
 | ``chat.automations.cloud.enabled`` `feature(cloud-automations)`<br/>Manage [cloud automations](/docs/agents/run/automations.md#create-an-automation) in eligible private GitHub repositories. Turning this off hides cloud controls but doesn't stop existing GitHub schedules or event triggers. | `true` |
-| ``chat.agentHost.remoteConnections`` _(Preview)_<br/>Choose the method for [sharing this machine](/docs/agents/run/remote-agent-sessions.md#register-your-machine): `devTunnel` or `githubEnvironment`. Selecting a method in **Remote Connections** starts sharing. **Off** stops sharing without changing the preference. Editing this setting directly stops sharing. | `"devTunnel"` |
-| ``chat.agentHost.githubEnvironments.enabled`` _(Preview)_<br/>Allow sharing this machine as a [GitHub Environment](/docs/agents/run/remote-agent-sessions.md#github-environments-preview), and discovering and connecting to other registered machines. Subject to rollout and organization policy. | `true` |
-| ``chat.remoteAgentHostsAutoConnect`` _(Experimental)_<br/>Automatically connect to eligible remote hosts. For [GitHub Environments](/docs/agents/run/remote-agent-sessions.md#connect-from-another-client) on desktop, first connect explicitly. Reconnection is scoped to the profile and account. Explicit disconnect suppresses it until you connect manually. | `true` |
+| ``chat.agentHost.remoteConnections`` _(Preview)_<br/>Choose the method for [enabling remote access to this machine](/docs/agents/run/remote-agent-sessions.md#make-a-host-available-for-remote-access): `devTunnel` or `githubEnvironment`. Selecting a method in **Remote Connections** starts sharing. **Off** stops sharing without changing the preference. Editing this setting directly stops sharing. | `"devTunnel"` |
+| ``chat.agentHost.githubEnvironments.enabled`` `feature(github-environments)`<br/>Allow sharing this machine as a [[copilot.github_environment]](/docs/agents/run/remote-agent-sessions.md#github-environments), and discovering and connecting to other registered machines. Subject to rollout and organization policy. | `true` |
+| ``chat.workspaceRemoteAgentHosts`` _(Experimental)_<br/>Configure WebSocket Agent Hosts for the Chat view with an `address`, `name`, and optional `connectionToken`. Requires a trusted workspace. Connected hosts receive your [product.prodname_github] credentials, so configure only hosts you trust and keep tokens private. | `[]` |
+| ``chat.remoteAgentHostsAutoConnect`` _(Experimental)_<br/>Automatically connect to eligible remote hosts. For [[copilot.github_environments]](/docs/agents/run/remote-agent-sessions.md#connect-from-another-client) in the installed Agents window, first connect explicitly. Reconnection is scoped to the profile and account. Explicit disconnect suppresses it until you connect manually. | `true` |
 | ``github.copilot.chat.localIndex.enabled``<br/>Enable local session tracking for [session insights](/docs/agents/run/sessions/session-history.md#query-session-history-with-chronicle) and `/chronicle` commands. | `true` |
 | ``chat.sessionSync.enabled`` _(Experimental)_<br/>Sync [session history](/docs/agents/run/sessions/session-history.md#enable-or-disable-session-sync-experimental) to GitHub.com for cross-device access. Requires ``github.copilot.chat.localIndex.enabled``. Set a preference explicitly and check the [sync status](/docs/agents/run/sessions/session-history.md#session-sync-status). | `false` |
 | ``chat.sessionSync.excludeRepositories`` _(Experimental)_<br/>Repository patterns to exclude from [session sync](/docs/agents/run/sessions/session-history.md#exclude-repositories-from-sync). Use exact `owner/repo` names or glob patterns like `my-org/*`. Matching sessions are not uploaded by session sync. | `[]` |
@@ -11659,8 +11660,8 @@ Unread sessions still in progress aren't counted. Reading or archiving a session
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/agents-window.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/agents-window
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/agents-window.md
-- **SHA256_FINGERPRINT**: `a7ad55985069cc1b3c04890a72bf2a97c1ebe246906c6fd694764c3341bbe59e`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:26.876006+00:00
+- **SHA256_FINGERPRINT**: `62e97a154e045583da8729260abc9768b65a4a0589f6feab892f05456b80f545`
+- **LAST_VERIFIED_UTC**: 2026-11-08T05:16:47.756735+00:00
 ---
 
 **MetaDescription**: Start and manage parallel agent sessions, review changes, and finish pull requests in the Agents window.
@@ -11954,7 +11955,7 @@ Run the same prompt with multiple models or harnesses to compare responses or is
 
 To edit or debug alongside a supported project conversation, select **Open in Editor** in the title bar. To return, select **Open in Agents**, then select the existing session. Check the [supported session types and continuation requirements](/docs/agents/run/sessions/manage-sessions.md#continue-between-the-chat-view-and-agents-window).
 
-For continuity across apps and devices, use [GitHub Environments (Preview)](/docs/agents/run/remote-agent-sessions.md#github-environments-preview). For VS Code-specific remote access, use [SSH or dev tunnels](/docs/agents/run/remote-agent-sessions.md#choose-how-to-connect). Keep the host and its required application or service running.
+For continuity across apps and devices, use [[copilot.github_environments]](/docs/agents/run/remote-agent-sessions.md#github-environments) `feature(github-environments)`. For VS Code-specific remote access, use [SSH or dev tunnels](/docs/agents/run/remote-agent-sessions.md#choose-how-to-connect). Keep the host and its required application or service running.
 
 ## Automate follow-up work
 
@@ -13114,8 +13115,8 @@ When you turn off an extension, its last-known canvas entries might remain visib
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/chat-view.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/chat-view
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/chat-view.md
-- **SHA256_FINGERPRINT**: `4a0dde5876be84d835cb1d672e0bd9d679ed0ba1fe2dfc31e68f46176574a683`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:37.459432+00:00
+- **SHA256_FINGERPRINT**: `20a0227b109602b915a8791ea3e5368aea1e168f7c5a4d47151720f37f7bad48`
+- **LAST_VERIFIED_UTC**: 2026-11-08T05:16:47.775188+00:00
 ---
 
 **MetaDescription**: Use AI beside your code in the Chat view, ask questions, run agents, and choose a layout.
@@ -13191,6 +13192,8 @@ The Copilot working set works without Git, but only lists changes made through t
 
 To show a changed-files summary after each request, enable ``chat.checkpoints.showFileChanges``. Supported tools depend on your harness and installed extensions. For example, you can [work with Jupyter notebooks](/docs/agents/guides/notebooks-with-ai.md) with the required tools installed. In a [remote workspace](/docs/remote/remote-overview.md), the session uses that project's remote context and tools.
 
+If your project is on another machine, see [Work in a remote workspace](/docs/agents/run/remote-agent-sessions.md#work-in-a-remote-workspace). To make sessions on this machine reachable from other clients, see [Make a host available for remote access](/docs/agents/run/remote-agent-sessions.md#make-a-host-available-for-remote-access).
+
 ## Continue in another interface
 
 When you want to coordinate work across projects, select **Open in Agents** in the application title bar, then select your existing supported session from the sessions list. You don't have to start the task again. Review the [supported session types and continuation steps](/docs/agents/run/sessions/manage-sessions.md#continue-between-the-chat-view-and-agents-window) first: Local sessions and sessions from the OpenAI Codex extension remain editor-only.
@@ -13262,8 +13265,8 @@ Set ``workbench.startupEditor`` to `agentSessionsWelcomePage` to show recent ses
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/cloud-sandbox-sessions.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/cloud-sandbox-sessions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/cloud-sandbox-sessions.md
-- **SHA256_FINGERPRINT**: `3b8c5ac290ad95f0eb1ddb15c57d4d6a4570f47286f5f5c9622fc111b9d510e2`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:37.455585+00:00
+- **SHA256_FINGERPRINT**: `29714920a0212355b40e4e212331755c9ddb22f095af01f4318d94fef1dab7ee`
+- **LAST_VERIFIED_UTC**: 2026-11-08T05:16:47.790646+00:00
 ---
 
 **MetaDescription**: Run and continue cloud sessions from VS Code without keeping your development machine online.
@@ -13283,7 +13286,7 @@ Explore your own private repository in a cloud session, then continue the same c
 | Option | Choose it when |
 |--------|----------------|
 | **Cloud session** | You want to keep agent tools and changes off your local machine, or work on managed cloud compute without maintaining a host or keeping your own machine online. Reconnect to the existing session to continue the task. |
-| **[GitHub Environments (Preview)](/docs/agents/run/remote-agent-sessions.md#github-environments-preview)** | You want to access sessions on your existing development machine across supported Copilot clients. That machine and its Agent Host must remain running. |
+| **[[copilot.github_environments]](/docs/agents/run/remote-agent-sessions.md#github-environments)** `feature(github-environments)` | You want to access sessions on your existing development machine across supported Copilot clients. That machine and its Agent Host must remain running. |
 | **[SSH or dev tunnels](/docs/agents/run/remote-agent-sessions.md#choose-how-to-connect)** | You want VS Code-specific access to an agent host on another machine. |
 
 Cloud execution separates agent activity from your local machine, but the agent can still affect the cloud workspace and services it has permission to access. See [cloud session security considerations](/docs/agents/run/security.md#cloud-sessions).
@@ -14327,106 +14330,204 @@ These options apply to the built-in Plan agent in Local harness sessions, not to
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/remote-agent-sessions.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/remote-agent-sessions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/remote-agent-sessions.md
-- **SHA256_FINGERPRINT**: `60dad5b060c0dd566e8528acc9d16f3852da86da0973eee18fa3ab539c3294a3`
-- **LAST_VERIFIED_UTC**: 2026-11-06T05:48:21.584903+00:00
+- **SHA256_FINGERPRINT**: `771d8a67b6e044016e54181b8a677d61801d545cd7bad2e38ec92cee948a3afe`
+- **LAST_VERIFIED_UTC**: 2026-11-08T05:16:47.801561+00:00
 ---
 
-**MetaDescription**: Connect to and manage agent sessions through GitHub Environments, SSH, or dev tunnels in VS Code.
+**MetaDescription**: Continue agent work from another machine or start tasks on a remote host with VS Code.
 
 # Run and manage remote agent sessions
 
-Continue agent work from another app or device while your workspace, tools, and running sessions stay on your development machine. Use GitHub Environments to make that machine available across supported Copilot clients, or use SSH and dev tunnels to connect from VS Code.
+Use remote agent sessions to run tasks on another machine and interact with them from your current device. Connect to a host from the Agents window, then start a new task or continue an existing conversation.
 
-This guide helps you choose a connection, share a host, manage remote environments, and continue an existing remote session without starting over.
+The machines have two roles:
 
-To prevent this client from connecting to remote agent hosts, turn off ``chat.remoteAgentHostsEnabled``.
+* **Host machine:** Runs the agent and contains the project, tools, and session.
+* **Client machine:** Runs the application you use to connect and interact with the session.
+
+Keep the host machine awake, online, and its Agent Host or owning application running. Connecting doesn't transfer the session or copy the project to the client machine.
+
+[Make a host available for remote access](#make-a-host-available-for-remote-access), then [connect to an existing session](#continue-an-existing-remote-session) or [start a new remote session](#start-a-remote-session). To edit and debug the remote project alongside chat, see [Use remote sessions in the Chat view](#use-remote-sessions-in-the-chat-view).
 
 ## Choose how to connect
 
-Choose based on where you want to interact with the session and how you can reach its host:
+![Screenshot showing three client groups with directly labeled connections to a host machine. The installed Agents window uses [copilot.github_environments], SSH, or a dev tunnel. The browser-based Agents window uses [copilot.github_environments] or a dev tunnel. Other Copilot experiences use [copilot.github_environments]. A shared cloud-sessions path connects all three groups to managed cloud.](../images/remote-agent-sessions/remote-session-connections.svg)
 
-| Connection | When to use it |
-|------------|----------------|
-| **[GitHub Environments (Preview)](#github-environments-preview)** | Register your machine for remote agent access from supported Copilot clients, including VS Code, the GitHub Copilot app, Copilot CLI, GitHub.com, and GitHub Mobile. Available session types and actions vary by client. |
-| **[SSH](#connect-via-ssh)** | Connect the Agents window to a remote host through SSH. |
-| **[Dev tunnels](#connect-via-dev-tunnel)** | Connect from VS Code or the [browser-based Agents window](#use-the-agents-window-in-the-browser) to a host through an authenticated tunnel. |
+Choose the workflow that matches what you want to do:
 
-SSH and dev tunnels provide VS Code-specific client-to-host access in these workflows. GitHub Environments provides machine registration for access across supported Copilot surfaces, not just another VS Code instance.
+| Your task | Start here | What you need |
+|---------------|------------|---------------|
+| Continue an existing agent session from another machine. | Use [[copilot.github_environments]](#github-environments) `feature(github-environments)` from the Agents window on the client machine. | Register the host machine as a [copilot.github_environment] and sign in with the same [product.prodname_github] account on both machines. |
+| Run agent tasks on an SSH-accessible development server. | [Start a remote session](#start-a-remote-session) in the Agents window, choosing **SSH** and a folder on that server. | SSH access to the server. |
+| Connect through an existing dev tunnel or use a browser. | [Start a remote session](#start-a-remote-session) with **Dev Tunnels** in the installed app, or follow the [browser workflow](#use-the-agents-window-in-the-browser). | For a dev tunnel, an authenticated tunnel running on the host. For browser access, either a registered [copilot.github_environment] or a dev tunnel. The browser doesn't connect directly over SSH. |
+| Edit and debug a remote project while using chat. | Open the project through [Remote Development](#work-in-a-remote-workspace), then use the Chat view. | A remote workspace open in the editor. This is different from opening an existing agent conversation. |
+| Run agent tasks without keeping a development machine online. | Start a [cloud session](/docs/agents/run/cloud-sandbox-sessions.md) `feature(cloud-sessions)`. | Managed cloud compute. Starting a cloud session doesn't move an existing session from your own host into the cloud. |
 
-The files and development tools stay on the machine where the agent runs. Keep that machine powered on and reachable, and keep its agent host running. For a session hosted by desktop VS Code, keep the application running.
+Opening a remote project in the editor is a separate workflow, described under [Use remote sessions in the Chat view](#use-remote-sessions-in-the-chat-view).
 
-Connecting doesn't move a local session or copy its workspace to another machine. To continue an existing remote session, connect to the host where it already runs. For managed compute that doesn't depend on keeping your own host online, use [cloud sessions](/docs/agents/run/cloud-sandbox-sessions.md) `feature(cloud-sessions)`.
+## Make a host available for remote access
 
-## Manage remote environments (Experimental)
+Enable remote access to start or continue agent sessions from another device while the project, tools, and execution stay on the host machine. Remote clients can access its Agent Host-backed sessions, such as a Copilot session. **Local** harness sessions and older extension-host sessions aren't shared this way.
 
-Use the Remote Environments editor in the Agents window to find and manage your remote machines in one place. The table groups known SSH hosts, dev tunnels, and WSL distributions on Windows. When [GitHub Environments](#github-environments-preview) is available and enabled, the **Environments** group also lists your registered machines, including offline ones. These are user-shared machines, not the managed environments used by cloud sessions.
+Run these steps on the host machine to make it available for remote access.
 
-Remote environment management requires ``sessions.chat.experimental.environmentPicker``, ``sessions.chat.experimental.environmentPickerManageRemotes``, and ``chat.remoteAgentHostsEnabled``. All three settings are on by default.
+1. On the host machine, open the Agents window, or use an Agent Host-backed session in the Chat view in an editor window.
 
-![Screen showing the Remote Environments editor in the Agents window.](../images/remote-agent-sessions/remote-environments-editor.png)
+1. Open **Remote Connections** (antenna icon) in the Agents window title bar or the Chat view input area.
 
-### Open remote environment management
+    ![Screenshot showing the Remote Connections menu with [copilot.github_environments_caps] selected and the registered environment name.](../images/remote-agent-sessions/remote-connections-picker.png)
 
-Run **Agents: Manage Remote Environments** from the Command Palette (``Shortcut: workbench.action.showCommands``), or select **Manage Remote Environments** from the sessions list **More Actions** (`...`) menu.
+1. Choose a connection method to start sharing.
 
-You can also open the editor from the **Environment** picker:
+    * **[copilot.github_environments_caps]** `feature(github-environments)`: Register the host as a [copilot.github_environment] for access from supported Copilot clients.
+    * **Dev Tunnels**: Allow remote access from VS Code or the browser-based Agents window.
 
-1. Create a new chat or session in the Agents window.
+1. Complete any sign-in or confirmation prompts.
 
-1. Open the **Environment** picker and select **Manage**.
-
-    ![Screen showing the Environment picker and its Manage entry.](../images/remote-agent-sessions/environment-picker-manage.png)
-
-### Find and organize remote machines
-
-Use the table to search, connect, and organize your remote machines. Keep these behaviors in mind:
-
-* Disconnecting doesn't stop running tasks. Refreshing discovers machines without connecting.
-
-* Renaming or hiding a machine affects only this client. Hiding doesn't disconnect it or remove sessions. Leave a name empty to restore the default.
-
-* **Delete** is available only for GitHub Environments. It removes the registration and disconnects this client without deleting files. The environment can reappear if its owning application registers it again.
-
-## GitHub Environments (Preview)
-
-GitHub Environments supports continuity across apps and devices: register your development machine with your [product.prodname_github] account, then access its supported agent sessions from another client. Registration doesn't provision a new machine or copy your code.
-
-**Prerequisites**:
-
-* Sign in to the host and connecting client with the same [product.prodname_github] account.
-
-* Check your [organization's controls](/docs/enterprise/manage-ai-settings.md#control-github-environments-preview) if the option is managed or unavailable.
-
-### Register your machine
-
-On the machine that contains your workspace and runs the agent:
-
-1. Open **Remote Connections** in the Agents window title bar or the editor's Chat view input area.
-
-1. Select **GitHub Environments**. Selecting this method starts sharing the machine. Complete any sign-in or confirmation prompts.
-
-1. Check the registered environment name in the menu. Select the name if you want to rename the environment so you can recognize it on another device.
+From the client machine, [continue an existing session](#continue-an-existing-remote-session) or [start a remote session](#start-a-remote-session) for a new task. To stop remote access, select **Off** in the same **Remote Connections** menu. This doesn't stop running agent tasks.
 
 > [!IMPORTANT]
-> Connected clients receive trusted-owner access to the host's sessions, tools, and workspace resources. Session actions are mirrored to [product.prodname_github] for catalog and history storage, and conversation content is not end-to-end encrypted. Review [remote connection security](/docs/agents/run/security.md#remote-connections-and-github-environments) before sharing a machine.
+> Remote connections enable access to the host's supported sessions, tools, and workspace resources, not just the current conversation. With [copilot.github_environments], session actions are mirrored to [product.prodname_github] for catalog and history storage, and conversation content is not end-to-end encrypted. Review [remote connection security](/docs/agents/run/security.md#remote-connections-and-github-environments) before enabling access.
 
-The ``chat.agentHost.remoteConnections`` setting records your preferred connection method. Changing the setting directly turns sharing off. To start sharing, select the method in **Remote Connections**.
+## Continue an existing remote session
 
-### Connect from another client
+Connect to the host that owns the session through [[copilot.github_environments]](#github-environments), [SSH](#connect-via-ssh), or a [dev tunnel](#connect-via-dev-tunnel). After connecting, select the existing session from the Agents window [sessions list](/docs/agents/run/sessions/manage-sessions.md#find-and-resume-a-session).
 
-In another desktop VS Code instance:
+Connecting to a host doesn't by itself reopen a conversation. To continue a task, select its existing session rather than submitting the task as a new prompt.
+
+### [copilot.github_environments]
+
+`feature(github-environments)`
+
+[Enable remote access on the host](#make-a-host-available-for-remote-access) and select **[copilot.github_environments_caps]** to make it discoverable through your [product.prodname_github] account. Registration doesn't create a new machine or copy your code.
+
+On the **client machine**, where you want to interact with the remote session:
 
 1. Sign in with the same [product.prodname_github] account you used to register the host.
 
-1. Open the Command Palette (``Shortcut: workbench.action.showCommands``) and run **Connect to Environment...**.
+1. Open the [Agents window](/docs/agents/run/agents-window.md#open-the-agents-window). If needed, select **New Session** to show the chat input and its **Environment** picker.
 
-1. Select the registered machine. Use **Refresh Environments** in the picker if it hasn't appeared yet.
+1. Run the **Agents: Manage Remote Environments** command from the Command Palette.
 
-1. After connecting, [select the existing remote session](#continue-an-existing-remote-session).
+1. Verify that the remote host appears in the list of available environments.
+
+1. The sessions list in the Agents window shows available sessions from the remote host. Select the existing session list to continue the conversation.
+
+The session's files, tools, and execution remain on the host machine. If you don't see the task, check the selected host and [session filters](/docs/agents/run/sessions/manage-sessions.md#find-a-missing-session).
 
 For other supported Copilot clients, use that client's environment connection controls. Registration makes the machine discoverable; it doesn't guarantee that every client supports the same harnesses, sessions, or actions.
 
-On desktop VS Code, discovering a machine doesn't connect to it for the first time. Connect explicitly. With ``chat.remoteAgentHostsAutoConnect`` on, previously connected online environments can reconnect for the same profile and account. Explicitly disconnecting suppresses automatic reconnection until you connect manually again.
+## Start a remote session
+
+Start a new remote session to run a task in a project folder on another machine.
+
+Have the project folder and its required tools available on the host. For [copilot.github_environments] or dev tunnels, [enable remote access with the antenna button](#make-a-host-available-for-remote-access) first. You can also [start a dev tunnel from the command line](#set-up-a-dev-tunnel).
+
+In the Agents window:
+
+1. Select **New Session** or press ``Shortcut: workbench.action.chat.newChat``.
+
+1. Open the **Environment** picker in chat. Select an existing remote environment, or choose [**[copilot.github_environments_caps]**](#github-environments), [**SSH**](#connect-via-ssh), or [**Dev Tunnels**](#connect-via-dev-tunnel) to connect to a new one.
+
+    ![Screenshot showing the environment picker in the chat window.](../images/remote-agent-sessions/remote-agent-environment-picker.png)
+
+1. Choose a folder on the remote host when prompted, or select one in the workspace picker. Use the folder that contains the project you want the agent to work on.
+
+1. Review the selected [agent](/docs/agents/run/agent-harnesses.md#compare-agent-harnesses) and [permission level](/docs/agents/run/approvals.md#permission-levels). Confirm the host and folder before sending your request.
+
+1. Describe the task, any constraints, and how the agent should check its work. Press ``Enter`` to submit it. Review any tool approval requests before proceeding.
+
+The agent uses the selected folder and tools on the host machine, not the client machine's local workspace. [Review its edits](/docs/agents/run/review-code-edits.md) before integrating the result.
+
+> [!TIP]
+> To verify the connection, ask the agent to report the operating system and current working directory without changing files. Check that the result matches the intended host and project folder before requesting edits.
+
+### Connect via SSH
+
+**Prerequisite**: the remote machine must be accessible over SSH. VS Code installs the required CLI on the remote machine when needed.
+
+Select **SSH** in the **Environment** picker, then select a configured host or enter a connection string, such as `user@hostname`. Complete any authentication prompts.
+
+![Screenshot showing how to select SSH in the environments dropdown when starting a new agent session in the Agents window.](../images/agents-window/agents-window-remote-2.png)
+
+### Connect via dev tunnel
+
+**Prerequisite**: a dev tunnel is already running on the host machine. Enable **Dev Tunnels** through [Remote Connections](#make-a-host-available-for-remote-access), or [start a tunnel from the command line](#set-up-a-dev-tunnel).
+
+> [!IMPORTANT]
+> Ensure your dev tunnel requires authentication (GitHub or Microsoft account). If the tunnel allows anonymous access, anyone who discovers the URL can reach your machine and start agent sessions. With auto-approval enabled, those sessions can execute commands with your credentials. For more information, see [remote connection security](/docs/agents/run/security.md#remote-connections-and-github-environments).
+
+Select **Dev Tunnels** in the **Environment** picker, choose your account type, then select the active tunnel from the list.
+
+![Screenshot showing how to select Tunnels in the environments dropdown when starting a new agent session in the Agents window.](../images/agents-window/agents-window-remote-2.png)
+
+## Use the Agents window in the browser
+
+Use the browser-based Agents window to access remote sessions from a device with a browser, without installing Visual Studio Code on that device. The agent and its project stay on the host machine.
+
+Prepare the host using **one** of these methods (the browser doesn't connect directly over SSH):
+
+* **[copilot.github_environments]** `feature(github-environments)`: [Enable remote access on the host](#make-a-host-available-for-remote-access) with **[copilot.github_environments_caps]**. If it's already registered, you don't need to start a dev tunnel.
+* **Dev tunnel:** Enable **Dev Tunnels** through [Remote Connections](#make-a-host-available-for-remote-access), [start a tunnel from the command line](#set-up-a-dev-tunnel), or use one that's already running.
+
+Then, on the device you want to connect from:
+
+1. Open the [browser-based Agents window](https://vscode.dev/agents).
+
+1. Sign in with **Continue with GitHub** when prompted. For a [copilot.github_environment], use the same account that registered the host. For a dev tunnel, authenticate with the account that owns the tunnel when prompted for tunnel access.
+
+1. Select the host in the sidebar's host picker. On mobile, the host picker is in the title bar of the new-session screen.
+
+1. If the selected host is **Disconnected**, use its connection control to connect. On larger layouts, you can also select **Connect** from the host picker's menu.
+
+1. Choose what you want to do:
+
+    * **Continue a task:** Select its existing session from the sessions list, review the conversation, and send a follow-up.
+    * **Start a new task:** Start a new session, choose a folder on the host and an available agent, then enter your task. Check the selected host and folder before sending the prompt.
+
+### Set up a dev tunnel
+
+Skip this step if you use [copilot.github_environments] or already have a tunnel running.
+
+On the **host machine**, open a terminal and run:
+
+```bash
+code tunnel
+```
+
+For VS Code Insiders, use `code-insiders tunnel` instead. Complete the GitHub or Microsoft authentication prompts if this is your first tunnel. Tunnels require authentication by default.
+
+Leave the tunnel running, then follow the [browser connection steps](#use-the-agents-window-in-the-browser) or [start a session in the installed app](#start-a-remote-session). For more setup options, see [Developing with Remote Tunnels](/docs/remote/tunnels.md).
+
+### Host management
+
+The host picker scopes the sessions list to the selected machine. Selecting a host and connecting to it are separate actions.
+
+Use **Re-discover Hosts** if a machine is missing. If a host is **Disconnected**, check that its tunnel or environment sharing is running and that the host is reachable, then reconnect. Disconnected doesn't necessarily mean that the remote machine is powered off.
+
+In the browser, [copilot.github_environments] can connect automatically when available and ``chat.remoteAgentHostsAutoConnect`` is on. They don't require the prior connection history used by the installed app. Explicitly disconnecting suppresses automatic reconnection until you connect again.
+
+If a connection drops during a session, let automatic recovery complete or reconnect through the host's connection control. Reopen the existing session to continue its conversation rather than starting a replacement.
+
+## Use remote sessions in the Chat view
+
+Use the Chat view to work with an agent alongside the editor, terminal, and debugger. Open a remote workspace to work with code on another machine.
+
+The **Environment** picker and connected-host list belong to the Agents window. The editor's Chat view uses the separate workflows below.
+
+### Work in a remote workspace
+
+To edit and debug a remote project alongside chat, [open the project through Remote Development](/docs/remote/remote-overview.md), such as with the [Remote - SSH extension](/docs/remote/ssh.md), then [start a chat](/docs/agents/run/chat-view.md#start-a-session) in that editor window.
+
+The chat uses the remote project's context and tools while the editor runs on the client machine.
+
+Opening the remote project isn't the same as reopening an existing agent conversation. To continue a task, select its session from the sessions list if it is available in that window. Don't assume that opening the same repository starts or resumes a session from another application.
+
+### Share this machine from the Chat view
+
+The **Remote Connections** control in the Chat view enables access to the machine running the agent. It doesn't connect the editor to another machine. In a local editor window with an Agent Host-backed session, follow [Make a host available for remote access](#make-a-host-available-for-remote-access) to use [copilot.github_environments] or dev tunnels.
+
+## Manage remote connections
 
 ### Disconnect or stop sharing
 
@@ -14436,148 +14537,68 @@ On desktop VS Code, discovering a machine doesn't connect to it for the first ti
 
 * **Stop an agent task** in its session when you want to halt active work. Disconnecting or turning sharing off is not a task-cancellation action.
 
-Keep the host awake, online, and its owning application or Agent Host running while you need remote access. Connecting to an offline registered machine doesn't start the host.
+The ``chat.agentHost.remoteConnections`` setting records your preferred connection method. Changing the setting directly turns sharing off. To start sharing, select the method in **Remote Connections**.
 
-### Troubleshoot GitHub Environments
+In the installed Agents window, discovering a machine doesn't connect to it for the first time. Connect explicitly. With ``chat.remoteAgentHostsAutoConnect`` on, previously connected online environments can reconnect for the same profile and account. Explicitly disconnecting suppresses automatic reconnection until you connect manually again.
 
-| Symptom | What to check |
-|---------|---------------|
-| GitHub Environments or the connection command is missing | Check Preview availability, ``chat.agentHost.githubEnvironments.enabled``, ``chat.remoteAgentHostsEnabled``, and organization policy. |
-| The machine isn't listed | Confirm that sharing is on at the host and both clients use the same account. Refresh the environment picker. |
-| The environment is offline or won't connect | Keep the host awake and online, with its application or Agent Host running. Registration alone doesn't keep the host running. |
-| A session is missing | Check the connected host, supported session types, workspace group, and [sessions list filters](/docs/agents/run/sessions/manage-sessions.md#sessions-list). Starting a new session doesn't resume a missing one. |
-| A transcript is visible but can't accept messages | Reconnect to the host. A cached transcript or [synced history](/docs/agents/run/sessions/session-history.md) is not a live connection. |
+### Manage remote environments (Experimental)
 
-## Connect via SSH
+Use the Remote Environments editor in the installed Agents window to find and manage your remote machines in one place. This editor is optional; you don't need to open it to follow the connection steps above.
 
-**Prerequisite**: the remote machine must be accessible over SSH. VS Code installs the required CLI on the remote machine when needed.
+The table groups known SSH hosts, dev tunnels, and WSL distributions on Windows. When support for [[copilot.github_environments]](#github-environments) is available and enabled, the **Environments** group also lists your registered machines, including offline ones. These are user-shared machines, not the managed environments used by cloud sessions.
 
-To connect to a remote machine via SSH:
+Remote environment management requires ``sessions.chat.experimental.environmentPicker``, ``sessions.chat.experimental.environmentPickerManageRemotes``, and ``chat.remoteAgentHostsEnabled``. All three settings are on by default.
 
-1. Select **New** or press ``Shortcut: workbench.action.chat.newChat``.
+![Screenshot showing the Remote Environments editor in the Agents window.](../images/remote-agent-sessions/remote-environments-editor.png)
 
-1. In the environments dropdown, select **SSH**. If you've already set up SSH connections, they appear as options in the dropdown.
+#### Open remote environment management
 
-    ![Screenshot showing how to select SSH in the environments dropdown when starting a new agent session in the Agents window.](../images/agents-window/agents-window-remote-2.png)
+Run **Agents: Manage Remote Environments** from the Command Palette (``Shortcut: workbench.action.showCommands``), or select **Manage Remote Environments** from the sessions list **More Actions** (`...`) menu.
 
-1. Enter the SSH connection string for the remote machine (for example, `user@hostname`).
+You can also open the editor from the **Environment** picker:
 
-After connecting, [open an existing remote session or start a new one](#continue-an-existing-remote-session).
+1. Create a new chat or session in the Agents window.
 
-## Connect via dev tunnel
+1. Open the **Environment** picker and select **Manage**.
 
-**Prerequisite**: a dev tunnel is already running on the remote machine. See [Developing with Remote Tunnels](/docs/remote/tunnels.md) for setup instructions.
+    ![Screenshot showing the Environment picker and its Manage entry.](../images/remote-agent-sessions/environment-picker-manage.png)
 
-To connect to a remote machine via dev tunnel:
+#### Find and organize remote machines
 
-1. Select **New** or press ``Shortcut: workbench.action.chat.newChat``.
+Use the table to search, connect, and organize your remote machines. Keep these behaviors in mind:
 
-1. In the environments dropdown, select **Dev Tunnels** and choose your account type.
+* Disconnecting doesn't stop running tasks. Refreshing discovers machines without connecting.
 
-    ![Screenshot showing how to select Tunnels in the environments dropdown when starting a new agent session in the Agents window.](../images/agents-window/agents-window-remote-2.png)
+* Renaming or hiding a machine affects only this client. Hiding doesn't disconnect it or remove sessions. Leave a name empty to restore the default.
 
-1. Choose the active dev tunnel from the list.
+* **Delete** has different effects depending on the connection:
+  * For a [copilot.github_environment], it removes the registration and disconnects this client. The environment can reappear if its owning application registers it again.
+  * For an eligible saved SSH connection, it forgets the saved connection and disconnects this client. It doesn't change your SSH configuration.
+  * For a dev tunnel, it deletes the tunnel registration and disconnects its clients. Stop hosting a tunnel from this application before deleting it. A machine that starts hosting the tunnel again can recreate it.
 
-After connecting, [open an existing remote session or start a new one](#continue-an-existing-remote-session).
+  None of these actions deletes files on the remote machine.
 
-> [!IMPORTANT]
-> Ensure your dev tunnel requires authentication (GitHub or Microsoft account). If the tunnel allows anonymous access, anyone who discovers the URL can reach your machine and start agent sessions. This is especially dangerous when auto-approval modes are active, because unauthorized users can trigger AI-assisted command execution with your credentials. For more information, see [Security](/docs/agents/run/security.md).
+## Other remote workflows
 
-## Continue an existing remote session
+### Start a chat without a workspace on a remote host
 
-After connecting to the host, select the existing session from the Agents window [sessions list](/docs/agents/run/sessions/manage-sessions.md#sessions-list). Check the host, workspace group, and list filters if the session isn't visible.
-
-In the Agents window, ask the agent to delegate a task to a connected remote machine. Enable both ``chat.remoteAgentHostsEnabled`` and ``chat.remoteSessions.tools.enabled``, and connect the machines that the agent can use. You don't need to select the target machine in the workspace picker.
-
-The remote delegation tools let an agent:
-
-* Use `list_agent_hosts` to discover connected remote machines, available models, resource capacity, and session load.
-* Use `create_remote_session` to start a session on a specific remote machine or choose a target automatically. For automatic placement, specify criteria such as Windows, Linux, or macOS, minimum memory, logical CPU count, and an optional model. Among matching machines, placement favors the machine with the fewest running sessions and pending session creations. If no connected machine meets all the criteria, the tool reports an error instead of selecting a nonmatching machine.
-* Use `get_remote_session` to check a remote session's status and latest response.
-* Use `send_remote_message` to send follow-up work or report results and questions to the exact originating chat. If that chat is busy, the message waits in its queue.
-
-For repository work, specify an existing trusted folder on the target machine, either directly or in a new Git worktree. The tools don't clone or copy the coordinating session's workspace to the remote machine. If you don't specify a workspace, the remote session starts without one.
-
-Normal approval requirements still apply to delegated work and messages. Review the selected host, folder, and worktree before you approve a tool call, especially when the agent uses automatic placement.
-
-Keep the coordinating Agents window open and connected while delegated work runs so messages can flow between sessions. A remote session's final response isn't forwarded automatically. Ask the remote agent to use `send_remote_message` to report its result.
-
-Turning off ``chat.remoteSessions.tools.enabled`` removes the remote delegation tools, but doesn't disconnect remote machines or stop remote sessions that are already running.
-
-## Run a session in a remote Dev Container
-
-Run agents inside your remote project's Dev Container to use its configured tools and dependencies without installing them directly on the remote machine. Starting in VS Code 1.139, this is supported for SSH, Tunnel, and WSL connections in the desktop Agents window.
-
-Before you start, enable ``chat.agentHost.devContainer.enabled``. Docker must be installed and running on the remote host, and the project must contain a [Dev Container configuration](/docs/devcontainers/create-dev-container.md).
-
-To run a session in a remote Dev Container:
-
-1. Connect over SSH, through a tunnel, or to WSL, and select the project folder in the workspace picker.
-
-1. Expand the menu for the remote folder and select **Use Dev Container**.
-
-    The workspace label gains the **- Dev Container** suffix.
-
-1. Choose an available agent harness, configure the session, and enter your prompt.
-
-The **Use Dev Container** option appears only when the source machine advertises Dev Container support. It isn't available for unsupported machines or for folders whose source is nested inside another remote environment. For more information about prerequisites, switching back to the source machine, and troubleshooting, see [Run a session in a Dev Container](/docs/agents/run/agents-window.md#run-a-session-in-a-dev-container).
-
-## Use the Agents window in the browser
-
-The Agents window is also available as a web client at <https://insiders.vscode.dev/agents>, so you can manage agent sessions from any device with a browser. This is useful when you're away from your main development machine, working from a mobile device, or want to check in on sessions running on a remote machine without installing Visual Studio Code locally.
-
-The browser acts only as a client for chatting, reviewing changes, and managing sessions. Agent sessions run on your development machine. Connect through a [dev tunnel](/docs/remote/tunnels.md), as described below, or use [GitHub Environments (Preview)](#github-environments-preview) for a registered machine. The browser doesn't connect directly over SSH.
-
-### Set up a dev tunnel
-
-To use the dev tunnel route, start a tunnel on the machine you want to connect to:
-
-1. On your remote machine, run the following command to start a dev tunnel:
-
-    ```bash
-    code-insiders tunnel
-    ```
-
-    If you're using the stable release, run `code tunnel` instead.
-
-    The first time you run this command, you're prompted to authenticate with your GitHub or Microsoft account. The tunnel requires authentication by default for security.
-
-1. After the tunnel is running, open <https://insiders.vscode.dev/agents> in a browser on any device.
-
-1. Sign in with **Continue with GitHub** when prompted. If you're already authenticated, the Agents window loads directly.
-
-1. Your tunnel host appears in the hosts bar at the top of the window. Select it to connect.
-
-1. Select an existing session from the sessions list to continue it. For a new task, choose a folder on the remote machine, select an agent, and enter a prompt.
-
-### Host management
-
-For dev tunnel connections, the hosts bar in the browser-based Agents window shows machines with configured tunnels. Each machine displays its connection status:
-
-* **Online**: the host is reachable and you can start or continue sessions on it.
-* **Offline**: the tunnel on the host is not running. Start the tunnel on the host to bring it back online.
-
-You can connect and disconnect from machines directly through the hosts bar. If a machine goes offline while you have an active session, the session shows a disconnected state. When the machine comes back online, the session reconnects automatically.
-
-## Start a chat without a workspace on a remote host
-
-Use a chat without a workspace when a task needs the resources or environment of a remote host but doesn't need a repository. First, connect the host over SSH or a dev tunnel.
+In the installed Agents window, use a chat without a workspace when a task needs the resources or environment of a remote host but doesn't need a repository. The **Chat** workspace option isn't available in the browser-based interface.
 
 To start a chat without a workspace:
 
-1. Select **New** or press ``Shortcut: workbench.action.chat.newChat`` to start a new agent session.
+1. Select **New Session** or press ``Shortcut: workbench.action.chat.newChat``.
 
-1. In the workspace picker, select the **Chat** entry for a connected remote host without choosing a folder. The entry identifies the host where the chat runs.
+1. In the **Environment** picker, select the connected remote host.
+
+1. In the workspace picker, select **Chat** instead of a project folder. This option requires a supported harness and environment.
 
 1. Choose an agent harness, enter your prompt, and press ``Enter``.
 
-The main workspace picker also shows folders from connected remote hosts alongside local folders. Select a remote folder there when the task needs an existing workspace.
+Select a folder on that host instead when the task needs an existing project.
 
-## Run a session in a remote Dev Container
+### Run a session in a remote Dev Container
 
-`feature(agent-host-dev-containers)`
-
-Run agents inside your remote project's Dev Container to use its configured tools and dependencies without installing them directly on the remote machine. Starting in VS Code 1.139, this is supported for SSH, Tunnel, and WSL connections in the Agents window.
+Run agents inside your remote project's Dev Container to use its configured tools and dependencies without installing them directly on the remote machine. Starting in VS Code 1.139, this is supported for SSH, Tunnel, and WSL connections in the installed Agents window, not in the browser-based window.
 
 Dev Container support (``chat.agentHost.devContainer.enabled``) is on by default. Docker must be installed and running on the remote host, and the project must contain a [Dev Container configuration](/docs/devcontainers/create-dev-container.md).
 
@@ -14593,32 +14614,57 @@ To run a session in a remote Dev Container:
 
 The **Use Dev Container** option appears only when the source machine advertises Dev Container support. It isn't available for unsupported machines or for folders whose source is nested inside another remote environment. For more information about prerequisites, switching back to the source machine, and troubleshooting, see [Run a session in a Dev Container](/docs/agents/run/agents-window.md#run-a-session-in-a-dev-container).
 
-## Preview a remote web app
+### Preview a remote web app
 
 `feature(integrated-browser-remote)`
 
-In the Agents window, use the integrated browser to preview a web app running on the session's remote host without forwarding its port. Enable ``workbench.browser.enableRemoteProxy``, leave ``workbench.browser.dataStorage`` at `default`, and open the app's original localhost URL.
+In the installed Agents window, use the integrated browser to preview a web app running on a supported session host without forwarding its port. Enable ``workbench.browser.enableRemoteProxy``, leave ``workbench.browser.dataStorage`` at `default`, and open the app's original localhost URL. Check that the remote indicator in the address bar identifies the intended host.
 
 Select **Share with Agent** to let the agent interact with your page, or ask it to open the app and validate a user flow. See [browsing through a remote agent host](/docs/debugtest/integrated-browser.md#browse-through-a-remote-agent-host) for supported hosts, storage behavior, and connection troubleshooting.
 
-## Delegate tasks to remote machines (Experimental)
+### Delegate tasks to remote machines (Experimental)
 
-In the Agents window, ask the agent to delegate a task to a connected remote machine. Turn on ``chat.remoteSessions.tools.enabled`` and connect the machines that the agent can use. You don't need to select the target machine in the workspace picker.
+Ask an agent in the installed Agents window to run work on another connected machine, such as testing a project on a different operating system. This starts remote work rather than resuming a session from the sessions list.
 
-The remote delegation tools let an agent:
+The originating chat must run on an [Agent Host](/docs/agents/concepts/agent-host.md), and the connected target must advertise remote delegation support. Other chat providers aren't supported.
 
-* Use `list_agent_hosts` to discover connected remote machines, available models, resource capacity, and session load.
-* Use `create_remote_session` to start a session on a specific remote machine or choose a target automatically. For automatic placement, specify criteria such as Windows, Linux, or macOS, minimum memory, logical CPU count, and an optional model. Among matching machines, placement favors the machine with the fewest running sessions and pending session creations. If no connected machine meets all the criteria, the tool reports an error instead of selecting a nonmatching machine.
-* Use `get_remote_session` to check a remote session's status and latest response.
-* Use `send_remote_message` to send follow-up work or report results and questions to the exact originating chat. If that chat is busy, the message waits in its queue.
+Turn on ``chat.remoteSessions.tools.enabled`` and ``chat.remoteAgentHostsEnabled``, and connect the machines that the agent can use. You don't need to select the target machine in the workspace picker.
+
+For example:
+
+```prompt
+Run the tests in <remote-project-path> on the connected Windows host <host-name>.
+Use the existing folder and send the results back to this chat when you finish.
+```
+
+The agent can discover connected hosts, start remote sessions, inspect their status, and send follow-up messages. You can name a host or ask the agent to choose one that matches requirements such as operating system, memory, CPU count, or model. If no connected host meets the criteria, the tool reports an error.
 
 For repository work, specify an existing trusted folder on the target machine, either directly or in a new Git worktree. The tools don't clone or copy the coordinating session's workspace to the remote machine. If you don't specify a workspace, the remote session starts without one.
 
 Normal approval requirements still apply to delegated work and messages. Review the selected host, folder, and worktree before you approve a tool call, especially when the agent uses automatic placement.
 
-Keep the coordinating Agents window open and connected while delegated work runs so messages can flow between sessions. A remote session's final response isn't forwarded automatically. Ask the remote agent to use `send_remote_message` to report its result.
+Keep the coordinating Agents window open and connected while delegated work runs so messages can flow between sessions. A remote session's final response isn't forwarded automatically. Ask the remote agent to send the result back to the originating chat, as in the example above.
 
 Turning off ``chat.remoteSessions.tools.enabled`` removes the remote delegation tools, but doesn't disconnect remote machines or stop remote sessions that are already running.
+
+## Troubleshoot remote sessions
+
+| Symptom | What to check |
+|---------|---------------|
+| Remote connection options are missing | Confirm that ``chat.remoteAgentHostsEnabled`` is on. Turning it off prevents this client from connecting to remote agent hosts. For [copilot.github_environments], also check the feature-specific requirements below. |
+| The host is offline or won't connect | Keep the host awake and online, with its application or Agent Host running. Connecting to an offline registered machine doesn't start the host. Check [SSH setup](/docs/remote/ssh.md) or [dev tunnel setup](/docs/remote/tunnels.md) for your connection method. |
+| A session is missing | Check the connected host, supported session types, workspace group, and [sessions list filters](/docs/agents/run/sessions/manage-sessions.md#find-a-missing-session). Starting a new session doesn't resume a missing one. |
+| A transcript is visible but can't accept messages | Reconnect to the host. A cached transcript or [synced history](/docs/agents/run/sessions/session-history.md) is not a live connection. |
+
+### Troubleshoot [copilot.github_environments]
+
+For host connectivity or missing sessions, start with the [common checks](#troubleshoot-remote-sessions).
+
+| Symptom | What to check |
+|---------|---------------|
+| [copilot.github_environments] or the connection command is missing | Check feature availability, ``chat.agentHost.githubEnvironments.enabled``, ``chat.remoteAgentHostsEnabled``, and [organization policy](/docs/enterprise/manage-ai-settings.md#control-github-environments). |
+| The machine isn't listed | Confirm that sharing is on at the host and both clients use the same account. Refresh the environment picker. |
+| A discovered machine doesn't connect automatically | In the installed Agents window, connect explicitly the first time. Automatic reconnection requires ``chat.remoteAgentHostsAutoConnect`` and a previously connected online environment for the same profile and account. In the browser, prior connection history isn't required. After an explicit disconnect, connect manually again. |
 
 ## Related resources
 
@@ -14873,8 +14919,8 @@ For Local harness sessions, use ``chat.editing.autoAcceptDelay`` to automaticall
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/security.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/security
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/security.md
-- **SHA256_FINGERPRINT**: `e801a96cfed5fc4a47fd734a278b77d26600b479c5870c844aab042825153d90`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:27.255828+00:00
+- **SHA256_FINGERPRINT**: `fd5110086d03af936e0b974f7bb35a6fd70707b8074276f9b7437ca4a6c84899`
+- **LAST_VERIFIED_UTC**: 2026-11-08T05:16:47.820167+00:00
 ---
 
 **MetaDescription**: Protect development environments when using AI agents and MCP servers in VS Code with approvals and sandboxing.
@@ -14913,9 +14959,9 @@ Use the following checklist to set up a secure starting point for AI-assisted de
 
 VS Code's security model uses trust boundaries to limit the potential impact of untrusted code. Trust decisions cover the workspace, extension publishers, MCP servers, and network domains, and you can revoke trust at any time. Related boundaries can share a decision. For example, MCP servers in `.vscode/mcp.json` and workspace-root `.mcp.json` inherit Workspace Trust. For a description of each boundary, see [trust boundaries](/docs/agents/concepts/trust-and-safety.md#trust-boundaries).
 
-## Remote connections and GitHub Environments
+## Remote connections and [copilot.github_environments]
 
-[GitHub Environments (Preview)](/docs/agents/run/remote-agent-sessions.md#github-environments-preview) lets you register a development machine for access from supported Copilot clients. Connected clients receive trusted-owner access to sessions, tools, and workspace resources on that machine. Only connect from clients and devices you trust, and protect the [product.prodname_github] account used to register the host.
+[[copilot.github_environments]](/docs/agents/run/remote-agent-sessions.md#github-environments) `feature(github-environments)` let you register a development machine for access from supported Copilot clients. Connected clients receive trusted-owner access to sessions, tools, and workspace resources on that machine. Only connect from clients and devices you trust, and protect the [product.prodname_github] account used to register the host.
 
 Session actions are mirrored to [product.prodname_github] for catalog and history storage. Conversation content is not end-to-end encrypted. Review the sharing disclosure before registering a host and check your organization's data-handling requirements.
 
@@ -15124,8 +15170,8 @@ Learn more about [managing AI settings in enterprise environments](/docs/enterpr
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/sessions/manage-sessions.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/sessions/manage-sessions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/sessions/manage-sessions.md
-- **SHA256_FINGERPRINT**: `d3af6636c7adbe7c0617c2347782350a90008266e3b083f6b76717b814eff2cf`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:27.327340+00:00
+- **SHA256_FINGERPRINT**: `7d58b96a27fbdb3fa8545d471f90ecdcc57c67245d2928e96f02fdb57c532291`
+- **LAST_VERIFIED_UTC**: 2026-11-08T05:16:47.809705+00:00
 ---
 
 **MetaDescription**: Find, continue, organize, and finish agent sessions in VS Code without losing track of ongoing work.
@@ -15210,7 +15256,7 @@ To begin a separate terminal conversation, [start a new CLI session](/docs/agent
 
 | Where the session runs | How to continue |
 |---|---|
-| A remote host | Use [GitHub Environments (Preview), SSH, or dev tunnels](/docs/agents/run/remote-agent-sessions.md#choose-how-to-connect), then open the existing session. The host must remain running and reachable. |
+| A remote host | Use [[copilot.github_environments]](/docs/agents/run/remote-agent-sessions.md#github-environments) `feature(github-environments)` or [SSH or dev tunnels](/docs/agents/run/remote-agent-sessions.md#choose-how-to-connect), then open the existing session. The host must remain running and reachable. |
 | A managed cloud environment `feature(cloud-sessions)` | [Reconnect to the existing cloud session](/docs/agents/run/cloud-sandbox-sessions.md#continue-an-existing-cloud-session). Execution stays in the managed environment. |
 
 To move from local work to cloud execution, [start a separate cloud session](/docs/agents/run/cloud-sandbox-sessions.md#start-a-cloud-session).

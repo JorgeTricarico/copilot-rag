@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-11-06T19:05:39.544960+00:00
-- **Total Palabras**: 26,239 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-08T05:16:52.531113+00:00
+- **Total Palabras**: 26,236 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -449,8 +449,8 @@ A worktree is a Git code-isolation boundary, not a security boundary. It does no
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/agent-host.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/agent-host
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/agent-host.md
-- **SHA256_FINGERPRINT**: `50ba126ee2f3a0fe91fe02b531f6fa05e79be90d6ee5500f099f19875988bd59`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:36.342538+00:00
+- **SHA256_FINGERPRINT**: `5d76fcbd3ce84e0ed6a5ec176bb68245c71ba09e864c062d7e7f84361d926a73`
+- **LAST_VERIFIED_UTC**: 2026-11-08T05:16:47.660137+00:00
 ---
 
 **MetaDescription**: Understand how the VS Code Agent Host manages sessions, execution environments, and connected clients.
@@ -496,7 +496,7 @@ The Agent Host runs next to the workspace: on your machine, inside a Dev Contain
 
 The Agents window can connect to an Agent Host on the same machine or on a connected SSH, Tunnel, or WSL host. SSH and dev tunnels provide VS Code-specific access to a remote host. A dev tunnel also supports the [browser-based Agents window](/docs/agents/run/remote-agent-sessions.md#use-the-agents-window-in-the-browser), where the browser is a client, not the host that runs the session.
 
-[GitHub Environments (Preview)](/docs/agents/run/remote-agent-sessions.md#github-environments-preview) extends continuity across supported Copilot clients. Register an existing machine with your [product.prodname_github] account to access its agent sessions from VS Code, the GitHub Copilot app, Copilot CLI, GitHub.com, or GitHub Mobile. Supported sessions and actions differ by client. Registration doesn't move the workspace or provision compute, and the host must remain running.
+[[copilot.github_environments]](/docs/agents/run/remote-agent-sessions.md#github-environments) `feature(github-environments)` extend continuity across supported Copilot clients. Register an existing machine with your [product.prodname_github] account to access its agent sessions from VS Code, the GitHub Copilot app, Copilot CLI, GitHub.com, or GitHub Mobile. Supported sessions and actions differ by client. Registration doesn't move the workspace or provision compute, and the host must remain running.
 
 The following diagram illustrates local, container, and dev tunnel deployments.
 
@@ -512,7 +512,7 @@ Dev Container execution is an environment choice, not a different harness. See t
 
 Like [VS Code Remote Development](/docs/remote/remote-overview.md), the user interface stays on the client while workspace operations run close to the source code and development tools.
 
-The **Cloud** target is a separate choice that uses provider-managed infrastructure. [Cloud sessions](/docs/agents/run/cloud-sandbox-sessions.md) `feature(cloud-sessions)` run the Copilot runtime in a managed environment that you can reconnect to from a client. Unlike registering your own machine with GitHub Environments, this provisions cloud execution.
+The **Cloud** target is a separate choice that uses provider-managed infrastructure. [Cloud sessions](/docs/agents/run/cloud-sandbox-sessions.md) `feature(cloud-sessions)` run the Copilot runtime in a managed environment that you can reconnect to from a client. Unlike registering your own machine as a [copilot.github_environment], this provisions cloud execution.
 
 ## Session lifetime and client dependencies
 
@@ -1074,8 +1074,8 @@ Learn how to [add your own language model key](/docs/agent-customization/languag
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/sessions.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/sessions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/sessions.md
-- **SHA256_FINGERPRINT**: `370ecfb771f4b2fc57ce086de4f4b9212cb3bb10be32d5f89da424582d70f24b`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:26.050119+00:00
+- **SHA256_FINGERPRINT**: `d82b55d6dda723ba724261315995fbe1cee71d7727258a1b66ea8a13dfe43b17`
+- **LAST_VERIFIED_UTC**: 2026-11-08T05:16:47.743434+00:00
 ---
 
 **MetaDescription**: Understand sessions and chats in VS Code, and choose when to start a chat, fork, or create a session.
@@ -1162,7 +1162,7 @@ Learn how to [hand off an ongoing session](/docs/agents/run/agent-harnesses.md#c
 
 A session doesn't have to run on your local machine, and it doesn't have to stay on one device:
 
-* **Remote sessions** run on a machine other than the one you work from. [GitHub Environments (Preview)](/docs/agents/run/remote-agent-sessions.md#github-environments-preview) registers that machine for access across supported Copilot clients. For VS Code-specific access, connect over [SSH or a dev tunnel](/docs/agents/run/remote-agent-sessions.md#choose-how-to-connect). The host, workspace, and running session stay on the remote machine.
+* **Remote sessions** run on a machine other than the one you work from. Register that machine as a [[copilot.github_environment]](/docs/agents/run/remote-agent-sessions.md#github-environments) `feature(github-environments)` for access across supported Copilot clients. For VS Code-specific access, connect over [SSH or a dev tunnel](/docs/agents/run/remote-agent-sessions.md#choose-how-to-connect). The host, workspace, and running session stay on the remote machine.
 * **Cloud sessions** `feature(cloud-sessions)` run in managed cloud environments rather than on a machine you register. [Reopen the existing cloud session](/docs/agents/run/cloud-sandbox-sessions.md#continue-an-existing-cloud-session) to reconnect and continue work. This doesn't migrate an existing local conversation, and environment lifetime is managed by the service.
 * **Synced sessions** are backed up to your GitHub account so you can access them across devices. Learn more about [syncing sessions](/docs/agents/run/sessions/session-history.md).
 * **Session insights** let you query your session history to review what you worked on. Learn more about [session insights](/docs/agents/run/sessions/session-history.md#query-session-history-with-chronicle).
@@ -1399,8 +1399,8 @@ Treat AI-generated output as a first draft: useful as a starting point, but alwa
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/overview.md
-- **SHA256_FINGERPRINT**: `f2c59679d2f70124c61aafd64fb39989ebdf433fb87a85549c689e1c0563bda6`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:36.882310+00:00
+- **SHA256_FINGERPRINT**: `8f4d422a56b49b1c6cb9890fa0346fb9604f3d6ec24cb6086499ba7d3eb9b326`
+- **LAST_VERIFIED_UTC**: 2026-11-08T05:16:47.697128+00:00
 ---
 
 **MetaDescription**: Choose AI workflows, models, and agents in VS Code, from inline suggestions to remote sessions.
@@ -1411,7 +1411,7 @@ Use as much or as little AI as your task needs in Visual Studio Code. Get sugges
 
 You can choose models from multiple providers and work with the Copilot, Claude, or Codex agent harness, using a supported account or your own API key. Customizations and plugins help you tailor agents to your work.
 
-Continuity lets you pick up agent work across supported interfaces without starting over. Connect to sessions on your own machine through GitHub Environments, or use a cloud session without keeping a local host online.
+Continuity lets you pick up agent work across supported interfaces without starting over. Connect to sessions on your own machine through [copilot.github_environments], or use a cloud session without keeping a local host online.
 
 ## Try your first agent task
 
@@ -1475,7 +1475,7 @@ Continuity means picking up agent work across supported interfaces and machines 
 
 | Where you want to work | Start here |
 |------------------------|------------|
-| **Across Copilot apps and devices** | Use [GitHub Environments (Preview)](/docs/agents/run/remote-agent-sessions.md#github-environments-preview) to register your development machine and continue its agent sessions from VS Code, the GitHub Copilot app, Copilot CLI, GitHub.com, or GitHub Mobile. Available actions vary by client. |
+| **Across Copilot apps and devices** | Use [[copilot.github_environments]](/docs/agents/run/remote-agent-sessions.md#github-environments) `feature(github-environments)` to register your development machine and continue its agent sessions from VS Code, the GitHub Copilot app, Copilot CLI, GitHub.com, or GitHub Mobile. Available actions vary by client. |
 | **On managed cloud compute** | Use [cloud sessions](/docs/agents/run/cloud-sandbox-sessions.md) `feature(cloud-sessions)` for interactive agent work without keeping your own machine online. Reopen the existing cloud session to continue the conversation. Execution stays in the cloud environment, whose availability and lifetime are managed by the service. |
 | **Editor or Agents window** | Use the GitHub Copilot, [product.prodname_anthropic_claude_short], or [product.prodname_openai_codex_short] agent harness in VS Code and [continue your session across interfaces](/docs/agents/run/sessions/manage-sessions.md#continue-between-the-chat-view-and-agents-window). |
 | **VS Code on another machine** | Use VS Code-specific remote connections through [SSH](/docs/agents/run/remote-agent-sessions.md#connect-via-ssh) or a [dev tunnel](/docs/agents/run/remote-agent-sessions.md#connect-via-dev-tunnel). Dev tunnels also support the [browser-based Agents window](/docs/agents/run/remote-agent-sessions.md#use-the-agents-window-in-the-browser). |
@@ -1508,8 +1508,8 @@ For keyboard, screen reader, and low-vision workflows, learn how to use the [Acc
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/agent-harnesses.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/agent-harnesses
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/agent-harnesses.md
-- **SHA256_FINGERPRINT**: `c2e5fa8802685b471f61026b0f1ff4fe2e60edbaebbd44bfe6fcd312f6426876`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:26.808565+00:00
+- **SHA256_FINGERPRINT**: `de452359dcf14ba8eea7206278d72f3bc80741019283d093f5da6fdb450f1c34`
+- **LAST_VERIFIED_UTC**: 2026-11-08T05:16:47.699204+00:00
 ---
 
 **MetaDescription**: Compare agent harnesses and built-in agents in Visual Studio Code, select one for a session, and review provider requirements.
@@ -1775,7 +1775,7 @@ Yes. In the Local session's chat input, open the **Session Target** dropdown and
 ## Related resources
 
 * [Manage agent sessions](/docs/agents/run/sessions/manage-sessions.md), including [continuing in the terminal](/docs/agents/run/sessions/manage-sessions.md#use-copilot-cli-from-the-terminal).
-* [Remote agent access through GitHub Environments, SSH, or dev tunnels](/docs/agents/run/remote-agent-sessions.md#choose-how-to-connect)
+* [Remote agent access through [copilot.github_environments], SSH, or dev tunnels](/docs/agents/run/remote-agent-sessions.md#choose-how-to-connect)
 * [Approvals and permissions](/docs/agents/run/approvals.md)
 
 

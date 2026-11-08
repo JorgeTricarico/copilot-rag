@@ -6,7 +6,7 @@ Use as much or as little AI as your task needs in Visual Studio Code. Get sugges
 
 You can choose models from multiple providers and work with the Copilot, Claude, or Codex agent harness, using a supported account or your own API key. Customizations and plugins help you tailor agents to your work.
 
-Continuity lets you pick up agent work across supported interfaces without starting over. Connect to sessions on your own machine through GitHub Environments, or use a cloud session without keeping a local host online.
+Continuity lets you pick up agent work across supported interfaces without starting over. Connect to sessions on your own machine through [copilot.github_environments], or use a cloud session without keeping a local host online.
 
 ## Try your first agent task
 
@@ -70,7 +70,7 @@ Continuity means picking up agent work across supported interfaces and machines 
 
 | Where you want to work | Start here |
 |------------------------|------------|
-| **Across Copilot apps and devices** | Use [GitHub Environments (Preview)](/docs/agents/run/remote-agent-sessions.md#github-environments-preview) to register your development machine and continue its agent sessions from VS Code, the GitHub Copilot app, Copilot CLI, GitHub.com, or GitHub Mobile. Available actions vary by client. |
+| **Across Copilot apps and devices** | Use [[copilot.github_environments]](/docs/agents/run/remote-agent-sessions.md#github-environments) `feature(github-environments)` to register your development machine and continue its agent sessions from VS Code, the GitHub Copilot app, Copilot CLI, GitHub.com, or GitHub Mobile. Available actions vary by client. |
 | **On managed cloud compute** | Use [cloud sessions](/docs/agents/run/cloud-sandbox-sessions.md) `feature(cloud-sessions)` for interactive agent work without keeping your own machine online. Reopen the existing cloud session to continue the conversation. Execution stays in the cloud environment, whose availability and lifetime are managed by the service. |
 | **Editor or Agents window** | Use the GitHub Copilot, [product.prodname_anthropic_claude_short], or [product.prodname_openai_codex_short] agent harness in VS Code and [continue your session across interfaces](/docs/agents/run/sessions/manage-sessions.md#continue-between-the-chat-view-and-agents-window). |
 | **VS Code on another machine** | Use VS Code-specific remote connections through [SSH](/docs/agents/run/remote-agent-sessions.md#connect-via-ssh) or a [dev tunnel](/docs/agents/run/remote-agent-sessions.md#connect-via-dev-tunnel). Dev tunnels also support the [browser-based Agents window](/docs/agents/run/remote-agent-sessions.md#use-the-agents-window-in-the-browser). |
