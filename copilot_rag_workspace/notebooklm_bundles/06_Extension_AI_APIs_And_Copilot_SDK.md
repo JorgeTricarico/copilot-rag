@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
-- **Generado (UTC)**: 2026-11-06T05:48:44.130214+00:00
-- **Total Palabras**: 124,990 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-09T22:06:32.891019+00:00
+- **Total Palabras**: 125,002 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -19227,8 +19227,8 @@ declare module 'vscode' {
 # DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts
-- **SHA256_FINGERPRINT**: `20e760338936f4514b11a1a33ebe28990d9893be5fc3bfbd1b0ccb0afe3cc0d1`
-- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:45.635573+00:00
+- **SHA256_FINGERPRINT**: `61f4983577f0a81c9ef7ebbe7560b9edc19158357aafbd18f9dca5408aa3eff0`
+- **LAST_VERIFIED_UTC**: 2026-11-09T22:06:25.903957+00:00
 ---
 
 # VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts`
@@ -19334,8 +19334,8 @@ declare module 'vscode' {
 		/**
 		 * Gives this artifact a pill of its own, shared with every other artifact assigned the same ID, including those of
 		 * other providers, and named by {@link ChatArtifactIntegrationProvider.groupLabel}. Without one, the artifact is listed
-		 * in the pill for its kind, such as Artifacts, with the other artifacts. Only consulted when this provider presents
-		 * the artifact's main part.
+		 * in the pill for its kind, such as Artifacts, with the other artifacts. References are always listed in the
+		 * References pill with the other references. Only consulted when this provider presents the artifact's main part.
 		 */
 		readonly groupId?: string;
 		/**

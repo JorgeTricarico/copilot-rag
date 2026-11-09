@@ -22,12 +22,12 @@
 - [x] Pin this endgame plan in the [VS Code issue tracker](https://github.com/microsoft/vscode/issues)
 - [x] Assign TPIs
   - [x] Create TPI's for all verification needed bugs. Visit `Testing and Verification` on tools site, and generate groupings, then create TPIs. The TPI section below  will update with all of the generated items.
-- [ ] Pause automatic releases (this also ensures chat-pre-release isn't released) after 10am. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=383))
+- [x] Pause automatic releases (this also ensures chat-pre-release isn't released) after 10am. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=383))
 - [x] Run the [Start Endgame](https://github.com/microsoft/vscode-engineering/actions/workflows/start-endgame.yml) workflow
 
   - PRs opened with auto-merge enabled — ensure they get reviewed and merged Monday morning so Insiders picks up the next milestone version:
-    - [ ] Version bump (`microsoft/vscode`): https://github.com/microsoft/vscode/pull/346890
-    - [ ] Endgame notebook milestone bump (`microsoft/vscode`): https://github.com/microsoft/vscode/pull/346889
+    - [x] Version bump (`microsoft/vscode`): https://github.com/microsoft/vscode/pull/346890
+    - [x] Endgame notebook milestone bump (`microsoft/vscode`): https://github.com/microsoft/vscode/pull/346889
 
   - If you need to run these steps manually, see the [Branching guide](https://github.com/microsoft/vscode-internalbacklog/blob/main/guidelines/endgame-guide.md#branching).
 - [ ] In absence of the tech writer, follow the steps in the [website endgame issue](https://github.com/microsoft/vscode-website/wiki#performing-a-weekly-release)

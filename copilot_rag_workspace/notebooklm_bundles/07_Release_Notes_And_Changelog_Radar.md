@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-09T05:28:40.584844+00:00
-- **Total Palabras**: 21,136 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-09T22:06:32.894162+00:00
+- **Total Palabras**: 21,411 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -956,11 +956,11 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_146.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_146
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_146.md
-- **SHA256_FINGERPRINT**: `4111fece40f4e0338f38e938155c9babc723e3a186f22e83751656c074d287a4`
-- **LAST_VERIFIED_UTC**: 2026-11-05T19:43:04.532437+00:00
+- **SHA256_FINGERPRINT**: `312773ae2afc8e1113a16484d22c6eb0002f638e6626dfe12cedca0114a9bdb8`
+- **LAST_VERIFIED_UTC**: 2026-11-09T22:06:24.362877+00:00
 ---
 
-**MetaDescription**: Learn what's new in Visual Studio Code 1.146 (Insiders)
+**MetaDescription**: Learn what is new in Visual Studio Code Insiders.
 
 # Visual Studio Code 1.146
 
@@ -968,7 +968,7 @@ Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://
 
 ---
 
-_Last updated: November 5, 2026_
+_Last updated: November 9, 2026_
 
 Welcome to the 1.146  release of Visual Studio Code.
 
@@ -976,9 +976,37 @@ Happy Coding!
 
 ---
 
+## November 9, 2026
+
+* The minimap slider appears during vertical scrolling when on mouseover. _[#127918: Make minimap slider visible when scrolling](https://github.com/microsoft/vscode/issues/127918)_
+
+## November 8, 2026
+
+* Add support for opening Agents sessions in separate chat windows. _[#319877: Support opening Agents sessions in separate windows](https://github.com/microsoft/vscode/issues/319877)_
+
+## November 7, 2026
+
+* Add support for Inbox mode (Experimental) to triage sessions without archiving them. _[#346662: Sessions: add an opt-in Inbox mode for attention-based triage](https://github.com/microsoft/vscode/issues/346662)_
+
+## November 6, 2026
+
+* Add **Fix Checks** and **Address Comments** actions to the **Sessions** list in the Agents window. _[#346647: Agents window: inline Fix Checks and Address Comments actions in the Sessions list](https://github.com/microsoft/vscode/issues/346647)_
+
+* Customize **Chat: Send in Background** in **Keyboard Shortcuts**. _[#346623: Make Agents window background send configurable and discoverable](https://github.com/microsoft/vscode/issues/346623)_
+
+* Add support for optional **Judge** and **Synthesizer** roles in chat-only model comparisons in the Agents window. _[#346588: Support Judge and Synthesizer for chat-only agent comparisons](https://github.com/microsoft/vscode/issues/346588)_
+
+* Read long agent questions and answer options in one scrollable area. _[#346327: Let me expand long agent questions to a larger view](https://github.com/microsoft/vscode/issues/346327)_ _[#343293: Ask question tool gets native scrollbar and is hard to see my options](https://github.com/microsoft/vscode/issues/343293)_
+
+* Sort editor hover diagnostics by severity and add severity icons and screen reader labels. _[#247250: Diagnostics hover sort and clarity](https://github.com/microsoft/vscode/issues/247250)_
+
+* Add support for selecting the pre-filled path in the simple **Open File** dialog. _[#339366: Should the simple "open file" picker auto-select the pre-filled text?](https://github.com/microsoft/vscode/issues/339366)_
+
 ## November 5, 2026
 
-* Add support for previewing Markdown descriptions in the Issue Reporter. _[#265509: Issue Reporter has no Markdown preview](https://github.com/microsoft/vscode/issues/265509)_
+* Add support for Copilot Fusion and its available effort levels in **Compare Models**, including **Judge** and **Synthesizer**. _[#346303: Allow Copilot Fusion in Compare Models](https://github.com/microsoft/vscode/issues/346303)_
+
+* Agent host terminals show process names and standard icons, with host names when connected to remote agent hosts (Experimental). _[#346374: Show agent host terminals like local terminals](https://github.com/microsoft/vscode/issues/346374)_ _[#333648: Show host name in Agent Host Terminal tab titles](https://github.com/microsoft/vscode/issues/333648)_
 
 ## November 4, 2026
 
@@ -1639,8 +1667,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_346882
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/346882
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/346882
-- **SHA256_FINGERPRINT**: `b0394fa08b74843c4556bd8bde31628cce1ae8a13c2fa96d2a0e88dc823326ef`
-- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:40.385360+00:00
+- **SHA256_FINGERPRINT**: `7e9d08fd09cbe36a7c0f36cac8f57a7427da46dbb4531f76d1d9c471bbe7f287`
+- **LAST_VERIFIED_UTC**: 2026-11-09T22:06:32.685127+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.146.0 Endgame
@@ -1667,12 +1695,12 @@ We really appreciate people trying our new features as soon as they are ready, s
 - [x] Pin this endgame plan in the [VS Code issue tracker](https://github.com/microsoft/vscode/issues)
 - [x] Assign TPIs
   - [x] Create TPI's for all verification needed bugs. Visit `Testing and Verification` on tools site, and generate groupings, then create TPIs. The TPI section below  will update with all of the generated items.
-- [ ] Pause automatic releases (this also ensures chat-pre-release isn't released) after 10am. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=383))
+- [x] Pause automatic releases (this also ensures chat-pre-release isn't released) after 10am. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=383))
 - [x] Run the [Start Endgame](https://github.com/microsoft/vscode-engineering/actions/workflows/start-endgame.yml) workflow
 
   - PRs opened with auto-merge enabled — ensure they get reviewed and merged Monday morning so Insiders picks up the next milestone version:
-    - [ ] Version bump (`microsoft/vscode`): https://github.com/microsoft/vscode/pull/346890
-    - [ ] Endgame notebook milestone bump (`microsoft/vscode`): https://github.com/microsoft/vscode/pull/346889
+    - [x] Version bump (`microsoft/vscode`): https://github.com/microsoft/vscode/pull/346890
+    - [x] Endgame notebook milestone bump (`microsoft/vscode`): https://github.com/microsoft/vscode/pull/346889
 
   - If you need to run these steps manually, see the [Branching guide](https://github.com/microsoft/vscode-internalbacklog/blob/main/guidelines/endgame-guide.md#branching).
 - [ ] In absence of the tech writer, follow the steps in the [website endgame issue](https://github.com/microsoft/vscode-website/wiki#performing-a-weekly-release)

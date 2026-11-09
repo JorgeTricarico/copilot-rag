@@ -1,4 +1,4 @@
-**MetaDescription**: Learn what's new in Visual Studio Code 1.146 (Insiders)
+**MetaDescription**: Learn what is new in Visual Studio Code Insiders.
 
 # Visual Studio Code 1.146
 
@@ -6,7 +6,7 @@ Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://
 
 ---
 
-_Last updated: November 5, 2026_
+_Last updated: November 9, 2026_
 
 Welcome to the 1.146  release of Visual Studio Code.
 
@@ -14,9 +14,37 @@ Happy Coding!
 
 ---
 
+## November 9, 2026
+
+* The minimap slider appears during vertical scrolling when on mouseover. _[#127918: Make minimap slider visible when scrolling](https://github.com/microsoft/vscode/issues/127918)_
+
+## November 8, 2026
+
+* Add support for opening Agents sessions in separate chat windows. _[#319877: Support opening Agents sessions in separate windows](https://github.com/microsoft/vscode/issues/319877)_
+
+## November 7, 2026
+
+* Add support for Inbox mode (Experimental) to triage sessions without archiving them. _[#346662: Sessions: add an opt-in Inbox mode for attention-based triage](https://github.com/microsoft/vscode/issues/346662)_
+
+## November 6, 2026
+
+* Add **Fix Checks** and **Address Comments** actions to the **Sessions** list in the Agents window. _[#346647: Agents window: inline Fix Checks and Address Comments actions in the Sessions list](https://github.com/microsoft/vscode/issues/346647)_
+
+* Customize **Chat: Send in Background** in **Keyboard Shortcuts**. _[#346623: Make Agents window background send configurable and discoverable](https://github.com/microsoft/vscode/issues/346623)_
+
+* Add support for optional **Judge** and **Synthesizer** roles in chat-only model comparisons in the Agents window. _[#346588: Support Judge and Synthesizer for chat-only agent comparisons](https://github.com/microsoft/vscode/issues/346588)_
+
+* Read long agent questions and answer options in one scrollable area. _[#346327: Let me expand long agent questions to a larger view](https://github.com/microsoft/vscode/issues/346327)_ _[#343293: Ask question tool gets native scrollbar and is hard to see my options](https://github.com/microsoft/vscode/issues/343293)_
+
+* Sort editor hover diagnostics by severity and add severity icons and screen reader labels. _[#247250: Diagnostics hover sort and clarity](https://github.com/microsoft/vscode/issues/247250)_
+
+* Add support for selecting the pre-filled path in the simple **Open File** dialog. _[#339366: Should the simple "open file" picker auto-select the pre-filled text?](https://github.com/microsoft/vscode/issues/339366)_
+
 ## November 5, 2026
 
-* Add support for previewing Markdown descriptions in the Issue Reporter. _[#265509: Issue Reporter has no Markdown preview](https://github.com/microsoft/vscode/issues/265509)_
+* Add support for Copilot Fusion and its available effort levels in **Compare Models**, including **Judge** and **Synthesizer**. _[#346303: Allow Copilot Fusion in Compare Models](https://github.com/microsoft/vscode/issues/346303)_
+
+* Agent host terminals show process names and standard icons, with host names when connected to remote agent hosts (Experimental). _[#346374: Show agent host terminals like local terminals](https://github.com/microsoft/vscode/issues/346374)_ _[#333648: Show host name in Agent Host Terminal tab titles](https://github.com/microsoft/vscode/issues/333648)_
 
 ## November 4, 2026
 
