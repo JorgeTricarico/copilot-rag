@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part3
-- **Generado (UTC)**: 2026-11-07T05:19:31.546732+00:00
-- **Total Palabras**: 446,250 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-09T05:28:40.478035+00:00
+- **Total Palabras**: 446,383 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -26048,8 +26048,8 @@ Evaluate automatic discovery separately from explicit loading. A frontmatter or 
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/bench-read/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/bench-read/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/bench-read/SKILL.md
-- **SHA256_FINGERPRINT**: `46bb65f2ca4af77cca8c269e4aee2974a12a2e0d2e50152cee88e917f6a52ebb`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:19.523958+00:00
+- **SHA256_FINGERPRINT**: `004860fd1d557ea1f14fb12e9aa2d81dd12c599995c931e335505b88e0ec30c7`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:36.211047+00:00
 ---
 
 **description**: Read artifacts from the shared bench — the workspace where desks leave findings, verdicts, and work products for each other and the operator.
@@ -26085,7 +26085,8 @@ Typical bench artifacts:
 
 The primary shared location is the `bench/` directory at the
 workshop root — the designated cross-desk workspace. Desk-local
-artifacts under `desks/<desk-name>/` are a secondary source: read
+artifacts under `desks/<desk-name>/` (or `<group>-desks/<desk-name>/`
+for desks kept in a group folder) are a secondary source: read
 them when you need a specific desk's own work, but shared artifacts
 belong in `bench/`.
 
@@ -26096,12 +26097,14 @@ belong in `bench/`.
   desks/<desk-name>/          # secondary — a desk's own workspace
     journal.md                #   the desk's memory
     <artifacts>               #   work still local to this desk
+  <group>-desks/<desk-name>/  # same, for desks kept in a group folder
 ```
 
 ## How to read
 
 1. **List what's there.** Start with the directory structure to see
-   what desks exist and what they've produced.
+   what desks exist and what they've produced. Desks live in `desks/`
+   and in any top-level folder whose name ends in `-desks`.
 
 2. **Read journals first.** Each desk's journal tells you what it
    worked on and where it left things. The most recent entry is
@@ -50955,8 +50958,8 @@ Clears only the specified version range ignore for `express`.
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/desk-journal/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/desk-journal/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/desk-journal/SKILL.md
-- **SHA256_FINGERPRINT**: `b2874c7b6d0da1e0bedb7bb02345798d37ccd4d4d64414749169dfcf158960bf`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:24.807087+00:00
+- **SHA256_FINGERPRINT**: `c6933da074d5659d1174b15b26da5d3b9862e70fa56070e44beebc773dea3ecf`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:36.217534+00:00
 ---
 
 **description**: Write, append, or read desk journal entries. The journal is persistent memory — what survives session boundaries. A good entry has: what was done, current state, next step.
@@ -50975,7 +50978,9 @@ session boundaries.
 
 ## How to write a journal entry
 
-Append to `desks/<desk-name>/journal.md`. Each entry is a section:
+Append to `desks/<desk-name>/journal.md` (for a desk in a group folder,
+`<group>-desks/<desk-name>/journal.md` — look in `desks/` first, then in
+each `*-desks/` folder). Each entry is a section:
 
 ```markdown
 ## <date> — <short summary>
@@ -51030,8 +51035,8 @@ state and next step. Earlier entries provide history if needed.
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/desk-open/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/desk-open/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/desk-open/SKILL.md
-- **SHA256_FINGERPRINT**: `36473b3e66f2b61ece0cac6603aa9292d724d73b39c2f3fb46ee3714000e6bad`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:24.981720+00:00
+- **SHA256_FINGERPRINT**: `91107e103839432e924c3103889ebdbf2d0f1709410774a53fe12e8ada3df509`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:36.230020+00:00
 ---
 
 **description**: Create and open a new desk in the workshop. Sets up the folder structure, initial journal, and desk identity so the next session that sits down finds the trail.
@@ -51055,6 +51060,12 @@ desks/<desk-name>/
   journal.md       # persistent memory — read at start, written at end
   .signals/        # structured signal output (JSON) — dashboard reads this
 ```
+
+`desks/` is the default home. A desk can instead live in a group folder:
+any top-level folder whose name ends in `-desks` (for example
+`team-desks/<desk-name>/`). Use one only when the operator asks for that
+group, create the group folder if it doesn't exist, and read `desks/` in
+the steps below as that group folder.
 
 ## How to use
 
@@ -51092,7 +51103,10 @@ directory. The session workflow:
 
 1. The operator (or TA) starts a session and says "sit at the
    `<desk-name>` desk"
-2. The session reads `desks/<desk-name>/journal.md` to load priors
+2. The session reads the desk's `journal.md` to load priors. To find
+   the desk, look in `desks/<desk-name>/`, then in each
+   `<group>-desks/<desk-name>/`; if more than one has that name, ask
+   which one (refer to it as `<group>-desks/<desk-name>`)
 3. Work happens — the session uses `signal-write` to emit signals
    and `desk-journal` to persist state at the end
 4. The next session repeats from step 2

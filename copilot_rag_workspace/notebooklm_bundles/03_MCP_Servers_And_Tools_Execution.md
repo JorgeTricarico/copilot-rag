@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 03_MCP_Servers_And_Tools_Execution
-- **Generado (UTC)**: 2026-11-04T19:33:34.305399+00:00
-- **Total Palabras**: 8,628 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-09T05:28:40.387742+00:00
+- **Total Palabras**: 8,742 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -201,8 +201,8 @@ For specific tasks, see [MCP sandboxing](/docs/agents/run/manage-mcp-servers.md#
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/mcp-configuration.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/mcp-configuration
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/mcp-configuration.md
-- **SHA256_FINGERPRINT**: `9ef6003068251b091fa48faa232168359bec88c0c19ace8204277d60045aae2b`
-- **LAST_VERIFIED_UTC**: 2026-10-31T04:48:44.076763+00:00
+- **SHA256_FINGERPRINT**: `8a0793f5803a5cf086b36922900b44769014d8c7d19e428ab7b33d1901a8a6d3`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.173545+00:00
 ---
 
 **MetaDescription**: Configure MCP servers in Visual Studio Code with reference details for file formats, commands, settings, and sandboxing.
@@ -219,6 +219,8 @@ MCP server configuration uses one of the following file formats:
 * The portable Copilot format is stored in `.mcp.json` at the root of your workspace or in `$COPILOT_HOME/mcp-config.json` for your user, with `~/.copilot/mcp-config.json` as the fallback location. It defines servers in a top-level `mcpServers` object.
 
 Copilot harness sessions read the portable format directly. VS Code forwards eligible servers from the VS Code format to the session, except servers that require interactive input, such as `${input:...}` variables. The agent doesn't read `.vscode/mcp.json` directly. For setup steps, see [Choose a configuration destination](/docs/agent-customization/mcp-servers.md#choose-a-configuration-destination).
+
+For remote and Dev Container sessions, native user configuration refers to the home directory where the harness runs. The connected client's `$COPILOT_HOME/mcp-config.json` (or `~/.copilot/mcp-config.json`) isn't forwarded to another host or harness. Configure the server in the execution environment or use an eligible forwarded configuration instead. See [remote session customization sources](/docs/agent-customization/overview.md#manage-customizations-for-remote-sessions).
 
 For other providers, use the provider's MCP configuration documentation. Their configuration locations and schemas can differ from the two formats described here.
 
@@ -624,8 +626,8 @@ For a full list of VS Code AI settings, see the [AI Settings Reference](/docs/ag
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/tools.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/tools
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/tools.md
-- **SHA256_FINGERPRINT**: `5520aa13ad7acebe54ce01ed0d73b7625cbb8d3f12d3fc8246d71e99660e6d5e`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:27.379055+00:00
+- **SHA256_FINGERPRINT**: `16d75ad8117a8cc947d5cce6b5af45b6e0189b535531e8fad643048cefaabd5c`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.210909+00:00
 ---
 
 **MetaDescription**: Use agent tools in VS Code to inspect code, run commands, control desktop apps, and manage approvals.
@@ -688,9 +690,11 @@ The `#` menu also contains context items, such as files, folders, and editor sel
 
 ## Manage available tools
 
-For Copilot harness sessions, manage tools from the Agent Customizations editor. Your selection persists in the active [user profile](/docs/configure/profiles.md), rather than applying to only one request:
+For Copilot harness sessions, manage client-tool availability from the Agent Customizations editor. Your selection persists for the selected harness across windows and [user profiles](/docs/configure/profiles.md), rather than applying to only one request. For remote sessions, selections are stored separately for each remote host and harness.
 
-1. In the chat input, select the **Copilot** harness.
+To change the selection:
+
+1. Select the intended session and confirm its workspace and execution environment. In the chat input, select the **Copilot** harness.
 
 1. Open the Agent Customizations editor:
 
@@ -700,6 +704,8 @@ For Copilot harness sessions, manage tools from the Agent Customizations editor.
 1. Select the **Tools** tab.
 
 1. Select or deselect tools to control which ones are available to the agent.
+
+The selected session supplies the editor's context, but changing a client-tool selection can affect other sessions using that harness and host. It isn't a session-only override. See [what customization changes affect](/docs/agent-customization/overview.md#understand-what-a-change-affects).
 
 Limit the selection to tools that are relevant to your request. Add MCP tools by connecting supported services with [Copilot connectors](/docs/agent-customization/copilot-connectors.md) `feature(copilot-connectors)`, [adding MCP servers](/docs/agent-customization/mcp-servers.md), or [installing agent plugins](/docs/agent-customization/agent-plugins.md#discover-and-install-plugins) that bundle MCP servers. [Extensions](/docs/configure/extensions/extensions.md) can also contribute tools.
 

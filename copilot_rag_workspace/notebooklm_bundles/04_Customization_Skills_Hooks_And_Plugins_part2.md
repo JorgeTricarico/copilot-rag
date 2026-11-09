@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part2
-- **Generado (UTC)**: 2026-11-07T05:19:31.520652+00:00
-- **Total Palabras**: 449,600 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-09T05:28:40.436515+00:00
+- **Total Palabras**: 449,673 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -21962,8 +21962,8 @@ Remember: Good security enables development, it doesn't block it. Always provide
 # DOCUMENT_SOURCE: github_awesome-copilot::agents/workshop-ta.agent.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/agents/workshop-ta.agent.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/agents/workshop-ta.agent.md
-- **SHA256_FINGERPRINT**: `7afe376e11d2bf39c0073e30d135c085c85659f82bca4f67324e134cec2a7c92`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:06.352897+00:00
+- **SHA256_FINGERPRINT**: `f13d7034c7a1ca1434364fb03c58201d35a9b72924ba8e30e3f89947e4d206cb`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:36.229457+00:00
 ---
 
 **description**: Room coordinator for a multi-agent workshop. Sees all desks, routes work, tracks state, manages journals, and emits coordination signals. Not a desk — the person who sees the whole room.
@@ -21983,7 +21983,11 @@ room. When the operator asks "what's everyone working on?" or
 A **workshop** is a named directory containing desks that share a
 workspace. Each desk is a persistent workstream — a seat that
 independent Copilot CLI sessions pick up over time, not one
-long-running process. Each desk has:
+long-running process. Desks live in `desks/<name>/` at the workshop
+root, or in group folders whose names end in `-desks` (for example
+`team-desks/<name>/`). To find a desk, look in `desks/` first, then in
+each `*-desks/` folder; if two groups have a desk with the same name,
+call it by its folder (`team-desks/<name>`). Each desk has:
 
 - **A journal** (`journal.md`) — persistent memory across sessions.
   Every desk reads its own journal at the start and writes to it
@@ -22046,6 +22050,7 @@ operator decide:
 - What the desk's focus is (scanning, ops, review, etc.)
 - Which repos or work it covers
 - Whether it needs a specific agent configuration
+- Whether it belongs in `desks/` (the default) or a `<group>-desks/` folder
 
 ### Track desk state
 
@@ -22073,7 +22078,8 @@ Use `signal-write` when something needs the operator's attention:
 
 The Workshop has a canvas extension — **🪨 Cairn** — that shows a live dashboard
 of every desk's signals, score bars, and escalations. It reads
-`desks/*/.signals/` for the latest signal JSON per desk.
+`desks/*/.signals/` and every `<group>-desks/*/.signals/` for the latest
+signal JSON per desk, with a header per folder when desks are grouped.
 
 The canvas does **not** auto-load when the plugin is installed. To see the live
 board, install and register the `signals-dashboard` extension separately. If the

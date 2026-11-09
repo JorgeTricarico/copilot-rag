@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part4
-- **Generado (UTC)**: 2026-11-07T05:19:31.571909+00:00
-- **Total Palabras**: 449,016 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-09T05:28:40.516947+00:00
+- **Total Palabras**: 448,787 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -26814,19 +26814,21 @@ When returning results, provide:
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/incident-postmortem/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/incident-postmortem/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/incident-postmortem/SKILL.md
-- **SHA256_FINGERPRINT**: `292e6bdc1ff42e2e7eeed8ad0c5cd774be35f5daf8e16a58e758bc27162afd8c`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:31.940358+00:00
+- **SHA256_FINGERPRINT**: `a74e7da0a5ce51dd7ac495a3db760be8a6f769e6771223018ae88bdf4a025527`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:36.223062+00:00
 ---
 
-**description**: Use when an outage, production incident, or significant service degradation has occurred and the team needs to write a structured blameless post-mortem. Triggers on phrases like "write a post-mortem", "incident review", "what went wrong", "outage report", "root cause analysis", or "RCA". Covers timeline reconstruction, contributing factor analysis, impact quantification, and action item generation with owners.
+**description**: Use when an outage, production incident, or significant service degradation has occurred and the team needs a blameless post-mortem / RCA document in the Google SRE format. Triggers on phrases like "write a post-mortem", "incident review", "what went wrong", "outage report", "root cause analysis", "RCA", or "fishbone". Collects incident inputs from the user, uses a fishbone (Ishikawa) diagram to surface candidate causes, drills the strongest branches with 5 Whys, and produces typed action items. Outputs Markdown by default, with HTML, DOCX, or PDF on request.
 
-# Incident Post-Mortem
+# Incident Post-Mortem (Google SRE format)
 
-Guide a team through writing a structured, blameless post-mortem after a production incident. The output is a document that builds shared understanding, identifies root causes without blame, and produces concrete action items to prevent recurrence.
+Guide a team through writing a blameless post-mortem after a production incident, following the structure of the Google SRE post-mortem template. The output builds shared understanding, identifies root causes without blame, and produces concrete action items to prevent recurrence.
+
+Everything in the document comes from the user. Never invent timestamps, metrics, names, or causes. If something is unknown, write it as an open question in the document.
 
 ## Blameless Principle
 
-Systems fail, not people. The goal is to understand HOW the incident happened — not WHO caused it. Avoid language like "X forgot to", "Y should have known". Use "the system did not", "the process lacked", "the alert did not fire".
+Systems fail, not people. The goal is to understand HOW the incident happened, not WHO caused it. Avoid language like "X forgot to" or "Y should have known". Use "the system did not", "the process lacked", "the alert did not fire".
 
 ## When to Use
 
@@ -26839,118 +26841,262 @@ Systems fail, not people. The goal is to understand HOW the incident happened �
 
 ## Input Requirements
 
-Gather these details before writing the post-mortem. Ask for anything missing:
+Gather these from the user before writing. Ask for anything missing, section by section, and do not start the analysis until the first three groups are covered.
 
 ### Incident Metadata
 - Incident title (short, descriptive)
-- Date and time of detection (with timezone)
-- Date and time of resolution
-- Severity / impact level (P1–P4 or equivalent)
-- Incident commander / on-call owner
+- Authors / post-mortem owner, and incident commander or on-call owner
+- Date and time of start, detection, and resolution (with timezone)
+- Severity / impact level (P1-P4 or equivalent)
 
 ### Impact
 - Affected services and systems
 - User-facing impact (errors, slowness, full outage)
-- Estimated number of users affected
+- Estimated number or percentage of users affected
 - Data loss or corruption (yes/no, scope)
-- SLA/SLO breach (yes/no, by how much)
+- SLA/SLO breach (yes/no, by how much), revenue or business impact if known
 
 ### Timeline Events
-Key moments to reconstruct:
 - First symptom occurred
-- Alert fired (or was noticed manually)
+- Trigger (the change or event that set the failure off, e.g. a deploy or config push)
+- Alert fired, or the problem was noticed manually, and by whom
 - On-call paged / incident declared
-- Investigation started
-- Root cause identified
-- Mitigation applied
-- Full resolution confirmed
+- Investigation started, root cause identified
+- Mitigation applied, full resolution confirmed
 - Customer communication sent (if any)
 
-### Contributing Factors
-Ask the team: "What made this worse than it needed to be?" — not "who failed". Examples:
-- Alert threshold too high / alert didn't fire
-- Runbook was missing or outdated
-- Deploy lacked a feature flag for rollback
-- Monitoring didn't cover this failure mode
-- On-call handoff missed context
+### Evidence and Context
+- Logs, dashboards, alerts, chat threads, or tickets to cite
+- Recent changes (deploys, config, infra, dependency upgrades)
+- Prior similar incidents
+
+### Output Format
+Ask which format they want. Default to Markdown.
 
 ## Process
 
-### Step 1 — Gather Metadata
-If the user has not provided full incident details, ask for them section by section. Don't proceed to writing until you have: title, times, severity, affected services, and at least a rough timeline.
+### Step 1 - Gather Inputs
+Collect the inputs above. If the user pastes raw material (chat export, alert log), extract what you can and list what is still missing.
 
-### Step 2 — Reconstruct Timeline
-Work with the user to build a precise chronological timeline. For each event:
-- Exact time (UTC preferred)
-- What happened (system event or human action)
-- Who observed it or took the action
-- Link to log / alert / Slack message if available
+### Step 2 - Reconstruct Timeline
+Build a chronological timeline in UTC. For each event record the time, what happened (system event or human action), who observed or acted, and a link to evidence.
 
-Flag gaps: "We don't know what happened between 14:32 and 14:47 — worth checking logs."
+Flag gaps: "We don't know what happened between 14:32 and 14:47 - worth checking logs." Separate **time to detect** (start to detection) from **time to mitigate** (detection to mitigation).
 
-### Step 3 — Root Cause Analysis
-Use the **5 Whys** iteratively:
+### Step 3 - Fishbone: Brainstorm Candidate Causes
+Before any 5 Whys, widen the search with a fishbone (Ishikawa) diagram. The problem statement is the "head" (the observed failure, e.g. "Checkout API returned 500s for 47 minutes"). Ask the user, for each category, "what in this area could have contributed?":
+
+| Category | Prompts |
+|----------|---------|
+| Code & Change | Recent deploy, feature flag, migration, dependency bump, missing rollback path |
+| Infrastructure & Platform | Capacity, limits/quotas, autoscaling, networking, node or zone health |
+| Configuration & Data | Config drift, secrets/certs expiry, data shape or volume, schema |
+| Monitoring & Detection | Missing metric, alert threshold or routing, dashboard gaps, noisy alerts |
+| Process & Tooling | Review/testing gaps, deploy checklist, runbooks, on-call handoff, escalation |
+| Dependencies & External | Upstream/downstream services, third-party vendors, traffic spikes |
+
+Rules:
+- Collect causes from the user's evidence; propose prompts, not conclusions. Mark each cause **confirmed** (evidence exists), **suspected**, or **ruled out**.
+- Leave a category empty if nothing applies. Do not pad it.
+- Sub-causes may nest one level (a cause of a cause) as a branch on the bone.
+
+Render the result as an indented tree plus a table. See [references/fishbone-example.md](references/fishbone-example.md) for the exact shape.
+
+### Step 4 - 5 Whys on the Strongest Branches
+Select the confirmed branches that most plausibly explain the incident (usually one to three, including at least one from Monitoring & Detection if detection was slow). Run a separate 5 Whys chain down each:
 
 ```
 Why did users see 500 errors?
-→ The API pods were crash-looping.
-
+-> The API pods were crash-looping.
 Why were they crash-looping?
-→ Memory limit was exceeded.
-
+-> Memory limit was exceeded.
 Why was the limit exceeded?
-→ A new query was loading full result sets into memory.
-
+-> A new query was loading full result sets into memory.
 Why wasn't this caught before deploy?
-→ Load tests only covered the p50 case, not high-cardinality accounts.
-
+-> Load tests only covered the p50 case, not high-cardinality accounts.
 Why did load tests only cover p50?
-→ We had no test fixtures for large accounts.
+-> We had no test fixtures for large accounts.
 ```
 
-Stop when you reach a system/process gap you can fix. The last "why" should point to an action item.
+Guidance:
+- Five is a guide. Stop when the last "why" lands on a system or process gap that can be fixed.
+- "Human error" is never a stopping point; keep asking why the system allowed it.
+- Each chain ends in a root cause. Record which fishbone category it came from.
+- Distinguish **root causes** (deepest fixable gaps), the **trigger** (what set it off), and **contributing factors** (conditions that made it worse). Unlike a single linear chain, this approach can legitimately yield more than one root cause.
 
-Distinguish:
-- **Root cause** — the deepest systemic gap (one or two)
-- **Contributing factors** — conditions that made it worse but aren't the root cause
+### Step 5 - Impact Quantification
+Help the user be precise: duration (separate detection from resolution), error rate at peak vs. baseline, percentage of traffic affected, SLO error budget consumed, revenue or business impact.
 
-### Step 4 — Impact Quantification
-Help the user be precise:
-- Duration: detection to resolution (not symptom start to resolution — separate these)
-- Error rate at peak vs. normal baseline
-- Percentage of traffic affected
-- Revenue / business impact if known
+### Step 6 - Action Items
+Every root cause and contributing factor needs at least one action item. Following the Google SRE template, give each a **type**:
 
-### Step 5 — Action Items
-For each root cause and contributing factor, generate at least one action item:
+- **Detect** - would have alerted us sooner
+- **Mitigate** - would have reduced impact or time to recover
+- **Prevent** - would have stopped it from happening
 
-| # | Action | Owner | Due Date | Priority |
-|---|--------|-------|----------|----------|
-| 1 | Add load test fixtures for accounts > 10k records | @eng-team | 2026-07-01 | High |
-| 2 | Lower memory alert threshold from 90% to 75% | @platform | 2026-06-23 | High |
-| 3 | Add runbook for memory OOM pods | @on-call-rotation | 2026-06-30 | Medium |
+| # | Action | Type | Owner | Tracking | Due | Priority |
+|---|--------|------|-------|----------|-----|----------|
+| 1 | Add load-test fixtures for accounts > 10k records | Prevent | @person | PROJ-123 | 2026-07-01 | High |
 
-Action items must have an owner (a person, not a team) and a due date. Vague actions like "improve monitoring" are not acceptable — break them into specific deliverables.
+Include at least one Detect or Mitigate item when detection or recovery was slow, not only Prevent items. Owners are individuals, not teams. Vague actions like "improve monitoring" must be broken into specific deliverables (service, metric, threshold). Ask the user for the tracking ticket; leave it as `TBD` rather than inventing one.
 
-### Step 6 — Write the Document
-Produce the full post-mortem using the template below. Save to `docs/postmortems/YYYY-MM-DD-<slug>.md`.
+### Step 7 - Write the Document
+Fill in the template in [references/postmortem-template.md](references/postmortem-template.md). Sections follow the Google SRE order: Summary, Impact, Root Causes, Trigger, Detection, Resolution, Action Items, Lessons Learned (what went well, what went wrong, where we got lucky), Timeline, Supporting Information. The fishbone and 5 Whys go in Root Cause Analysis.
 
-## Output Template
+Save Markdown to `docs/postmortems/YYYY-MM-DD-<slug>.md` unless the user names a different location.
+
+### Step 8 - Other Output Formats
+Always produce the Markdown source first, then convert only if the user asked.
+
+| Format | How |
+|--------|-----|
+| Markdown (default) | The `.md` file from Step 7 |
+| HTML | Write a single self-contained `.html` (inline CSS, no external assets) with the same sections and tables; render the fishbone tree in a `<pre>` block |
+| DOCX | Use the repo's `md-to-docx` skill: `node skills/md-to-docx/scripts/md-to-docx.mjs <file.md> <file.docx>` (needs `npm install` in that skill's `scripts/` folder once) |
+| PDF | Print the HTML to PDF with a browser, or use a locally available tool such as Pandoc. Check what is installed and tell the user if nothing suitable is available rather than installing anything silently |
+
+Confirm the output path(s) to the user at the end.
+
+## Common Mistakes
+
+| Mistake | Fix |
+|---------|-----|
+| "Bob forgot to check the config" | "The deploy checklist did not include config validation" |
+| Root cause is "human error" | Keep asking Why - human error is always a symptom |
+| Jumping straight to one 5 Whys chain | Fishbone first, then drill the strongest branches |
+| Listing every fishbone idea as a root cause | Only evidence-backed causes get a 5 Whys chain; label the rest suspected or ruled out |
+| Only Prevent action items | Add Detect and Mitigate items too |
+| Action items without owners | Every item needs a named individual, not a team |
+| Timeline reconstructed from memory | Check logs, alerts, chat, and paging history before writing |
+| "Improve monitoring" as an action | Specify which service, metric, threshold, and date |
+| Post-mortem written weeks later | Write within 48-72 hours while context is fresh |
+| Filling gaps with plausible-sounding details | Mark unknowns as open questions |
+
+## Bundled Files
+
+| File | Purpose |
+|------|---------|
+| [references/postmortem-template.md](references/postmortem-template.md) | Google SRE-style post-mortem template to fill in |
+| [references/fishbone-example.md](references/fishbone-example.md) | Worked fishbone + 5 Whys example and rendering format |
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/incident-postmortem/references/fishbone-example.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/incident-postmortem/references/fishbone-example.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/incident-postmortem/references/fishbone-example.md
+- **SHA256_FINGERPRINT**: `2b0281ba6e2dea40442e5f36328ca360a43c9ee10f75b3651785ce37697f760b`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:36.268381+00:00
+---
+
+# Fishbone + 5 Whys Worked Example
+
+Illustrative data only. Use the incident details the user provides, never this content.
+
+## Problem statement (fishbone head)
+
+Checkout API returned HTTP 500 for 47 minutes for accounts with more than 10k orders.
+
+## Fishbone as an indented tree
+
+```
+Checkout API returned HTTP 500 for 47 minutes
+|
++-- Code & Change
+|   +-- [confirmed] v2.14.1 loads full result sets into memory
+|   +-- [confirmed] No feature flag, so rollback required a redeploy
++-- Infrastructure & Platform
+|   +-- [confirmed] Pod memory limit 512Mi, no headroom for large accounts
+|   +-- [ruled out] Node pressure (nodes healthy in dashboards)
++-- Configuration & Data
+|   +-- [suspected] A few accounts hold 10x the typical order count
++-- Monitoring & Detection
+|   +-- [confirmed] Memory alert threshold at 90%, pods crashed before it fired
+|   +-- [confirmed] No alert on pod restart rate
++-- Process & Tooling
+|   +-- [confirmed] Load tests cover only the p50 account size
+|   +-- [confirmed] No runbook for OOM-killed pods
++-- Dependencies & External
+    +-- [ruled out] Payment provider latency normal
+```
+
+## Fishbone as a table
+
+| Category | Cause | Status | Evidence |
+|----------|-------|--------|----------|
+| Code & Change | v2.14.1 loads full result sets into memory | Confirmed | PR link, heap profile |
+| Code & Change | No feature flag for the new query | Confirmed | Deploy config |
+| Infrastructure & Platform | 512Mi memory limit without headroom | Confirmed | Pod spec, OOMKilled events |
+| Infrastructure & Platform | Node pressure | Ruled out | Node dashboards |
+| Configuration & Data | A few accounts hold 10x the typical order count | Suspected | Needs a data query |
+| Monitoring & Detection | Memory alert at 90% never fired before crash | Confirmed | Alert history |
+| Monitoring & Detection | No alert on pod restart rate | Confirmed | Alert rule inventory |
+| Process & Tooling | Load tests cover only p50 account size | Confirmed | Test suite |
+| Process & Tooling | No OOM runbook | Confirmed | Runbook index |
+| Dependencies & External | Payment provider latency | Ruled out | Provider status page |
+
+## Selecting branches for 5 Whys
+
+Drill the confirmed branches that best explain the impact and the duration:
+
+1. **Code & Change -> Process & Tooling**: why the bad query reached production (explains the trigger).
+2. **Monitoring & Detection**: why it took 31 minutes to notice (explains the duration).
+
+## Chain 1: query reached production (categories: Code & Change, Process & Tooling)
+
+1. Why did users see 500s? -> API pods were crash-looping.
+2. Why were they crash-looping? -> Memory limit exceeded (OOMKilled).
+3. Why was the limit exceeded? -> The new query loaded full result sets into memory.
+4. Why was this not caught before deploy? -> Load tests only covered the p50 account size.
+5. Why did load tests only cover p50? -> No fixtures exist for large accounts, and nothing in the release checklist requires them.
+
+**Root cause 1:** the release process has no required test coverage for high-cardinality accounts.
+
+## Chain 2: slow detection (category: Monitoring & Detection)
+
+1. Why did it take 31 minutes to notice? -> No alert fired until customers reported errors.
+2. Why did no alert fire? -> The memory alert threshold was 90%, and pods were killed before sustained readings reached it.
+3. Why was the threshold set that way? -> It was copied from a service with a different memory profile.
+4. Why was it never revisited? -> Alert thresholds have no review owner or cadence.
+5. Why is there no owner or cadence? -> The alerting standard does not require one.
+
+**Root cause 2:** alert definitions have no ownership or periodic review, and pod restart rate is not monitored.
+
+## Resulting action items (typed)
+
+| # | Action | Type | Owner |
+|---|--------|------|-------|
+| 1 | Add load-test fixtures for accounts > 10k orders and require them in the release checklist | Prevent | @person |
+| 2 | Add an alert on pod restart rate > 3 in 5 min for the checkout service | Detect | @person |
+| 3 | Put the new query behind a feature flag with documented rollback | Mitigate | @person |
+| 4 | Write an OOM-killed-pod runbook and link it from the alert | Mitigate | @person |
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/incident-postmortem/references/postmortem-template.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/incident-postmortem/references/postmortem-template.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/incident-postmortem/references/postmortem-template.md
+- **SHA256_FINGERPRINT**: `0d312ef7b5272c541742cff3b250d0dbd77f654da6000aa4b72a2d294e34bf78`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:36.244406+00:00
+---
+
+# Post-Mortem Template (Google SRE format)
+
+Copy this structure for the final document. Replace every bracketed placeholder with information supplied by the user. Mark anything unknown as `Open question: ...` instead of guessing.
 
 ```markdown
 # Post-Mortem: [Incident Title]
 
-**Date:** YYYY-MM-DD
-**Severity:** P[1-4]
-**Duration:** X hours Y minutes (HH:MM UTC – HH:MM UTC)
-**Incident Commander:** @name
-**Status:** Resolved
-
----
+| | |
+|---|---|
+| **Date** | YYYY-MM-DD |
+| **Authors** | @name, @name |
+| **Status** | Draft / In review / Final |
+| **Severity** | P[1-4] |
+| **Incident commander** | @name |
 
 ## Summary
 
-[2–3 sentences. What happened, what was the user impact, how was it resolved. Written for someone who wasn't involved.]
+[2-3 sentences. What happened, the user impact, and how it was resolved. Written for someone who was not involved.]
 
 ## Impact
 
@@ -26958,67 +27104,102 @@ Produce the full post-mortem using the template below. Save to `docs/postmortems
 |-----------|-------|
 | Affected services | [list] |
 | User-facing impact | [errors / degraded / full outage] |
-| Users affected | [estimated number or %] |
+| Users affected | [number or %] |
 | Peak error rate | [X% vs Y% baseline] |
-| Data loss | [none / describe scope] |
-| SLA breach | [yes/no — by how much] |
+| Data loss | [none / scope] |
+| SLO / SLA | [error budget consumed, breach yes/no] |
+| Business impact | [if known] |
+
+## Root Causes
+
+[One short paragraph per root cause, in blameless language. Each corresponds to a 5 Whys chain below.]
+
+1. **[Root cause 1]** - [one sentence]
+2. **[Root cause 2]** - [if applicable]
+
+## Trigger
+
+[The specific change or event that set the failure in motion, e.g. "Deploy of v2.14.1 at 14:02 UTC enabled the new report query".]
+
+## Detection
+
+[How the incident was detected (alert, customer report, manual). Time from start to detection. What would have detected it sooner.]
+
+## Resolution
+
+[What was done to mitigate and fully resolve. Time from detection to mitigation and to full resolution.]
+
+## Root Cause Analysis
+
+### Problem statement
+
+[The "head" of the fishbone: the observed failure in one line.]
+
+### Fishbone (candidate causes)
+
+[Indented tree, see fishbone-example.md. Mark each cause confirmed / suspected / ruled out.]
+
+| Category | Cause | Status | Evidence |
+|----------|-------|--------|----------|
+| [category] | [cause] | Confirmed / Suspected / Ruled out | [link or note] |
+
+### 5 Whys
+
+#### Chain 1: [branch name] (category: [category])
+
+1. Why [problem]? -> [answer]
+2. Why [answer]? -> [answer]
+3. Why ...? -> [answer]
+4. Why ...? -> [answer]
+5. Why ...? -> [systemic gap that can be fixed]
+
+#### Chain 2: [branch name] (category: [category])
+
+[...]
+
+### Contributing factors
+
+- [Condition that made the incident worse but is not a root cause]
+
+## Action Items
+
+| # | Action | Type (Detect / Mitigate / Prevent) | Owner | Tracking | Due | Priority |
+|---|--------|------------------------------------|-------|----------|-----|----------|
+| 1 | [Specific deliverable] | Prevent | @person | PROJ-123 or TBD | YYYY-MM-DD | High |
+
+## Lessons Learned
+
+### What went well
+
+- [Good alert, fast response, clear runbook]
+
+### What went wrong
+
+- [Gap in process, tooling, or coverage, no blame language]
+
+### Where we got lucky
+
+- [Things that limited the impact by chance rather than design]
 
 ## Timeline
 
 All times UTC.
 
-| Time | Event |
-|------|-------|
-| HH:MM | [First symptom / alert fired] |
-| HH:MM | [On-call paged] |
-| HH:MM | [Incident declared] |
-| HH:MM | [Root cause identified] |
-| HH:MM | [Mitigation applied] |
-| HH:MM | [Full resolution confirmed] |
-| HH:MM | [Customer communication sent] |
+| Time | Event | Source |
+|------|-------|--------|
+| HH:MM | [First symptom] | [link] |
+| HH:MM | [Trigger] | [link] |
+| HH:MM | [Alert fired / noticed] | [link] |
+| HH:MM | [On-call paged, incident declared] | [link] |
+| HH:MM | [Root cause identified] | [link] |
+| HH:MM | [Mitigation applied] | [link] |
+| HH:MM | [Full resolution confirmed] | [link] |
+| HH:MM | [Customer communication sent] | [link] |
 
-## Root Cause
+## Supporting Information
 
-[1–2 paragraphs. The deepest systemic gap that, if fixed, would have prevented the incident. Written in blameless language. Reference the 5 Whys chain if helpful.]
-
-## Contributing Factors
-
-- [Factor 1 — condition that made the incident worse]
-- [Factor 2]
-- [Factor 3]
-
-## What Went Well
-
-- [Thing that worked — good alert, fast response, clear runbook]
-- [Another positive]
-
-## What Could Have Gone Better
-
-- [Gap in process, tooling, or coverage — no blame language]
-- [Another gap]
-
-## Action Items
-
-| # | Action | Owner | Due Date | Priority |
-|---|--------|-------|----------|----------|
-| 1 | [Specific deliverable] | @person | YYYY-MM-DD | High/Medium/Low |
-| 2 | | | | |
-
-## Lessons Learned
-
-[Optional. 2–4 bullet points capturing non-obvious insights worth sharing with the broader team.]
+- [Dashboards, logs, chat threads, tickets, related post-mortems]
 ```
-
-## Common Mistakes
-
-| Mistake | Fix |
-|---------|-----|
-| "Bob forgot to check the config" | "The deploy checklist did not include config validation" |
-| Root cause is "human error" | Keep asking Why — human error is always a symptom |
-| Action items without owners | Every item needs a named individual, not a team |
-| Timeline reconstructed from memory | Check logs, alerts, Slack, PagerDuty before writing |
-| "Improve monitoring" as an action | Specify: which service, which metric, what threshold, by when |
-| Post-mortem written weeks later | Write within 48–72 hours while context is fresh |
 
 
 ---
@@ -44301,6 +44482,435 @@ Right arrow:     →
 Sub-item arrow:  ↳
 Repost icon:     ♻️
 ```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/logicapps-custom-code-net10-migration/README.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/logicapps-custom-code-net10-migration/README.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/logicapps-custom-code-net10-migration/README.md
+- **SHA256_FINGERPRINT**: `4572540af9d7b283c5512107c94a8e4e913ae796275f1e3c52c8f03068a98364`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:36.240470+00:00
+---
+
+# Logic Apps custom-code .NET 10 migration skill
+
+## Install
+
+With GitHub CLI 2.90.0 or later (`gh skill` is currently preview), inspect the skill
+and install it for Copilot across projects:
+
+```powershell
+gh skill preview github/awesome-copilot logicapps-custom-code-net10-migration
+gh skill install github/awesome-copilot logicapps-custom-code-net10-migration --agent github-copilot --scope user
+```
+
+For a project-scoped installation, use `--scope project` from the target repository.
+Installation makes the skill available to the agent; it does not run a migration.
+
+Alternatively, copy this **entire folder** into a supported skills directory. For a personal
+installation, use `<user profile>\.copilot\skills\logicapps-custom-code-net10-migration`;
+for a project installation, use `.github\skills\logicapps-custom-code-net10-migration`.
+Cloning the source repository alone does not install the skill. No plugin or third-party
+Python package is required. The package is licensed under MIT.
+
+## Prerequisites
+
+The [November 5 announcement](https://techcommunity.microsoft.com/blog/IntegrationsonAzureBlog/logic-apps-standard-custom-code-now-supports-net-10/4570808)
+documents the release prerequisites and migration configuration:
+
+- Azure Logic Apps (Standard) VS Code extension 5.1013.2, or a later version with .NET 10 custom-code support.
+- Logic Apps Standard extension bundle 1.194.31.
+- VS Code-selected .NET 10 SDK/runtime and the existing .NET 8 host runtime.
+- Python 3.11+ for the offline configuration helper and its tests.
+
+## Use
+
+Invoke the installed skill with a request such as:
+
+> Migrate this Logic Apps Standard .NET 8 custom-code workspace to .NET 10 using
+> logicapps-custom-code-net10-migration. Preserve the host and function identities.
+
+The helper can also be run directly with Python 3.11+:
+
+```powershell
+python ".\scripts\migrate.py" --root "C:\src\MySolution"
+python ".\scripts\migrate.py" --root "C:\src\MySolution" --apply
+```
+
+Default is dry run. Exit `0` means a valid plan or successful configuration application,
+not a passing build/runtime test; exit `1` means a blocker/failure. For multiple projects,
+add `--project "C:\src\MySolution\CustomCode\Utilities.csproj"`.
+
+Default migration preserves a missing direct Worker reference, existing logging pins
+when no direct Worker is selected, and all debugger configuration. Existing Worker
+references are aligned to the reviewed baseline with dependent logging pins adjusted.
+Do not interpret the sample dependency set as a universal minimum.
+
+The migration targets `Microsoft.Azure.Workflows.Webjobs.Sdk` **1.4.1** to incorporate
+a bug fix for 1.4.0. Confirm that 1.4.1 is available from the approved
+NuGet feed before applying the migration or restoring packages. Configuration tests
+do not establish package restore, build or runtime compatibility.
+
+Conditional options (include the same options in dry run and apply):
+
+```powershell
+python ".\scripts\migrate.py" --root "C:\src\MySolution" --integrated-debug
+python ".\scripts\migrate.py" --root "C:\src\MySolution" --integrated-debug --apply
+python ".\scripts\migrate.py" --root "C:\src\MySolution" --ensure-output-directory
+python ".\scripts\migrate.py" --root "C:\src\MySolution" --ensure-output-directory --apply
+```
+
+Use `--integrated-debug` for coordinated workflow/custom-code launching, not merely
+because the target framework changes. Use `--ensure-output-directory` only when the SDK
+directory scan needs the clean-build workaround. A narrowly recognized existing
+broken guard is repaired without the flag. Options can be combined when both apply.
+
+The helper supports direct, unconditional SDK-style project configuration and UTF-8
+JSON/JSONC settings (comments and trailing commas are preserved). It resolves the host
+from `LogicAppFolderToPublish` and does not assume sample folder or assembly names.
+With `--integrated-debug`, it appends an integrated debugger entry while keeping existing
+entries, or updates an unambiguous existing integrated launcher. Project XML
+whitespace/comments are retained, but XML serializer details such as self-closing tag
+spacing can change.
+
+It refuses ambiguous layouts, encrypted local settings, external host roots, conditional
+or centrally managed package/property definitions, explicit imports, inherited
+`Directory.Build.*`/`Directory.Packages.props`/`global.json`, and unreviewed newer Workflows
+SDK targets. Agent-led review is required for these cases; see the bundled procedure.
+Missing workspace/task files are reported as manual follow-up, not silently fabricated.
+
+Custom publication hooks and unresolved hook expressions block adding publish-on-build.
+Existing build/publication hooks are preserved, not authorized for execution: review
+their network/deployment effects before any validation build, even in a disposable copy.
+
+Apply keeps originals in memory for rollback and checks for concurrent changes. There
+are no intentional persistent backups, network access, package installs, builds, host
+execution or Azure operations. Inspect and back up configuration through your approved
+process when required. Do not run concurrently with another editor/host modifying the same files.
+
+**Interrupted-write warning:** temporary files use `.<original filename>.<random>` beside
+the original. Forced termination can bypass cleanup and leave credentials in
+`.local.settings.json.*`. Before applying, verify that source-control and deployment
+exclusions cover these temporary names, not just `local.settings.json`. Inspect for
+leftovers before committing or packaging, and remove only confirmed migration-owned
+files through your approved secret-handling process without displaying their contents.
+
+Existing access restrictions are copied before temporary files receive configuration
+bytes: Windows security descriptors (including inheritance protection and integrity
+labels), or Linux ownership, permissions and access-control extended attributes.
+Application blocks when metadata cannot be preserved; other POSIX platforms and
+encrypted Windows filesystem files require manual migration.
+
+For later deployment, the Azure app settings must include both
+`LOGIC_APPS_CUSTOMCODE_DOTNETVERSION=net10.0` and `FUNCTIONS_INPROC_NET8_ENABLED=1`.
+The .NET 8 host flag is still required for .NET 10 custom code. The helper requires
+that host flag before migration and preserves it.
+
+Deployment through the Logic Apps extension in VS Code copies these settings to Azure.
+If deploying through a pipeline, explicitly include both application settings in its
+deployment configuration. A local settings file alone does not configure the Azure app.
+Verify the deployed runtime separately. The helper reports these prerequisites and
+performs no Azure changes.
+
+The skill preserves library output and does not create `Program.cs`: a library `Main()`
+does not run automatically. Source/API compatibility remains a build/runtime check.
+
+Run the bundled standard-library tests:
+
+```powershell
+python -m unittest discover -s ".\tests" -v
+```
+
+The tests exercise synthetic project configurations and failure behavior, not real
+workflow execution or production support. The package baseline comes from inspected
+Workflows SDK 1.4.0 targets and Worker 2.51.0 package metadata. The updated 1.4.1 target
+still requires restore/build/runtime verification. The announcement above
+documents .NET 10 custom-code support; verify the selected local/deployed runtime separately.
+
+## Provenance
+
+Adapted from the MIT-licensed
+[custom-code-net10 skill at commit 2ee2905](https://github.com/wsilveiranz/custom-code-net10/tree/2ee2905c84b2589972a354f0006a036420770ce0/skills/logicapps-custom-code-net10-migration).
+The helper and initial 30 regression tests came from that revision. This contribution
+adds review-driven target matching, publication side-effect and access-control safeguards
+with additional regression tests.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/logicapps-custom-code-net10-migration/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/logicapps-custom-code-net10-migration/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/logicapps-custom-code-net10-migration/SKILL.md
+- **SHA256_FINGERPRINT**: `9e7278cfb919258e8e89c3dd5142b7316a2ecee9d0796303eddf793cf3d8c7f4`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:36.345632+00:00
+---
+
+**description**: Migrate Azure Logic Apps Standard local-function custom-code projects from .NET 8 to .NET 10. Use for legacy Logic Apps custom-code workspace upgrades, project/package configuration, custom-worker settings, publication, and integrated VS Code debugging. Not for ordinary .NET applications, standalone Azure Functions, Consumption workflows, or cloud deployment.
+
+# Logic Apps custom code .NET 10 migration
+
+Read [the migration procedure](references/migration.md) before editing. Resolve bundled
+files relative to this skill, not the target repository. Python 3.11+ is required only
+for the helper; do not install dependencies or start services merely by activating this skill.
+
+## Procedure
+
+1. Establish the solution root, custom-code `.csproj`, and Logic Apps `host.json` root.
+   Infer existing names/layout; ask only about ambiguous project selection or effects.
+   Read repository instructions and affected configuration, including dirty changes,
+   inherited build/package/SDK settings, workspace and tool paths. Do not inspect C#
+   contents unless separately authorized to diagnose a build failure.
+2. Run the bundled helper in its default dry-run mode:
+
+   ```powershell
+   python "<skill root>\scripts\migrate.py" --root "<solution root>"
+   ```
+
+   Use `--project "<csproj path>"` to select among multiple custom-code projects.
+   The helper resolves `LogicAppFolderToPublish`; it does not require `Functions`
+   or `LogicApps` folder names. Read all reported blockers/warnings. It prints no
+   settings values and writes nothing in dry-run mode.
+   Default edits cover framework/SDK/publication/runtime alignment, not reference
+   dependency parity. Preserve absent Worker packages and existing debugger configuration.
+   Use `--integrated-debug` only when coordinated launching is requested/needed.
+3. For a requested migration, apply the reviewed plan with the same coordinates and
+   `--apply`. Do not apply for a comparison/plan-only request. The helper guards changed
+   files and rolls back its own completed writes on failure; it is not an atomic
+   multi-file transaction or a persistent backup. Preserve unrelated user edits.
+4. If the helper refuses central/conditional/imported configuration, newer unreviewed
+   SDK targets, or an unfamiliar debugger/layout, do not bypass the guard. Read the
+   owning configuration, resolve scope with the user when shared projects are affected,
+   and make targeted agent edits using repository tools. Never claim universal helper
+   coverage. Repeat the dry run to check idempotency for supported layouts.
+5. Validate with the repository's build/analyzers and approved package source. Use the
+   exact SDK selected by VS Code, not just PATH. Verify assembly/dependency publication
+   and generated local-function metadata. Review custom build/publication hooks and
+   obtain separate authorization for any deployment/network effects before building;
+   a disposable copy does not neutralize those hooks. Obtain permission for trigger/connector
+   effects before host startup or workflow execution. Follow the installed Logic Apps
+   runtime skill/procedure when available; otherwise perform ownership-aware VS Code
+   launch and verify actual execution, not just debugger attachment.
+   If the SDK's directory scan fails on a clean build, rerun the helper dry run/apply
+   with `--ensure-output-directory`, then repeat the failed build. Do not introduce
+   the guard as a universal framework requirement. Resolve genuine missing-dependency
+   errors individually; do not add Worker/HTTP/telemetry packages just to match a sample.
+6. Report changed configuration, dry-run/apply/tests, and separate states:
+   configuration migrated, build verified, local-function execution verified.
+   State blockers plainly. Always report the later deployment prerequisite:
+   Azure app settings must carry `LOGIC_APPS_CUSTOMCODE_DOTNETVERSION=net10.0` and
+   `FUNCTIONS_INPROC_NET8_ENABLED=1`. Deployment through the Logic Apps extension
+   in VS Code copies these settings; pipelines must explicitly include them.
+   A local settings file alone does not configure Azure. Do not deploy, change
+   Azure app settings, or assert cloud/production support.
+
+## Invariants
+
+- Only upgrade the custom-code library; preserve host .NET 8 configuration.
+- Preserve names, workflows, connections, authentication, storage, unrelated dependencies,
+  workspace/task conventions, comments and secret exclusions.
+- Do not add sample-only HTTP, telemetry or framework references.
+- Do not introduce `Program.cs` or an executable worker host. Library `Main()` is
+  not automatically executed; source preservation is intent, not verified API compatibility.
+- No C# rewrites, SDK installation, restore, host start, Azure mutation or persistent
+  secret backups inside the configuration helper.
+- Do not silently downgrade packages, rewrite shared package management, suppress
+  restore/build errors, copy .NET 10 DLLs to `net472`, or manufacture passing checks.
+
+Installation and test commands are in [README.md](README.md).
+Bundled resources include the [migration helper](scripts/migrate.py),
+[regression tests](tests/test_migrate.py), and [MIT license](LICENSE).
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/logicapps-custom-code-net10-migration/references/migration.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/logicapps-custom-code-net10-migration/references/migration.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/logicapps-custom-code-net10-migration/references/migration.md
+- **SHA256_FINGERPRINT**: `b1c5c1c3b1540f2e6179c9a70a5bffb350fc9fe91cc65a3219e523740c1cd357`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:36.359684+00:00
+---
+
+# Required migration procedure
+
+## Recognize and scope the project
+
+The custom code is an SDK-style **library** with a Workflows SDK package and
+`LogicAppFolderToPublish`. The destination contains `host.json` with the
+`Microsoft.Azure.Functions.ExtensionBundle.Workflows` bundle and local
+`APP_KIND=workflowapp` settings. These checks prevent ordinary .NET/Functions upgrades.
+Do not assume that a folder named Functions contains a standalone Function app.
+
+Inspect workspace roots, existing tasks and effective tool settings. Check inherited
+`global.json`, `Directory.Build.*`, central package management and imported/conditional
+properties before edits. Multiple projects or shared SDK/package files need explicit
+selection and impact review. The helper intentionally stops rather than guessing.
+
+The [November 5 announcement](https://techcommunity.microsoft.com/blog/IntegrationsonAzureBlog/logic-apps-standard-custom-code-now-supports-net-10/4570808)
+documents .NET 10 custom-code support with VS Code extension 5.1013.2 and Logic Apps
+Standard extension bundle 1.194.31. Verify these release prerequisites before migration.
+
+Do not display local settings, payloads or credential-bearing diffs. The helper reports
+filenames and change categories, never local setting values. Its temporary writes may
+contain local settings; normal completion removes them after replacement rather than
+keeping persistent backups. Forced termination can bypass cleanup and leave files named
+`.<original filename>.<random>`, including credential-bearing `.local.settings.json.*`.
+Before applying, verify source-control and deployment exclusions cover those names;
+an exclusion matching only `local.settings.json` is insufficient. Inspect for leftovers
+before committing or packaging and remove only confirmed migration-owned files through
+the approved secret-handling process, without displaying their contents. Preserve
+existing ignore rules; the helper does not add exclusions automatically.
+
+Before any validation build, inspect custom targets, publication dependencies and
+repository build tasks for network/deployment effects. The helper refuses to introduce
+publish-on-build when custom publication hooks or unresolved hook expressions exist.
+It preserves an existing publish-on-build hook but reports custom publication hooks;
+preservation is not permission to run them. Review or disable external effects through
+a separately authorized change before building, including in a disposable copy.
+
+Replacement writes preserve Windows ownership, group, discretionary ACLs, integrity labels
+and ACL inheritance protection, or Linux ownership, mode and access-control extended
+attributes. Access restrictions are applied before configuration bytes enter the temporary
+file. Unreadable/unwritable access metadata, encrypted Windows filesystem files and other
+POSIX platforms block application rather than fall back to mode-only replacement.
+
+## Required configuration alignment
+
+| Configuration | Change |
+|---|---|
+| `TargetFramework` | `net8`/`net8.0` to `net10.0`; library identity/layout unchanged |
+| Workflows SDK | Upgrade to `1.4.1`; review newer targets before adopting |
+| Worker SDK | At least reviewed `2.0.7`; preserve already newer stable versions |
+| `CopyLocalLockFileAssemblies` | `true` |
+| Publish on build | Preserve existing hook; block insertion when custom publication hooks need side-effect review |
+| Host `Values.LOGIC_APPS_CUSTOMCODE_DOTNETVERSION` | Exactly `net10.0` |
+| Host `Values.FUNCTIONS_INPROC_NET8_ENABLED` | Keep `1`; still required for the host, and a helper prerequisite |
+| Functions editor deploy path | Replace only a `net8`/`net8.0` path component |
+
+Versions here are a selected migration baseline, not an independently established universal minimum.
+Workflows SDK 1.4.1 replaces the buggy 1.4.0 release. Verify availability from the approved
+NuGet feed before applying the migration or restoring. Restore/build/runtime validation
+of 1.4.1 is still required.
+
+## Conditional dependencies, build safeguards and debugging
+
+If Worker is already directly referenced, the helper aligns it to reviewed `2.51.0`
+while preserving newer stable versions. It does not add a missing Worker reference solely
+because the framework changes. Add dependencies only when application/build evidence
+requires them; source preservation does not establish compatibility.
+
+Worker Core 2.51.0 depends on Microsoft.Extensions.Hosting 10.0.0. When a direct Worker
+reference is selected, the helper raises existing direct Logging/Logging.Abstractions
+pins below `10.0.0`, preserving newer versions. Without a direct Worker reference, it
+preserves logging pins. Preserve dependencies rather than indiscriminately deleting them.
+Other direct framework-family pins can also cause restore conflicts: inspect actual
+restore diagnostics and align only affected dependencies. Do not blanket-upgrade packages
+with independent versioning, such as Microsoft.Extensions.Azure.
+
+Do not add ApplicationInsights.WorkerService, Http.AspNetCore or an ASP.NET Core framework
+reference solely for this migration. Existing application requirements remain intact.
+
+Add this guard **only if a clean build fails because the function-JSON scan directory
+is missing**, using helper flag `--ensure-output-directory`. The failure was observed
+with Workflows SDK 1.4.0; do not assume 1.4.1 requires the workaround.
+
+```xml
+<Target Name="EnsureOutputDirectory" BeforeTargets="DeleteFunctionJsonFoldersTarget">
+  <MakeDir Directories="$(MSBuildProjectDirectory)\bin\$(Configuration)\$(TargetFramework)"
+           Condition="!Exists('$(MSBuildProjectDirectory)\bin\$(Configuration)\$(TargetFramework)')" />
+</Target>
+```
+
+`FindFunctionJsonFolders` is a task, not a target. The helper repairs the known ineffective
+hook only when its contents match that narrow workaround; it refuses conflicting custom
+targets. Repairing an existing guard preserves its intended safeguard; a missing guard
+is not inserted by default. It leaves unrelated custom targets, including dead sample copy targets, alone
+and reports misleading `net472` targets for review.
+
+## Preserve host and workspace configuration
+
+Do not alter existing `FUNCTIONS_WORKER_RUNTIME=dotnet`,
+`FUNCTIONS_INPROC_NET8_ENABLED=1`, `APP_KIND=workflowapp`, or multi-language worker
+settings. Do not add an in-process .NET 10 flag or set the Logic Apps host to
+`dotnet-isolated`. Preserve host.json, connections, authentication, workflow definitions,
+ignore rules, design-time settings and workspace/task names.
+
+Do not add `Program.cs` or convert the library into a standalone worker host. A `Main()`
+method is not automatically executed with `OutputType=Library`. Preserve existing
+implementations/workflows unless separately authorized source changes are required by
+actual diagnostics; do not promise they compile or execute unchanged before testing.
+
+The helper preserves source project paths and machine-specific Node configuration.
+If moving the solution, explicitly update `ProjectDirectoryPath` in runtime and
+design-time settings and verify the Node executable. Relocation is not an implicit
+side effect of a target-framework migration.
+
+The helper leaves all debugger configuration unchanged by default. If coordinated
+workflow/custom-code launching is requested/needed, use `--integrated-debug` in dry run
+and apply. This adds a `logicapp` launch entry with both runtimes `coreclr` and
+`isCodeless=true`, retaining old attach configurations. An existing integrated entry for
+the default `coreclr` host is updated without overwriting unrelated properties; ambiguous
+multiple candidates require manual selection. Select that entry for coordinated debugging.
+The difference between the compared projects is not a universal .NET 10 requirement.
+
+The Functions deployment path is not the Logic Apps publication path. Shared missing
+predeploy tasks need separate review if deployment is requested; no deployment is authorized
+by this skill. Preserve `-nodeReuse:false` and managed Node/.NET PATH conventions.
+
+## Verification gates
+
+1. Inspect the **resolved VS Code-selected** .NET and Core Tools executables. Verify SDK
+   10, .NET 10 runtime, existing .NET 8 host runtime, and any already-required ASP.NET
+   runtime. Review effective user/workspace/folder tool settings; do not inject literal
+   environment-variable expressions into settings and assume universal expansion.
+2. Restore using an explicit approved NuGet configuration/source. Respect organizational
+   proxy policy; do not substitute nuget.org, install an SDK or accept new licensing
+   terms without the applicable authorization. The helper never restores.
+3. Run the smallest repository build/analyzer command using that executable. For example:
+
+   ```powershell
+   & $dotnet restore $project --configfile $approvedNuGetConfig
+   if ($LASTEXITCODE -ne 0) { throw 'Restore failed.' }
+   & $dotnet build $project --configuration Debug --no-restore -nodeReuse:false
+   if ($LASTEXITCODE -ne 0) { throw 'Build failed.' }
+   ```
+
+   Resolve genuine package/API failures; do not suppress warnings, exclude functions or
+   rewrite C# without separately authorized source changes.
+4. Test a clean build in a safe disposable copy. SDK cleanup removes `lib\custom`; do
+   not clean another active host's output. If the SDK scan directory is missing, review
+   and apply `--ensure-output-directory`, then repeat the failed build. Do not use this
+   flag to mask unrelated failures. Confirm `<host>\lib\custom\net10.0` contains
+   the **original** project assembly/dependencies and generated per-function metadata
+   is present under `<host>\lib\custom`. Inspect language/library references and function
+   identities. `Functions\bin` and standalone `functions.metadata` alone are insufficient.
+5. Confirm safe local trigger/connection effects before starting the host. Open the
+   existing multi-root workspace, run the custom-code build task, launch the integrated
+   debugger if chosen (otherwise preserve a working launch/attach route), and verify
+   host readiness and function discovery. Execute an appropriate
+   existing workflow through its supported trigger and inspect actual local-function
+   results; use original identities and non-sensitive fixtures.
+6. Stop only task-owned sessions/services after verification unless asked to retain them.
+   Report configuration, build and execution evidence separately, including skipped checks.
+
+## Later deployment prerequisite (report only)
+
+For Azure execution, the deployed Logic Apps **application settings** must carry both
+`LOGIC_APPS_CUSTOMCODE_DOTNETVERSION=net10.0` and `FUNCTIONS_INPROC_NET8_ENABLED=1`.
+The .NET 8 host flag remains required even though the custom code targets .NET 10.
+
+Deployment through the Logic Apps extension in VS Code copies these settings to Azure.
+Pipeline deployments must explicitly include both application settings. A local settings
+file alone does not configure the Azure app. Report these prerequisites even for
+local-only migration, distinguishing them from completed local changes.
+
+Verify that the intended deployed runtime supports .NET 10 custom code separately.
+Do not change Azure resources or deployment/IaC settings as a side effect of this skill.
+Any such mutation needs a separately scoped and authorized task with target/environment
+verification. Generated assemblies and metadata establish neither cloud support nor a
+successful local/deployed run.
+
+The helper has no universal package/host support guarantee. Newer Workflows SDK behavior,
+other layouts and deployed-host support need current authoritative validation. The
+announcement above documents .NET 10 support; package versions remain a reviewed
+baseline, and the intended runtime configuration and execution still require verification.
 
 
 ---
@@ -87095,555 +87705,3 @@ Based on the documented workflows, provide specific guidance for implementing ne
 **Conclusion:**
 Conclude with a summary of the most important patterns that should be followed when
 implementing new features to maintain consistency with the codebase."
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/prompt-optimizer/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/prompt-optimizer/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/prompt-optimizer/SKILL.md
-- **SHA256_FINGERPRINT**: `37240cadcb85ebca67c66e70450d7b6344c688daafd6bc370166becb3c40f05b`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.155637+00:00
----
-
-**description**: Turn any rough prompt, half-formed idea, or task description into a finished, ready-to-send prompt optimized for any LLM model inside a chat interface — NOT the API. Use this skill whenever the user wants to write, rewrite, optimize, improve, sharpen, or polish a prompt for chat. Trigger phrases include "rewrite this prompt", "make this a better prompt", "optimize this prompt", "turn this into a prompt", "help me prompt this", "draft a prompt that...", "I want to ask...", or whenever the user pastes a draft prompt and asks for improvements. Also trigger when the user describes a task they plan to send to an LLM model and clearly wants a reusable, well-structured prompt rather than a direct answer. The output is always a single, copy-pasteable prompt in a code block that the user sends as-is — never a template with placeholders.
-
-# Prompt Optimizer
-
-You turn whatever the user gives you — a rough draft, a vague idea, a task description, a paragraph of context — into a single high-quality prompt designed to run inside any chat interface with an LLM model.
-
-This is for **chat interfaces** (Claude, Codex, Copilot, or any other tool/LLM model), not the API. The user is going to paste a single message into chat. There is no system prompt, no `effort` parameter, no tool config to tune. The prompt itself has to do all the work.
-
-## Two hard rules
-
-These two rules override everything else in this skill. Read them, then re-read them.
-
-### Rule 1 — No placeholders. Ever.
-
-Never produce a prompt that contains `[paste X here]`, `[your content]`, `{topic}`, `<your_input_here>`, `[INSERT Y]`, `___`, or any other template variable the user is expected to fill in. The user must be able to copy your output, paste it into chat, hit send, and have a working interaction. If the prompt requires content the user hasn't provided yet, the prompt itself must handle that — see Rule 2.
-
-If you catch yourself typing square brackets around a noun, stop. That's a placeholder. Rewrite.
-
-### Rule 2 — Ship a finished prompt no matter what the user gave you.
-
-Two cases:
-
-**Case A — the user gave you real content** (a draft they wrote, code, a document, a list of items, a specific question, an actual product description). Bake that content directly into the optimized prompt. The whole thing — content and instructions — goes inside the code block. The user copies, pastes, sends. Done.
-
-**Case B — the user only described a class of task** ("I want a prompt to triage my emails", "help me prompt an LLM model to review my code", "give me a prompt for writing LinkedIn posts about my launches"). Write the prompt as a complete, self-contained instruction that works on its own. End the instruction by either:
-- Asking the LLM model to ask the user for the specific inputs it needs ("Before drafting, ask me to share the product name, audience, and a link."), or
-- Phrasing the task so the user will naturally provide the input in their next chat turn ("I'm going to paste a batch of emails next. For each one, do the following...").
-
-Either way: no brackets, no fill-in-the-blank, no template syntax. The prompt is final.
-
-## What you output
-
-A single fenced code block containing the optimized prompt. Nothing else. No preamble like "Here's your prompt:". No trailing explanation of what you changed.
-
-The prompt should end with a closing instruction that signals depth of reasoning. Choose one that matches your target model:
-
-For models with reasoning capabilities (like Claude with extended thinking):
-```
-Think before answering (maximum reasoning)
-```
-
-For general-purpose LLM models:
-```
-Take time to think through this carefully before responding.
-```
-
-This signals to the LLM model that a thorough, reasoned approach is needed. The exact wording can be adapted to fit your model's strengths.
-
-## Why these principles work
-
-Modern LLM models read prompts more literally, calibrate their thinking and length to perceived complexity, and reward prompts that are specific, structured, and motivated. The cookbook below is distilled from best practices in LLM prompting across multiple model families. Each rule has a reason. Treat the reasons as the point — apply them with judgment, don't paste them mechanically.
-
-## The rewrite workflow
-
-Work through these in your head before writing the prompt. You don't need to surface them.
-
-1. **Identify the goal.** What does the user actually want produced? A document? A decision? Code? A list? An analysis? Name it concretely.
-2. **Identify the audience and use.** Who reads the output, and what will they do with it? This drives tone and format.
-3. **Decide: Case A or Case B.** Did the user provide the actual content, or just describe a class of task? This decides whether you bake content in or write a self-contained instruction (see Rule 2).
-4. **Spot the gaps.** Audience, format, length, constraints, examples, edge cases — note which are missing.
-5. **Handle the gaps correctly.** If a missing detail is non-essential, make the most useful, most defensible assumption and keep it grounded in what they wrote. If the prompt depends on user-specific inputs they have not provided, follow Rule 2: in Case B, instruct the LLM model to ask for what it needs or phrase the task so the user will provide those inputs in the next turn.
-6. **Pick a structure.** Single-paragraph instruction for simple tasks. XML tags for anything with multiple sections.
-7. **Write the prompt.** Apply the principles below.
-8. **End with the closing line.**
-9. **Scan for brackets.** Before you finalize, re-read your output looking for `[`, `{`, or `<...your...>`-style placeholders. Kill any you find.
-
-## Core principles to apply
-
-### Be clear and direct
-State the task explicitly. Specify the desired output format and any hard constraints up front. If you want above-and-beyond effort, say so — LLM models won't infer it from a vague brief. "Create an analytics dashboard" is weaker than "Create an analytics dashboard with as many relevant features and interactions as possible — go beyond the basics for a fully-featured implementation."
-
-### Explain the why
-When you give an instruction, briefly explain the reason. "Avoid ellipses, because the output will be read aloud by a TTS engine that mispronounces them" lands far better than "Never use ellipses." LLM models generalize well from explanations and follow reasoned instructions more faithfully.
-
-### Tell the LLM model what to do, not what to avoid
-Positive framing outperforms negative framing. "Write in flowing prose paragraphs" beats "don't use bullet points."
-
-### Match prompt style to desired output style
-If you want prose, write the prompt in prose. If you want minimal markdown in the output, use minimal markdown in the prompt. Style leaks through.
-
-### Use XML tags when sections multiply
-When the prompt mixes instructions, context, examples, and input, wrap each in its own descriptive tag — `<instructions>`, `<context>`, `<examples>`, `<input>`. Nest naturally where there's hierarchy. This is the single highest-leverage structuring move for complex prompts. For simple one-shot prompts, skip it; XML on a haiku request is overkill.
-
-### Give the LLM model a role when it sharpens behavior
-A one-line role assignment ("You are a senior product strategist at a B2B SaaS company") tightens tone and frame. Don't force a role onto every prompt — only when it meaningfully steers the output.
-
-### Use examples for format, tone, or structure
-If the user has any preference about *how* the output should look, include 2–4 examples in `<example>` tags (or wrap multiple in `<examples>`). Examples beat description for steering format. Make them relevant, diverse, and structured. Skip examples when the task is so generic that examples would over-constrain.
-
-### Put long inputs on top, the question on the bottom
-If the prompt includes a long document, transcript, or data dump that the user provided, place it at the top. Research in LLM prompt optimization shows up to ~30% quality lift from this ordering on long-context tasks.
-
-### Ask for grounding in long-document tasks
-For analysis or Q&A over long inputs, instruct the LLM model to first pull relevant quotes into `<quotes>` tags, then answer based on those quotes. This dramatically reduces drift and hallucination.
-
-### Be literal about scope
-LLM models don't always silently generalize. If you want an instruction applied broadly, say "apply this to every section, not just the first one." If you want the LLM model to take action rather than suggest, use imperative verbs ("Edit the function to..." not "Could you suggest improvements to..."). Suggestion-flavored phrasing produces suggestions.
-
-### Trigger deeper reasoning deliberately
-LLM models decide when to allocate reasoning depth. Closing-line instructions nudge them toward deeper engagement with complex problems. Don't add competing thinking instructions earlier in the prompt; they create noise. Let the closing line do its job.
-
-### Self-check for high-stakes outputs
-For code, math, claims, or anything where errors matter, append a verification instruction near the end: "Before you finish, re-read your answer and check it against the criteria above." This catches errors reliably.
-
-## Domain-specific moves
-
-These are sharp tools for specific task types. Apply only when relevant.
-
-**Frontend / design.** LLM models may have ingrained stylistic defaults. If the user is asking for a design, either (a) specify a concrete alternative palette, type system, and structure in detail, or (b) instruct the model to propose 3–4 distinct visual directions before building, so the user picks one. Generic instructions like "make it clean and minimal" often need reinforcement with concrete examples.
-
-**Code review.** Tell the model its job at the finding stage is coverage, not filtering: "Report every issue you find, including ones you're uncertain about or consider low-severity. Include confidence and severity for each finding so a downstream filter can rank them." Avoid soft language like "only flag important issues" — LLM models tend to over-filter without explicit permission.
-
-**Research / analysis.** Encourage hypothesis-tracking: "Develop several competing hypotheses as you gather information. Track confidence levels in your notes. Self-critique your approach periodically." This produces more rigorous synthesis than a flat "research X" prompt.
-
-**Creative writing.** Specify voice, audience, length, constraints, and provide one or two example sentences in the target voice if the user has them. Generic "write a blog post" yields generic prose.
-
-**Document creation (slides, reports).** Ask for design intentionality: "Include thoughtful visual hierarchy, considered typography, and engaging structure." LLM models produce stronger first-pass designs when explicitly invited to prioritize structure and aesthetic intention.
-
-## Output format
-
-Always exactly this:
-
-````
-```
-You are helping with the user's request. If the request is missing essential information, ask a concise clarifying question first. Otherwise, complete the task directly and clearly.
-
-Think before answering (take time to reason through this carefully).
-```
-````
-
-No text before the code block. No text after. No "here you go." No "I added X and Y." Just the prompt.
-
-If the user explicitly asks "what did you change?" *after* they have the prompt, then explain in a follow-up turn. Until they ask, stay silent.
-
-## Examples
-
-These show the no-placeholder rule in action. Notice none of them contain `[paste X here]` or any other template variable.
-
-### Example 1 — Case B (user described a task class, no content given)
-
-**User input:**
-> I want a prompt to summarize my emails
-
-**Your output:**
-
-````
-```
-You are an executive assistant helping me triage email. I'm about to share a batch of emails with you in my next message.
-
-For each email, produce:
-- **Sender + subject** in one line
-- **Summary** — 1-2 sentences, neutral tone, no fluff
-- **Action required** — one of: reply needed, FYI only, schedule, delegate, ignore
-- **Priority** — high / medium / low, based on sender importance and urgency cues
-
-Group the output into three sections in this order: high priority, medium priority, low priority. Within each section, sort by action-required first (reply needed → schedule → delegate → FYI → ignore).
-
-Skip any email that's clearly automated marketing or notification spam — list its sender and subject under a final "Filtered out" section so I can verify.
-
-When you're ready, ask me to paste the emails.
-
-Think before answering (take time to reason through this carefully).
-```
-````
-
-The prompt ends by inviting the user to paste content in the next turn. No `[paste emails here]` block. The user sends this as-is and the LLM responds with "Ready when you are — paste the batch."
-
-### Example 2 — Case B (rough draft prompt, no product details given)
-
-**User input:**
-> can you fix this prompt: "write a linkedin post about my new product launch, make it engaging and not too salesy"
-
-**Your output:**
-
-````
-```
-You are writing a LinkedIn post for me announcing a product launch. The audience is mid-to-senior B2B operators on LinkedIn — they've seen every launch post template and are skeptical of marketing language.
-
-Before you draft, ask me for:
-- The product's name
-- What it does, in plain language
-- Who it's for
-- The 1-2 reasons I built it that aren't obvious from the description
-- A link or destination for the call to action
-
-Once I've answered, write one post that:
-- Opens with a concrete hook in the first 2 lines (a tension, a number, or an unexpected observation — not "I'm excited to announce").
-- Tells a short story or shares a specific insight that led to the product, before naming it.
-- Names what the product does in one plain sentence. No adjectives like "revolutionary", "game-changing", or "powerful".
-- Closes with one clear next step (link, DM, comment) — not a generic "let me know what you think".
-- Sits between 150 and 220 words. Short paragraphs, one idea per line break. No emojis. No hashtags except up to two at the very end if they're genuinely relevant.
-
-Match the voice of someone who's built the thing themselves and is talking to peers, not pitching to strangers.
-
-Think before answering (take time to reason through this carefully).
-```
-````
-
-Instead of a `<product_details>` block with `[paste details here]`, the prompt explicitly tells the LLM model to gather the details by asking. Self-contained, ready to send.
-
-### Example 3 — Case B (technical task, no code given)
-
-**User input:**
-> I need an LLM model to review my python code for bugs
-
-**Your output:**
-
-````
-```
-You're going to review Python code I share with you. Your job at the finding stage is coverage, not filtering — assume a separate pass will rank findings later.
-
-When I paste the code, report every issue you find, including ones you're uncertain about or consider low-severity. For each finding, include:
-- **Location** — file and line number(s)
-- **Issue** — what's wrong, in one sentence
-- **Why it matters** — the concrete failure mode (incorrect output, crash, security risk, race condition, etc.)
-- **Confidence** — high / medium / low
-- **Severity** — high / medium / low
-- **Suggested fix** — a minimal change that addresses the issue
-
-Cover at minimum: logic errors, off-by-one and boundary issues, mutable default arguments, exception handling gaps, race conditions and concurrency issues, resource leaks (files, connections, locks), input validation at trust boundaries, and any deviation from the code's apparent intent.
-
-Do not filter for importance at this stage. It's better to surface a finding that gets filtered out later than to silently drop a real bug.
-
-After listing findings, end with a single-paragraph overall assessment of code quality and the top 3 highest-severity issues to fix first.
-
-Ask me to paste the code when you're ready.
-
-Think before answering (take time to reason through this carefully).
-```
-````
-
-### Example 4 — Case A (real content provided, no follow-up needed)
-
-**User input:**
-> rewrite this so it's clearer: "Hey can you help me figure out whether to take the offer from Stripe vs the one from Anthropic. Stripe is paying 280k base + 60k bonus + 100k stock per year vesting over 4. Anthropic is 250k base + 0 bonus but 800k stock vesting over 4 with 1yr cliff. I care most about long term equity upside, work I'd be excited about, and not having to relocate. Stripe wants me in SF 3 days a week, Anthropic is fully remote."
-
-**Your output:**
-
-````
-```
-I'm deciding between two job offers and want your help thinking it through carefully.
-
-**My priorities, in order:**
-1. Long-term equity upside
-2. Work I'd be excited about
-3. Avoiding relocation
-
-**Offer A — Stripe**
-- $280k base
-- $60k annual bonus
-- $100k/year stock, vesting over 4 years
-- Hybrid: in SF 3 days a week
-
-**Offer B — Anthropic**
-- $250k base
-- No annual bonus
-- $800k stock, vesting over 4 years with a 1-year cliff
-- Fully remote
-
-Walk me through:
-1. The total expected compensation under each, year-by-year over 4 years, including a sensitivity range on equity outcomes (say: bear / base / bull cases for each company).
-2. How each offer scores against my three priorities, ranked.
-3. The non-obvious risks of each (what each offer's structure says about the company's confidence, how cliffs and vesting interact with my optionality, what the relocation requirement implies about future flexibility).
-4. Your overall recommendation and the single biggest reason it could be wrong.
-
-Be direct. Don't hedge with "it depends on what you value" — I told you what I value.
-
-Think before answering (take time to reason through this carefully).
-```
-````
-
-The user gave the actual numbers and constraints. They're baked in. No `[insert offer details]` block. The prompt is done.
-
-### Example 5 — simple task
-
-**User input:**
-> write me a haiku about coffee
-
-**Your output:**
-
-````
-```
-Write a haiku about coffee. Follow the traditional 5-7-5 syllable structure. Aim for a single concrete image rather than a general statement about coffee — something a reader could picture. Avoid clichés like "morning steam" and "liquid gold".
-
-Think before answering (take time to reason through this carefully).
-```
-````
-
-Notice the simple task doesn't get XML tags, a role, or a sectioning — and there's nothing to bake in. Apply structure proportional to the task; over-engineering a haiku prompt is its own failure mode.
-
-## Edge cases
-
-**The user pastes a prompt and asks "is this good?"** They want it rewritten regardless. Treat it as a rewrite request and return the optimized version in a code block. No commentary.
-
-**The user gives you a system prompt or API-style prompt with parameters.** Strip out API-only mechanics (effort levels, thinking config, tool definitions), translate the intent into a single user-message prompt for a chat app, and end with the closing line.
-
-**The user wants the prompt to ask the LLM model to do many small things.** Combine into a single coherent prompt with clear sections rather than a numbered list of micro-tasks. LLM models handle long, well-structured asks well.
-
-**The user's input is already excellent.** Tighten where you can, add the closing line, return it. Don't add ceremony for its own sake.
-
-**The user input is in a language other than English.** Write the optimized prompt in the same language. The closing line can be adapted to the target language while preserving the instruction to reason carefully.
-
-**You're tempted to write a `<context>` or `<input>` block expecting the user to fill it.** Don't. That's Rule 1. Either bake the actual content in (Case A) or tell the LLM model to ask the user for it (Case B).
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/protobuf-grpc-api-review/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/protobuf-grpc-api-review/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/protobuf-grpc-api-review/SKILL.md
-- **SHA256_FINGERPRINT**: `72e332e9c221abea1de74b770f075653d66f27caf6a93228fbc5b5c0ebedd346`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.220147+00:00
----
-
-**description**: Review Protocol Buffer (.proto) and gRPC API changes for wire and JSON compatibility, safe schema evolution, rollout hazards, and RPC contract quality. Use when reviewing proto diffs, adding or changing messages and services, planning migrations, or diagnosing cross-version failures.
-
-# Protobuf and gRPC API Review
-
-Review `.proto` and related gRPC changes as long-lived contracts. Distinguish what the wire format permits from what generated clients, JSON users, stored data, and mixed-version deployments can safely tolerate.
-
-## Start With the Compatibility Envelope
-
-Before deciding whether a change is safe, determine:
-
-- the old and new schema, not only the final file
-- whether payloads use binary protobuf, ProtoJSON, text format, or more than one encoding
-- whether messages persist in databases, queues, logs, caches, or events
-- whether clients exist outside the repository or release independently
-- the protobuf syntax or edition and the generated languages/runtime versions
-- whether HTTP/JSON transcoding, reflection, service config, or schema registries expose the contract
-- the deployment order, rollback window, and duration of mixed-version operation
-
-If context is missing, state the assumption and lower confidence. Do not call a change backward-compatible from the new schema alone.
-
-## Review Workflow
-
-### 1. Inventory Contract Changes
-
-Compare the old and new definitions by fully qualified symbol. Record:
-
-- message fields: number, name, type, cardinality, presence, `oneof`, defaults, and relevant options
-- enums: value name, number, aliases, reservations, and zero value
-- services: package, service, method, request and response types, and streaming mode
-- generated API inputs: package options, outer class names, namespaces, and custom options
-
-Ignore formatting-only changes after confirming they do not alter descriptors or generated APIs.
-
-### 2. Evaluate Four Compatibility Dimensions
-
-Assess each affected symbol independently:
-
-1. **Binary wire** — can old and new readers parse both old and new bytes without corruption or loss?
-2. **Named formats** — do ProtoJSON, text-format, REST-transcoded, or name-based consumers still work?
-3. **Source and generated API** — will regenerated clients compile and preserve presence, enum, and accessor behavior?
-4. **Behavior and operations** — do status codes, retry safety, deadlines, authorization, streaming, and resource bounds preserve the RPC contract?
-
-Read [protobuf compatibility rules](references/protobuf-compatibility.md) for field, enum, presence, `oneof`, and serialization changes. Read [gRPC contract review](references/grpc-contract-review.md) when services, methods, or runtime behavior change.
-
-### 3. Trace Mixed-Version Scenarios
-
-For every non-trivial change, reason through these paths:
-
-- old writer -> new reader
-- new writer -> old reader
-- old reader modifies and reserializes a new message
-- rollback after new writers have emitted new values
-- persisted old data read after the migration
-
-For conditionally compatible changes, identify the exact writer constraint and the point at which it may be relaxed. A safe rollout commonly requires deploying readers before writers and retaining the old field or method until rollback is no longer needed.
-
-### 4. Review Repository Evidence
-
-Use the repository's own tooling when available:
-
-- compile descriptors with the project's `protoc`, Buf, Gradle, Maven, Bazel, or language-specific task
-- run configured breaking-change or lint checks
-- inspect generated-code diffs only when they are committed by repository convention
-- search call sites for exhaustive enum switches, presence assumptions, JSON field names, method paths, status handling, and retry configuration
-- look for compatibility fixtures or descriptor baselines before proposing a new mechanism
-
-Do not claim a check passed unless you ran it. If a required tool or baseline is unavailable, name the unverified risk.
-
-### 5. Produce an Actionable Review
-
-Lead with one verdict:
-
-- **Compatible** — safe within the stated compatibility envelope
-- **Rollout-dependent** — parseable, but safe only with explicit sequencing or value constraints
-- **Breaking** — causes wire, named-format, source, or behavioral incompatibility
-- **Insufficient context** — the old schema, encoding, consumers, or deployment model is unknown
-
-Then provide only evidence-backed findings. For each finding include:
-
-```text
-[severity] Short title
-Location: file and symbol or changed lines
-Dimension: binary | JSON/text | source | behavior/operations
-Change: old contract -> new contract
-Impact: concrete failing mixed-version scenario
-Remediation: smallest safe schema change or staged migration
-```
-
-Use **blocker** for corruption, unparsable data, tag reuse, or an unavoidable production break; **high** for likely cross-version data loss or unsafe RPC behavior; **medium** for bounded compatibility or operability risks; and **low** for maintainability issues that do not break the contract. Do not inflate style preferences into compatibility findings.
-
-Conclude with:
-
-- a compact compatibility matrix for changed symbols
-- the rollout/rollback sequence if migration is required
-- targeted tests that would prove the remaining assumptions
-
-## Default Safety Principles
-
-- Never reuse a field or enum number, even after deletion; reserve deleted numbers and usually names.
-- Treat field-number changes and moving fields into an existing `oneof` as breaking.
-- Treat type and cardinality changes as migrations, even when their binary wire types are compatible.
-- Remember that adding a field or enum value can still break generated code or exhaustive consumers.
-- Review ProtoJSON separately: names and unknown-field behavior make its compatibility envelope narrower than binary protobuf.
-- Preserve unknown fields through read-modify-write paths when forward compatibility depends on them.
-- Prefer additive evolution: add a new field or RPC, migrate readers and writers, deprecate the old contract, then remove it only after the compatibility window closes.
-- Never recommend retries for a state-changing RPC without establishing idempotency or a deduplication mechanism.
-- Require realistic client deadlines and cancellation-aware server work for production RPCs.
-
-## Avoid False Positives
-
-- Do not require every service to use streaming, retries, health checks, or HTTP transcoding.
-- Do not flag a new optional field as breaking solely because old clients ignore it.
-- Do not call a wire-compatible type change safe without checking value ranges and rollout order.
-- Do not assume a renamed field is harmless when JSON, text format, reflection, or generated source APIs are consumers.
-- Do not demand reservations for fields that never shipped; ask for release history when that distinction matters.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/protobuf-grpc-api-review/references/grpc-contract-review.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/protobuf-grpc-api-review/references/grpc-contract-review.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/protobuf-grpc-api-review/references/grpc-contract-review.md
-- **SHA256_FINGERPRINT**: `f4fdb69f916c2468f1f503e9b80d49dc4e0ffc24a1dc3ad06098fc32e52f1afe`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.142663+00:00
----
-
-# gRPC Contract Review
-
-Use this reference when a change affects a service, method, request/response behavior, or client/server policy. Apply only the checks relevant to the change.
-
-## Method Identity and Shape
-
-The fully qualified package, service, and method form the RPC identity. Renaming or moving any of them changes the method path and breaks existing clients, routing, authorization policies, observability, and service configuration.
-
-Treat these as breaking contract changes:
-
-- removing or renaming a service or method
-- changing request or response message type
-- changing unary, client-streaming, server-streaming, or bidirectional-streaming mode
-- moving a service to another protobuf package
-
-Prefer adding a new method, migrating callers, deprecating the old method, and removing it only after the compatibility window closes. Review request and response message changes with the protobuf compatibility rules.
-
-## Deadlines and Cancellation
-
-- Clients should set a realistic deadline; gRPC does not set one by default.
-- The deadline must cover expected network and processing latency and be validated against production or load-test evidence.
-- Servers must stop spawned work when the call is cancelled or its deadline expires.
-- Downstream calls should receive the remaining deadline rather than starting a fresh full timeout. Confirm whether propagation is automatic or must be enabled in the implementation language.
-- Do not convert a deadline or cancellation into a misleading application status.
-
-Flag new unbounded calls, swallowed cancellation, or downstream work that can outlive the originating request when they create resource or correctness risk.
-
-## Retries and Idempotency
-
-Before recommending or approving a retry policy, answer:
-
-1. Can the operation be repeated without duplicating a state change?
-2. If the result is ambiguous, is there an idempotency key or server-side deduplication window?
-3. Which status codes are retryable for this method?
-4. Are attempts bounded by max attempts, exponential backoff, jitter, throttling, and the overall deadline?
-5. Are retry attempts and final call outcomes observable?
-
-Retries are enabled in gRPC implementations, but there is no default general retry policy; transparent retries can still occur in limited cases. A response header commits the RPC and ends gRPC retry attempts. Never treat a mutating RPC as retry-safe merely because it returns `UNAVAILABLE` or `DEADLINE_EXCEEDED`: the server may already have applied the change.
-
-## Status Codes Are Part of the API
-
-Review status changes as observable behavior. Prefer the most specific stable code and keep error details free of secrets.
-
-- `INVALID_ARGUMENT`: invalid regardless of system state
-- `FAILED_PRECONDITION`: retry only after state is explicitly fixed
-- `ABORTED`: retry the larger transaction or read-modify-write sequence
-- `UNAVAILABLE`: transient failure where retrying this call may be appropriate
-- `RESOURCE_EXHAUSTED`: quota or capacity exhausted
-- `UNAUTHENTICATED`: credentials are missing or invalid
-- `PERMISSION_DENIED`: authenticated caller lacks permission
-- `NOT_FOUND`: resource does not exist, or deliberate existence hiding is part of the authorization contract
-
-Avoid replacing domain failures with `UNKNOWN` or `INTERNAL`. Check client logic, retry policies, metrics, and alerts before changing an established code.
-
-## Streaming Contracts
-
-For streaming methods, establish and test:
-
-- message ordering and whether duplicates are possible
-- half-close and completion semantics
-- backpressure and bounded buffering
-- per-message and total stream size limits
-- cancellation and cleanup on both peers
-- authentication lifetime for long-lived streams
-- resume, replay, or checkpoint behavior after interruption
-
-Do not add streaming as a default improvement; require a concrete need and an explicit lifecycle contract.
-
-## Security and Resource Boundaries
-
-- Enforce authentication and authorization per method; update policy maps that enumerate paths whenever a method is added.
-- Use transport security appropriate to the deployment, and avoid logging credentials or sensitive metadata.
-- Bound request size, response size, concurrency, fan-out, and expensive repeated fields where input is untrusted.
-- Validate before starting irreversible or costly work.
-- Check that reflection, health services, and debug endpoints are exposed only as intended.
-
-## Behavioral Evolution
-
-Schema compatibility does not protect semantic contracts. Review changes to:
-
-- required business fields represented as optional protobuf fields
-- pagination tokens, ordering, filters, and consistency guarantees
-- idempotency and deduplication keys
-- partial success and batch error semantics
-- default limits, quotas, and server-side timeouts
-- error details and redaction
-
-For a behavioral change, require documentation and tests that cover old clients during rollout and rollback.
-
-## Targeted Verification
-
-- invoke old generated clients against the new server and new clients against the old server when mixed versions are supported
-- test the exact method path through proxies, gateways, and authorization middleware
-- exercise deadlines, cancellation, and downstream propagation
-- inject retryable and non-retryable failures, including an ambiguous failure after a state change
-- test streaming cancellation, slow consumers, large messages, and interrupted streams where applicable
-- verify metrics distinguish attempts from logical calls
-
-## Primary References
-
-- [gRPC deadlines](https://grpc.io/docs/guides/deadlines/)
-- [gRPC retry](https://grpc.io/docs/guides/retry/)
-- [gRPC status codes](https://grpc.io/docs/guides/status-codes/)
-- [gRPC authentication](https://grpc.io/docs/guides/auth/)

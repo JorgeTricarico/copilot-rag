@@ -1,7 +1,7 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-08T05:16:52.549564+00:00",
-  "total_documents": 2078,
+  "last_sync_utc": "2026-11-09T05:28:40.596294+00:00",
+  "total_documents": 2089,
   "documents": {
     "anthropics_skills::README.md": {
       "doc_id": "anthropics_skills::README.md",
@@ -3968,10 +3968,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/workshop-ta.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/workshop-ta.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "9dbaead73f14d9b86cba583bb0a0711600123b5d",
-      "content_sha256": "7afe376e11d2bf39c0073e30d135c085c85659f82bca4f67324e134cec2a7c92",
-      "word_count": 1302,
-      "last_updated_utc": "2026-10-21T03:45:06.352897+00:00",
+      "git_blob_sha": "860f4a3b13b22b083215c208cfe4e6f60274e23f",
+      "content_sha256": "f13d7034c7a1ca1434364fb03c58201d35a9b72924ba8e30e3f89947e4d206cb",
+      "word_count": 1375,
+      "last_updated_utc": "2026-11-09T05:28:36.229457+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_workshop-ta.agent.md"
     },
     "github_awesome-copilot::instructions/a11y.instructions.md": {
@@ -8214,10 +8214,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/bench-read/SKILL.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/bench-read/SKILL.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "665a3a99a8d83e9f62cf5e88eaca1375d77d70ba",
-      "content_sha256": "46bb65f2ca4af77cca8c269e4aee2974a12a2e0d2e50152cee88e917f6a52ebb",
-      "word_count": 467,
-      "last_updated_utc": "2026-10-21T03:45:19.523958+00:00",
+      "git_blob_sha": "5020a1333bac74b79f1a4262d138dcb0ef366229",
+      "content_sha256": "004860fd1d557ea1f14fb12e9aa2d81dd12c599995c931e335505b88e0ec30c7",
+      "word_count": 500,
+      "last_updated_utc": "2026-11-09T05:28:36.211047+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_bench-read_SKILL.md"
     },
     "github_awesome-copilot::skills/bigquery-pipeline-audit/SKILL.md": {
@@ -9963,10 +9963,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/desk-journal/SKILL.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/desk-journal/SKILL.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "3d5aa4f363ae2dbac8256a542b479a1a46ae9b42",
-      "content_sha256": "b2874c7b6d0da1e0bedb7bb02345798d37ccd4d4d64414749169dfcf158960bf",
-      "word_count": 413,
-      "last_updated_utc": "2026-10-21T03:45:24.807087+00:00",
+      "git_blob_sha": "8be96d252e95e7e6c79c7858e173d9f3b2443eed",
+      "content_sha256": "c6933da074d5659d1174b15b26da5d3b9862e70fa56070e44beebc773dea3ecf",
+      "word_count": 431,
+      "last_updated_utc": "2026-11-09T05:28:36.217534+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_desk-journal_SKILL.md"
     },
     "github_awesome-copilot::skills/desk-open/SKILL.md": {
@@ -9974,10 +9974,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/desk-open/SKILL.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/desk-open/SKILL.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "6aaacce8582502b84aba9da0dbbaea79160178c5",
-      "content_sha256": "36473b3e66f2b61ece0cac6603aa9292d724d73b39c2f3fb46ee3714000e6bad",
-      "word_count": 486,
-      "last_updated_utc": "2026-10-21T03:45:24.981720+00:00",
+      "git_blob_sha": "edefc6b6cd596303b21a4353e6a0b649f1c9066f",
+      "content_sha256": "91107e103839432e924c3103889ebdbf2d0f1709410774a53fe12e8ada3df509",
+      "word_count": 568,
+      "last_updated_utc": "2026-11-09T05:28:36.230020+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_desk-open_SKILL.md"
     },
     "github_awesome-copilot::skills/devops-rollout-plan/SKILL.md": {
@@ -12658,11 +12658,33 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/incident-postmortem/SKILL.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/incident-postmortem/SKILL.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "1d3faf2176d90b6dda0a89640e227b2757959bc9",
-      "content_sha256": "292e6bdc1ff42e2e7eeed8ad0c5cd774be35f5daf8e16a58e758bc27162afd8c",
-      "word_count": 1207,
-      "last_updated_utc": "2026-10-21T03:45:31.940358+00:00",
+      "git_blob_sha": "383e3ad302b42b0812514d302094b26f234eade8",
+      "content_sha256": "a74e7da0a5ce51dd7ac495a3db760be8a6f769e6771223018ae88bdf4a025527",
+      "word_count": 1566,
+      "last_updated_utc": "2026-11-09T05:28:36.223062+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_incident-postmortem_SKILL.md"
+    },
+    "github_awesome-copilot::skills/incident-postmortem/references/fishbone-example.md": {
+      "doc_id": "github_awesome-copilot::skills/incident-postmortem/references/fishbone-example.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/incident-postmortem/references/fishbone-example.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/incident-postmortem/references/fishbone-example.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "bf0a5c5a0cb7fff0658840912b58a70bcba3f73b",
+      "content_sha256": "2b0281ba6e2dea40442e5f36328ca360a43c9ee10f75b3651785ce37697f760b",
+      "word_count": 745,
+      "last_updated_utc": "2026-11-09T05:28:36.268381+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_incident-postmortem_references_fishbone-example.md"
+    },
+    "github_awesome-copilot::skills/incident-postmortem/references/postmortem-template.md": {
+      "doc_id": "github_awesome-copilot::skills/incident-postmortem/references/postmortem-template.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/incident-postmortem/references/postmortem-template.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/incident-postmortem/references/postmortem-template.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "428056baef766312540994bdc500ed9c197776b3",
+      "content_sha256": "0d312ef7b5272c541742cff3b250d0dbd77f654da6000aa4b72a2d294e34bf78",
+      "word_count": 570,
+      "last_updated_utc": "2026-11-09T05:28:36.244406+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_incident-postmortem_references_postmortem-template.md"
     },
     "github_awesome-copilot::skills/integrate-context-matic/SKILL.md": {
       "doc_id": "github_awesome-copilot::skills/integrate-context-matic/SKILL.md",
@@ -13752,6 +13774,39 @@
       "word_count": 577,
       "last_updated_utc": "2026-10-21T03:45:33.768364+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_linkedin-post-formatter_references_unicode-charmap.md"
+    },
+    "github_awesome-copilot::skills/logicapps-custom-code-net10-migration/README.md": {
+      "doc_id": "github_awesome-copilot::skills/logicapps-custom-code-net10-migration/README.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/logicapps-custom-code-net10-migration/README.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/logicapps-custom-code-net10-migration/README.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "0655b550256f9876d0366ef1079f664045abf859",
+      "content_sha256": "4572540af9d7b283c5512107c94a8e4e913ae796275f1e3c52c8f03068a98364",
+      "word_count": 948,
+      "last_updated_utc": "2026-11-09T05:28:36.240470+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_logicapps-custom-code-net10-migration_README.md"
+    },
+    "github_awesome-copilot::skills/logicapps-custom-code-net10-migration/SKILL.md": {
+      "doc_id": "github_awesome-copilot::skills/logicapps-custom-code-net10-migration/SKILL.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/logicapps-custom-code-net10-migration/SKILL.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/logicapps-custom-code-net10-migration/SKILL.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "e5ce00d9c034bf1de5238a81a4d019e710112fc3",
+      "content_sha256": "9e7278cfb919258e8e89c3dd5142b7316a2ecee9d0796303eddf793cf3d8c7f4",
+      "word_count": 656,
+      "last_updated_utc": "2026-11-09T05:28:36.345632+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_logicapps-custom-code-net10-migration_SKILL.md"
+    },
+    "github_awesome-copilot::skills/logicapps-custom-code-net10-migration/references/migration.md": {
+      "doc_id": "github_awesome-copilot::skills/logicapps-custom-code-net10-migration/references/migration.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/logicapps-custom-code-net10-migration/references/migration.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/logicapps-custom-code-net10-migration/references/migration.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "a7e062562a63bafa9548e2ca81532d9cc840803c",
+      "content_sha256": "b1c5c1c3b1540f2e6179c9a70a5bffb350fc9fe91cc65a3219e523740c1cd357",
+      "word_count": 1458,
+      "last_updated_utc": "2026-11-09T05:28:36.359684+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_logicapps-custom-code-net10-migration_references_migration.md"
     },
     "github_awesome-copilot::skills/lsp-setup/SKILL.md": {
       "doc_id": "github_awesome-copilot::skills/lsp-setup/SKILL.md",
@@ -18609,11 +18664,55 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/signal-write/SKILL.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/signal-write/SKILL.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "03a3d26a69ab78d0f3d29d9affe957c55bc90def",
-      "content_sha256": "68b213af5a04a672e1eaa61d34e7c87afe06dbbcd79a07cff09420de4711c0ca",
-      "word_count": 742,
-      "last_updated_utc": "2026-10-21T03:45:49.502312+00:00",
+      "git_blob_sha": "3b89194cac543f35632e898ea30c508f13f5ddd8",
+      "content_sha256": "30157eb38bef0e416acd589ab613c63b5aeef6c61fcd5ff7136ac15f3755bfbb",
+      "word_count": 750,
+      "last_updated_utc": "2026-11-09T05:28:36.355876+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_signal-write_SKILL.md"
+    },
+    "github_awesome-copilot::skills/skill-distribution-audit/SKILL.md": {
+      "doc_id": "github_awesome-copilot::skills/skill-distribution-audit/SKILL.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/skill-distribution-audit/SKILL.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/skill-distribution-audit/SKILL.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "56f12fc2ae13dbe14e42e302386ff37c9b20bfa9",
+      "content_sha256": "e6bf983fcfa9553c673ba11f8ae4530c501e5ee4b7e54c927536b8b39421ebf4",
+      "word_count": 816,
+      "last_updated_utc": "2026-11-09T05:28:36.371332+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_skill-distribution-audit_SKILL.md"
+    },
+    "github_awesome-copilot::skills/skill-distribution-audit/assets/copilot-validation/outputs/audit-report.md": {
+      "doc_id": "github_awesome-copilot::skills/skill-distribution-audit/assets/copilot-validation/outputs/audit-report.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/skill-distribution-audit/assets/copilot-validation/outputs/audit-report.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/skill-distribution-audit/assets/copilot-validation/outputs/audit-report.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "96c44303e588ee2126efd51ab93e806c535d3bc4",
+      "content_sha256": "8f4ce8328f1339cf313750bcf00c746c826f553e662f602630bf362d97403624",
+      "word_count": 889,
+      "last_updated_utc": "2026-11-09T05:28:36.388108+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_skill-distribution-audit_assets_copilot-validation_outputs_audit-report.md"
+    },
+    "github_awesome-copilot::skills/skill-distribution-audit/references/copilot-real-data-validation.md": {
+      "doc_id": "github_awesome-copilot::skills/skill-distribution-audit/references/copilot-real-data-validation.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/skill-distribution-audit/references/copilot-real-data-validation.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/skill-distribution-audit/references/copilot-real-data-validation.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "bd92688bf429877476ef4eba45fffc0d49956bfe",
+      "content_sha256": "97ed51683fbdf3a9aae9f04ed1607f2cf1c7926614ca6e4fb522910c26c9cd5e",
+      "word_count": 770,
+      "last_updated_utc": "2026-11-09T05:28:36.405748+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_skill-distribution-audit_references_copilot-real-data-validation.md"
+    },
+    "github_awesome-copilot::skills/skill-distribution-audit/references/worked-example.md": {
+      "doc_id": "github_awesome-copilot::skills/skill-distribution-audit/references/worked-example.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/skill-distribution-audit/references/worked-example.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/skill-distribution-audit/references/worked-example.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "4a0241006491708689512fe1f4fb847a01b84512",
+      "content_sha256": "6b42b3a221fcef2e764ef0d63dcc2023d299227b95de5b6bf3c7fea9821f3e90",
+      "word_count": 207,
+      "last_updated_utc": "2026-11-09T05:28:36.396009+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_skill-distribution-audit_references_worked-example.md"
     },
     "github_awesome-copilot::skills/slang-shader-engineer/SKILL.md": {
       "doc_id": "github_awesome-copilot::skills/slang-shader-engineer/SKILL.md",
@@ -19296,6 +19395,17 @@
       "word_count": 1025,
       "last_updated_utc": "2026-10-21T03:45:50.812145+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_suggest-awesome-github-copilot-skills_SKILL.md"
+    },
+    "github_awesome-copilot::skills/supabase-rls-policies/SKILL.md": {
+      "doc_id": "github_awesome-copilot::skills/supabase-rls-policies/SKILL.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/supabase-rls-policies/SKILL.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/supabase-rls-policies/SKILL.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "8c4096b878a952313cc6b5662f0689ae0dd1c056",
+      "content_sha256": "7927759eccb0474988045a20c0db29095c8dd0c6fd5202dd0b03ccc872785b58",
+      "word_count": 2072,
+      "last_updated_utc": "2026-11-09T05:28:36.407334+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_supabase-rls-policies_SKILL.md"
     },
     "github_awesome-copilot::skills/swift-mcp-server-generator/SKILL.md": {
       "doc_id": "github_awesome-copilot::skills/swift-mcp-server-generator/SKILL.md",
@@ -20094,10 +20204,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/workshop-create/SKILL.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/workshop-create/SKILL.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "f3e18b88d094ee5076509ee484c4c2d093835a09",
-      "content_sha256": "9ab87d22b032ebccc5990ec46242af1b3bf4325c3f48e8a48aeda47c459b9ca9",
-      "word_count": 783,
-      "last_updated_utc": "2026-10-21T03:45:53.205169+00:00",
+      "git_blob_sha": "ae9543f1a7c565453b7ea2854eb36bbab56148b6",
+      "content_sha256": "e0787197ee02cfa7d667ef80aa28fe10fb3da24e6958b9a2c06a98b4e8a8188c",
+      "word_count": 799,
+      "last_updated_utc": "2026-11-09T05:28:36.478929+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_workshop-create_SKILL.md"
     },
     "github_awesome-copilot::skills/write-coding-standards-from-file/SKILL.md": {
@@ -20843,9 +20953,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "101dde6d889523f61f3db50d5127b26654ecbc052131e9cf31b049a64d0544f6",
+      "content_sha256": "9c8b7d04ed9b4007d5e11a72f35dcdfd19bd9caaadc9c1a0a504eacf567ae2ac",
       "word_count": 25483,
-      "last_updated_utc": "2026-11-08T05:16:51.568686+00:00",
+      "last_updated_utc": "2026-11-09T05:28:39.588860+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -20854,9 +20964,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "101dde6d889523f61f3db50d5127b26654ecbc052131e9cf31b049a64d0544f6",
+      "content_sha256": "9c8b7d04ed9b4007d5e11a72f35dcdfd19bd9caaadc9c1a0a504eacf567ae2ac",
       "word_count": 25483,
-      "last_updated_utc": "2026-11-08T05:16:51.594707+00:00",
+      "last_updated_utc": "2026-11-09T05:28:38.703412+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -21370,10 +21480,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-plugins.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/agent-plugins",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "d81175cce3a869bd65ca6acc4f07d3b8384f1e6e",
-      "content_sha256": "1d96dbc94aa112a90f043fdde13e762b45a0a81b46e8a094926387007f352935",
-      "word_count": 2981,
-      "last_updated_utc": "2026-11-04T19:33:25.498236+00:00",
+      "git_blob_sha": "d07f4452c684edd3f7b3be675e50801d789e46eb",
+      "content_sha256": "36f3868a2f14eaf6e9b7c047755f02aec66b0ad302fd601cec6f6f9a8fa33e06",
+      "word_count": 3031,
+      "last_updated_utc": "2026-11-09T05:28:34.040959+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_agent-plugins.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/agent-skills.md": {
@@ -21381,10 +21491,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-skills.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/agent-skills",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "4fcfdefab36defb80527b43eee33d8c18fdfbc18",
-      "content_sha256": "13a1616523cc2453257ff9d23cf71a9466aeb77b89165e87a24a676f80531065",
-      "word_count": 3471,
-      "last_updated_utc": "2026-11-02T21:32:53.200196+00:00",
+      "git_blob_sha": "191fa28c2cb404aaff824a97993c50615c0c2142",
+      "content_sha256": "c9397bec5c502f4c1b38e3743c8ca8a3ed1f3956456b726c2ef57f750dc8484d",
+      "word_count": 3476,
+      "last_updated_utc": "2026-11-09T05:28:34.014233+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_agent-skills.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/copilot-connectors.md": {
@@ -21403,10 +21513,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/custom-agents.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/custom-agents",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "dab9e3704a898ef4e39f89f6f31e7493b5ce6785",
-      "content_sha256": "ef656080b99866bd163ebf9e0fa67c241f1d5325d425eb05544f618c1e481930",
-      "word_count": 2108,
-      "last_updated_utc": "2026-11-02T21:32:53.079756+00:00",
+      "git_blob_sha": "8067a3fd01ef448b72cd73626385e7b26636983e",
+      "content_sha256": "e7d7af9721b66f4a10f4a1b5053998b661023368dffae3f36c9d50fd0967b554",
+      "word_count": 2109,
+      "last_updated_utc": "2026-11-09T05:28:34.061582+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_custom-agents.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/custom-instructions.md": {
@@ -21469,10 +21579,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/overview.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/overview",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "91747a878c2d6f374d3ba1f3dc0190670afbb511",
-      "content_sha256": "019afc3c42753f69b3353511b652cd75bb074da56350383a5fc4ad981948ff2b",
-      "word_count": 2412,
-      "last_updated_utc": "2026-11-04T19:33:25.657081+00:00",
+      "git_blob_sha": "89ec4e100c83e5ea7c9607e03cc4c98c9b5f8c19",
+      "content_sha256": "fa883a01cf1a4495e0d9c47f682cfd46428cf72167ab2d10496c4064dd50d9fc",
+      "word_count": 3032,
+      "last_updated_utc": "2026-11-09T05:28:34.058435+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_overview.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/prompt-files.md": {
@@ -21480,10 +21590,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/prompt-files.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/prompt-files",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "49524dae188d7df2fdc84131f9e50fe6e6d2ddfa",
-      "content_sha256": "4823b1909e8ef40c495833840f97e8776a388f3efd33a2677c7fe88ce9ed57b4",
-      "word_count": 1964,
-      "last_updated_utc": "2026-11-02T21:32:53.266174+00:00",
+      "git_blob_sha": "f854f7d82b8d33ce9d09660b1f83f1c273c9a81c",
+      "content_sha256": "b3ccfe1275e04a41d0b074a14aef2c6bafb34ab67fa747001bbef84d300e211b",
+      "word_count": 1962,
+      "last_updated_utc": "2026-11-09T05:28:34.050903+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_prompt-files.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/tool-sets.md": {
@@ -21623,10 +21733,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/customization.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/concepts/customization",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "a0c543fe6e592aa95a65a0022d6a67d4bf3f50ea",
-      "content_sha256": "86adefca89422cd995fe2fd3502cd482fb5fd5a1e7865eb1f9c404fcebe57dee",
-      "word_count": 1527,
-      "last_updated_utc": "2026-10-31T04:48:44.031797+00:00",
+      "git_blob_sha": "2a0097cbbe24d4b59ca2fc07bd24a684cad0f2f4",
+      "content_sha256": "579d6a6faee75434bfa22cf8da768d07ce4572814795c96fe2e240ccfcd7f523",
+      "word_count": 1453,
+      "last_updated_utc": "2026-11-09T05:28:34.052174+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_concepts_customization.md"
     },
     "microsoft_vscode-docs::docs/agents/concepts/language-models.md": {
@@ -21700,10 +21810,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/context-engineering-guide.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/context-engineering-guide",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "2cd1e6e889939b4658b21001da9295f230437c5b",
-      "content_sha256": "d8be677cd3301e6684e247c2ccd084a2a396d71298f790b4f387c01072c35964",
-      "word_count": 2688,
-      "last_updated_utc": "2026-10-30T17:51:44.837047+00:00",
+      "git_blob_sha": "7fae29659526540b007910929aea564f88edf6d2",
+      "content_sha256": "af69b67fb9a648b11b456611da01b60629138007f6bbfcb18563637ebaeaff3e",
+      "word_count": 2689,
+      "last_updated_utc": "2026-11-09T05:28:34.045323+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_context-engineering-guide.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/customize-copilot-guide.md": {
@@ -21843,10 +21953,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/test-driven-development-guide.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/test-driven-development-guide",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "245d29c1876ff68517bb8e97d856711fc92a0da0",
-      "content_sha256": "5a5b02622b829d26290559a5333a3f4c719444e0c3a818e56ea0e2ea3d46e48b",
-      "word_count": 2348,
-      "last_updated_utc": "2026-10-21T03:44:55.061040+00:00",
+      "git_blob_sha": "e7f9c56db2739f3ae8ac526479d158362d10f9b6",
+      "content_sha256": "976dbf4a9d976cbba6c2b04f6abb856fe4360af0341d3032a202fa6b21520807",
+      "word_count": 2349,
+      "last_updated_utc": "2026-11-09T05:28:34.029407+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_test-driven-development-guide.md"
     },
     "microsoft_vscode-docs::docs/agents/overview.md": {
@@ -21876,10 +21986,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/agent-plugin-reference.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/reference/agent-plugin-reference",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "1326360c04edd2389bd9e3a64fe1f5e0f22fe95e",
-      "content_sha256": "8cdb26bf12eafa23a2b523afa8ae0716c11b576879cab298da7c4a2bd80f06ae",
-      "word_count": 3482,
-      "last_updated_utc": "2026-11-04T19:33:26.590755+00:00",
+      "git_blob_sha": "194cbe7c799f3a18446ec2a7572da9fe49e1a2e5",
+      "content_sha256": "d2441cf6c3761f08da58c92e229320aaaa851c16bfa182e699e37a5beb0e9557",
+      "word_count": 3494,
+      "last_updated_utc": "2026-11-09T05:28:34.162409+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_reference_agent-plugin-reference.md"
     },
     "microsoft_vscode-docs::docs/agents/reference/ai-features-cheat-sheet.md": {
@@ -21953,10 +22063,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/mcp-configuration.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/reference/mcp-configuration",
       "bundle_name": "03_MCP_Servers_And_Tools_Execution",
-      "git_blob_sha": "78a063e851448ff4233ec32717b9789fceb0bf9a",
-      "content_sha256": "9ef6003068251b091fa48faa232168359bec88c0c19ace8204277d60045aae2b",
-      "word_count": 3324,
-      "last_updated_utc": "2026-10-31T04:48:44.076763+00:00",
+      "git_blob_sha": "c84d0daef459fa78484294ff5fb2aa47af1bebee",
+      "content_sha256": "8a0793f5803a5cf086b36922900b44769014d8c7d19e428ab7b33d1901a8a6d3",
+      "word_count": 3374,
+      "last_updated_utc": "2026-11-09T05:28:34.173545+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_reference_mcp-configuration.md"
     },
     "microsoft_vscode-docs::docs/agents/reference/tools-reference.md": {
@@ -22118,10 +22228,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/manage-mcp-servers.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/run/manage-mcp-servers",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "6dceba4185b6dd7934f7ca7c07e91ea585be99d1",
-      "content_sha256": "8e3ba05c51751cf06a2e3b706b723909b00916d2b0a16e3d9723df40f5cc7a08",
-      "word_count": 1652,
-      "last_updated_utc": "2026-11-04T19:33:27.301397+00:00",
+      "git_blob_sha": "59a53fc507452c16650377b49616bbdf6217dbcd",
+      "content_sha256": "f5287769bc1b42c52c41e847f4ed4a79201204da2f47a93d2a96a375fb4fef80",
+      "word_count": 1719,
+      "last_updated_utc": "2026-11-09T05:28:34.186851+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_run_manage-mcp-servers.md"
     },
     "microsoft_vscode-docs::docs/agents/run/memory.md": {
@@ -22162,10 +22272,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/remote-agent-sessions.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/run/remote-agent-sessions",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "c734d48cc4af434e1160a34ddaef725acd53a22e",
-      "content_sha256": "771d8a67b6e044016e54181b8a677d61801d545cd7bad2e38ec92cee948a3afe",
-      "word_count": 3574,
-      "last_updated_utc": "2026-11-08T05:16:47.801561+00:00",
+      "git_blob_sha": "704c1b6323793e45aa4dffc7153a8afbff1e2cf3",
+      "content_sha256": "334d1840ca7d45bafddbf768100a15e7acde36a125aacd702f25fe4e16207e2c",
+      "word_count": 3623,
+      "last_updated_utc": "2026-11-09T05:28:34.208065+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_run_remote-agent-sessions.md"
     },
     "microsoft_vscode-docs::docs/agents/run/review-code-edits.md": {
@@ -22228,10 +22338,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/tools.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/run/tools",
       "bundle_name": "03_MCP_Servers_And_Tools_Execution",
-      "git_blob_sha": "90645dd0c52ff55331a081f547f6751342adc203",
-      "content_sha256": "5520aa13ad7acebe54ce01ed0d73b7625cbb8d3f12d3fc8246d71e99660e6d5e",
-      "word_count": 3407,
-      "last_updated_utc": "2026-11-04T19:33:27.379055+00:00",
+      "git_blob_sha": "e0770f078e2f68af447c328bae62d01e9bfc82ed",
+      "content_sha256": "16d75ad8117a8cc947d5cce6b5af45b6e0189b535531e8fad643048cefaabd5c",
+      "word_count": 3471,
+      "last_updated_utc": "2026-11-09T05:28:34.210909+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_run_tools.md"
     },
     "microsoft_vscode-docs::docs/chat/chat-overview.md": {
@@ -22772,6 +22882,17 @@
       "word_count": 373,
       "last_updated_utc": "2026-11-06T19:05:39.543045+00:00",
       "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_346427.md"
+    },
+    "vscode_insiders::endgame-plan_346882": {
+      "doc_id": "vscode_insiders::endgame-plan_346882",
+      "source_url": "https://github.com/microsoft/vscode/issues/346882",
+      "canonical_web_url": "https://github.com/microsoft/vscode/issues/346882",
+      "bundle_name": "07_Release_Notes_And_Changelog_Radar",
+      "git_blob_sha": null,
+      "content_sha256": "b0394fa08b74843c4556bd8bde31628cce1ae8a13c2fa96d2a0e88dc823326ef",
+      "word_count": 735,
+      "last_updated_utc": "2026-11-09T05:28:40.385360+00:00",
+      "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_346882.md"
     },
     "vscode_insiders::iteration-plan_271045": {
       "doc_id": "vscode_insiders::iteration-plan_271045",

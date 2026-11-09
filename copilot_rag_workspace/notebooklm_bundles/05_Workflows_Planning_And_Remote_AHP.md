@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-11-08T05:16:52.532925+00:00
-- **Total Palabras**: 157,693 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-09T05:28:40.577350+00:00
+- **Total Palabras**: 157,823 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -5370,8 +5370,8 @@ Now that you understand how browser tools work, try these scenarios to explore d
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/context-engineering-guide.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/context-engineering-guide
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/context-engineering-guide.md
-- **SHA256_FINGERPRINT**: `d8be677cd3301e6684e247c2ccd084a2a396d71298f790b4f387c01072c35964`
-- **LAST_VERIFIED_UTC**: 2026-10-30T17:51:44.837047+00:00
+- **SHA256_FINGERPRINT**: `af69b67fb9a648b11b456611da01b60629138007f6bbfcb18563637ebaeaff3e`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.045323+00:00
 ---
 
 **MetaDescription**: Learn how to implement context engineering using VS Code's built-in AI features.
@@ -5393,7 +5393,7 @@ Use your own repository for this workflow. Before you start:
 * Open the Chat view and select **Local** from the **Session Target** control. Run the prompts and handoffs in this view.
 * Set up the repository's development environment, including its dependencies and test commands, before you ask the agent to implement a plan.
 
-If you use another harness, adapt the workflow with the [customization formats that the harness supports](/docs/agents/concepts/customization.md#customization-options-at-a-glance). For example, use an [agent skill](/docs/agent-customization/agent-skills.md) instead of the prompt file in this guide.
+If you use another harness, follow the guidance for [reusing customizations across harnesses](/docs/agent-customization/overview.md#reuse-customizations-across-harnesses) to adapt the workflow. For example, use an [agent skill](/docs/agent-customization/agent-skills.md) instead of the prompt file in this guide.
 
 ## Context engineering workflow
 
@@ -8284,8 +8284,8 @@ Custom instructions guide the agent but don't enforce these safeguards. Review t
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/test-driven-development-guide.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/test-driven-development-guide
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/test-driven-development-guide.md
-- **SHA256_FINGERPRINT**: `5a5b02622b829d26290559a5333a3f4c719444e0c3a818e56ea0e2ea3d46e48b`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:55.061040+00:00
+- **SHA256_FINGERPRINT**: `976dbf4a9d976cbba6c2b04f6abb856fe4360af0341d3032a202fa6b21520807`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.029407+00:00
 ---
 
 **MetaDescription**: Build a Local TDD workflow in VS Code with custom agents, handoffs, and instructions.
@@ -8318,7 +8318,7 @@ Use your own repository for this workflow. Before you start:
 * Open the Chat view and select **Local** from the **Session Target** control. Run the TDD cycle and its handoffs in this view.
 * Install the project dependencies and confirm that you can run its test command from the integrated terminal. The custom agents use that command to verify each phase.
 
-If you use another harness, adapt these TDD roles with the [customization formats that the harness supports](/docs/agents/concepts/customization.md#customization-options-at-a-glance). You can package a portable workflow as an [agent skill](/docs/agent-customization/agent-skills.md).
+If you use another harness, follow the guidance for [reusing customizations across harnesses](/docs/agent-customization/overview.md#reuse-customizations-across-harnesses) to adapt these TDD roles. You can package a portable workflow as an [agent skill](/docs/agent-customization/agent-skills.md).
 
 ## Implementation overview
 
@@ -8790,8 +8790,8 @@ When you no longer need the app, run these steps to clean up your local resource
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/agent-plugin-reference.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/agent-plugin-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/agent-plugin-reference.md
-- **SHA256_FINGERPRINT**: `8cdb26bf12eafa23a2b523afa8ae0716c11b576879cab298da7c4a2bd80f06ae`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:26.590755+00:00
+- **SHA256_FINGERPRINT**: `d2441cf6c3761f08da58c92e229320aaaa851c16bfa182e699e37a5beb0e9557`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.162409+00:00
 ---
 
 **MetaDescription**: Package skills, agents, MCP servers, hooks, and automation templates with agent plugins in VS Code.
@@ -9156,7 +9156,7 @@ Hooks in a plugin-provided custom agent's frontmatter are [scoped to that agent]
 
 Plugin-wide hooks run alongside other applicable hook sources. For Copilot `preToolUse`, a denial blocks the tool call. Return no decision when the hook should leave the normal permission flow unchanged. Review the runtime's timeout and failure rules before relying on a hook for validation.
 
-Disabling a plugin also disables its hooks. Unless enterprise policy controls the plugin's enablement, you can [enable or disable plugins](/docs/agent-customization/agent-plugins.md#enable-or-disable-plugins) for the current profile or a specific workspace from the Agent Customizations editor.
+Disabling a plugin also disables its hooks. Unless enterprise policy controls the plugin's enablement, you can [enable or disable plugins](/docs/agent-customization/agent-plugins.md#enable-or-disable-plugins) globally or for a specific workspace from the Agent Customizations editor, where supported by the harness. Global enablement isn't isolated to the active user profile.
 
 ## Cross-tool compatibility
 
@@ -13507,8 +13507,8 @@ Each attempt, judge evaluation, and synthesis is separate model work. Consider t
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/manage-mcp-servers.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/manage-mcp-servers
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/manage-mcp-servers.md
-- **SHA256_FINGERPRINT**: `8e3ba05c51751cf06a2e3b706b723909b00916d2b0a16e3d9723df40f5cc7a08`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:27.301397+00:00
+- **SHA256_FINGERPRINT**: `f5287769bc1b42c52c41e847f4ed4a79201204da2f47a93d2a96a375fb4fef80`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.186851+00:00
 ---
 
 **MetaDescription**: Edit, share, stop, and troubleshoot MCP servers in Visual Studio Code, with guidance on trust and remote environments.
@@ -13517,7 +13517,7 @@ Each attempt, judge evaluation, and synthesis is separate model work. Consider t
 
 Change, stop, share, or troubleshoot an existing MCP server in Visual Studio Code. For first-time setup, see [Add MCP servers](/docs/agent-customization/mcp-servers.md). For formats and properties, see the [MCP configuration reference](/docs/agents/reference/mcp-configuration.md).
 
-Use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) to edit connections, start or stop servers, change their enabled state, and view output. The editor is scoped to the selected agent harness. The configuration form steps below use the Copilot harness. For differences in server support and configuration, see [Agent harnesses](/docs/agents/run/agent-harnesses.md).
+Use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) to edit connections, start or stop servers, change their enabled state, and view output. The editor uses the selected session's harness, workspace, and execution environment as its context. The configuration form steps below use the Copilot harness. For differences in server support and configuration, see [Agent harnesses](/docs/agents/run/agent-harnesses.md).
 
 ## Open the server controls
 
@@ -13562,6 +13562,8 @@ In **MCP Servers** in the [Agent Customizations editor](#open-the-server-control
 Starting can require trust or authentication. If the server fails to start, [view its output](#view-server-output) before retrying.
 
 **Disabling is different from stopping.** A disabled server doesn't start, and its tools, resources, prompts, and MCP apps are unavailable. Use the toggle beside the server, or select an enablement action from its menu to choose a scope. Depending on the server and harness, global, workspace, or session scope is available. The enabled state is separate from shared configuration, so disabling a server doesn't change your teammates' configuration.
+
+The configuration destination doesn't determine the enablement scope. For example, you can disable a workspace-defined server for one session, where supported, without editing its shared configuration. A global action can affect other sessions, even when you open the editor from a particular session. For remote sessions, check the server's source and available actions in that session's context. See [what customization changes affect](/docs/agent-customization/overview.md#understand-what-a-change-affects).
 
 **Removal depends on the configuration source.** If **Uninstall** isn't available for a manually configured server, remove only its entry from the source configuration, not the whole file. If automatic discovery restores it, review its [discovery source](/docs/agents/reference/mcp-configuration.md#automatic-mcp-server-discovery). You can also uninstall an installed server from the **MCP SERVERS - INSTALLED** section of the Extensions view.
 
@@ -14330,8 +14332,8 @@ These options apply to the built-in Plan agent in Local harness sessions, not to
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/remote-agent-sessions.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/remote-agent-sessions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/remote-agent-sessions.md
-- **SHA256_FINGERPRINT**: `771d8a67b6e044016e54181b8a677d61801d545cd7bad2e38ec92cee948a3afe`
-- **LAST_VERIFIED_UTC**: 2026-11-08T05:16:47.801561+00:00
+- **SHA256_FINGERPRINT**: `334d1840ca7d45bafddbf768100a15e7acde36a125aacd702f25fe4e16207e2c`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.208065+00:00
 ---
 
 **MetaDescription**: Continue agent work from another machine or start tasks on a remote host with VS Code.
@@ -14394,6 +14396,8 @@ From the client machine, [continue an existing session](#continue-an-existing-re
 Connect to the host that owns the session through [[copilot.github_environments]](#github-environments), [SSH](#connect-via-ssh), or a [dev tunnel](#connect-via-dev-tunnel). After connecting, select the existing session from the Agents window [sessions list](/docs/agents/run/sessions/manage-sessions.md#find-and-resume-a-session).
 
 Connecting to a host doesn't by itself reopen a conversation. To continue a task, select its existing session rather than submitting the task as a new prompt.
+
+To manage its customizations, keep the remote session selected and open **Customizations**. The editor uses that session's harness and remote workspace. It can show both host-owned customizations and supported customizations supplied by your connected client. Changes aren't necessarily limited to the selected session. See [Manage customizations for remote sessions](/docs/agent-customization/overview.md#manage-customizations-for-remote-sessions).
 
 ### [copilot.github_environments]
 

@@ -1,7 +1,559 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-11-07T05:19:31.595483+00:00
-- **Total Palabras**: 413,327 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-09T05:28:40.553846+00:00
+- **Total Palabras**: 424,094 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/prompt-optimizer/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/prompt-optimizer/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/prompt-optimizer/SKILL.md
+- **SHA256_FINGERPRINT**: `37240cadcb85ebca67c66e70450d7b6344c688daafd6bc370166becb3c40f05b`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.155637+00:00
+---
+
+**description**: Turn any rough prompt, half-formed idea, or task description into a finished, ready-to-send prompt optimized for any LLM model inside a chat interface — NOT the API. Use this skill whenever the user wants to write, rewrite, optimize, improve, sharpen, or polish a prompt for chat. Trigger phrases include "rewrite this prompt", "make this a better prompt", "optimize this prompt", "turn this into a prompt", "help me prompt this", "draft a prompt that...", "I want to ask...", or whenever the user pastes a draft prompt and asks for improvements. Also trigger when the user describes a task they plan to send to an LLM model and clearly wants a reusable, well-structured prompt rather than a direct answer. The output is always a single, copy-pasteable prompt in a code block that the user sends as-is — never a template with placeholders.
+
+# Prompt Optimizer
+
+You turn whatever the user gives you — a rough draft, a vague idea, a task description, a paragraph of context — into a single high-quality prompt designed to run inside any chat interface with an LLM model.
+
+This is for **chat interfaces** (Claude, Codex, Copilot, or any other tool/LLM model), not the API. The user is going to paste a single message into chat. There is no system prompt, no `effort` parameter, no tool config to tune. The prompt itself has to do all the work.
+
+## Two hard rules
+
+These two rules override everything else in this skill. Read them, then re-read them.
+
+### Rule 1 — No placeholders. Ever.
+
+Never produce a prompt that contains `[paste X here]`, `[your content]`, `{topic}`, `<your_input_here>`, `[INSERT Y]`, `___`, or any other template variable the user is expected to fill in. The user must be able to copy your output, paste it into chat, hit send, and have a working interaction. If the prompt requires content the user hasn't provided yet, the prompt itself must handle that — see Rule 2.
+
+If you catch yourself typing square brackets around a noun, stop. That's a placeholder. Rewrite.
+
+### Rule 2 — Ship a finished prompt no matter what the user gave you.
+
+Two cases:
+
+**Case A — the user gave you real content** (a draft they wrote, code, a document, a list of items, a specific question, an actual product description). Bake that content directly into the optimized prompt. The whole thing — content and instructions — goes inside the code block. The user copies, pastes, sends. Done.
+
+**Case B — the user only described a class of task** ("I want a prompt to triage my emails", "help me prompt an LLM model to review my code", "give me a prompt for writing LinkedIn posts about my launches"). Write the prompt as a complete, self-contained instruction that works on its own. End the instruction by either:
+- Asking the LLM model to ask the user for the specific inputs it needs ("Before drafting, ask me to share the product name, audience, and a link."), or
+- Phrasing the task so the user will naturally provide the input in their next chat turn ("I'm going to paste a batch of emails next. For each one, do the following...").
+
+Either way: no brackets, no fill-in-the-blank, no template syntax. The prompt is final.
+
+## What you output
+
+A single fenced code block containing the optimized prompt. Nothing else. No preamble like "Here's your prompt:". No trailing explanation of what you changed.
+
+The prompt should end with a closing instruction that signals depth of reasoning. Choose one that matches your target model:
+
+For models with reasoning capabilities (like Claude with extended thinking):
+```
+Think before answering (maximum reasoning)
+```
+
+For general-purpose LLM models:
+```
+Take time to think through this carefully before responding.
+```
+
+This signals to the LLM model that a thorough, reasoned approach is needed. The exact wording can be adapted to fit your model's strengths.
+
+## Why these principles work
+
+Modern LLM models read prompts more literally, calibrate their thinking and length to perceived complexity, and reward prompts that are specific, structured, and motivated. The cookbook below is distilled from best practices in LLM prompting across multiple model families. Each rule has a reason. Treat the reasons as the point — apply them with judgment, don't paste them mechanically.
+
+## The rewrite workflow
+
+Work through these in your head before writing the prompt. You don't need to surface them.
+
+1. **Identify the goal.** What does the user actually want produced? A document? A decision? Code? A list? An analysis? Name it concretely.
+2. **Identify the audience and use.** Who reads the output, and what will they do with it? This drives tone and format.
+3. **Decide: Case A or Case B.** Did the user provide the actual content, or just describe a class of task? This decides whether you bake content in or write a self-contained instruction (see Rule 2).
+4. **Spot the gaps.** Audience, format, length, constraints, examples, edge cases — note which are missing.
+5. **Handle the gaps correctly.** If a missing detail is non-essential, make the most useful, most defensible assumption and keep it grounded in what they wrote. If the prompt depends on user-specific inputs they have not provided, follow Rule 2: in Case B, instruct the LLM model to ask for what it needs or phrase the task so the user will provide those inputs in the next turn.
+6. **Pick a structure.** Single-paragraph instruction for simple tasks. XML tags for anything with multiple sections.
+7. **Write the prompt.** Apply the principles below.
+8. **End with the closing line.**
+9. **Scan for brackets.** Before you finalize, re-read your output looking for `[`, `{`, or `<...your...>`-style placeholders. Kill any you find.
+
+## Core principles to apply
+
+### Be clear and direct
+State the task explicitly. Specify the desired output format and any hard constraints up front. If you want above-and-beyond effort, say so — LLM models won't infer it from a vague brief. "Create an analytics dashboard" is weaker than "Create an analytics dashboard with as many relevant features and interactions as possible — go beyond the basics for a fully-featured implementation."
+
+### Explain the why
+When you give an instruction, briefly explain the reason. "Avoid ellipses, because the output will be read aloud by a TTS engine that mispronounces them" lands far better than "Never use ellipses." LLM models generalize well from explanations and follow reasoned instructions more faithfully.
+
+### Tell the LLM model what to do, not what to avoid
+Positive framing outperforms negative framing. "Write in flowing prose paragraphs" beats "don't use bullet points."
+
+### Match prompt style to desired output style
+If you want prose, write the prompt in prose. If you want minimal markdown in the output, use minimal markdown in the prompt. Style leaks through.
+
+### Use XML tags when sections multiply
+When the prompt mixes instructions, context, examples, and input, wrap each in its own descriptive tag — `<instructions>`, `<context>`, `<examples>`, `<input>`. Nest naturally where there's hierarchy. This is the single highest-leverage structuring move for complex prompts. For simple one-shot prompts, skip it; XML on a haiku request is overkill.
+
+### Give the LLM model a role when it sharpens behavior
+A one-line role assignment ("You are a senior product strategist at a B2B SaaS company") tightens tone and frame. Don't force a role onto every prompt — only when it meaningfully steers the output.
+
+### Use examples for format, tone, or structure
+If the user has any preference about *how* the output should look, include 2–4 examples in `<example>` tags (or wrap multiple in `<examples>`). Examples beat description for steering format. Make them relevant, diverse, and structured. Skip examples when the task is so generic that examples would over-constrain.
+
+### Put long inputs on top, the question on the bottom
+If the prompt includes a long document, transcript, or data dump that the user provided, place it at the top. Research in LLM prompt optimization shows up to ~30% quality lift from this ordering on long-context tasks.
+
+### Ask for grounding in long-document tasks
+For analysis or Q&A over long inputs, instruct the LLM model to first pull relevant quotes into `<quotes>` tags, then answer based on those quotes. This dramatically reduces drift and hallucination.
+
+### Be literal about scope
+LLM models don't always silently generalize. If you want an instruction applied broadly, say "apply this to every section, not just the first one." If you want the LLM model to take action rather than suggest, use imperative verbs ("Edit the function to..." not "Could you suggest improvements to..."). Suggestion-flavored phrasing produces suggestions.
+
+### Trigger deeper reasoning deliberately
+LLM models decide when to allocate reasoning depth. Closing-line instructions nudge them toward deeper engagement with complex problems. Don't add competing thinking instructions earlier in the prompt; they create noise. Let the closing line do its job.
+
+### Self-check for high-stakes outputs
+For code, math, claims, or anything where errors matter, append a verification instruction near the end: "Before you finish, re-read your answer and check it against the criteria above." This catches errors reliably.
+
+## Domain-specific moves
+
+These are sharp tools for specific task types. Apply only when relevant.
+
+**Frontend / design.** LLM models may have ingrained stylistic defaults. If the user is asking for a design, either (a) specify a concrete alternative palette, type system, and structure in detail, or (b) instruct the model to propose 3–4 distinct visual directions before building, so the user picks one. Generic instructions like "make it clean and minimal" often need reinforcement with concrete examples.
+
+**Code review.** Tell the model its job at the finding stage is coverage, not filtering: "Report every issue you find, including ones you're uncertain about or consider low-severity. Include confidence and severity for each finding so a downstream filter can rank them." Avoid soft language like "only flag important issues" — LLM models tend to over-filter without explicit permission.
+
+**Research / analysis.** Encourage hypothesis-tracking: "Develop several competing hypotheses as you gather information. Track confidence levels in your notes. Self-critique your approach periodically." This produces more rigorous synthesis than a flat "research X" prompt.
+
+**Creative writing.** Specify voice, audience, length, constraints, and provide one or two example sentences in the target voice if the user has them. Generic "write a blog post" yields generic prose.
+
+**Document creation (slides, reports).** Ask for design intentionality: "Include thoughtful visual hierarchy, considered typography, and engaging structure." LLM models produce stronger first-pass designs when explicitly invited to prioritize structure and aesthetic intention.
+
+## Output format
+
+Always exactly this:
+
+````
+```
+You are helping with the user's request. If the request is missing essential information, ask a concise clarifying question first. Otherwise, complete the task directly and clearly.
+
+Think before answering (take time to reason through this carefully).
+```
+````
+
+No text before the code block. No text after. No "here you go." No "I added X and Y." Just the prompt.
+
+If the user explicitly asks "what did you change?" *after* they have the prompt, then explain in a follow-up turn. Until they ask, stay silent.
+
+## Examples
+
+These show the no-placeholder rule in action. Notice none of them contain `[paste X here]` or any other template variable.
+
+### Example 1 — Case B (user described a task class, no content given)
+
+**User input:**
+> I want a prompt to summarize my emails
+
+**Your output:**
+
+````
+```
+You are an executive assistant helping me triage email. I'm about to share a batch of emails with you in my next message.
+
+For each email, produce:
+- **Sender + subject** in one line
+- **Summary** — 1-2 sentences, neutral tone, no fluff
+- **Action required** — one of: reply needed, FYI only, schedule, delegate, ignore
+- **Priority** — high / medium / low, based on sender importance and urgency cues
+
+Group the output into three sections in this order: high priority, medium priority, low priority. Within each section, sort by action-required first (reply needed → schedule → delegate → FYI → ignore).
+
+Skip any email that's clearly automated marketing or notification spam — list its sender and subject under a final "Filtered out" section so I can verify.
+
+When you're ready, ask me to paste the emails.
+
+Think before answering (take time to reason through this carefully).
+```
+````
+
+The prompt ends by inviting the user to paste content in the next turn. No `[paste emails here]` block. The user sends this as-is and the LLM responds with "Ready when you are — paste the batch."
+
+### Example 2 — Case B (rough draft prompt, no product details given)
+
+**User input:**
+> can you fix this prompt: "write a linkedin post about my new product launch, make it engaging and not too salesy"
+
+**Your output:**
+
+````
+```
+You are writing a LinkedIn post for me announcing a product launch. The audience is mid-to-senior B2B operators on LinkedIn — they've seen every launch post template and are skeptical of marketing language.
+
+Before you draft, ask me for:
+- The product's name
+- What it does, in plain language
+- Who it's for
+- The 1-2 reasons I built it that aren't obvious from the description
+- A link or destination for the call to action
+
+Once I've answered, write one post that:
+- Opens with a concrete hook in the first 2 lines (a tension, a number, or an unexpected observation — not "I'm excited to announce").
+- Tells a short story or shares a specific insight that led to the product, before naming it.
+- Names what the product does in one plain sentence. No adjectives like "revolutionary", "game-changing", or "powerful".
+- Closes with one clear next step (link, DM, comment) — not a generic "let me know what you think".
+- Sits between 150 and 220 words. Short paragraphs, one idea per line break. No emojis. No hashtags except up to two at the very end if they're genuinely relevant.
+
+Match the voice of someone who's built the thing themselves and is talking to peers, not pitching to strangers.
+
+Think before answering (take time to reason through this carefully).
+```
+````
+
+Instead of a `<product_details>` block with `[paste details here]`, the prompt explicitly tells the LLM model to gather the details by asking. Self-contained, ready to send.
+
+### Example 3 — Case B (technical task, no code given)
+
+**User input:**
+> I need an LLM model to review my python code for bugs
+
+**Your output:**
+
+````
+```
+You're going to review Python code I share with you. Your job at the finding stage is coverage, not filtering — assume a separate pass will rank findings later.
+
+When I paste the code, report every issue you find, including ones you're uncertain about or consider low-severity. For each finding, include:
+- **Location** — file and line number(s)
+- **Issue** — what's wrong, in one sentence
+- **Why it matters** — the concrete failure mode (incorrect output, crash, security risk, race condition, etc.)
+- **Confidence** — high / medium / low
+- **Severity** — high / medium / low
+- **Suggested fix** — a minimal change that addresses the issue
+
+Cover at minimum: logic errors, off-by-one and boundary issues, mutable default arguments, exception handling gaps, race conditions and concurrency issues, resource leaks (files, connections, locks), input validation at trust boundaries, and any deviation from the code's apparent intent.
+
+Do not filter for importance at this stage. It's better to surface a finding that gets filtered out later than to silently drop a real bug.
+
+After listing findings, end with a single-paragraph overall assessment of code quality and the top 3 highest-severity issues to fix first.
+
+Ask me to paste the code when you're ready.
+
+Think before answering (take time to reason through this carefully).
+```
+````
+
+### Example 4 — Case A (real content provided, no follow-up needed)
+
+**User input:**
+> rewrite this so it's clearer: "Hey can you help me figure out whether to take the offer from Stripe vs the one from Anthropic. Stripe is paying 280k base + 60k bonus + 100k stock per year vesting over 4. Anthropic is 250k base + 0 bonus but 800k stock vesting over 4 with 1yr cliff. I care most about long term equity upside, work I'd be excited about, and not having to relocate. Stripe wants me in SF 3 days a week, Anthropic is fully remote."
+
+**Your output:**
+
+````
+```
+I'm deciding between two job offers and want your help thinking it through carefully.
+
+**My priorities, in order:**
+1. Long-term equity upside
+2. Work I'd be excited about
+3. Avoiding relocation
+
+**Offer A — Stripe**
+- $280k base
+- $60k annual bonus
+- $100k/year stock, vesting over 4 years
+- Hybrid: in SF 3 days a week
+
+**Offer B — Anthropic**
+- $250k base
+- No annual bonus
+- $800k stock, vesting over 4 years with a 1-year cliff
+- Fully remote
+
+Walk me through:
+1. The total expected compensation under each, year-by-year over 4 years, including a sensitivity range on equity outcomes (say: bear / base / bull cases for each company).
+2. How each offer scores against my three priorities, ranked.
+3. The non-obvious risks of each (what each offer's structure says about the company's confidence, how cliffs and vesting interact with my optionality, what the relocation requirement implies about future flexibility).
+4. Your overall recommendation and the single biggest reason it could be wrong.
+
+Be direct. Don't hedge with "it depends on what you value" — I told you what I value.
+
+Think before answering (take time to reason through this carefully).
+```
+````
+
+The user gave the actual numbers and constraints. They're baked in. No `[insert offer details]` block. The prompt is done.
+
+### Example 5 — simple task
+
+**User input:**
+> write me a haiku about coffee
+
+**Your output:**
+
+````
+```
+Write a haiku about coffee. Follow the traditional 5-7-5 syllable structure. Aim for a single concrete image rather than a general statement about coffee — something a reader could picture. Avoid clichés like "morning steam" and "liquid gold".
+
+Think before answering (take time to reason through this carefully).
+```
+````
+
+Notice the simple task doesn't get XML tags, a role, or a sectioning — and there's nothing to bake in. Apply structure proportional to the task; over-engineering a haiku prompt is its own failure mode.
+
+## Edge cases
+
+**The user pastes a prompt and asks "is this good?"** They want it rewritten regardless. Treat it as a rewrite request and return the optimized version in a code block. No commentary.
+
+**The user gives you a system prompt or API-style prompt with parameters.** Strip out API-only mechanics (effort levels, thinking config, tool definitions), translate the intent into a single user-message prompt for a chat app, and end with the closing line.
+
+**The user wants the prompt to ask the LLM model to do many small things.** Combine into a single coherent prompt with clear sections rather than a numbered list of micro-tasks. LLM models handle long, well-structured asks well.
+
+**The user's input is already excellent.** Tighten where you can, add the closing line, return it. Don't add ceremony for its own sake.
+
+**The user input is in a language other than English.** Write the optimized prompt in the same language. The closing line can be adapted to the target language while preserving the instruction to reason carefully.
+
+**You're tempted to write a `<context>` or `<input>` block expecting the user to fill it.** Don't. That's Rule 1. Either bake the actual content in (Case A) or tell the LLM model to ask the user for it (Case B).
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/protobuf-grpc-api-review/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/protobuf-grpc-api-review/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/protobuf-grpc-api-review/SKILL.md
+- **SHA256_FINGERPRINT**: `72e332e9c221abea1de74b770f075653d66f27caf6a93228fbc5b5c0ebedd346`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.220147+00:00
+---
+
+**description**: Review Protocol Buffer (.proto) and gRPC API changes for wire and JSON compatibility, safe schema evolution, rollout hazards, and RPC contract quality. Use when reviewing proto diffs, adding or changing messages and services, planning migrations, or diagnosing cross-version failures.
+
+# Protobuf and gRPC API Review
+
+Review `.proto` and related gRPC changes as long-lived contracts. Distinguish what the wire format permits from what generated clients, JSON users, stored data, and mixed-version deployments can safely tolerate.
+
+## Start With the Compatibility Envelope
+
+Before deciding whether a change is safe, determine:
+
+- the old and new schema, not only the final file
+- whether payloads use binary protobuf, ProtoJSON, text format, or more than one encoding
+- whether messages persist in databases, queues, logs, caches, or events
+- whether clients exist outside the repository or release independently
+- the protobuf syntax or edition and the generated languages/runtime versions
+- whether HTTP/JSON transcoding, reflection, service config, or schema registries expose the contract
+- the deployment order, rollback window, and duration of mixed-version operation
+
+If context is missing, state the assumption and lower confidence. Do not call a change backward-compatible from the new schema alone.
+
+## Review Workflow
+
+### 1. Inventory Contract Changes
+
+Compare the old and new definitions by fully qualified symbol. Record:
+
+- message fields: number, name, type, cardinality, presence, `oneof`, defaults, and relevant options
+- enums: value name, number, aliases, reservations, and zero value
+- services: package, service, method, request and response types, and streaming mode
+- generated API inputs: package options, outer class names, namespaces, and custom options
+
+Ignore formatting-only changes after confirming they do not alter descriptors or generated APIs.
+
+### 2. Evaluate Four Compatibility Dimensions
+
+Assess each affected symbol independently:
+
+1. **Binary wire** — can old and new readers parse both old and new bytes without corruption or loss?
+2. **Named formats** — do ProtoJSON, text-format, REST-transcoded, or name-based consumers still work?
+3. **Source and generated API** — will regenerated clients compile and preserve presence, enum, and accessor behavior?
+4. **Behavior and operations** — do status codes, retry safety, deadlines, authorization, streaming, and resource bounds preserve the RPC contract?
+
+Read [protobuf compatibility rules](references/protobuf-compatibility.md) for field, enum, presence, `oneof`, and serialization changes. Read [gRPC contract review](references/grpc-contract-review.md) when services, methods, or runtime behavior change.
+
+### 3. Trace Mixed-Version Scenarios
+
+For every non-trivial change, reason through these paths:
+
+- old writer -> new reader
+- new writer -> old reader
+- old reader modifies and reserializes a new message
+- rollback after new writers have emitted new values
+- persisted old data read after the migration
+
+For conditionally compatible changes, identify the exact writer constraint and the point at which it may be relaxed. A safe rollout commonly requires deploying readers before writers and retaining the old field or method until rollback is no longer needed.
+
+### 4. Review Repository Evidence
+
+Use the repository's own tooling when available:
+
+- compile descriptors with the project's `protoc`, Buf, Gradle, Maven, Bazel, or language-specific task
+- run configured breaking-change or lint checks
+- inspect generated-code diffs only when they are committed by repository convention
+- search call sites for exhaustive enum switches, presence assumptions, JSON field names, method paths, status handling, and retry configuration
+- look for compatibility fixtures or descriptor baselines before proposing a new mechanism
+
+Do not claim a check passed unless you ran it. If a required tool or baseline is unavailable, name the unverified risk.
+
+### 5. Produce an Actionable Review
+
+Lead with one verdict:
+
+- **Compatible** — safe within the stated compatibility envelope
+- **Rollout-dependent** — parseable, but safe only with explicit sequencing or value constraints
+- **Breaking** — causes wire, named-format, source, or behavioral incompatibility
+- **Insufficient context** — the old schema, encoding, consumers, or deployment model is unknown
+
+Then provide only evidence-backed findings. For each finding include:
+
+```text
+[severity] Short title
+Location: file and symbol or changed lines
+Dimension: binary | JSON/text | source | behavior/operations
+Change: old contract -> new contract
+Impact: concrete failing mixed-version scenario
+Remediation: smallest safe schema change or staged migration
+```
+
+Use **blocker** for corruption, unparsable data, tag reuse, or an unavoidable production break; **high** for likely cross-version data loss or unsafe RPC behavior; **medium** for bounded compatibility or operability risks; and **low** for maintainability issues that do not break the contract. Do not inflate style preferences into compatibility findings.
+
+Conclude with:
+
+- a compact compatibility matrix for changed symbols
+- the rollout/rollback sequence if migration is required
+- targeted tests that would prove the remaining assumptions
+
+## Default Safety Principles
+
+- Never reuse a field or enum number, even after deletion; reserve deleted numbers and usually names.
+- Treat field-number changes and moving fields into an existing `oneof` as breaking.
+- Treat type and cardinality changes as migrations, even when their binary wire types are compatible.
+- Remember that adding a field or enum value can still break generated code or exhaustive consumers.
+- Review ProtoJSON separately: names and unknown-field behavior make its compatibility envelope narrower than binary protobuf.
+- Preserve unknown fields through read-modify-write paths when forward compatibility depends on them.
+- Prefer additive evolution: add a new field or RPC, migrate readers and writers, deprecate the old contract, then remove it only after the compatibility window closes.
+- Never recommend retries for a state-changing RPC without establishing idempotency or a deduplication mechanism.
+- Require realistic client deadlines and cancellation-aware server work for production RPCs.
+
+## Avoid False Positives
+
+- Do not require every service to use streaming, retries, health checks, or HTTP transcoding.
+- Do not flag a new optional field as breaking solely because old clients ignore it.
+- Do not call a wire-compatible type change safe without checking value ranges and rollout order.
+- Do not assume a renamed field is harmless when JSON, text format, reflection, or generated source APIs are consumers.
+- Do not demand reservations for fields that never shipped; ask for release history when that distinction matters.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/protobuf-grpc-api-review/references/grpc-contract-review.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/protobuf-grpc-api-review/references/grpc-contract-review.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/protobuf-grpc-api-review/references/grpc-contract-review.md
+- **SHA256_FINGERPRINT**: `f4fdb69f916c2468f1f503e9b80d49dc4e0ffc24a1dc3ad06098fc32e52f1afe`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.142663+00:00
+---
+
+# gRPC Contract Review
+
+Use this reference when a change affects a service, method, request/response behavior, or client/server policy. Apply only the checks relevant to the change.
+
+## Method Identity and Shape
+
+The fully qualified package, service, and method form the RPC identity. Renaming or moving any of them changes the method path and breaks existing clients, routing, authorization policies, observability, and service configuration.
+
+Treat these as breaking contract changes:
+
+- removing or renaming a service or method
+- changing request or response message type
+- changing unary, client-streaming, server-streaming, or bidirectional-streaming mode
+- moving a service to another protobuf package
+
+Prefer adding a new method, migrating callers, deprecating the old method, and removing it only after the compatibility window closes. Review request and response message changes with the protobuf compatibility rules.
+
+## Deadlines and Cancellation
+
+- Clients should set a realistic deadline; gRPC does not set one by default.
+- The deadline must cover expected network and processing latency and be validated against production or load-test evidence.
+- Servers must stop spawned work when the call is cancelled or its deadline expires.
+- Downstream calls should receive the remaining deadline rather than starting a fresh full timeout. Confirm whether propagation is automatic or must be enabled in the implementation language.
+- Do not convert a deadline or cancellation into a misleading application status.
+
+Flag new unbounded calls, swallowed cancellation, or downstream work that can outlive the originating request when they create resource or correctness risk.
+
+## Retries and Idempotency
+
+Before recommending or approving a retry policy, answer:
+
+1. Can the operation be repeated without duplicating a state change?
+2. If the result is ambiguous, is there an idempotency key or server-side deduplication window?
+3. Which status codes are retryable for this method?
+4. Are attempts bounded by max attempts, exponential backoff, jitter, throttling, and the overall deadline?
+5. Are retry attempts and final call outcomes observable?
+
+Retries are enabled in gRPC implementations, but there is no default general retry policy; transparent retries can still occur in limited cases. A response header commits the RPC and ends gRPC retry attempts. Never treat a mutating RPC as retry-safe merely because it returns `UNAVAILABLE` or `DEADLINE_EXCEEDED`: the server may already have applied the change.
+
+## Status Codes Are Part of the API
+
+Review status changes as observable behavior. Prefer the most specific stable code and keep error details free of secrets.
+
+- `INVALID_ARGUMENT`: invalid regardless of system state
+- `FAILED_PRECONDITION`: retry only after state is explicitly fixed
+- `ABORTED`: retry the larger transaction or read-modify-write sequence
+- `UNAVAILABLE`: transient failure where retrying this call may be appropriate
+- `RESOURCE_EXHAUSTED`: quota or capacity exhausted
+- `UNAUTHENTICATED`: credentials are missing or invalid
+- `PERMISSION_DENIED`: authenticated caller lacks permission
+- `NOT_FOUND`: resource does not exist, or deliberate existence hiding is part of the authorization contract
+
+Avoid replacing domain failures with `UNKNOWN` or `INTERNAL`. Check client logic, retry policies, metrics, and alerts before changing an established code.
+
+## Streaming Contracts
+
+For streaming methods, establish and test:
+
+- message ordering and whether duplicates are possible
+- half-close and completion semantics
+- backpressure and bounded buffering
+- per-message and total stream size limits
+- cancellation and cleanup on both peers
+- authentication lifetime for long-lived streams
+- resume, replay, or checkpoint behavior after interruption
+
+Do not add streaming as a default improvement; require a concrete need and an explicit lifecycle contract.
+
+## Security and Resource Boundaries
+
+- Enforce authentication and authorization per method; update policy maps that enumerate paths whenever a method is added.
+- Use transport security appropriate to the deployment, and avoid logging credentials or sensitive metadata.
+- Bound request size, response size, concurrency, fan-out, and expensive repeated fields where input is untrusted.
+- Validate before starting irreversible or costly work.
+- Check that reflection, health services, and debug endpoints are exposed only as intended.
+
+## Behavioral Evolution
+
+Schema compatibility does not protect semantic contracts. Review changes to:
+
+- required business fields represented as optional protobuf fields
+- pagination tokens, ordering, filters, and consistency guarantees
+- idempotency and deduplication keys
+- partial success and batch error semantics
+- default limits, quotas, and server-side timeouts
+- error details and redaction
+
+For a behavioral change, require documentation and tests that cover old clients during rollout and rollback.
+
+## Targeted Verification
+
+- invoke old generated clients against the new server and new clients against the old server when mixed versions are supported
+- test the exact method path through proxies, gateways, and authorization middleware
+- exercise deadlines, cancellation, and downstream propagation
+- inject retryable and non-retryable failures, including an ambiguous failure after a state change
+- test streaming cancellation, slow consumers, large messages, and interrupted streams where applicable
+- verify metrics distinguish attempts from logical calls
+
+## Primary References
+
+- [gRPC deadlines](https://grpc.io/docs/guides/deadlines/)
+- [gRPC retry](https://grpc.io/docs/guides/retry/)
+- [gRPC status codes](https://grpc.io/docs/guides/status-codes/)
+- [gRPC authentication](https://grpc.io/docs/guides/auth/)
 
 
 ---
@@ -33859,8 +34411,8 @@ closely related names sensibly so that the task can still succeed.
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/signal-write/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/signal-write/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/signal-write/SKILL.md
-- **SHA256_FINGERPRINT**: `68b213af5a04a672e1eaa61d34e7c87afe06dbbcd79a07cff09420de4711c0ca`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:49.502312+00:00
+- **SHA256_FINGERPRINT**: `30157eb38bef0e416acd589ab613c63b5aeef6c61fcd5ff7136ac15f3755bfbb`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:36.355876+00:00
 ---
 
 **description**: Emit structured agent signals — hands-up, blocked, done, checkpoint, partnership. Signals are written as JSON to .signals/ for dashboard consumption and noted in the journal for persistence.
@@ -33908,7 +34460,8 @@ Self-assessment scores reflect coordination, not code accuracy:
 ### 1. Write a JSON signal file to `.signals/`
 
 This is the primary output — it's what the dashboard reads.
-Create `desks/<desk-name>/.signals/<timestamp>.json`:
+Create `desks/<desk-name>/.signals/<timestamp>.json` (for a desk in a
+group folder, `<group>-desks/<desk-name>/.signals/<timestamp>.json`):
 
 ```json
 {
@@ -34016,6 +34569,259 @@ Write them to the **same** `.signals/` directory:
   can proceed with a reasonable default, proceed and note it.
 - Self-assessment scores should be honest, not optimistic. A 3/5
   is fine. A 5/5 on everything is suspicious.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/skill-distribution-audit/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/skill-distribution-audit/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/skill-distribution-audit/SKILL.md
+- **SHA256_FINGERPRINT**: `e6bf983fcfa9553c673ba11f8ae4530c501e5ee4b7e54c927536b8b39421ebf4`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:36.371332+00:00
+---
+
+**description**: Audit a skill collection before release or investigate installer omissions, archived/template leakage, duplicate identities, and manifest drift. Reconcile the intended public source set, distribution manifest, and actual discovery output for a specified consumer version. Includes a deterministic set-comparison helper.
+
+# Skill Distribution Audit
+
+Give a collection maintainer a release-correctness report: which intended skills are missing, which unintended entries are exposed, and which identities are ambiguous. Start from the source revision and target consumer, rather than assuming that a readable SKILL.md will be distributed correctly.
+
+## Establish the distribution contract
+
+Record the source revision, consumer/client and version, distribution layout, and requested scope. If a client-specific rule affects the result, consult that consumer's documentation or implementation; otherwise leave the conclusion unverified.
+
+Build the intended public set from the repository's actual release policy and source files. Distinguish active skills from archives, templates, test fixtures, generated copies, and internal maintenance content. A source collection can contain SKILL.md files that it deliberately does not publish. An existing manifest may itself be stale, so do not use it as the only source of truth.
+
+Keep a mapping from each identity to its source path. Prefer repository-relative paths when both sides expose them; use names only when unique and comparable. If discovery returns names that map to multiple source paths, report the ambiguity rather than silently choosing or deduplicating an entry.
+
+## Collect comparable evidence
+
+- Parse frontmatter with a standard YAML parser compatible with the target consumer, then validate its supported field types. Separate malformed YAML from valid YAML that fails the consumer's schema. A repository's custom parser passing is not proof of consumer compatibility.
+- Inspect the actual release/manifest rules, including path bases, explicit entries, globs, and exclusion or internal flags. Apply only the target version's semantics: a repository's deprecated status field does not necessarily hide an entry from an installer.
+- Obtain the consumer's discovery/list output for the same source revision when an appropriate command is available and authorized. Inspect its behavior first; a command named list is not automatically free of downloads or writes. Prefer an isolated checkout and retain stderr, exit status, version, source revision, and completeness/pagination limits.
+- Use existing captured output when a fresh consumer run is unavailable. Mark it as historical. If no comparable consumer output is available, complete the static checks and state that discovery coverage remains unverified.
+
+Do not execute skill bodies or their helpers while collecting distribution evidence. Installation and end-to-end task execution are separate validation scopes; do not repeat installations to manufacture usage counts.
+
+## Reconcile identities, not just totals
+
+Compare the intended public set against the manifest and against observed discovery separately, when those layers exist. Report missing identities, unexpected identities, duplicates, and parse failures independently. Also compare the manifest to discovery when it is the actual consumer input. Do not assume that a manifest for a different installer controls a direct repository scan.
+
+Equal totals can conceal different identities. For example, an intended set of two active skills and an observed set containing one active skill plus one template both have length two, yet contain one omission and one leak.
+
+For deterministic comparisons, use the bundled [compare-discovery.mjs](scripts/compare-discovery.mjs) with Node.js 20 or later; it needs no third-party packages. It accepts two JSON arrays of exact identity strings. Create those inputs from the evidence above; it does not discover skills or infer release policy.
+
+```sh
+node <skill-directory>/scripts/compare-discovery.mjs <expected.json> <observed.json>
+```
+
+The JSON report includes raw/unique counts, missing and unexpected identities, and duplicate counts on both sides. Exit codes: 0 for an exact unique match, 1 for mismatches or duplicates, 2 for invalid input or an I/O error. It reads the supplied files and writes only its report; it never invokes an installer.
+
+See the [worked example](references/worked-example.md) for sample inputs and an auditable report. The helper's regression tests run with:
+
+```sh
+node --test <skill-directory>/scripts/compare-discovery.test.mjs
+```
+
+For a recorded Copilot run on real historical captures, including exact inputs, helper output, and a local replay command, see the [Copilot validation report](references/copilot-real-data-validation.md). Read it when validating or reproducing this skill; it is not required for an ordinary audit.
+
+## Report and repair
+
+For each finding, give the affected identities, source/configuration paths and line numbers, observed behavior, likely cause, and smallest repair. Distinguish direct observations from inferences. Avoid changing skill bodies when a metadata or manifest correction is sufficient; preserve unrelated metadata and licensing.
+
+Include the source revision, consumer version, expected/manifest/discovered counts, exact differences, checks actually run, and verification limits. Allow zero findings. Do not turn unavailable or truncated discovery into a successful match by comparing only a convenient subset.
+
+An exact discovery match establishes distribution coverage within the audited scope. It does not establish that skills are loaded by a live Copilot session, that packaged helpers work, or that credentials and external services are usable. After an authorized repair, repeat the relevant parsing and reconciliation checks on the repaired revision and report what changed.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/skill-distribution-audit/assets/copilot-validation/outputs/audit-report.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/skill-distribution-audit/assets/copilot-validation/outputs/audit-report.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/skill-distribution-audit/assets/copilot-validation/outputs/audit-report.md
+- **SHA256_FINGERPRINT**: `8f4ce8328f1339cf313750bcf00c746c826f553e662f602630bf362d97403624`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:36.388108+00:00
+---
+
+# Historical skill-distribution audit
+
+## Result
+
+The collection release manifest matches the active source set in both captures. Direct `skills` discovery does not match that source set at the before revision, but matches exactly at the after revision. Comparisons are identity-based and preserve duplicates. No duplicate or ambiguous source names were found.
+
+| Capture / source revision | Consumer | Active source identities | Marketplace paths | Captured discovery names | Source↔marketplace | Source↔discovery |
+|---|---|---:|---:|---:|---|---|
+| before — `3641911a4540686b02900c7c49a14d021286e3ee` | `skills` 1.7.4 | 1,093 | 1,093 | 1,076 | exact; exit 0 | mismatch; exit 1 |
+| after — `d696ae529a83ecdd83d2ae69d5a3a221b0209541` | `skills` 1.7.4 | 1,093 | 1,093 | 1,093 | exact; exit 0 | exact; exit 0 |
+
+Both source indexes contain 1,114 identities, including 21 marked deprecated. The provided release-policy evidence for `scripts/build-index.mjs` at both revisions has the same SHA-256 (`693e4ba6bba90384e8ac35bc5f67f08267bb18b1153a6361e297a328f87c9e6b`): lines 13–18 exclude `_template`, `INDEX`, `node_modules`, `.git`, `scripts`, `assets`, and `en`; lines 703–708 put entries with status other than `deprecated` into release volumes. This defines the intended active set used here. The marketplace is a separate release channel: its skill directory paths were compared to active source paths (source `SKILL.md` paths with that suffix removed), not treated as input to direct repository discovery.
+
+## Exact differences
+
+At the before revision, discovery is missing these 38 active source names:
+
+```text
+accessibility-wcag-audit, agent-payment-x402, agentmail-email-infra,
+algolia-search-integration, astro-content-sites, azure-functions-serverless,
+bats-shell-testing, bullmq-job-queue, bun-runtime-development, bwa-mem2-dna-aligner,
+claude-api, convex-reactive-backend, electron-desktop-development, firebase-backend,
+javascript-testing-patterns, jetpack-compose-expert, julia-scientific-pro,
+modern-angular-expert, neon-serverless-postgres, nestjs-expert, nextjs-supabase-auth,
+odoo-automated-tests, playwright-e2e-testing, pydantic-ai-agents,
+shopify-app-development, slack-message-formatter, spline-3d-web-integration,
+swift-concurrency, swiftui-best-practices, tailwind-css-patterns, tanstack-query,
+threejs-3d-web, transformers-js, varlock-env-secrets-guard, vercel-ai-sdk,
+websocket-realtime-engineer, zoom-meeting-bot-builder, zoom-rtms-realtime-media
+```
+
+It also discovers these 20 identities marked deprecated in the source index, plus `your-skill-name`, which has no identity in that index:
+
+```text
+astronomy-data-toolkit, azure-container-apps-deploy, codetour-walkthrough-builder,
+data-strategy-review, dpa-clause-reviewer, first-principles-assumption-auditor,
+hardware-doc-generator, imessage-claude-bridge, llm-coding-mistake-guardrails,
+market-sizing-analyst, mlops-model-productionizer, molecular-dynamics-simulation,
+multi-framework-compliance-orchestrator, property-auction-legal-analysis,
+release-manager, security-antipattern-hook, seo-traffic-drop-forensics,
+tax-loss-harvesting, technical-change-tracker, x-twitter-automation, your-skill-name
+```
+
+There are no duplicate identities in either side of this comparison. Source paths and source-index line numbers for every missing/unexpected identity are recorded in `discovery-finding-paths.json`; `your-skill-name` has no source-index path. The path-index mapping and ambiguity counts are in `before-source-identity-map.json` and `after-source-identity-map.json`. The marketplace comparisons have no missing, unexpected, or duplicate paths at either revision.
+
+## Observed evidence and cause assessment
+
+- **Observed:** `before-discovery-stderr.txt` contains 39 `YAML parse error` warnings. They correspond to the 38 missing active identities plus `09-verticals/defi-natural-language-agent/SKILL.md`, which is already deprecated and therefore not expected. Most examples are unquoted `@` values in flow lists; `astro-content-sites` reports a nested-mapping error in a compact mapping. These errors plausibly explain the active omissions, but do not explain the deprecated identities or `your-skill-name`.
+- **Observed:** the after stderr capture is empty and the after discovery list exactly matches the active source identity list. The evidence does not establish which individual edits or other changes removed the earlier warnings.
+- **Consumer implementation evidence:** `inputs/consumer-policy-source.json` identifies cached `skills` 1.7.4 `dist/cli.mjs` (reported SHA-256 `b7d92e2a619e8982d38390572750efb8c2ec81cdf23c33aed2fa426d080a1e4e`). Excerpts at lines 21, 1017–1027, and 1258–1277 show the `yaml` parser, frontmatter parsing, required string `name` and `description` checks, and an exclusion for `metadata.internal === true` unless internal skills are requested. The captured before discovery of deprecated names confirms those names were not excluded in that capture; the excerpt does not establish all consumer filtering behavior. The supplied provenance says the package was locally cached; it also states that the tarball integrity was not independently recomputed. No fresh consumer execution was performed.
+
+## Reproduction artifacts and commands
+
+The derived arrays are `*-expected-manifest.json`, `*-manifest-paths.json`, `*-expected-discovery.json`, and `*-discovered-names.json`. `derived-counts-and-ambiguities.json` records derived counts and path/name ambiguity checks. The four complete bundled-helper reports are `before-manifest-comparison.json`, `before-discovery-comparison.json`, `after-manifest-comparison.json`, and `after-discovery-comparison.json`; their exit codes are in the matching `.exitcode.txt` files. The helper is `.github\skills\skill-distribution-audit\scripts\compare-discovery.mjs` relative to the repository root.
+
+Commands actually run:
+
+```powershell
+node --version
+node .\outputs\derive-audit-inputs.mjs
+node .\outputs\run-comparisons.mjs
+node .\outputs\annotate-findings.mjs
+node -e "const fs=require('node:fs'); for(const s of ['before-manifest','before-discovery','after-manifest','after-discovery']) { const r=JSON.parse(fs.readFileSync('outputs/'+s+'-comparison.json','utf8')); const c=Number(fs.readFileSync('outputs/'+s+'-comparison.exitcode.txt','utf8')); if(c!==(r.match?0:1)) throw Error(s+' result/exit mismatch'); console.log(s+': exit '+c+', match '+r.match+', '+r.counts.expected+' expected / '+r.counts.observed+' observed'); }"
+```
+
+The installed Node version was `v24.19.0`; the final command verified each retained JSON report and exit code against the helper's match result.
+
+`run-comparisons.mjs` invoked the bundled helper with these argument pairs, in before-manifest, before-discovery, after-manifest, after-discovery order:
+
+```text
+before-expected-manifest.json  before-manifest-paths.json
+before-expected-discovery.json  before-discovered-names.json
+after-expected-manifest.json  after-manifest-paths.json
+after-expected-discovery.json  after-discovered-names.json
+```
+
+Capture metadata identifies the command as `skills add findscripter/everything-skills --list`, package version 1.7.4. The before capture has no timestamp or recorded consumer exit code/observed checkout revision; its source revision is the metadata value only. The after capture records `2026-11-02T09:41:54.651Z`, exit code 0, and observed-before/after revisions equal to its source revision. Both capture metadata provide stdout hashes and describe name extraction from the complete `allDiscovered` output. The captured lists are historical; this audit ran only the local comparison helper, not the consumer or installer.
+
+## Limits
+
+The comparisons establish identity coverage only for the supplied source-index projection, manifests, and historical captured discovery. The name-only discovery output cannot support path attribution for identities absent from the source index; name collisions would also be unresolved, although none were found in the supplied index. No independent exhaustive frontmatter/schema audit was performed. The cached consumer excerpts and their stated provenance are not a fresh verification of the full package. The result does not establish live Copilot loading, skill-body/helper behavior, or external service and credential availability. No inputs or installed skill files were modified; no installer, network request, credential access, GitHub mutation, or collection skill body was used.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/skill-distribution-audit/references/copilot-real-data-validation.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/skill-distribution-audit/references/copilot-real-data-validation.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/skill-distribution-audit/references/copilot-real-data-validation.md
+- **SHA256_FINGERPRINT**: `97ed51683fbdf3a9aae9f04ed1607f2cf1c7926614ca6e4fb522910c26c9cd5e`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:36.405748+00:00
+---
+
+# Copilot validation on real captured collection data
+
+On 2026-11-06, GitHub Copilot CLI **1.0.106** used this skill at revision **11a11ef7c37cd2317e9121c695c7fb9d7b3e8e62** to audit real historical `findscripter/everything-skills` discovery captures. The session used GitHub Copilot's hosted provider, with Auto selecting **GPT-6 Luna** (`gpt-6-luna`, `isByok: false`), on Windows with Node.js **24.19.0**.
+
+Session: `70196521-4d41-458d-8dcc-40eb33cc4158`. The initial request ran 06:48:05–06:50:12 UTC; the continuation ran 06:51:10–06:54:13 UTC. An overly narrow operator shell allowlist prevented the first request from completing the comparisons. The same session continued with local shell execution permitted, one additional consumer-implementation excerpt, and the same skill and other input bytes. Both requests invoked the project skill. This was a practical validation run, not a controlled comparison against Copilot without the skill.
+
+## Inputs and results
+
+The target consumer was **`skills@1.7.4`**, using historical output of `skills add findscripter/everything-skills --list`. The inputs contain source name/path/status projections, original marketplace JSON, full ordered discovery-name extracts, capture metadata, parser warnings, and line-numbered release-policy/consumer implementation excerpts. Discovery names were extracted from original terminal stdout and cross-checked against the historical `allDiscovered` records. No fresh installer run was performed.
+
+| Source revision | Intended active identities | Manifest paths | Captured discovery | Source to manifest | Source to discovery |
+| --- | ---: | ---: | ---: | --- | --- |
+| `3641911a4540686b02900c7c49a14d021286e3ee` | 1,093 | 1,093 | 1,076 | Exact; exit 0 | 38 missing, 21 unexpected; exit 1 |
+| `d696ae529a83ecdd83d2ae69d5a3a221b0209541` | 1,093 | 1,093 | 1,093 | Exact; exit 0 | Exact; exit 0 |
+
+Copilot derived the intended sets from the source policy, mapped manifest directory paths separately from discovery names, checked identity ambiguity, and ran the bundled comparison helper. There were no duplicate identities in these four comparisons. The 21 unexpected entries comprise 20 source-deprecated skills and one unindexed identity. The 39 historical YAML warnings cover the 38 missing active skills plus one deprecated skill. The report distinguishes these observations from inferred causes and treats marketplace publication and direct repository scanning as different channels.
+
+- [Copilot's captured audit report](../assets/copilot-validation/outputs/audit-report.md)
+- [Complete before discovery helper output](../assets/copilot-validation/outputs/before-discovery-comparison.json) and [after output](../assets/copilot-validation/outputs/after-discovery-comparison.json)
+- [Before manifest helper output](../assets/copilot-validation/outputs/before-manifest-comparison.json) and [after output](../assets/copilot-validation/outputs/after-manifest-comparison.json)
+- [Original prompt](../assets/copilot-validation/prompt.txt), [continuation prompt](../assets/copilot-validation/followup.txt), and [selected tool/session evidence](../assets/copilot-validation/session-evidence.json)
+- [Input provenance, fixed source URLs, hashes, and published file inventory](../assets/copilot-validation/provenance.json)
+
+The selected trace records skill loading/invocation, Copilot provider/model identity, commands, tool outputs, and the permission-denied attempts. Local paths are redacted. Private service logs, personal skill descriptions, and model reasoning are excluded. Independent verification found the successful helper stdout equal to the saved JSON, with exit codes **0 / 1 / 0 / 0**; all 14 input files and four skill files retained their original bytes throughout the Copilot run. Publication normalizes four output files to LF and removes a trailing blank line from the path-redacted stderr excerpt; these transformations and hashes are recorded in provenance.
+
+## Reproduce the deterministic results
+
+From the repository root, with Node.js 24 or later:
+
+```sh
+node skills/skill-distribution-audit/assets/copilot-validation/reproduce.mjs
+```
+
+This makes a fresh temporary workspace, copies the supplied inputs and skill, and runs the three scripts generated by Copilot: identity derivation, four helper comparisons, and finding annotation. Only their line endings were normalized for publication, as recorded in the provenance file. It verifies the reports and exit codes against the captured results. It does not invoke Copilot, a network tool, an installer, or an audited collection skill. The temporary workspace is retained for inspection.
+
+To repeat the Copilot-guided part, use that temporary workspace, grant local execution/output writes, and submit the saved original prompt to an authenticated Copilot CLI session. Retain its transcript and record the actual client/model version; a fresh model response need not use identical wording. The saved continuation explains the original permission correction and the added implementation excerpt.
+
+## What this establishes
+
+This demonstrates that GitHub Copilot used the skill and helper on real captured data to produce reproducible identity reconciliation. It establishes coverage for the supplied source projection and historical captures only. Full original terminal logs remain local; the published extracts include their hashes and extraction method. The before capture lacks its own timestamp, recorded exit code, and before/after checkout observation; its source attribution comes from the historical audit metadata. The after capture records 2026-11-02T09:41:54.651Z, exit 0, and the same source revision observed before and after discovery. Cached consumer excerpts were not independently re-downloaded or verified against package integrity during this run.
+
+It does not establish current installer behavior, exhaustive YAML/schema validity, live loading or successful execution of the collection's skills, credential/service availability, or a measured improvement over baseline Copilot. References to no network requests in the captured audit report mean no network **tool** requests; Copilot inference itself used its hosted service.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/skill-distribution-audit/references/worked-example.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/skill-distribution-audit/references/worked-example.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/skill-distribution-audit/references/worked-example.md
+- **SHA256_FINGERPRINT**: `6b42b3a221fcef2e764ef0d63dcc2023d299227b95de5b6bf3c7fea9821f3e90`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:36.396009+00:00
+---
+
+# Equal counts can hide distribution failures
+
+This is a small synthetic example, not a benchmark of Copilot or an observation from a live installer.
+
+A collection's release policy publishes two skills, `active-a` and `active-b`, while keeping `template` internal. Its captured discovery output lists `active-a` and `template`. Both totals are two.
+
+Supply the intended identities as the first JSON input:
+
+```json
+["active-a", "active-b"]
+```
+
+Supply the observed identities as the second JSON input:
+
+```json
+["active-a", "template"]
+```
+
+Run [compare-discovery.mjs](../scripts/compare-discovery.mjs) as described in the skill. It returns exit code 1 with:
+
+```json
+{
+  "match": false,
+  "counts": {
+    "expected": 2,
+    "observed": 2,
+    "expectedUnique": 2,
+    "observedUnique": 2
+  },
+  "missing": ["active-b"],
+  "unexpected": ["template"],
+  "duplicates": {"expected": [], "observed": []}
+}
+```
+
+The report should then investigate each difference separately. For the omitted skill, inspect parser warnings, schema compatibility, path rules, and the target revision. For the template, inspect the release policy and the actual consumer's exclusion semantics. The identity comparison alone does not establish either root cause.
+
+If the manifest belongs to another distribution channel, compare that channel separately. Do not infer that changing that manifest will change direct repository discovery. After a repair, an exact unique match should return exit code 0; this still does not verify runtime loading or execution.
 
 
 ---
@@ -44572,6 +45378,266 @@ When outdated skills are identified:
 4. When user requests update, replace entire local skill folder with remote version
 5. Preserve folder location in `.github/skills/` directory
 6. Ensure all bundled assets are downloaded alongside the updated `SKILL.md`
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/supabase-rls-policies/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/supabase-rls-policies/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/supabase-rls-policies/SKILL.md
+- **SHA256_FINGERPRINT**: `7927759eccb0474988045a20c0db29095c8dd0c6fd5202dd0b03ccc872785b58`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:36.407334+00:00
+---
+
+**description**: Write, review, and test Supabase Row Level Security (RLS) policies so that one user cannot read or change another user''s rows. Use when creating or changing tables, policies, views, or security definer functions in a Supabase project, when reviewing a migration that touches RLS, or when asked to prove user isolation with pgTAP tests that sign in as two users.
+
+# Supabase RLS Policies
+
+Write Row Level Security (RLS) policies for Supabase tables, then prove them with pgTAP tests that act as two different users. A policy is not finished until a test shows that a second user cannot read, change, delete, or create rows that belong to the first user.
+
+## When to Use This Skill
+
+- Creating a table in an exposed schema (by default `public`)
+- Adding or changing a policy, a view, or a `security definer` function
+- Reviewing a migration or pull request that touches RLS
+- Answering whether users or tenants are isolated from each other
+
+## Workflow
+
+1. **List the access rules first.** For each table, write down which role (`anon` or `authenticated`) may run which operation (`select`, `insert`, `update`, `delete`) on which rows. Confirm the list with the user before writing SQL. Each rule gets one test.
+2. **Write the migration.** Enable RLS, add one policy per operation, and index every column the policies filter on.
+3. **Write a pgTAP test file** for the table under `supabase/tests/`, using the template below.
+4. **Run `supabase test db`** and read every line of output.
+5. **Break the policy on purpose, on a local database only.** Copy the test file and add a temporary policy with `using (true)` right after `begin;`, for example `create policy "tmp_open" on public.notes for select to authenticated using (true);`. Run `supabase test db` against the local stack from `supabase start`, confirm at least one test fails, then delete the copy. Do the same with a temporary `for update` and a `for delete` policy. The file ends with `rollback`, so the temporary policy is undone even when the run fails or stops early. Never put a temporary policy in a migration, and never run this against a shared or production database. Do not drop the real policy to do this: with no policy every read is denied, so denial tests still pass and prove nothing.
+6. **Do not change a policy just to make a test pass.** Report which assertion failed and which policy it covers, and let the user decide which one is wrong.
+
+## Rules for Every Table
+
+### Enable RLS and name the role
+
+- Run `alter table ... enable row level security` on every table in an exposed schema. Once RLS is on and no policy exists, the API returns no rows.
+- Add a `to` clause to every policy. Without it the policy applies to `PUBLIC`, which means every role, including `anon`.
+- `auth.uid()` returns `null` when the request has no signed in user. `to authenticated` keeps anonymous requests from reaching the check at all.
+
+### One policy per operation, with the owner checked on writes
+
+```sql
+alter table public.notes enable row level security;
+
+create policy "notes_select_own" on public.notes
+  for select to authenticated
+  using ((select auth.uid()) = owner_id);
+
+create policy "notes_insert_own" on public.notes
+  for insert to authenticated
+  with check ((select auth.uid()) = owner_id);
+
+create policy "notes_update_own" on public.notes
+  for update to authenticated
+  using ((select auth.uid()) = owner_id)
+  with check ((select auth.uid()) = owner_id);
+
+create policy "notes_delete_own" on public.notes
+  for delete to authenticated
+  using ((select auth.uid()) = owner_id);
+
+create index notes_owner_id_idx on public.notes using btree (owner_id);
+```
+
+- `using` checks rows that already exist. `with check` checks the row being written. Rows that fail `using` are skipped with no error; a row that fails `with check` raises an error.
+- **Bind the owner column in every insert and update check.** A check such as `auth.uid() is not null` only proves the caller is signed in. Any signed in user can then insert a row with another user's id in the owner column.
+- A column default such as `default auth.uid()` does not protect the owner column. Postgres uses a default only when the insert does not supply a value, and the client can always supply one.
+- An `update` needs a matching `select` policy, or the update will not work as expected.
+- Wrap `auth.uid()` and `auth.jwt()` in `(select ...)` so Postgres runs them once per statement instead of once per row.
+- Index every column a policy filters on. A column counts as indexed only when it is the first column of a btree index.
+
+### Authorization data in the token
+
+- Never base a policy on `user_metadata` (`raw_user_meta_data`). Signed in users can change it themselves.
+- Store roles, teams, and plans in `app_metadata` (`raw_app_meta_data`), which users cannot change, and read it with `auth.jwt()`.
+- A change to `app_metadata` reaches `auth.jwt()` only after the user's token is refreshed. A user removed from a team keeps access until then.
+
+### Multi factor authentication
+
+To require a second factor, add a restrictive policy:
+
+```sql
+create policy "notes_require_aal2" on public.notes
+  as restrictive
+  for all to authenticated
+  using ((select auth.jwt()->>'aal') = 'aal2');
+```
+
+Restrictive policies only narrow access. A table with only restrictive policies returns no rows, so keep the permissive policies above.
+
+### Views
+
+Views bypass RLS by default because they run with the rights of the role that created them. On Postgres 15 and later, create views with `security_invoker = true`:
+
+```sql
+create view public.my_notes
+  with (security_invoker = true)
+  as select id, body from public.notes;
+```
+
+On older versions, remove every grant path or keep the view in a schema that is not exposed. Revoking only the direct grants is not enough: a grant to `PUBLIC`, a grant to a role the API roles are members of, or a grant on a single column still lets them read the view. Check the result with `has_any_column_privilege`, which counts all three; `relacl` lists only direct table grants.
+
+```sql
+revoke all on public.my_notes from public, anon, authenticated;
+select has_any_column_privilege('anon', 'public.my_notes', 'select'),
+       has_any_column_privilege('authenticated', 'public.my_notes', 'select');  -- both must be false
+```
+
+### Security definer functions
+
+- A `security definer` function runs as its owner. If the owner is `postgres`, it bypasses RLS.
+- Never create one in an exposed schema. It can be called over the Data API with the owner's rights.
+- Set `search_path = ''` and schema qualify every name inside the function.
+
+### Keys
+
+- Secret keys (and the legacy `service_role` key) bypass RLS. Use them only on a server, never in a browser or mobile app.
+- A secret key bypasses RLS only when the request has no user access token. If the request carries one, that user's policies apply.
+
+## Two User pgTAP Test Template
+
+Save as `supabase/tests/notes_rls_test.sql` and adapt the table, columns, and ids. The file runs in one transaction and rolls back, so test data never persists.
+
+```sql
+begin;
+create extension if not exists pgtap with schema extensions;
+select plan(8);
+
+-- Two users, created before switching roles.
+insert into auth.users (id, email) values
+  ('11111111-1111-1111-1111-111111111111', 'user1@test.com'),
+  ('22222222-2222-2222-2222-222222222222', 'user2@test.com');
+
+insert into public.notes (id, owner_id, body) values
+  ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '11111111-1111-1111-1111-111111111111', 'user 1 note');
+
+-- As user 1: the owner can read and change their own row.
+set local role authenticated;
+set local request.jwt.claims = '{"sub": "11111111-1111-1111-1111-111111111111", "role": "authenticated"}';
+
+select results_eq(
+  $$select body from public.notes where id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'$$,
+  $$values ('user 1 note'::text)$$,
+  'user 1 reads their own note'
+);
+
+select results_eq(
+  $$update public.notes set body = 'edited' where id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' returning body$$,
+  $$values ('edited'::text)$$,
+  'user 1 updates their own note'
+);
+
+-- As user 2: every attempt on user 1's row must fail.
+-- User 2 owns no rows yet, so the write probes need no where clause.
+set local request.jwt.claims = '{"sub": "22222222-2222-2222-2222-222222222222", "role": "authenticated"}';
+
+select is_empty(
+  $$select 1 from public.notes where id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'$$,
+  'user 2 cannot read user 1 note'
+);
+
+select is_empty(
+  $$update public.notes set body = 'changed' returning 1$$,
+  'user 2 cannot update user 1 note'
+);
+
+select is_empty(
+  $$delete from public.notes returning 1$$,
+  'user 2 cannot delete user 1 note'
+);
+
+select throws_ok(
+  $$insert into public.notes (owner_id, body) values ('11111111-1111-1111-1111-111111111111', 'forged')$$,
+  '42501', null,
+  'user 2 cannot create a note owned by user 1'
+);
+
+select results_eq(
+  $$insert into public.notes (owner_id, body) values ('22222222-2222-2222-2222-222222222222', 'user 2 note') returning owner_id$$,
+  $$values ('22222222-2222-2222-2222-222222222222'::uuid)$$,
+  'user 2 creates their own note'
+);
+
+-- No where clause: the update policy alone picks user 2's row,
+-- so only its with check can stop the transfer.
+select throws_ok(
+  $$update public.notes set owner_id = '11111111-1111-1111-1111-111111111111'$$,
+  '42501', null,
+  'user 2 cannot hand their note to user 1'
+);
+
+select * from finish();
+rollback;
+```
+
+Notes on the template:
+
+- Use `returning` on writes. An update or delete that RLS filters out succeeds with zero rows, so only the returned rows show what happened.
+- In user 2's update and delete probes, do not filter on a column or return one. When an update or delete reads a column, Postgres applies the `select` policy as well, so a correct `select` policy can hide an `update` or `delete` policy that is too open. Return the constant `1` and rely on user 2 owning no rows yet.
+- Filter reads by the ids the test inserted. A count over the whole table breaks once other data exists.
+- Error `42501` is the code Postgres raises when a written row fails a `with check` expression.
+- Add an `anon` case for any table that anonymous visitors must not read, and add one to the plan count. Replace the claims first: changing the role does not clear them, so `auth.uid()` would still return user 2's id.
+
+  ```sql
+  set local request.jwt.claims = '{"role": "anon"}';
+  set local role anon;
+  select is_empty(
+    $$select 1 from public.notes where id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'$$,
+    'an anonymous visitor cannot read user 1 note'
+  );
+  ```
+
+  If your project does not grant table privileges to `anon`, the read raises `42501` instead, so use `throws_ok`.
+
+## Testing Policies That Read Other Claims
+
+The template sets the whole claims object in `request.jwt.claims`, the setting PostgREST fills from the token. `auth.uid()` and `auth.jwt()` both read it. If a test sets only `request.jwt.claim.sub`, `auth.uid()` still works but `auth.jwt()` returns `null`, so a policy that compares a claim such as `aal` or a value in `app_metadata` sees `null`. The `aal2` policy above denies every user in that state, so a test that expects a denial passes for the wrong reason.
+
+For a table with the restrictive `aal2` policy, add `"aal": "aal2"` to the claims at both user switches in the template, so the owner checks still pass. Then test the other side before `select * from finish();`, and add these two assertions to the plan count:
+
+```sql
+-- If the anon case ran first, the SQL role is still anon. The role claim in the JSON does not change it.
+set local role authenticated;
+set local request.jwt.claims = '{"sub": "11111111-1111-1111-1111-111111111111", "role": "authenticated", "aal": "aal1"}';
+select is_empty(
+  $$select 1 from public.notes where id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'$$,
+  'an aal1 session cannot read user 1 note'
+);
+
+set local request.jwt.claims = '{"sub": "11111111-1111-1111-1111-111111111111", "role": "authenticated", "aal": "aal2"}';
+select isnt_empty(
+  $$select 1 from public.notes where id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'$$,
+  'an aal2 session reads user 1 note'
+);
+```
+
+## Review Checklist
+
+- [ ] RLS is enabled on every table in an exposed schema
+- [ ] Every policy names a role with `to`
+- [ ] Insert and update checks bind the owner column to `(select auth.uid())`
+- [ ] No policy reads `user_metadata`
+- [ ] Views use `security_invoker = true`, or are not exposed
+- [ ] Security definer functions live outside exposed schemas and set `search_path = ''`
+- [ ] Each policy column has an index that leads with that column
+- [ ] Each user data table has a two user test covering read, update, delete, and insert
+- [ ] The second user's update and delete probes read no column
+- [ ] Tests set the full `request.jwt.claims` object at each user switch, and replace it before the `anon` case
+- [ ] The suite fails when a temporary `using (true)` policy is added inside the test transaction on a local database
+
+## References
+
+- [Row Level Security](https://supabase.com/docs/guides/database/postgres/row-level-security), Supabase docs
+- [Test Row Level Security policies with pgTAP](https://supabase.com/docs/guides/database/postgres/testing-row-level-security), Supabase docs
+- [Multi-Factor Authentication](https://supabase.com/docs/guides/auth/auth-mfa), Supabase docs
+- [CREATE POLICY](https://www.postgresql.org/docs/current/sql-createpolicy.html), PostgreSQL docs
+- [Transactions](https://docs.postgrest.org/en/stable/references/transactions.html), PostgREST docs (`request.jwt.claims`)
+- [CREATE TABLE](https://www.postgresql.org/docs/current/sql-createtable.html), PostgreSQL docs (column defaults)
+- [auth.uid() source](https://github.com/supabase/auth/blob/35307ce6c1ca59016fd820f1d77d9b6201dc2e15/migrations/20220224000811_update_auth_functions.up.sql) and [auth.jwt() source](https://github.com/supabase/auth/blob/35307ce6c1ca59016fd820f1d77d9b6201dc2e15/migrations/20220531120530_add_auth_jwt_function.up.sql), Supabase Auth
 
 
 ---
@@ -60354,8 +61420,8 @@ WorkIQ (Public Preview) lets Copilot query Microsoft 365 data with natural langu
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/workshop-create/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/workshop-create/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/workshop-create/SKILL.md
-- **SHA256_FINGERPRINT**: `9ab87d22b032ebccc5990ec46242af1b3bf4325c3f48e8a48aeda47c459b9ca9`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:53.205169+00:00
+- **SHA256_FINGERPRINT**: `e0787197ee02cfa7d667ef80aa28fe10fb3da24e6958b9a2c06a98b4e8a8188c`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:36.478929+00:00
 ---
 
 **description**: Create a new workshop or use an existing directory as one. Handles two paths: (A) use an existing local directory the operator points at, or (B) create a new private GitHub repo in the signed-in account. Never creates a repo inside another repo.
@@ -60378,11 +61444,11 @@ The operator already has a folder they want to use. Maybe it's a repo
 they cloned, maybe it's a local project folder.
 
 1. **Confirm the path exists.** If not, ask the operator for a valid path.
-2. **Detect existing workshop markers.** Look for `desks/` or `classroom/`
-   folders, a `workshop.md`, `CAIRN.md`, or `hands-up.md`. Finding any of
-   these tells you this is an existing workshop — but this is detection
-   only, not a stopping point. Continue to the next step and add whatever
-   is missing; never overwrite what is already there.
+2. **Detect existing workshop markers.** Look for `desks/`, `classroom/`,
+   or `*-desks/` folders, a `workshop.md`, `CAIRN.md`, or `hands-up.md`.
+   Finding any of these tells you this is an existing workshop — but this
+   is detection only, not a stopping point. Continue to the next step and
+   add whatever is missing; never overwrite what is already there.
 3. **Scaffold the workshop structure** (only what's missing):
    ```
    <path>/
@@ -60479,7 +61545,8 @@ working, not failing.
 
 Tell the operator:
 - Where the workshop lives (full path)
-- That they can now open desks in it with `desk-open`
+- That they can now open desks in it with `desk-open` — in `desks/`, or
+  in a top-level `<group>-desks/` folder if they want to group desks
 - That Cairn will show signals once desks start emitting them
 
 ## Principles
@@ -61905,8 +62972,8 @@ Behavior depends on where you set the flag:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/agent-plugins.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/agent-plugins
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-plugins.md
-- **SHA256_FINGERPRINT**: `1d96dbc94aa112a90f043fdde13e762b45a0a81b46e8a094926387007f352935`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:25.498236+00:00
+- **SHA256_FINGERPRINT**: `36f3868a2f14eaf6e9b7c047755f02aec66b0ad302fd601cec6f6f9a8fa33e06`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.040959+00:00
 ---
 
 **MetaDescription**: Find, install, and manage agent plugins from marketplaces in VS Code.
@@ -61917,7 +62984,7 @@ Agent plugins package related customizations, such as skills, agents, and tool i
 
 This article shows you how to discover and install a plugin, verify it with a document-review workflow, and manage the installation. To create or package a plugin, see the [agent plugin authoring reference](/docs/agents/reference/agent-plugin-reference.md).
 
-If you only need a project rule or a single skill, start with an [individual customization](/docs/agents/concepts/customization.md#customization-options-at-a-glance). Choose a bundle when its components support a workflow you want to adopt together.
+If you only need a project rule or a single skill, start with an [individual customization](/docs/agents/concepts/customization.md#customization-building-blocks). Choose a bundle when its components support a workflow you want to adopt together.
 
 > [!NOTE]
 > Enable or disable support for agent plugins with the ``chat.plugins.enabled`` setting.
@@ -62087,12 +63154,12 @@ If you only need a skill, consider [using or adapting an existing skill](/docs/a
 
 ### Enable or disable plugins
 
-You can enable or disable a plugin for the current profile or a specific workspace:
+Where offered by the selected harness, you can enable or disable a plugin globally or for a specific workspace. Enablement is separate from where the plugin is installed:
 
-1. In the Agent Customizations editor, select **Plugins** and open the plugin's details.
-1. Use **Enable** or **Disable** to change its state for the current profile, or **Enable (Workspace)** or **Disable (Workspace)** for the current workspace. Use the button's dropdown menu to choose the scope.
+1. Select the intended session. In the Agent Customizations editor, select **Plugins** and open the plugin's details.
+1. Use **Enable** or **Disable** to change its global state, or **Enable (Workspace)** or **Disable (Workspace)** for the current workspace. Use the button's dropdown menu to choose an available scope.
 
-The enable/disable state is stored separately from the plugin configuration, so it does not affect shared workspace settings.
+Global enablement isn't isolated to the active user profile. The enabled state is stored separately from the plugin configuration, so a workspace enablement choice doesn't change shared workspace settings. For remote sessions, check whether the plugin is host-owned or supplied by the connected client before changing it. See [customization context and change scope](/docs/agent-customization/overview.md#understand-what-a-change-affects).
 
 Policy-managed plugins are identified as managed by policy, and their toggles are locked.
 
@@ -62228,8 +63295,8 @@ Use the [agent plugin authoring reference](/docs/agents/reference/agent-plugin-r
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/agent-skills.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/agent-skills
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-skills.md
-- **SHA256_FINGERPRINT**: `13a1616523cc2453257ff9d23cf71a9466aeb77b89165e87a24a676f80531065`
-- **LAST_VERIFIED_UTC**: 2026-11-02T21:32:53.200196+00:00
+- **SHA256_FINGERPRINT**: `c9397bec5c502f4c1b38e3743c8ca8a3ed1f3956456b726c2ef57f750dc8484d`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.014233+00:00
 ---
 
 **MetaDescription**: Find, adapt, and create Agent Skills in VS Code for reusable workflows with supported agents.
@@ -62282,7 +63349,7 @@ Use custom instructions when you want to:
 
 ## Use an existing skill
 
-Start with an existing skill when it provides the workflow you need. [Browse customization marketplaces](/docs/agent-customization/overview.md#discover-and-install-existing-customizations-preview) to install an individual skill or find one bundled in an [agent plugin](/docs/agent-customization/agent-plugins.md). You can also copy and adapt a skill for your project. Check [harness compatibility](/docs/agent-customization/overview.md#check-harness-compatibility) before choosing a source and location.
+Start with an existing skill when it provides the workflow you need. [Browse customization marketplaces](/docs/agent-customization/overview.md#discover-and-install-existing-customizations-preview) to install an individual skill or find one bundled in an [agent plugin](/docs/agent-customization/agent-plugins.md). You can also copy and adapt a skill for your project. Review the requirements for [reusing customizations across harnesses](/docs/agent-customization/overview.md#reuse-customizations-across-harnesses) before choosing a source and location.
 
 A skill includes its full directory, not only the `SKILL.md` file: scripts, templates, examples, and other resources can be part of the workflow.
 
@@ -62745,8 +63812,8 @@ To use the service again, [connect it from the Agent Customizations editor](#con
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/custom-agents.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/custom-agents
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/custom-agents.md
-- **SHA256_FINGERPRINT**: `ef656080b99866bd163ebf9e0fa67c241f1d5325d425eb05544f618c1e481930`
-- **LAST_VERIFIED_UTC**: 2026-11-02T21:32:53.079756+00:00
+- **SHA256_FINGERPRINT**: `e7d7af9721b66f4a10f4a1b5053998b661023368dffae3f36c9d50fd0967b554`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.061582+00:00
 ---
 
 **MetaDescription**: Reuse, create, and manage custom agents in VS Code for specialized development roles and workflows.
@@ -62767,7 +63834,7 @@ Create a custom agent when a recurring role needs its own instructions, tools, o
 
 You don't need a custom agent for every task. Use the [built-in planning workflow](/docs/agents/run/planning.md) if it already meets your needs. Put project-wide conventions in [custom instructions](/docs/agent-customization/custom-instructions.md), and put one-time requirements in your prompt. For reusable workflows with supporting scripts or resources, consider an [agent skill](/docs/agent-customization/agent-skills.md).
 
-See the [customization comparison](/docs/agents/concepts/customization.md#customization-options-at-a-glance) if you're unsure which option fits.
+See the [customization building blocks](/docs/agents/concepts/customization.md#customization-building-blocks) if you're unsure which option fits.
 
 ## Reuse an agent from a plugin
 
@@ -64809,15 +65876,17 @@ With a plugin named `code-tutor`, users invoke this skill as `/code-tutor:teach-
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/overview.md
-- **SHA256_FINGERPRINT**: `019afc3c42753f69b3353511b652cd75bb074da56350383a5fc4ad981948ff2b`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:25.657081+00:00
+- **SHA256_FINGERPRINT**: `fa883a01cf1a4495e0d9c47f682cfd46428cf72167ab2d10496c4064dd50d9fc`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.058435+00:00
 ---
 
-**MetaDescription**: Find and reuse agent customizations from marketplaces in VS Code, or create project guidance.
+**MetaDescription**: Find, create, and manage agent customizations for a session's harness, workspace, and environment in VS Code.
 
 # Customize agents for your workflow
 
-Agent customizations adapt agents to your coding standards, workflows, and development systems. Start by looking for an existing skill, plugin, or integration in a customization marketplace before creating your own. This guide helps you find, install, and verify customizations in Visual Studio Code, or create project-specific guidance. To understand how customization types differ and work together, see [Agent customization concepts](/docs/agents/concepts/customization.md).
+Agent customizations adapt agents to your coding standards, workflows, and development systems. Start by looking for an existing skill, plugin, or integration in a customization marketplace before creating your own. This guide helps you find, install, and verify customizations in Visual Studio Code, or create project-specific guidance.
+
+To understand how customization types differ and work together, see [Agent customization concepts](/docs/agents/concepts/customization.md).
 
 <div class="docs-action" data-show-in-doc="false" data-show-in-sidebar="true" title="Core concepts">
 Learn about the different customization types and when to use each one.
@@ -64846,52 +65915,211 @@ Start with a recurring task or an observed problem, such as the agent using the 
 | Connect an external service | [Use a Copilot connector](/docs/agent-customization/copilot-connectors.md) `feature(copilot-connectors)` or [add an MCP server](/docs/agent-customization/mcp-servers.md#connect-a-server) |
 | Run an action at specific events of the agent's workflow | [Configure a hook](/docs/agent-customization/hooks.md) |
 
-Reuse or adapt an existing customization before creating one from scratch. You can combine approaches, such as installing a plugin and adding project instructions. For saved prompts and a comparison of all the options, see [customization types and activation](/docs/agents/concepts/customization.md#customization-options-at-a-glance).
-
-For a complete project walkthrough, follow [Configure AI for your codebase](/docs/agents/guides/customize-copilot-guide.md).
-
-## Check harness compatibility
-
-An agent harness coordinates the model, tools, and customizations for a session. It determines which customization formats and locations are supported. Choosing a different language model doesn't change those requirements.
-
-Before installing, copying, or creating a customization:
-
-1. [Select the intended harness](/docs/agents/run/agent-harnesses.md#select-a-harness) from the **Session Target** control in a new chat.
-
-1. Open the Agent Customizations editor for that harness, as described below.
-
-1. Follow the guide for your customization type for the harness-specific file location, fields, and activation rules.
-
-> [!NOTE]
-> [Prompt files](/docs/agent-customization/prompt-files.md) and [tool sets](/docs/agent-customization/tool-sets.md) require a **Local** harness session in the Chat view. Local sessions aren't available in the Agents window. For reusable workflows in other skills-compatible harnesses, use a skill instead of a prompt file.
-
-### Choose a customization scope
-
-Store a customization at the narrowest scope that matches how you want to use and share it:
-
-* **User**: use the customization across your workspaces without committing it to the project.
-
-* **Workspace**: share project guidance and workflows with contributors through source control.
-
-* **Organization**: centrally manage supported customization types across repositories. Configure these through GitHub rather than the Agent Customizations editor.
-
-Not every customization type supports every scope. User files must be stored in a location supported by the harness on the machine where the agent runs, and aren't shared automatically between machines. Follow the individual customization guide for supported locations.
+To understand what each type contributes, see [customization building blocks](/docs/agents/concepts/customization.md#customization-building-blocks).
 
 ## Agent Customizations editor
 
-The Agent Customizations editor provides a central place to discover, create, and manage customizations for the selected harness. It organizes customization types into separate sections, with configuration forms, inline file editors, or read-only details depending on the type and source.
+The Agent Customizations editor brings discovery, authoring, and management into one place:
 
-Follow these steps to open the Agent Customizations editor:
+* **Discover** reusable skills, plugins, and integrations through the Customization Marketplace (Preview).
+* **Inspect** customizations by type and source to see what is available.
+* **Create and edit** instructions, skills, custom agents, and supported configurations using inline editors and forms.
+* **Manage availability** with the enablement and tool-selection controls supported by the selected harness.
 
-In the left sidebar, select **Customizations** to open the Agent Customizations editor. Then select the customization type in the editor.
+Available actions depend on the customization type, source, and harness. Some entries are read-only.
+
+The editor shows customizations for the **selected session**, not a combined list for all sessions. Switching sessions can change what appears because the harness, workspace, or execution environment differs. You can see the active harness in the editor's title bar.
+
+The editor can also list disabled items. A listed customization isn't necessarily used in every request: [verify it](#verify-a-customization) with a representative task.
 
 ![Screenshot showing the Customizations sidebar action and the Agent Customizations editor.](images/customization/agents-window-customizations.png)
 
-The experimental **Extensions** section also lets you [choose which installed extensions run in the Agents window](/docs/agents/run/agents-window-configuration.md#manage-extensions-experimental).
+To open the Agent Customizations editor:
 
-In the Chat view, select **Open Customizations** in the title bar, or run **Chat: Open Customizations** from the Command Palette (``Shortcut: workbench.action.showCommands``).
+1. Select a session and harness for which you want to configure customizations.
 
-![Screenshot showing the Agent Customizations editor with customization categories in the sidebar and custom agents in the main view.](images/customization/chat-customizations-editor-2.png)
+1. Open the Agent Customizations editor:
+
+    * **Agents window**: select **Customizations** in the left sidebar.
+
+    * **Chat view**: select **Open Customizations** in the title bar, or run **Chat: Open Customizations** from the Command Palette (``Shortcut: workbench.action.showCommands``).
+
+1. Use the tabs in the editor to navigate between different customization types, such as skills, custom agents, hooks, and MCP servers.
+
+    The experimental **Extensions** section also lets you [choose which installed extensions run in the Agents window](/docs/agents/run/agents-window-configuration.md#manage-extensions-experimental).
+
+For remote hosts and Dev Containers, see [Manage customizations for remote sessions](#manage-customizations-for-remote-sessions).
+
+> [!IMPORTANT]
+> If the Agent Customizations editor shows **Migrations** `feature(user-customization-migration)`, Copilot cannot use one or more customizations in their current location or format. Select **Migrations** to review the required work, and follow [Migrate Copilot customizations in VS Code](/docs/agent-customization/migrate-customizations.md) for detailed steps.
+
+### Reuse customizations across harnesses
+
+For new customizations, select the intended session before creating them in the editor. The editor offers locations and configuration fields for that harness.
+
+When reusing existing customizations, check more than the file's presence:
+
+* **Location**: personal customizations can live in different directories for each harness.
+* **Format**: skills use a shared format, but custom-agent fields and hook configuration can differ.
+* **Behavior**: referenced tools, scripts, and commands must work in the target session's environment.
+
+After adapting a customization, [verify it](#verify-a-customization) in a session using the target harness.
+
+## Discover and install existing customizations (Preview)
+
+Use the customization marketplace to find a workflow or integration you can reuse instead of building it from scratch. The unified **Browse** page in the Agent Customizations editor brings together available sources, including plugin marketplaces, GitHub Feed, and Copilot connectors `feature(copilot-connectors)`.
+
+The list of available sources and installation actions depends on the selected harness and organization policy.
+
+You can install an individual skill or a plugin that bundles related customizations, such as skills, custom agents, hooks, and MCP servers. For a service integration, find an MCP server or connect a supported service without server setup.
+
+To find and install a customization:
+
+1. Open the Agent Customizations editor and select **Browse**.
+
+1. Use the source menu to browse all sources or select a specific available source, such as **GitHub Feed** or an individual plugin marketplace.
+
+1. Search by name or use a type filter, such as `@type:skill` or `@type:mcp`.
+
+1. Select an item and review its publisher, source, installation details, and any setup requirements.
+
+1. Select **Install** and [choose a scope](#choose-a-customization-scope) when prompted for a destination. For Copilot connectors `feature(copilot-connectors)`, select **Connect** and complete authorization instead.
+
+If your team shares plugins through another marketplace, select **Configure Marketplaces** from the source menu to [add or manage plugin marketplaces](/docs/agent-customization/agent-plugins.md#configure-plugin-marketplaces). Adding a marketplace makes its plugins available to browse. It doesn't install them.
+
+After installation, complete any publisher setup and [verify the customization](#verify-a-customization) with a representative task. For type-specific guidance, see [install a skill](/docs/agent-customization/agent-skills.md#install-a-skill-from-the-customization-marketplace-preview), [install a plugin](/docs/agent-customization/agent-plugins.md#install-a-plugin-from-a-marketplace), or [find an MCP server](/docs/agent-customization/mcp-servers.md#find-another-server).
+
+### Marketplace availability
+
+The **Browse** page appears when a marketplace source is available. Marketplace discovery is enabled by default with ``chat.customizations.marketplace.enabled``.
+
+If **Browse** isn't available, check that the setting is enabled and your organization permits **Editor preview features**. Disabling that policy forces the unified **Browse** experience and Copilot connectors off. See [organization and enterprise settings](/docs/enterprise/manage-ai-settings.md#use-github-organization-and-enterprise-settings).
+
+The experimental GitHub Feed source is enabled by default for harnesses that provide marketplace search. Local sessions don't provide this source, and organization policy can restrict access. Use the ``chat.customizations.marketplace.sources.publicFeed.enabled`` setting to show or hide this source. For plugin discovery without the unified **Browse** page, follow the [plugin installation guide](/docs/agent-customization/agent-plugins.md#install-a-plugin-from-a-marketplace).
+
+## Create a customization
+
+For file-based customizations, use the editor to create a file at [user or workspace scope](#choose-a-customization-scope):
+
+1. Select the intended session and confirm its harness, workspace, and execution environment. Open the Agent Customizations editor and select a customization type.
+
+1. Select the `+` button next to **User** or **Workspace** for your chosen scope.
+
+1. Enter a name and choose a storage location when prompted.
+
+1. Edit the customization in the inline editor, which provides syntax highlighting and validation.
+
+1. Review and save the customization.
+
+You can also run the **Chat: New \<customization-type\>** command from the Command Palette (``Shortcut: workbench.action.showCommands``). The command creates the corresponding file in a supported location for that customization type.
+
+To add an MCP server manually, select **MCP Servers**, select **Add Server** (**+**) in the **User** or **Workspace** group, and follow the guided flow. For detailed steps, see [Add MCP servers](/docs/agent-customization/mcp-servers.md#connect-a-server). To update an existing connection, see [Edit an MCP server configuration](/docs/agents/run/manage-mcp-servers.md#edit-an-mcp-server-configuration).
+
+Creating or saving a file doesn't establish that the agent uses it. Verify the customization before relying on it or sharing it with your team.
+
+### Choose a customization scope
+
+When installing or creating a customization, choose a supported destination:
+
+* **User**: use it across your workspaces without committing it to the project.
+
+* **Workspace**: store it with the project so contributors can share it through source control.
+
+The available destinations depend on the customization type and harness. Follow the individual customization guide for supported locations. For centrally managed configuration and company-shared packages, see [personal and shared customizations](/docs/agents/concepts/customization.md#personal-and-shared-customizations).
+
+## Verify a customization
+
+Repeat your representative task in a fresh chat with the intended harness, workspace, and execution host. For remote sessions, connect from the client you intend to use so its contributions are included. Don't repeat the customization's rules in the test prompt. Check these three stages separately:
+
+1. **Discovery**: open the Agent Customizations editor and confirm that the customization is listed without validation errors.
+
+1. **Inclusion or invocation**: check whether the request uses the customization. For instructions and skills, inspect the response's **References** section, where available, or [Agent Debug Logs](/docs/agents/agent-troubleshooting/chat-debug-view.md#instructions-or-a-prompt-file-are-not-applied). For tools and hooks, inspect the corresponding tool activity or execution logs.
+
+1. **Effectiveness**: review the changes, commands, and results against the outcome you defined. Inclusion doesn't guarantee that the agent follows the guidance.
+
+For example, if project instructions specify the correct test command, ask the agent to make a small code change without restating that command. Confirm that it runs the expected tests and reports their results.
+
+If a stage fails, [troubleshoot that stage](#troubleshoot-customization-issues) before adding more guidance. Once the customization meets your goal, review it before sharing it.
+
+## Manage existing customizations
+
+Use the Agent Customizations editor to find and update customizations for the selected session's context. Select the intended session and check its harness, workspace, and host before editing:
+
+1. Open the Agent Customizations editor and select the customization type.
+
+1. Use the search box to find the customization.
+
+1. Select the customization to open its details.
+
+1. If the customization is editable, update its form or file and save your changes. For a read-only customization, use the available action to open the source file.
+
+The available actions depend on the customization type and its source. Use the inline actions or context menu to access supported operations, such as revealing an editable file in your operating system or deleting it. Check [what the change affects](#understand-what-a-change-affects) before editing a shared file or changing enablement. Manage plugin-provided customizations from the **Plugins** section.
+
+### Understand what a change affects
+
+Changes made from one session's editor aren't necessarily limited to that session:
+
+| Action | What changes |
+|--------|--------------|
+| Edit a workspace instruction or skill | The project file changes. Other sessions that read that file can use the updated content. Sharing the file through source control also shares the change with contributors. |
+| Disable an MCP server for one session | The server is unavailable to that session without deleting its configuration or changing the shared server definition. |
+| Change a client-tool selection | The selection persists for that harness across windows and profiles, rather than only for the current request. For remote sessions, selections are stored separately for each remote host and harness. |
+
+Available global, workspace, or session enablement actions depend on the customization type and harness. Check the action's scope before applying it. A global action isn't confined to the selected session, even when the customization is stored in the workspace.
+
+For detailed controls, see [plugin enablement](/docs/agent-customization/agent-plugins.md#enable-or-disable-plugins), [MCP server enablement](/docs/agents/run/manage-mcp-servers.md#enable-or-disable-mcp-servers), and [tool availability](/docs/agents/run/tools.md#manage-available-tools).
+
+## Troubleshoot customization issues
+
+Use the verification result to choose your next action:
+
+| Symptom | What to check |
+|---------|---------------|
+| Different customizations appear when I switch sessions | The editor follows the selected session, not all open sessions. Compare the sessions' harnesses, workspaces, and execution hosts. Switching sessions doesn't remove customizations from the previous one. |
+| The customization isn't listed | Confirm the selected session, harness, workspace, and host. Check the file name and supported location. For remote sessions, check whether the customization comes from the remote host or connected client. |
+| A marketplace-installed skill shows **Missing files** | [Repair the installation](#repair-marketplace-installations) to restore missing files without replacing your edits. |
+| The customization has validation errors | Correct the reported file or configuration errors. |
+| It's discovered but isn't included or invoked | Check that it is enabled in the relevant scope, then check activation conditions against the current file or task. Invoke an on-demand customization explicitly when supported. |
+| It's included but doesn't improve the result | Resolve conflicting guidance, make vague rules more specific, and repeat the task in a fresh chat. |
+
+For hooks, also verify the script's event inputs and outputs. Hooks in user folders, settings, repositories, custom agents, and plugins can require [manual migration to the shared Copilot runtime](/docs/agent-customization/migrate-customizations.md#migrate-hooks), even when the file is discovered.
+
+If the issue continues, follow [customization diagnostics and agent troubleshooting](/docs/agents/agent-troubleshooting/troubleshooting.md#check-customization-diagnostics).
+
+### Repair marketplace installations
+
+If a Marketplace-installed skill shows **Missing files**, select **Repair** to restore only the missing files. Repair preserves files that you edited or added. **Installed** indicates that the recorded target is available.
+
+A Marketplace-installed customization and a local customization with the same name remain separate. Deleting the Marketplace installation doesn't remove the unrelated local customization.
+
+## Advanced scenarios
+
+### Manage customizations for remote sessions
+
+Select the remote session before opening the editor. Its harness and remote workspace determine the relevant customizations, rather than the project open on your local machine.
+
+The inventory can include customizations from these sources:
+
+| Source | What it provides |
+|--------|------------------|
+| **Remote workspace** | Supported project customizations in the remote session's workspace or worktree. |
+| **Remote host** | User-level configuration and installed customizations on the machine or in the Dev Container that runs the agent. |
+| **Connected client** | Eligible user instructions, skills, custom agents, and contributions from plugins, extensions, and the Agents window. The client can also supply tools and supported MCP configurations. |
+
+Client contributions depend on harness compatibility, discovery, and your enablement and sync choices. Connecting from another machine preserves the existing session's host-owned customizations, but can change the client contributions. [Client tools](/docs/agents/run/tools.md#manage-tool-availability-for-the-copilot-harness) require the client to remain connected.
+
+For Dev Container sessions, configure host-owned customizations in the container's user home or workspace. The outer machine's user configuration isn't automatically inherited.
+
+Not every client customization is forwarded:
+
+* Standalone hook files aren't forwarded. Configure them in a supported location on the execution host, or use a [compatible plugin](/docs/agent-customization/hooks.md#reuse-hooks-from-a-plugin).
+* Native Copilot user MCP configuration isn't forwarded to another host. See [MCP configuration sources](/docs/agents/reference/mcp-configuration.md#configuration-file).
+
+Where **Local** and **Remote** groups appear, they distinguish client-supplied customizations from host-owned customizations. These labels identify the source, not whether the customization applies to the remote session.
+
+Some client-supplied entries are read-only reflections of their source configuration. Manage them at the source rather than trying to edit a remote copy. For host-owned customizations, use the actions and writable locations offered by the remote harness. A global change on the remote host can affect other sessions on that host, not just the selected session.
+
+To connect to a host or resume its work, see [Run and manage remote agent sessions](/docs/agents/run/remote-agent-sessions.md).
 
 ### Open customization pages with deep links
 
@@ -64915,7 +66143,7 @@ Parameters:
   * `migrations`: Opens the Migrations review view.
 * **`search`** (optional): A search query to pre-populate in the section's search field. URL-encode query values.
 
-These links navigate within the selected harness context; they do not install customizations or bypass consent, workspace trust, or enterprise policies.
+These links navigate within the selected session's customization context. They do not select a different session, install customizations, or bypass consent, workspace trust, or enterprise policies.
 
 **Examples:**
 
@@ -64939,101 +66167,6 @@ These links navigate within the selected harness context; they do not install cu
 
 > [!NOTE]
 > For VS Code Insiders, use the `vscode-insiders://` scheme instead of `vscode://`. To share links on web pages or markdown badges, use the HTTPS redirect wrapper: `https://vscode.dev/redirect?url=<url-encoded-vscode-URL>`. For more information on URL handlers, see [URL handling](/docs/configure/command-line.md#url-handling).
-
-## Discover and install existing customizations (Preview)
-
-Use the Customization Marketplace to find a workflow or integration you can reuse instead of building it from scratch. The unified **Browse** page brings together available sources, including plugin marketplaces, GitHub Feed, and Copilot connectors `feature(copilot-connectors)`. Available sources and installation actions depend on the selected harness and organization policy.
-
-You can install an individual skill or a plugin that bundles related customizations, such as skills, custom agents, hooks, and MCP servers. For a service integration, find an MCP server or connect a supported service without server setup.
-
-To find and install a customization:
-
-1. Open the Agent Customizations editor and select **Browse**.
-1. Use the source menu to browse all sources or select a specific available source, such as **GitHub Feed** or an individual plugin marketplace.
-1. Search by name or use a type filter, such as `@type:skill` or `@type:mcp`.
-1. Select an item and review its publisher, source, installation details, and any setup requirements.
-1. Select **Install** and choose a destination when prompted. For Copilot connectors `feature(copilot-connectors)`, select **Connect** and complete authorization instead.
-
-Some items are available for discovery but don't support automatic installation. Follow the publisher's setup instructions when they are provided.
-
-If your team shares plugins through another marketplace, select **Configure Marketplaces** from the source menu to [add or manage plugin marketplaces](/docs/agent-customization/agent-plugins.md#configure-plugin-marketplaces). Adding a marketplace makes its plugins available to browse. It doesn't install them.
-
-After installation, complete any publisher setup and [verify the customization](#verify-a-customization) with a representative task. For type-specific guidance, see [install a skill](/docs/agent-customization/agent-skills.md#install-a-skill-from-the-customization-marketplace-preview), [install a plugin](/docs/agent-customization/agent-plugins.md#install-a-plugin-from-a-marketplace), or [find an MCP server](/docs/agent-customization/mcp-servers.md#find-another-server).
-
-### Marketplace availability
-
-The **Browse** page appears when a marketplace source is available. Marketplace discovery is enabled by default with ``chat.customizations.marketplace.enabled``.
-
-If **Browse** isn't available, check that the setting is enabled and your organization permits **Editor preview features**. Disabling that policy forces the unified **Browse** experience and Copilot connectors off. See [organization and enterprise settings](/docs/enterprise/manage-ai-settings.md#use-github-organization-and-enterprise-settings).
-
-The experimental GitHub Feed source is enabled by default for harnesses that provide marketplace search. Local sessions don't provide this source, and organization policy can restrict access. Use the ``chat.customizations.marketplace.sources.publicFeed.enabled`` setting to show or hide this source. For plugin discovery without the unified **Browse** page, follow the [plugin installation guide](/docs/agent-customization/agent-plugins.md#install-a-plugin-from-a-marketplace).
-
-## Create a customization
-
-For file-based customizations, use the editor to create a file in the chosen scope:
-
-1. Open the Agent Customizations editor and select a customization type.
-1. Select the `+` button next to **Workspace** to share the customization with your project, or next to **User** to use it across your workspaces.
-1. Enter a name and choose a storage location when prompted.
-1. Edit the customization in the inline editor, which provides syntax highlighting and validation.
-1. Review and save the customization.
-
-You can also run the **Chat: New \<customization-type\>** command from the Command Palette (``Shortcut: workbench.action.showCommands``). The command creates the corresponding file in a supported location for that customization type.
-
-To add an MCP server manually, select **MCP Servers**, select **Add Server** (**+**) in the **User** or **Workspace** group, and follow the guided flow. For detailed steps, see [Add MCP servers](/docs/agent-customization/mcp-servers.md#connect-a-server). To update an existing connection, see [Edit an MCP server configuration](/docs/agents/run/manage-mcp-servers.md#edit-an-mcp-server-configuration).
-
-Creating or saving a file doesn't establish that the agent uses it. Verify the customization before relying on it or sharing it with your team.
-
-## Verify a customization
-
-Repeat your representative task in a fresh chat with the intended harness and workspace. Don't repeat the customization's rules in the test prompt. Check these three stages separately:
-
-1. **Discovery**: open the Agent Customizations editor and confirm that the customization is listed without validation errors.
-1. **Inclusion or invocation**: check whether the request uses the customization. For instructions and skills, inspect the response's **References** section, where available, or [Agent Debug Logs](/docs/agents/agent-troubleshooting/chat-debug-view.md#instructions-or-a-prompt-file-are-not-applied). For tools and hooks, inspect the corresponding tool activity or execution logs.
-1. **Effectiveness**: review the changes, commands, and results against the outcome you defined. Inclusion doesn't guarantee that the agent follows the guidance.
-
-For example, if project instructions specify the correct test command, ask the agent to make a small code change without restating that command. Confirm that it runs the expected tests and reports their results.
-
-If a stage fails, [troubleshoot that stage](#troubleshoot-customization-issues) before adding more guidance. Once the customization meets your goal, review it before sharing it. For a complete before-and-after workflow, see [Configure AI for your codebase](/docs/agents/guides/customize-copilot-guide.md).
-
-## Manage existing customizations
-
-Use the Agent Customizations editor to find and update customizations for the selected harness:
-
-1. Open the Agent Customizations editor and select the customization type.
-1. Use the search box to find the customization.
-1. Select the customization to open its details.
-1. If the customization is editable, update its form or file and save your changes. For a read-only customization, use the available action to open the source file.
-
-The available actions depend on the customization type and its source. Use the inline actions or context menu to access supported operations, such as revealing an editable file in your operating system or deleting it. Manage plugin-provided customizations from the **Plugins** section.
-
-`feature(user-customization-migration)`
-
-> [!IMPORTANT]
-> If the Agent Customizations editor shows **Migrations**, Copilot cannot use one or more customizations in their current location or format. Select **Migrations** to review the required work, and follow [Migrate Copilot customizations in VS Code](/docs/agent-customization/migrate-customizations.md) for detailed steps.
-
-## Troubleshoot customization issues
-
-Use the verification result to choose your next action:
-
-| Symptom | What to check |
-|---------|---------------|
-| The customization isn't listed | Confirm the harness, file name, and supported location. Ensure the session uses the folder containing your changes. |
-| The customization has validation errors | Correct the reported file or configuration errors. |
-| It's discovered but isn't included or invoked | Check activation conditions against the current file or task. Invoke an on-demand customization explicitly when supported. |
-| It's included but doesn't improve the result | Resolve conflicting guidance, make vague rules more specific, and repeat the task in a fresh chat. |
-
-For hooks, also verify the script's event inputs and outputs. Hooks in user folders, settings, repositories, custom agents, and plugins can require [manual migration to the shared Copilot runtime](/docs/agent-customization/migrate-customizations.md#migrate-hooks), even when the file is discovered.
-
-If the issue continues, follow [customization diagnostics and agent troubleshooting](/docs/agents/agent-troubleshooting/troubleshooting.md#check-customization-diagnostics).
-
-## Advanced scenarios
-
-### Repair marketplace installations
-
-If a Marketplace-installed skill shows **Missing files**, select **Repair** to restore only the missing files. Repair preserves files that you edited or added. **Installed** indicates that the recorded target is available.
-
-A Marketplace-installed customization and a local customization with the same name remain separate. Deleting the Marketplace installation doesn't remove the unrelated local customization.
 
 ### Manage canvas extensions
 
@@ -65093,8 +66226,8 @@ For analysis guidance and skill evaluations with [Waza](https://github.com/micro
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/prompt-files.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/prompt-files
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/prompt-files.md
-- **SHA256_FINGERPRINT**: `4823b1909e8ef40c495833840f97e8776a388f3efd33a2677c7fe88ce9ed57b4`
-- **LAST_VERIFIED_UTC**: 2026-11-02T21:32:53.266174+00:00
+- **SHA256_FINGERPRINT**: `b3ccfe1275e04a41d0b074a14aef2c6bafb34ab67fa747001bbef84d300e211b`
+- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.050903+00:00
 ---
 
 **MetaDescription**: Use prompt files in VS Code for reusable Local harness workflows, or migrate them to agent skills.
@@ -65103,7 +66236,7 @@ For analysis guidance and skill evaluations with [Waza](https://github.com/micro
 
 Prompt files simplify prompting for common tasks by encoding them as standalone Markdown files that you invoke as slash commands in chat. Each prompt file includes task-specific context and guidelines about how the task should be performed.
 
-Unlike [custom instructions](/docs/agent-customization/custom-instructions.md) that are applied automatically, you invoke prompt files manually in chat. See the [decision matrix](/docs/agents/concepts/customization.md#customization-options-at-a-glance) to compare prompt files with custom agents, agent skills, and the other options.
+Unlike [custom instructions](/docs/agent-customization/custom-instructions.md) that are applied automatically, you invoke prompt files manually in chat. See [customization building blocks](/docs/agents/concepts/customization.md#customization-building-blocks) to understand how instructions, skills, custom agents, and other customizations differ.
 
 Use prompt files to:
 
