@@ -1,5 +1,12 @@
 # GitHub Copilot Official Changelog Feed
 
+## Claude Fable 5.2 in GitHub Copilot
+- **Date**: Mon, 09 Nov 2026 16:46:43 +0000
+- **URL**: https://github.blog/changelog/2026-11-09-claude-fable-5-2-in-github-copilot
+
+Claude Fable 5.2, Anthropic’s newest Fable model, is now generally available in GitHub Copilot. You can use it for complex, multistep coding tasks across large codebases. In early testing, Fable...
+The post Claude Fable 5.2 in GitHub Copilot appeared first on The GitHub Blog .
+
 ## Copilot code review: API management and review overview updates
 - **Date**: Sat, 07 Nov 2026 00:27:19 +0000
 - **URL**: https://github.blog/changelog/2026-11-06-copilot-code-review-api-management-and-review-overview-updates
@@ -62,10 +69,3 @@ The post BYOK and enterprise custom models in the Copilot usage API appeared fir
 
 You can now delegate coding tasks, guide execution, and review results with GitHub Copilot in JetBrains Air. The integration uses the Agent Client Protocol (ACP) and supports tasks in your...
 The post GitHub Copilot is now available in JetBrains Air appeared first on The GitHub Blog .
-
-## Route and orchestrate models with GitHub Copilot Fusion
-- **Date**: Wed, 28 Oct 2026 16:00:00 +0000
-- **URL**: https://github.blog/changelog/2026-10-28-route-and-orchestrate-models-with-github-copilot-fusion
-
-GitHub Copilot Fusion is generally available. Instead of picking a model for each task, choose Copilot Fusion and let Copilot intelligently route and orchestrate which models it uses for you....
-The post Route and orchestrate models with GitHub Copilot Fusion appeared first on The GitHub Blog .

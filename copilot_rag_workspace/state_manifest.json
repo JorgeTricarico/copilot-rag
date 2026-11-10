@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-09T22:06:32.906273+00:00",
+  "last_sync_utc": "2026-11-10T06:40:00.527370+00:00",
   "total_documents": 2089,
   "documents": {
     "anthropics_skills::README.md": {
@@ -7884,10 +7884,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/azure-logic-apps-standard-cli/README.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/azure-logic-apps-standard-cli/README.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "064d687c945b775cc70feab60fe14b453416bb32",
-      "content_sha256": "4d662fa7c64e6ddcd2f903fdd806ba32dcc77a2927e4cd2d5f0acfc93f37dad5",
+      "git_blob_sha": "c480fb3c0eb4926c041cc06983ddec54de73dfd7",
+      "content_sha256": "f2d4d7667e361260718f68aaaf90ac73d166d02ee1de46972c0eeb38be5587f4",
       "word_count": 1152,
-      "last_updated_utc": "2026-10-26T03:59:45.528493+00:00",
+      "last_updated_utc": "2026-11-10T06:39:56.610289+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_azure-logic-apps-standard-cli_README.md"
     },
     "github_awesome-copilot::skills/azure-logic-apps-standard-cli/SKILL.md": {
@@ -20953,9 +20953,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "90794c0bf824396fbfd37273c4a54e2be641f8e12f49dca050ff18e5c828390a",
-      "word_count": 25483,
-      "last_updated_utc": "2026-11-09T22:06:30.569756+00:00",
+      "content_sha256": "00da920f7b2ad9a97e75eb10d7057aab4854419c06caa7fc3e2d920f6f504318",
+      "word_count": 25487,
+      "last_updated_utc": "2026-11-10T06:39:59.551721+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -20964,9 +20964,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "90794c0bf824396fbfd37273c4a54e2be641f8e12f49dca050ff18e5c828390a",
-      "word_count": 25483,
-      "last_updated_utc": "2026-11-09T22:06:30.514457+00:00",
+      "content_sha256": "00da920f7b2ad9a97e75eb10d7057aab4854419c06caa7fc3e2d920f6f504318",
+      "word_count": 25487,
+      "last_updated_utc": "2026-11-10T06:39:59.595156+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -22889,9 +22889,9 @@
       "canonical_web_url": "https://github.com/microsoft/vscode/issues/346882",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
       "git_blob_sha": null,
-      "content_sha256": "7e9d08fd09cbe36a7c0f36cac8f57a7427da46dbb4531f76d1d9c471bbe7f287",
-      "word_count": 732,
-      "last_updated_utc": "2026-11-09T22:06:32.685127+00:00",
+      "content_sha256": "a0cf512151a8a8d07092805611437bb94c5c75b151316b59f668a12dbaa9e40e",
+      "word_count": 730,
+      "last_updated_utc": "2026-11-10T06:40:00.359117+00:00",
       "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_346882.md"
     },
     "vscode_insiders::iteration-plan_271045": {
@@ -22966,9 +22966,9 @@
       "canonical_web_url": "https://github.blog/changelog/label/copilot/feed/",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
       "git_blob_sha": null,
-      "content_sha256": "6b3ab6e197c9c55c915e88ba734e64c188affd6ad8bc285bc287bbfc8b4df761",
-      "word_count": 694,
-      "last_updated_utc": "2026-11-07T05:19:29.756035+00:00",
+      "content_sha256": "b4abbc90d71465518e1a9d86eba82fa780c8b6c859561dc9125319fbc6500488",
+      "word_count": 690,
+      "last_updated_utc": "2026-11-10T06:39:58.880107+00:00",
       "local_clean_path": "clean_sources/web__github_changelog_copilot_rss.md"
     },
     "web::vscode_api_contribution_points": {

@@ -1,5 +1,5 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part3
-- **Generado (UTC)**: 2026-11-09T22:06:32.778400+00:00
+- **Generado (UTC)**: 2026-11-10T06:40:00.432373+00:00
 - **Total Palabras**: 446,383 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
@@ -20251,8 +20251,8 @@ deploy_to_environments() {
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/azure-logic-apps-standard-cli/README.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/azure-logic-apps-standard-cli/README.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/azure-logic-apps-standard-cli/README.md
-- **SHA256_FINGERPRINT**: `4d662fa7c64e6ddcd2f903fdd806ba32dcc77a2927e4cd2d5f0acfc93f37dad5`
-- **LAST_VERIFIED_UTC**: 2026-10-26T03:59:45.528493+00:00
+- **SHA256_FINGERPRINT**: `f2d4d7667e361260718f68aaaf90ac73d166d02ee1de46972c0eeb38be5587f4`
+- **LAST_VERIFIED_UTC**: 2026-11-10T06:39:56.610289+00:00
 ---
 
 # Logic Apps Standard CLI skill package
@@ -20292,7 +20292,7 @@ In an Awesome Copilot checkout:
    characters), optional compatibility (at most 500 characters), referenced assets
    below 5 MB each, relative links, and absence of secrets or private-machine paths.
 4. Run `npm run skill:validate`, then `npm run build` to regenerate listings. Normalize
-   line endings with `bash eng/fix-line-endings.sh`, as required by that repository.
+   line endings with `bash .github/scripts/maintenance/fix-line-endings.sh`, as required by that repository.
    Verify generated changes belong to this contribution. Do not hand-maintain listings.
 5. Exercise representative tasks: offline authoring must not start a host; connector
    work must load the connection procedure; replay requires approval; native tests
@@ -20359,7 +20359,7 @@ where generated Microsoft Learn command labels say GA.
 - [Azure CLI Logic Apps reference](https://learn.microsoft.com/en-us/cli/azure/logicapp?view=azure-cli-latest)
 - [Awesome Copilot contribution guide](https://github.com/github/awesome-copilot/blob/main/CONTRIBUTING.md#adding-skills)
 - [Awesome Copilot repository conventions](https://github.com/github/awesome-copilot/blob/main/AGENTS.md)
-- [Awesome Copilot skill validator](https://github.com/github/awesome-copilot/blob/main/eng/validate-skills.mjs)
+- [Awesome Copilot skill validator](https://github.com/github/awesome-copilot/blob/main/.github/scripts/catalog/validate-skills.mjs)
 - [Agent Skills specification](https://agentskills.io/specification)
 
 

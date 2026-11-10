@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-09T22:06:32.894162+00:00
-- **Total Palabras**: 21,411 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-10T06:40:00.513074+00:00
+- **Total Palabras**: 21,405 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1667,8 +1667,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_346882
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/346882
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/346882
-- **SHA256_FINGERPRINT**: `7e9d08fd09cbe36a7c0f36cac8f57a7427da46dbb4531f76d1d9c471bbe7f287`
-- **LAST_VERIFIED_UTC**: 2026-11-09T22:06:32.685127+00:00
+- **SHA256_FINGERPRINT**: `a0cf512151a8a8d07092805611437bb94c5c75b151316b59f668a12dbaa9e40e`
+- **LAST_VERIFIED_UTC**: 2026-11-10T06:40:00.359117+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.146.0 Endgame
@@ -1724,8 +1724,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 - Release notes written
 
 `@endgame-champ`:
-- [ ] Build and release Insiders from `release/<x.y>` branch so we can finish verification. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
-- [ ] Build stable from `release/<x.y>` branch (do not release) so that the Zurich team would have a build to release given no candidates. ([Pipline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
+- [x] Build and release Insiders from `release/<x.y>` branch so we can finish verification. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
+- [x] Build stable from `release/<x.y>` branch (do not release) so that the Zurich team would have a build to release given no candidates. ([Pipline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
 
 # Tuesday by noon CET
 
@@ -2400,11 +2400,18 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `6b3ab6e197c9c55c915e88ba734e64c188affd6ad8bc285bc287bbfc8b4df761`
-- **LAST_VERIFIED_UTC**: 2026-11-07T05:19:29.756035+00:00
+- **SHA256_FINGERPRINT**: `b4abbc90d71465518e1a9d86eba82fa780c8b6c859561dc9125319fbc6500488`
+- **LAST_VERIFIED_UTC**: 2026-11-10T06:39:58.880107+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
+
+## Claude Fable 5.2 in GitHub Copilot
+- **Date**: Mon, 09 Nov 2026 16:46:43 +0000
+- **URL**: https://github.blog/changelog/2026-11-09-claude-fable-5-2-in-github-copilot
+
+Claude Fable 5.2, Anthropic’s newest Fable model, is now generally available in GitHub Copilot. You can use it for complex, multistep coding tasks across large codebases. In early testing, Fable...
+The post Claude Fable 5.2 in GitHub Copilot appeared first on The GitHub Blog .
 
 ## Copilot code review: API management and review overview updates
 - **Date**: Sat, 07 Nov 2026 00:27:19 +0000
@@ -2468,10 +2475,3 @@ The post BYOK and enterprise custom models in the Copilot usage API appeared fir
 
 You can now delegate coding tasks, guide execution, and review results with GitHub Copilot in JetBrains Air. The integration uses the Agent Client Protocol (ACP) and supports tasks in your...
 The post GitHub Copilot is now available in JetBrains Air appeared first on The GitHub Blog .
-
-## Route and orchestrate models with GitHub Copilot Fusion
-- **Date**: Wed, 28 Oct 2026 16:00:00 +0000
-- **URL**: https://github.blog/changelog/2026-10-28-route-and-orchestrate-models-with-github-copilot-fusion
-
-GitHub Copilot Fusion is generally available. Instead of picking a model for each task, choose Copilot Fusion and let Copilot intelligently route and orchestrate which models it uses for you....
-The post Route and orchestrate models with GitHub Copilot Fusion appeared first on The GitHub Blog .
