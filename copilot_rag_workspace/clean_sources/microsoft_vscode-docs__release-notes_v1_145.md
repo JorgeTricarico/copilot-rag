@@ -6,6 +6,8 @@
 
 **Update 1.145.2**: The update addresses these [issues](https://github.com/microsoft/vscode/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.145.2).
 
+**Update 1.145.3**: The update addresses these [security issues](https://github.com/microsoft/vscode/issues?q=milestone%3A1.145.3+state%3Aclosed+label%3Acandidate).
+
 ## Release highlights
 
 This week, your remote agent sessions feel a bit more local. Preview apps and use canvases right in VS Code, fine-tune automation schedules with cron, and turn down the noise in chat. And when you need a break, Blobby is ready to play.

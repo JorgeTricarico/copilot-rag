@@ -1,5 +1,12 @@
 # GitHub Copilot Official Changelog Feed
 
+## C++ language server now auto-configures MSBuild builds
+- **Date**: Tue, 10 Nov 2026 17:04:10 +0000
+- **URL**: https://github.blog/changelog/2026-11-10-c-language-server-now-auto-configures-msbuild-builds
+
+The Microsoft C++ Language Server for GitHub Copilot CLI now bundles its MSBuild compile commands extractor and invokes it automatically. An agent no longer needs to discover and run a...
+The post C++ language server now auto-configures MSBuild builds appeared first on The GitHub Blog .
+
 ## Claude Fable 5.2 in GitHub Copilot
 - **Date**: Mon, 09 Nov 2026 16:46:43 +0000
 - **URL**: https://github.blog/changelog/2026-11-09-claude-fable-5-2-in-github-copilot
@@ -62,10 +69,3 @@ The post GitHub Copilot is now available in Xcode’s coding assistant appeared 
 
 The Copilot usage metrics API now shows bring your own key (BYOK) usage across GitHub Copilot, so you can separate it from Copilot-hosted model usage. Reports cover two kinds of...
 The post BYOK and enterprise custom models in the Copilot usage API appeared first on The GitHub Blog .
-
-## GitHub Copilot is now available in JetBrains Air
-- **Date**: Tue, 03 Nov 2026 15:11:46 +0000
-- **URL**: https://github.blog/changelog/2026-11-03-github-copilot-is-now-available-in-jetbrains-air
-
-You can now delegate coding tasks, guide execution, and review results with GitHub Copilot in JetBrains Air. The integration uses the Agent Client Protocol (ACP) and supports tasks in your...
-The post GitHub Copilot is now available in JetBrains Air appeared first on The GitHub Blog .

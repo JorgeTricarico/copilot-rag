@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-10T06:40:00.513074+00:00
-- **Total Palabras**: 21,405 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-10T19:29:21.040881+00:00
+- **Total Palabras**: 21,408 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -594,8 +594,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_145.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_145
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_145.md
-- **SHA256_FINGERPRINT**: `55d855e2764a8b5ddff40df460267d65e20ee83ebf6e59cd677eaf00f20919e1`
-- **LAST_VERIFIED_UTC**: 2026-11-06T19:05:32.184313+00:00
+- **SHA256_FINGERPRINT**: `e9c0319f506900c85aa6f46f1900f802075b54fff14d437fdb441a35ac39ea26`
+- **LAST_VERIFIED_UTC**: 2026-11-10T19:29:14.895709+00:00
 ---
 
 **MetaDescription**: Learn what's new in Visual Studio Code 1.145
@@ -605,6 +605,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 **Update 1.145.1**: The update addresses these [issues](https://github.com/microsoft/vscode/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.145.1).
 
 **Update 1.145.2**: The update addresses these [issues](https://github.com/microsoft/vscode/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.145.2).
+
+**Update 1.145.3**: The update addresses these [security issues](https://github.com/microsoft/vscode/issues?q=milestone%3A1.145.3+state%3Aclosed+label%3Acandidate).
 
 ## Release highlights
 
@@ -1667,8 +1669,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_346882
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/346882
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/346882
-- **SHA256_FINGERPRINT**: `a0cf512151a8a8d07092805611437bb94c5c75b151316b59f668a12dbaa9e40e`
-- **LAST_VERIFIED_UTC**: 2026-11-10T06:40:00.359117+00:00
+- **SHA256_FINGERPRINT**: `0d9470b5db523e8e258ef8dca0fe386546e6d78fcc29045f7b817f0a2c17848c`
+- **LAST_VERIFIED_UTC**: 2026-11-10T19:29:21.032331+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.146.0 Endgame
@@ -1734,9 +1736,9 @@ We really appreciate people trying our new features as soon as they are ready, s
 - Release notes
 
 `@endgame-champ`:
-- [ ] Generate "Thank you" section of the release notes in the `vnext` branch of the `vscode-docs` repo.
-    - [ ] [Acknowledge third-party pull requests](https://tools.code.visualstudio.com/acknowledgement) in release notes.
-    - [ ] Acknowledge [issue trackers](https://github.com/microsoft/vscode-internalbacklog/wiki/Community-Triage---Credits#community-triage---role-based) from the community (do the copy-paste variant) -
+- [x] Generate "Thank you" section of the release notes in the `vnext` branch of the `vscode-docs` repo.
+    - [x] [Acknowledge third-party pull requests](https://tools.code.visualstudio.com/acknowledgement) in release notes.
+    - [x] Acknowledge [issue trackers](https://github.com/microsoft/vscode-internalbacklog/wiki/Community-Triage---Credits#community-triage---role-based) from the community (do the copy-paste variant) -
 - [ ] If this is not Patch Tuesday only:
   - [ ] Build and release insiders from release/<x.y> (if there have been newer changes since last release)
   - [ ] Build stable from release/<x.y> and release to MSFT folks
@@ -2400,11 +2402,18 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `b4abbc90d71465518e1a9d86eba82fa780c8b6c859561dc9125319fbc6500488`
-- **LAST_VERIFIED_UTC**: 2026-11-10T06:39:58.880107+00:00
+- **SHA256_FINGERPRINT**: `16ebdce222624785f867b9df6fdf1bb42317f95534e166f7a6e3253a521018ac`
+- **LAST_VERIFIED_UTC**: 2026-11-10T19:29:18.325695+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
+
+## C++ language server now auto-configures MSBuild builds
+- **Date**: Tue, 10 Nov 2026 17:04:10 +0000
+- **URL**: https://github.blog/changelog/2026-11-10-c-language-server-now-auto-configures-msbuild-builds
+
+The Microsoft C++ Language Server for GitHub Copilot CLI now bundles its MSBuild compile commands extractor and invokes it automatically. An agent no longer needs to discover and run a...
+The post C++ language server now auto-configures MSBuild builds appeared first on The GitHub Blog .
 
 ## Claude Fable 5.2 in GitHub Copilot
 - **Date**: Mon, 09 Nov 2026 16:46:43 +0000
@@ -2468,10 +2477,3 @@ The post GitHub Copilot is now available in Xcode’s coding assistant appeared 
 
 The Copilot usage metrics API now shows bring your own key (BYOK) usage across GitHub Copilot, so you can separate it from Copilot-hosted model usage. Reports cover two kinds of...
 The post BYOK and enterprise custom models in the Copilot usage API appeared first on The GitHub Blog .
-
-## GitHub Copilot is now available in JetBrains Air
-- **Date**: Tue, 03 Nov 2026 15:11:46 +0000
-- **URL**: https://github.blog/changelog/2026-11-03-github-copilot-is-now-available-in-jetbrains-air
-
-You can now delegate coding tasks, guide execution, and review results with GitHub Copilot in JetBrains Air. The integration uses the Agent Client Protocol (ACP) and supports tasks in your...
-The post GitHub Copilot is now available in JetBrains Air appeared first on The GitHub Blog .

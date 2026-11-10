@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-11-09T22:06:32.880189+00:00
-- **Total Palabras**: 158,175 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-10T19:29:21.035022+00:00
+- **Total Palabras**: 156,410 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -273,8 +273,8 @@ For a complete list of slash commands for Copilot CLI, see [Cli Command Referenc
 # DOCUMENT_SOURCE: github_docs::content/copilot/reference/copilot-cli-reference/cli-command-reference.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-command-reference.md
-- **SHA256_FINGERPRINT**: `0a065d263a0d894f81207224dd7e85b8e288903489e28a2ef042f9d827df2416`
-- **LAST_VERIFIED_UTC**: 2026-11-09T22:06:25.139224+00:00
+- **SHA256_FINGERPRINT**: `df5bd959358b111eaac79202685d0e313849ba2df644d2e9f47deeaa9e15b3d4`
+- **LAST_VERIFIED_UTC**: 2026-11-10T19:29:15.551217+00:00
 ---
 
 **title**: GitHub Copilot CLI command reference
@@ -2043,221 +2043,13 @@ Run `/sandbox policy` to see the resolved paths grouped by source and access. Th
 
 ## OpenTelemetry monitoring
 
-Copilot CLI can export traces and metrics via [OpenTelemetry](https://opentelemetry.io/) (OTel), giving you visibility into agent interactions, LLM calls, tool executions, and token usage. All signal names and attributes follow the [OTel GenAI Semantic Conventions](https://github.com/open-telemetry/semantic-conventions-genai/tree/main/docs/gen-ai/).
+Copilot CLI and other Copilot clients support OpenTelemetry (OTel) monitoring. For configuration options, exported signals, and attributes, see [Opentelemetry Reference](https://docs.github.com/en/copilot/reference/enterprise-administrators/opentelemetry-reference).
 
 OTel is off by default with zero overhead. It activates when any of the following conditions are met:
 
 * `COPILOT_OTEL_ENABLED=true`
 * `OTEL_EXPORTER_OTLP_ENDPOINT` is set
 * `COPILOT_OTEL_FILE_EXPORTER_PATH` is set
-
-OTel configuration can also be set in VS Code, or in an enterprise-wide `[copilot.managed_setting_file]` file. See [Enable OTel monitoring](https://code.visualstudio.com/docs/agents/guides/monitoring-agents#_enable-otel-monitoring) in the VS Code documentation and [Enterprise Managed Settings](https://docs.github.com/en/copilot/reference/enterprise-administrators/enterprise-managed-settings).
-
-### OTel environment variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `COPILOT_OTEL_ENABLED` | `false` | Explicitly enable OTel. Not required if `OTEL_EXPORTER_OTLP_ENDPOINT` is set. |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | — | OTLP endpoint URL. Setting this automatically enables OTel. |
-| `COPILOT_OTEL_EXPORTER_TYPE` | `otlp-http` | Exporter type: `otlp-http` or `file`. Auto-selects `file` when `COPILOT_OTEL_FILE_EXPORTER_PATH` is set. |
-| `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/json` | OTLP HTTP wire protocol: `http/json` or `http/protobuf`. Only applies to the `otlp-http` exporter. |
-| `OTEL_EXPORTER_OTLP_TRACES_PROTOCOL` | — | Override `OTEL_EXPORTER_OTLP_PROTOCOL` for traces only. |
-| `OTEL_EXPORTER_OTLP_METRICS_PROTOCOL` | — | Override `OTEL_EXPORTER_OTLP_PROTOCOL` for metrics only. |
-| `OTEL_SERVICE_NAME` | `github-copilot` | Service name in resource attributes. |
-| `OTEL_RESOURCE_ATTRIBUTES` | — | Extra resource attributes as comma-separated `key=value` pairs. Use percent-encoding for special characters. |
-| `OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT` | `false` | Capture full prompt and response content. See [Content capture](#content-capture). |
-| `OTEL_LOG_LEVEL` | — | OTel diagnostic log level: `NONE`, `ERROR`, `WARN`, `INFO`, `DEBUG`, `VERBOSE`, `ALL`. |
-| `COPILOT_OTEL_FILE_EXPORTER_PATH` | — | Write all signals to this file as JSON-lines. Setting this automatically enables OTel. |
-| `COPILOT_OTEL_SOURCE_NAME` | `github.copilot` | Instrumentation scope name for tracer and meter. |
-| `OTEL_EXPORTER_OTLP_HEADERS` | — | Auth headers for the OTLP exporter (for example, `Authorization=Bearer token`). |
-
-### Dynamic authentication headers
-
-Set `telemetry.headersProvider` in your user settings or in an enterprise-managed telemetry policy to run a command that supplies fresh OTLP headers. Repository settings never apply this setting.
-
-```json
-{
-  "telemetry": {
-    "headersProvider": {
-      "path": "node",
-      "args": ["bin/otel-headers.js"],
-      "refreshIntervalMs": 1740000
-    }
-  }
-}
-```
-
-| Field | Description |
-|-------|-------------|
-| `path` | Executable name, absolute path, or home-relative path. This is not a shell command, and workspace-relative paths are rejected. |
-| `args` | Optional arguments, passed literally. Select an interpreter explicitly for scripts (for example, `node`). |
-| `refreshIntervalMs` | Optional refresh interval. Default: 29 minutes. |
-
-Set `headersProvider` to `false` to disable dynamic headers.
-
-* The command runs from your home directory with a 30-second deadline. Its stdout must be a JSON object of string header values. An empty object clears dynamic headers.
-* The provider runs only for active HTTP OTLP exporters. Use HTTPS, because an HTTP endpoint produces a warning and OTLP redirects are rejected.
-* Header precedence, from highest to lowest: managed helper output, managed static headers, user helper output, then `OTEL_EXPORTER_OTLP_HEADERS`. A managed helper overrides a user helper, and a managed `false` disables helpers.
-* If a refresh fails, exports that need dynamic headers are blocked until the next refresh.
-
-### Traces
-
-The runtime emits a hierarchical span tree for each agent interaction. Each tree contains an `invoke_agent` root span, with `chat` and `execute_tool` child spans.
-
-#### `invoke_agent` span attributes
-
-Wraps the entire agent invocation: all LLM calls and tool executions for one user message.
-
-* Both **top-level sessions** and **subagent invocations** (for example, explore, task) use span kind `INTERNAL` (in-process); provider-facing inference is represented by child `CLIENT` `chat` spans.
-* **Top-level sessions** additionally carry `server.address` and `server.port`; subagent invocations do not.
-
-| Attribute | Description | Scope |
-|-----------|-------------|-----------|
-| `gen_ai.operation.name` | `invoke_agent` | Both |
-| `gen_ai.provider.name` | Provider (for example, `github`, `anthropic`) | Both |
-| `gen_ai.agent.id` | Stable agent-definition identifier when known; top-level default uses `github.copilot.default` | Both |
-| `gen_ai.agent.name` | Agent name (when available) | Both |
-| `gen_ai.agent.description` | Agent description (when available) | Both |
-| `gen_ai.agent.version` | Agent definition version when known; otherwise runtime version | Both |
-| `gen_ai.conversation.id` | Session identifier | Both |
-| `enduser.pseudo.id` | Pseudonymous Copilot user identifier from `analytics_tracking_id` when available | Both |
-| `gen_ai.request.model` | Requested model | Both |
-| `gen_ai.response.finish_reasons` | `["stop"]` or `["error"]` | Both |
-| `gen_ai.usage.input_tokens` | Total input tokens (all turns) | Both |
-| `gen_ai.usage.output_tokens` | Total output tokens (all turns) | Both |
-| `gen_ai.usage.cache_read.input_tokens` | Cached input tokens read | Both |
-| `gen_ai.usage.cache_creation.input_tokens` | Cached input tokens created | Both |
-| `github.copilot.turn_count` | Number of LLM round-trips | Both |
-| `github.copilot.cost` | Per-request model multiplier used for billing. **Not a monetary value.** | Both |
-| `github.copilot.nano_aiu` | AI units consumed, in nano AI units (1 AIU = 1,000,000,000 nano AIU) | Both |
-| `server.address` | Server hostname | Top-level only |
-| `server.port` | Server port | Top-level only |
-| `error.type` | Error class name (on error) | Both |
-| `gen_ai.input.messages` | Full input messages as JSON (content capture only) | Both |
-| `gen_ai.output.messages` | Full output messages as JSON (content capture only) | Both |
-| `gen_ai.system_instructions` | System prompt content as JSON (content capture only) | Both |
-| `gen_ai.tool.definitions` | Tool schemas as JSON (content capture only) | Both |
-
-#### `chat` span attributes
-
-One span per LLM request. Span kind: `CLIENT`.
-
-| Attribute | Description |
-|-----------|-------------|
-| `gen_ai.operation.name` | `chat` |
-| `gen_ai.provider.name` | Provider name |
-| `gen_ai.request.model` | Requested model |
-| `gen_ai.request.stream` | Whether streaming mode was used (streaming only) |
-| `gen_ai.conversation.id` | Session identifier |
-| `gen_ai.response.finish_reasons` | Stop reasons |
-| `gen_ai.response.id` | Response ID |
-| `gen_ai.response.model` | Resolved model |
-| `gen_ai.response.time_to_first_chunk` | Time to first streaming chunk, in seconds (streaming only) |
-| `gen_ai.usage.cache_creation.input_tokens` | Cached tokens created |
-| `gen_ai.usage.cache_read.input_tokens` | Cached tokens read |
-| `gen_ai.usage.input_tokens` | Input tokens this turn |
-| `gen_ai.usage.output_tokens` | Output tokens this turn |
-| `github.copilot.cost` | Per-request model multiplier used for billing. **Not a monetary value.** |
-| `github.copilot.nano_aiu` | AI units consumed this turn, in nano AI units (1 AIU = 1,000,000,000 nano AIU) |
-| `github.copilot.server_duration` | Server-side duration |
-| `github.copilot.initiator` | Request initiator |
-| `github.copilot.turn_id` | Turn identifier |
-| `github.copilot.interaction_id` | Interaction identifier |
-| `server.address` | Server hostname |
-| `server.port` | Server port |
-| `error.type` | Error class name (on error) |
-| `gen_ai.input.messages` | Full prompt messages as JSON (content capture only) |
-| `gen_ai.output.messages` | Full response messages as JSON (content capture only) |
-| `gen_ai.system_instructions` | System prompt content as JSON (content capture only) |
-
-#### `execute_tool` span attributes
-
-One span per tool call. Span kind: `INTERNAL`.
-
-| Attribute | Description |
-|-----------|-------------|
-| `gen_ai.operation.name` | `execute_tool` |
-| `gen_ai.provider.name` | Provider name (when available) |
-| `gen_ai.tool.name` | Tool name (for example, `readFile`) |
-| `gen_ai.tool.type` | `function` |
-| `gen_ai.tool.call.id` | Tool call identifier |
-| `gen_ai.tool.description` | Tool description |
-| `error.type` | Error class name (on error) |
-| `gen_ai.tool.call.arguments` | Tool input arguments as JSON (content capture only) |
-| `gen_ai.tool.call.result` | Tool output as JSON (content capture only) |
-
-> [!NOTE]
-> To measure AI unit consumption, read `github.copilot.nano_aiu` from the root `invoke_agent` span only. The attribute is also stamped on the child `chat` spans, so summing it across every span double-counts. `github.copilot.cost` is a per-request model multiplier used for billing calculations—it is not a currency value and must not be interpreted as one.
-
-### Metrics
-
-#### GenAI convention metrics
-
-| Metric | Type | Unit | Description |
-|--------|------|------|-------------|
-| `gen_ai.client.operation.duration` | Histogram | s | LLM API call and agent invocation duration |
-| `gen_ai.client.token.usage` | Histogram | tokens | Token counts by type (`input`/`output`) |
-| `gen_ai.client.operation.time_to_first_chunk` | Histogram | s | Time to receive first streaming chunk |
-| `gen_ai.client.operation.time_per_output_chunk` | Histogram | s | Inter-chunk latency after first chunk |
-| `gen_ai.invoke_agent.duration` | Histogram | s | End-to-end duration of one agent invocation |
-| `gen_ai.invoke_agent.inference_calls` | Histogram | `{inference_call}` | Number of model calls made during one agent invocation, counted at provider dispatch (failed and partial calls included; requests blocked before dispatch excluded). Dimension: `gen_ai.agent.name`. |
-| `gen_ai.invoke_agent.tool_calls` | Histogram | `{tool_call}` | Number of client-side tool calls made during one agent invocation (failed and partial calls included; synthetic CLI tool lifecycles and provider-executed server-side tools excluded). Dimension: `gen_ai.agent.name`. |
-| `gen_ai.invoke_workflow.duration` | Histogram | s | End-to-end duration of a GenAI workflow (for example, a fleet mode run orchestrating parallel subagents). |
-
-#### Vendor-specific metrics
-
-| Metric | Type | Unit | Description |
-|--------|------|------|-------------|
-| `github.copilot.tool.call.count` | Counter | calls | Tool invocations by `gen_ai.tool.name` and `success` |
-| `github.copilot.tool.call.duration` | Histogram | s | Tool execution latency by `gen_ai.tool.name` |
-| `github.copilot.agent.turn.count` | Histogram | turns | LLM round-trips per agent invocation |
-| `github.copilot.mcp.server.connection.count` | Counter | attempts | Completed MCP server connection attempts by transport and outcome |
-| `github.copilot.code.lines_added` | Counter | lines | Lines added by file-editing tools, recorded in real time |
-| `github.copilot.code.lines_removed` | Counter | lines | Lines removed by file-editing tools, recorded in real time |
-
-### Span events
-
-Lifecycle events recorded on the active `chat` or `invoke_agent` span.
-
-| Event | Description | Key attributes |
-|-------|-------------|----------------|
-| `github.copilot.hook.start` | A hook began executing | `github.copilot.hook.type`, `github.copilot.hook.invocation_id` |
-| `github.copilot.hook.end` | A hook completed successfully | `github.copilot.hook.type`, `github.copilot.hook.invocation_id` |
-| `github.copilot.hook.error` | A hook failed | `github.copilot.hook.type`, `github.copilot.hook.invocation_id`, `github.copilot.hook.error_message` |
-| `github.copilot.session.truncation` | Conversation history was truncated | `github.copilot.token_limit`, `github.copilot.pre_tokens`, `github.copilot.post_tokens`, `github.copilot.pre_messages`, `github.copilot.post_messages`, `github.copilot.tokens_removed`, `github.copilot.messages_removed`, `github.copilot.performed_by` |
-| `github.copilot.session.compaction_start` | History compaction began | None |
-| `github.copilot.session.compaction_complete` | History compaction completed | `github.copilot.success`, `github.copilot.pre_tokens`, `github.copilot.post_tokens`, `github.copilot.tokens_removed`, `github.copilot.messages_removed`, `github.copilot.message` (content capture only) |
-| `github.copilot.skill.invoked` | A skill was invoked | `github.copilot.skill.name`, `github.copilot.skill.path`, `github.copilot.skill.plugin_name`, `github.copilot.skill.plugin_version` |
-| `github.copilot.session.shutdown` | Session is shutting down | `github.copilot.shutdown_type`, `github.copilot.total_premium_requests`, `github.copilot.lines_added`, `github.copilot.lines_removed`, `github.copilot.files_modified_count` |
-| `github.copilot.session.abort` | User cancelled the current operation | `github.copilot.abort_reason` |
-| `exception` | Session error | `github.copilot.error_type`, `github.copilot.error_status_code`, `github.copilot.error_provider_call_id` |
-
-### Resource attributes
-
-All signals carry these resource attributes.
-
-| Attribute | Value |
-|-----------|-------|
-| `service.name` | `github-copilot` (configurable via `OTEL_SERVICE_NAME`) |
-| `service.version` | Runtime version |
-
-### Content capture
-
-By default, no prompt content, responses, or tool arguments are captured—only metadata like model names, token counts, and durations. To capture full content, set `OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=true`.
-
-> [!WARNING]
-> Content capture may include sensitive information such as code, file contents, and user prompts. Only enable this in trusted environments.
-
-When content capture is enabled, the following attributes are populated.
-
-| Attribute | Content |
-|-----------|---------|
-| `gen_ai.input.messages` | Full prompt messages (JSON) |
-| `gen_ai.output.messages` | Full response messages (JSON) |
-| `gen_ai.system_instructions` | System prompt content (JSON) |
-| `gen_ai.tool.definitions` | Tool schemas (JSON) |
-| `gen_ai.tool.call.arguments` | Tool input arguments |
-| `gen_ai.tool.call.result` | Tool output |
 
 ## Further reading
 
@@ -2272,8 +2064,8 @@ When content capture is enabled, the following attributes are populated.
 # DOCUMENT_SOURCE: github_docs::content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md
-- **SHA256_FINGERPRINT**: `9559556bb2146b5fe9c4a5e7cbfd59e598d3ac26996be177b8741eed50f5b123`
-- **LAST_VERIFIED_UTC**: 2026-11-09T22:06:24.973238+00:00
+- **SHA256_FINGERPRINT**: `eb44e5aca0719536f66df3cc980ee4e19d2a1a51b462ce7814fe90b524e83d6c`
+- **LAST_VERIFIED_UTC**: 2026-11-10T19:29:15.575134+00:00
 ---
 
 **title**: GitHub Copilot CLI configuration directory
@@ -3219,7 +3011,7 @@ Only the following keys are supported in MDM managed settings.
 | `sandbox` | Set a sandbox policy floor that users cannot relax. Supported settings include `enabled`, `failIfUnavailable`, `allowBypass`, `addCurrentWorkingDirectory`, `sandboxMcpServers`, `sandboxLspServers`, `auth.git`, `auth.gh`, `allowDevToolAccess`, `learningMode`, and the `userPolicy.*` filesystem and network rules. The managed value always takes precedence over a user's own value in the safer direction. Turning the sandbox on, requiring it to succeed, and sandboxing MCP and LSP servers cannot be turned off. Disabling bypass or credential injection cannot be re-enabled. Filesystem allow lists can only be narrowed, and denied paths can only be added to. `failIfUnavailable` can only be set by an administrator and blocks the session when the sandbox cannot be established. For the settings users can set themselves, see [User settings](#user-settings-copilotsettingsjson) or run `copilot help sandbox`. |
 | `shellShortcut` | Force-enable or force-disable the `$` interactive shell shortcut for all users. A managed value always overrides the user's own `shellShortcut` setting. |
 | `strictKnownMarketplaces` | Restrict plugins to an allowlist of known marketplaces (a JSON array of marketplace specs). The allowlist also governs built-in marketplaces once set—an empty array (`[]`) hides and blocks every marketplace, including built-ins, not just user- or repository-added ones. |
-| `telemetry` | Push baseline OpenTelemetry export configuration: `enabled`, `endpoint`, `protocol`, `headers`, `resourceAttributes`, `captureContent`, `lockCaptureContent`, `serviceName`, and `headersProvider`. See [Cli Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#opentelemetry-monitoring). |
+| `telemetry` | Push baseline OpenTelemetry export configuration: `enabled`, `endpoint`, `protocol`, `headers`, `resourceAttributes`, `captureContent`, `lockCaptureContent`, `serviceName`, and `headersProvider`. See [Opentelemetry Reference](https://docs.github.com/en/copilot/reference/enterprise-administrators/opentelemetry-reference). |
 
 > [!NOTE]
 > * `policyHelper.path` accepts an absolute path, a home-relative path (`~/...`), or a bare program name resolved from `PATH`. Other relative forms are rejected. The registration is accepted and validated, but the runtime doesn't yet invoke the helper—helper execution ships in a future release.

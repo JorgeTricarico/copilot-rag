@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-11-09T05:28:40.387069+00:00
-- **Total Palabras**: 26,162 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-10T19:29:21.033344+00:00
+- **Total Palabras**: 26,322 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1806,8 +1806,8 @@ Yes. In the Local session's chat input, open the **Session Target** dropdown and
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/setup/copilot.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/setup/copilot
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/setup/copilot.md
-- **SHA256_FINGERPRINT**: `b388f6776380887d86bd585345bee1bd5dfacb7c02ca12d0b9fd685b5540537f`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:38.215016+00:00
+- **SHA256_FINGERPRINT**: `a6296175b74efb45d45580359b17efb838911332433f26251dad5eceaccb1653`
+- **LAST_VERIFIED_UTC**: 2026-11-10T19:29:14.922563+00:00
 ---
 
 **MetaDescription**: Set up GitHub Copilot in VS Code, understand billing and data use, and manage your account.
@@ -1856,7 +1856,7 @@ Follow these steps to get started with Copilot in VS Code:
     Learn the basics with the [agents quickstart](/docs/agents/quickstart.md).
 
 > [!IMPORTANT]
-> Telemetry in your free version of GitHub Copilot is currently enabled. By default, code suggestions that match public code, including code references in the VS Code and [github.com](http://github.com/copilot) experience, are allowed. You can opt out of telemetry data collection by disabling telemetry in VS Code by setting ``telemetry.telemetryLevel`` to `off`, or you can adjust both telemetry and code suggestion settings in [Copilot Settings](https://github.com/settings/copilot).
+> Telemetry in your free version of GitHub Copilot is currently enabled. By default, code suggestions that match public code, including code references in the VS Code and [github.com](https://github.com/copilot) experience, are allowed. You can opt out of telemetry data collection by disabling telemetry in VS Code by setting ``telemetry.telemetryLevel`` to `off`, or you can adjust both telemetry and code suggestion settings in [Copilot Settings](https://github.com/settings/copilot).
 
 ## Use Copilot with a GHE account
 
@@ -1936,8 +1936,8 @@ To disable AI features for a specific workspace, configure the ``chat.disableAIF
 # DOCUMENT_SOURCE: microsoft_vscode::src/vs/workbench/contrib/chat/chatCodeOrganization.md
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/chat/chatCodeOrganization.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/workbench/contrib/chat/chatCodeOrganization.md
-- **SHA256_FINGERPRINT**: `62c9544c1ab9efc75dc4dc3afd6c5ba6ad3c73d5816a1e1be9265e1169513cea`
-- **LAST_VERIFIED_UTC**: 2026-11-02T21:32:56.178495+00:00
+- **SHA256_FINGERPRINT**: `88f6f5e74ab0e90245913709f70026b832597aad94dc93a78237326a43fe824b`
+- **LAST_VERIFIED_UTC**: 2026-11-10T19:29:16.440947+00:00
 ---
 
 # workbench/contrib/chat Code Organization
@@ -1957,6 +1957,8 @@ For local testing, set `"experiments.override.chatOpenInAgentsTitleBarLabel": "T
 The boolean treatment `chatOpenInAgentsTitleBarExpandOnHover` applies to all users, independently of the copy experiment. It defaults to `true`; `false` keeps the action icon-only on pointer hover, while keyboard focus still reveals the label. Tooltips, accessible names, and action behavior remain available. Set `"experiments.override.chatOpenInAgentsTitleBarExpandOnHover": false` to test locally. Its `experimentTrigger` fires on pointer hover in both arms after the assignment resolves.
 
 The experimental setting `chat.titleBar.openInAgentsWindow.richHover` (`experiment: { mode: 'auto' }`) controls what users who are new to the Agents Window (`createdSessionCount < 2`) see when they hover or focus the action. `none` keeps the simple tooltip and the expanding label. The other values show a hover card (`AgentsWindowHoverCard`: a compact graphic, a title, a description, and an Open Agents Window button) and keep the action icon-only, even on keyboard focus. Each is named after its graphic, like the values of `chat.welcomePage.agentsWindowGraphic`: `manyWindowsToOne` shows editor windows for several projects becoming one Agents Window, and `windowComparison` shows the editor window and the Agents Window side by side. The card uses the same managed hover as the tooltip, so it also shows on keyboard focus and can be focused with Cmd/Ctrl+K Cmd/Ctrl+I. Other users always see the simple tooltip, and the action switches as the count or the setting changes. Its `experimentTrigger` (`treatmentName == "config.chat.titleBar.openInAgentsWindow.richHover"`) fires in every arm when a new user hovers or focuses the action. While the card shows, the label never does, so the card arms neither apply nor trigger the copy and expansion treatments. Set `"chat.titleBar.openInAgentsWindow.richHover": "manyWindowsToOne"` or `"windowComparison"` with a fresh profile/data directory to test locally.
+
+The experimental advanced setting `chat.titleBar.openInAgentsWindow.richHoverOnClick` (`experiment: { mode: 'auto' }`, default `false`) applies only while the action shows the hover card. When enabled, activating the action by click, tap, Enter or Space opens the card with focus on its Open Agents Window button, instead of opening the Agents Window. It is an ordinary hover otherwise: it closes when the pointer leaves the action and the card, on Escape, on a click outside it, or when the action is activated again. So new users open the Agents Window with two clicks, or with one click on the button of the card that shows on hover. Users who don't see the card, because they have created two or more sessions or `richHover` is `none`, are unaffected. Its `experimentTrigger` (`treatmentName == "config.chat.titleBar.openInAgentsWindow.richHoverOnClick"`) fires in every arm when a user who sees the card activates the action. Set it together with a card value of `richHover` and a fresh profile/data directory to test locally.
 
 ## Key Folders
 
