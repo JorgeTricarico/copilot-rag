@@ -11,7 +11,7 @@ If the service you need isn't available as a connector, [add an MCP server](/doc
 ## Before you start
 
 * Sign in to VS Code with your GitHub.com account. Connectors are available on all GitHub Copilot plans.
-* Select **Copilot** in the **Session Target** dropdown. Connectors provide tools to the [Copilot harness](/docs/agents/run/agent-harnesses.md#copilot), not Local harness sessions.
+* Select **Copilot** in the **Session Target** dropdown. Connectors provide tools to the [Copilot harness](/docs/agents/run/agent-harnesses.md#copilot), not Local harness sessions `feature(local-harness)`.
 
 Marketplace discovery and connectors are enabled by default with ``chat.customizations.marketplace.enabled`` and ``chat.customizations.copilotConnectors.enabled``.
 

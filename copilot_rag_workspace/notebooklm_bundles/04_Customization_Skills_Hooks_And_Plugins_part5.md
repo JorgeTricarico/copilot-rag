@@ -1,7 +1,300 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-11-10T06:40:00.493320+00:00
-- **Total Palabras**: 424,229 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-11T05:27:05.184403+00:00
+- **Total Palabras**: 435,147 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/project-workflow-analysis-blueprint-generator/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/project-workflow-analysis-blueprint-generator/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/project-workflow-analysis-blueprint-generator/SKILL.md
+- **SHA256_FINGERPRINT**: `e2da4582cc227631ae1243b3ecda80531dd5692d4014819995bfda323b40247c`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.149054+00:00
+---
+
+**description**: Comprehensive technology-agnostic prompt generator for documenting end-to-end application workflows. Automatically detects project architecture patterns, technology stacks, and data flow patterns to generate detailed implementation blueprints covering entry points, service layers, data access, error handling, and testing approaches across multiple technologies including .NET, Java/Spring, React, and microservices architectures.
+
+# Project Workflow Documentation Generator
+
+## Configuration Variables
+
+```
+${PROJECT_TYPE="Auto-detect|.NET|Java|Spring|Node.js|Python|React|Angular|Microservices|Other"}
+
+${ENTRY_POINT="API|GraphQL|Frontend|CLI|Message Consumer|Scheduled Job|Custom"}
+
+${PERSISTENCE_TYPE="Auto-detect|SQL Database|NoSQL Database|File System|External API|Message Queue|Cache|None"}
+
+${ARCHITECTURE_PATTERN="Auto-detect|Layered|Clean|CQRS|Microservices|MVC|MVVM|Serverless|Event-Driven|Other"}
+
+${WORKFLOW_COUNT=1-5}
+
+${DETAIL_LEVEL="Standard|Implementation-Ready"}
+
+${INCLUDE_SEQUENCE_DIAGRAM=true|false}
+
+${INCLUDE_TEST_PATTERNS=true|false}
+
+```
+
+## Generated Prompt
+
+```
+"Analyze the codebase and document ${WORKFLOW_COUNT} representative end-to-end workflows
+that can serve as implementation templates for similar features. Use the following approach:
+```
+
+### Initial Detection Phase
+
+```
+${PROJECT_TYPE == "Auto-detect" ?
+  "Begin by examining the codebase structure to identify technologies:
+   - Check for .NET solutions/projects, Spring configurations, Node.js/Express files, etc.
+   - Identify the primary programming language(s) and frameworks in use
+   - Determine the architectural patterns based on folder structure and key components"
+  : "Focus on ${PROJECT_TYPE} patterns and conventions"}
+```
+
+```
+${ENTRY_POINT == "Auto-detect" ?
+  "Identify typical entry points by looking for:
+   - API controllers or route definitions
+   - GraphQL resolvers
+   - UI components that initiate network requests
+   - Message handlers or event subscribers
+   - Scheduled job definitions"
+  : "Focus on ${ENTRY_POINT} entry points"}
+```
+
+```
+${PERSISTENCE_TYPE == "Auto-detect" ?
+  "Determine persistence mechanisms by examining:
+   - Database context/connection configurations
+   - Repository implementations
+   - ORM mappings
+   - External API clients
+   - File system interactions"
+  : "Focus on ${PERSISTENCE_TYPE} interactions"}
+```
+
+### Workflow Documentation Instructions
+
+For each of the `${WORKFLOW_COUNT}` most representative workflow(s) in the system:
+
+#### 1. Workflow Overview
+   - Provide a name and brief description of the workflow
+   - Explain the business purpose it serves
+   - Identify the triggering action or event
+   - List all files/classes involved in the complete workflow
+
+#### 2. Entry Point Implementation
+
+**API Entry Points:**
+```
+${ENTRY_POINT == "API" || ENTRY_POINT == "Auto-detect" ?
+  "- Document the API controller class and method that receives the request
+   - Show the complete method signature including attributes/annotations
+   - Include the full request DTO/model class definition
+   - Document validation attributes and custom validators
+   - Show authentication/authorization attributes and checks" : ""}
+```
+
+**GraphQL Entry Points:**
+```
+${ENTRY_POINT == "GraphQL" || ENTRY_POINT == "Auto-detect" ?
+  "- Document the GraphQL resolver class and method
+   - Show the complete schema definition for the query/mutation
+   - Include input type definitions
+   - Show resolver method implementation with parameter handling" : ""}
+```
+
+**Frontend Entry Points:**
+```
+${ENTRY_POINT == "Frontend" || ENTRY_POINT == "Auto-detect" ?
+  "- Document the component that initiates the API call
+   - Show the event handler that triggers the request
+   - Include the API client service method
+   - Show state management code related to the request" : ""}
+```
+
+**Message Consumer Entry Points:**
+```
+${ENTRY_POINT == "Message Consumer" || ENTRY_POINT == "Auto-detect" ?
+  "- Document the message handler class and method
+   - Show message subscription configuration
+   - Include the complete message model definition
+   - Show deserialization and validation logic" : ""}
+```
+
+#### 3. Service Layer Implementation
+   - Document each service class involved with their dependencies
+   - Show the complete method signatures with parameters and return types
+   - Include actual method implementations with key business logic
+   - Document interface definitions where applicable
+   - Show dependency injection registration patterns
+
+**CQRS Patterns:**
+```
+${ARCHITECTURE_PATTERN == "CQRS" || ARCHITECTURE_PATTERN == "Auto-detect" ?
+  "- Include complete command/query handler implementations" : ""}
+```
+
+**Clean Architecture Patterns:**
+```
+${ARCHITECTURE_PATTERN == "Clean" || ARCHITECTURE_PATTERN == "Auto-detect" ?
+  "- Show use case/interactor implementations" : ""}
+```
+
+#### 4. Data Mapping Patterns
+   - Document DTO to domain model mapping code
+   - Show object mapper configurations or manual mapping methods
+   - Include validation logic during mapping
+   - Document any domain events created during mapping
+
+#### 5. Data Access Implementation
+   - Document repository interfaces and their implementations
+   - Show complete method signatures with parameters and return types
+   - Include actual query implementations
+   - Document entity/model class definitions with all properties
+   - Show transaction handling patterns
+
+**SQL Database Patterns:**
+```
+${PERSISTENCE_TYPE == "SQL Database" || PERSISTENCE_TYPE == "Auto-detect" ?
+  "- Include ORM configurations, annotations, or Fluent API usage
+   - Show actual SQL queries or ORM statements" : ""}
+```
+
+**NoSQL Database Patterns:**
+```
+${PERSISTENCE_TYPE == "NoSQL Database" || PERSISTENCE_TYPE == "Auto-detect" ?
+  "- Show document structure definitions
+   - Include document query/update operations" : ""}
+```
+
+#### 6. Response Construction
+   - Document response DTO/model class definitions
+   - Show mapping from domain/entity models to response models
+   - Include status code selection logic
+   - Document error response structure and generation
+
+#### 7. Error Handling Patterns
+   - Document exception types used in the workflow
+   - Show try/catch patterns at each layer
+   - Include global exception handler configurations
+   - Document error logging implementations
+   - Show retry policies or circuit breaker patterns
+   - Include compensating actions for failure scenarios
+
+#### 8. Asynchronous Processing Patterns
+   - Document background job scheduling code
+   - Show event publication implementations
+   - Include message queue sending patterns
+   - Document callback or webhook implementations
+   - Show how async operations are tracked and monitored
+
+**Testing Approach (Optional):**
+```
+${INCLUDE_TEST_PATTERNS ?
+  "9. **Testing Approach**
+     - Document unit test implementations for each layer
+     - Show mocking patterns and test fixture setup
+     - Include integration test implementations
+     - Document test data generation approaches
+     - Show API/controller test implementations" : ""}
+```
+
+**Sequence Diagram (Optional):**
+```
+${INCLUDE_SEQUENCE_DIAGRAM ?
+  "10. **Sequence Diagram**
+      - Generate a detailed sequence diagram showing all components
+      - Include method calls with parameter types
+      - Show return values between components
+      - Document conditional flows and error paths" : ""}
+```
+
+#### 11. Naming Conventions
+Document consistent patterns for:
+- Controller naming (e.g., `EntityNameController`)
+- Service naming (e.g., `EntityNameService`)
+- Repository naming (e.g., `IEntityNameRepository`)
+- DTO naming (e.g., `EntityNameRequest`, `EntityNameResponse`)
+- Method naming patterns for CRUD operations
+- Variable naming conventions
+- File organization patterns
+
+#### 12. Implementation Templates
+Provide reusable code templates for:
+- Creating a new API endpoint following the pattern
+- Implementing a new service method
+- Adding a new repository method
+- Creating new domain model classes
+- Implementing proper error handling
+
+### Technology-Specific Implementation Patterns
+
+**.NET Implementation Patterns (if detected):**
+```
+${PROJECT_TYPE == ".NET" || PROJECT_TYPE == "Auto-detect" ?
+  "- Complete controller class with attributes, filters, and dependency injection
+   - Service registration in Startup.cs or Program.cs
+   - Entity Framework DbContext configuration
+   - Repository implementation with EF Core or Dapper
+   - AutoMapper profile configurations
+   - Middleware implementations for cross-cutting concerns
+   - Extension method patterns
+   - Options pattern implementation for configuration
+   - Logging implementation with ILogger
+   - Authentication/authorization filter or policy implementations" : ""}
+```
+
+**Spring Implementation Patterns (if detected):**
+```
+${PROJECT_TYPE == "Java" || PROJECT_TYPE == "Spring" || PROJECT_TYPE == "Auto-detect" ?
+  "- Complete controller class with annotations and dependency injection
+   - Service implementation with transaction boundaries
+   - Repository interface and implementation
+   - JPA entity definitions with relationships
+   - DTO class implementations
+   - Bean configuration and component scanning
+   - Exception handler implementations
+   - Custom validator implementations" : ""}
+```
+
+**React Implementation Patterns (if detected):**
+```
+${PROJECT_TYPE == "React" || PROJECT_TYPE == "Auto-detect" ?
+  "- Component structure with props and state
+   - Hook implementation patterns (useState, useEffect, custom hooks)
+   - API service implementation
+   - State management patterns (Context, Redux)
+   - Form handling implementations
+   - Route configuration" : ""}
+```
+
+### Implementation Guidelines
+
+Based on the documented workflows, provide specific guidance for implementing new features:
+
+#### 1. Step-by-Step Implementation Process
+- Where to start when adding a similar feature
+- Order of implementation (e.g., model → repository → service → controller)
+- How to integrate with existing cross-cutting concerns
+
+#### 2. Common Pitfalls to Avoid
+- Identify error-prone areas in the current implementation
+- Note performance considerations
+- List common bugs or issues encountered
+
+#### 3. Extension Mechanisms
+- Document how to plug into existing extension points
+- Show how to add new behavior without modifying existing code
+- Explain configuration-driven feature patterns
+
+**Conclusion:**
+Conclude with a summary of the most important patterns that should be followed when
+implementing new features to maintain consistency with the codebase."
 
 
 ---
@@ -29866,6 +30159,2137 @@ Build the test project and confirm it compiles with zero errors before finishing
 - Oracle is the golden behavior source — scaffold for Oracle only, not PostgreSQL.
 - Keep to existing .NET and C# versions; do not introduce newer language or runtime features.
 - Output is an empty test project with infrastructure only — no test cases.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/scout-issue/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/scout-issue/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/scout-issue/SKILL.md
+- **SHA256_FINGERPRINT**: `1ab91f3c38b2ab16b141e5eb010309857f2a2ff4935b6a2b6bf86dac7ba09478`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:01.900135+00:00
+---
+
+**description**: Use when a developer wants to find the best GitHub issues to contribute to in a repository. Invoke with /scout-issue or ask to find good first issues, beginner-friendly issues, or open source work. Asks about experience level, technical skills, time, and contribution type, then searches GitHub issues, scores them, and presents ranked recommendations with match analysis.
+
+# Issue Scout - /scout-issue Command
+
+Run this four-phase pipeline when the user invokes `/scout-issue` or asks for
+help finding issues to contribute to. This skill is read-only by default:
+inspect issues and code, but never modify issues unless the user explicitly
+asks.
+
+## Bundled Resources
+
+- `references/interview.md` — intake questions, prioritization, and the internal specification format
+- `references/scoring-rubric.md` — scoring dimensions, adaptive weights, and confidence levels
+- `references/workflow.md` — end-to-end workflow, decision points, and edge cases
+- `references/tool-patterns.md` — GitHub CLI, REST, and git command patterns
+- `references/investigation-templates.md` — deep-investigation and implementation-plan output templates
+- `references/recovery.md` — cancellation, missing tools, rate limits, and fallbacks
+- `references/quick-reference.md` — condensed command and output reference
+- `examples/` — worked scenarios, including `copilot-run.md`, a run against real issues
+- `scripts/validate-skill.sh` — local consistency check for this skill
+
+Read the relevant reference when a phase needs more detail than this file provides.
+
+## Command Detection
+
+**Trigger:** The user invokes `/scout-issue`, or asks for help finding issues to
+contribute to (for example, "find me a beginner-friendly issue I could finish
+this weekend").
+
+**Detection:** Parse user input for `/scout-issue` anywhere in the message, or
+recognize a request to discover and rank contribution opportunities. If
+detected, activate this pipeline instead of normal chat.
+
+**Examples:**
+- `/scout-issue`
+- `/scout-issue rust`
+- `/scout-issue beginner-friendly`
+- `Find a beginner-friendly Rust issue I could finish this weekend`
+
+**Note:** If the user types `/scout-issue` again during the process, restart
+from Phase 1. If they type `/cancel`, abort the pipeline.
+
+## Pipeline Flow
+
+```
+/scout-issue invoked
+    ↓
+Phase 1: User Interrogation
+    ↓
+Phase 2: Issue Detection
+    ↓
+Phase 3: Issue Analysis & Ranking
+    ↓
+Phase 4: Output Formatting
+    ↓
+Display to User
+```
+
+---
+
+## Phase 1: User Interrogation
+
+**Goal:** Build an internal specification: experience, languages, available
+time, contribution type, difficulty, and special requirements.
+
+Ask the six questions in `references/interview.md`, in a single message when the
+client supports it. Skip any question the user already answered, and do not
+re-ask after a clarification. If the user gives no special requirements, do not
+filter on assignment or linked-PR status.
+
+**Output:**
+```
+Experience: [level]
+Languages: [list]
+Scope: [time estimate]
+Type: [contribution type]
+Difficulty: [level]
+Special: [requirements]
+```
+
+---
+
+## Phase 2: Issue Detection
+
+**Goal:** Find candidate issues with GitHub CLI/REST and git.
+
+### Step 1: Inspect Repository
+
+```bash
+repo=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
+gh repo view --json name,primaryLanguage,languages
+cat CONTRIBUTING.md 2>/dev/null || echo "No CONTRIBUTING.md"
+git log --oneline -10
+ls -la
+```
+
+### Step 2: List Candidate Issues
+
+```bash
+# Issue-only total. open_issues_count also counts open pull requests, so it
+# overstates the search population.
+gh api "search/issues?q=repo:$repo+is:issue+is:open&per_page=1" --jq '.total_count'
+
+# Newest 100 open issues. gh issue list excludes pull requests.
+gh issue list --state open --limit 100
+
+# Page beyond 100 with REST. --paginate follows the API's pagination links
+# before jq runs, so filtering pull requests cannot cut pagination short. The
+# issues endpoint includes pull requests, so drop entries that have a
+# pull_request field.
+gh api "repos/$repo/issues?state=open&per_page=100" --paginate \
+  --jq '.[] | select(.pull_request == null) | .number'
+
+# Filter by label when the user named a language, type, or difficulty hint
+gh issue list --state open --label "bug" --limit 50
+gh issue list --state open --label "good first issue" --limit 50
+```
+
+> **Note:** `gh issue list` and `gh search issues` have no `--page` flag. Use the
+> REST issues endpoint with `--paginate` to walk every page, and always filter
+> out entries with a non-null `pull_request` field. `gh search issues --repo
+> "$repo" --limit N` can raise the search ceiling without pagination; `--repo`
+> is required to keep results repository-scoped.
+
+### Step 3: Initial Filtering
+
+Only apply filters that match the user's explicit preferences.
+
+Remove issues that:
+- Are assigned, **only** when special requirements include "No active PRs
+  (unclaimed work only)".
+- Are clearly outside the user's stated skill set.
+
+Keep these for Phase 3 as weighted evidence, not automatic rejection:
+- Issues with linked PRs (an **open** linked PR is competing work; closed or
+  reverted PRs are evidence only).
+- Inactive issues (no activity for 6+ months) unless there is evidence of
+  obsolescence or the user set a recency constraint.
+
+**Output:** Candidate issue numbers (typically 20-50).
+
+---
+
+## Phase 3: Issue Analysis & Ranking
+
+> The `good first issue` label is a candidate-hunting hint only. Verify difficulty
+> from the issue body, comments, and surrounding code before scoring.
+
+**Goal:** Apply eligibility gates, score candidates, and rank them.
+
+For each candidate:
+```bash
+gh issue view ISSUE_NUM
+gh issue view ISSUE_NUM --comments
+gh api "repos/$repo/issues/ISSUE_NUM/timeline" --paginate --jq '[.[] | select(.event == "cross-referenced") | select(.source.issue.pull_request != null) | select(.source.issue.state == "open") | .source.issue.number]'
+rg "relevant_function" src/
+find . -name "*test*" -type f | head -5
+```
+
+**Eligibility gates (all must pass before scoring):**
+- The issue is open and still matches the user's hard constraints.
+- When the user requested unclaimed work, the issue is unassigned and has no
+  open linked PR.
+- Evidence comes from the issue body, comments, code, and tests — never from the
+  title alone.
+- The proposed work is actionable: a location or subsystem can be identified, or
+  the missing information is called out as a risk.
+
+**Score each eligible issue 0-100 on:** User Fit, Technical Fit, Scope Fit,
+Difficulty Fit, Issue Quality, Activity, Contribution Feasibility, and Evidence
+Quality.
+
+Use the default weights (User Fit 20%, Technical Fit 15%, Scope Fit 20%,
+Difficulty Fit 15%, Issue Quality 10%, Activity 5%, Contribution Feasibility
+10%, Evidence Quality 5%), or the adapted weights in
+`references/scoring-rubric.md`. Rank by weighted score and keep the evidence
+behind each score.
+
+**Output:** Top 5-10 issues with scores and analysis.
+
+---
+
+## Phase 4: Output Formatting
+
+**Goal:** Present a ranked shortlist that a developer can act on.
+
+**Output contract:** Top 5 maximum. For each issue show the overall match score
+out of 100, difficulty level, estimated scope, confidence level, a brief note on
+verification gaps, short evidence bullets, and short concerns bullets. End with
+a single "best match" recommendation. Use emojis for visual clarity.
+
+Use the template in `references/quick-reference.md` ("Output Format"). Mention
+the issue-only candidate pool size and any issues excluded for competing PRs,
+assignments, or hard constraints.
+
+**Rules:**
+- Show top 5 issues maximum.
+- Explain why each issue matches and note concerns.
+- Separate evidence from inference; never claim an issue "will definitely be
+  accepted" or is "guaranteed to work".
+- Never skip eligibility or evidence checks for a quick-scan shortcut.
+
+---
+
+## Investigation Mode
+
+**Trigger:** User says "Investigate #[NUMBER]"
+
+**Action:** Produce the deep-investigation brief in
+`references/investigation-templates.md`. Include the problem, why it matches,
+relevant code and tests, related PRs/commits, implementation scope, potential
+difficulties, maintainer expectations, effort estimate, first steps, and
+confidence.
+
+End with: `Want me to create an implementation plan? Say: "Plan this issue".`
+
+---
+
+## Implementation Planning
+
+**Trigger:** User says "Plan this issue" or "How should I approach this?"
+
+**Action:** Produce the implementation plan in
+`references/investigation-templates.md`. Separate verified facts from likely
+implementation and open questions, and include files to modify, testing
+approach, potential challenges, time estimate, and confidence.
+
+End with: `Ready to start? Say: "Start working on this".`
+
+---
+
+## Evidence Rules
+
+- **Evidence:** what was observed — issue text, comment, code, test, timeline, or
+  assignment.
+- **Inference:** what you conclude — likely actionable, likely accepted.
+- Use: likely, appears, suggests, uncertain, insufficient evidence.
+- Never: "will definitely be accepted", "guaranteed to work".
+- Record the source for every claim; call out gaps instead of filling them.
+
+---
+
+## Error Handling
+
+- **Cancel:** on `/cancel`, stop immediately and return to normal chat.
+- **Restart:** on `/scout-issue` again, discard progress and restart Phase 1.
+- **Missing tools, auth failures, rate limits:** explain the limitation and use
+  the fallbacks in `references/recovery.md`.
+- **No issues found:** explain which constraints are binding and offer to relax
+  them.
+
+---
+
+## Important Rules
+
+1. Never rank by title match alone.
+2. Never trust `good first issue` or `help-wanted` labels without checking the
+   issue and surrounding code.
+3. Never assume active from open status, or abandoned from age.
+4. Always check for open linked PRs before recommending unclaimed work.
+5. Always check code and tests when difficulty or feasibility matters.
+6. Explain recommendations and rejections.
+7. Separate evidence from inference; never invent facts.
+8. Fewer, better recommendations beat many weak ones.
+9. Read-only by default; never modify issues unless explicitly asked.
+10. Handle cancellation and restart at any point.
+
+---
+
+## Portability
+
+Works with any AI CLI that provides shell access, git, and optional GitHub CLI.
+If `gh` is unavailable, use the git and web fallbacks in `references/recovery.md`
+and state what could not be checked.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/scout-issue/examples/copilot-run.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/scout-issue/examples/copilot-run.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/scout-issue/examples/copilot-run.md
+- **SHA256_FINGERPRINT**: `eea79526ba0add218a2bf4046e3d27eaa13d039f293d945c8c1a8d55a676bc7e`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:01.914133+00:00
+---
+
+# Copilot Run: Real Issues in `cli/cli`
+
+Captured on 2026-11-06 against `github/cli` (`cli/cli`). This is a condensed
+run, not a synthetic scenario. The user was an intermediate Go contributor
+looking for a bug fix they could finish in a weekend and explicitly requested
+unclaimed work only (no open competing PR).
+
+## Candidate Pool
+
+- Issue-only search count: **1,057 open issues**. The repository
+  `open_issues_count` was not used because it also counts open pull requests.
+- Read the newest 100 open issues with `gh issue list --state open --limit 100`.
+- Added repository-scoped label and text searches for `bug`, `gh-issue`,
+  `gh-auth`, and `gh-pr` so older issues were not excluded by recency.
+- Those passes left seven candidates: #14621, #14647, #14386, #14844, #14754,
+  #14856, and #14550.
+
+## Evidence and Eligibility Screen
+
+| Issue | Evidence from the issue | Open linked PR? | Result |
+|---|---|---|---|
+| #14647 | Help text promises local files survive `gh skill update`; reproduction and affected version given | Yes — #14689 | **Excluded** for unclaimed work |
+| #14844 | Detailed sandbox token-refresh failure; clear steps and impact | Yes — #14845 | **Excluded** for unclaimed work |
+| #14621 | Skill description lacks task triggers; concrete gap list | Yes — #14629 | **Excluded** for unclaimed work |
+| #14856 | Exact failing command, code path, affected versions, and expected behavior | No — attempts #14860 and #14914 are closed | Eligible |
+| #14550 | Clear data-loss repro; points at `pkg/cmd/pr/close/close.go` | No — attempts #14556 and #14763 are closed | Eligible |
+| #14754 | Clear scope-mismatch report with token and version details | No — attempt #14857 is closed | Eligible |
+| #14386 | Priority-2 behavior regression with nine comments | No — attempt #14448 is closed | Eligible |
+
+None of the seven issues was assigned. Competing PRs were checked from the
+issue timeline, not from title matches:
+
+```bash
+repo=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
+gh api "repos/$repo/issues/14647/timeline" --paginate --jq '[.[] | select(.event == "cross-referenced") | select(.source.issue.pull_request != null) | select(.source.issue.state == "open") | .source.issue.number]'
+```
+
+`#14647` was excluded even though it was otherwise a strong documentation fit:
+open PR #14689 already claimed the fix. The same rule removed #14844 and #14621.
+Closed attempts were treated as evidence (the work was tried before), not as
+competing work.
+
+## Ranking
+
+Scores use the default weights from `references/scoring-rubric.md`.
+
+| Rank | Issue | User | Tech | Scope | Diff. | Quality | Activity | Feasibility | Evidence | Overall |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | #14856 | 85 | 90 | 85 | 80 | 90 | 70 | 80 | 85 | **84** |
+| 2 | #14754 | 80 | 85 | 85 | 75 | 80 | 55 | 70 | 70 | **78** |
+| 3 | #14550 | 80 | 85 | 70 | 65 | 85 | 75 | 65 | 75 | **75** |
+| 4 | #14386 | 70 | 80 | 55 | 50 | 75 | 80 | 50 | 70 | **65** |
+
+### Final shortlist
+
+1. **#14856 — 84/100 — best match.** The issue names the failing code path,
+   gives reproducible steps, and has a small, testable fix. Concern: two closed
+   attempts show the area has tripped people up; check the linked history first.
+   Confidence: **High**. Verification gaps: none; open-PR state, assignment, and
+   code/test paths were all rechecked.
+2. **#14754 — 78/100.** Small auth validation fix with clear expected behavior.
+   Concern: lower activity and an earlier closed attempt.
+   Confidence: **Medium**. Verification gaps: maintainer appetite for the fix was
+   not confirmed.
+3. **#14550 — 75/100.** High-quality report with a serious data-loss impact and
+   an identified file. Concern: the fix touches branch cleanup and needs
+   careful regression tests.
+   Confidence: **Medium**. Verification gaps: branch-cleanup regression risk was
+   not exercised locally.
+
+## How the Final Ranking Was Checked
+
+- Re-ran the open-linked-PR timeline for each finalist immediately before
+  output; #14856, #14754, and #14550 had no open linked PR.
+- Re-checked assignees and confirmed all four were unassigned.
+- Confirmed via the repository contents API that the cited code paths and their
+  test files exist (`develop.go`, `close.go`, `login.go`, `create.go`).
+- Used comments and update dates as activity evidence; no issue was discarded
+  for age alone.
+- Recomputed the weighted total with the default weights and sanity-checked the
+  order: #14856 stayed first because its scope, issue quality, and evidence were
+  all strongest.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/scout-issue/examples/deep-investigation.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/scout-issue/examples/deep-investigation.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/scout-issue/examples/deep-investigation.md
+- **SHA256_FINGERPRINT**: `58174699472ef5abd1cc0ab4b090cffbb06df5188cfab5b86a28d47028c639e2`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:01.920799+00:00
+---
+
+# Example: Deep Investigation of a Specific Issue
+
+## User Request
+```
+Investigate #1842.
+```
+
+## Output
+
+```
+ISSUE #1842 — Investigation Brief
+
+Problem: Multi-line commands get corrupted in terminal history. When recalling such commands, line breaks are lost or duplicated.
+
+Why it matches:
+- Bug fix with clear reproduction
+- No active PR (previous attempt reverted)
+- Maintainer priority for upcoming release
+- Good learning opportunity for terminal internals
+
+Relevant code:
+- src/terminal/history.rs: Main history management
+- src/terminal/parser.rs: Command parsing
+- src/terminal/display.rs: Display logic
+
+Relevant tests:
+- tests/history_tests.rs: Existing history tests
+- tests/integration/terminal_integration.rs: Integration tests
+
+Related PRs:
+- PR #1801: Fixed similar issue for single-line (merged)
+- PR #1839: Attempted fix reverted (indicates complexity)
+
+Related commits:
+- abc123: Refactored history storage
+- def456: Fixed memory leak in history
+
+Likely implementation scope:
+1. Fix multi-line storage in history.rs
+2. Update parser to handle line breaks
+3. Add tests for multi-line scenarios
+4. Update documentation
+
+Potential difficulties:
+- Multi-line command boundaries unclear
+- Single-line optimizations may conflict
+- Edge cases with escaped characters
+- Performance considerations
+
+Maintainer expectations:
+- Must not break single-line functionality
+- Comprehensive test coverage required
+- Consider performance impact
+- Documentation updates needed
+
+Estimated effort: 8-12 hours
+
+Recommended first steps:
+1. Read PR #1839 to understand previous attempt
+2. Create reproduction test case
+3. Study history.rs and parser.rs
+4. Implement fix with tests
+
+Confidence: Medium
+
+Reasons:
+- Clear problem and reproduction
+- Previous fix attempt suggests complexity
+- Need to understand parser internals
+- Edge cases may be tricky
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/scout-issue/examples/first-contribution.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/scout-issue/examples/first-contribution.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/scout-issue/examples/first-contribution.md
+- **SHA256_FINGERPRINT**: `6c249dd683af6e69cbfd7a103e4983a87d5ffba517500ca4c46157275f64b470`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:01.934655+00:00
+---
+
+# Example: Finding a First Contribution
+
+*Note: Issue counts and numbers below are illustrative examples.*
+
+## User Request
+```
+Find me a good first contribution in this repository.
+```
+
+## Output
+
+```
+ISSUE SCOUT
+
+Found 3 strong candidates from 23 issues matching the initial criteria.
+
+1. #1247 — Fix button hover state not working in Safari
+   Match: 91/100
+   Difficulty: Easy
+   Estimated scope: 1-2 hours
+   Confidence: High
+   Verification gaps: None identified
+
+   Why:
+   ✓ Clear reproduction case provided
+   ✓ Localized fix in single file
+   ✓ Existing tests to verify
+   ✓ Maintainer actively responding
+   ✓ Simple CSS issue
+
+   Concern:
+   ⚠ Need to test across Safari versions
+
+2. #1301 — Add loading spinner to async components
+   Match: 82/100
+   Difficulty: Easy-Medium
+   Estimated scope: 2-4 hours
+   Confidence: Medium
+   Verification gaps: Design sign-off not confirmed
+
+   Why:
+   ✓ Clear specification
+   ✓ Follows existing patterns
+   ✓ Good learning opportunity
+
+   Concern:
+   ⚠ Touches multiple components
+   ⚠ May need design decisions
+
+3. #1189 — Fix typo in error message
+   Match: 75/100
+   Difficulty: Trivial
+   Estimated scope: 15 minutes
+   Confidence: High
+   Verification gaps: None identified
+
+   Why:
+   ✓ Simple, low-risk change
+   ✓ Good for confidence building
+
+   Concern:
+   ⚠ Very trivial, may not provide learning value
+
+Best match: #1247
+
+It provides a good balance of simplicity, learning value, and realistic scope for a first contribution.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/scout-issue/examples/no-good-matches.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/scout-issue/examples/no-good-matches.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/scout-issue/examples/no-good-matches.md
+- **SHA256_FINGERPRINT**: `f9762555885c1a7f082a4f71cb15a3de673158a8de8001e8bec3e28f1a1619bc`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:01.928838+00:00
+---
+
+# Example: No Good Matches Found
+
+*Note: Issue counts and numbers below are illustrative examples.*
+
+## User Request
+```
+Find me a beginner-friendly Rust issue in the compiler subsystem. No active
+PRs (unclaimed work only), and it should have seen activity in the last 6 months.
+```
+
+## Output
+
+```
+ISSUE SCOUT
+
+Searched 47 open issues. Found 0 strong candidates.
+
+Analysis:
+- Rust issues in compiler subsystem: 23
+- Beginner-friendly: 3
+- After filtering (assigned, active PRs, inactive): 0
+
+Rejected issues and reasons:
+
+Issue #1234 — Rejected
+Reasons:
+- Assigned to maintainer
+- Requires deep compiler knowledge
+- Estimated scope: 20+ hours
+
+Issue #1289 — Rejected
+Reasons:
+- Active PR already exists
+- Design discussion still ongoing
+
+Issue #1362 — Rejected
+Reasons:
+- Requires understanding of LLVM backend
+- No reproduction case provided
+
+Recommendation:
+Your constraints are quite specific. Consider:
+
+1. **Relaxing scope**: "Beginner-friendly Rust issues" (not limited to compiler)
+2. **Expanding timeframe**: "Issues I can complete in a week" (not just beginner-friendly)
+3. **Different area**: "Frontend Rust issues" or "documentation issues"
+
+The compiler subsystem requires deep expertise. For a first contribution, consider:
+- Issues labeled "good first issue" in other areas
+- Documentation improvements
+- Test coverage additions
+- Simple bug fixes in utilities
+
+Would you like me to search with different constraints?
+```
+
+## Key Points
+- Explains why no matches were found
+- Shows rejection reasoning for top candidates
+- Suggests alternative approaches
+- Offers to re-search with different constraints
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/scout-issue/examples/portfolio-contribution.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/scout-issue/examples/portfolio-contribution.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/scout-issue/examples/portfolio-contribution.md
+- **SHA256_FINGERPRINT**: `89f30e5009e9bb1b79508c670ae24a6a6d67a7d0fe2e23aa584a2f3496b19c3f`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:01.934913+00:00
+---
+
+# Example: Finding Portfolio-Worthy Contributions
+
+## User Request
+```
+Find me an issue that would make a strong open-source contribution for my portfolio.
+```
+
+## Output
+
+```
+ISSUE SCOUT
+
+Found 3 strong candidates from 412 open issues.
+
+1. #2103 — Implement real-time notifications with WebSockets
+   Match: 96/100
+   Difficulty: Hard
+   Estimated scope: 12-16 hours
+   Confidence: Medium
+   Verification gaps: Infrastructure approach not confirmed
+
+   Why:
+   ✓ Significant feature with visible impact
+   ✓ Demonstrates full-stack development
+   ✓ Clear specification from maintainer
+   ✓ Community interest and support
+   ✓ Good documentation potential
+
+   Concern:
+   ⚠ Requires WebSocket knowledge
+   ⚠ Needs frontend and backend changes
+   ⚠ May require infrastructure decisions
+
+2. #2156 — Add data visualization dashboard
+   Match: 93/100
+   Difficulty: Hard
+   Estimated scope: 10-14 hours
+   Confidence: Medium
+   Verification gaps: Charting library choice unresolved
+
+   Why:
+   ✓ Visible user-facing feature
+   ✓ Demonstrates data visualization skills
+   ✓ Clear mockups provided
+   ✓ Good portfolio showcase potential
+
+   Concern:
+   ⚠ Needs UI/UX design decisions
+   ⚠ May require charting library selection
+
+3. #2189 — Implement caching layer for performance
+   Match: 89/100
+   Difficulty: Medium-Hard
+   Estimated scope: 8-12 hours
+   Confidence: Medium
+   Verification gaps: Cache invalidation design unverified
+
+   Why:
+   ✓ Technical depth in optimization
+   ✓ Demonstrates performance engineering
+   ✓ Clear performance metrics to improve
+   ✓ Good technical writing opportunity
+
+   Concern:
+   ⚠ Requires understanding of current architecture
+   ⚠ May need cache invalidation strategy
+
+Best match: #2103
+
+This WebSocket implementation would be an impressive portfolio piece. It demonstrates full-stack skills, has clear requirements, and would be a significant feature contribution that the maintainer actually wants.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/scout-issue/examples/skill-matching.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/scout-issue/examples/skill-matching.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/scout-issue/examples/skill-matching.md
+- **SHA256_FINGERPRINT**: `9efebcab04a9d6d08a3cb82f88b679762dea5e3b24e29056d573c446361879a9`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:01.929090+00:00
+---
+
+# Example: Finding Issues Matching Specific Skills
+
+## User Request
+```
+I know TypeScript and React well but don't know this codebase.
+Find me something I can reasonably solve in 4–8 hours.
+```
+
+## Output
+
+```
+ISSUE SCOUT
+
+Found 3 strong candidates from 278 open issues.
+
+1. #1456 — Fix responsive layout breaking on mobile
+   Match: 92/100
+   Difficulty: Easy-Medium
+   Estimated scope: 2-4 hours
+   Confidence: High
+   Verification gaps: None identified
+
+   Why:
+   ✓ Clear screenshots of the issue
+   ✓ CSS/React expertise required
+   ✓ Localized to layout component
+   ✓ Visual regression tests exist
+   ✓ Common mobile responsiveness issue
+
+   Concern:
+   ⚠ Need to test across device sizes
+   ⚠ May need to understand CSS media queries
+
+2. #1502 — Add keyboard navigation to dropdown component
+   Match: 89/100
+   Difficulty: Medium
+   Estimated scope: 4-6 hours
+   Confidence: Medium
+   Verification gaps: Current component implementation not reviewed
+
+   Why:
+   ✓ Clear accessibility specification
+   ✓ Follows React component patterns
+   ✓ Good portfolio contribution
+   ✓ Well-defined success criteria
+
+   Concern:
+   ⚠ Need to understand component's current implementation
+   ⚠ May require ARIA attribute knowledge
+
+3. #1478 — Fix form validation error messages
+   Match: 84/100
+   Difficulty: Medium
+   Estimated scope: 3-5 hours
+   Confidence: Medium
+   Verification gaps: Form state management not inspected
+
+   Why:
+   ✓ Multiple user reports (real problem)
+   ✓ TypeScript form validation
+   ✓ Good learning opportunity
+
+   Concern:
+   ⚠ Touches multiple files
+   ⚠ Need to understand form state management
+
+Best match: #1456
+
+It's a responsive layout issue that perfectly matches your TypeScript/React skills. The clear screenshots and localized fix make it ideal for someone unfamiliar with the codebase.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/scout-issue/examples/weekend-project.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/scout-issue/examples/weekend-project.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/scout-issue/examples/weekend-project.md
+- **SHA256_FINGERPRINT**: `c97facfb5e5be606ceeef1ba11ad811e660600a79ca5c9d7f969d780666e4a4d`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:02.042717+00:00
+---
+
+# Example: Finding a Weekend-Sized Issue
+
+## User Request
+```
+Find me a Rust issue I could realistically finish this weekend.
+```
+
+## Output
+
+```
+ISSUE SCOUT
+
+Found 3 strong candidates from 156 open issues.
+
+1. #892 — Fix memory leak in connection pool
+   Match: 94/100
+   Difficulty: Medium
+   Estimated scope: 4-6 hours
+   Confidence: High
+   Verification gaps: None identified
+
+   Why:
+   ✓ Clear reproduction with profiler output
+   ✓ Maintainer confirmed the issue
+   ✓ Localized to single module
+   ✓ Existing test infrastructure
+   ✓ Clear success criteria
+
+   Concern:
+   ⚠ May require understanding of async lifetimes
+   ⚠ Similar to #845 but different scenario
+
+2. #915 — Improve error messages for invalid configurations
+   Match: 88/100
+   Difficulty: Easy-Medium
+   Estimated scope: 3-5 hours
+   Confidence: Medium
+   Verification gaps: Error message format decisions unresolved
+
+   Why:
+   ✓ Multiple user reports (real problem)
+   ✓ Maintainer wants this fixed
+   ✓ Follows existing error patterns
+   ✓ Good learning opportunity
+
+   Concern:
+   ⚠ Touches multiple files
+   ⚠ Need to decide on error message format
+
+3. #878 — Add timeout to HTTP client requests
+   Match: 85/100
+   Difficulty: Medium
+   Estimated scope: 5-7 hours
+   Confidence: Medium
+   Verification gaps: Client architecture not inspected
+
+   Why:
+   ✓ Clear specification
+   ✓ Follows existing patterns
+   ✓ Good feature contribution
+
+   Concern:
+   ⚠ Need to understand client architecture
+   ⚠ May need API design decisions
+
+Best match: #892
+
+It's a well-defined bug with clear reproduction, localized fix, and existing tests. The 4-6 hour estimate fits perfectly in a weekend.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/scout-issue/references/interview.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/scout-issue/references/interview.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/scout-issue/references/interview.md
+- **SHA256_FINGERPRINT**: `0e96803987269e696169c0a3ef5bf97f65060ee78e3d9c779c283fe9654ed5ec`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:02.103508+00:00
+---
+
+# Issue Scout Interview
+
+Ask these six questions in order, in a single message when the AI CLI supports
+batched prompts. Skip any question the user already answered in their request.
+
+## Question 1: Experience Level
+
+```
+What's your experience level with this repository?
+- [ ] First-time contributor
+- [ ] Some familiarity
+- [ ] Experienced with the codebase
+```
+
+## Question 2: Technical Skills
+
+```
+What languages/frameworks are you comfortable with?
+(Select all that apply)
+- [ ] JavaScript/TypeScript
+- [ ] Python
+- [ ] Rust
+- [ ] Go
+- [ ] Java/Kotlin
+- [ ] C/C++
+- [ ] Ruby
+- [ ] Other: ___
+```
+
+## Question 3: Time Availability
+
+```
+How much time can you dedicate?
+- [ ] Quick fix (< 2 hours)
+- [ ] Weekend project (4-8 hours)
+- [ ] Week-long (20-40 hours)
+- [ ] Longer contribution (40+ hours)
+```
+
+## Question 4: Contribution Type
+
+```
+What type of contribution are you looking for?
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Documentation
+- [ ] Tests
+- [ ] Performance improvement
+- [ ] Code refactoring
+- [ ] Any suitable issue
+```
+
+## Question 5: Difficulty Preference
+
+```
+What difficulty level do you prefer?
+- [ ] Beginner-friendly (good first issue)
+- [ ] Intermediate
+- [ ] Advanced
+- [ ] Any difficulty
+```
+
+## Question 6: Special Requirements
+
+```
+Any special requirements?
+- [ ] No active PRs (unclaimed work only)
+- [ ] Must have reproduction case
+- [ ] Must have clear acceptance criteria
+- [ ] Avoid compiler/core subsystem
+- [ ] Other: ___
+```
+
+## Internal Specification
+
+Parse the answers into this structure before moving to Phase 2:
+
+```
+Experience: [level]
+Languages: [list]
+Scope: [time estimate]
+Type: [contribution type]
+Difficulty: [level]
+Special: [requirements]
+```
+
+Treat "No active PRs (unclaimed work only)" as two hard filters: the issue must
+be unassigned and must have no open linked pull request. If that box is not
+selected, keep assigned and claimed issues eligible and score them as evidence.
+
+## Prioritization Hints
+
+Use the user's answers to choose weights in `scoring-rubric.md`:
+
+- **First-time contributor** → "first contribution" weights, prioritizing
+  Difficulty Fit, Contribution Feasibility, and Issue Quality.
+- **Weekend project** → "weekend project" weights, prioritizing Scope Fit,
+  Difficulty Fit, and Contribution Feasibility.
+- **Portfolio contribution** → "portfolio contribution" weights, prioritizing
+  Technical Fit, Issue Quality, and Contribution Feasibility.
+- Otherwise use the default weights.
+
+Record any assumption made about an implicit constraint so the final output can
+distinguish evidence from inference.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/scout-issue/references/investigation-templates.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/scout-issue/references/investigation-templates.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/scout-issue/references/investigation-templates.md
+- **SHA256_FINGERPRINT**: `2249a8bb0b319ac7bbbd044cc39ab7488825ca91ba87f20cea12fcaf4319ed81`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:02.089966+00:00
+---
+
+# Investigation and Planning Templates
+
+Use these templates after the ranked shortlist. Keep the same evidence rules:
+mark what was verified, what is inferred, and what still needs investigation.
+
+## Investigation Mode
+
+**Trigger:** User says "Investigate #[NUMBER]".
+
+**Action:** Provide a detailed contribution brief.
+
+**Output format:**
+```
+🔍 ISSUE #[NUMBER] — DEEP INVESTIGATION
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 PROBLEM
+[Clear description of the issue]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 WHY IT MATCHES
+• [Match point 1]
+• [Match point 2]
+• [Match point 3]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📁 RELEVANT CODE
+• src/path/file1.ts: [What it does]
+• src/path/file2.ts: [What it does]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🧪 RELEVANT TESTS
+• tests/path/test1.ts: [What it tests]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔗 RELATED
+• PR #[NUMBER]: [Description]
+• Commit [HASH]: [Description]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📝 IMPLEMENTATION SCOPE
+1. [Step 1]
+2. [Step 2]
+3. [Step 3]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ POTENTIAL DIFFICULTIES
+• [Difficulty 1]
+• [Difficulty 2]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+👨‍💻 MAINTAINER EXPECTATIONS
+[If known]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⏱️ ESTIMATED EFFORT: [X-Y] hours
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 RECOMMENDED FIRST STEPS
+1. [Step 1]
+2. [Step 2]
+3. [Step 3]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 CONFIDENCE: [HIGH/MEDIUM/LOW]
+[Reason for confidence level]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 Want me to create an implementation plan?
+   Say: "Plan this issue"
+```
+
+## Implementation Planning
+
+**Trigger:** User says "Plan this issue" or "How should I approach this?".
+
+**Action:** Provide a step-by-step implementation plan.
+
+**Output format:**
+```
+📋 IMPLEMENTATION PLAN
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔍 PROBLEM ANALYSIS
+[What needs to be fixed/implemented]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ VERIFIED FACTS
+• [Fact from code inspection]
+• [Fact from tests]
+• [Fact from documentation]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔮 LIKELY IMPLEMENTATION
+• [Probable approach]
+• [Expected file locations]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❓ NEEDS INVESTIGATION
+• [Uncertain aspect]
+• [Potential edge cases]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📝 STEP-BY-STEP PLAN
+
+Step 1: [First step]
+├─ Why: [Rationale]
+├─ Files: [Specific files]
+└─ Time: [Estimate]
+
+Step 2: [Second step]
+├─ Why: [Rationale]
+├─ Files: [Specific files]
+└─ Time: [Estimate]
+
+Step 3: [Third step]
+├─ Why: [Rationale]
+├─ Files: [Specific files]
+└─ Time: [Estimate]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📁 FILES TO MODIFY
+• src/path/file1.ts: [What to change]
+• src/path/file2.ts: [What to change]
+• tests/path/test.ts: [What tests to add]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🧪 TESTING APPROACH
+1. [How to verify the fix]
+2. [Edge cases to test]
+3. [Regression prevention]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ POTENTIAL CHALLENGES
+• [Challenge 1]: [Mitigation]
+• [Challenge 2]: [Mitigation]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⏱️ TIME ESTIMATE
+• Implementation: [X] hours
+• Testing: [Y] hours
+• Total: [X+Y] hours
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 CONFIDENCE: [HIGH/MEDIUM/LOW]
+[Brief explanation]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Ready to start? Say: "Start working on this"
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/scout-issue/references/quick-reference.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/scout-issue/references/quick-reference.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/scout-issue/references/quick-reference.md
+- **SHA256_FINGERPRINT**: `97c05e0eac08f8f7da349f17d8be2be8815b1cf236bf3dea4fe6e788d7e5ddef`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:02.081149+00:00
+---
+
+# Issue Scout Quick Reference
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `/scout-issue` | Start issue discovery |
+| `/scout-issue rust` | Start with language filter |
+| `/scout-issue beginner` | Start with difficulty filter |
+| `Find issues I could contribute to` | Auto-activates the skill (no slash command needed) |
+| `Investigate #NNN` | Deep dive into specific issue |
+| `Plan this issue` | Get implementation plan |
+| `How should I approach this?` | Get approach advice |
+| `/cancel` | Abort the current pipeline and return to normal chat mode |
+| `/scout-issue` (again) | Restart the pipeline from Phase 1, discarding previous progress |
+| `Start working on this` | Begin the planned implementation |
+
+## Pipeline Flow
+
+```
+/scout-issue invoked
+    ↓
+Phase 1: User Interrogation
+    ↓
+Phase 2: Issue Detection
+    ↓
+Phase 3: Issue Analysis & Ranking
+    ↓
+Phase 4: Output Formatting
+    ↓
+Display to User
+```
+
+## User Interrogation Questions
+
+1. **Experience Level**
+   - First-time contributor
+   - Some familiarity
+   - Experienced with the codebase
+
+2. **Technical Skills**
+   - JavaScript/TypeScript
+   - Python
+   - Rust
+   - Go
+   - Java/Kotlin
+   - C/C++
+   - Ruby
+   - Other
+
+3. **Time Availability**
+   - Quick fix (< 2 hours)
+   - Weekend project (4-8 hours)
+   - Week-long (20-40 hours)
+   - Longer contribution (40+ hours)
+
+4. **Contribution Type**
+   - Bug fix
+   - New feature
+   - Documentation
+   - Tests
+   - Performance improvement
+   - Code refactoring
+   - Any suitable issue
+
+5. **Difficulty Preference**
+   - Beginner-friendly (good first issue) — label is a hunting hint only; verify difficulty from the issue body and code
+   - Intermediate
+   - Advanced
+   - Any difficulty
+
+6. **Special Requirements**
+   - No active PRs (unclaimed work only)
+   - Must have reproduction case
+   - Must have clear acceptance criteria
+   - Avoid compiler/core subsystem
+   - Other
+
+## Scoring Dimensions
+
+1. **User Fit** - Matches user preferences
+2. **Technical Fit** - Matches tech stack
+3. **Scope Fit** - Matches time constraints
+4. **Difficulty Fit** - Matches skill level
+5. **Issue Quality** - Well-defined problem
+6. **Activity** - Active maintenance
+7. **Contribution Feasibility** - Realistic to complete
+8. **Evidence Quality** - Strong supporting evidence
+
+## GitHub CLI Commands
+
+```bash
+# Issue-only open count (open_issues_count also includes PRs)
+repo=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
+gh api "search/issues?q=repo:$repo+is:issue+is:open&per_page=1" --jq '.total_count'
+
+# List open issues (excludes pull requests)
+gh issue list --state open
+
+# Filter by label
+gh issue list --label "bug" --state open
+
+# View specific issue
+gh issue view 1234
+
+# Check for open linked PRs (only open PRs count as competing work)
+gh api "repos/$repo/issues/1234/timeline" --paginate --jq '[.[] | select(.event == "cross-referenced") | select(.source.issue.pull_request != null) | select(.source.issue.state == "open") | .source.issue.number]'
+
+# List PRs
+gh pr list --state open
+
+# View PR details
+gh pr view 5678
+```
+
+## Git Commands
+
+```bash
+# Recent activity
+git log --oneline -20
+
+# Search code
+rg "pattern" src/
+
+# Find files
+find . -name "*.ts" -type f
+
+# Check blame
+git blame src/file.ts
+```
+
+## Confidence Levels
+
+- **High**: Strong evidence, clear path, active support
+- **Medium**: Good evidence, achievable, some unknowns
+- **Low**: Weak evidence, significant unknowns
+
+## Output Format
+
+```
+🔍 ISSUE SCOUT RESULTS
+
+Found X strong candidates from Y open issues (issue-only count).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. #NNNN — [TITLE]
+   📊 Match: NN/100
+   🎯 Difficulty: [LEVEL]
+   ⏱️ Estimated scope: [N] hours
+   📌 Confidence: [HIGH/MEDIUM/LOW]
+   🔎 Verification gaps: [None, or what could not be checked]
+
+   ✅ Why it matches:
+   • [Evidence point 1]
+   • [Evidence point 2]
+   • [Evidence point 3]
+
+   ⚠️ Concerns:
+   • [Concern 1]
+   • [Concern 2]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🏆 BEST MATCH: #[NUMBER]
+
+[One sentence recommendation]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 Want me to investigate any of these issues in detail?
+   Say: "Investigate #[NUMBER]"
+```
+
+## Key Rules
+
+1. Evidence ≠ Inference
+2. Don't rank by title match alone
+3. Check linked PRs
+4. Check recent activity
+5. Explain recommendations
+6. Explain rejections
+7. Never invent facts
+8. Read-only by default
+
+## Investigation Checklist
+
+- [ ] Full description read
+- [ ] Comments reviewed
+- [ ] Linked PRs checked
+- [ ] Code locations identified
+- [ ] Tests located
+- [ ] Complexity assessed
+- [ ] Evidence documented
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/scout-issue/references/recovery.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/scout-issue/references/recovery.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/scout-issue/references/recovery.md
+- **SHA256_FINGERPRINT**: `3eccae0c07bf66975b21cd00e02467462ac01330d8e21c923d7530b00dfe9901`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:02.112001+00:00
+---
+
+# Recovery and Fallbacks
+
+Use these paths when the pipeline cannot continue normally. Always explain the
+limitation instead of pretending a tool or data source exists.
+
+## User Cancels
+
+If the user types `/cancel` or says "cancel" during any phase:
+
+1. Stop the pipeline immediately.
+2. Acknowledge the cancellation.
+3. Return to normal chat mode.
+
+## User Restarts
+
+If the user types `/scout-issue` again during the process:
+
+1. Restart from Phase 1.
+2. Ask the questions again.
+3. Discard any previous progress.
+
+## Missing Tools
+
+If GitHub CLI is not available:
+
+```bash
+which gh
+echo "GitHub CLI not available. Using git log for activity analysis."
+git log --oneline -20
+```
+
+Use git history and web search as fallbacks, reduce the scope of the search, and
+state which checks could not be completed. Do not claim that linked PRs or
+maintainer activity were verified when they were not.
+
+## GitHub CLI Not Authenticated
+
+```bash
+gh auth status
+```
+
+If not authenticated, explain what is limited:
+
+- Local repository inspection still works.
+- Issue text may be available through web search.
+- Linked PRs and maintainer activity cannot be verified through the API.
+
+If the user can authenticate, ask them to run `gh auth login` and resume.
+
+## Rate Limiting
+
+```bash
+gh api rate_limit
+```
+
+If the API is rate-limited:
+
+- Use git history for recent activity.
+- Reduce the number of issues investigated.
+- Prefer one batched REST page over many per-issue calls.
+- Tell the user which evidence is missing.
+
+## No Issues Found
+
+If no suitable issues are found:
+
+- Explain which constraints are binding.
+- Suggest relaxing one constraint at a time.
+- Offer alternative approaches, such as a different contribution type or a
+  nearby subsystem.
+- Never lower the evidence bar to fill the shortlist.
+
+## Limited Repository Information
+
+When the repository is not available locally:
+
+- Work with the issue text and API data that is available.
+- Note confidence limitations.
+- Suggest manual verification for code locations and tests.
+- Prefer issues whose body already points to specific files or subsystems.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/scout-issue/references/scoring-rubric.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/scout-issue/references/scoring-rubric.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/scout-issue/references/scoring-rubric.md
+- **SHA256_FINGERPRINT**: `b89ff3d70fca2800a824fbcb443e98acb0c03e60ae48c559058f3bb4e2dc6319`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:02.104919+00:00
+---
+
+# Scoring Rubric
+
+## Dimensions
+
+### 1. User Fit (0-100)
+How well does this issue match the user's explicit and implicit preferences?
+
+- **High (80-100)**: Perfect match for stated skills, experience, and preferences
+- **Medium (50-79)**: Good match with minor gaps
+- **Low (0-49)**: Partial match or significant gaps
+
+**Factors:**
+- Technical skills alignment
+- Experience level match
+- Preferred issue type
+- Avoided areas respected
+
+### 2. Technical Fit (0-100)
+How well does this issue align with the repository's technical stack and architecture?
+
+- **High (80-100)**: Uses primary technologies, clear code locations
+- **Medium (50-79)**: Uses relevant technologies, some code exploration needed
+- **Low (0-49)**: Requires unfamiliar technologies or deep architecture knowledge
+
+**Factors:**
+- Primary language/framework match
+- Code location clarity
+- Architecture understanding required
+- Technology familiarity
+
+### 3. Scope Fit (0-100)
+How well does this issue fit within the user's time and complexity constraints?
+
+- **High (80-100)**: Clearly within stated scope
+- **Medium (50-79)**: Slightly outside scope but achievable
+- **Low (0-49)**: Significantly outside scope
+
+**Factors:**
+- Estimated time vs. requested time
+- Complexity vs. requested complexity
+- Number of files/components affected
+- External dependencies
+
+### 4. Difficulty Fit (0-100)
+How well does this issue match the user's skill level?
+
+- **High (80-100)**: Appropriate challenge level
+- **Medium (50-79)**: Slightly above/below but manageable
+- **Low (0-49)**: Too easy or too difficult
+
+**Factors:**
+- Required expertise level
+- Learning curve involved
+- Previous similar work
+- Available documentation/help
+
+### 5. Issue Quality (0-100)
+How well-defined and actionable is this issue?
+
+- **High (80-100)**: Clear problem, reproduction, acceptance criteria
+- **Medium (50-79)**: Good description, some gaps
+- **Low (0-49)**: Vague, unclear requirements
+
+**Factors:**
+- Problem description clarity
+- Reproduction steps provided
+- Acceptance criteria defined
+- Examples/expected behavior
+
+### 6. Activity (0-100)
+How active is this issue and its surrounding discussion?
+
+- **High (80-100)**: Recent maintainer activity, clear interest
+- **Medium (50-79)**: Some activity, reasonable response time
+- **Low (0-49)**: Stale, no recent activity
+
+**Factors:**
+- Last maintainer comment
+- Overall issue activity
+- Related PR activity
+- Community interest
+
+### 7. Contribution Feasibility (0-100)
+How feasible is it for the user to actually complete this contribution?
+
+- **High (80-100)**: Clear path to completion, low risk
+- **Medium (50-79)**: Achievable with some research/learning
+- **Low (0-49)**: Significant unknowns or blockers
+
+**Factors:**
+- Existing tests to verify changes
+- Clear implementation path
+- Low risk of rejection
+- Available guidance
+
+### 8. Evidence Quality (0-100)
+How strong is the evidence supporting this recommendation?
+
+- **High (80-100)**: Multiple strong evidence points
+- **Medium (50-79)**: Good evidence with some gaps
+- **Low (0-49)**: Weak or insufficient evidence
+
+**Factors:**
+- Clear reproduction case
+- Maintainer confirmation
+- No blocking PRs
+- Recent activity
+
+## Weighting
+
+### Default Weights
+- User Fit: 20%
+- Technical Fit: 15%
+- Scope Fit: 20%
+- Difficulty Fit: 15%
+- Issue Quality: 10%
+- Activity: 5%
+- Contribution Feasibility: 10%
+- Evidence Quality: 5%
+
+### Weight Adaptation
+
+The three named scenarios re-weight a subset of dimensions and reduce the
+remaining dimensions **proportionally** so the weights still sum to 100%.
+
+How "proportionally" is computed: let S be the sum of the weights assigned to
+the promoted dimensions. The remaining weight is `100 - S`, shared by the
+unpromoted dimensions in proportion to their default weights:
+
+```
+reduced_weight(d) = default_weight(d) × (100 - S) / sum_of_defaults_of_unpromoted
+```
+
+The tables below use the result rounded to whole percentage points (the last
+dimension absorbs any rounding remainder so every row sums to exactly 100%).
+
+**For "weekend project":**
+
+| Dimension | Default | Weekend |
+|---|---|---|
+| Scope Fit | 20% | 30% |
+| Difficulty Fit | 15% | 25% |
+| Contribution Feasibility | 10% | 20% |
+| User Fit | 20% | 9% |
+| Technical Fit | 15% | 7% |
+| Issue Quality | 10% | 5% |
+| Activity | 5% | 2% |
+| Evidence Quality | 5% | 2% |
+
+(Promoted sum 75%, remaining 25% reduced proportionally; totals 100%.)
+
+**For "portfolio contribution":**
+
+| Dimension | Default | Portfolio |
+|---|---|---|
+| Technical Fit | 15% | 25% |
+| Issue Quality | 10% | 20% |
+| Contribution Feasibility | 10% | 20% |
+| User Fit | 20% | 11% |
+| Scope Fit | 20% | 11% |
+| Difficulty Fit | 15% | 8% |
+| Activity | 5% | 3% |
+| Evidence Quality | 5% | 2% |
+
+(Promoted sum 65%, remaining 35% reduced proportionally; totals 100%.)
+
+**For "first contribution":**
+
+| Dimension | Default | First |
+|---|---|---|
+| Difficulty Fit | 15% | 30% |
+| Contribution Feasibility | 10% | 25% |
+| Issue Quality | 10% | 20% |
+| User Fit | 20% | 8% |
+| Technical Fit | 15% | 6% |
+| Scope Fit | 20% | 8% |
+| Activity | 5% | 2% |
+| Evidence Quality | 5% | 1% |
+
+(Promoted sum 75%, remaining 25% reduced proportionally; totals 100%.)
+
+## Calculation
+
+Final Score = Σ (Dimension Score × Weight)
+
+Where each dimension score is 0-100 and weights sum to 1.0.
+
+### Worked example ("weekend project")
+
+Scores: User Fit 60, Technical Fit 80, Scope Fit 90, Difficulty Fit 70,
+Issue Quality 85, Activity 40, Contribution Feasibility 75, Evidence Quality 50.
+
+| Dimension | Score | Weight (weekend) | Contribution |
+|---|---|---|---|
+| User Fit | 60 | 9% | 5.40 |
+| Technical Fit | 80 | 7% | 5.60 |
+| Scope Fit | 90 | 30% | 27.00 |
+| Difficulty Fit | 70 | 25% | 17.50 |
+| Issue Quality | 85 | 5% | 4.25 |
+| Activity | 40 | 2% | 0.80 |
+| Contribution Feasibility | 75 | 20% | 15.00 |
+| Evidence Quality | 50 | 2% | 1.00 |
+
+Final Score = 5.40 + 5.60 + 27.00 + 17.50 + 4.25 + 0.80 + 15.00 + 1.00 = **76.55**
+
+## Confidence Levels
+
+**High Confidence:**
+- Score ≥ 80
+- Strong evidence across multiple dimensions
+- Clear implementation path
+- Active maintainer support
+
+**Medium Confidence:**
+- Score 60-79
+- Good evidence with some gaps
+- Achievable but may require research
+- Reasonable maintainer interest
+
+**Low Confidence:**
+- Score < 60
+- Weak or insufficient evidence
+- Significant unknowns
+- Unclear maintainer intent
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/scout-issue/references/tool-patterns.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/scout-issue/references/tool-patterns.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/scout-issue/references/tool-patterns.md
+- **SHA256_FINGERPRINT**: `6945493a1a860711d97f1fe1795617b2e1dfef116742fda85a91b03394d249c8`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:02.090330+00:00
+---
+
+# Tool Usage Patterns
+
+## GitHub CLI Patterns
+
+### List Issues
+```bash
+# All open issues
+gh issue list --state open --limit 100
+
+# Filter by label (hint only — verify difficulty in Phase 3, never trust labels alone)
+gh issue list --state open --label "bug" --limit 50
+gh issue list --state open --label "good first issue" --limit 50
+gh issue list --state open --label "help-wanted" --limit 50
+
+# Filter by language (if repo uses language labels)
+gh issue list --state open --label "rust" --limit 50
+gh issue list --state open --label "javascript" --limit 50
+
+# Sort by activity. Always pass --repo; gh search issues searches all of
+# GitHub when the repository is omitted.
+gh search issues --repo OWNER/REPO --state open --sort updated --limit 50
+
+# Search by text
+gh issue list --state open --search "memory leak" --limit 50
+```
+
+### View Issues
+```bash
+# Basic view
+gh issue view 1234
+
+# With comments
+gh issue view 1234 --comments
+
+# JSON format for parsing
+gh issue view 1234 --json title,body,labels,assignees
+
+# Check for open linked PRs (only open PRs count as competing work)
+repo=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
+gh api "repos/$repo/issues/1234/timeline" --paginate --jq '[.[] | select(.event == "cross-referenced") | select(.source.issue.pull_request != null) | select(.source.issue.state == "open") | .source.issue.number]'
+```
+
+### List PRs
+```bash
+# All open PRs
+gh pr list --state open --limit 50
+
+# PRs targeting specific branch
+gh pr list --state open --base main --limit 50
+
+# PRs by author
+gh pr list --state open --author username --limit 50
+```
+
+### View PRs
+```bash
+# Basic view
+gh pr view 5678
+
+# View PR files changed
+gh pr diff --name-only 5678
+
+# Check if PR is linked to issue (body references like "Fixes #1234")
+gh pr view 5678 --json body | grep -iE "(Fixes|Closes|Resolves)[[:space:]]+#"
+```
+
+### Search Code
+```bash
+# Search for function
+gh search code "function_name" --repo owner/repo
+
+# Search for file
+gh search code "filename:config.ts" --repo owner/repo
+```
+
+## Git Patterns
+
+### Recent Activity
+```bash
+# Last 20 commits
+git log --oneline -20
+
+# Commits in last week
+git log --oneline --since="1 week ago"
+
+# Commits by specific author
+git log --oneline --author="username" -10
+
+# Commits touching specific file
+git log --oneline -10 -- path/to/file
+```
+
+### Code Search
+```bash
+# Search for pattern in code
+rg "pattern" src/
+rg -i "pattern" src/  # case insensitive
+
+# Search in specific file type
+rg "pattern" -g "*.ts" src/
+rg "pattern" -g "*.rs" src/
+
+# Search with context
+rg -C 3 "pattern" src/  # 3 lines before/after
+```
+
+### File Operations
+```bash
+# Find files by name
+find . -name "*.ts" -type f
+find . -name "*test*" -type f
+
+# Find files by content
+grep -r "function_name" src/
+grep -l "TODO" src/**/*.ts
+
+# Check file structure
+tree -L 2 -I 'node_modules'
+ls -la src/
+```
+
+### Blame and History
+```bash
+# Who changed what
+git blame path/to/file
+
+# History of specific function
+git log -p -S "function_name" -- path/to/file
+
+# Diff between commits
+git diff abc123..def456
+```
+
+## Combined Patterns
+
+### Investigate Issue
+```bash
+# Get issue details
+gh issue view 1234 --comments
+
+# Find related code
+rg "relevant_function" src/
+
+# Check if tests exist
+find . -name "*test*" -type f | xargs grep -l "relevant_function"
+
+# Check recent changes to relevant files
+git log --oneline -5 -- path/to/file
+```
+
+### Check Issue Activity
+```bash
+# Get issue timeline (open linked PRs referencing this issue)
+repo=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
+gh api "repos/$repo/issues/1234/timeline" --paginate --jq '[.[] | select(.event == "cross-referenced") | select(.source.issue.pull_request != null) | select(.source.issue.state == "open") | .source.issue.number]'
+# Note: `gh issue view --json timelineItems/linkedPRs` is not supported; the CLI
+# exposes a fixed set of REST fields, so linked-PR detection uses the timeline API.
+
+# Check maintainer activity
+gh issue view 1234 --json comments | jq '.comments[].author.login'
+```
+
+### Validate Contribution Feasibility
+```bash
+# Check if issue is assigned
+gh issue view 1234 --json assignees
+
+# Check if PR exists (search titles AND bodies for a reference to this issue)
+gh pr list --state open --search "1234 in:title"
+gh pr list --state open --search "Fixes #1234"
+
+# Check test coverage
+find . -name "*test*" -type f | wc -l
+
+# Check documentation
+cat CONTRIBUTING.md 2>/dev/null | head -50
+```
+
+## Error Handling
+
+### When gh CLI is not available
+```bash
+# Fallback to git
+git remote -v  # Get repo URL
+git log --oneline -20  # Recent activity
+```
+
+### When authentication fails
+```bash
+# Check auth status
+gh auth status
+
+# Provide instructions
+echo "Please run: gh auth login"
+```
+
+### When rate limited
+```bash
+# Check rate limit
+gh api rate_limit
+
+# Use git instead
+git log --oneline -20
+```
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/scout-issue/references/workflow.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/scout-issue/references/workflow.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/scout-issue/references/workflow.md
+- **SHA256_FINGERPRINT**: `6c9d005e60dbd4bc3edcae03d298f53bcc923677ccf44750f86695cce4ac9f18`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:02.099087+00:00
+---
+
+# Issue Scout Workflow
+
+## High-Level Flow
+
+```
+User Request
+    ↓
+Parse Intent → Internal Specification
+    ↓
+Inspect Repository → Understand Context
+    ↓
+Discover Issues → Candidate Pool
+    ↓
+Filter Obvious Bad Candidates → Reduced Pool
+    ↓
+Investigate Promising Candidates → Deep Analysis
+    ↓
+Score & Rank → Final Shortlist
+    ↓
+Present Results → User Decision
+```
+
+## Detailed Steps
+
+### 1. Parse User Intent
+
+**Input:** Natural language request
+
+**Process:**
+- Extract explicit constraints (languages, time, type)
+- Infer implicit constraints (experience, preferences)
+- Identify priorities (what matters most)
+- Create internal specification
+
+**Output:** Structured internal specification
+
+**Example:**
+```
+"Find me a Rust issue I could finish this weekend"
+
+→ Goal: Weekend project
+→ Language: Rust
+→ Scope: 4-8 hours
+→ Preference: Clear requirements, reproducible bugs
+→ Priority: Scope fit > Technical fit
+```
+
+### 2. Inspect Repository
+
+**Input:** Repository context
+
+**Process:**
+- Identify primary language/framework
+- Understand project structure
+- Review contribution guidelines
+- Check issue templates and labels
+- Assess recent activity
+- Identify testing infrastructure
+
+**Output:** Repository understanding
+
+**Key Questions:**
+- What is this project?
+- How is it organized?
+- What are the contribution norms?
+- What testing tools are used?
+- How active is maintenance?
+
+### 3. Discover Issues
+
+**Input:** Repository and constraints
+
+**Process:**
+- Use GitHub CLI/API to list issues
+- Apply broad filters (open; add "not assigned" only when the user requested
+  unclaimed work)
+- Consider labels and milestones
+- Start with high-potential categories
+
+**Output:** Candidate issue pool
+
+**Commands:**
+```bash
+gh issue list --state open --limit 100
+gh issue list --label "bug" --state open
+gh issue list --label "help-wanted" --state open
+```
+
+### 4. Filter Obvious Bad Candidates
+
+**Input:** Candidate pool
+
+**Process:**
+- Remove closed/duplicate issues
+- Eliminate assigned issues only when the user wants unclaimed work
+- Exclude open competing PRs only when the user wants unclaimed work; record
+  them as evidence otherwise
+- Filter out explicit constraint violations
+- Keep inactive issues unless there is evidence of obsolescence or the user set
+  a recency constraint
+
+**Output:** Reduced candidate pool
+
+**Filters:**
+- Status: Open, not closed
+- Assignment: Unassigned only when requested
+- PR links: No open competing PR only when requested; closed PRs are evidence
+- Recency: No automatic stale exclusion; inactivity lowers Activity evidence
+- Constraints: Match user requirements
+
+### 5. Investigate Promising Candidates
+
+**Input:** Reduced pool
+
+**Process:**
+- Read full issue descriptions
+- Examine comments and discussion
+- Check linked PRs and commits
+- Locate relevant code files
+- Assess implementation complexity
+- Verify evidence quality
+
+**Output:** Deep analysis of each candidate
+
+**Investigation Checklist:**
+- [ ] Full description read
+- [ ] Comments reviewed
+- [ ] Linked PRs checked
+- [ ] Code locations identified
+- [ ] Tests located
+- [ ] Complexity assessed
+- [ ] Evidence documented
+
+### 6. Score & Rank
+
+**Input:** Deep analysis
+
+**Process:**
+- Apply scoring rubric
+- Adapt weights to user priorities
+- Calculate final scores
+- Rank by score
+- Identify best match
+
+**Output:** Ranked shortlist with scores
+
+**Scoring Dimensions:**
+- User Fit
+- Technical Fit
+- Scope Fit
+- Difficulty Fit
+- Issue Quality
+- Activity
+- Contribution Feasibility
+- Evidence Quality
+
+### 7. Present Results
+
+**Input:** Ranked shortlist
+
+**Process:**
+- Format concise output
+- Explain why each issue matches
+- Highlight concerns
+- Provide clear recommendation
+- Offer rejection reasoning for top rejected issues
+
+**Output:** User-ready recommendation
+
+**Format:**
+- Top 3-5 issues with scores
+- Clear "best match" recommendation
+- Key evidence for each
+- Important concerns noted
+
+## Decision Points
+
+### When to Reduce Candidates (not skip checks)
+- **Reduce candidate pool** if user provides full context (still inspect for evidence)
+- **Reduce candidates investigated** if pool is small (<20) — apply full checks to all
+- **Focus deep investigation** on top 3-5 from quick scan — still verify eligibility for each
+
+### When to Iterate
+- **Re-prioritize** if user clarifies constraints
+- **Expand search** if initial pool is insufficient
+- **Deepen investigation** if user requests specific issue
+
+### When to Stop
+- **Sufficient candidates** found (3-5 strong matches) after full eligibility checks
+- **Time constraints** reached
+- **User satisfaction** indicated
+
+## Edge Cases
+
+### No Good Matches Found
+- Explain why constraints are too restrictive
+- Suggest relaxing constraints
+- Offer alternative approaches
+
+### Too Many Good Matches
+- Increase filtering strictness
+- Prioritize highest-scoring
+- Group by category
+
+### Ambiguous User Request
+- Ask clarifying questions
+- Make reasonable assumptions
+- Document assumptions made
+
+### Limited Repository Information
+- Work with available data
+- Note confidence limitations
+- Suggest manual verification
+
+## Scout-Specific Decisions
+
+Before presenting, run the investigation checklist in `quick-reference.md`.
+Evidence and honesty rules live in `SKILL.md`; the decisions below are
+specific to scouting.
+
+### Linked-PR Evidence Unavailable for Unclaimed Work
+If auth, rate limits, or the timeline API prevent checking linked PRs:
+- Do not call the issue unclaimed.
+- Mark the competing-work gate **unverified**, lower Confidence, and prefer
+  candidates whose status was verified.
+- If no verified candidate remains, present the best unverified option with an
+  explicit warning and the manual linked-PR check from `quick-reference.md`.
+
+### Issue State Changed Mid-Run
+Re-check state immediately before presenting. If an issue closed, became
+assigned, or gained an open linked PR:
+- Drop it when the change violates a hard constraint.
+- Otherwise keep it and record the change as updated evidence.
+
+### Constraints Eliminate Every Candidate
+Name the constraint that removes the most candidates and offer one concrete
+relaxation. Do not silently drop a hard constraint to produce a match.
+
+### Code or Test Evidence Missing
+Keep the candidate but lower Technical Fit and Evidence Quality. State what
+could not be verified and point to the manual check, rather than inferring
+difficulty from the title.
 
 
 ---
@@ -62976,8 +65400,8 @@ Behavior depends on where you set the flag:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/agent-plugins.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/agent-plugins
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-plugins.md
-- **SHA256_FINGERPRINT**: `36f3868a2f14eaf6e9b7c047755f02aec66b0ad302fd601cec6f6f9a8fa33e06`
-- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.040959+00:00
+- **SHA256_FINGERPRINT**: `7261246e05418d12480d699493c0cf43de87ffca0c4e99708445d3d28af9a136`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:57.877556+00:00
 ---
 
 **MetaDescription**: Find, install, and manage agent plugins from marketplaces in VS Code.
@@ -63237,7 +65661,7 @@ Consider this update behavior when deciding whether to trust a plugin. Review ch
 
 Projects can recommend plugins for team members by configuring plugin settings in the workspace settings (`.claude/settings.json` or `.github/copilot/settings.json`).
 
-In the Local harness, VS Code shows a notification the first time a chat message is sent. To browse and install plugins from the project's marketplaces, open the Agent Customizations editor and select **Browse**, or select **Plugins** > **Browse Marketplace** if the unified Browse experience is unavailable.
+In the Local harness `feature(local-harness)`, VS Code shows a notification the first time a chat message is sent. To browse and install plugins from the project's marketplaces, open the Agent Customizations editor and select **Browse**, or select **Plugins** > **Browse Marketplace** if the unified Browse experience is unavailable.
 
 In the Copilot harness, `.github/copilot/settings.json` supplies repository plugin and marketplace defaults. You can turn off optional plugins in **Plugins** in the Agent Customizations editor without changing the shared defaults. Enterprise-managed settings take precedence over repository defaults and your choices.
 
@@ -63299,8 +65723,8 @@ Use the [agent plugin authoring reference](/docs/agents/reference/agent-plugin-r
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/agent-skills.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/agent-skills
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-skills.md
-- **SHA256_FINGERPRINT**: `c9397bec5c502f4c1b38e3743c8ca8a3ed1f3956456b726c2ef57f750dc8484d`
-- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.014233+00:00
+- **SHA256_FINGERPRINT**: `317da5de922be359cc24266e4f2e2e611c3819a1b8b84d4f2e710ac6ccff1ff4`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:57.875385+00:00
 ---
 
 **MetaDescription**: Find, adapt, and create Agent Skills in VS Code for reusable workflows with supported agents.
@@ -63351,6 +65775,17 @@ Use custom instructions when you want to:
 * Specify code review or commit message guidelines
 * Apply rules based on file types using glob patterns
 
+## Where skills come from
+
+Skills can come from the following sources:
+
+* **Project or personal files:** [Create a skill](#create-a-skill), [copy and adapt one](#copy-and-adapt-an-existing-skill), or use skills included in a repository.
+* **Marketplaces and plugins:** [Install individual skills](#install-a-skill-from-the-customization-marketplace-preview) or use skills bundled in an [agent plugin](/docs/agent-customization/agent-plugins.md).
+* **Extensions:** Installed VS Code extensions can [contribute skills](#contribute-skills-from-extensions).
+* **MCP servers:** Connected servers can [supply skills](#use-skills-from-an-mcp-server) `feature(mcp-skills)` for Copilot harness sessions.
+
+Supported sources depend on your [agent harness](/docs/agents/run/agent-harnesses.md). For project and personal skill directories, see [Skill locations](#skill-locations).
+
 ## Use an existing skill
 
 Start with an existing skill when it provides the workflow you need. [Browse customization marketplaces](/docs/agent-customization/overview.md#discover-and-install-existing-customizations-preview) to install an individual skill or find one bundled in an [agent plugin](/docs/agent-customization/agent-plugins.md). You can also copy and adapt a skill for your project. Review the requirements for [reusing customizations across harnesses](/docs/agent-customization/overview.md#reuse-customizations-across-harnesses) before choosing a source and location.
@@ -63376,6 +65811,32 @@ VS Code tracks the directory of each skill installed from the Marketplace. Delet
 If files from a Marketplace-installed skill are missing, **Browse** shows **Missing files**. Select **Repair** to restore only the missing packaged files. Files that you changed or added remain unchanged.
 
 For source availability and setup, see [Discover and install existing customizations](/docs/agent-customization/overview.md#discover-and-install-existing-customizations-preview).
+
+### Use skills from an MCP server
+
+`feature(mcp-skills)`
+
+An [MCP server](/docs/agent-customization/mcp-servers.md) can provide Agent Skills alongside its tools. These skills supply reusable instructions for working with a service, without requiring you to copy a skill directory into your project. This feature requires the [Copilot harness](/docs/agents/run/agent-harnesses.md#copilot) and isn't available in Local harness sessions `feature(local-harness)`.
+
+1. Enable the ``chat.agentHost.mcpSkills.enabled`` setting. It is off by default.
+1. [Add an MCP server](/docs/agent-customization/mcp-servers.md#add-a-server-by-url-or-command) that provides skills, following the publisher's setup instructions.
+1. Start a new session with the Copilot harness. Changing the setting doesn't affect sessions that are already running.
+1. Ask the agent to describe the skills available from that server.
+1. With that session selected, run **Chat: Open Customizations** and select **Skills**. Server-provided skills appear under **Skills from \<server\>**. Open a skill to inspect its read-only instructions.
+1. In chat, type `/` and select a skill, shown as `/<server>:<skill>`, or ask the agent to use it.
+
+Before the agent loads instructions from a server, it asks **Allow Skills from \<server\>?**. Only allow instructions from servers you trust. Your choice applies to that server:
+
+| Choice | Effect |
+|--------|--------|
+| **Allow Once** | Allow skills for the current session, including later turns. A new session asks again. |
+| **Always Allow** | Allow skills in the current and future sessions, including after a reload. |
+| **Not Now** | Decline for the current turn. A later turn can ask again. |
+| **Never** | Decline in the current and future sessions, including after a reload. |
+
+This approval is separate from [MCP server trust](/docs/agents/run/manage-mcp-servers.md#mcp-server-trust).
+
+If skills don't appear, confirm that the server is fully running and authenticated, and that you started a new session after enabling the setting. If sign-in hasn't started, ask the agent to call a read-only tool from that server to trigger authentication.
 
 ### Copy and adapt an existing skill
 
@@ -63437,7 +65898,9 @@ You can also ask the agent to turn a process from the current conversation into 
 
 ### Local harness shortcuts
 
-With **Local** selected in the Chat view, you can also:
+`feature(local-harness)`
+
+With **Local** `feature(local-harness)` selected in the Chat view, you can also:
 
 * Enter `/skills` to open the **Configure Skills** menu.
 * Enter `/create-skill` followed by a description to generate a skill.
@@ -63477,7 +65940,7 @@ The following table gives a supported project and personal location for each har
 | Copilot | Project: `.github/skills/`<br>Personal: `~/.copilot/skills/` |
 | [product.prodname_anthropic_claude] | Project: `.claude/skills/`<br>Personal: `~/.claude/skills/` |
 | [product.prodname_openai_codex] | Project: `.agents/skills/`<br>Personal: `~/.agents/skills/` |
-| Local | Project: `.github/skills/`<br>Personal: `~/.copilot/skills/` |
+| Local `feature(local-harness)` | Project: `.github/skills/`<br>Personal: `~/.copilot/skills/` |
 
 ### Codex
 
@@ -63488,6 +65951,8 @@ If skills in `.github/skills/` have duplicate names across workspace roots, the 
 The Codex harness is disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
 
 ### Local
+
+`feature(local-harness)`
 
 Local sessions also read project skills from `.claude/skills/` and `.agents/skills/`, and personal skills from `~/.claude/skills/` and `~/.agents/skills/`.
 
@@ -63726,8 +66191,8 @@ Learn more about the Agent Skills standard at [agentskills.io](https://agentskil
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/copilot-connectors.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/copilot-connectors
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/copilot-connectors.md
-- **SHA256_FINGERPRINT**: `342707701df5d5ec54f2a0e3d200aec0e67c06b8206f1246758057c279580261`
-- **LAST_VERIFIED_UTC**: 2026-11-02T21:32:53.056922+00:00
+- **SHA256_FINGERPRINT**: `c9167ac89ca06ac8c0586d00d78f2581e0a2c36e16ee35f3cfbf8b9826855732`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:57.903664+00:00
 ---
 
 **MetaDescription**: Connect external services to Copilot without server setup, use their tools, and manage connections.
@@ -63743,7 +66208,7 @@ If the service you need isn't available as a connector, [add an MCP server](/doc
 ## Before you start
 
 * Sign in to VS Code with your GitHub.com account. Connectors are available on all GitHub Copilot plans.
-* Select **Copilot** in the **Session Target** dropdown. Connectors provide tools to the [Copilot harness](/docs/agents/run/agent-harnesses.md#copilot), not Local harness sessions.
+* Select **Copilot** in the **Session Target** dropdown. Connectors provide tools to the [Copilot harness](/docs/agents/run/agent-harnesses.md#copilot), not Local harness sessions `feature(local-harness)`.
 
 Marketplace discovery and connectors are enabled by default with ``chat.customizations.marketplace.enabled`` and ``chat.customizations.copilotConnectors.enabled``.
 
@@ -63816,8 +66281,8 @@ To use the service again, [connect it from the Agent Customizations editor](#con
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/custom-agents.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/custom-agents
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/custom-agents.md
-- **SHA256_FINGERPRINT**: `e7d7af9721b66f4a10f4a1b5053998b661023368dffae3f36c9d50fd0967b554`
-- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.061582+00:00
+- **SHA256_FINGERPRINT**: `16dd326b58abcbc218f25da9de0f9a8da709c58432cf9c9bfa22a54111d1b15c`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:57.840571+00:00
 ---
 
 **MetaDescription**: Reuse, create, and manage custom agents in VS Code for specialized development roles and workflows.
@@ -63931,6 +66396,8 @@ For more examples to adapt and verify, see the community-contributed [Awesome Co
 
 Select the intended harness from the **Session Target** control, then choose your custom agent from the **Agent** dropdown. Enter a request for its role and review the response and tool calls. The custom agent remains selected until you switch agents. Switch back to a general-purpose agent when you're ready for a different task, such as implementing a review finding.
 
+In **Local** `feature(local-harness)` and **Copilot** sessions, selecting an agent applies its preferred model and supported reasoning effort. You can choose a different model unless the agent uses `model-policy: required`, which limits your choices to its configured models. See [Model preferences](/docs/agents/reference/custom-agent-file-reference.md#model-preferences).
+
 In the Copilot harness, the agent's instructions are added to your custom instructions and take precedence if they conflict. Keep the guidance consistent rather than relying on conflicting rules. For details, see the [agent file reference](/docs/agents/reference/custom-agent-file-reference.md#body).
 
 Another agent can also invoke a custom agent as a [subagent](/docs/agents/run/subagents.md#run-a-custom-agent-as-a-subagent). Delegation is optional. You don't need it to use the reviewer yourself.
@@ -63954,14 +66421,14 @@ To keep a custom agent available as a [subagent](/docs/agents/run/subagents.md) 
 user-invocable: false
 ```
 
-This property controls picker visibility in both **Local** and **Copilot**. To show the agent again, set it to `true` or remove the property. Subagent invocation is controlled separately by `disable-model-invocation`.
+This property controls picker visibility in both **Local** `feature(local-harness)` and **Copilot**. To show the agent again, set it to `true` or remove the property. Subagent invocation is controlled separately by `disable-model-invocation`.
 
 Editing this property changes the agent definition, not a personal visibility preference. If you share the file in a repository, the change applies to everyone who uses that definition. It doesn't delete the agent file.
 
 ## Handoffs
 
 > [!NOTE]
-> Custom-agent `handoffs` are supported only in the **Local** harness. A Local handoff can still offer **Continue in** options for other supported session targets.
+> Custom-agent `handoffs` are supported only in the **Local** harness `feature(local-harness)`. A Local handoff can still offer **Continue in** options for other supported session targets.
 
 Handoffs connect agents into a workflow with suggested next steps. After a chat response completes, handoff buttons let you switch to another agent with the conversation context and a pre-filled prompt.
 
@@ -63973,7 +66440,7 @@ Use handoffs to review one stage of a task before starting the next. For example
 
 For an optional planning-to-implementation workflow:
 
-1. Select **Local** as the harness in the Chat view.
+1. Select **Local** `feature(local-harness)` as the harness in the Chat view.
 1. Open the Agent Customizations editor, select **Agents**, and select **New Agent** (plus icon) next to **Workspace**.
 1. Choose the workspace location, enter `planner` as the file name, and replace the generated content with the following example.
 
@@ -63998,7 +66465,7 @@ Do not edit files. Return a Markdown plan with these sections:
 
 Save the file, then try the handoff. If you prefer to create the file directly, save the example as `.github/agents/planner.agent.md`.
 
-1. In a Local harness session, select **Planner** and ask it to plan a change.
+1. In a Local harness `feature(local-harness)` session, select **Planner** and ask it to plan a change.
 1. Review the completed plan, then select **Implement Plan**.
 1. Review the pre-filled implementation prompt and send it when you're ready for code changes.
 
@@ -64014,6 +66481,7 @@ Identify whether the problem is discovery, configuration, or the result before c
 |------------------|---------------|
 | The file isn't listed in the Agent Customizations editor. | Confirm the selected harness, [file name and location](/docs/agents/reference/custom-agent-file-reference.md#custom-agent-file-locations), and repository folder. A new worktree might not contain your uncommitted agent file. |
 | The file is listed, but the agent isn't in the dropdown. | Check frontmatter errors and whether `user-invocable` is `false`. See [picker visibility](#customize-the-agents-dropdown-list). |
+| Sending is blocked because no required model is available. | Check the agent's `model` list and your access to those models. Select another agent, or edit the agent to use an available model or `model-policy: preferred`. |
 | The agent has unexpected tools or can't use a required tool. | Check the tool names supported by the selected harness and review actual tool activity. Editor completions don't prove runtime availability. For Local, also check whether a [prompt file overrides the tool list](/docs/agents/reference/custom-agent-file-reference.md#tool-list-priority). |
 | The agent is selected, but the result doesn't follow its role. | Check for vague or conflicting instructions. Clarify one rule and [repeat the task in a new chat](#verify-your-custom-agent). Don't add more tools unless the task needs them. |
 
@@ -64030,8 +66498,8 @@ For unresolved problems, [inspect chat interactions](/docs/agents/agent-troubles
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/custom-instructions.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/custom-instructions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/custom-instructions.md
-- **SHA256_FINGERPRINT**: `2c33e77c53264cc123c74f4bf2d7c0f36ff33e757bf620944b1ae4e84fed6f1f`
-- **LAST_VERIFIED_UTC**: 2026-11-02T21:32:53.173829+00:00
+- **SHA256_FINGERPRINT**: `45874c0c9f847dfc073e31b956c8ab3dedd6f11ca9385ebb7a97d98c4a2cba9d`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:57.845562+00:00
 ---
 
 **MetaDescription**: Create and test custom instructions in VS Code to guide agents with project conventions.
@@ -64079,7 +66547,7 @@ If you prefer to create the file outside the Agent Customizations editor, use a 
 | Copilot | `.github/copilot-instructions.md` or `AGENTS.md` |
 | [product.prodname_anthropic_claude] | `CLAUDE.md` |
 | [product.prodname_openai_codex] | `AGENTS.md` |
-| Local | `.github/copilot-instructions.md` or `AGENTS.md` |
+| Local `feature(local-harness)` | `.github/copilot-instructions.md` or `AGENTS.md` |
 
 Add your rules, save the file, and verify it as described below. `AGENTS.md` is a cross-agent format, not a Codex-only file. See [supported formats](/docs/agents/reference/custom-instructions-reference.md#supported-formats-and-locations) before sharing one file across harnesses.
 
@@ -64146,7 +66614,7 @@ The pattern matches `tests/test_api.py` and `tests/unit/test_api.py`, but not `s
 
 If you prefer to create the file directly, save it as `.github/instructions/python-tests.instructions.md`. Use separate `.instructions.md` files for guidance that applies to different languages, folders, or tasks.
 
-In Local sessions, you can also add a `description`, such as `'Use when creating or updating Python tests.'`, for task-based discovery. The description is not an extra restriction on `applyTo`. The agent can load the file by relevance separately from pattern matching.
+In Local sessions `feature(local-harness)`, you can also add a `description`, such as `'Use when creating or updating Python tests.'`, for task-based discovery. The description is not an extra restriction on `applyTo`. The agent can load the file by relevance separately from pattern matching.
 
 1. Open the Agent Customizations editor with the **Claude** harness selected and select **Instructions**.
 1. Select the `+` button next to **Workspace** and choose the action for a new rules file, rather than the project-wide `CLAUDE.md` file.
@@ -64273,20 +66741,20 @@ The response's **References** section, where available, helps check inclusion, n
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/hooks.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/hooks
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/hooks.md
-- **SHA256_FINGERPRINT**: `302af8b485561093d2bc7e23d13c01599febfb2c9ec48ac67ee38751e3aa2a89`
-- **LAST_VERIFIED_UTC**: 2026-11-02T21:32:53.054736+00:00
+- **SHA256_FINGERPRINT**: `b37b847cd7e7b9c30ae37b424f9ca35178e0965b9ed0c8fb6e650fe4bf7a65dc`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:57.858593+00:00
 ---
 
 **MetaDescription**: Reuse and configure agent hooks for personal and shared workflows in VS Code.
 
-# Configure agent hooks in Visual Studio Code (Preview)
+# Configure agent hooks in Visual Studio Code
 
 Hooks run custom actions at specific points in the agent's workflow, such as before or after a tool runs. Use them to add context, validate a tool call, run a formatter, or record an event without relying on the model to request the action.
 
 Use the [Agent Customizations editor](#find-and-manage-hooks) to create and manage hooks for the shared Copilot runtime. This article walks through creating a hook, adding its supporting script, and verifying the result. If you already have hooks for another harness, start with [Migrate hooks](/docs/agent-customization/migrate-customizations.md#migrate-hooks). Migration includes user folders, settings, custom agents, and plugins, not only repository files.
 
 > [!NOTE]
-> The VS Code hooks experience is in Preview. Individual provider implementations can have a different lifecycle status and release schedule.
+> Individual provider implementations can have a different lifecycle status and release schedule.
 
 > [!IMPORTANT]
 > Your organization might restrict which hooks can run. Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access. Administrators can learn how to [manage hooks in enterprise environments](/docs/enterprise/manage-ai-settings.md#enable-or-disable-hooks).
@@ -64306,7 +66774,7 @@ Other session targets use their own hook implementations:
 
 [Cloud sessions](/docs/agents/run/cloud-sandbox-sessions.md) `feature(cloud-sessions)` use the Copilot harness in a managed environment. Local hook files aren't automatically copied to that environment. Check the configuration available in the cloud workspace rather than assuming that hooks on your machine apply there.
 
-The older Local harness has a separate [Local hooks reference](/docs/agents/reference/hooks-reference.md). Use it to interpret existing hooks during migration, not as the schema for a new Copilot hook.
+The Local harness `feature(local-harness)` has a separate [Local hooks reference](/docs/agents/reference/hooks-reference.md). Use it to interpret existing hooks during migration, not as the schema for a new Copilot hook.
 
 ### Migrate hooks between harnesses
 
@@ -64478,6 +66946,8 @@ Keep agent-specific automation in the agent's frontmatter. Moving a command to a
 
 ## Existing Local hooks
 
+`feature(local-harness)`
+
 Use this section only to identify an existing Local setup before [migrating it](/docs/agent-customization/migrate-customizations.md#migrate-hooks).
 
 * Local discovers repository and user hook files, configured `chat.hookFilesLocations`, and agent or plugin hooks. Claude settings files require `chat.useClaudeHooks`.
@@ -64521,8 +66991,8 @@ For an old Local setup, **Chat: Configure Hooks** lists its files, and the **Git
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/language-models.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/language-models
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/language-models.md
-- **SHA256_FINGERPRINT**: `485f6a5833448afd3f09905cfca0f06ff66746bfb753f71c68b1b5c002d75903`
-- **LAST_VERIFIED_UTC**: 2026-11-06T05:48:21.542227+00:00
+- **SHA256_FINGERPRINT**: `296ca905720406435bce9f2fa62e160f1ca33b11a0365cbc438af705846147fc`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:57.918551+00:00
 ---
 
 **MetaDescription**: Configure chat, inline, and voice models in VS Code. Use your own API key or run models on your device.
@@ -64559,7 +67029,7 @@ You can further extend the list of available models by [using your own language 
 > [!NOTE]
 > If you are a Copilot Business or Copilot Enterprise user, your administrator needs to enable certain models for your organization by opting in to `Editor Preview Features` in the [Copilot policy settings](https://docs.github.com/en/enterprise-cloud@latest/copilot/managing-copilot/managing-github-copilot-in-your-organization/managing-policies-for-copilot-in-your-organization#enabling-copilot-features-in-your-organization) on GitHub.com.
 
-To compare solutions to the same coding task, use [model comparison (Preview)](/docs/agents/run/compare-models.md) in the Agents window. Run one prompt with multiple models or harnesses, then review the results side by side.
+To compare solutions to the same coding task, use [model comparison](/docs/agents/run/compare-models.md) in the Agents window. Run one prompt with multiple models or harnesses, then review the results side by side.
 
 ### Organization-managed model defaults
 
@@ -64780,7 +67250,7 @@ To pin or unpin a model:
 
 Bring Your Own Key (BYOK) lets you connect to any compatible model provider while still using the VS Code chat experience and tools. You can use BYOK to access models from other providers, to run models locally, or to use models that are not yet available as built-in options in VS Code.
 
-In [Local harness sessions](/docs/agents/run/agent-harnesses.md#local), BYOK models work without signing into a GitHub account and without a Copilot plan. This lets you use AI chat features with your own models, including offline scenarios with local models such as Ollama.
+In [Local harness sessions](/docs/agents/run/agent-harnesses.md#local) `feature(local-harness)`, BYOK models work without signing into a GitHub account and without a Copilot plan. This lets you use AI chat features with your own models, including offline scenarios with local models such as Ollama.
 
 > [!NOTE]
 > To use supported BYOK models in Copilot harness sessions in the Chat view or [Agents window](/docs/agents/run/agents-window.md), enable ``chat.agentHost.byokModels.enabled`` `feature(agent-host-byok-models)`. For sign-in requirements, see [Agents window accounts and provider credentials](/docs/agents/run/agents-window-configuration.md#manage-ai-providers-and-accounts).
@@ -65154,8 +67624,8 @@ Yes, you can use BYOK models, including local models, without a Copilot plan and
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/migrate-customizations.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/migrate-customizations
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/migrate-customizations.md
-- **SHA256_FINGERPRINT**: `b12f386e16eafa942d98b0bb07a1de782c3fb83eda8b14066aaf0fedb54d9752`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:25.871509+00:00
+- **SHA256_FINGERPRINT**: `8525b7f6444c56007abbe6d1d43e17a8ed2aa4d745be91d0cbd1c53e616421d5`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.026576+00:00
 ---
 
 **MetaDescription**: Migrate agent customizations and resolve harness compatibility gaps in VS Code.
@@ -65166,7 +67636,7 @@ Move your existing Local customizations to the Copilot harness without losing th
 
 Start with the path for your customization below. You don't need to complete every migration in this article. For answers about keeping Local available, MCP secrets, custom discovery paths, and agent tool names, see the [migration FAQ](#frequently-asked-questions).
 
-For the broader workflow transition, including session continuity, organization rollout, and policy verification, follow [Move from Local to the Copilot harness](/docs/agents/run/move-to-copilot.md).
+The Local harness `feature(local-harness)` is deprecated and will be removed by **February 2027**. Complete your customization migration before then. For the broader workflow transition, including session continuity, organization rollout, and policy verification, follow [Move from Local to the Copilot harness](/docs/agents/run/move-to-copilot.md).
 
 > [!NOTE]
 > This article covers migration to the Copilot harness. For the Claude or Codex harness, use the locations and formats in the provider documentation.
@@ -65220,7 +67690,7 @@ Keep your backup until you [verify the migration](#verify-the-migration). Automa
 The Copilot harness reads customizations from Copilot folders and portable formats. Move custom agents, instructions, and skills from editor-specific storage and configured custom locations to native harness folders so they can be discovered across Copilot clients. VS Code can [forward files from configured locations](#move-customizations-from-configured-locations) for compatibility with existing editor workflows, but other clients do not inherit those settings.
 
 > [!NOTE]
-> **For Local harness sessions:** The agent reads VS Code profile customizations and the additional locations configured through those settings. Moving a customization for the Copilot harness doesn't change which sources the Local harness reads.
+> **For Local harness sessions `feature(local-harness)`:** The agent reads VS Code profile customizations and the additional locations configured through those settings. Moving a customization for the Copilot harness doesn't change which sources the Local harness reads.
 
 Moving customizations to those locations has these benefits:
 
@@ -65237,6 +67707,8 @@ For a complete list of customization types and supported locations, see the [Cop
 
 MCP server migration moves compatible configurations to files that the Copilot harness reads directly:
 
+Migration is different from [editor forwarding](/docs/agents/reference/mcp-configuration.md#editor-forwarding-to-copilot), which can make eligible existing definitions available without moving their configuration. Neither path preserves every editor-specific capability. Check [MCP support and limitations](/api/extension-guides/ai/mcp.md#mcp-support-in-copilot) if your workflow depends on prompts, resources, sampling, or interactive UI.
+
 | Existing configuration | Destination |
 |------------------------|-------------|
 | Workspace `.vscode/mcp.json` | `.mcp.json` at the corresponding workspace root |
@@ -65251,6 +67723,8 @@ To migrate MCP servers:
 1. Review the source, destination, and any properties that the destination format cannot preserve.
 1. Select **Migrate** for the group. You can also open one server and select **Migrate** from its detail page.
 1. Open the destination file and test the server with the Copilot harness.
+
+Test authentication and the capabilities your workflow needs, not only whether the server starts. Editor sampling model permissions, development mode, and editor-provided UI are not portable configuration properties.
 
 VS Code writes and verifies each destination entry before removing the migrated entry from its source file. Unselected servers and servers that cannot be migrated stay in their current files.
 
@@ -65326,7 +67800,7 @@ Replace the example URL with your server's endpoint. For a stdio server, referen
 }
 ```
 
-Add this `env` object to the server's existing command and arguments. To update a portable entry, use **Chat: Open Customizations** > **MCP Servers**, select the server, and edit its headers or environment variables in the [configuration form](/docs/agents/run/manage-mcp-servers.md#edit-an-mcp-server-configuration). Enter the reference, not the credential value, then select **Save**.
+Add this `env` object to the server's existing command and arguments. To update a portable entry, use **Chat: Open Customizations** > **MCP Servers** and select the server. For Copilot user configuration, enter references in the headers or environment-variable fields of the [configuration form](/docs/agents/run/manage-mcp-servers.md#edit-an-mcp-server-configuration), then select **Save**. For workspace-root `.mcp.json`, select **Other Properties** and edit the source JSON because the form rejects `${...}` expressions. Enter the reference, not the credential value.
 
 Before testing:
 
@@ -65340,7 +67814,7 @@ Environment variables are not a secret store. This migration does not meet a req
 
 ## Convert prompt files to skills
 
-Copilot harness sessions use [agent skills](/docs/agent-customization/agent-skills.md) for reusable workflows and do not load `*.prompt.md` files. Convert workspace and user prompt files to skills to use those workflows with the Copilot harness. Prompt files remain supported in Local harness sessions.
+Copilot harness sessions use [agent skills](/docs/agent-customization/agent-skills.md) for reusable workflows and do not load `*.prompt.md` files. Convert workspace and user prompt files to skills to use those workflows with the Copilot harness. Prompt files remain supported in Local harness `feature(local-harness)` sessions.
 
 > [!IMPORTANT]
 > Conversion preserves explicit invocation by adding `disable-model-invocation: true` to the generated skill. If you later remove that restriction, the agent can select the skill automatically for relevant tasks. Review the description and instructions with the repository maintainer before enabling automatic invocation for a shared skill. Convert a personal workflow to a user skill instead.
@@ -65416,7 +67890,7 @@ After completing the migration path for your customization:
 1. Confirm that the migrated agents, instructions, skills, MCP servers, or plugins appear in the Agent Customizations editor. This checks discovery, not whether they work.
 1. Repeat the representative task you chose before migration without restating the customization's guidance.
 1. Check actual inclusion or invocation through references, tool activity, or hook execution logs, as applicable. Compare the output, tools, and approvals with your expected result.
-1. For a replaced tool set, check for missing capabilities and preserved tool restrictions. For a replaced participant, test its workflows, unavailable-service errors, approvals, and any MCP App interactions.
+1. For a replaced tool set, check for missing capabilities and preserved tool restrictions. For a replaced participant, test its workflows, unavailable-service errors, approvals, input collection, and any MCP App interactions.
 1. Check that old and migrated copies aren't both active.
 1. Review and commit workspace migrations when your team should share them. Remove remaining old files and settings only after the migrated customization works.
 
@@ -65426,7 +67900,7 @@ For remote or Dev Container sessions, perform these checks in the destination en
 
 The migration list does not automatically convert every customization type:
 
-* **Custom agents with Local harness-specific behavior**: use **Migrate with Agent** when an agent depends on Local harness tool names, tool sets, hooks, or other behavior that needs semantic changes.
+* **Custom agents with Local harness-specific behavior**: use **Migrate with Agent** when an agent depends on Local harness `feature(local-harness)` tool names, tool sets, hooks, or other behavior that needs semantic changes.
 * **Tool sets**: deprecated and not supported in the Copilot harness. [Replace tool-set references](#replace-tool-sets) with tools configured for the workflow.
 * **Chat participants**: deprecated and not supported in the Copilot harness. [Replace participant capabilities](#replace-chat-participants) with plugins that combine skills, MCP tools, and, when needed, MCP Apps.
 * **Hooks**: there is no automatic hook migration. Follow [Migrate hooks](#migrate-hooks) to review discovery, command configuration, script inputs, and output decisions.
@@ -65719,7 +68193,7 @@ These fixtures check the script's input and output handling. They do not establi
 User-defined tool sets are deprecated and are not supported in the Copilot harness. A tool-set file groups existing tools under a reusable name; it does not implement the tools. Move the tool selection, not the file.
 
 > [!NOTE]
-> Tool-set files remain a Local harness compatibility feature. Tool groups displayed in the Copilot **Tools** tab and supported built-in tool aliases are separate from user-defined tool-set files.
+> Tool-set files remain a Local harness `feature(local-harness)` compatibility feature. Tool groups displayed in the Copilot **Tools** tab and supported built-in tool aliases are separate from user-defined tool-set files.
 
 Choose a replacement based on why you used the tool set:
 
@@ -65745,7 +68219,7 @@ For example, a `reader` set might combine code search, symbol usages, diagnostic
 
 ## Replace chat participants
 
-Chat participants, including extension-provided `@participant` integrations, are deprecated and are not supported in the Copilot harness. The Chat Participant API remains available for Local harness compatibility, but new integrations should not depend on it.
+Chat participants, including extension-provided `@participant` integrations, are deprecated and are not supported in the Copilot harness. The Chat Participant API remains available for Local harness `feature(local-harness)` compatibility, but new integrations should not depend on it.
 
 ### If you use a participant
 
@@ -65755,13 +68229,86 @@ For an extension-provided participant, check whether its publisher provides an [
 
 There is no automatic conversion of an installed participant. If its publisher has not provided a replacement, ask for one. Keep Local compatibility only while you still need the original integration.
 
-If you maintain the participant implementation, follow the separate [publisher guidance](#if-you-maintain-a-participant) after the FAQ.
+### If you maintain a participant
+
+This section is for extension publishers replacing a participant implementation. If you only use an installed participant, follow the [user guidance](#if-you-use-a-participant) instead.
+
+Start with an **agent plugin containing skills and an MCP server**. Skills describe the domain workflow, and MCP tools provide the data and actions needed to complete it. Add a custom agent when users need an ongoing specialist role. This separates reusable expertise from the code that accesses a service and makes the integration usable beyond one editor.
+
+Choose based on the interaction, not the participant as a whole:
+
+* **[MCP elicitation](/api/extension-guides/ai/mcp.md#elicitation):** use when a tool needs input and standard host controls are sufficient. Supply a question and schema without building a frontend, for example to select exercise difficulty.
+* **[MCP Apps](/api/extension-guides/ai/mcp.md#mcp-apps):** use when the interaction needs your own layout, controls, or visualization. Implement a frontend, for example an interactive exercise that accepts answers and shows feedback.
+
+An integration can use both. Prefer [extension tools](/api/extension-guides/ai/tools.md) when the integration needs editor APIs or live editor context that an independent MCP server cannot access.
+
+Inventory the responsibilities of your participant before choosing its components:
+
+| Participant responsibility | Migration approach | What to review |
+|----------------------------|--------------------|----------------|
+| Domain instructions and examples | Put task-specific knowledge in a skill. Use a custom agent for a persistent role, or instruction files for standing project guidance. | Move the useful instructions, not the entire request-handler implementation. |
+| Slash commands such as `@tutor /exercise` | Create explicitly invoked skills for the workflows. Set `disable-model-invocation: true` when they should run only on request. | Choose the skill name and argument guidance. Plugin skills use the plugin's command prefix, not the old `@participant` syntax. |
+| Service access, retrieval, or actions | Expose bounded operations as MCP tools and include the server configuration in the plugin. | Preserve authentication, input validation, cancellation, error reporting, and approval requirements. Do not put secrets in the plugin. |
+| Missing information or a structured choice during a tool call | Use MCP elicitation to collect input through host-rendered controls. | Requests require an active turn and are canceled in Autopilot. Handle declined or canceled input without continuing the action that needs it. Keep credentials out of forms. |
+| Custom forms, visualizations, or interactive exercise UI | Return an MCP App from a tool and implement the interaction in its UI. | This requires a new UI implementation, not a conversion of `ChatResponseStream` calls. |
+| Selection, diagnostics, or other editor state | Let users attach context, or expose editor-specific operations through extension tools. | An MCP server does not automatically have access to VS Code APIs. Extension tools require the contributing extension and a connected editor. |
+| A procedure that must run in a fixed order | Keep the procedure in a script or tool implementation and use the skill to describe when to call it. | Model instructions are not a substitute for deterministic execution or validation. |
+| Custom model calls, conversation history, or response rendering | Refactor a bounded operation into a tool, or retain the bespoke experience in extension commands and views. | A custom agent or skill does not take over the harness's conversation loop. Participant history, feedback events, routing rules, and arbitrary response parts have no automatic mapping. |
+
+Neither an elicitation response nor an MCP App confirmation replaces host tool approvals or service authorization.
+
+MCP Apps require a client that supports their UI. Provide a useful text or structured tool result for clients without that support. Test app behavior in each target client instead of assuming that every Copilot interface renders the same controls. In VS Code, review the [MCP Apps behavior and limitations](/api/extension-guides/ai/mcp.md#vs-code-behavior-and-limitations), including how apps add messages and context.
+
+#### Example: migrate a code tutor to a plugin
+
+Instead of replacing a code-tutor participant with one large custom-agent prompt, separate its capabilities:
+
+* **Teaching workflow:** a `teach-concept` skill asks conversational questions about the learner's experience, explains a concept, and proposes an exercise. Ordinary chat questions don't require elicitation or an MCP App.
+* **Exercise operations:** MCP tools retrieve exercises and check answers.
+* **Structured tool input:** an exercise tool uses elicitation to ask for a missing difficulty level before retrieving an exercise.
+* **Optional interactive exercise:** an MCP App displays the question, accepts an answer, and shows feedback. Keep a text-based exercise path for clients without app support.
+* **Optional Tutor agent:** a custom agent holds the teaching style for a longer conversation.
+* **Optional editor integration:** an extension tool supplies diagnostics or selected code when the workflow needs live editor APIs. Otherwise, ask the learner to attach the code.
+
+A plugin can package the portable parts together:
+
+```text
+code-tutor/
+  plugin.json
+  skills/
+    teach-concept/
+      SKILL.md
+  mcp.json
+  com.github.copilot/
+    agents/
+      tutor.agent.md
+```
+
+Use the [plugin manifest and format guidance](/docs/agents/reference/agent-plugin-reference.md#plugin-manifest-pluginjson) to configure the package. The MCP server supplies the exercise tools and app resources; the plugin does not automatically convert or embed the old participant extension.
+
+For the teaching skill, preserve explicit invocation:
+
+```markdown
+---
+name: teach-concept
+description: Explain a programming concept and guide the learner through an exercise.
+argument-hint: "[concept or code to explain]"
+disable-model-invocation: true
+---
+
+Ask about the learner's experience and the concept or code they want to understand.
+Explain the concept with a short example before offering an exercise.
+Use the exercise server's tools when available. If they are unavailable, explain
+that limitation and offer a text-only exercise instead.
+```
+
+With a plugin named `code-tutor`, users invoke this skill as `/code-tutor:teach-concept`, rather than `@tutor /teach`. Test the installed plugin and authentication, accepted, declined, and canceled elicitation responses, any app interactions, and the text-only path before retiring the participant.
 
 ## Frequently asked questions
 
 ### Can I keep using the Local harness while adapting my customizations?
 
-Yes, when organization controls permit it. In the editor's Chat view, start a new session and select **Local** as the **Session Target**. Local harness availability and automatic Copilot harness selection depend on your settings and organization policies. See [Keep the Local harness available while migrating](/docs/agents/run/agent-harnesses.md#can-i-keep-local-available-while-migrating).
+Yes, when organization controls permit it, until its removal in February 2027. In the editor's Chat view, start a new session and select **Local** `feature(local-harness)` as the **Session Target**. Local harness availability and automatic Copilot harness selection depend on your settings and organization policies. See [Keep the Local harness available while migrating](/docs/agents/run/agent-harnesses.md#can-i-keep-the-local-harness-available-while-migrating).
 
 Administrators can use the temporary `vscode.temporaryDefaultToLocalHarness` enterprise-managed setting, available from version 1.142. It keeps the Local harness available and suppresses automatic Copilot routing, but the Local harness does not enforce Copilot runtime-only sandbox and permission rules. It does not override `vscode.temporaryAllowLocalHarness: false`, available from version 1.143. Review the [administrator guidance and security caveat](/docs/enterprise/manage-ai-settings.md#keep-local-harness-as-default).
 
@@ -65803,72 +68350,6 @@ Do not assume that removing a prefix or replacing a tool name fixes every discov
 
 A separate report, [microsoft/vscode#342961](https://github.com/microsoft/vscode/issues/342961), describes tool search returning no results even when MCP tools are callable. If compatible tools still cannot be discovered, report the exact error, selected model, agent tool list, and environment rather than treating every discovery failure as an authentication problem.
 
-## If you maintain a participant
-
-This section is for extension publishers replacing a participant implementation. If you only use an installed participant, follow [Replace chat participants](#replace-chat-participants) instead.
-
-Start with an **agent plugin containing skills and an MCP server**. Skills describe the domain workflow, and MCP tools provide the data and actions needed to complete it. Add a custom agent when users need an ongoing specialist role. This separates reusable expertise from the code that accesses a service and makes the integration usable beyond one editor.
-
-For interactive controls, use [MCP Apps](/api/extension-guides/ai/mcp.md#mcp-apps). They can provide buttons, forms, visualizations, and multi-step interactions in chat. Prefer [extension tools](/api/extension-guides/ai/tools.md) when the integration needs editor APIs or live editor context that an independent MCP server cannot access.
-
-Inventory the responsibilities of your participant before choosing its components:
-
-| Participant responsibility | Migration approach | What to review |
-|----------------------------|--------------------|----------------|
-| Domain instructions and examples | Put task-specific knowledge in a skill. Use a custom agent for a persistent role, or instruction files for standing project guidance. | Move the useful instructions, not the entire request-handler implementation. |
-| Slash commands such as `@tutor /exercise` | Create explicitly invoked skills for the workflows. Set `disable-model-invocation: true` when they should run only on request. | Choose the skill name and argument guidance. Plugin skills use the plugin's command prefix, not the old `@participant` syntax. |
-| Service access, retrieval, or actions | Expose bounded operations as MCP tools and include the server configuration in the plugin. | Preserve authentication, input validation, cancellation, error reporting, and approval requirements. Do not put secrets in the plugin. |
-| Buttons, forms, or a confirmation step within a workflow | Return an MCP App from a tool and implement the interaction in its UI. | This requires a new UI implementation, not a conversion of `ChatResponseStream` calls. An app's confirmation step does not replace host tool approvals or authorization in the service. |
-| Selection, diagnostics, or other editor state | Let users attach context, or expose editor-specific operations through extension tools. | An MCP server does not automatically have access to VS Code APIs. Extension tools require the contributing extension and a connected editor. |
-| A procedure that must run in a fixed order | Keep the procedure in a script or tool implementation and use the skill to describe when to call it. | Model instructions are not a substitute for deterministic execution or validation. |
-| Custom model calls, conversation history, or response rendering | Refactor a bounded operation into a tool, or retain the bespoke experience in extension commands and views. | A custom agent or skill does not take over the harness's conversation loop. Participant history, feedback events, routing rules, and arbitrary response parts have no automatic mapping. |
-
-MCP Apps require a client that supports their UI. Provide a useful text or structured tool result for clients without that support. Test app behavior in each target client instead of assuming that every Copilot interface renders the same controls. In VS Code, review the [MCP Apps behavior and limitations](/api/extension-guides/ai/mcp.md#vs-code-behavior-and-limitations), including how apps add messages and context.
-
-### Example: migrate a code tutor to a plugin
-
-Instead of replacing a code-tutor participant with one large custom-agent prompt, separate its capabilities:
-
-* **Teaching workflow:** a `teach-concept` skill asks about the learner's experience, explains a concept, and proposes an exercise.
-* **Exercise operations:** MCP tools retrieve exercises and check answers.
-* **Interactive exercise:** an MCP App displays the question, accepts an answer, and shows feedback. Keep a text-based exercise path for clients without app support.
-* **Optional Tutor agent:** a custom agent holds the teaching style for a longer conversation.
-* **Optional editor integration:** an extension tool supplies diagnostics or selected code when the workflow needs live editor APIs. Otherwise, ask the learner to attach the code.
-
-A plugin can package the portable parts together:
-
-```text
-code-tutor/
-  plugin.json
-  skills/
-    teach-concept/
-      SKILL.md
-  mcp.json
-  com.github.copilot/
-    agents/
-      tutor.agent.md
-```
-
-Use the [plugin manifest and format guidance](/docs/agents/reference/agent-plugin-reference.md#plugin-manifest-pluginjson) to configure the package. The MCP server supplies the exercise tools and app resources; the plugin does not automatically convert or embed the old participant extension.
-
-For the teaching skill, preserve explicit invocation:
-
-```markdown
----
-name: teach-concept
-description: Explain a programming concept and guide the learner through an exercise.
-argument-hint: "[concept or code to explain]"
-disable-model-invocation: true
----
-
-Ask about the learner's experience and the concept or code they want to understand.
-Explain the concept with a short example before offering an exercise.
-Use the exercise server's tools when available. If they are unavailable, explain
-that limitation and offer a text-only exercise instead.
-```
-
-With a plugin named `code-tutor`, users invoke this skill as `/code-tutor:teach-concept`, rather than `@tutor /teach`. Test the installed plugin, authentication, app interactions, and text-only path before retiring the participant.
-
 ## Related resources
 
 * [Create and manage agent customizations](/docs/agent-customization/overview.md)
@@ -65880,8 +68361,8 @@ With a plugin named `code-tutor`, users invoke this skill as `/code-tutor:teach-
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/overview.md
-- **SHA256_FINGERPRINT**: `fa883a01cf1a4495e0d9c47f682cfd46428cf72167ab2d10496c4064dd50d9fc`
-- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.058435+00:00
+- **SHA256_FINGERPRINT**: `8747680a91bfa1e747b70e1134c5bda46ef8db29006ca94d80b92ef56259b48a`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.034883+00:00
 ---
 
 **MetaDescription**: Find, create, and manage agent customizations for a session's harness, workspace, and environment in VS Code.
@@ -65916,7 +68397,7 @@ Start with a recurring task or an observed problem, such as the agent using the 
 | Stop repeating project commands and conventions | [Create or refine project instructions](/docs/agent-customization/custom-instructions.md#get-started-with-project-instructions) |
 | Reuse a multi-step process specific to your team | [Create or adapt an agent skill](/docs/agent-customization/agent-skills.md#create-a-skill) |
 | Give a recurring role focused guidance and tools | [Create a custom agent](/docs/agent-customization/custom-agents.md) |
-| Connect an external service | [Use a Copilot connector](/docs/agent-customization/copilot-connectors.md) `feature(copilot-connectors)` or [add an MCP server](/docs/agent-customization/mcp-servers.md#connect-a-server) |
+| Connect an external service | [Use a Copilot connector](/docs/agent-customization/copilot-connectors.md) `feature(copilot-connectors)` or [add an MCP server](/docs/agent-customization/mcp-servers.md#add-a-server-by-url-or-command) |
 | Run an action at specific events of the agent's workflow | [Configure a hook](/docs/agent-customization/hooks.md) |
 
 To understand what each type contributes, see [customization building blocks](/docs/agents/concepts/customization.md#customization-building-blocks).
@@ -65950,7 +68431,7 @@ To open the Agent Customizations editor:
 
 1. Use the tabs in the editor to navigate between different customization types, such as skills, custom agents, hooks, and MCP servers.
 
-    The experimental **Extensions** section also lets you [choose which installed extensions run in the Agents window](/docs/agents/run/agents-window-configuration.md#manage-extensions-experimental).
+    The experimental **Extensions** section also lets you [install and manage extensions in the Agents window](/docs/agents/run/agents-window-configuration.md#manage-extensions-experimental).
 
 For remote hosts and Dev Containers, see [Manage customizations for remote sessions](#manage-customizations-for-remote-sessions).
 
@@ -65991,7 +68472,7 @@ To find and install a customization:
 
 If your team shares plugins through another marketplace, select **Configure Marketplaces** from the source menu to [add or manage plugin marketplaces](/docs/agent-customization/agent-plugins.md#configure-plugin-marketplaces). Adding a marketplace makes its plugins available to browse. It doesn't install them.
 
-After installation, complete any publisher setup and [verify the customization](#verify-a-customization) with a representative task. For type-specific guidance, see [install a skill](/docs/agent-customization/agent-skills.md#install-a-skill-from-the-customization-marketplace-preview), [install a plugin](/docs/agent-customization/agent-plugins.md#install-a-plugin-from-a-marketplace), or [find an MCP server](/docs/agent-customization/mcp-servers.md#find-another-server).
+After installation, complete any publisher setup and [verify the customization](#verify-a-customization) with a representative task. For type-specific guidance, see [install a skill](/docs/agent-customization/agent-skills.md#install-a-skill-from-the-customization-marketplace-preview), [install a plugin](/docs/agent-customization/agent-plugins.md#install-a-plugin-from-a-marketplace), or [find an MCP server](/docs/agent-customization/mcp-servers.md#find-and-install-a-server).
 
 ### Marketplace availability
 
@@ -66017,7 +68498,7 @@ For file-based customizations, use the editor to create a file at [user or works
 
 You can also run the **Chat: New \<customization-type\>** command from the Command Palette (``Shortcut: workbench.action.showCommands``). The command creates the corresponding file in a supported location for that customization type.
 
-To add an MCP server manually, select **MCP Servers**, select **Add Server** (**+**) in the **User** or **Workspace** group, and follow the guided flow. For detailed steps, see [Add MCP servers](/docs/agent-customization/mcp-servers.md#connect-a-server). To update an existing connection, see [Edit an MCP server configuration](/docs/agents/run/manage-mcp-servers.md#edit-an-mcp-server-configuration).
+To add an MCP server manually, select **MCP Servers**, select **Add Server** (**+**) in the **User** or **Workspace** group, and follow the guided flow. For detailed steps, see [Add MCP servers](/docs/agent-customization/mcp-servers.md#add-a-server-by-url-or-command). To update an existing connection, see [Edit an MCP server configuration](/docs/agents/run/manage-mcp-servers.md#edit-an-mcp-server-configuration).
 
 Creating or saving a file doesn't establish that the agent uses it. Verify the customization before relying on it or sharing it with your team.
 
@@ -66180,7 +68661,7 @@ The **Canvases** section lists canvas extensions available to the active local C
 
 ### Use customizations in a monorepo
 
-In monorepo setups, you might open a subfolder of a repository rather than the repo root. For Local harness discovery, enable ``chat.useCustomizationsInParentRepositories`` to also discover customizations from the parent repository. Other harnesses use their own discovery rules. See [nested project instructions](/docs/agents/reference/custom-instructions-reference.md#nested-project-instructions).
+In monorepo setups, you might open a subfolder of a repository rather than the repo root. For Local harness discovery `feature(local-harness)`, enable ``chat.useCustomizationsInParentRepositories`` to also discover customizations from the parent repository. Other harnesses use their own discovery rules. See [nested project instructions](/docs/agents/reference/custom-instructions-reference.md#nested-project-instructions).
 
 When this setting is enabled, VS Code walks up the folder hierarchy from each workspace folder until it finds a `.git` folder. If found, it collects customizations from all folders between the workspace folder and the repository root (inclusive). This applies to all customization types: always-on instructions (`copilot-instructions.md`, `AGENTS.md`, `CLAUDE.md`), file-based instructions, prompt files, custom agents, agent skills, and hooks.
 
@@ -66230,11 +68711,11 @@ For analysis guidance and skill evaluations with [Waza](https://github.com/micro
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/prompt-files.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/prompt-files
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/prompt-files.md
-- **SHA256_FINGERPRINT**: `b3ccfe1275e04a41d0b074a14aef2c6bafb34ab67fa747001bbef84d300e211b`
-- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.050903+00:00
+- **SHA256_FINGERPRINT**: `b692e9fc554910763c8429b17d0732600db72bbd2f2a218e9ea3ab8b35e2d491`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.039744+00:00
 ---
 
-**MetaDescription**: Use prompt files in VS Code for reusable Local harness workflows, or migrate them to agent skills.
+**MetaDescription**: Use prompt files with the deprecated Local harness in VS Code, or migrate workflows to agent skills.
 
 # Use prompt files in VS Code
 
@@ -66247,16 +68728,16 @@ Use prompt files to:
 * Simplify prompting for common tasks, such as scaffolding a new component, running and fixing tests, or preparing a pull request
 * Override default behavior of a custom agent, such as creating a minimal implementation plan or generating mockups for API calls
 
-With **Local** selected, use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) to discover, create, and manage prompt files. Run **Chat: Open Customizations** from the Command Palette.
+With **Local** `feature(local-harness)` selected, use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) to discover, create, and manage prompt files. Run **Chat: Open Customizations** from the Command Palette.
 
 > [!IMPORTANT]
-> Prompt files run only in **Local** harness sessions in the Chat view. For reusable workflows in other harnesses, create an [agent skill](/docs/agent-customization/agent-skills.md) or [convert an existing prompt file to a skill](/docs/agent-customization/migrate-customizations.md#convert-prompt-files-to-skills).
+> Prompt files run only in **Local** harness sessions `feature(local-harness)` in the Chat view. The Local harness is deprecated and will be removed by **February 2027**. Before then, [convert existing prompt files to skills](/docs/agent-customization/migrate-customizations.md#convert-prompt-files-to-skills) for use with the Copilot harness. For new reusable workflows, create an [agent skill](/docs/agent-customization/agent-skills.md).
 
 Before writing a prompt file, consider [reusing a skill from the Customization Marketplace](/docs/agent-customization/agent-skills.md#install-a-skill-from-the-customization-marketplace-preview) for the same task. This installs a skill, not a Local prompt file. Follow the skill's harness requirements and invocation instructions.
 
 ## Create a prompt file
 
-Before creating a prompt file, select the **Local** harness in the Chat view. Choose whether to store the file in your workspace or user profile. Workspace prompt files are available to Local sessions in that workspace. User prompt files are available to Local sessions across workspaces in the same profile.
+Before creating a prompt file, select the **Local** harness `feature(local-harness)` in the Chat view. Choose whether to store the file in your workspace or user profile. Workspace prompt files are available to Local sessions in that workspace. User prompt files are available to Local sessions across workspaces in the same profile.
 
 Use the Agent Customizations editor to create the file in the selected scope:
 
@@ -66294,15 +68775,15 @@ An agent with file-editing tools can help author a prompt file, even if you use 
 
 Authoring a `.prompt.md` file in a Copilot session doesn't make that file runnable by the Copilot harness. To reuse a workflow in that harness, [create a skill](/docs/agent-customization/agent-skills.md#create-a-skill) or [convert an existing prompt file](/docs/agent-customization/migrate-customizations.md#convert-prompt-files-to-skills).
 
-With **Local** selected, you can also type `/create-prompt` in chat followed by the description. The agent asks clarifying questions, generates a `.prompt.md` file with appropriate frontmatter and instructions, and offers you a choice between workspace and user storage. The `/create-prompt` command isn't available for other harnesses.
+With **Local** `feature(local-harness)` selected, you can also type `/create-prompt` in chat followed by the description. The agent asks clarifying questions, generates a `.prompt.md` file with appropriate frontmatter and instructions, and offers you a choice between workspace and user storage. The `/create-prompt` command isn't available for other harnesses.
 
 You can also ask an agent to capture an ongoing conversation as a prompt file for Local sessions. Specify the target harness so that it doesn't create a customization in a format you can't use.
 
-With **Local** selected in the Chat view, you can also generate a prompt file from the Agent Customizations editor by selecting **Generate with AI** next to the **Workspace** group in the **Prompts** section.
+With **Local** `feature(local-harness)` selected in the Chat view, you can also generate a prompt file from the Agent Customizations editor by selecting **Generate with AI** next to the **Workspace** group in the **Prompts** section.
 
 ## Use a prompt file in chat
 
-Select **Local** in the Chat view before running the prompt. The following options run prompt files in Local sessions:
+Select **Local** `feature(local-harness)` in the Chat view before running the prompt. The following options run prompt files in Local sessions:
 
 * In the Chat view, type `/` followed by the prompt name in the chat input field. [Agent skills](/docs/agent-customization/agent-skills.md) also appear as slash commands alongside prompt files.
 
@@ -66323,19 +68804,19 @@ Select **Local** in the Chat view before running the prompt. The following optio
 
 Test discovery and effectiveness separately:
 
-1. Start a fresh **Local** chat in the workspace where you created the prompt.
+1. Start a fresh **Local** chat `feature(local-harness)` in the workspace where you created the prompt.
 1. Type `/` and confirm that `/review-api-security` appears. If it does not, follow [Troubleshoot prompt files](#troubleshoot-prompt-files).
 1. Run `/review-api-security` followed by the path to a small API file or folder.
 1. Confirm that the result cites files, groups findings by priority, and distinguishes observed controls from missing or uncertain controls.
 1. Open the prompt file, adjust instructions that produced an unclear or unsupported result, and use the editor play button to rerun the same request in a new chat.
 
-Discovery only confirms that the Local harness found the file. Review the result and tool activity to determine whether the prompt is effective for your task.
+Discovery only confirms that the Local harness `feature(local-harness)` found the file. Review the result and tool activity to determine whether the prompt is effective for your task.
 
 ## Troubleshoot prompt files
 
 If a prompt is missing or produces an unexpected result:
 
-1. Confirm that the session target is **Local** and that the file has the `.prompt.md` extension.
+1. Confirm that the session target is **Local** `feature(local-harness)` and that the file has the `.prompt.md` extension.
 1. Confirm that a workspace prompt is in `.github/prompts` for the open workspace, or that the user prompt is in the current VS Code profile.
 1. Check the YAML frontmatter for syntax errors and confirm that configured agents, models, and tools are available.
 1. Run the prompt in a fresh chat to avoid context from an earlier task.
@@ -66345,7 +68826,7 @@ If a prompt is missing or produces an unexpected result:
 
 ### Locations
 
-You can define prompt files for a specific workspace or at the user level, where they are available across all your workspaces. The following table lists the default file locations that the Local harness uses for prompt files.
+You can define prompt files for a specific workspace or at the user level, where they are available across all your workspaces. The following table lists the default file locations that the Local harness `feature(local-harness)` uses for prompt files.
 
 | Scope | Default file location |
 |-------|-----------------------|
@@ -66368,7 +68849,7 @@ Prompt files are Markdown files with the `.prompt.md` extension. The optional YA
 | `argument-hint` | No | Hint text shown in the chat input field to guide users on how to interact with the prompt. |
 | `agent` | No | The agent used for running the prompt: `ask`, `agent`, `plan`, or the name of a [custom agent](/docs/agent-customization/custom-agents.md). By default, the current agent is used. If tools are specified, the default agent is `agent`. |
 | `model` | No | The language model used when running the prompt. If not specified, the currently selected model in model picker is used. |
-| `tools` | No | A list of tool names that are available for this Local harness prompt. Can include built-in tools, MCP tools, or tools contributed by extensions. To include all tools of an MCP server, use the `<server name>/*` format. Existing tool-set references are deprecated; see [Replace tool sets](/docs/agent-customization/migrate-customizations.md#replace-tool-sets).<br/>Learn more about [tools with agents](/docs/agents/run/tools.md). |
+| `tools` | No | A list of tool names that are available for this Local harness `feature(local-harness)` prompt. Can include built-in tools, MCP tools, or tools contributed by extensions. To include all tools of an MCP server, use the `<server name>/*` format. Existing tool-set references are deprecated; see [Replace tool sets](/docs/agent-customization/migrate-customizations.md#replace-tool-sets).<br/>Learn more about [tools with agents](/docs/agents/run/tools.md). |
 
 > [!NOTE]
 > If a given tool is not available when running the prompt, it is ignored.
@@ -66435,15 +68916,15 @@ To sync your user prompt files, enable Settings Sync and run **Settings Sync: Co
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/tool-sets.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/tool-sets
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/tool-sets.md
-- **SHA256_FINGERPRINT**: `bf217a3d2b32848fb6795dcd83ea228a0428af6ee6c1f997fe6310a0b5ac4a71`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.819421+00:00
+- **SHA256_FINGERPRINT**: `ca16a7cc8ec0db3e3d6db26c09aac4a5cf8c8684e300665bb2931e6e1979c4cb`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.047420+00:00
 ---
 
 **MetaDescription**: Replace deprecated tool sets with custom-agent tool selections and plugins in Visual Studio Code.
 
 # Tool sets (deprecated)
 
-User-defined tool sets group existing tools under a reusable name. They are deprecated and are not supported in the Copilot harness. Tool-set files remain available only for Local harness compatibility.
+User-defined tool sets group existing tools under a reusable name. They are deprecated and are not supported in the Copilot harness. Tool-set files remain available only for Local harness compatibility `feature(local-harness)`.
 
 To move an existing workflow to the Copilot harness, follow [Replace tool sets](/docs/agent-customization/migrate-customizations.md#replace-tool-sets).
 

@@ -1,7 +1,545 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part4
-- **Generado (UTC)**: 2026-11-10T06:40:00.462787+00:00
-- **Total Palabras**: 448,787 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-11T05:27:05.145882+00:00
+- **Total Palabras**: 448,948 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/game-engine/assets/2d-maze-game.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/game-engine/assets/2d-maze-game.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/game-engine/assets/2d-maze-game.md
+- **SHA256_FINGERPRINT**: `13d33e9010ce43d2ef01a2aaa1019e18d5b3b408091bf98c1f7f14d972fb9892`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:28.999020+00:00
+---
+
+# 2D Maze Game Template
+
+A mobile-optimized 2D maze game where players guide a ball through a labyrinth of obstacles to reach a target hole. The game uses the **Device Orientation API** for tilt-based motion controls on mobile devices and keyboard arrow keys on desktop. Built with the **Phaser** framework (v2.x with Arcade Physics), it features multi-level progression, collision detection, audio feedback, vibration haptics, and a timer system.
+
+**Source reference:** [MDN - HTML5 Gamedev Phaser Device Orientation](https://developer.mozilla.org/en-US/docs/Games/Tutorials/HTML5_Gamedev_Phaser_Device_Orientation)
+**Live demo:** [Cyber Orb](https://orb.enclavegames.com/)
+**Source code:** [GitHub - EnclaveGames/Cyber-Orb](https://github.com/EnclaveGames/Cyber-Orb)
+
+---
+
+## Game Concept
+
+The player controls a ball (the "orb") by tilting their mobile device or pressing arrow keys. The ball rolls through a maze of horizontal and vertical wall segments. The objective on each level is to navigate the ball to a hole at the top of the screen while avoiding walls. Collisions with walls trigger a bounce, a sound effect, and optional vibration. A timer tracks how long the player takes per level and across the entire game.
+
+---
+
+## Project Structure
+
+```
+project/
+  index.html
+  src/
+    phaser-arcade-physics.2.2.2.min.js
+    Boot.js
+    Preloader.js
+    MainMenu.js
+    Howto.js
+    Game.js
+  img/
+    ball.png
+    hole.png
+    element-horizontal.png
+    element-vertical.png
+    button-start.png
+    loading-bg.png
+    loading-bar.png
+  audio/
+    bounce.ogg
+    bounce.mp3
+    bounce.m4a
+```
+
+---
+
+## Phaser Setup and Initialization
+
+### HTML Entry Point
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Cyber Orb</title>
+  <style>
+    body { margin: 0; background: #333; }
+  </style>
+  <script src="src/phaser-arcade-physics.2.2.2.min.js"></script>
+  <script src="src/Boot.js"></script>
+  <script src="src/Preloader.js"></script>
+  <script src="src/MainMenu.js"></script>
+  <script src="src/Howto.js"></script>
+  <script src="src/Game.js"></script>
+</head>
+<body>
+  <script>
+    (() => {
+      const game = new Phaser.Game(320, 480, Phaser.CANVAS, "game");
+      game.state.add("Boot", Ball.Boot);
+      game.state.add("Preloader", Ball.Preloader);
+      game.state.add("MainMenu", Ball.MainMenu);
+      game.state.add("Howto", Ball.Howto);
+      game.state.add("Game", Ball.Game);
+      game.state.start("Boot");
+    })();
+  </script>
+</body>
+</html>
+```
+
+- Canvas size: `320 x 480`
+- Renderer: `Phaser.CANVAS` (alternatives: `Phaser.WEBGL`, `Phaser.AUTO`)
+
+---
+
+## Game State Architecture
+
+The game follows a linear state flow:
+
+```
+Boot --> Preloader --> MainMenu --> Howto --> Game
+```
+
+### Boot State
+
+Loads minimal assets for the loading screen and configures scaling.
+
+```javascript
+const Ball = {
+  _WIDTH: 320,
+  _HEIGHT: 480,
+};
+
+Ball.Boot = function (game) {};
+Ball.Boot.prototype = {
+  preload() {
+    this.load.image("preloaderBg", "img/loading-bg.png");
+    this.load.image("preloaderBar", "img/loading-bar.png");
+  },
+  create() {
+    this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    this.game.scale.pageAlignHorizontally = true;
+    this.game.scale.pageAlignVertically = true;
+    this.game.state.start("Preloader");
+  },
+};
+```
+
+### Preloader State
+
+Displays a visual loading bar while loading all game assets. Audio is loaded in multiple formats for cross-browser compatibility.
+
+```javascript
+Ball.Preloader = function (game) {};
+Ball.Preloader.prototype = {
+  preload() {
+    this.preloadBg = this.add.sprite(
+      (Ball._WIDTH - 297) * 0.5,
+      (Ball._HEIGHT - 145) * 0.5,
+      "preloaderBg"
+    );
+    this.preloadBar = this.add.sprite(
+      (Ball._WIDTH - 158) * 0.5,
+      (Ball._HEIGHT - 50) * 0.5,
+      "preloaderBar"
+    );
+    this.load.setPreloadSprite(this.preloadBar);
+
+    this.load.image("ball", "img/ball.png");
+    this.load.image("hole", "img/hole.png");
+    this.load.image("element-w", "img/element-horizontal.png");
+    this.load.image("element-h", "img/element-vertical.png");
+    this.load.spritesheet("button-start", "img/button-start.png", 146, 51);
+    this.load.audio("audio-bounce", [
+      "audio/bounce.ogg",
+      "audio/bounce.mp3",
+      "audio/bounce.m4a",
+    ]);
+  },
+  create() {
+    this.game.state.start("MainMenu");
+  },
+};
+```
+
+### MainMenu State
+
+Displays the title screen with a start button.
+
+```javascript
+Ball.MainMenu = function (game) {};
+Ball.MainMenu.prototype = {
+  create() {
+    this.add.sprite(0, 0, "screen-mainmenu");
+    this.gameTitle = this.add.sprite(Ball._WIDTH * 0.5, 40, "title");
+    this.gameTitle.anchor.set(0.5, 0);
+
+    this.startButton = this.add.button(
+      Ball._WIDTH * 0.5, 200, "button-start",
+      this.startGame, this,
+      2, 0, 1  // hover, out, down frames
+    );
+    this.startButton.anchor.set(0.5, 0);
+    this.startButton.input.useHandCursor = true;
+  },
+  startGame() {
+    this.game.state.start("Howto");
+  },
+};
+```
+
+### Howto State
+
+A single-click instruction screen before gameplay begins.
+
+```javascript
+Ball.Howto = function (game) {};
+Ball.Howto.prototype = {
+  create() {
+    this.buttonContinue = this.add.button(
+      0, 0, "screen-howtoplay",
+      this.startGame, this
+    );
+  },
+  startGame() {
+    this.game.state.start("Game");
+  },
+};
+```
+
+---
+
+## Device Orientation API Usage
+
+The Device Orientation API provides real-time data about the physical tilt of a device. Two axes are used:
+
+| Property | Axis | Range | Effect |
+|----------|------|-------|--------|
+| `event.gamma` | Left/right tilt | -90 to 90 degrees | Horizontal ball velocity |
+| `event.beta` | Front/back tilt | -180 to 180 degrees | Vertical ball velocity |
+
+### Registering the Listener
+
+```javascript
+// In the Game state's create() method
+window.addEventListener("deviceorientation", this.handleOrientation);
+```
+
+### Handling Orientation Events
+
+```javascript
+handleOrientation(e) {
+  const x = e.gamma; // left-right tilt
+  const y = e.beta;  // front-back tilt
+  Ball._player.body.velocity.x += x;
+  Ball._player.body.velocity.y += y;
+}
+```
+
+### Tilt Behavior
+
+- Tilt device left: negative gamma, ball rolls left
+- Tilt device right: positive gamma, ball rolls right
+- Tilt device forward: positive beta, ball rolls down
+- Tilt device backward: negative beta, ball rolls up
+
+The tilt angle directly maps to velocity increments -- the steeper the tilt, the greater the force applied to the ball each frame.
+
+---
+
+## Core Game Mechanics
+
+### Game State Structure
+
+```javascript
+Ball.Game = function (game) {};
+Ball.Game.prototype = {
+  create() {},
+  initLevels() {},
+  showLevel(level) {},
+  updateCounter() {},
+  managePause() {},
+  manageAudio() {},
+  update() {},
+  wallCollision() {},
+  handleOrientation(e) {},
+  finishLevel() {},
+};
+```
+
+### Ball Creation and Physics
+
+```javascript
+// In create()
+this.ball = this.add.sprite(this.ballStartPos.x, this.ballStartPos.y, "ball");
+this.ball.anchor.set(0.5);
+this.physics.enable(this.ball, Phaser.Physics.ARCADE);
+this.ball.body.setSize(18, 18);
+this.ball.body.bounce.set(0.3, 0.3);
+```
+
+- Anchor at center `(0.5, 0.5)` for rotation around midpoint
+- Physics body: 18x18 pixels
+- Bounce coefficient: 0.3 (retains 30% velocity after wall collision)
+
+### Keyboard Controls (Desktop Fallback)
+
+```javascript
+// In create()
+this.keys = this.game.input.keyboard.createCursorKeys();
+
+// In update()
+if (this.keys.left.isDown) {
+  this.ball.body.velocity.x -= this.movementForce;
+} else if (this.keys.right.isDown) {
+  this.ball.body.velocity.x += this.movementForce;
+}
+if (this.keys.up.isDown) {
+  this.ball.body.velocity.y -= this.movementForce;
+} else if (this.keys.down.isDown) {
+  this.ball.body.velocity.y += this.movementForce;
+}
+```
+
+### Hole (Goal) Setup
+
+```javascript
+this.hole = this.add.sprite(Ball._WIDTH * 0.5, 90, "hole");
+this.physics.enable(this.hole, Phaser.Physics.ARCADE);
+this.hole.anchor.set(0.5);
+this.hole.body.setSize(2, 2);
+```
+
+The hole has a tiny 2x2 collision body for precise overlap detection.
+
+---
+
+## Level System
+
+### Level Data Format
+
+Each level is an array of wall segment objects with position and type:
+
+```javascript
+this.levelData = [
+  [{ x: 96, y: 224, t: "w" }],                           // Level 1
+  [
+    { x: 72, y: 320, t: "w" },
+    { x: 200, y: 320, t: "h" },
+    { x: 72, y: 150, t: "w" },
+  ],                                                       // Level 2
+  // ... more levels
+];
+```
+
+- `x, y`: Position in pixels
+- `t`: Type -- `"w"` for horizontal wall, `"h"` for vertical wall
+
+### Building Levels
+
+```javascript
+initLevels() {
+  for (let i = 0; i < this.maxLevels; i++) {
+    const newLevel = this.add.group();
+    newLevel.enableBody = true;
+    newLevel.physicsBodyType = Phaser.Physics.ARCADE;
+
+    for (const item of this.levelData[i]) {
+      newLevel.create(item.x, item.y, `element-${item.t}`);
+    }
+
+    newLevel.setAll("body.immovable", true);
+    newLevel.visible = false;
+    this.levels.push(newLevel);
+  }
+}
+```
+
+### Showing a Level
+
+```javascript
+showLevel(level) {
+  const lvl = level || this.level;
+  if (this.levels[lvl - 2]) {
+    this.levels[lvl - 2].visible = false;
+  }
+  this.levels[lvl - 1].visible = true;
+}
+```
+
+---
+
+## Collision Detection
+
+### Wall Collisions (Bounce)
+
+```javascript
+// In update()
+this.physics.arcade.collide(
+  this.ball, this.borderGroup,
+  this.wallCollision, null, this
+);
+this.physics.arcade.collide(
+  this.ball, this.levels[this.level - 1],
+  this.wallCollision, null, this
+);
+```
+
+`collide` causes the ball to bounce off walls and triggers the callback.
+
+### Hole Overlap (Pass-Through Detection)
+
+```javascript
+this.physics.arcade.overlap(
+  this.ball, this.hole,
+  this.finishLevel, null, this
+);
+```
+
+`overlap` detects intersection without physical collision response.
+
+### Wall Collision Callback
+
+```javascript
+wallCollision() {
+  if (this.audioStatus) {
+    this.bounceSound.play();
+  }
+  if ("vibrate" in window.navigator) {
+    window.navigator.vibrate(100);
+  }
+}
+```
+
+---
+
+## Audio System
+
+```javascript
+// In create()
+this.bounceSound = this.game.add.audio("audio-bounce");
+
+// Toggle
+manageAudio() {
+  this.audioStatus = !this.audioStatus;
+}
+```
+
+---
+
+## Vibration API
+
+```javascript
+if ("vibrate" in window.navigator) {
+  window.navigator.vibrate(100); // 100ms vibration pulse
+}
+```
+
+Feature-detect before calling. Provides tactile feedback on supported mobile devices.
+
+---
+
+## Timer System
+
+```javascript
+// In create()
+this.timer = 0;
+this.totalTimer = 0;
+this.timerText = this.game.add.text(15, 15, "Time: 0", this.fontBig);
+this.totalTimeText = this.game.add.text(120, 30, "Total time: 0", this.fontSmall);
+this.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);
+
+// Counter callback
+updateCounter() {
+  this.timer++;
+  this.timerText.setText(`Time: ${this.timer}`);
+  this.totalTimeText.setText(`Total time: ${this.totalTimer + this.timer}`);
+}
+```
+
+---
+
+## Level Completion
+
+```javascript
+finishLevel() {
+  if (this.level >= this.maxLevels) {
+    this.totalTimer += this.timer;
+    alert(`Congratulations, game completed!\nTotal time: ${this.totalTimer}s`);
+    this.game.state.start("MainMenu");
+  } else {
+    alert(`Level ${this.level} completed!`);
+    this.totalTimer += this.timer;
+    this.timer = 0;
+    this.level++;
+    this.timerText.setText(`Time: ${this.timer}`);
+    this.totalTimeText.setText(`Total time: ${this.totalTimer}`);
+    this.levelText.setText(`Level: ${this.level} / ${this.maxLevels}`);
+    this.ball.body.x = this.ballStartPos.x;
+    this.ball.body.y = this.ballStartPos.y;
+    this.ball.body.velocity.x = 0;
+    this.ball.body.velocity.y = 0;
+    this.showLevel();
+  }
+}
+```
+
+---
+
+## Complete Update Loop
+
+```javascript
+update() {
+  // Keyboard input
+  if (this.keys.left.isDown) {
+    this.ball.body.velocity.x -= this.movementForce;
+  } else if (this.keys.right.isDown) {
+    this.ball.body.velocity.x += this.movementForce;
+  }
+  if (this.keys.up.isDown) {
+    this.ball.body.velocity.y -= this.movementForce;
+  } else if (this.keys.down.isDown) {
+    this.ball.body.velocity.y += this.movementForce;
+  }
+
+  // Wall collisions
+  this.physics.arcade.collide(
+    this.ball, this.borderGroup, this.wallCollision, null, this
+  );
+  this.physics.arcade.collide(
+    this.ball, this.levels[this.level - 1], this.wallCollision, null, this
+  );
+
+  // Hole overlap
+  this.physics.arcade.overlap(
+    this.ball, this.hole, this.finishLevel, null, this
+  );
+}
+```
+
+---
+
+## Phaser API Quick Reference
+
+| Function | Purpose |
+|----------|---------|
+| `this.add.sprite(x, y, key)` | Create a game object |
+| `this.add.group()` | Create a container for objects |
+| `this.add.button(x, y, key, cb, ctx, over, out, down)` | Create interactive button |
+| `this.add.text(x, y, text, style)` | Create text display |
+| `this.physics.enable(obj, system)` | Enable physics on object |
+| `this.physics.arcade.collide(a, b, cb)` | Detect collision with bounce |
+| `this.physics.arcade.overlap(a, b, cb)` | Detect overlap without bounce |
+| `this.load.image(key, path)` | Load image asset |
+| `this.load.spritesheet(key, path, w, h)` | Load sprite animation sheet |
+| `this.load.audio(key, paths[])` | Load audio with format fallbacks |
+| `this.game.add.audio(key)` | Instantiate audio object |
+| `this.time.events.loop(interval, cb, ctx)` | Create repeating timer |
 
 
 ---
@@ -10583,8 +11121,8 @@ For new projects, the **Fetch API** (`fetch()`) is generally preferred over XHR.
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/gdpr-compliant/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/gdpr-compliant/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/gdpr-compliant/SKILL.md
-- **SHA256_FINGERPRINT**: `fd2046fe70cddfe403ef255b8d822c8ad6803d92f8e5cb10fa409a9afab74d24`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:29.505623+00:00
+- **SHA256_FINGERPRINT**: `022d7884be07fbbfe24d1734861b27030ef920246d1fe986dba8a3233a8c76ff`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:01.764579+00:00
 ---
 
 **description**: Apply GDPR-compliant engineering practices across your codebase. Use this skill whenever you are designing APIs, writing data models, building authentication flows, implementing logging, handling user data, writing retention/deletion jobs, designing cloud infrastructure, or reviewing pull requests for privacy compliance. Trigger this skill for any task involving personal data, user accounts, cookies, analytics, emails, audit logs, encryption, pseudonymization, anonymization, data exports, breach response, CI/CD pipelines that process real data, or any question framed as "is this GDPR-compliant?". Inspired by CNIL developer guidance and GDPR Articles 5, 25, 32, 33, 35.
@@ -10598,8 +11136,7 @@ Inspired by CNIL developer guidance and GDPR Articles 5, 25, 32, 33, 35.
 
 For deep dives, read the reference files in `references/`:
 - `references/data-rights.md` — user rights endpoints, DSR workflow, RoPA
-- `references/security.md` — encryption, hashing, secrets, anonymization
-- `references/operations.md` — cloud, CI/CD, incident response, architecture patterns
+- `references/security.md` — encryption, hashing, secrets, anonymization, cloud, CI/CD, incident response, architecture patterns
 
 ---
 
@@ -10870,11 +11407,198 @@ ENISA, OWASP, and NIST engineering best practices.*
 
 
 ---
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/gdpr-compliant/references/Security.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/gdpr-compliant/references/Security.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/gdpr-compliant/references/Security.md
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/gdpr-compliant/references/data-rights.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/gdpr-compliant/references/data-rights.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/gdpr-compliant/references/data-rights.md
+- **SHA256_FINGERPRINT**: `8a17c938497e5988c70775b2431377204cb37c225613c92cc4176ca1d1d450f8`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:29.448814+00:00
+---
+
+# GDPR Reference — Data Rights, Accountability & Governance
+
+Load this file when you need implementation detail on:
+user rights endpoints, Data Subject Request (DSR) workflow,
+Record of Processing Activities (RoPA), consent management.
+
+---
+
+## User Rights Implementation (Articles 15–22)
+
+Every right MUST have a tested API endpoint or documented back-office process
+before the system goes live. Respond to verified requests within **30 calendar days**.
+
+| Right | Article | Engineering implementation |
+|---|---|---|
+| Right of access | 15 | `GET /api/v1/me/data-export` — all personal data, JSON or CSV |
+| Right to rectification | 16 | `PUT /api/v1/me/profile` — propagate to all downstream stores |
+| Right to erasure | 17 | `DELETE /api/v1/me` — scrub all stores per erasure checklist |
+| Right to restriction | 18 | `ProcessingRestricted` flag on user record; gate non-essential processing |
+| Right to portability | 20 | Same as access endpoint; structured, machine-readable (JSON) |
+| Right to object | 21 | Opt-out endpoint for legitimate-interest processing; honor immediately |
+| Automated decision-making | 22 | Expose a human review path + explanation of the logic |
+
+### Erasure Checklist — MUST cover all stores
+
+When `DELETE /api/v1/me` is called, the erasure pipeline MUST scrub:
+
+- Primary relational database (anonymize or delete rows)
+- Read replicas
+- Search index (Elasticsearch, Azure Cognitive Search, etc.)
+- In-memory cache (Redis, IMemoryCache)
+- Object storage (S3, Azure Blob — profile pictures, documents)
+- Email service logs (Brevo, SendGrid — delivery logs)
+- Analytics platform (Mixpanel, Amplitude, GA4 — user deletion API)
+- Audit logs (anonymize identifying fields — do not delete the event)
+- Backups (document the backup TTL; accept that backups expire naturally)
+- CDN edge cache (purge if personal data may be cached)
+- Third-party sub-processors (trigger their deletion API or document the manual step)
+
+### Data Export Format (`GET /api/v1/me/data-export`)
+
+```json
+{
+  "exportedAt": "2025-03-30T10:00:00Z",
+  "subject": {
+    "id": "uuid",
+    "email": "user@example.com",
+    "createdAt": "2024-01-15T08:30:00Z"
+  },
+  "profile": { ... },
+  "orders": [ ... ],
+  "consents": [ ... ],
+  "auditEvents": [ ... ]
+}
+```
+
+- MUST be machine-readable (JSON preferred, CSV acceptable).
+- MUST NOT be a PDF screenshot or HTML page.
+- MUST include all stores listed in the RoPA for this user.
+
+### DSR Tracker (back-office)
+
+Implement a **Data Subject Request tracker** with:
+- Incoming request date
+- Request type (access / rectification / erasure / portability / restriction / objection)
+- Verification status (identity confirmed y/n)
+- Deadline (received date + 30 days)
+- Assigned handler
+- Completion date and outcome
+- Notes
+
+Automate the primary store scrubbing; document manual steps for third-party stores.
+
+---
+
+## Record of Processing Activities (RoPA)
+
+Maintain as a living document (Markdown, YAML, or JSON) version-controlled in the repo.
+Update with **every** new feature that introduces a processing activity.
+
+### Minimum fields per processing activity
+
+```yaml
+- name: "User account management"
+  purpose: "Create and manage user accounts for service access"
+  legalBasis: "Contract (Art. 6(1)(b))"
+  dataSubjects: ["Registered users"]
+  personalDataCategories: ["Name", "Email", "Password hash", "IP address"]
+  recipients: ["Internal engineering team", "Brevo (email delivery)"]
+  retentionPeriod: "Account lifetime + 12 months"
+  transfers:
+    outside_eea: true
+    safeguard: "Brevo — Standard Contractual Clauses (SCCs)"
+  securityMeasures: ["TLS 1.3", "AES-256 at rest", "bcrypt password hashing"]
+  dpia_required: false
+```
+
+### Legal basis options (Art. 6)
+
+| Basis | When to use |
+|---|---|
+| `Contract (6(1)(b))` | Processing necessary to fulfill the service contract |
+| `Legitimate interest (6(1)(f))` | Fraud prevention, security, analytics (requires balancing test) |
+| `Consent (6(1)(a))` | Marketing, non-essential cookies, optional profiling |
+| `Legal obligation (6(1)(c))` | Tax records, anti-money-laundering |
+| `Vital interest (6(1)(d))` | Emergency situations only |
+| `Public task (6(1)(e))` | Public authorities |
+
+---
+
+## Consent Management
+
+### MUST
+
+- Store consent as an **immutable event log**, not a mutable boolean flag.
+- Record: what was consented to, when, which version of the privacy policy, the mechanism.
+- Load analytics / marketing SDKs **conditionally** — only after consent is granted.
+- Provide a consent withdrawal mechanism as easy to use as the consent grant.
+
+### Consent store schema (minimum)
+
+```sql
+CREATE TABLE ConsentRecords (
+    Id          UUID PRIMARY KEY,
+    UserId      UUID NOT NULL,
+    Purpose     VARCHAR(100) NOT NULL,   -- e.g. "marketing_emails", "analytics"
+    Granted     BOOLEAN NOT NULL,
+    PolicyVersion VARCHAR(20) NOT NULL,
+    ConsentedAt TIMESTAMPTZ NOT NULL,
+    IpAddressHash VARCHAR(64),           -- HMAC-SHA256 of anonymized IP
+    UserAgent   VARCHAR(500)
+);
+```
+
+### MUST NOT
+
+- MUST NOT pre-tick consent checkboxes.
+- MUST NOT bundle consent for marketing with consent for service delivery.
+- MUST NOT make service access conditional on marketing consent.
+- MUST NOT use dark patterns (e.g., "Accept all" prominent, "Reject" buried).
+
+---
+
+## Sub-processor Management
+
+Maintain a **sub-processor list** updated with every new SaaS tool or cloud service
+that touches personal data.
+
+Minimum fields per sub-processor:
+
+| Field | Example |
+|---|---|
+| Name | Brevo |
+| Service | Transactional email |
+| Data categories transferred | Email address, name, email content |
+| Processing location | EU (Paris) |
+| DPA signed |  2024-01-10 |
+| DPA URL / reference | [link] |
+| SCCs applicable | N/A (EU-based) |
+
+**MUST** review the sub-processor list annually and upon any change.
+**MUST NOT** allow data to flow to a new sub-processor before a DPA is signed.
+
+---
+
+## DPIA Triggers (Article 35)
+
+A DPIA is **mandatory** before processing that is likely to result in a high risk. Triggers include:
+
+- Systematic and extensive profiling with significant effects on individuals
+- Large-scale processing of special category data (health, biometric, racial origin, sexual orientation, religion)
+- Systematic monitoring of publicly accessible areas (CCTV, location tracking)
+- Processing of children's data at scale
+- Innovative technology with unknown privacy implications
+- Matching or combining datasets from multiple sources
+
+When in doubt: conduct the DPIA anyway. Document the outcome.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/gdpr-compliant/references/security.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/gdpr-compliant/references/security.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/gdpr-compliant/references/security.md
 - **SHA256_FINGERPRINT**: `37e0894ff66ee373fbb9aa0fd4c58c31229abd7ebedc2c26d39b289655cf416c`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:29.452453+00:00
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:01.872176+00:00
 ---
 
 # GDPR Reference — Security, Operations & Architecture
@@ -11143,193 +11867,6 @@ The analytics zone receives only pseudonymized identifiers.
 Encrypt personal data in events with a per-user DEK stored in the KMS.
 On user erasure: delete the DEK → all historical events for that user are effectively anonymized
 without modifying the event log.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/gdpr-compliant/references/data-rights.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/gdpr-compliant/references/data-rights.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/gdpr-compliant/references/data-rights.md
-- **SHA256_FINGERPRINT**: `8a17c938497e5988c70775b2431377204cb37c225613c92cc4176ca1d1d450f8`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:29.448814+00:00
----
-
-# GDPR Reference — Data Rights, Accountability & Governance
-
-Load this file when you need implementation detail on:
-user rights endpoints, Data Subject Request (DSR) workflow,
-Record of Processing Activities (RoPA), consent management.
-
----
-
-## User Rights Implementation (Articles 15–22)
-
-Every right MUST have a tested API endpoint or documented back-office process
-before the system goes live. Respond to verified requests within **30 calendar days**.
-
-| Right | Article | Engineering implementation |
-|---|---|---|
-| Right of access | 15 | `GET /api/v1/me/data-export` — all personal data, JSON or CSV |
-| Right to rectification | 16 | `PUT /api/v1/me/profile` — propagate to all downstream stores |
-| Right to erasure | 17 | `DELETE /api/v1/me` — scrub all stores per erasure checklist |
-| Right to restriction | 18 | `ProcessingRestricted` flag on user record; gate non-essential processing |
-| Right to portability | 20 | Same as access endpoint; structured, machine-readable (JSON) |
-| Right to object | 21 | Opt-out endpoint for legitimate-interest processing; honor immediately |
-| Automated decision-making | 22 | Expose a human review path + explanation of the logic |
-
-### Erasure Checklist — MUST cover all stores
-
-When `DELETE /api/v1/me` is called, the erasure pipeline MUST scrub:
-
-- Primary relational database (anonymize or delete rows)
-- Read replicas
-- Search index (Elasticsearch, Azure Cognitive Search, etc.)
-- In-memory cache (Redis, IMemoryCache)
-- Object storage (S3, Azure Blob — profile pictures, documents)
-- Email service logs (Brevo, SendGrid — delivery logs)
-- Analytics platform (Mixpanel, Amplitude, GA4 — user deletion API)
-- Audit logs (anonymize identifying fields — do not delete the event)
-- Backups (document the backup TTL; accept that backups expire naturally)
-- CDN edge cache (purge if personal data may be cached)
-- Third-party sub-processors (trigger their deletion API or document the manual step)
-
-### Data Export Format (`GET /api/v1/me/data-export`)
-
-```json
-{
-  "exportedAt": "2025-03-30T10:00:00Z",
-  "subject": {
-    "id": "uuid",
-    "email": "user@example.com",
-    "createdAt": "2024-01-15T08:30:00Z"
-  },
-  "profile": { ... },
-  "orders": [ ... ],
-  "consents": [ ... ],
-  "auditEvents": [ ... ]
-}
-```
-
-- MUST be machine-readable (JSON preferred, CSV acceptable).
-- MUST NOT be a PDF screenshot or HTML page.
-- MUST include all stores listed in the RoPA for this user.
-
-### DSR Tracker (back-office)
-
-Implement a **Data Subject Request tracker** with:
-- Incoming request date
-- Request type (access / rectification / erasure / portability / restriction / objection)
-- Verification status (identity confirmed y/n)
-- Deadline (received date + 30 days)
-- Assigned handler
-- Completion date and outcome
-- Notes
-
-Automate the primary store scrubbing; document manual steps for third-party stores.
-
----
-
-## Record of Processing Activities (RoPA)
-
-Maintain as a living document (Markdown, YAML, or JSON) version-controlled in the repo.
-Update with **every** new feature that introduces a processing activity.
-
-### Minimum fields per processing activity
-
-```yaml
-- name: "User account management"
-  purpose: "Create and manage user accounts for service access"
-  legalBasis: "Contract (Art. 6(1)(b))"
-  dataSubjects: ["Registered users"]
-  personalDataCategories: ["Name", "Email", "Password hash", "IP address"]
-  recipients: ["Internal engineering team", "Brevo (email delivery)"]
-  retentionPeriod: "Account lifetime + 12 months"
-  transfers:
-    outside_eea: true
-    safeguard: "Brevo — Standard Contractual Clauses (SCCs)"
-  securityMeasures: ["TLS 1.3", "AES-256 at rest", "bcrypt password hashing"]
-  dpia_required: false
-```
-
-### Legal basis options (Art. 6)
-
-| Basis | When to use |
-|---|---|
-| `Contract (6(1)(b))` | Processing necessary to fulfill the service contract |
-| `Legitimate interest (6(1)(f))` | Fraud prevention, security, analytics (requires balancing test) |
-| `Consent (6(1)(a))` | Marketing, non-essential cookies, optional profiling |
-| `Legal obligation (6(1)(c))` | Tax records, anti-money-laundering |
-| `Vital interest (6(1)(d))` | Emergency situations only |
-| `Public task (6(1)(e))` | Public authorities |
-
----
-
-## Consent Management
-
-### MUST
-
-- Store consent as an **immutable event log**, not a mutable boolean flag.
-- Record: what was consented to, when, which version of the privacy policy, the mechanism.
-- Load analytics / marketing SDKs **conditionally** — only after consent is granted.
-- Provide a consent withdrawal mechanism as easy to use as the consent grant.
-
-### Consent store schema (minimum)
-
-```sql
-CREATE TABLE ConsentRecords (
-    Id          UUID PRIMARY KEY,
-    UserId      UUID NOT NULL,
-    Purpose     VARCHAR(100) NOT NULL,   -- e.g. "marketing_emails", "analytics"
-    Granted     BOOLEAN NOT NULL,
-    PolicyVersion VARCHAR(20) NOT NULL,
-    ConsentedAt TIMESTAMPTZ NOT NULL,
-    IpAddressHash VARCHAR(64),           -- HMAC-SHA256 of anonymized IP
-    UserAgent   VARCHAR(500)
-);
-```
-
-### MUST NOT
-
-- MUST NOT pre-tick consent checkboxes.
-- MUST NOT bundle consent for marketing with consent for service delivery.
-- MUST NOT make service access conditional on marketing consent.
-- MUST NOT use dark patterns (e.g., "Accept all" prominent, "Reject" buried).
-
----
-
-## Sub-processor Management
-
-Maintain a **sub-processor list** updated with every new SaaS tool or cloud service
-that touches personal data.
-
-Minimum fields per sub-processor:
-
-| Field | Example |
-|---|---|
-| Name | Brevo |
-| Service | Transactional email |
-| Data categories transferred | Email address, name, email content |
-| Processing location | EU (Paris) |
-| DPA signed |  2024-01-10 |
-| DPA URL / reference | [link] |
-| SCCs applicable | N/A (EU-based) |
-
-**MUST** review the sub-processor list annually and upon any change.
-**MUST NOT** allow data to flow to a new sub-processor before a DPA is signed.
-
----
-
-## DPIA Triggers (Article 35)
-
-A DPIA is **mandatory** before processing that is likely to result in a high risk. Triggers include:
-
-- Systematic and extensive profiling with significant effects on individuals
-- Large-scale processing of special category data (health, biometric, racial origin, sexual orientation, religion)
-- Systematic monitoring of publicly accessible areas (CCTV, location tracking)
-- Processing of children's data at scale
-- Innovative technology with unknown privacy implications
-- Matching or combining datasets from multiple sources
-
-When in doubt: conduct the DPIA anyway. Document the outcome.
 
 
 ---
@@ -87412,296 +87949,3 @@ Whenever you receive a prompt to "Build a premium landing page," "Create an Awww
 3. Integrate sweeping, staggered component entrances.
 4. Elevate the typography using fluid scales.
 5. Create an intentional, memorable aesthetic footprint.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/project-workflow-analysis-blueprint-generator/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/project-workflow-analysis-blueprint-generator/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/project-workflow-analysis-blueprint-generator/SKILL.md
-- **SHA256_FINGERPRINT**: `e2da4582cc227631ae1243b3ecda80531dd5692d4014819995bfda323b40247c`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.149054+00:00
----
-
-**description**: Comprehensive technology-agnostic prompt generator for documenting end-to-end application workflows. Automatically detects project architecture patterns, technology stacks, and data flow patterns to generate detailed implementation blueprints covering entry points, service layers, data access, error handling, and testing approaches across multiple technologies including .NET, Java/Spring, React, and microservices architectures.
-
-# Project Workflow Documentation Generator
-
-## Configuration Variables
-
-```
-${PROJECT_TYPE="Auto-detect|.NET|Java|Spring|Node.js|Python|React|Angular|Microservices|Other"}
-
-${ENTRY_POINT="API|GraphQL|Frontend|CLI|Message Consumer|Scheduled Job|Custom"}
-
-${PERSISTENCE_TYPE="Auto-detect|SQL Database|NoSQL Database|File System|External API|Message Queue|Cache|None"}
-
-${ARCHITECTURE_PATTERN="Auto-detect|Layered|Clean|CQRS|Microservices|MVC|MVVM|Serverless|Event-Driven|Other"}
-
-${WORKFLOW_COUNT=1-5}
-
-${DETAIL_LEVEL="Standard|Implementation-Ready"}
-
-${INCLUDE_SEQUENCE_DIAGRAM=true|false}
-
-${INCLUDE_TEST_PATTERNS=true|false}
-
-```
-
-## Generated Prompt
-
-```
-"Analyze the codebase and document ${WORKFLOW_COUNT} representative end-to-end workflows
-that can serve as implementation templates for similar features. Use the following approach:
-```
-
-### Initial Detection Phase
-
-```
-${PROJECT_TYPE == "Auto-detect" ?
-  "Begin by examining the codebase structure to identify technologies:
-   - Check for .NET solutions/projects, Spring configurations, Node.js/Express files, etc.
-   - Identify the primary programming language(s) and frameworks in use
-   - Determine the architectural patterns based on folder structure and key components"
-  : "Focus on ${PROJECT_TYPE} patterns and conventions"}
-```
-
-```
-${ENTRY_POINT == "Auto-detect" ?
-  "Identify typical entry points by looking for:
-   - API controllers or route definitions
-   - GraphQL resolvers
-   - UI components that initiate network requests
-   - Message handlers or event subscribers
-   - Scheduled job definitions"
-  : "Focus on ${ENTRY_POINT} entry points"}
-```
-
-```
-${PERSISTENCE_TYPE == "Auto-detect" ?
-  "Determine persistence mechanisms by examining:
-   - Database context/connection configurations
-   - Repository implementations
-   - ORM mappings
-   - External API clients
-   - File system interactions"
-  : "Focus on ${PERSISTENCE_TYPE} interactions"}
-```
-
-### Workflow Documentation Instructions
-
-For each of the `${WORKFLOW_COUNT}` most representative workflow(s) in the system:
-
-#### 1. Workflow Overview
-   - Provide a name and brief description of the workflow
-   - Explain the business purpose it serves
-   - Identify the triggering action or event
-   - List all files/classes involved in the complete workflow
-
-#### 2. Entry Point Implementation
-
-**API Entry Points:**
-```
-${ENTRY_POINT == "API" || ENTRY_POINT == "Auto-detect" ?
-  "- Document the API controller class and method that receives the request
-   - Show the complete method signature including attributes/annotations
-   - Include the full request DTO/model class definition
-   - Document validation attributes and custom validators
-   - Show authentication/authorization attributes and checks" : ""}
-```
-
-**GraphQL Entry Points:**
-```
-${ENTRY_POINT == "GraphQL" || ENTRY_POINT == "Auto-detect" ?
-  "- Document the GraphQL resolver class and method
-   - Show the complete schema definition for the query/mutation
-   - Include input type definitions
-   - Show resolver method implementation with parameter handling" : ""}
-```
-
-**Frontend Entry Points:**
-```
-${ENTRY_POINT == "Frontend" || ENTRY_POINT == "Auto-detect" ?
-  "- Document the component that initiates the API call
-   - Show the event handler that triggers the request
-   - Include the API client service method
-   - Show state management code related to the request" : ""}
-```
-
-**Message Consumer Entry Points:**
-```
-${ENTRY_POINT == "Message Consumer" || ENTRY_POINT == "Auto-detect" ?
-  "- Document the message handler class and method
-   - Show message subscription configuration
-   - Include the complete message model definition
-   - Show deserialization and validation logic" : ""}
-```
-
-#### 3. Service Layer Implementation
-   - Document each service class involved with their dependencies
-   - Show the complete method signatures with parameters and return types
-   - Include actual method implementations with key business logic
-   - Document interface definitions where applicable
-   - Show dependency injection registration patterns
-
-**CQRS Patterns:**
-```
-${ARCHITECTURE_PATTERN == "CQRS" || ARCHITECTURE_PATTERN == "Auto-detect" ?
-  "- Include complete command/query handler implementations" : ""}
-```
-
-**Clean Architecture Patterns:**
-```
-${ARCHITECTURE_PATTERN == "Clean" || ARCHITECTURE_PATTERN == "Auto-detect" ?
-  "- Show use case/interactor implementations" : ""}
-```
-
-#### 4. Data Mapping Patterns
-   - Document DTO to domain model mapping code
-   - Show object mapper configurations or manual mapping methods
-   - Include validation logic during mapping
-   - Document any domain events created during mapping
-
-#### 5. Data Access Implementation
-   - Document repository interfaces and their implementations
-   - Show complete method signatures with parameters and return types
-   - Include actual query implementations
-   - Document entity/model class definitions with all properties
-   - Show transaction handling patterns
-
-**SQL Database Patterns:**
-```
-${PERSISTENCE_TYPE == "SQL Database" || PERSISTENCE_TYPE == "Auto-detect" ?
-  "- Include ORM configurations, annotations, or Fluent API usage
-   - Show actual SQL queries or ORM statements" : ""}
-```
-
-**NoSQL Database Patterns:**
-```
-${PERSISTENCE_TYPE == "NoSQL Database" || PERSISTENCE_TYPE == "Auto-detect" ?
-  "- Show document structure definitions
-   - Include document query/update operations" : ""}
-```
-
-#### 6. Response Construction
-   - Document response DTO/model class definitions
-   - Show mapping from domain/entity models to response models
-   - Include status code selection logic
-   - Document error response structure and generation
-
-#### 7. Error Handling Patterns
-   - Document exception types used in the workflow
-   - Show try/catch patterns at each layer
-   - Include global exception handler configurations
-   - Document error logging implementations
-   - Show retry policies or circuit breaker patterns
-   - Include compensating actions for failure scenarios
-
-#### 8. Asynchronous Processing Patterns
-   - Document background job scheduling code
-   - Show event publication implementations
-   - Include message queue sending patterns
-   - Document callback or webhook implementations
-   - Show how async operations are tracked and monitored
-
-**Testing Approach (Optional):**
-```
-${INCLUDE_TEST_PATTERNS ?
-  "9. **Testing Approach**
-     - Document unit test implementations for each layer
-     - Show mocking patterns and test fixture setup
-     - Include integration test implementations
-     - Document test data generation approaches
-     - Show API/controller test implementations" : ""}
-```
-
-**Sequence Diagram (Optional):**
-```
-${INCLUDE_SEQUENCE_DIAGRAM ?
-  "10. **Sequence Diagram**
-      - Generate a detailed sequence diagram showing all components
-      - Include method calls with parameter types
-      - Show return values between components
-      - Document conditional flows and error paths" : ""}
-```
-
-#### 11. Naming Conventions
-Document consistent patterns for:
-- Controller naming (e.g., `EntityNameController`)
-- Service naming (e.g., `EntityNameService`)
-- Repository naming (e.g., `IEntityNameRepository`)
-- DTO naming (e.g., `EntityNameRequest`, `EntityNameResponse`)
-- Method naming patterns for CRUD operations
-- Variable naming conventions
-- File organization patterns
-
-#### 12. Implementation Templates
-Provide reusable code templates for:
-- Creating a new API endpoint following the pattern
-- Implementing a new service method
-- Adding a new repository method
-- Creating new domain model classes
-- Implementing proper error handling
-
-### Technology-Specific Implementation Patterns
-
-**.NET Implementation Patterns (if detected):**
-```
-${PROJECT_TYPE == ".NET" || PROJECT_TYPE == "Auto-detect" ?
-  "- Complete controller class with attributes, filters, and dependency injection
-   - Service registration in Startup.cs or Program.cs
-   - Entity Framework DbContext configuration
-   - Repository implementation with EF Core or Dapper
-   - AutoMapper profile configurations
-   - Middleware implementations for cross-cutting concerns
-   - Extension method patterns
-   - Options pattern implementation for configuration
-   - Logging implementation with ILogger
-   - Authentication/authorization filter or policy implementations" : ""}
-```
-
-**Spring Implementation Patterns (if detected):**
-```
-${PROJECT_TYPE == "Java" || PROJECT_TYPE == "Spring" || PROJECT_TYPE == "Auto-detect" ?
-  "- Complete controller class with annotations and dependency injection
-   - Service implementation with transaction boundaries
-   - Repository interface and implementation
-   - JPA entity definitions with relationships
-   - DTO class implementations
-   - Bean configuration and component scanning
-   - Exception handler implementations
-   - Custom validator implementations" : ""}
-```
-
-**React Implementation Patterns (if detected):**
-```
-${PROJECT_TYPE == "React" || PROJECT_TYPE == "Auto-detect" ?
-  "- Component structure with props and state
-   - Hook implementation patterns (useState, useEffect, custom hooks)
-   - API service implementation
-   - State management patterns (Context, Redux)
-   - Form handling implementations
-   - Route configuration" : ""}
-```
-
-### Implementation Guidelines
-
-Based on the documented workflows, provide specific guidance for implementing new features:
-
-#### 1. Step-by-Step Implementation Process
-- Where to start when adding a similar feature
-- Order of implementation (e.g., model → repository → service → controller)
-- How to integrate with existing cross-cutting concerns
-
-#### 2. Common Pitfalls to Avoid
-- Identify error-prone areas in the current implementation
-- Note performance considerations
-- List common bugs or issues encountered
-
-#### 3. Extension Mechanisms
-- Document how to plug into existing extension points
-- Show how to add new behavior without modifying existing code
-- Explain configuration-driven feature patterns
-
-**Conclusion:**
-Conclude with a summary of the most important patterns that should be followed when
-implementing new features to maintain consistency with the codebase."

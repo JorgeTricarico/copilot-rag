@@ -24,19 +24,17 @@ Each call gives the agent new information or changes the development environment
 
 VS Code supports three types of tools:
 
-* **Built-in tools**: tools that ship with VS Code for common development tasks, like reading and writing files, running terminal commands, searching your codebase, and navigating the editor. These are available immediately without any setup.
+* **Built-in tools**: tools supplied for common development tasks, like reading and writing files, running terminal commands, and searching your codebase. Which tools are available depends on the harness and interface.
 * **MCP tools**: tools provided by [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) servers, an open standard for connecting AI models to external tools and data sources. MCP tools can come from servers you [configure directly](/docs/agent-customization/mcp-servers.md), managed [Copilot connectors](/docs/agent-customization/copilot-connectors.md) `feature(copilot-connectors)`, or servers bundled in [agent plugins](/docs/agent-customization/agent-plugins.md). MCP servers can run locally on your machine or be hosted remotely. Use MCP tools to connect to databases, APIs, and other external services.
 * **Extension tools**: tools contributed by VS Code extensions through the Language Model Tools API. Extension tools integrate deeply with the editor and are available when you install the extension.
+
+An MCP server can also supply [skills](/docs/agent-customization/agent-skills.md#use-skills-from-an-mcp-server) `feature(mcp-skills)` in Copilot harness sessions: tools provide actions the agent can take, while skills provide workflow instructions.
 
 ### Connect external services
 
 [Copilot connectors](/docs/agent-customization/copilot-connectors.md) `feature(copilot-connectors)` are [product.prodname_github]-managed connections that add MCP tools to your agent. For example, connect Microsoft Learn Docs so the agent can retrieve official documentation while working on a task.
 
-Use a connector for a supported service when you want a managed connection without local server setup or manual MCP configuration. If the service isn't available as a connector or you need a custom integration, [add an MCP server](/docs/agent-customization/mcp-servers.md).
-
-Connectors are available in Copilot harness sessions, not Local sessions. [Connect a service from the Agent Customizations editor](/docs/agent-customization/copilot-connectors.md#connect-a-service).
-
-[Agent plugins](/docs/agent-customization/agent-plugins.md) can bundle MCP servers with skills, custom agents, and other customizations. Use a plugin when you want those tools as part of a packaged workflow.
+Use a connector for a supported service when you want a managed connection, an [MCP server](/docs/agent-customization/mcp-servers.md) for a custom integration, or an [agent plugin](/docs/agent-customization/agent-plugins.md) when the integration is part of a packaged workflow. Connectors require a Copilot harness session. Follow the [connector guide](/docs/agent-customization/copilot-connectors.md) for availability and setup.
 
 ## How agents choose tools
 
@@ -50,10 +48,9 @@ An available tool comes from VS Code, an installed extension, or an MCP server. 
 
 Limit enabled tools to the capabilities that are relevant to your task. A focused set helps the agent choose appropriate tools, reduces the chance of unnecessary actions, and limits the tool output added to the [context window](/docs/agents/concepts/language-models.md#context-window).
 
-For Copilot harness sessions, your tool selection persists in the active [user profile](/docs/configure/profiles.md). Tools can also be fixed for a reusable [custom agent](/docs/agent-customization/custom-agents.md). Learn how to [manage available tools](/docs/agents/run/tools.md#manage-available-tools).
+Tool selection and how long it persists depend on the harness. Tools can also be configured for a reusable [custom agent](/docs/agent-customization/custom-agents.md). Learn how to [manage available tools](/docs/agents/run/tools.md#manage-available-tools).
 
-> [!NOTE]
-> **For Local harness sessions:** The tool selection applies to one chat request rather than persisting across requests.
+An enabled tool isn't automatically approved to run. The agent can request it, but the applicable permission checks still determine whether the call proceeds.
 
 ## Tool approval and trust
 

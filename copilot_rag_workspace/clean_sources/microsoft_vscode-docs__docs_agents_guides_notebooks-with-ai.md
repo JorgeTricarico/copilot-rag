@@ -18,7 +18,7 @@ This guide shows how to use AI for data analysis in a Jupyter notebook while you
 
 Start with the outcome you want instead of specifying individual cells. The agent plans the notebook, creates Markdown and code cells, and can run the code to validate the result.
 
-1. Open the [Chat view](/docs/agents/run/chat-view.md) (``Shortcut: workbench.action.chat.open``) and start a **Local** agent session.
+1. Open the [Chat view](/docs/agents/run/chat-view.md) (``Shortcut: workbench.action.chat.open``) and start a **Local** agent session `feature(local-harness)`.
 
 1. Add your data file as context, then describe the analysis and output you want.
 

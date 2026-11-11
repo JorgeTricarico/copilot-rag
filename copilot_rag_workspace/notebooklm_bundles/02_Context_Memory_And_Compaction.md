@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 02_Context_Memory_And_Compaction
-- **Generado (UTC)**: 2026-11-06T05:48:43.972846+00:00
-- **Total Palabras**: 6,684 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-11T05:27:05.014984+00:00
+- **Total Palabras**: 6,686 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -171,8 +171,8 @@ An existing repository index can remain available when external ingest is disabl
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/chat/chat-overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/chat/chat-overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/chat/chat-overview.md
-- **SHA256_FINGERPRINT**: `7cbd1f00c7ada18bd3aa2587321f5322f93b58708e3748ab50f71a1a676580ca`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:27.385136+00:00
+- **SHA256_FINGERPRINT**: `c47b1f14bc52c892bb6cc85c017d0d7646dbb89b3e624a95a4da25724b021fa6`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.639818+00:00
 ---
 
 **MetaDescription**: Use chat in VS Code to ask about code, send requests, add context, and review AI-generated changes.
@@ -230,7 +230,7 @@ For example, enter the following message to run your tests:
 The command runs immediately in the session's default shell, without sending the message to the agent or asking for approval. It uses the session folder or worktree as the working directory. The command output and exit status appear in the chat transcript.
 
 > [!NOTE]
-> The `!` command isn't available in Local harness sessions, cloud sessions, or extension-based agent integrations. Use the [integrated terminal](/docs/terminal/getting-started.md) to run commands yourself instead.
+> The `!` command isn't available in Local harness sessions `feature(local-harness)`, cloud sessions, or extension-based agent integrations. Use the [integrated terminal](/docs/terminal/getting-started.md) to run commands yourself instead.
 
 ## Send messages while a request is running
 
@@ -268,7 +268,9 @@ Providing the right context helps the AI generate more relevant and accurate res
 
 Learn more about [managing context for AI](/docs/chat/copilot-chat-context.md).
 
-## Generate and edit images (Experimental)
+## Generate and edit images
+
+`feature(image-generation)`
 
 Generate illustrations, UI mockups, or other image assets directly in chat. In a [Copilot harness](/docs/agents/run/agent-harnesses.md) session, the agent uses a dedicated image-generation model, separate from the language model selected for the conversation.
 
@@ -393,9 +395,11 @@ For an image background, run **Chat: Change Background Layout...** to repeat, st
 
 Backgrounds are hidden in high contrast themes to preserve chat readability. The background commands are also unavailable while a high contrast theme is active.
 
-#### Generate a chat background (Experimental)
+#### Generate a chat background
 
-Generate a background from a text description instead of finding an image yourself. [Configure image generation](#generate-and-edit-images-experimental) and keep ``chat.agentSessions.appearanceTools.enabled`` turned on.
+`feature(image-generation)`
+
+Generate a background from a text description instead of finding an image yourself. [Configure image generation](#generate-and-edit-images) and keep ``chat.agentSessions.appearanceTools.enabled`` turned on.
 
 In a [Copilot harness](/docs/agents/run/agent-harnesses.md) session in the Agents window, ask the agent to generate an image and apply it as your chat background. For example:
 
@@ -443,8 +447,8 @@ To learn more about Copilot's security, privacy, compliance, and transparency, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/chat/copilot-chat-context.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/chat/copilot-chat-context
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/chat/copilot-chat-context.md
-- **SHA256_FINGERPRINT**: `748ecb2b0e80311f9e5fdf5527cc6437c885c52769727a5286cf8887862d929b`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:27.412223+00:00
+- **SHA256_FINGERPRINT**: `96234d133ba00ddeede5c4cac5db308f0a904e4bcc2da07e6ac9a88860920e2a`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.657291+00:00
 ---
 
 **MetaDescription**: Add files, symbols, images, browser content, and other context to AI prompts in Visual Studio Code for more relevant responses.
@@ -528,7 +532,7 @@ Learn more about [using tools with agents](/docs/agents/run/tools.md).
 
 ## @-mentions
 
-Chat participants invoked with `@name` are deprecated and are not supported in the Copilot harness. They remain available for Local harness compatibility.
+Chat participants invoked with `@name` are deprecated and are not supported in the Copilot harness. They remain available for Local harness compatibility `feature(local-harness)`.
 
 Ask Copilot directly about your code, terminal output, or editor settings and attach the relevant context. For domain-specific integrations, use plugins with skills and MCP tools, or extension tools when editor context is required. See [Replace chat participants](/docs/agent-customization/migrate-customizations.md#replace-chat-participants).
 
@@ -536,7 +540,7 @@ Ask Copilot directly about your code, terminal output, or editor settings and at
 
 Chat supports vision capabilities, which means you can attach an image as context to your chat prompt and ask questions about it. For example, attach a screenshot of a block of code and ask to explain it, or attach a sketch of a UI and ask the agent to implement it.
 
-Vision analyzes image input and doesn't generate image output. To create an image or edit an existing one, use [image generation](/docs/chat/chat-overview.md#generate-and-edit-images-experimental) in a Copilot harness session.
+Vision analyzes image input and doesn't generate image output. To create an image or edit an existing one, use [image generation](/docs/chat/chat-overview.md#generate-and-edit-images) in a Copilot harness session.
 
 > [!TIP]
 > You can drag and drop an image from a web browser onto the Chat view to add it as context.

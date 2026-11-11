@@ -73,8 +73,8 @@
 # Tuesday afternoon/Wednesday morning
 
 - In extreme cases, accept candidate changes
-    - [ ] Build stable from `release/<x.y>`. Do *not* bump the VS Code version.
-    - [ ] Release stable to MSFT folks
+    - [x] Build stable from `release/<x.y>`. Do *not* bump the VS Code version.
+    - [x] Release stable to MSFT folks
 
 # Wednesday
 `@endgame-champ`:

@@ -1,13 +1,13 @@
 **MetaDescription**: Reuse and configure agent hooks for personal and shared workflows in VS Code.
 
-# Configure agent hooks in Visual Studio Code (Preview)
+# Configure agent hooks in Visual Studio Code
 
 Hooks run custom actions at specific points in the agent's workflow, such as before or after a tool runs. Use them to add context, validate a tool call, run a formatter, or record an event without relying on the model to request the action.
 
 Use the [Agent Customizations editor](#find-and-manage-hooks) to create and manage hooks for the shared Copilot runtime. This article walks through creating a hook, adding its supporting script, and verifying the result. If you already have hooks for another harness, start with [Migrate hooks](/docs/agent-customization/migrate-customizations.md#migrate-hooks). Migration includes user folders, settings, custom agents, and plugins, not only repository files.
 
 > [!NOTE]
-> The VS Code hooks experience is in Preview. Individual provider implementations can have a different lifecycle status and release schedule.
+> Individual provider implementations can have a different lifecycle status and release schedule.
 
 > [!IMPORTANT]
 > Your organization might restrict which hooks can run. Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access. Administrators can learn how to [manage hooks in enterprise environments](/docs/enterprise/manage-ai-settings.md#enable-or-disable-hooks).
@@ -27,7 +27,7 @@ Other session targets use their own hook implementations:
 
 [Cloud sessions](/docs/agents/run/cloud-sandbox-sessions.md) `feature(cloud-sessions)` use the Copilot harness in a managed environment. Local hook files aren't automatically copied to that environment. Check the configuration available in the cloud workspace rather than assuming that hooks on your machine apply there.
 
-The older Local harness has a separate [Local hooks reference](/docs/agents/reference/hooks-reference.md). Use it to interpret existing hooks during migration, not as the schema for a new Copilot hook.
+The Local harness `feature(local-harness)` has a separate [Local hooks reference](/docs/agents/reference/hooks-reference.md). Use it to interpret existing hooks during migration, not as the schema for a new Copilot hook.
 
 ### Migrate hooks between harnesses
 
@@ -198,6 +198,8 @@ The [custom-agent editor](/docs/agents/reference/custom-agent-file-reference.md#
 Keep agent-specific automation in the agent's frontmatter. Moving a command to a repository-wide or plugin-wide event changes which agents trigger it and is not an equivalent configuration.
 
 ## Existing Local hooks
+
+`feature(local-harness)`
 
 Use this section only to identify an existing Local setup before [migrating it](/docs/agent-customization/migrate-customizations.md#migrate-hooks).
 

@@ -43,7 +43,7 @@ If you prefer to create the file outside the Agent Customizations editor, use a 
 | Copilot | `.github/copilot-instructions.md` or `AGENTS.md` |
 | [product.prodname_anthropic_claude] | `CLAUDE.md` |
 | [product.prodname_openai_codex] | `AGENTS.md` |
-| Local | `.github/copilot-instructions.md` or `AGENTS.md` |
+| Local `feature(local-harness)` | `.github/copilot-instructions.md` or `AGENTS.md` |
 
 Add your rules, save the file, and verify it as described below. `AGENTS.md` is a cross-agent format, not a Codex-only file. See [supported formats](/docs/agents/reference/custom-instructions-reference.md#supported-formats-and-locations) before sharing one file across harnesses.
 
@@ -110,7 +110,7 @@ The pattern matches `tests/test_api.py` and `tests/unit/test_api.py`, but not `s
 
 If you prefer to create the file directly, save it as `.github/instructions/python-tests.instructions.md`. Use separate `.instructions.md` files for guidance that applies to different languages, folders, or tasks.
 
-In Local sessions, you can also add a `description`, such as `'Use when creating or updating Python tests.'`, for task-based discovery. The description is not an extra restriction on `applyTo`. The agent can load the file by relevance separately from pattern matching.
+In Local sessions `feature(local-harness)`, you can also add a `description`, such as `'Use when creating or updating Python tests.'`, for task-based discovery. The description is not an extra restriction on `applyTo`. The agent can load the file by relevance separately from pattern matching.
 
 1. Open the Agent Customizations editor with the **Claude** harness selected and select **Instructions**.
 1. Select the `+` button next to **Workspace** and choose the action for a new rules file, rather than the project-wide `CLAUDE.md` file.

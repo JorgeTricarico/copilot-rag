@@ -2,7 +2,7 @@
 
 # Set up a context engineering flow in VS Code
 
-This guide shows you how to set up a context engineering workflow in VS Code using custom instructions, custom agents, and prompt files. The customization concepts apply to both the Local and Copilot agent harnesses. The runnable workflow in this guide uses the Local harness in the Chat view because it includes a prompt file and a custom agent handoff.
+This guide shows you how to set up a context engineering workflow in VS Code using custom instructions, custom agents, and prompt files. The customization concepts apply to both the Local and Copilot agent harnesses. The runnable workflow in this guide uses the Local harness `feature(local-harness)` in the Chat view because it includes a prompt file and a custom agent handoff.
 
 Context engineering is a systematic approach to providing AI agents with targeted project information to improve the quality and accuracy of generated code. By curating essential project context through custom instructions, implementation plans, and coding guidelines, you enable AI to make better decisions, improve accuracy, and maintain persistent knowledge across interactions.
 
@@ -14,7 +14,7 @@ Context engineering is a systematic approach to providing AI agents with targete
 Use your own repository for this workflow. Before you start:
 
 * Open the repository root as a folder or workspace in VS Code. The workflow stores shared customization files under `.github`.
-* Open the Chat view and select **Local** from the **Session Target** control. Run the prompts and handoffs in this view.
+* Open the Chat view and select **Local** `feature(local-harness)` from the **Session Target** control. Run the prompts and handoffs in this view.
 * Set up the repository's development environment, including its dependencies and test commands, before you ask the agent to implement a plan.
 
 If you use another harness, follow the guidance for [reusing customizations across harnesses](/docs/agent-customization/overview.md#reuse-customizations-across-harnesses) to adapt the workflow. For example, use an [agent skill](/docs/agent-customization/agent-skills.md) instead of the prompt file in this guide.

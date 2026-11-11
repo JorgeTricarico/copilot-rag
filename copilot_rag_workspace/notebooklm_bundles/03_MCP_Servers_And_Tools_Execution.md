@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 03_MCP_Servers_And_Tools_Execution
-- **Generado (UTC)**: 2026-11-09T05:28:40.387742+00:00
-- **Total Palabras**: 8,742 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-11T05:27:05.015512+00:00
+- **Total Palabras**: 8,770 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -8,188 +8,143 @@
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/mcp-servers.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/mcp-servers
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/mcp-servers.md
-- **SHA256_FINGERPRINT**: `9b9dcfe99134a649ac0bb4ef4d9022605ce192ec1773185beffcd47b6e3ade32`
-- **LAST_VERIFIED_UTC**: 2026-11-02T21:32:53.133231+00:00
+- **SHA256_FINGERPRINT**: `5432af25cf1b47d03759f4cfe219f4b4e4ad137645ae798f87962ce7b5e0103b`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:57.973709+00:00
 ---
 
-**MetaDescription**: Connect MCP servers in VS Code to give agents external tools, then verify the first tool call.
+**MetaDescription**: Add MCP servers to Copilot in VS Code and use their tools.
 
-# Add MCP servers in VS Code
+# Add and use MCP servers in VS Code
 
-Add an MCP server when your agent needs a capability its existing tools don't provide, such as querying a database or retrieving information from an external service. [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) connects agents to these tools and data sources. If your existing tools meet your needs, you don't need another server.
+Add an MCP server when Copilot needs tools or data that aren't already available, such as querying a database or searching a documentation service. [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) connects agents to these tools and data sources.
 
-For supported services, [Copilot connectors](/docs/agent-customization/copilot-connectors.md) `feature(copilot-connectors)` provide [product.prodname_github]-managed MCP connections for Copilot harness sessions without local server setup or manual MCP configuration.
+Choose how to add the capability you need:
 
-This article takes you from adding a server to verifying its first tool call. Choose your starting point:
-
-* **Connect a supported service without server setup:** [Use a Copilot connector](/docs/agent-customization/copilot-connectors.md) `feature(copilot-connectors)`.
-* **Use tools from a packaged workflow:** [Install an agent plugin](/docs/agent-customization/agent-plugins.md#discover-and-install-plugins) that bundles MCP servers.
-* **I have a server URL or command:** [Connect a server](#connect-a-server).
-* **Help me find a server:** [Choose a server to try](#choose-a-server-to-try) or [browse the Customization Marketplace](#discover-servers-in-the-customization-marketplace-preview).
-* **My server is configured but isn't working:** [Check the connection](#if-the-server-does-not-work).
+* **Connect a supported service:** use a [Copilot connector](/docs/agent-customization/copilot-connectors.md) `feature(copilot-connectors)`. [product.prodname_github] manages configuration and authentication without local server setup.
+* **Find a published integration:** [browse servers](#find-and-install-a-server) or [install an agent plugin](/docs/agent-customization/agent-plugins.md#discover-and-install-plugins) that bundles MCP tools.
+* **Add a server directly:** [use a publisher's URL or launch command](#add-a-server-by-url-or-command).
 
 ## Before you start
 
 * [Enable AI features](/docs/getstarted/overview.md#enable-ai-features) and open a local project folder in VS Code.
-* Select the intended harness in the **Session Target** dropdown. The walkthrough below uses **Copilot** and a personal configuration. Choose a different destination below if you need to share the server or use a Local harness configuration.
-* For manually configured servers, check the server publisher's prerequisites. A remote HTTP server can require an account or sign-in. A server launched by a command needs its runtime installed on the machine that runs it.
+* Select **Copilot** in the **Session Target** dropdown. The connection example below uses a personal configuration.
 
 > [!CAUTION]
-> Local MCP servers can run code on your machine, and tools can access external services using your permissions. Review the publisher, command or endpoint, and requested access before installing or starting a server. Only trust configurations you have reviewed. Learn about [MCP server trust](/docs/agents/run/manage-mcp-servers.md#mcp-server-trust).
+> Local MCP servers can run code on your machine, and tools can access services using your permissions. Review the publisher, command or endpoint, and requested access before installing or starting a server. Learn about [MCP server trust](/docs/agents/run/manage-mcp-servers.md#mcp-server-trust).
 
-## Choose a configuration destination
-
-Choose a destination before adding the server so its tools are available to the intended harness and users:
-
-| Your goal | Configuration |
-|-----------|---------------|
-| Use a server across your workspaces | **Global** > **Copilot Global** writes to `$COPILOT_HOME/mcp-config.json`, or `~/.copilot/mcp-config.json` when `COPILOT_HOME` is unset. |
-| Share a server with a team using compatible Copilot tools | Workspace-root `.mcp.json`. The guided flow offers this destination when the Experimental ``chat.mcp.workspaceRootConfig.enabled`` setting is on. |
-| Use a Local harness configuration with input variables or per-server sandboxing | Workspace `.vscode/mcp.json` or user-profile `mcp.json`. These destinations remain available for compatibility and are labeled deprecated in the guided flow. |
-
-Portable files use a top-level `mcpServers` object. The VS Code format uses `servers`. Don't copy a configuration between them without checking the [format and capability reference](/docs/agents/reference/mcp-configuration.md#configuration-file).
-
-> [!IMPORTANT]
-> Portable configurations don't support VS Code input variables or environment files. Servers requiring interactive inputs aren't forwarded to Copilot harness sessions. Use the [authentication guidance for your configuration](/docs/agents/reference/mcp-configuration.md#authentication-and-secrets), rather than adding unsupported credential placeholders.
-
-For [Dev Containers](/docs/agents/run/manage-mcp-servers.md#remote-workspaces-and-dev-containers) or [command-line installation](/docs/agents/reference/mcp-configuration.md#command-line-installation), follow the environment-specific instructions.
-
-## Choose a server to try
-
-For a concrete local example, use the [Playwright MCP server](https://github.com/microsoft/playwright-mcp). It requires **Node.js 18 or newer**, with `npx` available. Check your installation in a terminal:
-
-```bash
-node --version
-npx --version
-```
-
-The walkthrough uses Playwright to demonstrate connecting an external tool provider. For everyday browser interaction, try the [built-in browser tools](/docs/agents/run/browser-tools.md) first: they don't require an MCP server.
-
-To try a remote documentation server instead, follow the [Context7 setup requirements](https://context7.com/docs/resources/all-clients) for its current authentication requirements and service limits. Use the HTTP endpoint `https://mcp.context7.com/mcp` in the connection steps below. A remote server doesn't require a local Node.js installation.
-
-## Connect a server
-
-Use the publisher's URL or launch command. For the Playwright example, use the command in step two.
-
-1. With the intended harness selected, run **Chat: Open Customizations** from the Command Palette (``Shortcut: workbench.action.showCommands``) and select **MCP Servers**. Select **Add Server** (**+**) in the **User** or **Workspace** group for your chosen scope.
-
-1. Choose the option that matches what the publisher provides:
-
-    | What you have | Choose | Enter |
-    |---------------|--------|-------|
-    | A server URL | **HTTP (HTTP or Server-Sent Events)** | The publisher's MCP endpoint. |
-    | A launch command | **Command (stdio)** | The command and its arguments. The server communicates through standard input and output. |
-
-    For Playwright, choose **Command (stdio)** and enter:
-
-    ```bash
-    npx -y @playwright/mcp@latest
-    ```
-
-1. Enter a server ID, such as `playwright` or `context7`, that isn't already used in the destination configuration. Use distinct IDs for different servers you plan to use together.
-
-1. For a personal configuration, select **Global**, and then **Copilot Global** when prompted. This stores the server outside your project. For team configurations or other harnesses, [choose a configuration destination](#choose-a-configuration-destination).
-
-    If **Copilot Global** isn't available, check the [Copilot harness requirements](/docs/agents/run/agent-harnesses.md#copilot) before continuing with this walkthrough.
-
-1. Review any server trust or authentication prompts before accepting them. Follow the publisher's sign-in instructions if the service requires authentication. Do not paste credentials into chat or commit them to your project.
-
-As an alternative to the Agent Customizations editor, run **MCP: Add Server** from the Command Palette to start the guided flow. Follow any prompts to select the destination for your harness.
-
-For other ways to add a server, see [Find another server](#find-another-server).
-
-## Verify the first tool call
-
-Adding a configuration isn't proof that the agent can use the server. Complete a request and inspect the tool call:
-
-1. In the agent session, enter a prompt that explicitly names the server and a low-impact action. For Playwright:
-
-    ```prompt
-    Use the Playwright MCP server to open <your URL here> and report the page title. Use its tools, not the built-in browser tools. Do not change files.
-    ```
-
-    For Context7:
-
-    ```prompt
-    Use the Context7 MCP tools to look up the React documentation for useState. Summarize the basic usage and cite the documentation returned by the tool. Do not change files.
-    ```
-
-1. Review startup, sign-in, and tool approval requests as they appear. Approve only actions you understand.
-
-1. Expand the tool call in the conversation. Check that it belongs to the server you added and inspect its returned output.
-
-**Your connection works when all three checks pass:**
-
-* A tool from the intended MCP server was called in your session.
-* The tool returned the requested page or documentation without a connection error.
-* The agent's answer reflects that tool output. A plausible answer alone isn't sufficient.
-
-If you only wanted to try the server, open **Chat: Open Customizations** > **MCP Servers** and use its ellipsis (**...**) menu to **Disable** or **Uninstall** it. Stopping a server only ends its current run; a later request can start it again. If **Uninstall** isn't available, follow [removal instructions for its configuration source](/docs/agents/run/manage-mcp-servers.md#control-or-remove-a-server).
-
-To control available tools in a Copilot session, open **Chat: Open Customizations** > **Tools**. For Local harness sessions, use **Configure Tools** in the chat input. See [Manage available tools](/docs/agents/run/tools.md#manage-available-tools) for the differences.
-
-## Find another server
+## Find and install a server
 
 ### Discover servers in the Customization Marketplace (Preview)
 
-Use the [Customization Marketplace](/docs/agent-customization/overview.md#discover-and-install-existing-customizations-preview) to find existing server integrations alongside skills and plugins.
+Use the [Customization Marketplace](/docs/agent-customization/overview.md#discover-and-install-existing-customizations-preview) to find existing server integrations:
 
-1. For a Copilot session, run **Chat: Open Customizations** and select **Browse**.
+1. Run **Chat: Open Customizations** from the Command Palette (``Shortcut: workbench.action.showCommands``) and select **Browse**.
+
 1. Select **GitHub Feed** from the source menu and search by name or with `@type:mcp`.
+
 1. Review the publisher, server capabilities, and setup requirements, then select **Install** when available.
-1. Complete the publisher's setup and [verify a tool call](#verify-the-first-tool-call).
 
-The experimental GitHub Feed requires a harness that provides marketplace search. Local sessions don't provide this source. Availability also depends on organization policy. If automatic installation isn't supported, follow the publisher's instructions or [add its URL or command](#connect-a-server).
+1. Complete the publisher's setup and [use the server's tools](#use-your-servers-tools).
 
-You can also select a plugin marketplace and [install a plugin that bundles MCP servers](/docs/agent-customization/agent-plugins.md#install-a-plugin-from-a-marketplace). Adding the marketplace alone doesn't install its servers.
+GitHub Feed is Experimental and requires a harness that provides marketplace search. Availability also depends on organization policy. If discovery or automatic installation isn't available, [add the publisher's URL or command](#add-a-server-by-url-or-command) instead.
 
-**Open discovery from the Extensions view or Command Palette**
+You can also select a plugin marketplace and [install a plugin that bundles MCP servers](/docs/agent-customization/agent-plugins.md#install-a-plugin-from-a-marketplace). Adding a marketplace makes its plugins available to browse but doesn't install them.
 
-Searching for `@mcp` in the Extensions view or running **MCP: Browse MCP Servers** opens **Find MCP Servers in Customizations**, not a list of gallery results, when ``chat.customizations.marketplace.enabled`` is on (the default). Select **Browse MCP Servers** to continue in the Agent Customizations editor. When the setting is off, the legacy Extensions gallery can still appear.
+**Other discovery and installation options**
 
-### Add a server from another source
+* Run **MCP: Browse MCP Servers** to open server discovery.
+* To import configuration from another application, run **MCP: Add Server** and choose **Add from another application**. See [supported discovery sources](/docs/agents/reference/mcp-configuration.md#automatic-mcp-server-discovery).
+* If you have a package or image name, run **MCP: Add Server** and choose **NPM Package**, **Pip Package**, or **Docker Image** when available. Model assistance generates a configuration. Review its command, publisher, and credential requirements before accepting it, and install the required runtime.
 
-If marketplace discovery isn't available for your harness or organization, use a publisher-provided URL or command with [MCP: Add Server](#connect-a-server).
+## Add a server by URL or command
 
-To reuse a configuration from another application, run **MCP: Add Server** and choose **Add from another application...**. See [automatic MCP server discovery](/docs/agents/reference/mcp-configuration.md#automatic-mcp-server-discovery) for supported sources.
+Provide the publisher's URL or launch command so Copilot knows how to access an existing MCP server. Use a URL for a remote server or a command to start a local server process.
 
-**Add from a package or Docker image (model-assisted)**
+If you already installed a server or connected a connector, continue to [use its tools](#use-your-servers-tools).
 
-If you have a package or image name instead of a launch command, use model assistance to generate the server configuration:
+For a first server, try the [Microsoft Learn MCP server](https://learn.microsoft.com/en-us/training/support/mcp). It searches official Microsoft documentation and requires no authentication or local runtime.
 
-1. Run **MCP: Add Server** and select **NPM Package**, **Pip Package**, or **Docker Image**.
-1. [Choose a configuration destination](#choose-a-configuration-destination), then enter the package or image name when prompted. For example, enter `@playwright/mcp` for **NPM Package**.
-1. Review the package name, version, and publisher shown in the confirmation. Select **Allow** only if you trust the source, then follow the model-assisted setup prompts.
-1. Confirm a server ID that isn't already used in the destination configuration. Review the generated command, arguments, and credential requirements before accepting any server trust or tool approval prompts.
-1. [Verify a tool call](#verify-the-first-tool-call) from the added server.
+1. With **Copilot** selected, run **Chat: Open Customizations** and select **MCP Servers**. Select **Add Server** (**+**) in the **User** group.
 
-These options appear only when model-assisted setup is supported in your current configuration. If they aren't available, use the publisher's launch command with **Command (stdio)**. Runtime prerequisites still apply: generating a configuration doesn't replace installing the required runtime.
+1. Choose **HTTP (HTTP or Server-Sent Events)** and enter the server endpoint. For the Microsoft Learn MCP server, use `https://learn.microsoft.com/api/mcp`.
 
-## Use context and prompts from your server
+1. Enter a unique server ID, such as `microsoftLearn`.
 
-Servers can provide more than tools. Available capabilities depend on the server and your session:
+1. Select **Global**, then **Copilot Global**. This personal configuration is shared across your workspaces and compatible Copilot experiences on the same host, including Copilot CLI. For sharing within a workspace, see [Choose a configuration destination](#choose-a-configuration-destination).
 
-* **Resources:** attach server-provided data to a request from **Add Context** > **MCP Resources**, or run **MCP: Browse Resources**.
+    If **Copilot Global** isn't available, check the [Copilot harness requirements](/docs/agents/run/agent-harnesses.md#copilot).
 
-* **Prompts:** use a server's prompt template by typing `/<server>.<prompt>` in chat.
+1. Review any server trust requests before accepting them.
 
-* **MCP Apps (Experimental):** supported servers can display interactive forms or visualizations in chat. See [MCP Apps support](https://code.visualstudio.com/blogs/2026/01/26/mcp-apps-support).
+For another HTTP server, substitute the publisher's endpoint and follow its authentication instructions. Don't paste credentials into chat or put them in shared configuration. For API keys or configuration copied from another client, check the [authentication and compatibility guidance](/docs/agents/reference/mcp-configuration.md#authentication-and-secrets).
+
+**Add a server with a launch command (stdio)**
+
+For a server that runs as a local process, choose **Command (stdio)** instead of HTTP and enter the publisher's launch command. Install its runtime where the server runs.
+
+For example, the [Playwright MCP server](https://github.com/microsoft/playwright-mcp) requires Node.js 18 or newer with `npx` available:
+
+```bash
+npx -y @playwright/mcp@latest
+```
+
+Use `playwright` as the server ID and follow the remaining connection steps. For browser tasks that don't require an MCP server, consider the [built-in browser tools](/docs/agents/run/browser-tools.md).
+
+As an alternative to the Agent Customizations editor, run **MCP: Add Server** from the Command Palette to start the guided flow.
+
+## Use your server's tools
+
+Ask Copilot for a task that needs the connected service, such as finding official documentation for an API. Copilot selects relevant tools, so you don't need to name the server in every request. Naming it explicitly can help when testing a connection or directing a request to a specific service.
+
+Review startup, sign-in, or tool approval requests as they appear. Approve only actions you understand. Depending on the server, you might also encounter:
+
+* **Input requests:** the server asks for missing information, such as a filter or date range. Don't enter passwords or API keys in these forms. Learn about [server input requests](/api/extension-guides/ai/mcp.md#elicitation).
+* **Interactive results (Experimental):** [MCP Apps](/api/extension-guides/ai/mcp.md#mcp-apps) display forms, visualizations, or other controls alongside a tool result.
+
+### Verify the first tool call
+
+To check your setup, name the server and a low-impact task. For Microsoft Learn:
+
+```prompt
+Use the Microsoft Learn MCP tools to find the official documentation for the Kusto Query Language where operator. Summarize its syntax and link to the documentation. Do not change files.
+```
+
+Expand the tool call in the conversation. Confirm that it used Microsoft Learn and returned documentation for the Kusto `where` operator, not a similarly named operator in another language. The answer should reflect that result. A plausible answer without a tool call doesn't verify the connection.
+
+For another server, choose a low-impact task supported by its tools and inspect the result in the same way.
 
 ## If the server does not work
 
 | What you observe | Next step |
 |------------------|-----------|
-| The server doesn't appear or cannot start | Check its configuration scope, runtime requirements, and [server output](/docs/agents/run/manage-mcp-servers.md#view-server-output). |
-| Sign-in or a connection fails | Check the publisher's authentication instructions and your organization's access restrictions. See [MCP troubleshooting](/docs/agents/run/manage-mcp-servers.md#troubleshoot-mcp-servers). |
-| The server runs, but no tool from it is called | Check [tool availability and invocation](/docs/agents/agent-troubleshooting/chat-debug-view.md#an-mcp-tool-is-not-being-invoked). |
+| The server doesn't appear or cannot start. | Check its configuration scope, runtime requirements, and [server output](/docs/agents/run/manage-mcp-servers.md#view-server-output). |
+| Sign-in or a connection fails. | Check the publisher's authentication instructions and your organization's access restrictions. See [MCP troubleshooting](/docs/agents/run/manage-mcp-servers.md#troubleshoot-mcp-servers). |
+| The server runs, but no tool from it is called. | Check [tool availability and invocation](/docs/agents/agent-troubleshooting/chat-debug-view.md#an-mcp-tool-is-not-being-invoked). |
 
 After correcting the problem, repeat the request and inspect the tool output again.
 
+## Choose a configuration destination
+
+The connection example uses a personal configuration. Choose a different destination when you need to share a server:
+
+| Your goal | Destination |
+|-----------|-------------|
+| Use a server across your workspaces and compatible Copilot experiences, including Copilot CLI. | **Global** > **Copilot Global** on the same host. |
+| Share server configuration with teammates working in the same workspace. | Workspace-root `.mcp.json`, when offered in the guided flow. Share the file with the workspace, for example through source control. |
+
+**Copilot Global** applies to clients that read the same personal Copilot configuration. It doesn't synchronize configuration across machines or guarantee shared authentication credentials.
+
+See the [configuration reference](/docs/agents/reference/mcp-configuration.md#configuration-file) for workspace setup availability, file locations, supported fields, and authentication. For remote hosts or containers, follow the [remote setup guidance](/docs/agents/run/manage-mcp-servers.md#remote-workspaces-and-dev-containers).
+
+For existing Local harness `feature(local-harness)` configurations, use the [compatibility reference](/docs/agents/reference/mcp-configuration.md#editor-managed-configuration-for-local-harness-compatibility) instead of copying their settings into a new configuration.
+
 ## Manage an existing server
 
-Continue with [Manage and troubleshoot MCP servers](/docs/agents/run/manage-mcp-servers.md) to change a connection, stop or remove a server, review trust and startup behavior, or share configuration across environments.
+Open **Chat: Open Customizations** > **MCP Servers** to manage your servers. If you only wanted to try a server, use its ellipsis (**...**) menu to **Disable** or **Uninstall** it. Stopping a server only ends its current run, and a later request can start it again.
 
-For specific tasks, see [MCP sandboxing](/docs/agents/run/manage-mcp-servers.md#sandbox-mcp-servers), [configuration synchronization](/docs/agents/run/manage-mcp-servers.md#synchronize-mcp-configuration-across-devices), or [enterprise access management](https://docs.github.com/en/copilot/how-tos/administer-copilot/manage-mcp-usage/configure-enterprise-allowlist).
+For connectors, [disconnect the service](/docs/agent-customization/copilot-connectors.md#disconnect-a-service) instead. If **Uninstall** isn't available for another server, follow the [removal instructions for its configuration source](/docs/agents/run/manage-mcp-servers.md#control-or-remove-a-server).
+
+For editing connections, server output, and sharing configuration, see [Manage and troubleshoot MCP servers](/docs/agents/run/manage-mcp-servers.md). To control which tools the agent can use, see [Manage available tools](/docs/agents/run/tools.md#manage-available-tools).
 
 ## Related resources
 
@@ -201,41 +156,60 @@ For specific tasks, see [MCP sandboxing](/docs/agents/run/manage-mcp-servers.md#
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/mcp-configuration.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/mcp-configuration
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/mcp-configuration.md
-- **SHA256_FINGERPRINT**: `8a0793f5803a5cf086b36922900b44769014d8c7d19e428ab7b33d1901a8a6d3`
-- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.173545+00:00
+- **SHA256_FINGERPRINT**: `f0ed8e4fa70a71268863137646e1db849c0b7fab37bbbacbfebe7c696c39ccc8`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.031267+00:00
 ---
 
-**MetaDescription**: Configure MCP servers in Visual Studio Code with reference details for file formats, commands, settings, and sandboxing.
+**MetaDescription**: Configure MCP servers for the Copilot harness with portable files, authentication, and tool controls.
 
 # MCP configuration reference
 
-This article provides the MCP configuration formats, supported fields, commands, and settings in VS Code. To connect your first server, see [Add MCP servers](/docs/agent-customization/mcp-servers.md). For operational tasks, see [Manage and troubleshoot MCP servers](/docs/agents/run/manage-mcp-servers.md).
+Configure MCP servers for the Copilot harness with the portable `mcpServers` format. This reference covers configuration locations, fields, authentication, and relevant controls.
 
-## Configuration file
+* **Connect a server to Copilot:** [choose a configuration destination](#configure-mcp-for-copilot), then use the [portable examples and fields](#portable-configuration).
+* **Reuse an existing editor configuration:** check [forwarding and migration](#editor-forwarding-to-copilot).
+* **Maintain a deprecated Local configuration:** use the separate [Local compatibility reference](#editor-managed-configuration-for-local-harness-compatibility).
 
-MCP server configuration uses one of the following file formats:
+For a complete first-time walkthrough, see [Add MCP servers](/docs/agent-customization/mcp-servers.md). To operate an existing server, see [Manage and troubleshoot MCP servers](/docs/agents/run/manage-mcp-servers.md).
 
-* The VS Code format is stored in `.vscode/mcp.json` in your workspace or in your [user profile](/docs/configure/profiles.md). It defines servers in a top-level `servers` object. VS Code provides IntelliSense for this format.
-* The portable Copilot format is stored in `.mcp.json` at the root of your workspace or in `$COPILOT_HOME/mcp-config.json` for your user, with `~/.copilot/mcp-config.json` as the fallback location. It defines servers in a top-level `mcpServers` object.
+Configuration compatibility is separate from protocol support. For tools, prompts, resources, roots, sampling, elicitation, and MCP Apps, see [MCP support and limitations](/api/extension-guides/ai/mcp.md#mcp-support-in-copilot).
 
-Copilot harness sessions read the portable format directly. VS Code forwards eligible servers from the VS Code format to the session, except servers that require interactive input, such as `${input:...}` variables. The agent doesn't read `.vscode/mcp.json` directly. For setup steps, see [Choose a configuration destination](/docs/agent-customization/mcp-servers.md#choose-a-configuration-destination).
+## Configure MCP for Copilot
+
+Use the Agent Customizations editor to add a server to the intended Copilot session:
+
+1. Select the **Copilot** harness in a chat session, then run **Chat: Open Customizations** and select **MCP Servers**.
+
+1. Select **Add Server**, provide the publisher's command or endpoint, and choose a destination below. For personal configuration, select **Global** > **Copilot Global**.
+
+1. Complete any authentication prompts and [verify a tool call](/docs/agent-customization/mcp-servers.md#verify-the-first-tool-call). Adding a configuration alone doesn't confirm that the session can use the server.
+
+### Configuration file
+
+Choose a native Copilot destination. Both files use a top-level `mcpServers` object, and the harness reads them directly.
+
+| Your goal | Configuration file | Guided setup destination |
+|-----------|--------------------|--------------------------|
+| Use a server across your workspaces | `$COPILOT_HOME/mcp-config.json`, or `~/.copilot/mcp-config.json` when `COPILOT_HOME` is unset | **Global** > **Copilot Global** |
+| Share server definitions with your team | `.mcp.json` at the workspace root | Workspace-root `.mcp.json`, offered when the Experimental ``chat.mcp.workspaceRootConfig.enabled`` setting is on |
+
+As an alternative to guided setup, edit the native file using the [portable configuration examples](#portable-configuration). Existing workspace-root `.mcp.json` files remain available when the guided-setup setting is off.
+
+> [!IMPORTANT]
+> For new Copilot configurations, use these native destinations, not `.vscode/mcp.json` or profile `mcp.json`. Those files use the deprecated Local harness's `feature(local-harness)` editor-managed `servers` format. Eligible existing definitions can be [forwarded](#editor-forwarding-to-copilot), but the harness doesn't read those files directly.
+
+[Plugin-provided servers](/docs/agents/reference/agent-plugin-reference.md#mcp-servers-in-plugins) travel with their plugin. Installing a plugin is different from copying its server definitions into a personal or workspace configuration.
 
 For remote and Dev Container sessions, native user configuration refers to the home directory where the harness runs. The connected client's `$COPILOT_HOME/mcp-config.json` (or `~/.copilot/mcp-config.json`) isn't forwarded to another host or harness. Configure the server in the execution environment or use an eligible forwarded configuration instead. See [remote session customization sources](/docs/agent-customization/overview.md#manage-customizations-for-remote-sessions).
 
-For other providers, use the provider's MCP configuration documentation. Their configuration locations and schemas can differ from the two formats described here.
+For other providers, use the provider's MCP configuration documentation. Their configuration locations and schemas can differ.
 
-The formats and locations differ in the capabilities they support:
+The guided setup and configuration form support a subset of the native file's options. Both native destinations have a configuration form in the Agent Customizations editor:
 
-| Capability | Workspace or profile `mcp.json` | Workspace-root `.mcp.json` | Copilot user `mcp-config.json` |
-|------------|---------------------------------|----------------------------|--------------------------------|
-| Top-level server object | `servers` | `mcpServers` | `mcpServers` |
-| Agent Customizations editor | Read-only JSON | Configuration form | Configuration form |
-| Server transports | stdio, HTTP, and SSE | stdio and HTTP | stdio, HTTP, and SSE |
-| Environment-variable references | `${env:NAME}` | `${NAME}` or `${NAME:-default}` | `${NAME}` or `${NAME:-default}` |
-| Working directory | Yes | No | Yes |
-| Environment file | Yes | No | No |
-| VS Code input variables | Yes | No | No |
-| Development mode and per-server sandboxing | Yes | No | No |
+| Destination | Transports offered in the form | Working-directory field |
+|-------------|--------------------------------|-------------------------|
+| Copilot user `mcp-config.json` | stdio, HTTP, and legacy SSE | Yes |
+| Workspace-root `.mcp.json` | stdio and HTTP | No |
 
 The configuration form preserves properties that it doesn't display. Select **Other Properties** in the form to open the complete server entry in JSON.
 
@@ -247,8 +221,10 @@ Use a top-level `mcpServers` object in workspace-root `.mcp.json` or Copilot use
 {
     "mcpServers": {
         "playwright": {
+            "type": "stdio",
             "command": "npx",
-            "args": ["-y", "@playwright/mcp@latest"]
+            "args": ["-y", "@playwright/mcp@latest"],
+            "tools": ["*"]
         }
     }
 }
@@ -263,7 +239,8 @@ For an HTTP server, replace the server entry with the publisher's endpoint:
     "mcpServers": {
         "context7": {
             "type": "http",
-            "url": "https://mcp.context7.com/mcp"
+            "url": "https://mcp.context7.com/mcp",
+            "tools": ["*"]
         }
     }
 }
@@ -271,7 +248,19 @@ For an HTTP server, replace the server entry with the publisher's endpoint:
 
 Follow the [Context7 setup instructions](https://context7.com/docs/resources/all-clients) for authentication and service limits. An endpoint alone doesn't grant access to a service.
 
-The property tables below describe the VS Code format, not a shared schema for all MCP clients. Check the [capability comparison](#configuration-file) before copying properties into a portable file.
+These are common fields in a portable server entry:
+
+| Field | Applies to | Purpose |
+|-------|------------|---------|
+| `type` | All servers | `stdio` for a command, `http` for Streamable HTTP, or `sse` for a legacy SSE endpoint. Prefer HTTP when the server supports it. |
+| `command`, `args` | stdio | Executable and its arguments. Install the runtime where the harness runs. |
+| `env` | stdio | Environment-variable values or references. Use strings for values. |
+| `cwd` | stdio | Working directory. The Copilot user configuration form supports this field; the workspace-root form does not. |
+| `url`, `headers` | HTTP and SSE | Endpoint and optional request headers. Don't store literal credentials in shared files. |
+| `tools` | All servers | Tool names to make available. `["*"]` makes all server tools available; use specific names to limit the selection. This doesn't bypass tool approvals. |
+| `oauthClientId` | HTTP and SSE | Client ID for a server that requires a pre-registered OAuth client. This is a flat field, not the editor format's nested `oauth` object. |
+
+For additional runtime-specific options, see the [Copilot CLI MCP configuration guidance](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers). Don't copy editor-only fields such as `inputs`, `envFile`, `dev`, or `sandboxEnabled` into a portable file.
 
 ### Environment-variable references
 
@@ -279,9 +268,87 @@ Portable configurations support environment variables independently of VS Code i
 
 Provide variables in the environment of the host that runs or connects to the server. For remote sessions, that is the remote host or container. Use the braced `${NAME}` form for compatibility across the Copilot runtime and the VS Code MCP client, which treats bare `$NAME` as literal text.
 
-You can edit environment variables and HTTP headers in the [MCP configuration form](/docs/agents/run/manage-mcp-servers.md#edit-an-mcp-server-configuration). The form writes the configured values to the file. Enter references rather than literal credentials.
+You can edit environment variables and HTTP headers in the Copilot user [MCP configuration form](/docs/agents/run/manage-mcp-servers.md#edit-an-mcp-server-configuration). Enter references rather than literal credentials. The workspace-root form rejects `${...}` expressions, so use **Other Properties** to edit references in the source `.mcp.json` instead. A form restriction does not mean that the Copilot runtime cannot read the reference.
 
 Support for environment variables does not include `envFile`, input prompting, or a bridge to VS Code `SecretStorage`. For a worked example, see [Replace input prompts with environment variables](/docs/agent-customization/migrate-customizations.md#replace-input-prompts-with-environment-variables).
+
+### Authentication and secrets
+
+Authentication grants access to an external service. It is separate from trusting a server to start and approving individual tool calls.
+
+| Server requirement | Copilot guidance |
+|--------------------|------------------|
+| Browser sign-in or OAuth | Follow the publisher's instructions and complete authorization when prompted. Use **Authenticate** in the session's server actions when offered. The editor coordinates authentication for Copilot sessions in VS Code; don't assume another client shares its saved credentials. |
+| A pre-registered OAuth client | Use supported flat Copilot fields such as `oauthClientId`, not the editor format's nested `oauth` object. See the [Copilot CLI guidance](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers). |
+| An API key or fixed token | Use [environment-variable references](#environment-variable-references) if they meet your requirements. Provide credentials in the environment of the host that runs or connects to the server. |
+| VS Code input prompts or an environment file | These are editor-managed options, not native Copilot configuration. Review the [migration limitations](/docs/agent-customization/migrate-customizations.md#check-mcp-values-before-migration). |
+
+Do not commit tokens, passwords, or populated authentication headers. A personal configuration file is not a secret store.
+
+The Copilot harness has no built-in MCP configuration option to forward a `${input:...}` secret or read an existing VS Code `SecretStorage` value into an HTTP authentication header. OAuth can be an alternative when the server supports it, but it does not substitute a prompted API key. If your integration requires a static bearer token without environment variables or credentials in files, see the [migration FAQ](/docs/agent-customization/migrate-customizations.md#can-copilot-pass-a-prompted-secret-to-an-http-mcp-server-without-an-environment-variable-or-a-file).
+
+### Server naming conventions
+
+Use a descriptive, unique name for each server you use together, such as `github` or `database`. Avoid whitespace and special characters. For multi-word names, use camelCase, such as `uiTesting` or `githubIntegration`.
+
+### Commands
+
+Use these commands for Copilot setup and management from the Command Palette (``Shortcut: workbench.action.showCommands``).
+
+| Command | Copilot workflow |
+|---------|------------------|
+| **Chat: Open Customizations** | Open **MCP Servers** in the intended session's context to add, edit, or manage servers. |
+| **MCP: Add Server** | Start guided setup. Choose **Copilot Global** for native user configuration or workspace-root `.mcp.json` when offered. |
+| **MCP: Browse MCP Servers** | Open [MCP discovery](/docs/agent-customization/mcp-servers.md#find-and-install-a-server). With marketplace discovery enabled, continue in the Agent Customizations editor. |
+| **MCP: Install Server from Manifest** | Install from an MCP manifest. Review the destination rather than assuming it uses native Copilot configuration. |
+| **MCP: List Servers** | Open available server controls. Use the intended session's context because Copilot runtime and editor-managed connections have different actions. |
+
+Commands that open profile `mcp.json` or `.vscode/mcp.json`, and `code --add-mcp`, target [editor-managed configuration](#editor-managed-commands), not the portable Copilot files.
+
+### Settings
+
+These settings are relevant to Copilot setup or its connected editor. They don't replace the server entries in the native configuration file.
+
+| Setting | Copilot workflow |
+|---------|------------------|
+| ``chat.mcp.access`` | Manage which MCP servers can be used in VS Code. |
+| ``chat.mcp.workspaceRootConfig.enabled`` | (Experimental) Offer workspace-root `.mcp.json` in **MCP: Add Server**. Existing `.mcp.json` files remain available when this setting is off. |
+| ``chat.mcp.apps.enabled`` `feature(mcp-apps)` | Control whether the connected editor displays MCP Apps, which provide interactive tool UI. |
+| ``chat.agent.sandbox.mcpServers`` | Configure MCP server inclusion in the [Copilot harness sandbox](/docs/agents/run/agent-sandboxing.md). Review the required session sandbox settings; this is separate from Local per-server sandboxing. |
+| ``accessibility.verbosity.mcpServerConfiguration`` | Control whether the MCP configuration form announces information about opening Accessibility Help. |
+
+Copilot reads its native configuration independently of the editor's discovery setting. The editor's autostart and sampling-model settings also don't control the native runtime. Use [server enablement](/docs/agents/run/manage-mcp-servers.md#enable-or-disable-mcp-servers) to prevent a server from starting, and review the [Copilot sampling approval flow](/api/extension-guides/ai/mcp.md#sampling) for model requests.
+
+For the full settings list, see the [AI Settings Reference](/docs/agents/reference/ai-settings.md). Settings for the deprecated Local path are listed under [editor-managed settings](#editor-managed-settings).
+
+## Editor forwarding to Copilot
+
+Editor forwarding reuses an eligible server definition in a Copilot session. It does not move the original file or turn an editor-managed server connection into the runtime's connection. Prefer [native configuration](#portable-configuration) for integrations that must work without the editor.
+
+* Workspace `.vscode/mcp.json`, profile configurations, and eligible extension-provided definitions can be forwarded. Extension discovery and definition resolution require the contributing extension and editor.
+* Configurations requiring `${input:...}` or `${command:...}` are rejected before variable resolution. Resolving or caching the value in Local first does not make the configuration eligible.
+* Editor development mode, per-server sandbox rules, and `envFile` behavior do not transfer. Review authentication options and working-directory paths in the destination environment.
+* Copilot user configuration is read on the host where the harness runs, not forwarded from a different host. Plugin servers are delivered with their plugin rather than duplicated as standalone definitions.
+
+Forwarding is not [automatic migration](/docs/agent-customization/migrate-customizations.md#migrate-mcp-servers). Migration writes native files and can remove successfully migrated source entries; forwarding leaves the source configuration in place.
+
+When reusing an existing configuration, check these differences:
+
+| Capability | Portable Copilot configuration | Editor-managed configuration |
+|------------|--------------------------------|------------------------------|
+| Top-level server object | `mcpServers` | `servers` |
+| Copilot delivery | Read by the runtime | Eligible definitions forwarded by the editor |
+| Environment-variable references | `${NAME}` or `${NAME:-default}` | `${env:NAME}` |
+| Environment file and input prompts | Not supported | `envFile` and `${input:...}` |
+| Development mode and per-server sandboxing | Not supported in this format | `dev`, `sandboxEnabled`, and `sandbox` |
+
+## Editor-managed configuration for Local harness compatibility
+
+`feature(local-harness)`
+
+The Local harness is deprecated. Use this section only to maintain an existing editor-managed configuration, not to set up a new native Copilot server.
+
+The following schemas and examples apply to the `servers` format in workspace `.vscode/mcp.json` or [user-profile](/docs/configure/profiles.md) `mcp.json`. These files appear as read-only JSON in the Agent Customizations editor; edit their source file instead. A server using this format might be [eligible for forwarding](#editor-forwarding-to-copilot), but editor-specific behavior does not automatically carry over.
 
 ### Configuration structure
 
@@ -299,7 +366,7 @@ You can use [predefined variables](/docs/reference/variables-reference.md) in th
 
 ### Standard I/O (stdio) servers
 
-Use this configuration for servers that communicate through standard input and output streams. This is the most common type for locally-run MCP servers.
+Use this editor-managed configuration for servers that communicate through standard input and output streams.
 
 | Field | Required | Description | Examples |
 |-------|----------|-------------|----------|
@@ -334,14 +401,14 @@ This example configures the same Playwright server in the VS Code format:
 
 ### Sandbox configuration
 
-You can enable sandboxing for locally-running stdio MCP servers to restrict their access to the file system and network. Sandbox rules can deny file access, grant write access, and grant access to specific network domains. Sandboxing is available on macOS and Linux only.
+Editor-managed sandboxing restricts file system and network access for stdio MCP servers on macOS and Linux. It does not configure the [Copilot harness sandbox](/docs/agents/run/agent-sandboxing.md) and its ``chat.agent.sandbox.mcpServers`` setting.
 
 To enable sandboxing for a server, set `"sandboxEnabled": true` in its configuration. Add a `sandbox` object to the server to define its file system and network permissions. You can also add a top-level `sandbox` object as a sibling of `servers` and `inputs` to define deny rules that apply to all sandboxed servers in the file.
 
 Allow rules are supported only in a server's `sandbox` object. Top-level `allowWrite` and `allowedDomains` rules are ignored.
 
 > [!NOTE]
-> When sandboxing is enabled, tool confirmations are auto-approved because the server runs in a controlled environment.
+> In Local harness `feature(local-harness)` sessions, editor-sandboxed MCP tools are auto-approved. This does not describe the Copilot harness's approval behavior.
 
 The server-level and top-level `sandbox` objects support the following properties:
 
@@ -387,7 +454,7 @@ This example grants one server write access to the workspace and network access 
 
 ### HTTP and Server-Sent Events (SSE) servers
 
-Use this configuration for servers that communicate over HTTP. VS Code first tries the HTTP Stream transport and falls back to SSE if HTTP is not supported.
+Use this editor-managed configuration for servers that communicate over HTTP. The editor's MCP client first tries the Streamable HTTP transport and falls back to SSE if HTTP is not supported.
 
 | Field | Required | Description | Examples |
 |-------|----------|-------------|----------|
@@ -443,28 +510,11 @@ This example shows the configuration for an MCP server that uses OAuth for authe
 }
 ```
 
-### Authentication and secrets
-
-Authentication grants access to an external service. It is separate from trusting a server to start and approving individual tool calls.
-
-Choose an authentication method that both the server and your configuration support:
-
-| Server requirement | Guidance |
-|--------------------|----------|
-| Browser sign-in or OAuth | Follow the publisher's connection instructions and review the requested permissions. Complete the authorization flow when prompted. The `oauth` fields above apply to the VS Code format. |
-| Environment variables | Portable configurations support [environment-variable references](#environment-variable-references) in stdio server configuration and HTTP headers. Provide credentials in the environment of the host that runs or connects to the server, not only in an unrelated terminal or on your local machine for a remote session. |
-| VS Code input prompts | Use the [input variables](#input-variables-for-sensitive-data) supported by the VS Code format. Servers requiring these interactive inputs aren't forwarded to Copilot harness sessions. |
-| An environment file | `envFile` is supported in the VS Code format, not in portable `.mcp.json` or Copilot user `mcp-config.json`. Keep files containing credentials out of source control. |
-
-Do not commit tokens, passwords, or populated authentication headers. A personal configuration file is not a secret store. For a server that requires a fixed token, follow its publisher's secure configuration guidance for your client and harness rather than copying credentials into a shared example.
-
-The Copilot harness has no built-in MCP configuration option to forward a `${input:...}` secret or read an existing VS Code `SecretStorage` value into an HTTP authentication header. OAuth can be an alternative when the server supports it, but it does not substitute a prompted API key. If your integration requires a static bearer token without environment variables or credentials in files, see the [migration FAQ](/docs/agent-customization/migrate-customizations.md#can-copilot-pass-a-prompted-secret-to-an-http-mcp-server-without-an-environment-variable-or-a-file).
-
 ### Input variables for sensitive data
 
 Input variables in the VS Code format let you define placeholders for values such as API keys or passwords. They aren't supported in portable configuration files, and servers that require them aren't forwarded to Copilot harness sessions.
 
-Forwarding rejects input and command variables before resolving them. Entering or caching the secret in a Local session first does not make the server available to Copilot. Keep the original configuration until a supported authentication method works in the destination harness.
+Forwarding rejects input and command variables before resolving them. Entering or caching the secret in a Local session `feature(local-harness)` first does not make the server available to Copilot. Keep the original configuration until a supported authentication method works in the destination harness.
 
 When you reference an input variable using `${input:variable-id}`, VS Code prompts you for the value when the server starts for the first time. The value is then securely stored for subsequent use. Learn more about [input variables](/docs/reference/variables-reference.md#input-variables) in VS Code.
 
@@ -536,25 +586,16 @@ This example configures a local server that requires an API key:
 
 ### Development mode
 
-You can enable _development mode_ for MCP servers by adding a `dev` key to the server configuration. This is an object with two properties:
+For editor-managed servers, add a `dev` key to the server configuration to use _development mode_. This does not configure a server started independently by the Copilot runtime. The object has two properties:
 
 * `watch`: A glob pattern, or an array of glob patterns, to watch for file changes that restart the MCP server. Available for all server types.
 * `debug`: Enables you to set up a debugger with the MCP server. Currently, VS Code supports debugging Node.js and Python MCP servers. Available for stdio servers only.
 
-Learn more about [MCP development mode](/api/extension-guides/ai/mcp.md#mcp-development-mode-in-vs-code) in the MCP Dev Guide.
+Learn more about [MCP development mode](/api/extension-guides/ai/mcp.md#mcp-development-mode-in-vs-code) in the MCP integration reference.
 
-### Server naming conventions
+### Automatic MCP server discovery
 
-When defining MCP servers, follow these naming conventions for the server name:
-
-* Use camelCase for the server name, such as "uiTesting" or "githubIntegration"
-* Avoid using whitespace or special characters
-* Use a unique name for each server to avoid conflicts
-* Use a descriptive name that reflects the server's functionality or brand, such as "github" or "database"
-
-## Automatic MCP server discovery
-
-VS Code can automatically detect and reuse MCP server configurations from supported applications. Use ``chat.mcp.discovery.enabled`` to select the discovery sources.
+The editor can automatically detect and reuse MCP server configurations from supported applications. Use ``chat.mcp.discovery.enabled`` to select these discovery sources. This is separate from native Copilot discovery and [plugin-provided servers](/docs/agents/reference/agent-plugin-reference.md#mcp-servers-in-plugins).
 
 | Source | Setting property | Configuration location |
 |--------|------------------|------------------------|
@@ -571,23 +612,19 @@ For GitHub Copilot CLI, setting `COPILOT_HOME` replaces the default `~/.copilot`
 > [!NOTE]
 > Copilot harness sessions read the GitHub Copilot CLI MCP configuration independently, whether you use the Chat view or Agents window. The discovery setting does not change how these sessions receive MCP servers. See [configuration formats and forwarding](#configuration-file).
 
-## Commands
+### Editor-managed commands
 
-The following table lists the MCP-related commands available in the Command Palette (``Shortcut: workbench.action.showCommands``).
+These commands operate on editor-managed configuration or connections. They aren't the native Copilot configuration workflow.
 
-| Command | Description |
-|---------|-------------|
-| **MCP: Add Server** | Add a new MCP server to your workspace or user profile. |
-| **MCP: Browse MCP Servers** | Open [MCP discovery](/docs/agent-customization/mcp-servers.md#find-another-server) in the Extensions view. With marketplace discovery enabled, select **Browse MCP Servers** to continue in the Agent Customizations editor. |
-| **MCP: Browse Resources** | Browse resources provided by MCP servers. |
-| **MCP: Install Server from Manifest** | Install an MCP server from an MCP manifest file. |
-| **MCP: List Servers** | List all configured MCP servers and perform actions like start, stop, restart, or show output. |
-| **MCP: Open Remote User Configuration** | Open the `mcp.json` file for the remote environment. |
-| **MCP: Open User Configuration** | Open the `mcp.json` file in your user profile. |
-| **MCP: Open Workspace Folder MCP Configuration** | Open the `.vscode/mcp.json` file in your workspace. |
-| **MCP: Reset Cached Tools** | Clear the cached list of tools for MCP servers. Use this when a server's tools have changed. |
-| **MCP: Reset Trust** | Reset separate trust decisions for MCP servers from non-workspace sources. Workspace MCP servers inherit Workspace Trust and are unaffected. |
-| **MCP: Show Installed Servers** | Show a list of all installed MCP servers. |
+| Command | Scope and purpose |
+|---------|-------------------|
+| **MCP: Browse Resources** | Browse resources from editor-managed server connections. This is not a list of every native Copilot server's resources. |
+| **MCP: Open Remote User Configuration** | Open the editor-managed remote `mcp.json`, not the Copilot user file. |
+| **MCP: Open User Configuration** | Open the editor-managed profile `mcp.json`, not the Copilot user file. |
+| **MCP: Open Workspace Folder MCP Configuration** | Open the editor-managed `.vscode/mcp.json`, not workspace-root `.mcp.json`. |
+| **MCP: Reset Cached Tools** | Clear the editor's cached tool lists. This doesn't reset a Copilot runtime connection. |
+| **MCP: Reset Trust** | Reset separate editor MCP trust decisions for non-workspace sources, not Workspace Trust or runtime tool approvals. |
+| **MCP: Show Installed Servers** | Show installed servers in the editor's Extensions view. |
 
 ### Command-line installation
 
@@ -599,21 +636,17 @@ For example, from a Bash shell:
 code --add-mcp '{"name":"playwright","type":"stdio","command":"npx","args":["-y","@playwright/mcp@latest"]}'
 ```
 
-This uses the VS Code format, not the portable Copilot user file. To choose a portable destination, use the [guided connection flow](/docs/agent-customization/mcp-servers.md#connect-a-server). After installation, [verify a tool call](/docs/agent-customization/mcp-servers.md#verify-the-first-tool-call).
+This uses the VS Code format, not the portable Copilot user file. To choose a portable destination, use the [guided connection flow](/docs/agent-customization/mcp-servers.md#add-a-server-by-url-or-command). After installation, [verify a tool call](/docs/agent-customization/mcp-servers.md#verify-the-first-tool-call).
 
-## Settings
+### Editor-managed settings
 
-For a full list of VS Code AI settings, see the [AI Settings Reference](/docs/agents/reference/ai-settings.md). The following settings are specific to MCP servers.
+These settings control the editor's MCP client, which the deprecated Local harness uses. They don't configure native Copilot discovery, startup, or sampling.
 
 | Setting | Description |
 |---------|-------------|
-| ``chat.mcp.access`` | Manage which MCP servers can be used in VS Code. |
 | ``chat.mcp.discovery.enabled`` | Configure automatic discovery of MCP server configuration from other applications. |
-| ``chat.mcp.workspaceRootConfig.enabled`` | (Experimental) Control whether **MCP: Add Server** offers the workspace-root `.mcp.json` destination. Existing `.mcp.json` files remain available when this setting is off. |
 | ``chat.mcp.autostart`` `feature(mcp-autostart)` | Control which MCP servers VS Code starts automatically when you submit a chat message. This setting doesn't prevent a Copilot harness session from starting servers it manages independently. See [MCP autostart behavior](/docs/agents/run/manage-mcp-servers.md#automatically-start-mcp-servers). |
-| ``chat.mcp.serverSampling`` | Configure which models are exposed to MCP servers for sampling (making requests in the background). |
-| ``chat.mcp.apps.enabled`` `feature(mcp-apps)` | Enable or disable MCP Apps, which are rich user interfaces provided by MCP servers. |
-| ``accessibility.verbosity.mcpServerConfiguration`` | Control whether the MCP server configuration form announces information about opening Accessibility Help. |
+| ``chat.mcp.serverSampling`` | Configure model access for editor-managed sampling. Copilot runtime sampling has a separate [approval flow](/api/extension-guides/ai/mcp.md#sampling). |
 
 ## Related resources
 
@@ -626,8 +659,8 @@ For a full list of VS Code AI settings, see the [AI Settings Reference](/docs/ag
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/tools.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/tools
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/tools.md
-- **SHA256_FINGERPRINT**: `16d75ad8117a8cc947d5cce6b5af45b6e0189b535531e8fad643048cefaabd5c`
-- **LAST_VERIFIED_UTC**: 2026-11-09T05:28:34.210909+00:00
+- **SHA256_FINGERPRINT**: `1e0c80b7fa4eefc167b8523d1c473f88046ff5acb2f8a9b91239a0eccc5ad3a5`
+- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.608392+00:00
 ---
 
 **MetaDescription**: Use agent tools in VS Code to inspect code, run commands, control desktop apps, and manage approvals.
@@ -745,9 +778,9 @@ To remove an extension from the tool list, right-click its tool group and select
 
 **Select tools for a Local harness request**
 
-For Local harness sessions, select tools for an individual request from the Chat view:
+For Local harness sessions `feature(local-harness)`, select tools for an individual request from the Chat view:
 
-1. In the chat input, select the **Local** harness and then select **Agent** from the agent picker.
+1. In the chat input, select the **Local** harness `feature(local-harness)` and then select **Agent** from the agent picker.
 
 1. Select **Configure Tools**.
 
@@ -763,7 +796,7 @@ For a tool call that requires approval, expand the confirmation dialog to review
 
 **Edit parameters in Local harness and extension tool confirmations**
 
-Confirmations from the Local harness and extension-contributed tools can support parameter editing. When the confirmation provides editable fields:
+Confirmations from the Local harness `feature(local-harness)` and extension-contributed tools can support parameter editing. When the confirmation provides editable fields:
 
 1. When the tool confirmation dialog appears, select the chevron next to the tool name to expand its details.
 
@@ -839,7 +872,7 @@ Learn how to [use browser tools with agents](/docs/agents/run/browser-tools.md),
 
 Of all the built-in tools, the terminal tool is one of the most frequently used. The agent uses it to run commands as part of its workflow, for example to install dependencies, run a build, or execute tests. Because terminal commands can change your environment, VS Code provides additional controls for reviewing, running, and monitoring them, building on the [approval](/docs/agents/run/approvals.md) behavior described earlier.
 
-Copilot harness sessions use the built-in shell tool by default. Workspace commands run in the session's environment, and you review the results in chat. To load your shell profile before each command, see [Configure shell initialization](#configure-shell-initialization). The integrated-terminal controls below apply to Local harness sessions and configurations that use the integrated terminal tool.
+Copilot harness sessions use the built-in shell tool by default. Workspace commands run in the session's environment, and you review the results in chat. To load your shell profile before each command, see [Configure shell initialization](#configure-shell-initialization). The integrated-terminal controls below apply to Local harness sessions `feature(local-harness)` and configurations that use the integrated terminal tool.
 
 **Integrated-terminal controls**
 
@@ -878,68 +911,45 @@ With [Python Environments](/docs/python/environments.md#terminal-settings) insta
 
 This setting does not apply to remote sessions or the custom terminal tool override.
 
-## Control desktop applications (Experimental)
+## Control desktop applications
 
-Use Computer Use when a task needs a desktop application that the agent's other tools can't reach. [product.prodname_github]'s Computer Use plugin lets the agent see application windows, click, type, and scroll. For web applications, use [browser tools](#use-browser-tools) instead.
+`feature(computer-use)`
 
-Computer Use is available for local [Copilot harness sessions](/docs/agents/run/agent-harnesses.md#copilot) on macOS and Windows. It isn't available for the Local, Claude, or Codex harnesses, Linux, or remote or cloud hosts.
+Use [copilot.computer_use] when a task needs a desktop application that the agent's other tools can't reach. For web applications, use [browser tools](#use-browser-tools) instead.
+
+[copilot.computer_use_caps] is available for local [Copilot harness sessions](/docs/agents/run/agent-harnesses.md#copilot) on macOS and Windows. It isn't available for the Local, Claude, or Codex harnesses, Linux, or remote or cloud hosts.
+
+For shared capabilities, permission controls, and limitations, see [[product.prodname_github]'s [copilot.computer_use] guide](https://docs.github.com/en/copilot/concepts/agent-capabilities/agent-powered-workflows-and-operations/computer-use).
 
 > [!CAUTION]
-> Computer Use can read and change content in applications outside your workspace. Approve access only to apps needed for your task, and avoid exposing sensitive content in application windows. See [desktop application access risks](/docs/agents/run/security.md#security-risks-to-be-aware-of).
+> [copilot.computer_use_caps] can read and change content in applications outside your workspace. Avoid exposing sensitive content in application windows, and review requested access and results.
 
-### Turn on Computer Use
+### Turn on [copilot.computer_use]
 
-Computer Use is Experimental and off by default. To use it:
+[copilot.computer_use_caps] is off by default. To use it:
 
 1. Turn on ``chat.agentHost.computerUse.enabled`` in Settings, and restart VS Code.
 
 1. Start a new local Copilot chat in the Chat view or Agents window. The plugin downloads automatically on first use.
 
-1. Ask the agent to perform a task in a desktop application. For example:
+1. Run `/computer on` in the chat, or ask the agent to perform a task in a desktop application and follow the activation prompt.
 
-    ```prompt
-    Open Calculator and use it to compute 12 times 7.
-    ```
-
-1. When the agent asks **Turn on Computer Use?**, review its reason and select **Turn On**.
-
-1. On macOS, [grant the required system permissions](#grant-macos-permissions). On both platforms, approve access to each application when requested.
-
-You can also run `/computer on` in a Copilot chat. If you select **Not Now**, the agent continues without Computer Use and doesn't ask again in that chat. Run `/computer on` if you change your mind.
+1. On macOS, select **Set Up Computer Use** in the chat card and follow the prompts to grant the required system permissions. Review application-access requests when prompted.
 
 > [!IMPORTANT]
-> Turning on Computer Use is not limited to the current chat. It stays on for Copilot on this computer, including Copilot CLI, until you run `/computer off`.
+> Activation persists across chats and also applies to Copilot CLI on the same computer.
 
-### Grant macOS permissions
+### Turn off [copilot.computer_use]
 
-On macOS, Computer Use requires two permissions for the **Copilot Computer Use** helper app:
-
-* **Accessibility**: Click and type in applications.
-* **Screen Recording**: See application windows.
-
-To grant these permissions:
-
-1. Select **Set Up Computer Use** on the chat card.
-
-1. For the current permission, select **Allow in Settings** and follow the macOS prompt or turn on **Copilot Computer Use** in System Settings. If the app isn't listed, drag **Copilot Computer Use** from the setup dialog into the permission list in System Settings.
-
-1. Return to VS Code. The dialog checks the permission and shows a check mark when it's granted. Repeat for the next permission. You can also select the refresh icon to check the current permission again.
-
-When both permissions are confirmed, the dialog closes and the agent continues your task.
-
-### Turn off Computer Use
-
-Run `/computer off` in a Copilot chat to turn off Computer Use, including for Copilot CLI on the same computer.
+Run `/computer off` in a Copilot chat to turn off [copilot.computer_use], including for Copilot CLI on the same computer.
 
 To stop offering the integration in VS Code, turn off ``chat.agentHost.computerUse.enabled`` and restart.
 
-### Troubleshoot Computer Use
+### Troubleshoot [copilot.computer_use]
 
-* **Computer Use isn't offered**: Check the supported platform and harness, confirm that the setting is on, and restart before starting a new chat. On first use, allow time for the plugin to download.
-* **The agent doesn't ask to turn it on**: The activation prompt isn't shown in Autopilot or chats with automatic replies. Run `/computer on` yourself. If you previously selected **Not Now**, the agent doesn't ask again in that chat.
-* **The macOS setup dialog closes before you finish**: The dialog closes if the waiting tool call ends. Finish granting permissions in System Settings, then ask the agent to retry the task. A new setup card appears if permissions are still missing.
-* **Allow in Settings doesn't open a prompt**: After a restart, macOS might not show a permission prompt it has already shown. Select **Allow in Settings** again to open System Settings.
-* **Your organization blocks Computer Use**: Contact your administrator. Turning on the setting doesn't override an organization restriction.
+* **[copilot.computer_use_caps] isn't offered**: Check the supported platform and harness, confirm that the setting is on, and restart before starting a new chat. On first use, allow time for the plugin to download.
+* **The agent doesn't ask to turn it on**: The activation prompt isn't shown in Autopilot or chats with automatic replies. Run `/computer on` yourself. Use the command if you previously selected **Not Now**, which suppresses further activation prompts in that chat.
+* **The macOS setup dialog closes before you finish**: Finish granting permissions in System Settings, then ask the agent to retry the task.
 
 ## Built-in tools and context reference
 
@@ -949,7 +959,7 @@ For individual names, descriptions, and availability, see the [Tools and context
 
 **How do I know which tools are available?**
 
-Type `#` in the chat input field to browse available tools and context items. For Copilot harness sessions, open the Agent Customizations editor and select the **Tools** tab to view and manage enabled tools. For Local harness sessions, use **Configure Tools** in the chat input.
+Type `#` in the chat input field to browse available tools and context items. For Copilot harness sessions, open the Agent Customizations editor and select the **Tools** tab to view and manage enabled tools. For Local harness sessions `feature(local-harness)`, use **Configure Tools** in the chat input.
 
 **I'm getting an error that says "Cannot have more than 128 tools per request."**
 

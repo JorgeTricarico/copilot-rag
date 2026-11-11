@@ -4,7 +4,7 @@
 
 Test-driven development (TDD) is a software development approach where you write tests before implementing functionality. This creates a tight feedback loop that improves code quality, catches bugs early, and ensures that the code meets your requirements. Visual Studio Code's AI capabilities can enhance your TDD workflow by guiding you through the different phases of writing tests, implementing code, running tests, and optimizing the code.
 
-This guide shows you how to set up an AI-assisted test-driven development workflow in VS Code by using custom agents, handoffs, and custom instructions. The TDD roles and instructions apply to both the Local and Copilot agent harnesses. The runnable workflow in this guide uses the Local harness in the Chat view because it relies on handoff actions between the TDD agents.
+This guide shows you how to set up an AI-assisted test-driven development workflow in VS Code by using custom agents, handoffs, and custom instructions. The TDD roles and instructions apply to both the Local and Copilot agent harnesses. The runnable workflow in this guide uses the Local harness `feature(local-harness)` in the Chat view because it relies on handoff actions between the TDD agents.
 
 **TDD overview**
 
@@ -25,7 +25,7 @@ The three phases are:
 Use your own repository for this workflow. Before you start:
 
 * Open the repository root as a folder or workspace in VS Code. The workflow stores shared customization files under `.github`.
-* Open the Chat view and select **Local** from the **Session Target** control. Run the TDD cycle and its handoffs in this view.
+* Open the Chat view and select **Local** `feature(local-harness)` from the **Session Target** control. Run the TDD cycle and its handoffs in this view.
 * Install the project dependencies and confirm that you can run its test command from the integrated terminal. The custom agents use that command to verify each phase.
 
 If you use another harness, follow the guidance for [reusing customizations across harnesses](/docs/agent-customization/overview.md#reuse-customizations-across-harnesses) to adapt these TDD roles. You can package a portable workflow as an [agent skill](/docs/agent-customization/agent-skills.md).

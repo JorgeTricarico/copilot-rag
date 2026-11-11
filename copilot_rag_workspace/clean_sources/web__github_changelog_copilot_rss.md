@@ -1,5 +1,19 @@
 # GitHub Copilot Official Changelog Feed
 
+## GitHub App support for Enterprise Copilot seat management
+- **Date**: Wed, 11 Nov 2026 00:10:31 +0000
+- **URL**: https://github.blog/changelog/2026-11-10-github-app-support-for-enterprise-copilot-seat-management
+
+Enterprise GitHub Apps can now call the enterprise-level Copilot seat management APIs to control which users and enterprise teams are assigned Copilot seats. The Copilot seat management APIs are accessible...
+The post GitHub App support for Enterprise Copilot seat management appeared first on The GitHub Blog .
+
+## Gemini 4 Carbon in GitHub Copilot
+- **Date**: Tue, 10 Nov 2026 19:26:51 +0000
+- **URL**: https://github.blog/changelog/2026-11-10-gemini-4-carbon-in-github-copilot
+
+Gemini 4 Carbon, Google’s latest model, is now generally available in GitHub Copilot. It is designed for complex coding, agentic, and reasoning tasks, with a focus on secure code generation...
+The post Gemini 4 Carbon in GitHub Copilot appeared first on The GitHub Blog .
+
 ## C++ language server now auto-configures MSBuild builds
 - **Date**: Tue, 10 Nov 2026 17:04:10 +0000
 - **URL**: https://github.blog/changelog/2026-11-10-c-language-server-now-auto-configures-msbuild-builds
@@ -55,17 +69,3 @@ The post Usage metrics API adds code review details and addressed rate appeared 
 
 The Copilot usage metrics API now shows which users are missing client telemetry or are running IDE or extension versions below the usage metrics minimums. New per-user fields appear in...
 The post Usage metrics API flags telemetry and version gaps appeared first on The GitHub Blog .
-
-## GitHub Copilot is now available in Xcode’s coding assistant
-- **Date**: Wed, 04 Nov 2026 19:10:40 +0000
-- **URL**: https://github.blog/changelog/2026-11-04-github-copilot-is-now-available-in-xcodes-coding-assistant
-
-You can now work with GitHub Copilot directly in Xcode’s built-in coding assistant, bringing Copilot into your native Xcode workflow. The integration is now in public preview, available starting with...
-The post GitHub Copilot is now available in Xcode’s coding assistant appeared first on The GitHub Blog .
-
-## BYOK and enterprise custom models in the Copilot usage API
-- **Date**: Wed, 04 Nov 2026 00:32:19 +0000
-- **URL**: https://github.blog/changelog/2026-11-03-byok-and-enterprise-custom-models-in-the-copilot-usage-api
-
-The Copilot usage metrics API now shows bring your own key (BYOK) usage across GitHub Copilot, so you can separate it from Copilot-hosted model usage. Reports cover two kinds of...
-The post BYOK and enterprise custom models in the Copilot usage API appeared first on The GitHub Blog .
