@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-11T05:27:05.235767+00:00",
+  "last_sync_utc": "2026-11-11T19:24:27.317904+00:00",
   "total_documents": 2108,
   "documents": {
     "anthropics_skills::README.md": {
@@ -21029,10 +21029,10 @@
       "source_url": "https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-command-reference.md",
       "canonical_web_url": "https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "bde1d4d6c4b51f7afe6032c282edeaa1fc3c7a60",
-      "content_sha256": "df5bd959358b111eaac79202685d0e313849ba2df644d2e9f47deeaa9e15b3d4",
-      "word_count": 22911,
-      "last_updated_utc": "2026-11-10T19:29:15.551217+00:00",
+      "git_blob_sha": "55ba80aa062972c38f5d501c53d8a325acd2d070",
+      "content_sha256": "65eed5a1faf571e188b5b7c387d851622b7aa07bfbaa261c3b0e69f9d1300188",
+      "word_count": 23128,
+      "last_updated_utc": "2026-11-11T19:24:21.316109+00:00",
       "local_clean_path": "clean_sources/github_docs__content_copilot_reference_copilot-cli-reference_cli-command-reference.md"
     },
     "github_docs::content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md": {
@@ -21040,10 +21040,10 @@
       "source_url": "https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md",
       "canonical_web_url": "https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "302159b733f943e2170ed9afe8230061e986ee37",
-      "content_sha256": "eb44e5aca0719536f66df3cc980ee4e19d2a1a51b462ce7814fe90b524e83d6c",
-      "word_count": 13824,
-      "last_updated_utc": "2026-11-10T19:29:15.575134+00:00",
+      "git_blob_sha": "b958fdfa650f2f6833b53605491363652d4253a8",
+      "content_sha256": "772bf9fa6eca27288cad9150080382d760363d131a8c629f8756196362ddf93e",
+      "word_count": 13983,
+      "last_updated_utc": "2026-11-11T19:24:21.451824+00:00",
       "local_clean_path": "clean_sources/github_docs__content_copilot_reference_copilot-cli-reference_cli-config-dir-reference.md"
     },
     "github_docs::content/copilot/reference/copilot-cli-reference/cli-plugin-reference.md": {
@@ -21062,10 +21062,10 @@
       "source_url": "https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-programmatic-reference.md",
       "canonical_web_url": "https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-programmatic-reference",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "2bb0c7c571471215c921d3e4eb74c8c531d453f6",
-      "content_sha256": "73c4d0aeb34ca058de9f84686f4f0ac19d0115353d224bc9a06b496e529f6a17",
-      "word_count": 2696,
-      "last_updated_utc": "2026-11-09T22:06:24.943016+00:00",
+      "git_blob_sha": "10d1df60299a23c02abef840fb42e29e6ea9f5e9",
+      "content_sha256": "cbf8d4ac654047cd46edb00c3b161a2e1bdded9c74f508a7b4b0946dd54e7195",
+      "word_count": 2794,
+      "last_updated_utc": "2026-11-11T19:24:21.335118+00:00",
       "local_clean_path": "clean_sources/github_docs__content_copilot_reference_copilot-cli-reference_cli-programmatic-reference.md"
     },
     "github_docs::content/copilot/reference/copilot-cli-reference/index.md": {
@@ -21151,9 +21151,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "1d73a71ba5cf1cd4679567dda3feafb034ec7651de5f658eeaddd3fdd22daabc",
-      "word_count": 25514,
-      "last_updated_utc": "2026-11-11T05:27:04.231638+00:00",
+      "content_sha256": "387dce0d56050814c88d63bf8cbde8df1cb753031ee76c22624f5f8d31f5100e",
+      "word_count": 26104,
+      "last_updated_utc": "2026-11-11T19:24:25.182725+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -21162,9 +21162,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "1d73a71ba5cf1cd4679567dda3feafb034ec7651de5f658eeaddd3fdd22daabc",
-      "word_count": 25514,
-      "last_updated_utc": "2026-11-11T05:27:04.168708+00:00",
+      "content_sha256": "387dce0d56050814c88d63bf8cbde8df1cb753031ee76c22624f5f8d31f5100e",
+      "word_count": 26104,
+      "last_updated_utc": "2026-11-11T19:24:25.140888+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -21437,9 +21437,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/sql-agent",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "e037569d581dd21a873ecac9950319545d44b1b9e446adbb2a15fd24663990da",
+      "content_sha256": "af06da4f81b9fad528c386fef87482d2aa16bedaddb111c3870f13cd9a4606fc",
       "word_count": 3413,
-      "last_updated_utc": "2026-11-03T19:17:06.470555+00:00",
+      "last_updated_utc": "2026-11-11T19:24:25.444475+00:00",
       "local_clean_path": "clean_sources/langgraph__sql-agent.md"
     },
     "langgraph::stores": {
@@ -21459,9 +21459,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/streaming",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "424ad739566d158ea0ef95d271566d39705736b7f7fe11b18001f16bd69d2c1f",
+      "content_sha256": "cd93eb6a08c6fd315a2a275f81879f9a925d55f26ec0f187f29c205a64acfcfa",
       "word_count": 5195,
-      "last_updated_utc": "2026-11-02T21:33:00.318464+00:00",
+      "last_updated_utc": "2026-11-11T19:24:25.441596+00:00",
       "local_clean_path": "clean_sources/langgraph__streaming.md"
     },
     "langgraph::studio": {
@@ -21470,9 +21470,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/studio",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "5b152a87b5279e81108f3ce44bcad1b1ec2188791f5e9ddd86de20dd48d8efde",
+      "content_sha256": "91bcc1919aee6cbd35b239357486e95daadc1ec54f0286d0fe8050cc62b7b826",
       "word_count": 813,
-      "last_updated_utc": "2026-11-02T05:12:42.149251+00:00",
+      "last_updated_utc": "2026-11-11T19:24:25.449088+00:00",
       "local_clean_path": "clean_sources/langgraph__studio.md"
     },
     "langgraph::test": {
@@ -22613,10 +22613,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_146.md",
       "canonical_web_url": "https://code.visualstudio.com/updates/v1_146",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
-      "git_blob_sha": "e899e0e5c532dfdc390af7f9071e931563f30a09",
-      "content_sha256": "dda4256b220206be69b63c291e60ddbc1fa950360be484e69e34561d1ebf87da",
-      "word_count": 3563,
-      "last_updated_utc": "2026-11-11T05:26:59.771681+00:00",
+      "git_blob_sha": "20a3384a791cd42ef7874ecfa22260e2950a6867",
+      "content_sha256": "8c558cdf823345cce7a49fab46171309c6a96cbf42f81b162e37ae3929036f26",
+      "word_count": 3660,
+      "last_updated_utc": "2026-11-11T19:24:20.851579+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__release-notes_v1_146.md"
     },
     "microsoft_vscode-docs::release-notes/v1_147.md": {
@@ -23098,9 +23098,9 @@
       "canonical_web_url": "https://github.com/microsoft/vscode/issues/346882",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
       "git_blob_sha": null,
-      "content_sha256": "7aa2e439cd127ade6862850f11b87fb116a06a3b41e3030f04d2d17d6f5287b8",
-      "word_count": 725,
-      "last_updated_utc": "2026-11-11T05:27:05.012418+00:00",
+      "content_sha256": "e077509966ea8f7fc95606e2f6edc04c1f3ec7922a618fd5474930e666e0a06c",
+      "word_count": 710,
+      "last_updated_utc": "2026-11-11T19:24:27.293311+00:00",
       "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_346882.md"
     },
     "vscode_insiders::iteration-plan_271045": {

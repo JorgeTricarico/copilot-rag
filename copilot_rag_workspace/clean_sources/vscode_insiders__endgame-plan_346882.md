@@ -1,7 +1,7 @@
 # VS Code Insiders Roadmap: 1.146.0 Endgame
 - **Issue Number**: #346882
 - **Category**: `endgame-plan`
-- **State**: open
+- **State**: closed
 - **Source Issue**: https://github.com/microsoft/vscode/issues/346882
 
 [Endgame guide](https://github.com/microsoft/vscode-internalbacklog/blob/main/guidelines/endgame-guide.md)
@@ -78,18 +78,18 @@
 
 # Wednesday
 `@endgame-champ`:
-- [ ] Publish website so that in-product release notes are ready
-- [ ] Start Stable rollout to everyone (start percentage: `20%`, end time UTC: `6AM next Wednesday`)
-- [ ] Deploy vscode.dev
-  - [ ] Verify the [release candidate](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) `release/x.y` passed the sanity tests in the last step
-  - [ ] [Kick off deploy](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) (Branch `release/x.y`, Deployment Target `prod`, needs peer approval)
-- [ ] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `auto`; the release pipeline job requires two approvals)
-- [ ] Publish socials (ping Cynthia)
-- [ ] [Publish @types/vscode](https://github.com/microsoft/vscode/wiki/Publish-vscode-types) if you find type diffs after running the steps
-- [ ] Create an official release
-  - [ ] Create a tag (make sure you pull the release branch first): `git tag <x.y.z>`
-  - [ ] Push the tag: `git push origin <x.y.z>`
-  - [ ] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right ... > Create Release. Use the version as title <x.y.z> and use the release link `https://code.visualstudio.com/updates/v<x_y>` for the description
-- [ ] Close milestone (**do not** delete it): https://github.com/microsoft/vscode/milestones
-- [ ] Move all remaining issues to "On Deck"
-- [ ] Ensure that the latest Insiders release from main has succeeded
+- [x] Publish website so that in-product release notes are ready
+- [x] Start Stable rollout to everyone (start percentage: `20%`, end time UTC: `6AM next Wednesday`)
+- [x] Deploy vscode.dev
+  - [x] Verify the [release candidate](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) `release/x.y` passed the sanity tests in the last step
+  - [x] [Kick off deploy](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) (Branch `release/x.y`, Deployment Target `prod`, needs peer approval)
+- [x] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `auto`; the release pipeline job requires two approvals)
+- [x] Publish socials (ping Cynthia)
+- [x] [Publish @types/vscode](https://github.com/microsoft/vscode/wiki/Publish-vscode-types) if you find type diffs after running the steps
+- [x] Create an official release
+  - [x] Create a tag (make sure you pull the release branch first): `git tag <x.y.z>`
+  - [x] Push the tag: `git push origin <x.y.z>`
+  - [x] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right ... > Create Release. Use the version as title <x.y.z> and use the release link `https://code.visualstudio.com/updates/v<x_y>` for the description
+- [x] Close milestone (**do not** delete it): https://github.com/microsoft/vscode/milestones
+- [x] Move all remaining issues to "On Deck"
+- [x] Ensure that the latest Insiders release from main has succeeded

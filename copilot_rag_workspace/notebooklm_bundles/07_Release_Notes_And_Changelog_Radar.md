@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-11T05:27:05.223751+00:00
-- **Total Palabras**: 18,437 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-11T19:24:27.303705+00:00
+- **Total Palabras**: 18,519 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -372,8 +372,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_146.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_146
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_146.md
-- **SHA256_FINGERPRINT**: `dda4256b220206be69b63c291e60ddbc1fa950360be484e69e34561d1ebf87da`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.771681+00:00
+- **SHA256_FINGERPRINT**: `8c558cdf823345cce7a49fab46171309c6a96cbf42f81b162e37ae3929036f26`
+- **LAST_VERIFIED_UTC**: 2026-11-11T19:24:20.851579+00:00
 ---
 
 **MetaDescription**: Learn what's new in Visual Studio Code 1.146
@@ -451,11 +451,13 @@ Learn more about [chat windows](https://code.visualstudio.com/docs/agents/run/ag
 
 To open a chat in a new window, right-click the session or chat in the sessions list and select **Open in** > **New Window**. You can also drag a chat out of the Agents window to create a new window. You can move it back with the **Move to Main Window** command.
 
+The following video shows opening a chat in its own window.
+
+<video src="images/1_146/chat-windows-open.mp4" title="Video showing a chat opened in a new window from the Agents window, with the chat beside its editors." autoplay loop controls muted></video>
+
 A chat window can hold several chats from one or more sessions: pick another session in its title bar, drag a chat in from another window, or select **New Session** (``Shortcut: sessions.chatWindow.newSession``) at the left of the title bar to start a new session in that window. Chat windows reopen with their chats and editors after you restart VS Code.
 
 The content within a chat window is organized into parts, which you can arrange freely to fit your workflow.
-
-<video src="images/1_146/chat-windows.mp4" title="Video showing moving a chat into a new window and arranging parts in a chat window." autoplay loop controls muted></video>
 
 * **Move parts:** Drag a part by the grabber on the top edge of its card to another side of the window, or beside another part. You can also use **Move Part Left**, **Move Part Right**, **Move Part Up**, and **Move Part Down**.
 * **Move tabs between parts:** Drag a tab to another part, or drop it on a part's edge to split that part. Use **Move Editor to Part** or **Move Editor into New Part Left/Right/Above/Below** to do the same from the Command Palette. Drag an editor tab onto the chat input to attach it to the chat as context.
@@ -463,6 +465,10 @@ The content within a chat window is organized into parts, which you can arrange 
 * **Switch the layout:** Use **Configure Layout** in the title bar to show the chat, the editor, or both, side by side or stacked. In the stacked layout, **Agents: Toggle Chat Conversation** collapses the chat to only its input, so the editor takes the rest of the window.
 
 Use **Developer: Reset Chat Window Layout** to return a window to how it first opened.
+
+The following video shows rearranging a chat window and resetting its layout.
+
+<video src="images/1_146/chat-windows-layout.mp4" title="Video showing parts and tabs of a chat window being rearranged, and the layout being reset." autoplay loop controls muted></video>
 
 Let us know what you think by [filing an issue](https://github.com/microsoft/vscode/issues).
 
@@ -595,6 +601,10 @@ The Welcome page shows a visible outline when the page itself has keyboard focus
 ### Mermaid 12 support
 
 VS Code now uses Mermaid 12 when rendering Mermaid diagrams in chat, Markdown previews, and notebooks. You can use new diagram types, including use-case diagrams, and benefit from updated automatic layout behavior.
+
+| Before: Mermaid 11 | After: Mermaid 12 |
+| --- | --- |
+| ![Screenshot showing Mermaid 11 rendering with older flowchart and subgraph layouts and a use-case diagram error.](images/1_146/mermaid-11.png) | ![Screenshot showing Mermaid 12 rendering with updated flowchart and subgraph layouts and a rendered use-case diagram.](images/1_146/mermaid-12.png) |
 
 ### Copy the address of local HTML files in the Integrated Browser
 
@@ -1402,14 +1412,14 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_346882
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/346882
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/346882
-- **SHA256_FINGERPRINT**: `7aa2e439cd127ade6862850f11b87fb116a06a3b41e3030f04d2d17d6f5287b8`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:05.012418+00:00
+- **SHA256_FINGERPRINT**: `e077509966ea8f7fc95606e2f6edc04c1f3ec7922a618fd5474930e666e0a06c`
+- **LAST_VERIFIED_UTC**: 2026-11-11T19:24:27.293311+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.146.0 Endgame
 - **Issue Number**: #346882
 - **Category**: `endgame-plan`
-- **State**: open
+- **State**: closed
 - **Source Issue**: https://github.com/microsoft/vscode/issues/346882
 
 [Endgame guide](https://github.com/microsoft/vscode-internalbacklog/blob/main/guidelines/endgame-guide.md)
@@ -1486,21 +1496,21 @@ We really appreciate people trying our new features as soon as they are ready, s
 
 # Wednesday
 `@endgame-champ`:
-- [ ] Publish website so that in-product release notes are ready
-- [ ] Start Stable rollout to everyone (start percentage: `20%`, end time UTC: `6AM next Wednesday`)
-- [ ] Deploy vscode.dev
-  - [ ] Verify the [release candidate](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) `release/x.y` passed the sanity tests in the last step
-  - [ ] [Kick off deploy](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) (Branch `release/x.y`, Deployment Target `prod`, needs peer approval)
-- [ ] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `auto`; the release pipeline job requires two approvals)
-- [ ] Publish socials (ping Cynthia)
-- [ ] [Publish @types/vscode](https://github.com/microsoft/vscode/wiki/Publish-vscode-types) if you find type diffs after running the steps
-- [ ] Create an official release
-  - [ ] Create a tag (make sure you pull the release branch first): `git tag <x.y.z>`
-  - [ ] Push the tag: `git push origin <x.y.z>`
-  - [ ] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right ... > Create Release. Use the version as title <x.y.z> and use the release link `https://code.visualstudio.com/updates/v<x_y>` for the description
-- [ ] Close milestone (**do not** delete it): https://github.com/microsoft/vscode/milestones
-- [ ] Move all remaining issues to "On Deck"
-- [ ] Ensure that the latest Insiders release from main has succeeded
+- [x] Publish website so that in-product release notes are ready
+- [x] Start Stable rollout to everyone (start percentage: `20%`, end time UTC: `6AM next Wednesday`)
+- [x] Deploy vscode.dev
+  - [x] Verify the [release candidate](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) `release/x.y` passed the sanity tests in the last step
+  - [x] [Kick off deploy](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) (Branch `release/x.y`, Deployment Target `prod`, needs peer approval)
+- [x] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `auto`; the release pipeline job requires two approvals)
+- [x] Publish socials (ping Cynthia)
+- [x] [Publish @types/vscode](https://github.com/microsoft/vscode/wiki/Publish-vscode-types) if you find type diffs after running the steps
+- [x] Create an official release
+  - [x] Create a tag (make sure you pull the release branch first): `git tag <x.y.z>`
+  - [x] Push the tag: `git push origin <x.y.z>`
+  - [x] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right ... > Create Release. Use the version as title <x.y.z> and use the release link `https://code.visualstudio.com/updates/v<x_y>` for the description
+- [x] Close milestone (**do not** delete it): https://github.com/microsoft/vscode/milestones
+- [x] Move all remaining issues to "On Deck"
+- [x] Ensure that the latest Insiders release from main has succeeded
 
 
 ---
