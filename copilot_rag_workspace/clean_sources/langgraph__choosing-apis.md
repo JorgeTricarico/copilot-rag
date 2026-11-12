@@ -4,7 +4,7 @@
 
 # Functional API overview
 
-> Wrap other frameworks with entrypoints and tasks for LangSmith Deployment. Covers checkpointing, resume rules, and common pitfalls.
+> Wrap other frameworks with entrypoints and tasks for LangSmith Agent Server. Covers checkpointing, resume rules, and common pitfalls.
 
 The **Functional API** wraps ordinary functions with LangGraph runtime features ([persistence](https://docs.langchain.com/oss/python/langgraph/persistence.md), [memory](https://docs.langchain.com/oss/python/langgraph/add-memory.md), [human-in-the-loop](https://docs.langchain.com/oss/python/langgraph/interrupts.md), and [streaming](https://docs.langchain.com/oss/python/langgraph/streaming.md)). Use it when you already have existing code or are using a different framework and want to [deploy it on LangSmith](https://docs.langchain.com/langsmith/deploy-other-frameworks.md) without rewriting that agent as a graph. Prefer the [Graph API](https://docs.langchain.com/oss/python/langgraph/graph-api.md) for building new agents.
 
@@ -20,7 +20,7 @@ The Functional API uses two building blocks:
 | Build | Use |
 | - | - |
 | New LangGraph agents and workflows | [Graph API](https://docs.langchain.com/oss/python/langgraph/graph-api.md) |
-| Existing agent in another framework (Claude Agent SDK, Strands, CrewAI, AutoGen, and similar) that you want on LangSmith Deployment | Functional API via [Deploy other frameworks](https://docs.langchain.com/langsmith/deploy-other-frameworks.md) |
+| Existing agent in another framework (Claude Agent SDK, Strands, CrewAI, AutoGen, and similar) that you want on LangSmith Agent Server | Functional API via [Deploy other frameworks](https://docs.langchain.com/langsmith/deploy-other-frameworks.md) |
 
 Compared with the Graph API, the Functional API uses ordinary language control flow (`if` / `else`, loops, and calls), keeps values scoped to the entrypoint and tasks instead of a shared [state](https://docs.langchain.com/oss/python/langgraph/graph-api.md#state) schema, saves task results on the entrypoint checkpoint rather than after each [super-step](https://docs.langchain.com/oss/python/langgraph/graph-api.md#super-steps), and has no static graph visualization.
 

@@ -146,7 +146,6 @@ Type `/` to see commands available in the current session. Availability depends 
 | `/models`, `/tools` | Open the model picker, or configure tools for a local chat. |
 | `/init` | Generate or update workspace instructions in a local agent session. |
 | `/agents`, `/instructions`, `/skills`, `/prompts`, `/hooks` | Configure the corresponding customization type. In the Chat view, all are available with **Local** `feature(local-harness)`. Only `/prompts` and `/hooks` are available with **Copilot**. |
-| `/create-agent`, `/create-instructions`, `/create-skill`, `/create-prompt`, `/create-hook` | Generate a customization in a local agent session. |
 | `/troubleshoot` | Analyze agent debug logs in a local or Copilot CLI session. |
 | `/debug` | Open the Chat Debug view from the Chat view, not the Agents window. |
 | `/sandbox policy` | Inspect the [effective sandbox policy](/docs/agents/run/agent-sandboxing.md#inspect-the-effective-sandbox-policy) for a Copilot session. |

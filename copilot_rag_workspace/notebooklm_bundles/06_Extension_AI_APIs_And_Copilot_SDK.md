@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
-- **Generado (UTC)**: 2026-11-11T05:27:05.220580+00:00
-- **Total Palabras**: 124,770 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-12T19:42:46.950974+00:00
+- **Total Palabras**: 124,780 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -25461,8 +25461,8 @@ declare module 'vscode' {
 # DOCUMENT_SOURCE: web::vscode_api_contribution_points
 - **CANONICAL_URL**: https://code.visualstudio.com/api/references/contribution-points
 - **RAW_SOURCE_URL**: https://code.visualstudio.com/api/references/contribution-points
-- **SHA256_FINGERPRINT**: `728e58937afa6eacb3a3336e311ce33a6ab177c126678e4de28ff3814fda56e3`
-- **LAST_VERIFIED_UTC**: 2026-11-06T05:48:41.662421+00:00
+- **SHA256_FINGERPRINT**: `0452171dfcdbbbab21a891cc2666bab451de3f100ebf0ba598c60d8be69d1d4a`
+- **LAST_VERIFIED_UTC**: 2026-11-12T19:42:41.626524+00:00
 ---
 
 # Contribution Points
@@ -26926,11 +26926,11 @@ Defining that Ctrl+F1 under Windows and Linux and Cmd+F1 under macOS trigger the
 Contribute definition of a programming language. This will introduce a new language or enrich the knowledge VS Code has about a language.
 The main effects of contributes.languages are:
 contributes.languages
-- Define a languageId that can be reused in other parts of VS Code API, such as vscode.TextDocument.languageId and the onLanguage Activation Events. You can contribute a human-readable using the aliases field. The first item in the list will be used as the human-readable label.
+- Define a languageId that can be reused in other parts of VS Code API, such as vscode.TextDocument.languageId and the onLanguage Activation Events. You can contribute a human-readable label using the aliases field. The first item in the list will be used as the human-readable label.
 languageId
 vscode.TextDocument.languageId
 onLanguage
-- You can contribute a human-readable using the aliases field. The first item in the list will be used as the human-readable label.
+- You can contribute a human-readable label using the aliases field. The first item in the list will be used as the human-readable label.
 aliases
 - Associate file name extensions ( extensions ), file names ( filenames ), file name glob patterns ( filenamePatterns ), files that begin with a specific line (such as hashbang) ( firstLine ), and mimetypes to that languageId .
 extensions
@@ -26940,7 +26940,7 @@ firstLine
 mimetypes
 languageId
 - Contribute a set of Declarative Language Features for the contributed language. Learn more about the configurable editing features in the Language Configuration Guide .
-- Contribute an icon which can be used as in file icon themes if theme does not contain an icon for the language
+- Contribute an icon which can be used in file icon themes if the active theme does not contain an icon for the language. Learn more in Language default icons .
 
 ### language example
 

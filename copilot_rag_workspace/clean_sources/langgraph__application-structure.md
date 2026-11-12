@@ -6,11 +6,11 @@
 
 A LangGraph application consists of one or more graphs, a configuration file (`langgraph.json`), a file that specifies dependencies, and an optional `.env` file that specifies environment variables.
 
-This guide shows a typical structure of an application and shows you how to provide the required configuration to deploy an application with [LangSmith Deployment](https://docs.langchain.com/langsmith/deployment.md).
+This guide shows a typical structure of an application and shows you how to provide the required configuration to deploy an application with [LangSmith Agent Server](https://docs.langchain.com/langsmith/deployment.md).
 
 > [!NOTE]
 >
-> LangSmith Deployment is a managed hosting platform for deploying and scaling LangGraph agents. It handles the infrastructure, scaling, and operational concerns so you can deploy your stateful, long-running agents directly from your repository. Learn more in the [Deployment documentation](https://docs.langchain.com/langsmith/deployment.md).
+> LangSmith Agent Server hosting manages deployment and scaling for LangGraph agents. It handles the infrastructure, scaling, and operational concerns so you can deploy your stateful, long-running agents directly from your repository. Learn more in the [Deployment documentation](https://docs.langchain.com/langsmith/deployment.md).
 
 ## Key concepts
 

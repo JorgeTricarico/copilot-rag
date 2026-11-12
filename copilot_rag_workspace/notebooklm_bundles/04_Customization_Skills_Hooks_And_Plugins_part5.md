@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-11-11T05:27:05.184403+00:00
-- **Total Palabras**: 435,147 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-12T19:42:46.920909+00:00
+- **Total Palabras**: 434,989 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -65723,8 +65723,8 @@ Use the [agent plugin authoring reference](/docs/agents/reference/agent-plugin-r
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/agent-skills.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/agent-skills
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-skills.md
-- **SHA256_FINGERPRINT**: `317da5de922be359cc24266e4f2e2e611c3819a1b8b84d4f2e710ac6ccff1ff4`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:57.875385+00:00
+- **SHA256_FINGERPRINT**: `182ac3959e2a5430bc177bb1e0ab8841dd84a14a72e6d7070ea31b8b87e451a9`
+- **LAST_VERIFIED_UTC**: 2026-11-12T19:42:37.726496+00:00
 ---
 
 **MetaDescription**: Find, adapt, and create Agent Skills in VS Code for reusable workflows with supported agents.
@@ -65895,18 +65895,6 @@ Create a project skill named test-changes in a location supported by this harnes
 ```
 
 You can also ask the agent to turn a process from the current conversation into a skill, such as "create a skill from how we just debugged that." Review the generated instructions, file locations, and supporting resources, then [verify the skill](#verify-a-skill).
-
-### Local harness shortcuts
-
-`feature(local-harness)`
-
-With **Local** `feature(local-harness)` selected in the Chat view, you can also:
-
-* Enter `/skills` to open the **Configure Skills** menu.
-* Enter `/create-skill` followed by a description to generate a skill.
-* Select **Generate with AI** in the **Skills** section of the Agent Customizations editor.
-
-For other harnesses, use **Open Customizations** or describe the skill directly in chat.
 
 ## Use skills as slash commands
 
@@ -66741,8 +66729,8 @@ The response's **References** section, where available, helps check inclusion, n
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/hooks.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/hooks
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/hooks.md
-- **SHA256_FINGERPRINT**: `b37b847cd7e7b9c30ae37b424f9ca35178e0965b9ed0c8fb6e650fe4bf7a65dc`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:57.858593+00:00
+- **SHA256_FINGERPRINT**: `cfbbfe66c9a90cdc517879ff54beec7e94ecd32ba1a8aafcf335c7d5b1536698`
+- **LAST_VERIFIED_UTC**: 2026-11-12T19:42:37.648347+00:00
 ---
 
 **MetaDescription**: Reuse and configure agent hooks for personal and shared workflows in VS Code.
@@ -66802,7 +66790,7 @@ Select the harness before opening the hooks interface so the editor shows the re
    * In the Chat view, enter `/hooks` in the chat input.
 1. Select **New Hook** (plus icon) next to **Workspace** or **User** to create a hook, or select an existing hook to open its configuration.
 
-To generate a hook with AI, describe the hook you want in chat. The `/create-hook <description>` and **Chat: Generate Hook** shortcuts are available only for Local sessions. Review generated configuration and scripts against the destination reference before running them. Generation is not automatic migration or verification.
+To generate a hook with AI, describe the hook you want in chat. Review generated configuration and scripts against the destination reference before running them. Generation is not automatic migration or verification.
 
 ## Create your first Copilot hook
 
@@ -68711,8 +68699,8 @@ For analysis guidance and skill evaluations with [Waza](https://github.com/micro
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/prompt-files.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/prompt-files
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/prompt-files.md
-- **SHA256_FINGERPRINT**: `b692e9fc554910763c8429b17d0732600db72bbd2f2a218e9ea3ab8b35e2d491`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.039744+00:00
+- **SHA256_FINGERPRINT**: `89c0a742526dc70219741acda6f285777f17f34e9e5704856932e0bb2e5a8d46`
+- **LAST_VERIFIED_UTC**: 2026-11-12T19:42:37.710907+00:00
 ---
 
 **MetaDescription**: Use prompt files with the deprecated Local harness in VS Code, or migrate workflows to agent skills.
@@ -68775,11 +68763,7 @@ An agent with file-editing tools can help author a prompt file, even if you use 
 
 Authoring a `.prompt.md` file in a Copilot session doesn't make that file runnable by the Copilot harness. To reuse a workflow in that harness, [create a skill](/docs/agent-customization/agent-skills.md#create-a-skill) or [convert an existing prompt file](/docs/agent-customization/migrate-customizations.md#convert-prompt-files-to-skills).
 
-With **Local** `feature(local-harness)` selected, you can also type `/create-prompt` in chat followed by the description. The agent asks clarifying questions, generates a `.prompt.md` file with appropriate frontmatter and instructions, and offers you a choice between workspace and user storage. The `/create-prompt` command isn't available for other harnesses.
-
 You can also ask an agent to capture an ongoing conversation as a prompt file for Local sessions. Specify the target harness so that it doesn't create a customization in a format you can't use.
-
-With **Local** `feature(local-harness)` selected in the Chat view, you can also generate a prompt file from the Agent Customizations editor by selecting **Generate with AI** next to the **Workspace** group in the **Prompts** section.
 
 ## Use a prompt file in chat
 

@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-11T19:24:27.303705+00:00
-- **Total Palabras**: 18,519 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-12T19:42:46.953635+00:00
+- **Total Palabras**: 18,647 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -740,11 +740,11 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_147.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_147
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_147.md
-- **SHA256_FINGERPRINT**: `539f4bd59be7a55fc9cf4fbf43403dd940782111a8e5e40d97224bea1983a35c`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.728729+00:00
+- **SHA256_FINGERPRINT**: `6475e4367f04f941f9d8515ffdae49b6dd073f5e935ff3bdf73fbafa4fd3c1df`
+- **LAST_VERIFIED_UTC**: 2026-11-12T19:42:37.814316+00:00
 ---
 
-**MetaDescription**: Learn what's new in Visual Studio Code 1.147 (Insiders)
+**MetaDescription**: Learn what is new in Visual Studio Code Insiders, including agent session management, chat resources, and Markdown editing.
 
 # Visual Studio Code 1.147
 
@@ -752,7 +752,7 @@ Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://
 
 ---
 
-_Last updated: November 10, 2026_
+_Last updated: November 12, 2026_
 
 Welcome to the 1.147  release of Visual Studio Code.
 
@@ -760,14 +760,22 @@ Happy Coding!
 
 ---
 
+## November 11, 2026
+
+* Share agent sessions between the Agents window and WSL, Remote - SSH, or Dev Container editor windows when both windows use the same agent host. _[#346859: Share agent host sessions between the Agents Window and WSL, SSH and Dev Container editor windows](https://github.com/microsoft/vscode/issues/346859)_
+* Drag sessions between compatible inbox categories to pin, hold, clear, archive, or resume them (Experimental). _[#346934: Inbox mode: Sessions cannot be dragged between groups](https://github.com/microsoft/vscode/issues/346934)_
+* Enable opening all web links in the integrated browser. _[#316528: Option to open all links in Integrated Browser](https://github.com/microsoft/vscode/issues/316528)_
+
 ## November 10, 2026
 
-* Group **On hold** sessions by workspace in inbox mode (Experimental). _[#347140: On Hold is too limiting. I'm gonna end up having many many things "on hold"](https://github.com/microsoft/vscode/issues/347140)_
 * Add an inline **Merge Pull Request** action for eligible sessions in inbox mode (Experimental). _[#346936: Inbox mode: Ready to Merge sessions have no inline Merge action](https://github.com/microsoft/vscode/issues/346936)_
 * Hide empty categories in inbox mode (Experimental), while keeping **Inbox** visible. _[#346938: Inbox mode: Empty sections take up too much vertical space](https://github.com/microsoft/vscode/issues/346938)_
 * Hover over a Compare Models (Preview) parent chat in the Agents window to see its original settings. _[#347109: Model compare: show original settings on hover of the parent chat](https://github.com/microsoft/vscode/issues/347109)_
 * Shorten worktree cleanup confirmations while retaining the session restoration reminder. _[#347134: Worktree cleanup confirmation is unncessarily wordy](https://github.com/microsoft/vscode/issues/347134)_
-* Add a one-time custom-agent tip in **Add Context**. _[#347399: Show a one-time tip for custom agents in the Add Context menu](https://github.com/microsoft/vscode/issues/347399)_
+* Add support for collapsible `` sections in the Markdown editor (Experimental). _[#347433: Markdown editor: render ``/`<summary>` as collapsible sections](https://github.com/microsoft/vscode/issues/347433)_
+* Add support for viewing pinned chat files above the chat input (Experimental). _[#345427: Let extensions dock views above the chat input](https://github.com/microsoft/vscode/issues/345427)_
+* Add context menu option to hide VS Code pet (Experimental). _[#346510: Remove option for vscode-pet](https://github.com/microsoft/vscode/issues/346510)_
+* Filter inbox sessions by workspace and execution environment (Experimental). _[#347488: Add workspace and environment scope pickers to Inbox](https://github.com/microsoft/vscode/issues/347488)_
 
 ---
 

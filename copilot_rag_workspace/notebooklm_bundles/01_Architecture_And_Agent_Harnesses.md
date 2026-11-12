@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-11-11T05:27:05.014225+00:00
-- **Total Palabras**: 26,357 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-12T19:42:46.789225+00:00
+- **Total Palabras**: 26,380 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -71,8 +71,8 @@ When auditing, ensure docs accurately cover these areas:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/best-practices.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/best-practices
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/best-practices.md
-- **SHA256_FINGERPRINT**: `6e27fb5c60bdc9c7d27e1bb0ea16360d5eb03b2f647edbcf03f24d16a47c8525`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:36.137051+00:00
+- **SHA256_FINGERPRINT**: `dab797485fafe7a20646f0f2f70be6bfb9a654e2b48d741240c35bf818d3ba36`
+- **LAST_VERIFIED_UTC**: 2026-11-12T19:42:37.767471+00:00
 ---
 
 **MetaDescription**: Use AI effectively in VS Code by choosing the right workflow, writing focused prompts, and reviewing results.
@@ -250,19 +250,19 @@ For more information, see [choosing an agent harness](/docs/agents/run/agent-har
 
 Project customization is optional. Add it when you have conventions, project context, or workflows that the AI can't reliably infer from your code. Concise customization can also help [optimize AI credit usage](/docs/agents/guides/optimize-usage.md) by reducing repeated context gathering, corrections, and retries.
 
-VS Code supports several mechanisms to configure AI behavior for your project. Enter `/init` in chat to generate a starter configuration.
+VS Code supports several mechanisms to configure AI behavior for your project. Run **Chat: Open Customizations** to open the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) and create customizations for your selected harness.
 
 | Mechanism | Best for | Get started |
 |-----------|----------|-------------|
 | [Custom instructions](/docs/agent-customization/custom-instructions.md) | Project-wide coding standards and architectural context | Type `/init` to generate always-on instructions for your project |
-| [Custom agents](/docs/agent-customization/custom-agents.md) | Specialized workflows or personas (TDD, security audit) | Type `/create-agent <description>` to generate a custom agent |
-| [Skills](/docs/agent-customization/agent-skills.md) | Domain-specific capabilities (testing, deployment) | Type `/create-skill <description>` to generate a skill |
+| [Custom agents](/docs/agent-customization/custom-agents.md) | Specialized workflows or personas (TDD, security audit) | Select **Agents**, then **New Agent** next to **Workspace** in the Agent Customizations editor |
+| [Skills](/docs/agent-customization/agent-skills.md) | Domain-specific capabilities (testing, deployment) | Select **Skills**, then **New Skill** next to **Workspace** in the Agent Customizations editor |
 | [Tools and MCP servers](/docs/agents/run/tools.md) | Connecting to external systems (databases, APIs, CLIs) | Configure in `mcp.json` |
 
 Tips for effective project configuration:
 
 * **Keep instruction files concise.** They load on every chat interaction. Focus on information the AI can't infer from code, such as non-default conventions, architectural decisions, or environment setup.
-* **Scope instructions with `applyTo` patterns.** Enter `/instructions` to create language-specific or folder-specific instruction files instead of putting everything in one file.
+* **Scope instructions with `applyTo` patterns.** Create language-specific or folder-specific instruction files from **Instructions** in the Agent Customizations editor instead of putting everything in one file.
 * **Limit enabled tools.** Fewer active tools means faster, more relevant responses. Enable tools only when the task needs them.
 * **Exclude generated and noisy files from search.** Configure ``search.exclude`` and ``files.exclude`` so agent text search and grep stay focused on source code. See [improve agent search with exclusion settings](/docs/agents/reference/workspace-context.md#improve-agent-search-with-exclusion-settings).
 

@@ -1459,11 +1459,11 @@ Defining that Ctrl+F1 under Windows and Linux and Cmd+F1 under macOS trigger the
 Contribute definition of a programming language. This will introduce a new language or enrich the knowledge VS Code has about a language.
 The main effects of contributes.languages are:
 contributes.languages
-- Define a languageId that can be reused in other parts of VS Code API, such as vscode.TextDocument.languageId and the onLanguage Activation Events. You can contribute a human-readable using the aliases field. The first item in the list will be used as the human-readable label.
+- Define a languageId that can be reused in other parts of VS Code API, such as vscode.TextDocument.languageId and the onLanguage Activation Events. You can contribute a human-readable label using the aliases field. The first item in the list will be used as the human-readable label.
 languageId
 vscode.TextDocument.languageId
 onLanguage
-- You can contribute a human-readable using the aliases field. The first item in the list will be used as the human-readable label.
+- You can contribute a human-readable label using the aliases field. The first item in the list will be used as the human-readable label.
 aliases
 - Associate file name extensions ( extensions ), file names ( filenames ), file name glob patterns ( filenamePatterns ), files that begin with a specific line (such as hashbang) ( firstLine ), and mimetypes to that languageId .
 extensions
@@ -1473,7 +1473,7 @@ firstLine
 mimetypes
 languageId
 - Contribute a set of Declarative Language Features for the contributed language. Learn more about the configurable editing features in the Language Configuration Guide .
-- Contribute an icon which can be used as in file icon themes if theme does not contain an icon for the language
+- Contribute an icon which can be used in file icon themes if the active theme does not contain an icon for the language. Learn more in Language default icons .
 
 ### language example
 
