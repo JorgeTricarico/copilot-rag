@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-11T19:24:27.317904+00:00",
+  "last_sync_utc": "2026-11-12T06:31:07.969471+00:00",
   "total_documents": 2108,
   "documents": {
     "anthropics_skills::README.md": {
@@ -21151,9 +21151,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "387dce0d56050814c88d63bf8cbde8df1cb753031ee76c22624f5f8d31f5100e",
-      "word_count": 26104,
-      "last_updated_utc": "2026-11-11T19:24:25.182725+00:00",
+      "content_sha256": "3ee490675c58c483420f5a8cc7594a38a32bb256425325e652610c88ad7431ef",
+      "word_count": 26119,
+      "last_updated_utc": "2026-11-12T06:31:07.016908+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -21162,9 +21162,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "387dce0d56050814c88d63bf8cbde8df1cb753031ee76c22624f5f8d31f5100e",
-      "word_count": 26104,
-      "last_updated_utc": "2026-11-11T19:24:25.140888+00:00",
+      "content_sha256": "3ee490675c58c483420f5a8cc7594a38a32bb256425325e652610c88ad7431ef",
+      "word_count": 26119,
+      "last_updated_utc": "2026-11-12T06:31:07.066666+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
