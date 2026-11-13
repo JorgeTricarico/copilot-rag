@@ -1,5 +1,19 @@
 # GitHub Copilot Official Changelog Feed
 
+## GitHub Enterprise Server support in the GitHub Copilot app
+- **Date**: Fri, 13 Nov 2026 18:27:13 +0000
+- **URL**: https://github.blog/changelog/2026-11-13-github-enterprise-server-support-in-the-github-copilot-app
+
+You can now bring your work on GitHub Enterprise Server (GHES) into the GitHub Copilot app. Add your GHES account to work with remote repositories, issues, and pull requests. This...
+The post GitHub Enterprise Server support in the GitHub Copilot app appeared first on The GitHub Blog .
+
+## Gemini 4 Hydrogen in GitHub Copilot
+- **Date**: Fri, 13 Nov 2026 18:23:48 +0000
+- **URL**: https://github.blog/changelog/2026-11-13-gemini-4-hydrogen-in-github-copilot
+
+Gemini 4 Hydrogen, Google’s latest Flash model, is now generally available in GitHub Copilot. It is designed for fast, efficient agentic coding, tool use, and multistep workflows, with improved instruction...
+The post Gemini 4 Hydrogen in GitHub Copilot appeared first on The GitHub Blog .
+
 ## GitHub App support for Enterprise Copilot seat management
 - **Date**: Wed, 11 Nov 2026 00:10:31 +0000
 - **URL**: https://github.blog/changelog/2026-11-10-github-app-support-for-enterprise-copilot-seat-management
@@ -55,17 +69,3 @@ The post GitHub Copilot weekly releases — November 2 appeared first on The Git
 
 Turn conversations into code with @GitHub in Slack and Teams! Investigate bugs, create issues, implement changes, and open pull requests—all without leaving your conversation. What’s new Build and review together...
 The post @GitHub in Slack and Teams is generally available and more appeared first on The GitHub Blog .
-
-## Usage metrics API adds code review details and addressed rate
-- **Date**: Fri, 06 Nov 2026 00:19:07 +0000
-- **URL**: https://github.blog/changelog/2026-11-05-usage-metrics-api-adds-code-review-details-and-addressed-rate
-
-The enterprise and organization repository-level Copilot usage metrics reports now show what happens to Copilot code review feedback. A new copilot_code_review object on each repos-1-day row reports how many Copilot-reviewed...
-The post Usage metrics API adds code review details and addressed rate appeared first on The GitHub Blog .
-
-## Usage metrics API flags telemetry and version gaps
-- **Date**: Fri, 06 Nov 2026 00:08:31 +0000
-- **URL**: https://github.blog/changelog/2026-11-05-usage-metrics-api-flags-telemetry-and-version-gaps
-
-The Copilot usage metrics API now shows which users are missing client telemetry or are running IDE or extension versions below the usage metrics minimums. New per-user fields appear in...
-The post Usage metrics API flags telemetry and version gaps appeared first on The GitHub Blog .

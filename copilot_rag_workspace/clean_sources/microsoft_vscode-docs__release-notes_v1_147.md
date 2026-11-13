@@ -6,13 +6,24 @@ Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://
 
 ---
 
-_Last updated: November 12, 2026_
+_Last updated: November 13, 2026_
 
 Welcome to the 1.147  release of Visual Studio Code.
 
 Happy Coding!
 
 ---
+
+## November 12, 2026
+
+* Add an editor tab bar **+** menu for creating text files, Markdown documents, chats, and integrated browser tabs. _[#347849: Experimental new tab (+) button in the editor tab bar](https://github.com/microsoft/vscode/issues/347849)_
+* Add actions for generating code, starting a chat, choosing a language, or reopening an untitled file in another editor. _[#347848: Experiment: show a list of actions in the hint of new untitled files](https://github.com/microsoft/vscode/issues/347848)_
+* Name images pasted into chat after their source file when available. _[#347828: Chat: name pasted images after their source file](https://github.com/microsoft/vscode/issues/347828)_
+* Start the Agents window's **Open Folder** dialog at the parent of the selected local folder to reduce navigation between sibling projects. _[#335652: Choose Folder: Make parent folder of current folder the starting point](https://github.com/microsoft/vscode/issues/335652)_
+* Use toolbar menus to filter and sort worktrees in the Agents window's cleanup editor. _[#347138: Controls area for worktree cleanup could use some design love](https://github.com/microsoft/vscode/issues/347138)_
+* Show minimap section headers for single-line `#region` comments in HTML and CSS files. _[#210637: Minimap section headers are not shown for regions in HTML and CSS](https://github.com/microsoft/vscode/issues/210637)_
+* Add the proposed `contribTitleBar` API for contributing buttons to editor and Agents window title bars during [local extension development](https://code.visualstudio.com/api/advanced-topics/using-proposed-api). _[#347839: Proposed API: let extensions contribute buttons to the title bar of the editor and Agents windows](https://github.com/microsoft/vscode/issues/347839)_
+* Remove the experimental **AI Usage Statistics** Status Bar widget. _[#340001: Remove the AI Usage Statistics widget](https://github.com/microsoft/vscode/issues/340001)_
 
 ## November 11, 2026
 

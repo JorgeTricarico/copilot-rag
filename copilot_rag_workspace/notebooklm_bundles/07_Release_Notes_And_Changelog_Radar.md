@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-12T19:42:46.953635+00:00
-- **Total Palabras**: 18,647 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-13T19:24:37.186181+00:00
+- **Total Palabras**: 18,871 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -740,8 +740,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_147.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_147
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_147.md
-- **SHA256_FINGERPRINT**: `6475e4367f04f941f9d8515ffdae49b6dd073f5e935ff3bdf73fbafa4fd3c1df`
-- **LAST_VERIFIED_UTC**: 2026-11-12T19:42:37.814316+00:00
+- **SHA256_FINGERPRINT**: `e78f7de20dfd3d24d765751261fbef76e49d617e2004b2511c092cc75fa691dd`
+- **LAST_VERIFIED_UTC**: 2026-11-13T19:24:32.484744+00:00
 ---
 
 **MetaDescription**: Learn what is new in Visual Studio Code Insiders, including agent session management, chat resources, and Markdown editing.
@@ -752,13 +752,24 @@ Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://
 
 ---
 
-_Last updated: November 12, 2026_
+_Last updated: November 13, 2026_
 
 Welcome to the 1.147  release of Visual Studio Code.
 
 Happy Coding!
 
 ---
+
+## November 12, 2026
+
+* Add an editor tab bar **+** menu for creating text files, Markdown documents, chats, and integrated browser tabs. _[#347849: Experimental new tab (+) button in the editor tab bar](https://github.com/microsoft/vscode/issues/347849)_
+* Add actions for generating code, starting a chat, choosing a language, or reopening an untitled file in another editor. _[#347848: Experiment: show a list of actions in the hint of new untitled files](https://github.com/microsoft/vscode/issues/347848)_
+* Name images pasted into chat after their source file when available. _[#347828: Chat: name pasted images after their source file](https://github.com/microsoft/vscode/issues/347828)_
+* Start the Agents window's **Open Folder** dialog at the parent of the selected local folder to reduce navigation between sibling projects. _[#335652: Choose Folder: Make parent folder of current folder the starting point](https://github.com/microsoft/vscode/issues/335652)_
+* Use toolbar menus to filter and sort worktrees in the Agents window's cleanup editor. _[#347138: Controls area for worktree cleanup could use some design love](https://github.com/microsoft/vscode/issues/347138)_
+* Show minimap section headers for single-line `#region` comments in HTML and CSS files. _[#210637: Minimap section headers are not shown for regions in HTML and CSS](https://github.com/microsoft/vscode/issues/210637)_
+* Add the proposed `contribTitleBar` API for contributing buttons to editor and Agents window title bars during [local extension development](https://code.visualstudio.com/api/advanced-topics/using-proposed-api). _[#347839: Proposed API: let extensions contribute buttons to the title bar of the editor and Agents windows](https://github.com/microsoft/vscode/issues/347839)_
+* Remove the experimental **AI Usage Statistics** Status Bar widget. _[#340001: Remove the AI Usage Statistics widget](https://github.com/microsoft/vscode/issues/340001)_
 
 ## November 11, 2026
 
@@ -2153,11 +2164,25 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `f6c5c6fbfe671c55890651aa310a9f540bc6b4c129c894aa824e8f918c8d7fba`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:27:03.215713+00:00
+- **SHA256_FINGERPRINT**: `fec01e6dea8eec2fc80a5ff40320ccf7ba4aa9a05c0b053562102cd8f9848732`
+- **LAST_VERIFIED_UTC**: 2026-11-13T19:24:35.718560+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
+
+## GitHub Enterprise Server support in the GitHub Copilot app
+- **Date**: Fri, 13 Nov 2026 18:27:13 +0000
+- **URL**: https://github.blog/changelog/2026-11-13-github-enterprise-server-support-in-the-github-copilot-app
+
+You can now bring your work on GitHub Enterprise Server (GHES) into the GitHub Copilot app. Add your GHES account to work with remote repositories, issues, and pull requests. This...
+The post GitHub Enterprise Server support in the GitHub Copilot app appeared first on The GitHub Blog .
+
+## Gemini 4 Hydrogen in GitHub Copilot
+- **Date**: Fri, 13 Nov 2026 18:23:48 +0000
+- **URL**: https://github.blog/changelog/2026-11-13-gemini-4-hydrogen-in-github-copilot
+
+Gemini 4 Hydrogen, Google’s latest Flash model, is now generally available in GitHub Copilot. It is designed for fast, efficient agentic coding, tool use, and multistep workflows, with improved instruction...
+The post Gemini 4 Hydrogen in GitHub Copilot appeared first on The GitHub Blog .
 
 ## GitHub App support for Enterprise Copilot seat management
 - **Date**: Wed, 11 Nov 2026 00:10:31 +0000
@@ -2214,17 +2239,3 @@ The post GitHub Copilot weekly releases — November 2 appeared first on The Git
 
 Turn conversations into code with @GitHub in Slack and Teams! Investigate bugs, create issues, implement changes, and open pull requests—all without leaving your conversation. What’s new Build and review together...
 The post @GitHub in Slack and Teams is generally available and more appeared first on The GitHub Blog .
-
-## Usage metrics API adds code review details and addressed rate
-- **Date**: Fri, 06 Nov 2026 00:19:07 +0000
-- **URL**: https://github.blog/changelog/2026-11-05-usage-metrics-api-adds-code-review-details-and-addressed-rate
-
-The enterprise and organization repository-level Copilot usage metrics reports now show what happens to Copilot code review feedback. A new copilot_code_review object on each repos-1-day row reports how many Copilot-reviewed...
-The post Usage metrics API adds code review details and addressed rate appeared first on The GitHub Blog .
-
-## Usage metrics API flags telemetry and version gaps
-- **Date**: Fri, 06 Nov 2026 00:08:31 +0000
-- **URL**: https://github.blog/changelog/2026-11-05-usage-metrics-api-flags-telemetry-and-version-gaps
-
-The Copilot usage metrics API now shows which users are missing client telemetry or are running IDE or extension versions below the usage metrics minimums. New per-user fields appear in...
-The post Usage metrics API flags telemetry and version gaps appeared first on The GitHub Blog .
