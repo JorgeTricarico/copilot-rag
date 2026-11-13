@@ -4,9 +4,7 @@
 
 In this quickstart, you use an AI agent in Visual Studio Code to build a small web app from a natural-language prompt. You then review the generated code, let the agent validate the app with browser tools, and verify the result yourself.
 
-Follow a hands-on tutorial to build and refine an app with agents in VS Code.
-
-* [Start agents tutorial](/docs/agents/agents-tutorial.md)
+The app uses a single HTML file, so you don't need to install runtimes or build tools.
 
 ## Prerequisites
 
@@ -14,7 +12,7 @@ Follow a hands-on tutorial to build and refine an app with agents in VS Code.
 
 * [Set up GitHub Copilot in VS Code](/docs/setup/copilot.md).
 
-    Start with the [Copilot harness](/docs/agents/run/agent-harnesses.md#copilot) to complete this quickstart. It connects the model to the tools that build and test your app.
+    This quickstart uses Copilot with the recommended session settings shown below. You don't need to compare models or configure additional tools first.
 
 > [!NOTE]
 > Requests in this quickstart use AI credits from your Copilot plan. Copilot Free includes a monthly allowance. Open the Copilot status dashboard from the Status Bar to monitor your monthly usage. Learn more about [AI credits and model costs](/docs/agents/concepts/language-models.md#ai-credits-and-model-costs) and [what happens when you reach a limit](/docs/agents/agent-troubleshooting/faq.md#i-reached-my-inline-suggestions-or-ai-credits-limit).
@@ -31,12 +29,9 @@ mkdir agent-quickstart
 
 ## 2. Build the app
 
-VS Code lets you work with agents in different ways:
+For your first task, follow the **Chat view** tab to work with the agent alongside your code in the editor.
 
-* **Chat view**: work with an agent alongside your code in the editor, focused on the current project.
-* **Agents window**: assign (high-level) tasks to agents and switch between projects without reloading the window.
-
-Choose the approach that works best for you and follow the steps in the corresponding tab below.
+If you prefer a dedicated window for agent tasks across projects, follow the **Agents window** tab instead. Both paths build the same app.
 
 1. In VS Code, select **File** > **Open Folder** from the menu, and then open the `agent-quickstart` folder.
 
@@ -47,8 +42,6 @@ Choose the approach that works best for you and follow the steps in the correspo
 1. Open the Chat view with ``Shortcut: workbench.action.chat.open``, and then select `+` to start a new chat.
 
     ![Screenshot of opening a new chat in the Copilot Chat view.](images/agents-quickstart/editor-new-chat.png)
-
-    If you already had an active chat, starting a new chat does not close the previous one. The previous chat remains accessible via the sessions list.
 
 1. Configure the following settings for the chat session. Keep the default values for any other options.
 
@@ -200,7 +193,7 @@ If a follow-up doesn't resolve the problem, use [Get an agent back on track](/do
 
 ## Continue in another interface or application
 
-The Agents window and Chat view share your Copilot session, so you can switch between them without losing the conversation.
+This section is optional. The Agents window and Chat view share your Copilot session, so you can switch between them without losing the conversation.
 
 * From the Agents window, select **Open in Editor** in the title bar. VS Code opens the project in an editor window with the session available in the Chat view.
 

@@ -2,19 +2,32 @@
 
 # Build with AI in VS Code
 
-Use as much or as little AI as your task needs in Visual Studio Code. Get suggestions as you type, collaborate with an agent beside your code, or coordinate tasks across projects in the Agents window. Combine these approaches as your work changes.
+Use as much or as little AI as your task needs in Visual Studio Code. Get suggestions as you type, collaborate with an agent beside your code, tests, and debugger, or coordinate tasks across projects in the Agents window. Combine these approaches as your work changes.
 
-You can choose models from multiple providers and work with the Copilot, Claude, or Codex agent harness, using a supported account or your own API key. Customizations and plugins help you tailor agents to your work.
+Choose models from multiple providers and work with the Copilot, [product.prodname_anthropic_claude_short], or [product.prodname_openai_codex_short] agent harness, using a supported account or your own API key. A harness provides the tools and workflow around a model. Customizations and plugins help you tailor agents to your work.
 
 Continuity lets you pick up agent work across supported interfaces without starting over. Connect to sessions on your own machine through [copilot.github_environments], or use a cloud session without keeping a local host online.
 
-## Try your first agent task
+## Choose where to start
 
-Build and validate a small app, then review the result. The quickstart uses the GitHub Copilot harness with recommended defaults, so you don't need to configure every option first.
+<div class="card-grid">
+    <a class="card" href="/docs/agents/quickstart">
+        <i class="codicon codicon-hubot" aria-hidden="true"></i>
+        <div>
+            <p><strong>Complete your first AI task</strong></p>
+            <p>New to AI coding? Build and validate a small app with recommended defaults, then review the changes.</p>
+        </div>
+    </a>
+    <a class="card" href="/docs/agents/guides/overview#experienced-agent-fast-track">
+        <i class="codicon codicon-tools" aria-hidden="true"></i>
+        <div>
+            <p><strong>Bring your AI workflow to VS Code</strong></p>
+            <p>Already use AI coding tools? Connect your account or model, choose an agent harness, and work in your own repository.</p>
+        </div>
+    </a>
+</div>
 
-* [Start the agents quickstart](/docs/agents/quickstart.md)
-
-* **Already use agents:** Follow the [experienced-agent fast track](/docs/agents/guides/overview.md#experienced-agent-fast-track) in your own repository.
+* **Prefer to start with your own code:** [Explore a codebase without changing files](/docs/agents/guides/explore-a-codebase.md), then verify the explanation against your code.
 * **New to VS Code:** First [install the editor and open a workspace](/docs/getstarted/overview.md).
 
 <video src="images/agents-overview/build-with-ai-overview.mp4" title="Video overview of building with AI in VS Code, showing inline suggestions, collaboration alongside code, and task orchestration in the Agents window." autoplay loop controls muted></video>

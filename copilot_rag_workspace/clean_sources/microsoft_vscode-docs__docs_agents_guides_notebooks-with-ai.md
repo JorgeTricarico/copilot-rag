@@ -90,4 +90,4 @@ To keep the cell that an agent is running in view, enable the ``github.copilot.c
 
 * [Learn more about Jupyter notebooks in VS Code](/docs/datascience/jupyter-notebooks.md)
 * [Add context to chat](/docs/chat/copilot-chat-context.md)
-* [Explore prompt examples for Jupyter notebooks](/docs/agents/guides/prompt-examples.md#working-with-jupyter-notebooks)
+* [Adapt prompt examples to your task](/docs/agents/guides/prompt-examples.md)

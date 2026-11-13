@@ -1,7 +1,124 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-11-12T19:42:46.920909+00:00
-- **Total Palabras**: 434,989 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-13T05:49:51.896926+00:00
+- **Total Palabras**: 441,900 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/premium-frontend-ui/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/premium-frontend-ui/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/premium-frontend-ui/SKILL.md
+- **SHA256_FINGERPRINT**: `ca5acde81036bc146ff4d2f20524f4c680d6084b8f9a2f27a7d02dafeb471b8d`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.127667+00:00
+---
+
+**description**: A comprehensive guide for GitHub Copilot to craft immersive, high-performance web experiences with advanced motion, typography, and architectural craftsmanship.
+
+# Immersive Frontend UI Craftsmanship
+
+As an AI engineering assistant, your role when building premium frontend experiences goes beyond outputting functional HTML and CSS. You must architect **immersive digital environments**. This skill provides the blueprint for generating highly intentional, award-level web applications that prioritize aesthetic quality, deep interactivity, and flawless performance.
+
+When a user requests a high-end landing page, an interactive portfolio, or a specialized component that requires top-tier visual polish, apply the following rigorous standards to every line of code you generate.
+
+---
+
+## 1. Establishing the Creative Foundation
+
+Before generating layout code, ensure you understand the core emotional resonance the UI should deliver. Do not default to generic, unopinionated code.
+
+Commit to a strong visual identity in your CSS and component structure:
+- **Editorial Brutalism**: High-contrast monochromatic palettes, oversized typography, sharp rectangular edges, and raw grid structures.
+- **Organic Fluidity**: Soft gradients, deeply rounded corners, glassmorphism overlays, and bouncy spring-based physics.
+- **Cyber / Technical**: Dark mode dominance, glowing neon accents, monospaced typography, and rapid, staggered reveal animations.
+- **Cinematic Pacing**: Full-viewport imagery, slow cross-fades, profound use of negative space, and scroll-dependent storytelling.
+
+---
+
+## 2. Structural Requirements for Immersive UI
+
+When scaffolding a page or generating core components, include the following architectural layers to transform a standard page into an experience.
+
+### 2.1 The Entry Sequence (Preloading & Initialization)
+A blank screen is unacceptable. The user's first interaction must set expectations.
+- **Implementation**: Generate a lightweight preloader component that handles asset resolution (fonts, initial images, 3D models).
+- **Animation**: Output code that transitions the preloader away fluidly—such as a split-door reveal, a scale-up zoom, or a staggered text sweep.
+
+### 2.2 The Hero Architecture
+The top fold must command attention immediately.
+- **Visuals**: Output code that implements full-bleed containers (`100vh`/`100dvh`).
+- **Typography Engine**: Ensure headlines are broken down syntactically (e.g., span wrapping by word or character) to allow for cascading entrance animations.
+- **Depth**: Utilize subtle floating elements or background clipping paths to create a sense of scale and depth behind the primary copy.
+
+### 2.3 Fluid & Contextual Navigation
+- **Implementation**: Do not generate standard static navbars. Output sticky headers that react toscroll direction (hide on scroll down, reveal on scroll up).
+- **Interactivity**: Include hover states that reveal rich content (e.g., mega-menus that display image previews of the hovered link).
+
+---
+
+## 3. The Motion Design System
+
+Animation is not an afterthought; it is the connective tissue of a premium site. Always implement the following motion principles:
+
+### 3.1 Scroll-Driven Narratives
+Generate code utilizing modern scroll libraries (like GSAP's ScrollTrigger) to tie animations to user progress.
+- **Pinned Containers**: Create sections that lock into the viewport while secondary content flows past or reveals itself.
+- **Horizontal Journeys**: Translate vertical scroll data into horizontal movement for specific galleries or showcases.
+- **Parallax Mapping**: Assign subtle, varying scroll-speeds to background elements, midground text, and foreground imagery.
+
+### 3.2 High-Fidelity Micro-Interactions
+The cursor is the user's avatar. Build interactions around it.
+- **Magnetic Components**: Write logic that calculates the distance between the mouse pointer and a button, pulling the button towards the cursor dynamically.
+- **Custom Tracking Elements**: Generate custom cursor components that follow the mouse with calculated interpolation (lerp) for a smooth drag effect.
+- **Dimensional Hover States**: Use CSS Transforms (`scale`, `rotateX`, `translate3d`) to give interactive elements weight and tactile feedback.
+
+---
+
+## 4. Typography & Visual Texture
+
+The aesthetics of your generated code must reflect premium craftsmanship.
+
+- **Type Hierarchy**: Enforce massive contrast in scale. Headlines should utilize extreme sizing (`clamp()` functions spanning up to `12vw`), while body copy remains incredibly crisp (`16px-18px` minimum).
+- **Font Selection**: Always recommend or implement highly specified variable fonts or premium typefaces over system defaults.
+- **Atmospheric Filters**: Implement CSS/SVG noise overlays (`mix-blend-mode: overlay`, opacity `0.02 - 0.05`) to remove digital sterility and add photographic grain.
+- **Lighting & Glass**: Utilize `backdrop-filter: blur(x)` combined with ultra-thin, semi-transparent borders to create modern, frosted-glass depth.
+
+---
+
+## 5. The Performance Imperative
+
+A beautiful site that stutters is a failure. Enforce strict performance guardrails in all generated code:
+
+- **Hardware Acceleration**: Only animate properties that do not trigger layout recalculations: `transform` and `opacity`. Code that animates `width`, `height`, `top`, or `margin` should be fiercely avoided.
+- **Render Optimization**: Apply `will-change: transform` intelligently on complex moving elements, but remove it post-animation to conserve memory.
+- **Responsive Degradation**: Wrap custom cursor logic and heavy hover animations in `@media (hover: hover) and (pointer: fine)` to ensure pristine performance on touch devices.
+- **Accessibility**: Wrap heavy continuous animations in `@media (prefers-reduced-motion: no-preference)`. Never sacrifice user accessibility for aesthetic flair.
+
+---
+
+## 6. Implementation Ecosystem
+
+When the user asks you to implement these patterns, leverage industry-standard libraries tailored to their framework:
+
+### For React / Next.js Targets
+- Structure the application to support **Framer Motion** for layout transitions and spring physics.
+- Recommend **Lenis** (`@studio-freight/lenis`) for smooth scrolling context.
+- Implement **React Three Fiber** (`@react-three/fiber`) if webGL or 3D interactions are requested.
+
+### For Vanilla / HTML / Astro Targets
+- Rely heavily on **GSAP** (GreenSock Animation Platform) for timeline sequencing.
+- Utilize vanilla **Lenis** via CDN for scroll hijacking and smoothing.
+- Use **SplitType** for safe, accessible typography chunking.
+
+---
+
+## Summary of Action
+
+Whenever you receive a prompt to "Build a premium landing page," "Create an Awwwards-style component," or "Design an immersive UI," you must automatically:
+1. Wrap the output in a robust, scroll-smoothed architecture.
+2. Provide CSS that guarantees perfect performance using composited layers.
+3. Integrate sweeping, staggered component entrances.
+4. Elevate the typography using fluid scales.
+5. Create an intentional, memorable aesthetic footprint.
 
 
 ---
@@ -30098,6 +30215,520 @@ npm run dev          # Start dev server
 ## Vite Compatibility
 
 If your project uses Vite, you may need to allow the symlinked path in `server.fs.allow`. Add the symlink target's parent directory (e.g., `/home/agent/project-deps/`) to your Vite config so that Vite can serve files through the symlink.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/sap-cloud-integration/README.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/sap-cloud-integration/README.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/sap-cloud-integration/README.md
+- **SHA256_FINGERPRINT**: `1d29ca6ff44ac723cc591af540491567361d21a5e496a4dfd4728e788dbead06`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:49.084356+00:00
+---
+
+# sap-cloud-integration skill
+
+CPI runtime knowledge for GitHub Copilot: Groovy script API usage, header and property scope across JMS and ProcessDirect, Exception Subprocess status behavior, JMS retry and idempotency patterns, and an MPL-error-to-root-cause map for SFTP, HTTP/OAuth, IDoc, OData, SOAP, AS2, and Cloud Connector.
+
+## Install
+
+Copy the whole `sap-cloud-integration` folder, including `references/`, into your project's `.github/skills/` folder or your personal skills folder. Copilot loads `SKILL.md` when a request matches its description and reads the references it routes to.
+
+## Provenance and maintenance
+
+- Written and reviewed by Rameshkumar Varanganti, SAP integration architect (20+ years with SAP PI/PO and SAP Integration Suite).
+- Baseline: SAP Cloud Integration on the Cloud Foundry environment (Integration Suite), current as of November 2026. Neo-environment differences are not covered.
+- Each behavior claim is cross-checked against the SAP Help Portal source in [SAP-docs/btp-integration-suite](https://github.com/SAP-docs/btp-integration-suite); see [references/sap-documentation-index.md](references/sap-documentation-index.md). Report corrections as issues in the source repository.
+
+## Evaluation scenarios
+
+Each scenario compares a capable model without this skill against the same model with it. "Skill-specific" means the point comes from CPI runtime behavior documented in `references/`, not from general engineering practice.
+
+| # | Prompt | Skill-specific points the answer must contain |
+|---|---|---|
+| 1 | "My Exception Subprocess catches the HTTP error, builds an error JSON, and ends with an End event. Support says failed messages don't show up as failed. Why?" | A Message End event in the Exception Subprocess makes the MPL status Completed; use Error or Escalation End; set `CamelHttpResponseCode` for a synchronous caller |
+| 2 | "iFlow A sets property `targetSystem`, then sends to iFlow B over JMS. In B the property is empty. Fix it." | Properties are not propagated over ProcessDirect and are not stored in JMS unless *Transfer Exchange Properties* is on (not recommended; 4 MB limit for headers plus properties); pass as a header or in the body |
+| 3 | "Write a Groovy script that logs the full payload for every message to the MPL." | Gate the attachment with an externalized `LOG_PAYLOAD` flag and cap it with `getBodySize()`; 1 GB/24 h tenant attachment limit; `addCustomHeaderProperty` for searchable keys; no secrets or PII |
+| 4 | "IDoc from CPI to S/4HANA arrives with status 56." | Start from the status long text; control record vs. WE20 as the most common cause; 56 vs. 51 distinction |
+| 5 | "In the Exception Subprocess I need the receiver's HTTP status and error body." | `CamelExceptionCaught`; `AhcOperationFailedException` with `getStatusCode()` / `getResponseBody()`; compare by class name |
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/sap-cloud-integration/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/sap-cloud-integration/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/sap-cloud-integration/SKILL.md
+- **SHA256_FINGERPRINT**: `a2ceeb7ea6ef89cd71564ad1f6aee354cfa6b77a17ff938bb4e9e7a825501e58`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:49.080848+00:00
+---
+
+**description**: SAP Cloud Integration (CPI, part of SAP Integration Suite) runtime-specific guidance for building and troubleshooting iFlows. Use when writing or reviewing CPI Groovy scripts, choosing headers vs. exchange properties, designing exception subprocesses, JMS retry, idempotency or data store patterns, or diagnosing adapter errors (SFTP, HTTP/OAuth, SOAP, IDoc, OData, AS2, Cloud Connector) from Message Processing Log (MPL) text. Not for SAP PI/PO, ABAP development, or generic Java/Groovy outside CPI.
+
+# SAP Cloud Integration (CPI)
+
+This skill supplies CPI runtime behavior that general models often get wrong: what survives a JMS or ProcessDirect hop, how End events change the monitored status, which Camel and `SAP_` headers the runtime reads, how scripts should touch large payloads, and how specific adapter error texts map to root causes.
+
+## Required references
+
+Read the matching reference before answering. Resolve paths relative to this file.
+
+| Task | Read first |
+|---|---|
+| Write, review, or optimize a Groovy script | [references/groovy-scripting.md](references/groovy-scripting.md) |
+| Decide header vs. property, write Simple expressions, use `SAP_`/`Camel` names | [references/headers-properties-expressions.md](references/headers-properties-expressions.md) |
+| Exception subprocess, End events, retry, JMS, idempotency, data store | [references/error-handling-reliability.md](references/error-handling-reliability.md) |
+| Diagnose an MPL error or adapter failure | [references/adapter-troubleshooting.md](references/adapter-troubleshooting.md) |
+| Need SAP's own wording, a field not covered here, or a source link for the user | [references/sap-documentation-index.md](references/sap-documentation-index.md) |
+
+## Rules that change the answer
+
+1. **Exchange properties stay inside one iFlow.** They are not propagated over ProcessDirect. They are not stored in a JMS queue unless the JMS receiver's *Transfer Exchange Properties* option is on, which SAP does not recommend because of size limits. Pass what a downstream iFlow needs as a header or in the body. Headers that leave the tenant must not carry secrets.
+2. **An Exception Subprocess that ends with a Message End event reports the message as Completed.** Use an Error End event when the failure must stay visible in monitoring. For synchronous senders, also set `CamelHttpResponseCode`.
+3. **Check `message.getBodySize()` before reading a body with `getBody(String)`.** Treat `-1` (size unknown) as too large. For large payloads, use a streaming parser or a streaming splitter. Line-by-line reading only helps for line-delimited formats; minified JSON or XML is often a single line. Never attach payloads to the MPL unconditionally: gate attachments behind an externalized flag and cap their size. Tenants can write at most 1 GB of MPL attachments per 24 hours.
+4. **Use `SAP_ApplicationID` for business keys.** It makes messages searchable in Monitor. Do not build custom correlation stores for this.
+5. **Reliable delivery needs JMS (or a data store) for retry, and duplicate protection on the receiver side.** An Idempotent Process Call skips messages already processed successfully, but if a receiver commits and the acknowledgment is lost, a retry can still duplicate the effect (at least once). A failed synchronous call is not redelivered by the runtime; the caller must retry. To stop retrying after N attempts, route on `SAPJMSRetries`. The JMS sender sets it only for *Non-Exclusive* queues.
+6. **Read credentials through the Security Material APIs** (`SecureStoreService`), never from externalized parameters or headers. Trust a server certificate chain only after verifying its fingerprints against an independent source, never just because a TLS test returned it, and never disable certificate validation as a fix.
+7. **Diagnose from the exact MPL text.** Separate evidence (error text, HTTP status, step ID) from hypotheses, and give one concrete check per hypothesis (Connectivity Test, trace, keystore entry, Cloud Connector log).
+
+## Output contract
+
+- Code is complete and runnable in a CPI Script step: imports, null handling, guarded `messageLog`.
+- Generated code contains no author names, credits, or promotional URLs.
+- Say which iFlow step the code or setting belongs to and what to configure there (adapter field, End event, externalized parameter).
+- Include test steps for the tenant (trace level, expected MPL status and properties).
+- End with *Static analysis — not tested on a tenant* unless the user confirms a successful test run on their tenant; deployment alone is not enough.
+- If a field name, limit, or behavior is not in these references and you are unsure, say so and point to the matching page in [references/sap-documentation-index.md](references/sap-documentation-index.md). Do not invent adapter fields, headers, or SAP Note numbers.
+- Before designing a new integration between SAP products, check SAP Business Accelerator Hub for prepackaged integration content and SAP Architecture Center for a reference architecture. Extend standard content rather than rebuilding it.
+
+## Authoritative sources
+
+- SAP Integration Suite documentation: https://help.sap.com/docs/integration-suite (overview: https://help.sap.com/docs/integration-suite/sap-integration-suite/what-is-sap-integration-suite)
+- Markdown source of the same documentation, for searching its text only: https://github.com/SAP-docs/btp-integration-suite
+- Prepackaged integration content: https://api.sap.com/integrations/discoverintegrations
+- Reference architectures: https://architecture.learning.sap.com/
+
+When you cite a source to the user, link the public SAP page (SAP Help Portal, SAP Business Accelerator Hub, SAP Architecture Center, or another official SAP site), not the GitHub Markdown source. When these sources and this skill disagree, the SAP documentation wins. Tell the user about the difference.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/sap-cloud-integration/references/adapter-troubleshooting.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/sap-cloud-integration/references/adapter-troubleshooting.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/sap-cloud-integration/references/adapter-troubleshooting.md
+- **SHA256_FINGERPRINT**: `9ae2ae64479e461566b4a1c34b43a06ea7e8d25453a6b7959325e8c3b42df1f7`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:49.081900+00:00
+---
+
+# Adapter troubleshooting: MPL text → cause → check
+
+Always start from the exact error text and the failing step in the MPL. Give the user one concrete check per likely cause, most likely first.
+
+## Cloud Connector (any on-premise target)
+
+| Symptom | Likely cause | Check |
+|---|---|---|
+| Error says no Cloud Connector is connected, or a connection or timeout error to a virtual host | Cloud Connector offline, wrong subaccount, or Location ID mismatch | Cloud Connector UI: connected subaccount and Location ID; the adapter's **Location ID** field matches |
+| HTTP 403 or 404 from an on-premise target only through CPI | Path not exposed in Cloud Connector **Access Control** | Add the resource path (with "path and all sub-paths" if needed) for the virtual host |
+| Works in Postman on the network, fails from CPI | Adapter **Proxy Type** not set to On-Premise, or virtual host/port used incorrectly | Adapter uses the virtual host and port defined in Cloud Connector, not the internal host |
+
+## SFTP
+
+| MPL text contains | Likely cause | Check |
+|---|---|---|
+| `Auth fail` | Client authentication rejected: wrong user, wrong key or password alias, public key not installed for that user, or an unsupported key type | Security Material alias and type; ask the server admin which user and key fingerprint were presented |
+| `reject HostKey` / host key changed | Server host key missing from or outdated in **known_hosts** | **Monitor → Connectivity Tests → SSH**: fetch the host key, verify the fingerprint with the server owner, update known_hosts. Never disable host key checking. |
+| `No such file` / `Permission denied` | Wrong directory, chroot path differences (absolute vs. relative), or missing rights for read/delete/rename | Connectivity Test with the same user and directory; post-processing needs write or delete rights |
+| Sender polls but picks nothing up | File name pattern mismatch, files already recorded in the idempotent repository ("Keep File and Mark as Processed"), or another node holds the lock | Pattern and case; idempotent repository entries; post-processing option |
+
+## HTTP, OAuth, and certificates
+
+| Symptom | Likely cause | Check |
+|---|---|---|
+| 401 from receiver | Wrong credential or OAuth2 artifact, wrong token URL or scope, client authentication method mismatch (body vs. Basic header) | Deployed OAuth2 Client Credentials artifact; request a token with the same settings in a test tool |
+| 403 with a CSRF message from SAP Gateway | Target requires an `X-CSRF-Token`. The HTTP adapter does not fetch it; the OData adapter can (CSRF Protected) | Use the OData adapter, or Request-Reply `GET` with `X-CSRF-Token: Fetch`, then send the token and session cookie |
+| Client gets 403 calling a CPI endpoint | Caller lacks the role for the Process Integration Runtime instance (`ESBMessaging.send` or a custom role), or **CSRF Protected** is enabled on the HTTPS sender | Service key or role collection of the caller; the sender's CSRF setting |
+| Client gets 404 calling a CPI endpoint | Address path wrong, iFlow not deployed or started, or path changed | Monitor → Manage Integration Content → endpoint URL |
+| `PKIX path building failed` / SSL handshake error | Server CA chain not trusted by the tenant | Run **Monitor → Connectivity Tests → TLS** to see the chain the server presents. **Do not trust it on that basis alone.** See *Trusting a server certificate chain* below |
+| `AhcOperationFailedException ... status code 400` with no obvious payload problem | The receiver rejects the SAP monitoring headers the runtime adds | Set exchange property `SAP_DisableMonitoringHeaders` = `true` in a Content Modifier right before the HTTP receiver |
+| Wrong target called after a dynamic URL | `CamelHttpUri` or the address expression resolved differently than expected | MPL property `RealDestinationUrl` shows the URL actually used |
+| 413, or a timeout on a large call | Payload above the target's limit, or receiver adapter timeout too low | Target limits; adapter **Timeout**; consider splitting or async |
+
+### Trusting a server certificate chain
+
+What a server presents during a TLS test is unauthenticated input: a misconfigured proxy or an attacker in the path can present its own chain. Importing it lets the tenant trust an impersonated receiver.
+
+1. Identify the issuing CA from the TLS test result (issuer names and SHA-256 fingerprints).
+2. Get the root and any intermediate certificates **from an independent source**: the CA's official repository, or the receiver's owner over a separate, trusted channel. Compare the SHA-256 fingerprints with what the test showed.
+3. Only then upload them to the tenant Keystore. Use the TLS test's *Add to keystore* or *Download* options only after the fingerprints match.
+4. Trust CA certificates, not the server's own (leaf) certificate. Pin a leaf or self-signed certificate only as a deliberate, documented decision agreed with the receiver's owner, and track its expiry.
+5. Never switch off server certificate validation in a receiver adapter to work around the error. Unselecting *Validate Server Certificate* in the TLS test is for diagnosis only.
+6. After the upload, run the TLS test again with validation on, then retest the iFlow.
+
+## IDoc
+
+| Direction | Required setup | Typical failure |
+|---|---|---|
+| S/4HANA/ECC → CPI (IDoc sender) | SM59 type **G** connection to the CPI endpoint path; WE21 port of type **XML HTTP** using it; WE20 partner profile | Port or RFC destination points to the wrong path, or client certificate/basic authentication not configured in SM59 |
+| CPI → S/4HANA/ECC (IDoc receiver) | Endpoint `/sap/bc/srt/idoc?sap-client=<client>`; SICF service active; IDoc SOAP inbound registered in transaction **SRTIDOC** | IDoc status **56** ("IDoc with errors added"): read the status long text in WE02/WE05 first. The most common cause is a control record (`EDI_DC40` sender partner, partner type, port, message type) that does not match an active WE20 inbound partner profile. Status **51**: passed to the application but not posted; check the application error, not CPI |
+
+## OData
+
+- Errors arrive as `OsciException`. Read the OData error payload from the body inside the Exception Subprocess.
+- For large reads, use **Process in Pages** and `$select`, rather than one unrestricted query.
+- For `$batch` with the **OData V2 receiver**, select *Enable Batch Processing* and send an **XML** body in the adapter's `batchParts` format. The adapter builds the multipart HTTP request itself, so do not build raw multipart content for it. A read batch looks like this (SAP example):
+
+  ```xml
+  <batchParts>
+      <batchQueryPart>
+          <method>GET</method>
+          <uri>Products</uri>
+      </batchQueryPart>
+      <batchQueryPart>
+          <method>GET</method>
+          <uri>CustomerReviews</uri>
+      </batchQueryPart>
+  </batchParts>
+  ```
+
+  The *Resource Path* field is still mandatory with batch processing. For create/update/delete operations, use the adapter's change set structure described on SAP's *Configure the OData V2 Receiver Adapter* page. Inspect each part of the response, because one operation can fail while others succeed.
+- Build a raw `multipart/mixed` batch body only when calling the OData service through the **HTTP** receiver adapter.
+
+## SOAP
+
+- One-way (fire-and-forget) SOAP sender calls return HTTP 202 and do not report later processing errors to the caller. Use Request-Reply when the caller needs the outcome.
+- WS-Security errors usually mean a mismatched policy: signing or encryption expected but not configured, a certificate alias missing in the keystore, or a timestamp/clock skew.
+
+## AS2
+
+- Partner rejects the message or MDN: AS2-From/AS2-To IDs, signing and encryption certificate aliases, or the MIC algorithm differ from what was agreed.
+- Asynchronous MDN never arrives: the partner cannot reach the MDN endpoint, or the MDN URL or authentication is wrong.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/sap-cloud-integration/references/error-handling-reliability.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/sap-cloud-integration/references/error-handling-reliability.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/sap-cloud-integration/references/error-handling-reliability.md
+- **SHA256_FINGERPRINT**: `9af19e129f4629517a78971ea7454cdc3424b32e418b9c31f0215010494f4d38`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:49.145875+00:00
+---
+
+# Error handling and reliable delivery
+
+## Exception Subprocess and monitored status
+
+| How the Exception Subprocess ends | Status in Monitor | Synchronous sender receives |
+|---|---|---|
+| End (Message End) event | **Completed** | The current body, with HTTP 200 unless `CamelHttpResponseCode` is set |
+| Error End event | **Failed** | An error response |
+| Escalation End event | **Escalated** | An error response |
+| No Exception Subprocess | **Failed** | An error response containing the exception |
+
+Rules:
+
+- Ending with an End event after "handling" an error makes the message Completed in monitoring. If you choose this deliberately (for example, to return a custom error to the caller), set the exchange property `SAP_MessageProcessingLogCustomStatus` (for example `LowPrio`) so support can filter these messages by **Custom Status**. Otherwise end with Error End or Escalation End.
+- For a synchronous HTTP sender that must return a business error, build the error body, set `CamelHttpResponseCode` (for example 400, 422, or 502), and decide deliberately which End event to use.
+- Inspect the cause in a script through `message.getProperty('CamelExceptionCaught')`:
+
+```groovy
+def ex = message.getProperty('CamelExceptionCaught')
+if (ex?.getClass()?.getCanonicalName() == 'org.apache.camel.component.ahc.AhcOperationFailedException') {
+    message.setProperty('httpStatus', ex.getStatusCode())
+    message.setProperty('httpStatusText', ex.getStatusText())
+    message.setProperty('httpErrorBody', ex.getResponseBody())   // the receiver's error payload
+}
+```
+
+  - HTTP receiver failures surface as `AhcOperationFailedException`, which carries the status code and response body.
+  - OData V2 receiver failures surface as `com.sap.gateway.core.ip.component.odata.exception.OsciException`. `ex.getRequestUri()` gives the failing request, and the service's error payload is in the message body inside the subprocess.
+  - Compare by class name, as shown, which is also how SAP's own script examples do it. Importing adapter-internal classes can break when the runtime is updated.
+
+## Delivery guarantees
+
+| Need | Pattern |
+|---|---|
+| Caller waits for the result | Synchronous Request-Reply. The message is not persisted for redelivery: if processing fails, the caller gets an error and must retry (SAP: *Sender Handles Retry*), so the receiver call must be safe to repeat. Some receiver adapters retry the connection within the same call; the flow keeps its worker resources until a response arrives or those retries are exhausted, so keep sender timeouts longer than the total receiver retry time. |
+| Fire-and-forget with retry | iFlow A: sender → **JMS receiver** (queue), returns immediately. iFlow B: **JMS sender** → processing → receiver. The JMS sender retries failed messages. |
+| Skip reprocessing of messages already processed successfully | **Idempotent Process Call** around the receiver call, with a stable business key as Message ID (`${header.SAP_ApplicationID}` or a payload key). It records **successful** processing and skips (or flags) later duplicates with the same ID. |
+| Hold data between runs or for later reprocessing | **Data Store** Write/Get/Select/Delete with an explicit Entry ID |
+
+**Limit of the Idempotent Process Call.** It cannot guarantee duplicate-free effects at a receiver that is not idempotent. If the receiver commits but its response or acknowledgment is lost, CPI records no success, and the retry calls the receiver again. SAP describes the resulting quality of service as *at least once*. For true no-duplicate behavior, the receiver must detect duplicates itself (for example by a unique business key or message ID it stores), or you must reconcile with the receiver before retrying an uncertain outcome.
+
+## JMS retry details
+
+- On the JMS sender, configure the retry interval, exponential backoff, and maximum retry interval. Without a stop condition, a permanently failing message retries until it expires.
+- The JMS sender cannot be configured to stop after a fixed number of retries. For *Non-Exclusive* queues, it sets `SAPJMSRetries`. Add an Exception Subprocess that calls a Local Integration Process which checks `${header.SAPJMSRetries} > 'N'`. After N attempts it writes the message to a data store or an error queue, raises an alert, and ends successfully, so the queue drains. (For the XI adapter with a data store, use `SAP_DataStoreRetries`.)
+- Reading from a queue with the JMS sender starts a JMS transaction automatically; a failed message stays in the queue and is retried. You do not need *Required for JMS* for that.
+- Set **Transaction Handling = Required for JMS** when the process **writes** to JMS queues (JMS receiver) and those writes must commit or roll back together, for example JMS sends after a Splitter or in a reusable subprocess. Since Integration Process version 1.2, the default is *Not Required*.
+- Do not expect JDBC (data store) and JMS work to commit atomically together. If one commits and the other fails, the message is retried and can be duplicated (SAP *Transaction Handling Guidelines*).
+- Queues and JMS storage are limited per tenant, and the limits depend on the service plan. Check **Monitor → Manage Stores → Message Queues** before adding queues. Delete unused queues.
+- Use the **Dead-Letter Queue** option for poison messages that crash processing, so they do not block the queue. Then monitor and reprocess them from Manage Stores.
+
+## Data store details
+
+- Data stores live in the tenant database. Keep entries small, give them a deterministic Entry ID, and delete them after successful processing.
+- On **Write**, set the expiration period and alerting threshold deliberately. Do not rely on defaults for business data.
+- **Overwrite Existing Message** must be enabled when the same Entry ID can be written again. Otherwise the second write fails.
+- A Global data store is visible to all iFlows on the tenant. A Local one is visible only to the iFlow that wrote it.
+
+## Monitoring
+
+- Set `SAP_ApplicationID` and custom header properties so support can find messages by business key.
+- Trace log level expires after 10 minutes by default and switches back to the previous level. Enable it to reproduce one problem. Do not leave Debug on for high-volume flows.
+- Route alerts through SAP Alert Notification service or SAP Cloud ALM rather than custom email steps in every iFlow.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/sap-cloud-integration/references/groovy-scripting.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/sap-cloud-integration/references/groovy-scripting.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/sap-cloud-integration/references/groovy-scripting.md
+- **SHA256_FINGERPRINT**: `e5c1b9841f3c25bf1a4881ad6233a16dccf9b41338b41a003372c8cf918afdd7`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:49.159048+00:00
+---
+
+# Groovy scripting in SAP Cloud Integration
+
+## Script contract
+
+```groovy
+import com.sap.gateway.ip.core.customdev.util.Message
+
+def Message processData(Message message) {
+    // work on the message
+    return message
+}
+```
+
+- The Script step calls `processData` by default. Another function name can be set in the step's **Script Function** field.
+- `messageLogFactory` is available as a binding. Get the log with `messageLogFactory.getMessageLog(message)` and null-check it.
+- Shared code belongs in a **Script Collection** that iFlows reference. Do not copy the same script into many iFlows.
+- Scripts run concurrently for different messages. Keep them stateless: no static mutable fields and no caching between calls.
+
+## Body access
+
+| Call | Behavior | Use when |
+|---|---|---|
+| `message.getBody(java.io.Reader)` | Streams the body | Large or unknown-size payloads; line or record processing |
+| `message.getBody(java.io.InputStream)` | Streams raw bytes | Binary, or passing the stream on unchanged |
+| `message.getBodySize()` | Returns the body size in bytes **without** converting the body. Returns `-1` when the body type cannot report its size: treat that as unknown and too large | Before any full read: decide whether `getBody(String)` is safe |
+| `message.getBody(String)` | Loads the whole payload into memory as a String; SAP warns that String or `byte[]` conversion of large bodies can cause out-of-memory failures on the worker | Small payloads only (configuration, tokens, short JSON), after a size check |
+| `message.setBody(x)` | Accepts String, byte[], or InputStream | Prefer a stream for large output |
+
+For large XML, split with a **General/Iterating Splitter with Streaming enabled** before the script, or parse with StAX. `XmlSlurper` and `XmlParser` both build the whole document in memory.
+
+Reading a `Reader` line by line (`eachLine`) bounds memory **only for line-delimited formats with bounded lines** (CSV, flat files). Minified JSON or XML is often a single line, so `eachLine` then loads the whole payload. Use a streaming parser or a streaming splitter for those.
+
+## Headers and properties
+
+```groovy
+def orderId  = message.getHeader('X-Order-Id', String)   // typed header read
+def headers  = message.getHeaders()                      // Map, includes Camel* and SAP_* names
+def retry    = message.getProperty('retryCount')         // exchange property
+message.setHeader('SAP_ApplicationID', orderId)          // searchable in Monitor
+message.setProperty('targetSystem', 'S4P')               // stays inside this iFlow run
+```
+
+See [headers-properties-expressions.md](headers-properties-expressions.md) for scope rules.
+
+## Message Processing Log (MPL)
+
+```groovy
+def log = messageLogFactory.getMessageLog(message)
+if (log != null) {
+    log.setStringProperty('OrderId', orderId)              // shown in the MPL properties
+    log.addCustomHeaderProperty('OrderId', orderId)        // searchable via Custom Header Properties
+    if (message.getProperty('logPayload') == 'true') {     // property set from an externalized parameter
+        long maxBytes = (message.getProperty('logPayloadMaxBytes') ?: '102400') as long  // externalized cap, default 100 KB
+        long size = message.getBodySize()                  // no body conversion; -1 = size unknown
+        if (size >= 0 && size <= maxBytes) {
+            log.addAttachmentAsString('Request', message.getBody(String), 'text/plain')
+        } else {
+            String reason = size < 0 ? 'Body size unknown' : "Body is ${size} bytes; limit is ${maxBytes}"
+            log.setStringProperty('PayloadNotLogged', reason)
+        }
+    }
+}
+```
+
+- MPL attachments are stored in the tenant database and are kept with the log. A tenant can write at most **1 GB of MPL attachments per 24 hours**; after that, attachments are no longer stored, for any iFlow, until usage drops below the limit. Gate attachments behind a flag that a Content Modifier sets from an externalized parameter (for example `{{LOG_PAYLOAD}}`), and cap their size with `getBodySize()` (for example `{{LOG_PAYLOAD_MAX_BYTES}}`). Do not write attachments in short-interval retry loops.
+- Never attach or log credentials, tokens, or personal data.
+- `addCustomHeaderProperty` is the right tool for values support teams search on (order ID, file name, partner). Use `setStringProperty` for diagnostic detail.
+
+## Security material and value mapping
+
+```groovy
+import com.sap.it.api.ITApiFactory
+import com.sap.it.api.securestore.SecureStoreService
+import com.sap.it.api.securestore.UserCredential
+import com.sap.it.api.mapping.ValueMappingApi
+
+def secureStore = ITApiFactory.getService(SecureStoreService.class, null)
+UserCredential cred = secureStore.getUserCredential('S4_TECH_USER')   // alias deployed in Security Material
+String user = cred.getUsername()
+String pwd  = new String(cred.getPassword())                           // char[]; do not log it
+
+def vm = ITApiFactory.getService(ValueMappingApi.class, null)
+def target = vm.getMappedValue('S4', 'Plant', '1000', 'WMS', 'Site')   // returns null when no entry exists
+```
+
+- Handle a `null` value-mapping result explicitly: fail with a clear message or apply a documented default.
+- Credentials come only from deployed Security Material aliases, never from externalized parameters or headers.
+
+## Errors
+
+- Throwing an exception sends the message to the Exception Subprocess, if one is modeled. The text becomes `${exception.message}`.
+- Use a clear, actionable message, for example `IllegalStateException("Header X-Order-Id is missing; check the sender Allowed Header(s) setting")`.
+- Do not swallow exceptions and return the message unchanged. The MPL then shows Completed for a failed message.
+
+## Avoid
+
+- `System.out.println`. Output does not appear in the MPL; use `messageLog`.
+- `Thread.sleep` or polling loops. Use JMS retry or a Timer start instead.
+- Outbound HTTP calls from a script. Use a Request-Reply step with a receiver adapter so security material, Cloud Connector, and monitoring apply.
+- Building XML or JSON with string concatenation. Use `groovy.xml.MarkupBuilder` / `StreamingMarkupBuilder` or `groovy.json.JsonOutput` / `JsonBuilder`.
+
+## Template: validate a header, set monitoring keys, record body size
+
+```groovy
+import com.sap.gateway.ip.core.customdev.util.Message
+
+def Message processData(Message message) {
+    String orderId = message.getHeader('X-Order-Id', String)?.trim()
+    if (!orderId) {
+        throw new IllegalArgumentException("Required header 'X-Order-Id' is missing or blank.")
+    }
+    message.setHeader('SAP_ApplicationID', orderId)
+
+    long size = message.getBodySize()                     // no body conversion; -1 = size unknown
+    message.setProperty('bodySize', size)
+
+    def log = messageLogFactory.getMessageLog(message)
+    if (log != null) {
+        log.addCustomHeaderProperty('OrderId', orderId)
+        log.setStringProperty('BodySizeBytes', size.toString())
+    }
+    return message
+}
+```
+
+Downstream steps can route on `${property.bodySize}`, for example sending large or unknown-size (`-1`) payloads to a streaming splitter.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/sap-cloud-integration/references/headers-properties-expressions.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/sap-cloud-integration/references/headers-properties-expressions.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/sap-cloud-integration/references/headers-properties-expressions.md
+- **SHA256_FINGERPRINT**: `e0c6aec3dfdf5e50e1191622d6d5ddb34c32f7bbc9fd777b2322ce35f736948a`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:49.159786+00:00
+---
+
+# Headers, exchange properties, and expressions
+
+## Scope: what survives where
+
+| Crossing | Headers | Exchange properties | Body |
+|---|---|---|---|
+| Steps inside one integration process | Yes | Yes | Yes |
+| Local Integration Process call | Yes | Yes | Yes |
+| ProcessDirect (iFlow → iFlow) | Yes | **No** (only `SAP_SAPPASSPORT` is propagated) | Yes |
+| JMS receiver → queue → JMS sender | Yes, simple-typed values only (strings, primitives) | **No**, unless *Transfer Exchange Properties* is selected on the JMS receiver. SAP does not recommend it. | Yes |
+| HTTP receiver adapter | **No custom headers by default.** Only the headers listed in *Request Headers* (pipe-separated, or `*` for all) | Never | Yes |
+| Sender adapter → iFlow | Only headers listed in *Runtime Configuration → Allowed Header(s)* (plus adapter-specific ones) | n/a | Yes |
+
+Consequences:
+
+- Pass values a downstream iFlow needs (after ProcessDirect or JMS) as headers or in the body. Rebuild properties after the hop.
+- Headers and exchange properties saved to a JMS queue must not exceed **4 MB in total**. Keep large values in the body or a data store.
+- HTTP-based receivers can reject calls with large headers; the limit typically ranges from 4 to 16 KB depending on the receiver. Delete headers that should not go out with a Content Modifier before the receiver call.
+- An HTTP header from a sender that "disappears" is usually missing from *Allowed Header(s)*. SAP warns against `*` there, because the iFlow then processes headers you do not control.
+- Keep secrets out of headers. Headers can leave the tenant through receiver adapters.
+- An HTTP receiver that returns **400** for no obvious reason may be rejecting the SAP monitoring headers the runtime adds. Set the exchange property `SAP_DisableMonitoringHeaders` to `true` in a Content Modifier right before the call.
+
+## Names the runtime reads or sets
+
+| Name | Type | Purpose |
+|---|---|---|
+| `SAP_ApplicationID` | Header | Business key shown as **Application Message ID** and searchable in Monitor |
+| `SAP_Sender`, `SAP_Receiver`, `SAP_MessageType` | Header | Shown in the MPL; filterable in monitoring |
+| `SAP_MessageProcessingLogCustomStatus` | Property | Custom status text displayed for the message in Monitor |
+| `CamelHttpResponseCode` | Header | Status returned by an HTTP receiver call. On a synchronous HTTP sender, set it to control the status code returned to the caller |
+| `CamelHttpUri`, `CamelHttpPath`, `CamelHttpQuery`, `CamelHttpMethod` | Header | Request details on HTTP sender; dynamic target overrides on receiver. The URL actually called appears in the MPL property `RealDestinationUrl` |
+| `Content-Type` | Header | Media type sent by HTTP-based receivers |
+| `CamelFileName` | Header | File name on SFTP/File sender; target file name on SFTP receiver when set |
+| `CamelExceptionCaught` | Property | The exception object inside an Exception Subprocess |
+| `CamelSplitIndex`, `CamelSplitSize`, `CamelSplitComplete` | Property | Position within a splitter run |
+| `SAPJMSRetries` | Header | Retry count set by the JMS sender, for *Non-Exclusive* queues only |
+| `SAP_DataStoreRetries` | Header | Retry count when the XI adapter uses a data store as temporary storage |
+
+Confirm the exact semantics of any name not listed here in the SAP Help Portal before relying on it.
+
+## Simple expressions (Content Modifier, Router, adapter fields)
+
+| Expression | Meaning |
+|---|---|
+| `${header.Name}` | Header value |
+| `${property.Name}` | Exchange property value |
+| `${in.body}` | Current body (loads it into memory; avoid for large payloads) |
+| `${date:now:yyyy-MM-dd'T'HH:mm:ss}` | Current timestamp, Java date format |
+| `${exception.message}`, `${exception.stacktrace}` | Inside an Exception Subprocess |
+| `{{PARAM}}` | Externalized parameter, resolved at deployment |
+
+- Router conditions use either XML (XPath) or Non-XML (Simple) syntax, chosen per Router step. Do not mix them.
+- In a Content Modifier, a value of type **XPath** needs a **Data Type** (for example `java.lang.String`). Namespaced XPath needs the prefix declared in the iFlow's **Namespace Mapping** runtime property.
+- Externalize anything that differs per environment: URLs, aliases, directories, flags such as `LOG_PAYLOAD`. Keep the iFlow transportable.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/sap-cloud-integration/references/sap-documentation-index.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/sap-cloud-integration/references/sap-documentation-index.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/sap-cloud-integration/references/sap-documentation-index.md
+- **SHA256_FINGERPRINT**: `a4d94c6c8c8685e8b257c4447718f13ae07a80cbc1d4ad835c577578c360ca9a`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:49.176098+00:00
+---
+
+# SAP documentation index
+
+Use these pages to confirm details, quote SAP's wording, or give the user a source. **When you give the user a link, use a public SAP page**: the SAP Help Portal, SAP Business Accelerator Hub, or SAP Architecture Center links below, or another official SAP site. Do not link the GitHub Markdown source. The links in *Cloud Integration pages behind this skill* use each page's stable SAP topic ID, the same form SAP uses in its own cross-references; the entry points are top-level pages.
+
+## Entry points
+
+| Source | Use for |
+|---|---|
+| [SAP Integration Suite documentation](https://help.sap.com/docs/integration-suite) | Official documentation for all capabilities |
+| [What is SAP Integration Suite](https://help.sap.com/docs/integration-suite/sap-integration-suite/what-is-sap-integration-suite) | Capability overview and terminology |
+| [SAP-docs/btp-integration-suite](https://github.com/SAP-docs/btp-integration-suite) | Markdown source of the Help Portal, for searching the text only (for example with the `web` tool); link users to the Help Portal page instead |
+| [SAP Business Accelerator Hub: integrations](https://api.sap.com/integrations/discoverintegrations) | Prepackaged integration content to reuse or extend before building from scratch |
+| [SAP Architecture Center](https://architecture.learning.sap.com/) | Reference architectures for SAP BTP and integration patterns |
+
+## Cloud Integration pages behind this skill
+
+| Topic | SAP page |
+|---|---|
+| Header vs. exchange property scope, header size limits | [About Headers and Exchange Properties](https://help.sap.com/docs/integration-suite/sap-integration-suite/about-headers-and-exchange-properties-0974c4f3c9304694a66bcb77dc275c64) |
+| Headers and properties set by the runtime (`SAP_*`, `Camel*`, `SAPJMSRetries`) | [Headers and Exchange Properties Provided by the Integration Framework](https://help.sap.com/docs/integration-suite/sap-integration-suite/headers-and-exchange-properties-provided-by-the-integration-framework-d0fcb0988f034e889f611c6e36d43ad5) |
+| Allowed Header(s), log level | [Specify the Runtime Configuration](https://help.sap.com/docs/integration-suite/sap-integration-suite/specify-the-runtime-configuration-0c1c96e50ff340869090469d260976f3) |
+| Exception Subprocess with End event (Completed + custom status) | [Variant: Exception Subprocess with End Event](https://help.sap.com/docs/integration-suite/sap-integration-suite/variant-exception-subprocess-with-end-event-5f7b1c7c00f54339bc039ecd3c398a32) |
+| Exception Subprocess with Error End event (Failed) | [Variant: Exception Subprocess with Error End Event](https://help.sap.com/docs/integration-suite/sap-integration-suite/variant-exception-subprocess-with-error-end-event-35262c9e300f4592b54b66db60ac5232) |
+| Exception Subprocess with Escalation End event (Escalated) | [Variant: Exception Subprocess with Escalation End Event](https://help.sap.com/docs/integration-suite/sap-integration-suite/variant-exception-subprocess-with-escalation-end-event-5649cde1d7e549bbb22a4869b1ac0ab2) |
+| HTTP receiver error details in a script | [Script Example for Exception Handling in HTTP Receiver](https://help.sap.com/docs/integration-suite/sap-integration-suite/script-example-for-exception-handling-in-http-receiver-a443efe1d5d2403fb95ee9def1a672d4) |
+| OData V2 receiver error details in a script | [Script Example for Exception Handling in OData V2 Receiver Adapter](https://help.sap.com/docs/integration-suite/sap-integration-suite/script-example-for-exception-handling-in-odata-v2-receiver-adapter-361c5e87ffff45aea5b23c67c8e02189) |
+| HTTP receiver *Request Headers* | [HTTP Receiver Adapter](https://help.sap.com/docs/integration-suite/sap-integration-suite/http-receiver-adapter-2da452effb764b3bb28f8e0a2f5bd480) |
+| JMS receiver, *Transfer Exchange Properties* | [Configure the JMS Receiver Adapter](https://help.sap.com/docs/integration-suite/sap-integration-suite/configure-the-jms-receiver-adapter-79edc04c91574a6bb8c15ae3e1a27b03) |
+| JMS sender retry, `SAPJMSRetries` | [Configure the JMS Sender Adapter](https://help.sap.com/docs/integration-suite/sap-integration-suite/configure-the-jms-sender-adapter-161791b8cb98485ba00d81efa4197a49) |
+| JMS queue, size, and header limits | [JMS Resource Limits and Optimizing their Usage](https://help.sap.com/docs/integration-suite/sap-integration-suite/jms-resource-limits-and-optimizing-their-usage-4857054e3f194ae6a7ed93a52002d556) |
+| Which side retries: sender vs. Cloud Integration | [Sender Handles Retry](https://help.sap.com/docs/integration-suite/sap-integration-suite/sender-handles-retry-48b120a03f524f9d9f4d497f392b46da), [SAP Integration Suite Handles Retry](https://help.sap.com/docs/integration-suite/sap-integration-suite/sap-integration-suite-handles-retry-035a1c917b6149558c3d03f7d02d7b55) |
+| Retry and timeouts for synchronous HTTP senders; receiver adapter connection retries | [Apply the Retry Pattern in the Sender Applications](https://help.sap.com/docs/integration-suite/sap-integration-suite/apply-the-retry-pattern-in-the-sender-applications-0e27ac963308474f941436565d76de6b) |
+| Transaction Handling options and defaults | [Define Transaction Handling](https://help.sap.com/docs/integration-suite/sap-integration-suite/define-transaction-handling-2a5d4bc3b5da46df84b26ac96450587b), [Define Proper Transaction Handling](https://help.sap.com/docs/integration-suite/sap-integration-suite/define-proper-transaction-handling-1c3196315d5a46a293d350b73dc2ccd5) |
+| JMS transaction started by the JMS sender; JDBC/JMS combination risks | [Transaction Handling Characteristics and Restrictions](https://help.sap.com/docs/integration-suite/sap-integration-suite/transaction-handling-characteristics-and-restrictions-2388efb12dfd4c6ca2473e8c7c730efc), [Transaction Handling Guidelines](https://help.sap.com/docs/integration-suite/sap-integration-suite/transaction-handling-guidelines-52e3f6760a4c46f7a423c43cf5656d75) |
+| Data store vs. variables vs. JMS | [Data Storages](https://help.sap.com/docs/integration-suite/sap-integration-suite/data-storages-31efe35bdf65422a8df18a08c4e4160f) |
+| Idempotent Process Call | [Define Idempotent Process Call](https://help.sap.com/docs/integration-suite/sap-integration-suite/define-idempotent-process-call-84c85d753dcd4400a440fb1915899b72) |
+| Duplicate risk when the receiver is not idempotent (at least once) | [Receiver Isn't Idempotent](https://help.sap.com/docs/integration-suite/sap-integration-suite/receiver-isn-t-idempotent-5955d3fa4f0944609454faa291d85694) |
+| OData V2 batch requests (XML `batchParts` body) | [Perform OData Batch Requests](https://help.sap.com/docs/integration-suite/sap-integration-suite/perform-odata-batch-requests-b0372d4d1c0745cbadadbfb6b094ea51), [Configure the OData V2 Receiver Adapter](https://help.sap.com/docs/integration-suite/sap-integration-suite/configure-the-odata-v2-receiver-adapter-c5c2e38e0c87472e996dfda04920bfc4) |
+| MPL properties, attachments, custom header properties | [Add Information to the Message Processing Log](https://help.sap.com/docs/integration-suite/sap-integration-suite/add-information-to-the-message-processing-log-e8e928373b66488b8d78fb5a314b8a9e) |
+| Message API in scripts (`getBodySize()`, OOM warning for String conversion) | [Read and Modify Message Header, Message Body, and Exchange Properties](https://help.sap.com/docs/integration-suite/sap-integration-suite/read-and-modify-message-header-message-body-and-exchange-properties-5822f320823040af915c54a379463547) |
+| MPL attachment limit (1 GB per 24 hours) | [Message Processing Log Text View](https://help.sap.com/docs/integration-suite/sap-integration-suite/message-processing-log-text-view-718309ae651b452ea750b3abe2297a7b) |
+| Script guidelines | [General Scripting Guidelines](https://help.sap.com/docs/integration-suite/sap-integration-suite/general-scripting-guidelines-fcbf0f20059a4ffba7dfda7d28830ccd) |
+| Value mapping from scripts | [Access Value Mappings in Scripts](https://help.sap.com/docs/integration-suite/sap-integration-suite/access-value-mappings-in-scripts-12536ee29f7547bf9fb177b4350309b4) |
+| SSH connectivity test, host keys | [SSH Connectivity Tests](https://help.sap.com/docs/integration-suite/sap-integration-suite/ssh-connectivity-tests-da7dfd0f1fce401d99bca63e2de5bde1) |
+| TLS connectivity test, server certificate chain, *Add to keystore* | [TLS Connectivity Tests](https://help.sap.com/docs/integration-suite/sap-integration-suite/tls-connectivity-tests-03bbb5da16854f5aaf4ad4a26014c8a7) |
+| Adapter error catalog (incl. `SAP_DisableMonitoringHeaders`) | [Troubleshooting Adapters](https://help.sap.com/docs/integration-suite/sap-integration-suite/troubleshooting-adapters-b7a3906a083f44da86fde70e81d7bb97) |
+| HTTP status error catalog with SAP Notes | [Troubleshooting HTTP Error Catalog](https://help.sap.com/docs/integration-suite/sap-integration-suite/troubleshooting-http-error-catalog-069b461074a14d7b8cb2e2e273ac67db) |
 
 
 ---

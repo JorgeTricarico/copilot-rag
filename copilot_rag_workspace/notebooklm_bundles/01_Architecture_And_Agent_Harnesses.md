@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-11-12T19:42:46.789225+00:00
-- **Total Palabras**: 26,380 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-13T05:49:51.722831+00:00
+- **Total Palabras**: 25,658 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -71,15 +71,15 @@ When auditing, ensure docs accurately cover these areas:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/best-practices.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/best-practices
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/best-practices.md
-- **SHA256_FINGERPRINT**: `dab797485fafe7a20646f0f2f70be6bfb9a654e2b48d741240c35bf818d3ba36`
-- **LAST_VERIFIED_UTC**: 2026-11-12T19:42:37.767471+00:00
+- **SHA256_FINGERPRINT**: `acfd6c51217ba24dddc589acb2531aaccc7e9d5d4ddd9075539b570dbaa01a99`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.624718+00:00
 ---
 
 **MetaDescription**: Use AI effectively in VS Code by choosing the right workflow, writing focused prompts, and reviewing results.
 
 # Best practices for using AI in VS Code
 
-This article covers good practices for using AI in Visual Studio Code. Start with a bounded task, provide relevant context, and verify the result. Configure custom instructions, agents, or tools later when you have a recurring need.
+This article covers good practices for using AI in Visual Studio Code. Start with a bounded task, provide relevant context, and verify the result. The first sections cover that workflow. [Go further with configuration and optimization](#go-further-when-you-need-to) when you have a recurring need.
 
 <div class="docs-action" data-show-in-doc="false" data-show-in-sidebar="true" title="How AI works in VS Code">
 Learn about the agent loop, context window, tools, and other core concepts.
@@ -162,8 +162,6 @@ The quality of AI responses depends on the clarity and specificity of your promp
 
 * **Tell the AI to ask clarifying questions.** If a task is ambiguous, instruct the AI to ask you questions before proceeding. This leads to more accurate results than guessing at requirements.
 
-* **Parallel tasks.** If you have multiple independent tasks, ask the AI to run them in parallel to save time. For example, "Perform isolated research about X and Y in parallel and summarize the findings."
-
 Adapt the [prompt examples](/docs/agents/guides/prompt-examples.md) for your task, including the multi-turn examples for refining a result. For a video introduction, watch [Core principles of prompt engineering with GitHub Copilot](https://www.youtube.com/watch?v=hh1nOX14TyY).
 
 ## Provide the right context
@@ -182,38 +180,18 @@ The AI responds more accurately when it has relevant context. Use these techniqu
 
 * Give agents [browser tools](/docs/agents/run/browser-tools.md) to exercise user flows, inspect the result, fix problems, and verify their changes autonomously.
 
+* [Start a new chat for an unrelated task](/docs/agents/run/sessions/manage-sessions.md#start-a-new-or-related-conversation) instead of carrying irrelevant conversation history into the next request.
+
 For more information, see [adding context to chat prompts](/docs/chat/copilot-chat-context.md) and [configuring tools](/docs/agents/run/tools.md).
-
-## Choose the right model
-
-Each AI model has different strengths. Some are better at reasoning, others excel at code generation or faster responses. Choosing the right model for your task improves results.
-
-* **Match model to task complexity.** Use fast models for simple completions and boilerplate. Switch to reasoning-optimized models for planning, debugging, or architectural decisions.
-
-* **Use latest models.** Newer models often have improved capabilities. VS Code continuously adds support for new models and model versions. Check the [available models](/docs/agent-customization/language-models.md) and use the latest models.
-
-* **Pin models in prompt files and agents.** Specify preferred models in your prompt file or custom agent definitions to ensure the right model is used consistently for specific tasks.
-
-* **Experiment and compare.** If you're not satisfied with a response, try a different model. Different models can produce significantly different results for the same prompt.
-
-* **Adjust thinking effort for reasoning models.** Use the [thinking effort control](/docs/agent-customization/language-models.md#configure-thinking-effort) in the model picker to increase effort for complex tasks or reduce it for simpler ones.
-
-* **Use BYOK for additional control.** Bring your own API key for more model choices and hosting options.
-
-* **Consider credit consumption.** More capable models consume more [AI credits](/docs/agents/concepts/language-models.md#ai-credits-and-model-costs) per token. Auto model selection balances quality and cost automatically. For more tips, see [optimize AI credit usage](/docs/agents/guides/optimize-usage.md).
-
-For more information, see [selecting AI models](/docs/agent-customization/language-models.md) and [available models for Copilot Chat](https://docs.github.com/en/copilot/using-github-copilot/ai-models/changing-the-ai-model-for-copilot-chat).
 
 ## Plan first, then implement
 
 For complex changes that span multiple files, separate planning from implementation. This approach prevents the AI from solving the wrong problem and avoids spending [AI credits](/docs/agents/concepts/language-models.md#ai-credits-and-model-costs) on code that needs to be thrown away.
 
-1. **Explore.** Use chat for questions or use a subagent to read the relevant code and understand how it works before making changes.
+1. **Explore.** Use **Ask** to read the relevant code and understand how it works before making changes.
 1. **Plan.** Use the [Plan agent](/docs/agents/run/planning.md) to create a structured implementation plan. Review and refine the plan before executing.
-1. **Implement.** Switch to agent mode and implement from the plan. Include tests or expected outputs so the agent can verify its own work. Run independent sessions that use the Copilot, Claude, or Codex harness in parallel. For managed cloud execution, [start a cloud session](/docs/agents/run/cloud-sandbox-sessions.md) `feature(cloud-sessions)` with the task and its context.
-1. **Review.** Use [checkpoints](/docs/agents/run/review-code-edits.md#edit-requests-and-restore-checkpoints) to review progress, rewind if the agent goes off track, or [request a Copilot code review](https://docs.github.com/en/copilot/concepts/agents/code-review) on the resulting pull request.
-
-For more information, see the [context engineering workflow](/docs/agents/guides/context-engineering-guide.md).
+1. **Implement.** Select **Agent** and implement the approved plan. Include tests or expected outputs so the agent can verify its work.
+1. **Review.** [Inspect the diff and validation results](/docs/agents/run/review-code-edits.md) before committing. If the result doesn't match the plan, request a focused revision.
 
 ## Review and verify AI output
 
@@ -229,26 +207,28 @@ AI-generated code can contain bugs, security issues, or subtle logic errors. Alw
 
 For more information, see [GitHub Copilot security](/docs/agents/run/security.md) and the [GitHub Copilot Trust Center](https://copilot.github.trust.page/faq).
 
-## Choose the right agent harness
+## Go further when you need to
 
-When working with agents, choose the harness that matches your task and workflow. Each harness offers different provider capabilities, tools, and execution environments.
+You don't need the following techniques to complete a first task. Use them when a specific problem or recurring workflow calls for more control.
 
-> [!NOTE]
-> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
+### Choose the right model
 
-* **Use the Copilot harness for day-to-day coding.** The Copilot harness runs tools on your machine with access to your workspace and run-time context. It is a good default for most coding tasks. Tool execution location is separate from where the selected language model runs.
+Start with **Copilot Fusion** or **Auto** when available. If results, speed, or cost don't meet your needs, compare models on the same representative task rather than changing several options at once.
 
-* **Use Claude or Codex for provider-specific capabilities.** These harnesses also run tools on your machine and provide their own SDK capabilities through the same VS Code session experience.
+* Use the [model picker](/docs/agent-customization/language-models.md) to browse available models and their requirements.
+* Use [**Compare Models**](/docs/agents/run/compare-models.md) in the Agents window to run the same prompt with multiple models and compare their results side by side.
+* For reasoning models, adjust [thinking effort](/docs/agent-customization/language-models.md#configure-thinking-effort-and-context-size) when the task needs more analysis.
+* Compare the result and verification evidence alongside [AI credit usage](/docs/agents/guides/optimize-usage.md), not only response speed.
 
-* **Use cloud sessions for managed execution.** Use [cloud sessions](/docs/agents/run/cloud-sandbox-sessions.md) `feature(cloud-sessions)` for interactive work on managed compute that you can reconnect to later, without keeping your own host online.
+### Choose the right agent harness
 
-* **Run parallel sessions for independent tasks.** Start multiple sessions with the Copilot, Claude, or Codex harness, or use cloud sessions, to work on unrelated tasks simultaneously. Monitor them from the [sessions list](/docs/agents/run/sessions/manage-sessions.md#sessions-list).
+Keep the Copilot harness for the workflow above. When you need another provider's tools or account, [compare harness requirements](/docs/agents/run/agent-harnesses.md#requirements-and-setup) before switching. Organization policies can restrict the available choices.
 
-For more information, see [choosing an agent harness](/docs/agents/run/agent-harnesses.md) and the [agentic coding tutorial](/docs/agents/agents-tutorial.md).
+Changing the model doesn't change the harness. Where tools run is another decision: use [remote sessions](/docs/agents/run/remote-agent-sessions.md) for a host you manage, or [cloud sessions](/docs/agents/run/cloud-sandbox-sessions.md) `feature(cloud-sessions)` for managed execution without keeping your own machine online.
 
-## Optimize your project for AI
+### Optimize your project for AI
 
-Project customization is optional. Add it when you have conventions, project context, or workflows that the AI can't reliably infer from your code. Concise customization can also help [optimize AI credit usage](/docs/agents/guides/optimize-usage.md) by reducing repeated context gathering, corrections, and retries.
+Add customizations when the agent repeatedly misses a convention or workflow that it can't infer from your code. Run **Chat: Open Customizations** to open the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) for your selected session.
 
 VS Code supports several mechanisms to configure AI behavior for your project. Run **Chat: Open Customizations** to open the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) and create customizations for your selected harness.
 
@@ -259,73 +239,33 @@ VS Code supports several mechanisms to configure AI behavior for your project. R
 | [Skills](/docs/agent-customization/agent-skills.md) | Domain-specific capabilities (testing, deployment) | Select **Skills**, then **New Skill** next to **Workspace** in the Agent Customizations editor |
 | [Tools and MCP servers](/docs/agents/run/tools.md) | Connecting to external systems (databases, APIs, CLIs) | Configure in `mcp.json` |
 
-Tips for effective project configuration:
+Verify one customization on a representative task before adding more. Follow the [project customization guide](/docs/agents/guides/customize-copilot-guide.md) for a before-and-after comparison.
 
-* **Keep instruction files concise.** They load on every chat interaction. Focus on information the AI can't infer from code, such as non-default conventions, architectural decisions, or environment setup.
-* **Scope instructions with `applyTo` patterns.** Create language-specific or folder-specific instruction files from **Instructions** in the Agent Customizations editor instead of putting everything in one file.
-* **Limit enabled tools.** Fewer active tools means faster, more relevant responses. Enable tools only when the task needs them.
-* **Exclude generated and noisy files from search.** Configure ``search.exclude`` and ``files.exclude`` so agent text search and grep stay focused on source code. See [improve agent search with exclusion settings](/docs/agents/reference/workspace-context.md#improve-agent-search-with-exclusion-settings).
+### Manage context and sessions
 
-For full setup details, see [Customize agent behavior in VS Code](/docs/agent-customization/overview.md).
+Choose an approach based on the problem you're solving:
 
-## Manage context and sessions
+* **A long conversation is losing focus:** [Compact the conversation](/docs/agents/run/sessions/manage-sessions.md#compact-conversation-context), specifying what to retain, or start a fresh chat with a concise summary.
+* **You want to compare approaches:** [Fork the conversation](/docs/agents/run/sessions/manage-sessions.md#fork-a-chat-session) to retain its history. A fork doesn't isolate file changes.
+* **Independent tasks need to run in parallel:** Use [separate worktrees](/docs/agents/guides/delegate-two-tasks.md) when their changes must stay separate. Review each result before integrating it.
+* **One task needs a focused investigation:** Ask a [subagent](/docs/agents/run/subagents.md#subagents-by-harness) to investigate a bounded question and report back.
 
-AI responses might degrade as the conversation fills with irrelevant context. Manage your sessions proactively.
+### Optimize AI credit usage
 
-* **Start new sessions for unrelated tasks.** Don't keep piling unrelated questions into one conversation. Context pollution reduces response quality and wastes tokens on irrelevant history.
+If usage is higher than expected, first check task scope, relevant context, and repeated failed attempts. Planning before implementation and correcting the agent early can avoid work you would otherwise discard.
 
-* **Start a fresh chat for related work.** When the task still belongs in the same workspace but doesn't need the current conversation history, [start another chat in the session](/docs/agents/run/sessions/manage-sessions.md#run-multiple-chats-in-a-session), where supported. It shares the session's files and code changes without inheriting the other chats' history.
+Use the [AI credit usage guide](/docs/agents/guides/optimize-usage.md) to compare cost with result quality. If session metrics indicate low cache reuse, use the [Cache Explorer](/docs/agents/agent-troubleshooting/cache-explorer.md) to investigate it rather than treating cache tuning as a prerequisite for coding.
 
-* **Compact context.** Use [/compact](/docs/agents/run/sessions/manage-sessions.md#compact-conversation-context) and provide instructions to selectively compact the context and retain only the most relevant information. Compacting reduces the tokens sent with each subsequent request, which helps [manage AI credit usage](/docs/agents/guides/optimize-usage.md).
+### Work with large codebases
 
-* **Verify cache performance.** Keep the early parts of your prompt stable across turns to reuse the prompt cache and reduce cost and latency. Use the [Cache Explorer](/docs/agents/agent-troubleshooting/cache-explorer.md) to check cache hit rates and find where the cache breaks.
+Start with a bounded behavior or component instead of asking the agent to understand the entire repository. [Workspace context](/docs/agents/reference/workspace-context.md) explains how search and indexing help locate relevant code.
 
-* **Use subagents for investigation.** Hint the AI to perform research and exploration in isolation by using [subagents](/docs/agents/run/subagents.md) so the findings don't clutter your main context.
+For monorepos or projects with multiple services, use [multi-root workspaces](/docs/editing/workspaces/multi-root-workspaces.md) to scope the workspace, and record non-obvious module boundaries in [project instructions](/docs/agent-customization/custom-instructions.md). [Exclude generated and noisy files from search](/docs/agents/reference/workspace-context.md#improve-agent-search-with-exclusion-settings) to keep searches focused.
 
-* **Choose the right harness and execution environment.** Start with the [Copilot harness](/docs/agents/run/agent-harnesses.md#copilot) for day-to-day work in a folder or isolated worktree on your machine, or a [cloud session](/docs/agents/run/cloud-sandbox-sessions.md) `feature(cloud-sessions)` for interactive work on managed compute.
+## Next steps
 
-* **Scale with parallel sessions.** Run multiple sessions in separate folders or worktrees to save time and keep contexts separate. You can switch among sessions that run on your machine, a connected host, in a Dev Container, or on provider-managed cloud infrastructure from the [sessions list](/docs/agents/run/sessions/manage-sessions.md#sessions-list) in VS Code.
-
-* **Fork instead of re-prompting.** Use [`/fork`](/docs/agents/run/sessions/manage-sessions.md#fork-a-chat-session) to explore alternatives without losing context, instead of starting over and re-establishing context from scratch.
-
-For more information, see [session management](/docs/agents/run/sessions/manage-sessions.md), [workspace indexing](/docs/agents/reference/workspace-context.md), and [optimize AI credit usage](/docs/agents/guides/optimize-usage.md).
-
-## Optimize AI credit usage
-
-Many of the practices in this article also help you control cost. More capable models, large contexts, and throwaway work all consume [AI credits](/docs/agents/concepts/language-models.md#ai-credits-and-model-costs). A few levers have the biggest impact:
-
-* **Match the model to the task.** Use faster, cheaper models for simple work and reserve premium models for planning, debugging, and architectural decisions. Auto model selection balances quality and cost for you.
-
-* **Keep context lean.** Send only relevant context, [compact](/docs/agents/run/sessions/manage-sessions.md#compact-conversation-context) long conversations, and start fresh sessions for unrelated tasks to avoid paying for irrelevant history on every request.
-
-* **Plan before you implement.** Separating planning from implementation avoids spending credits on code you throw away.
-
-For a complete set of techniques, see [optimize AI credit usage](/docs/agents/guides/optimize-usage.md).
-
-## Work with large codebases
-
-Copilot is designed to work effectively with large, complex, and multi-root workspaces. Use these practices to get the best results at scale.
-
-* **Use workspace indexing.** VS Code automatically indexes your project using semantic search, language intelligence, and GitHub's code search for deep cross-file reasoning. This works for both small projects and large enterprise codebases. For large repositories, use [remote indexing](/docs/agents/reference/workspace-context.md#semantic-index-sources) for fast, comprehensive results across your repository and related repositories on GitHub.
-
-* **Scope work with multi-root workspaces.** For monorepos or projects with multiple services, use [multi-root workspaces](/docs/editing/workspaces/multi-root-workspaces.md) to give the AI clear boundaries and focused context.
-
-* **Provide project-level instructions.** Use [custom instructions](/docs/agent-customization/custom-instructions.md) to describe your project's architecture, module boundaries, and conventions that the AI can't infer from code alone. This gives the AI the context it needs for architecture-level changes.
-
-* **Run parallel sessions for independent changes.** Break large tasks into independent subtasks and run them in [parallel sessions](/docs/agents/run/sessions/manage-sessions.md#sessions-list), each focused on a different area of the codebase.
-
-* **Use the Plan agent for cross-cutting changes.** For changes that span many files or modules, start with the [Plan agent](/docs/agents/run/planning.md) to create a structured implementation plan before executing.
-
-For more information, see [workspace context](/docs/agents/reference/workspace-context.md) and [agents](/docs/agents/overview.md).
-
-## Related resources
-
-* [Context engineering guide](/docs/agents/guides/context-engineering-guide.md)
-* [Optimize AI credit usage](/docs/agents/guides/optimize-usage.md)
-* [Customize agent behavior in VS Code](/docs/agent-customization/overview.md)
-* [Cheat sheet](/docs/agents/reference/ai-features-cheat-sheet.md)
-* [GitHub Copilot security](/docs/agents/run/security.md)
-* [Best Practices for using GitHub Copilot](https://docs.github.com/en/copilot/using-github-copilot/best-practices-for-using-github-copilot) in the GitHub Copilot documentation
+* [Find a guide for your next project task](/docs/agents/guides/overview.md#work-on-a-project).
+* [Choose a recovery action when an agent gets off track](/docs/agents/guides/get-agent-back-on-track.md#choose-a-recovery-action).
 
 
 ---
@@ -1450,27 +1390,40 @@ Neither replaces the applicable permission controls or your review of the result
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/overview.md
-- **SHA256_FINGERPRINT**: `8f4d422a56b49b1c6cb9890fa0346fb9604f3d6ec24cb6086499ba7d3eb9b326`
-- **LAST_VERIFIED_UTC**: 2026-11-08T05:16:47.697128+00:00
+- **SHA256_FINGERPRINT**: `9cf430e260b12b28136e7cdf3f2ffc4723c8c3b8eba48f63819754b21c9f9f6a`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.612021+00:00
 ---
 
 **MetaDescription**: Choose AI workflows, models, and agents in VS Code, from inline suggestions to remote sessions.
 
 # Build with AI in VS Code
 
-Use as much or as little AI as your task needs in Visual Studio Code. Get suggestions as you type, collaborate with an agent beside your code, or coordinate tasks across projects in the Agents window. Combine these approaches as your work changes.
+Use as much or as little AI as your task needs in Visual Studio Code. Get suggestions as you type, collaborate with an agent beside your code, tests, and debugger, or coordinate tasks across projects in the Agents window. Combine these approaches as your work changes.
 
-You can choose models from multiple providers and work with the Copilot, Claude, or Codex agent harness, using a supported account or your own API key. Customizations and plugins help you tailor agents to your work.
+Choose models from multiple providers and work with the Copilot, [product.prodname_anthropic_claude_short], or [product.prodname_openai_codex_short] agent harness, using a supported account or your own API key. A harness provides the tools and workflow around a model. Customizations and plugins help you tailor agents to your work.
 
 Continuity lets you pick up agent work across supported interfaces without starting over. Connect to sessions on your own machine through [copilot.github_environments], or use a cloud session without keeping a local host online.
 
-## Try your first agent task
+## Choose where to start
 
-Build and validate a small app, then review the result. The quickstart uses the GitHub Copilot harness with recommended defaults, so you don't need to configure every option first.
+<div class="card-grid">
+    <a class="card" href="/docs/agents/quickstart">
+        <i class="codicon codicon-hubot" aria-hidden="true"></i>
+        <div>
+            <p><strong>Complete your first AI task</strong></p>
+            <p>New to AI coding? Build and validate a small app with recommended defaults, then review the changes.</p>
+        </div>
+    </a>
+    <a class="card" href="/docs/agents/guides/overview#experienced-agent-fast-track">
+        <i class="codicon codicon-tools" aria-hidden="true"></i>
+        <div>
+            <p><strong>Bring your AI workflow to VS Code</strong></p>
+            <p>Already use AI coding tools? Connect your account or model, choose an agent harness, and work in your own repository.</p>
+        </div>
+    </a>
+</div>
 
-* [Start the agents quickstart](/docs/agents/quickstart.md)
-
-* **Already use agents:** Follow the [experienced-agent fast track](/docs/agents/guides/overview.md#experienced-agent-fast-track) in your own repository.
+* **Prefer to start with your own code:** [Explore a codebase without changing files](/docs/agents/guides/explore-a-codebase.md), then verify the explanation against your code.
 * **New to VS Code:** First [install the editor and open a workspace](/docs/getstarted/overview.md).
 
 <video src="images/agents-overview/build-with-ai-overview.mp4" title="Video overview of building with AI in VS Code, showing inline suggestions, collaboration alongside code, and task orchestration in the Agents window." autoplay loop controls muted></video>
@@ -1841,8 +1794,8 @@ Yes. In the Local session's chat input, open the **Session Target** dropdown and
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/setup/copilot.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/setup/copilot
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/setup/copilot.md
-- **SHA256_FINGERPRINT**: `a6296175b74efb45d45580359b17efb838911332433f26251dad5eceaccb1653`
-- **LAST_VERIFIED_UTC**: 2026-11-10T19:29:14.922563+00:00
+- **SHA256_FINGERPRINT**: `cbe49d6efac2f885c156f8ee27bf9d085cc78e00b562eb7fc86fac8c6890f739`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.671375+00:00
 ---
 
 **MetaDescription**: Set up GitHub Copilot in VS Code, understand billing and data use, and manage your account.
@@ -1851,28 +1804,24 @@ Yes. In the Local session's chat input, open the **Session Target** dropdown and
 
 Use this guide to sign in to GitHub Copilot in Visual Studio Code and manage your account. If you already have Copilot access, sign in with that GitHub account.
 
-For a different access path, follow the [[product.prodname_anthropic_claude] setup](/docs/agents/run/agent-harnesses.md#claude), [[product.prodname_openai_codex] setup](/docs/agents/run/agent-harnesses.md#codex), or [bring your own model key](/docs/agent-customization/language-models.md#bring-your-own-language-model-key). These routes have their own requirements; some agent workflows without GitHub sign-in are experimental.
+To use another provider's account or your own API key, see [other AI access options](#other-ai-access-options).
 
-<div class="docs-action" data-show-in-doc="false" data-show-in-sidebar="true" title="Get started with AI">
-Complete your first coding task with an AI agent in VS Code.
+<div class="docs-action" data-show-in-doc="false" data-show-in-sidebar="true" title="Choose your first AI task">
+Start with your own code or a guided sample project.
 
-* [Start quickstart](/docs/agents/quickstart.md)
+* [Explore your code without changing files](/docs/agents/guides/explore-a-codebase.md)
+* [Build a sample app](/docs/agents/quickstart.md)
 
 </div>
-
-> [!NOTE]
-> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), even with separate provider credentials. Contact the IT team that deployed the settings to discuss access.
 
 ## Before you start
 
 Review these account, usage, and data-handling details before you send project content to an AI model:
 
 * **Account access**: the recommended setup uses a GitHub account with a Copilot plan. If your employer provides Copilot, use the account and policies for your organization. Without a plan, signing in enrolls an eligible account in Copilot Free.
-* **Usage and billing**: models accessed through Copilot consume AI credits from your Copilot plan. Access through another provider's credentials follows that provider's usage and billing terms. Compare [harness authentication and billing options](/docs/agents/run/agent-harnesses.md#requirements-and-setup).
+* **Usage and billing**: models accessed through Copilot consume AI credits from your Copilot plan. Learn about [AI credits and model costs](/docs/agents/concepts/language-models.md#ai-credits-and-model-costs).
 * **Monitor usage**: open the Copilot status dashboard from the VS Code Status Bar to view the percentage of your monthly allowance that you used. Learn [how to monitor usage and what happens when you reach a limit](/docs/agents/agent-troubleshooting/faq.md#how-can-i-monitor-my-copilot-usage).
-* **Data handling**: review the [GitHub Copilot Trust Center](https://resources.github.com/copilot-trust-center/) and your organization's policies before you send work code. Models that use third-party credentials or your own API key follow that provider's terms. VS Code [telemetry settings](/docs/configure/telemetry.md) are separate from AI-provider data handling.
-
-BYOK can provide chat access without a Copilot plan, but it doesn't replace the GitHub Copilot service for inline suggestions, semantic search, or embeddings. Check the [requirements for your chosen BYOK workflow](/docs/agent-customization/language-models.md#bring-your-own-language-model-key).
+* **Data handling**: review the [GitHub Copilot Trust Center](https://resources.github.com/copilot-trust-center/) and your organization's policies before you send work code. VS Code [telemetry settings](/docs/configure/telemetry.md) are separate from AI-provider data handling.
 
 ## Set up GitHub Copilot
 
@@ -1886,9 +1835,11 @@ Follow these steps to get started with Copilot in VS Code:
 
     * If you don't have a Copilot subscription yet, you'll be signed up for the [Copilot Free plan](https://github.com/github-copilot/signup) and get a monthly allowance of inline suggestions and AI credits. Learn more about the different [GitHub Copilot plans](https://docs.github.com/en/copilot/get-started/plans).
 
-1. Start using Copilot in VS Code!
+1. Choose a first task:
 
-    Learn the basics with the [agents quickstart](/docs/agents/quickstart.md).
+    * **Use your own project**: [explore a codebase without changing files](/docs/agents/guides/explore-a-codebase.md) and check the explanation against your code.
+
+    * **Use a practice project**: [build and validate a small app](/docs/agents/quickstart.md) with recommended defaults.
 
 > [!IMPORTANT]
 > Telemetry in your free version of GitHub Copilot is currently enabled. By default, code suggestions that match public code, including code references in the VS Code and [github.com](https://github.com/copilot) experience, are allowed. You can opt out of telemetry data collection by disabling telemetry in VS Code by setting ``telemetry.telemetryLevel`` to `off`, or you can adjust both telemetry and code suggestion settings in [Copilot Settings](https://github.com/settings/copilot).
@@ -1902,6 +1853,17 @@ If your Copilot subscription is associated with a GitHub Enterprise (GHE) accoun
 1. In the sign in dialog, choose **Continue with GHE.com** and provide your GHE instance URL and credentials.
 
 If you need to switch between a GitHub.com account and a GHE account, see [Use a different GitHub account per workspace or profile](#use-a-different-github-account-per-workspace-or-profile) for instructions.
+
+## Other AI access options
+
+To use another provider's account, follow the [[product.prodname_anthropic_claude] setup](/docs/agents/run/agent-harnesses.md#claude) or [[product.prodname_openai_codex] setup](/docs/agents/run/agent-harnesses.md#codex). To connect a model with your own API key, follow the [bring your own key (BYOK) setup](/docs/agent-customization/language-models.md#bring-your-own-language-model-key). These routes have their own requirements. Some agent workflows without GitHub sign-in are experimental.
+
+Access through another provider's credentials follows that provider's usage, billing, and data-handling terms. Compare [harness authentication and billing options](/docs/agents/run/agent-harnesses.md#requirements-and-setup).
+
+BYOK can provide chat access without a Copilot plan, but it doesn't replace the GitHub Copilot service for inline suggestions, semantic search, or embeddings.
+
+> [!NOTE]
+> [product.prodname_anthropic_claude_short] and [product.prodname_openai_codex_short] harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), even with separate provider credentials. Contact the IT team that deployed the settings to discuss access.
 
 ## Use a different GitHub account with Copilot
 
@@ -1964,7 +1926,8 @@ To disable AI features for a specific workspace, configure the ``chat.disableAIF
 
 ## Next steps
 
-* Continue with the [Quickstart for using AI](/docs/agents/quickstart.md) to discover the key features for AI-powered development in VS Code.
+* [Explore your codebase without changing files](/docs/agents/guides/explore-a-codebase.md).
+* [Build and validate a sample app with an agent](/docs/agents/quickstart.md).
 
 
 ---

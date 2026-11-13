@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-11-12T19:42:46.942296+00:00
-- **Total Palabras**: 159,533 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-13T05:49:51.922513+00:00
+- **Total Palabras**: 159,415 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -4880,8 +4880,8 @@ You have explored a repository in VS Code and continued the same cloud-hosted ta
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/add-a-feature.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/add-a-feature
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/add-a-feature.md
-- **SHA256_FINGERPRINT**: `39c8381ddb9d22f05c773db1e8265af385442adf27a2ec7def6524cb64eda1ab`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.450938+00:00
+- **SHA256_FINGERPRINT**: `af607730e98aa9be29e9c7cbcf9da48d5a7ebea5be063789e7609650681eb52c`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.602920+00:00
 ---
 
 **MetaDescription**: Add a feature to an existing project with an agent in VS Code, from a reviewed plan to a tested change.
@@ -4893,6 +4893,8 @@ Adding a feature means more than generating new code. The change needs to fit th
 In this guide, you use an agent to research a small feature in your own repository, review its plan, implement the change, and prepare the verified result for a pull request. You don't need to create custom agents or instructions first.
 
 The example adds an optional title filter to a paginated issues API. Adapt the prompts and acceptance criteria to a feature in your project. No particular framework or sample project is required.
+
+For a practice project, complete [Fix an API bug with an agent](/docs/agents/guides/fix-a-bug-with-agents.md) first, then continue with its `pagination-bug` repository and `issues-api.js` file. Finish and commit the pagination fix before adding the filter, rather than using the buggy starting version.
 
 ## Prerequisites
 
@@ -4935,6 +4937,8 @@ Check that these assumptions match your API before using the prompts. For exampl
     ```
 
 1. Review the identified files and commands. Ask the agent to run the existing tests for the affected area, and inspect the actual output.
+
+    If you're continuing from the bug tutorial, run `node issues-api.js test` in the `pagination-bug` folder. Keep the pagination regression tests as part of the baseline.
 
 Resolve failures that prevent you from validating the feature before you continue. Record unrelated baseline failures separately so that they aren't confused with regressions from the change.
 
@@ -6147,8 +6151,8 @@ Keep the verified summary with your task. Promote stable project knowledge to sh
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/fix-a-bug-with-agents.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/fix-a-bug-with-agents
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/fix-a-bug-with-agents.md
-- **SHA256_FINGERPRINT**: `f25138462d2bc204dfc8c984d25e1b3caa8cfa4b57e98a202638a0e39e87a498`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.664296+00:00
+- **SHA256_FINGERPRINT**: `c29c3114d44b443db8f23f9ef9a8653cd32ee18b0268cf22b1a14d7d0f3ed8fc`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.599153+00:00
 ---
 
 **MetaDescription**: Fix a pagination bug in a Node.js API with an AI agent in VS Code by reproducing it, adding regression tests, and reviewing the fix.
@@ -6455,8 +6459,9 @@ Before you commit an agent's work, inspect both the code and the evidence that s
 
 You fixed a reproducible API defect by establishing the expected behavior before changing production code. This workflow gives you evidence for the diagnosis, protects the behavior with a regression test, and keeps the final change focused and reviewable.
 
-## Related resources
+## Next steps
 
+* Continue with the fixed API and [add an optional title filter](/docs/agents/guides/add-a-feature.md). Use the same repository to practice planning and testing a feature while preserving the pagination behavior you verified.
 * Explore more ways to [test with GitHub Copilot](/docs/agents/guides/test-code-with-ai.md).
 * Review how to [inspect, revise, and revert agent changes](/docs/agents/run/review-code-edits.md).
 
@@ -7219,8 +7224,8 @@ OTel monitoring is off by default. You or your organization must configure monit
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/notebooks-with-ai.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/notebooks-with-ai
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/notebooks-with-ai.md
-- **SHA256_FINGERPRINT**: `4cbf28bf8d7c363bb8bd411cd70400e8c2e4a3dd2447d2e950a73fd08cfad61d`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.670102+00:00
+- **SHA256_FINGERPRINT**: `2159b18fe9482cc8df922cb25c43970c4ed8dc8f69f6be21da9f340bb3f50e42`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.604709+00:00
 ---
 
 **MetaDescription**: Create, edit, run, and analyze Jupyter notebooks with AI in Visual Studio Code.
@@ -7315,7 +7320,7 @@ To keep the cell that an agent is running in view, enable the ``github.copilot.c
 
 * [Learn more about Jupyter notebooks in VS Code](/docs/datascience/jupyter-notebooks.md)
 * [Add context to chat](/docs/chat/copilot-chat-context.md)
-* [Explore prompt examples for Jupyter notebooks](/docs/agents/guides/prompt-examples.md#working-with-jupyter-notebooks)
+* [Adapt prompt examples to your task](/docs/agents/guides/prompt-examples.md)
 
 
 ---
@@ -7475,8 +7480,8 @@ Use these measurements as an optimization loop:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/overview.md
-- **SHA256_FINGERPRINT**: `c5bf2e8fb60443b39de30125849e5cd2be0808945cfa6b175719a67f43146487`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.774853+00:00
+- **SHA256_FINGERPRINT**: `335c36c5a85a84c812a725a4162cbe3445d57728b012916bbdb93081d0453cf7`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.574673+00:00
 ---
 
 **MetaDescription**: Find agent tutorials and guides for VS Code by task, from a first app to testing and project workflows.
@@ -7485,13 +7490,21 @@ Use these measurements as an optimization loop:
 
 Find a tutorial or guide for the task you want to complete with agents in VS Code. Learn with a sample project or apply a workflow to your own codebase.
 
-For help choosing an AI workflow, [compare suggestions, collaboration alongside code, and agent orchestration](/docs/agents/overview.md#choose-how-you-work).
+For help choosing a feature and its first action, use the [AI features cheat sheet](/docs/agents/reference/ai-features-cheat-sheet.md#choose-a-feature).
 
 ## Choose where to start
 
-Choose a starting path. If you're new to VS Code, [install the editor and open a workspace](/docs/getstarted/overview.md) first.
+New to AI coding? Start by exploring your own code without changing it, or use a sample project to practice making and reviewing changes. If you're new to VS Code, [install the editor and open a workspace](/docs/getstarted/overview.md) first.
 
 <div class="card-grid">
+    <a class="card" href="/docs/agents/guides/explore-a-codebase">
+        <i class="codicon codicon-source-control" aria-hidden="true"></i>
+        <div>
+            <p><strong>Explore your own code</strong></p>
+            <p>Ask about a behavior and verify the explanation without changing files.</p>
+            <p>Your repository. Start with a question about code you know.</p>
+        </div>
+    </a>
     <a class="card" href="/docs/agents/quickstart">
         <i class="codicon codicon-hubot" aria-hidden="true"></i>
         <div>
@@ -7508,15 +7521,9 @@ Choose a starting path. If you're new to VS Code, [install the editor and open a
             <p>Sample project. Requires Git.</p>
         </div>
     </a>
-    <a class="card" href="/docs/agents/guides/overview#work-on-a-project">
-        <i class="codicon codicon-source-control" aria-hidden="true"></i>
-        <div>
-            <p><strong>Work in your own repository</strong></p>
-            <p>Explore your codebase, add a feature, or refactor existing code with an agent.</p>
-            <p>Your repository. Check the guide's prerequisites.</p>
-        </div>
-    </a>
 </div>
+
+Already use AI coding tools? Follow the [experienced-agent fast track](#experienced-agent-fast-track) to bring your workflow to VS Code.
 
 Or jump to a task:
 
@@ -7565,9 +7572,15 @@ Or jump to a task:
 
 ## Experienced-agent fast track
 
-To skip the sample projects, [open your repository as a workspace](/docs/getstarted/overview.md#open-your-code), then [explore the codebase](/docs/agents/guides/explore-a-codebase.md) or [add a feature](/docs/agents/guides/add-a-feature.md). Follow the guide's setup and [review and validate edits](/docs/agents/run/review-code-edits.md) before you integrate them.
+If you already use AI coding tools but are new to VS Code, bring your workflow to your own repository without completing the sample tutorials:
 
-To bring an existing setup, compare [agent harnesses and supported accounts](/docs/agents/run/agent-harnesses.md#requirements-and-setup), or [connect a model with your own API key](/docs/agent-customization/language-models.md#bring-your-own-language-model-key). Check compatibility with the guide you choose.
+1. [Open your repository as a workspace](/docs/getstarted/overview.md#open-your-code).
+
+1. Connect your existing account by following the [setup for your agent harness](/docs/agents/run/agent-harnesses.md#requirements-and-setup), or [connect a model with your own API key](/docs/agent-customization/language-models.md#bring-your-own-language-model-key).
+
+1. Use the [Chat view](/docs/agents/run/chat-view.md) to work alongside your editor, tests, and debugger, or the [Agents window](/docs/agents/run/agents-window.md) to coordinate tasks across multiple projects.
+
+Start with a bounded task: [explore the codebase](/docs/agents/guides/explore-a-codebase.md) or [add a feature](/docs/agents/guides/add-a-feature.md). Check the guide's harness and interface requirements, and [review and validate edits](/docs/agents/run/review-code-edits.md) before you integrate them.
 
 ## Match a guide to your setup
 
@@ -7588,8 +7601,8 @@ To bring an existing setup, compare [agent harnesses and supported accounts](/do
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/prompt-examples.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/prompt-examples
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/prompt-examples.md
-- **SHA256_FINGERPRINT**: `11dcb9bde7fc2d42f4cf3e10fbc3a27abbaa0a0b6a89634c0f6d438efd6a9d5a`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.899648+00:00
+- **SHA256_FINGERPRINT**: `c4c376efef9b451028a5ab5ce22e8316d93534b78d2ca0016e0f928a89770502`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.609905+00:00
 ---
 
 **MetaDescription**: Use chat prompts in VS Code to explore code, build features, refactor, debug, and test.
@@ -7606,6 +7619,19 @@ Follow a hands-on tutorial to build an app with AI agents in VS Code.
 * [Start agentic coding tutorial](/docs/agents/agents-tutorial.md)
 
 </div>
+
+## Adapt an example to your project
+
+The Chat view examples use the Copilot harness. Select **Ask** for an explanation without edits, or **Agent** when you want the agent to make and verify changes.
+
+> [!TIP]
+> If you don't see the agent picker, look under **Add Context** (`+`) > **Agent**. To restore the separate picker, uncheck the experimental ``sessions.chat.experimental.agentsPickerInAttachContextMenu`` setting.
+
+Before sending a prompt:
+
+* **Select your context.** Type `#` in the chat input and choose a file, folder, or other item from the picker, or use **Add Context**. Replace sample filenames such as `calculator.test.js` and `styles.css` with files in your project. Available context items depend on your session. See [Add context to chat](/docs/chat/copilot-chat-context.md).
+* **State the expected result.** Adapt the task to your project. For a failure, include the input, expected behavior, and relevant error or test output. Remove secrets from copied output.
+* **Review before keeping changes.** Check tool approval requests, inspect the diff, and run the relevant checks. Treat tests that weren't run as unverified.
 
 ## General coding and technology questions
 
@@ -7647,7 +7673,7 @@ Which testing framework is used for #calculator.test.js?
 
 ## Code generation and editing
 
-Use **Agent** for multi-file creation and **inline chat** (``Shortcut: inlinechat.start``) for targeted, in-place edits.
+Use **Agent** for multi-file creation and **inline chat** (``Shortcut: inlineChat.start``) for targeted, in-place edits.
 
 For complete workflows in an existing project, see [Add a feature](/docs/agents/guides/add-a-feature.md) and [Refactor without changing behavior](/docs/agents/guides/refactor-safely.md).
 
@@ -7665,14 +7691,27 @@ Refactor this code to use async/await
 
 ## Testing and quality assurance
 
-Use **Agent** to generate tests or fix failing tests.
+Use **Agent** to generate tests or fix failing tests. Provide the expected behavior and use the project's existing test framework. For a complete workflow, see [Add tests to existing code](/docs/agents/guides/test-code-with-ai.md).
 
 ```prompt
-Add unit tests for the user service.
+Add unit tests for the attached user service using the existing test framework.
+Cover normal inputs, empty inputs, and error cases without changing implementation
+code. Run the tests and report the command, results, and anything you couldn't run.
 ```
 
 ```prompt
-Fix the failing tests #testFailure
+Investigate the attached test failure before changing code.
+Explain whether the cause is test setup, an incorrect expectation, or an
+implementation bug. Propose a fix and wait for my approval before applying it.
+Do not delete assertions, skip tests, or change expected results just to make
+the tests pass.
+```
+
+After you agree on the cause and fix:
+
+```prompt
+Apply the agreed fix without changing unrelated code.
+Run the relevant tests and report the command, results, and any tests not run.
 ```
 
 ## Debugging and fixing issues
@@ -7680,24 +7719,40 @@ Fix the failing tests #testFailure
 Use **Agent** for fixing issues across files, or **Ask** to understand the root cause first.
 
 ```prompt
-Fix the issues in #problems
+Investigate the attached compiler or lint errors.
+Fix the root cause without suppressing diagnostics or changing unrelated code.
+Rerun the command that reported the errors and summarize the remaining failures.
 ```
 
-```prompt
-Why is this function returning undefined?
+```prompt-ask
+Explain why the selected function returns undefined for the input I provided.
+Trace the return path without changing files.
 ```
 
 ## Working with source control
 
-Use chat to work with your pending changes and generate release documentation.
+Attach the diff you want to discuss. Use **Ask** to summarize changes, draft release documentation, or choose a recovery action before changing Git history.
 
-```prompt
-Summarize the #changes
+```prompt-ask
+Summarize the attached diff. Group the changes by behavior and flag anything
+that needs further review.
 ```
 
-```prompt
-Generate release notes based on the #changes
+```prompt-ask
+Draft release notes from the attached diff. Focus on user-visible changes
+and flag claims that need verification. Do not edit files.
 ```
+
+Before undoing a commit, establish whether it has been shared and which changes you want to keep:
+
+```prompt-ask
+Help me choose how to undo my most recent commit while keeping all file changes.
+First ask whether it has been pushed or shared and whether I have uncommitted
+changes. Explain an option that avoids rewriting shared history.
+Do not run commands or change the repository.
+```
+
+Review the [Git undo and discard options](/docs/sourcecontrol/staging-commits.md#undo-or-discard-changes) before taking action.
 
 ## Working with external resources
 
@@ -7712,7 +7767,8 @@ Build an API endpoint to fetch address info, use the template from GitHub repo c
 ```
 
 ```prompt
-What are the top #extensions for this workspace?
+Recommend extensions for the languages used in this workspace.
+Explain what each adds and do not install anything.
 ```
 
 ## Terminal and command-line tasks
@@ -7725,30 +7781,6 @@ How do I install npm packages?
 
 ```prompt
 List the top 5 largest files in the src directory
-```
-
-```prompt
-undo the last git commit
-```
-
-## Working with Jupyter notebooks
-
-Use **Agent** to create, edit, and work with Jupyter notebooks.
-
-```prompt
-/newNotebook use pandas and seaborn to read and visualize the titanic dataset. Show key information from the dataset.
-```
-
-```prompt
-Create a notebook to read data from #housing.csv and plot the distribution of prices
-```
-
-```prompt
-Make sure the data is cleaned before visualizing and processing it
-```
-
-```prompt
-Show the correlation between different features in the dataset
 ```
 
 ## Multi-turn conversation examples
@@ -7776,7 +7808,7 @@ By building on earlier responses, the AI maintains context from the previous ste
 ## Tips for crafting effective prompts
 
 * **Be specific**: Include details about what you want to accomplish, the technologies to use, and the expected output format.
-* **Add context**: Use #-mentions to reference files, symbols, or context variables like `#codebase`, `#changes`, or `#problems`.
+* **Add context**: Select relevant files and symbols with the `#` picker or **Add Context**. Include error output and expected behavior when investigating a failure.
 * **Iterate**: Start with a simple prompt and refine it based on the response. Ask follow-up questions to improve the results.
 * **Break down complex tasks**: Instead of asking for everything at once, break large tasks into smaller, manageable steps.
 
@@ -8354,8 +8386,8 @@ Learn more about testing and AI customization in VS Code:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/quickstart.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/quickstart
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/quickstart.md
-- **SHA256_FINGERPRINT**: `23f36e770bc55853aef0a50eb5ef37f3613a22c3b197bcc44cbbdb70c9dd5e4f`
-- **LAST_VERIFIED_UTC**: 2026-11-06T19:05:32.183118+00:00
+- **SHA256_FINGERPRINT**: `f0624210228f8daf637d0b70414540ebb8992173f2b8f21bd1da0a77ac6ee6cd`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.611052+00:00
 ---
 
 **MetaDescription**: Build and validate a web app with an AI agent in VS Code, then review and recover changes.
@@ -8364,9 +8396,7 @@ Learn more about testing and AI customization in VS Code:
 
 In this quickstart, you use an AI agent in Visual Studio Code to build a small web app from a natural-language prompt. You then review the generated code, let the agent validate the app with browser tools, and verify the result yourself.
 
-Follow a hands-on tutorial to build and refine an app with agents in VS Code.
-
-* [Start agents tutorial](/docs/agents/agents-tutorial.md)
+The app uses a single HTML file, so you don't need to install runtimes or build tools.
 
 ## Prerequisites
 
@@ -8374,7 +8404,7 @@ Follow a hands-on tutorial to build and refine an app with agents in VS Code.
 
 * [Set up GitHub Copilot in VS Code](/docs/setup/copilot.md).
 
-    Start with the [Copilot harness](/docs/agents/run/agent-harnesses.md#copilot) to complete this quickstart. It connects the model to the tools that build and test your app.
+    This quickstart uses Copilot with the recommended session settings shown below. You don't need to compare models or configure additional tools first.
 
 > [!NOTE]
 > Requests in this quickstart use AI credits from your Copilot plan. Copilot Free includes a monthly allowance. Open the Copilot status dashboard from the Status Bar to monitor your monthly usage. Learn more about [AI credits and model costs](/docs/agents/concepts/language-models.md#ai-credits-and-model-costs) and [what happens when you reach a limit](/docs/agents/agent-troubleshooting/faq.md#i-reached-my-inline-suggestions-or-ai-credits-limit).
@@ -8391,12 +8421,9 @@ mkdir agent-quickstart
 
 ## 2. Build the app
 
-VS Code lets you work with agents in different ways:
+For your first task, follow the **Chat view** tab to work with the agent alongside your code in the editor.
 
-* **Chat view**: work with an agent alongside your code in the editor, focused on the current project.
-* **Agents window**: assign (high-level) tasks to agents and switch between projects without reloading the window.
-
-Choose the approach that works best for you and follow the steps in the corresponding tab below.
+If you prefer a dedicated window for agent tasks across projects, follow the **Agents window** tab instead. Both paths build the same app.
 
 1. In VS Code, select **File** > **Open Folder** from the menu, and then open the `agent-quickstart` folder.
 
@@ -8407,8 +8434,6 @@ Choose the approach that works best for you and follow the steps in the correspo
 1. Open the Chat view with ``Shortcut: workbench.action.chat.open``, and then select `+` to start a new chat.
 
     ![Screenshot of opening a new chat in the Copilot Chat view.](images/agents-quickstart/editor-new-chat.png)
-
-    If you already had an active chat, starting a new chat does not close the previous one. The previous chat remains accessible via the sessions list.
 
 1. Configure the following settings for the chat session. Keep the default values for any other options.
 
@@ -8560,7 +8585,7 @@ If a follow-up doesn't resolve the problem, use [Get an agent back on track](/do
 
 ## Continue in another interface or application
 
-The Agents window and Chat view share your Copilot session, so you can switch between them without losing the conversation.
+This section is optional. The Agents window and Chat view share your Copilot session, so you can switch between them without losing the conversation.
 
 * From the Agents window, select **Open in Editor** in the title bar. VS Code opens the project in an editor window with the session available in the Chat view.
 
@@ -9099,110 +9124,89 @@ For marketplace schemas and distribution details, see the [Agent Plugins specifi
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/ai-features-cheat-sheet.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/ai-features-cheat-sheet
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/ai-features-cheat-sheet.md
-- **SHA256_FINGERPRINT**: `02afcf3232c9ee1b980f48f32c79db3739b0041ad6e46a59196e5fb3968928e8`
-- **LAST_VERIFIED_UTC**: 2026-11-12T19:42:37.766567+00:00
+- **SHA256_FINGERPRINT**: `eb3e8023d8e138ebb042ffd95ba003252646ec70c435684778d292e64bdd8fa7`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.654501+00:00
 ---
 
 **MetaDescription**: Choose AI features in VS Code for coding, planning, testing, and reviewing changes.
 
 # AI features cheat sheet
 
-Find the AI feature in Visual Studio Code that fits your task, from a focused edit to work you delegate to an agent. Use this reference for common tasks, useful controls, and shortcuts.
+Find the AI feature in Visual Studio Code that fits your task, take the first action, and follow the linked guide when you need more detail.
 
-New to agents? [Complete your first task with an agent](/docs/agents/quickstart.md). Available features depend on your [agent harness](/docs/agents/run/agent-harnesses.md), model, account, and organization policies.
+The agent examples use the [Copilot harness](/docs/agents/run/agent-harnesses.md#copilot) in the [Chat view](/docs/agents/run/chat-view.md), unless noted otherwise. New to agents? [Complete your first task with recommended defaults](/docs/agents/quickstart.md). Available features depend on your model, account, and organization policies.
+
+Jump to:
+
+* [Choose a feature](#choose-a-feature).
+* [Review and recover](#stay-in-control).
+* [Shortcuts and commands](#shortcuts-and-common-commands).
+* [Improve responses](#get-better-results).
+* [Customize and scale up](#customize-and-scale-up).
 
 ## Choose a feature
 
-| I want to... | Use | Start with... |
+Select **Ask** or **Agent** in chat, type `/plan` to plan a change, or select code and press ``Shortcut: inlineChat.start`` for inline chat. Adapt the examples to your project and [attach relevant code or error output](/docs/chat/copilot-chat-context.md).
+
+| Task | Feature | Example prompt |
 |---|---|---|
-| Understand unfamiliar code without changing it | [Ask](/docs/agents/run/agent-harnesses.md#choose-a-built-in-agent) | Select **Ask** and enter "Trace how a request reaches the database." |
-| Plan a complex change | [Plan agent](/docs/agents/run/planning.md) | Select **Plan** and describe the change to research before implementation. |
-| Build a feature, fix a bug, or create a project | [Agents](#use-agents) | Select **Agent**, describe the outcome, and specify how to verify it. |
-| Make a focused edit | [Inline chat](/docs/chat/inline-chat.md) | Select code in the editor and describe the change. |
-| Get help while typing and editing | [Inline suggestions](/docs/editing/ai-powered-suggestions.md) | Accept ghost text to complete code, or use next edit suggestions to navigate to and apply a related edit. |
-| Manage independent tasks across projects | [Agents window](/docs/agents/run/agents-window.md) | Select **Open in Agents** in the title bar, then start and monitor sessions. |
-| Continue agent work across apps and devices | [[copilot.github_environments]](/docs/agents/run/remote-agent-sessions.md#github-environments) `feature(github-environments)` | Register your development machine from **Remote Connections**, then connect from a supported Copilot client. For VS Code-specific access, use [SSH or dev tunnels](/docs/agents/run/remote-agent-sessions.md#choose-how-to-connect). |
-| Run and continue interactive work without keeping my machine online | [Cloud sessions](/docs/agents/run/cloud-sandbox-sessions.md) `feature(cloud-sessions)` | Turn on cloud session support, select **Cloud**, and choose a repository. Reopen the existing session to continue. |
-| Check a web app's behavior | [Browser tools](/docs/agents/run/browser-tools.md) | Ask the agent to open the app, test a user flow, and report the result. |
-| Repeat routine work on a schedule or repository event | [Automations](/docs/agents/run/automations.md) | Save a prompt and configuration in the Agents window. Check a manual run first. Cloud automations `feature(cloud-automations)` also support service-advertised issue and pull request triggers. |
-| Generate commit messages or rename symbols | [Smart actions](/docs/editing/copilot-smart-actions.md) | Use the sparkle action or editor context menu without writing a prompt. |
-| Explore data or edit a notebook | [AI for notebooks](/docs/agents/guides/notebooks-with-ai.md) | In a **Local** agent session `feature(local-harness)`, ask the agent to create, edit, and run notebook cells. |
-| Find code or settings without exact keywords | [Semantic search](/docs/editing/copilot-smart-actions.md#semantic-search-results-preview) (Preview) and [AI settings search](/docs/editing/copilot-smart-actions.md#search-settings-with-ai) | Search by meaning in the Search view, or describe a setting in the Settings editor. |
+| Understand code without changing it | [Ask](/docs/agents/guides/explore-a-codebase.md) | "Where is sign-in validated?" |
+| Plan a change or feature | [Plan](/docs/agents/run/planning.md) | "/plan Add pagination without breaking existing clients" |
+| Build, fix, or test | [Agent](/docs/agents/guides/add-a-feature.md) | "Fix this failure and run the relevant tests." |
+| Edit selected code inline | [Inline chat](/docs/chat/inline-chat.md#use-editor-inline-chat) | "Handle empty input without changing other behavior." |
+| Validate a web app | [Browser tools](/docs/agents/run/browser-tools.md) | "Submit an empty form and verify the validation message." |
 
-## Use agents
+For assistance without writing a prompt:
 
-Use the [Chat view](/docs/agents/run/chat-view.md) to work beside your code, or the **Agents window** to focus on assigning higher-level tasks and reviewing outcomes.
-
-For a complex change, **plan**, **implement**, **verify**, then **review**:
-
-* **Plan:** Ask the Plan agent to research the change and identify risks. Review the approach before handing it to an implementation agent.
-* **Implement:** Describe the intended behavior and constraints. The agent searches your code, edits files, and uses tools.
-* **Verify:** Ask the agent to run relevant tests or exercise the app. Inspect what it actually checked.
-* **Review:** Review the diff and validation results before committing or merging.
-
-For example, give the agent a concrete browser check:
-
-```prompt
-Open the app and test the sign-up flow with a missing email address.
-Verify that it shows a validation error and does not submit the form.
-Report what you tested and any problems you found.
-```
-
-To organize larger tasks:
-
-* Use [separate sessions and worktrees](/docs/agents/guides/delegate-two-tasks.md) for independent tasks that should not share code changes.
-* Use [subagents](/docs/agents/run/subagents.md) to delegate a focused part of a task in a separate context.
-* [Hand off a session](/docs/agents/run/agent-harnesses.md#continue-with-a-different-harness) when you want to continue work with another supported harness. For cloud execution, [start a cloud session](/docs/agents/run/cloud-sandbox-sessions.md).
-
-## Get better results
-
-| Need | What to use |
-|---|---|
-| Ground a request in specific code or a failure | [Add context](/docs/chat/copilot-chat-context.md) with **Add Context**, `#`-mentions, or dragged files. Attach relevant code, errors, test output, or GitHub issues. |
-| Explore the codebase without finding every file yourself | Let the agent gather [workspace context](/docs/agents/reference/workspace-context.md) with search and language tools. |
-| Balance reasoning, speed, and cost | Use the [model picker](/docs/agent-customization/language-models.md), or **Auto** when available. Changing the model does not change the agent harness. |
-| Work with another agent provider | [Choose a harness](/docs/agents/run/agent-harnesses.md#cloud-target), such as Copilot, [product.prodname_anthropic_claude], or [product.prodname_openai_codex]. Check its tools, authentication options, and setup requirements. |
-| Use your own model provider or a local model | Configure [bring your own key (BYOK)](/docs/agent-customization/language-models.md#bring-your-own-language-model-key). Inline suggestions and semantic search still require the GitHub Copilot service. |
-| Retain useful knowledge across conversations | Ask the agent to remember it with [memory](/docs/agents/run/memory.md). Use **Chat: Show Memory Files** to inspect stored notes. |
-| Manage a long conversation or its cost | Check [context usage](/docs/agents/run/sessions/manage-sessions.md#manage-session-context), compact the conversation, or start a new chat for an unrelated task. See [usage guidance](/docs/agents/guides/optimize-usage.md). |
+* **Complete code as you type:** Review [inline suggestions](/docs/editing/ai-powered-suggestions.md), then press ``Tab`` to accept or ``Escape`` to dismiss them.
+* **Write a commit message:** Select the sparkle beside the **Source Control** message input to [generate a message](/docs/editing/copilot-smart-actions.md#generate-a-commit-message-and-pr-information), then review it.
 
 ## Stay in control
 
+> [!IMPORTANT]
+> Agents can save edits directly to your project. **Manual permissions** does not ask for confirmation for every file edit. Review the [security baseline](/docs/agents/run/security.md#recommended-security-baseline) before working on an existing project.
+
 | I need to... | Action |
 |---|---|
-| Decide which actions need confirmation | Choose a session [permission level](/docs/agents/run/approvals.md#permission-levels) and review tool requests. **Allow all** bypasses confirmations and should not be treated as a prerequisite for using agents. |
-| Redirect work in progress | [Steer, queue a follow-up, or stop the request](/docs/chat/chat-overview.md#send-messages-while-a-request-is-running). Stopping does not undo completed actions. |
-| Inspect or undo agent changes | [Review the diff, provide feedback, or restore a checkpoint](/docs/agents/run/review-code-edits.md). Validate the result before integrating it. |
-| Restrict terminal access to files and the network | Use [agent terminal sandboxing](/docs/agents/run/agent-sandboxing.md) (Preview on macOS, Linux, and WSL2, Experimental on Windows). A Git worktree separates code changes, but is not a security boundary. |
-| Ask AI to review my code | Use [code review smart actions](/docs/editing/copilot-smart-actions.md#review-code). This generates review feedback, not a replacement for your review of agent changes. |
+| Choose which actions require approval | Select a [permission level](/docs/agents/run/approvals.md#permission-levels) in the chat input. Keep **Manual permissions** for an interactive first task. |
+| Review changes | In the Chat view, open a changed file and use [**Keep** or **Undo**](/docs/agents/run/review-code-edits.md#review-pending-edits-with-the-working-set) to accept or revert individual tracked edits. Edits are already saved. In the Agents window, inspect diffs and provide inline feedback in **Changes**. |
+| Redirect or stop a request | Use the **Send** dropdown to [steer, queue, or stop and send](/docs/chat/chat-overview.md#send-messages-while-a-request-is-running). Use **Stop** to cancel without sending another message. |
+| Undo file changes | Hover over an earlier request and select [**Restore Checkpoint**](/docs/agents/run/review-code-edits.md#restore-a-checkpoint) to restore affected files and chat history. |
+| Restrict terminal access | Use [agent sandboxing](/docs/agents/run/agent-sandboxing.md). |
+| Keep agent execution off my machine | Run the task on a [remote host](/docs/agents/run/remote-agent-sessions.md) or in a [cloud session](/docs/agents/run/cloud-sandbox-sessions.md) `feature(cloud-sessions)`. Review permissions for that environment. The agent can still change its files and access connected services. |
 
-> [!IMPORTANT]
-> Agents can save edits directly to the session's folder or worktree. **Manual permissions** does not ask for confirmation for every file edit. Review the [security baseline](/docs/agents/run/security.md#recommended-security-baseline) before working on an existing project.
+Stopping doesn't undo completed work. Checkpoints don't reverse terminal commands or changes to external services. If you're unsure how to recover, follow [Get an agent back on track](/docs/agents/guides/get-agent-back-on-track.md).
 
-## Customize your workflow
+## Shortcuts and common commands
 
-| I want to... | Use |
+### Keyboard shortcuts
+
+| Action | Shortcut |
 |---|---|
-| Apply project conventions without repeating them | [Instructions](/docs/agent-customization/custom-instructions.md) for coding standards, architecture, and test commands. |
-| Package a workflow with supporting scripts or examples | [Agent skills](/docs/agent-customization/agent-skills.md), loaded when relevant or invoked by name. |
-| Run a saved prompt on demand | [Prompt files](/docs/agent-customization/prompt-files.md), invoked as slash commands. |
-| Define a specialized role and tool selection | [Custom agents](/docs/agent-customization/custom-agents.md), such as a read-only reviewer. |
-| Connect a database, issue tracker, or other external system | [MCP servers](/docs/agent-customization/mcp-servers.md) that provide tools. |
-| Run a command at a specific point in the agent's workflow | [Hooks](/docs/agent-customization/hooks.md), rather than relying on the model to follow an instruction. |
-| Install a packaged set of customizations | [Agent plugins](/docs/agent-customization/agent-plugins.md). |
+| Open the Chat view | ``Shortcut: workbench.action.chat.open`` |
+| Start a new chat with focus in the Chat view | ``Shortcut: workbench.action.chat.newChat`` |
+| Open inline chat with focus in the editor | ``Shortcut: inlineChat.start`` |
+| Open [terminal inline chat](/docs/chat/inline-chat.md#use-terminal-inline-chat) with focus in the terminal | ``Shortcut: workbench.action.terminal.chat.start`` |
+| Open [Quick Chat](/docs/chat/inline-chat.md#use-quick-chat) | ``Shortcut: workbench.action.quickchat.toggle`` |
+| Accept an inline suggestion in the editor | ``Shortcut: editor.action.inlineSuggest.commit`` |
+| Dismiss an inline suggestion in the editor | ``Shortcut: editor.action.inlineSuggest.hide`` |
 
-Use the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) to create and manage these options for your selected harness.
+For spoken interaction, see [Voice Mode](/docs/configure/accessibility/voice.md#use-voice-mode) `feature(voice-mode)` and [built-in dictation](/docs/configure/accessibility/voice.md#use-built-in-dictation) `feature(built-in-dictation)`.
 
-## Debug and fix problems
+### Slash commands
 
-| Task | Starting point |
+These commands work in Copilot harness sessions. Type `/` in the chat input to see available commands and installed skills.
+
+| Command | Purpose |
 |---|---|
-| Generate tests | Select code and use **Generate Code** > **Generate Tests**, or ask an agent to add and run tests with your project's framework. |
-| Diagnose a failing test | Select **Fix Test Failure** in the Test Explorer, or attach the failure output to chat. |
-| Fix a compiler or linting error | Use the editor Code Action (lightbulb), or attach the problem to chat. |
-| Configure a debugging session | Ask for a debug configuration, or use `copilot-debug` (Preview) before a terminal run command, such as `copilot-debug python foo.py`. |
+| `/plan <task>` | Research the task and propose a plan before implementation. |
+| `/compact` | [Summarize earlier conversation context](/docs/agents/run/sessions/manage-sessions.md#compact-conversation-context). |
+| `/fork` | [Copy the conversation with its history](/docs/agents/run/sessions/manage-sessions.md#fork-a-chat-session) to explore another approach. Forking doesn't isolate file changes. |
+| `/<skill-name>` | [Run an installed skill](/docs/agent-customization/agent-skills.md#use-skills-as-slash-commands) by name. |
 
-Combine the task, constraint, and verification in one request:
+## Get better results
+
+Combine the task, constraints, and verification in one request:
 
 ```prompt
 Find the cause of the failing authentication test.
@@ -9210,62 +9214,49 @@ Fix the implementation without changing the expected behavior.
 Run the relevant tests and summarize the change and results.
 ```
 
-See [smart actions for tests and errors](/docs/editing/copilot-smart-actions.md#fix-testing-errors) and [debugging](/docs/debugtest/debugging.md).
-
-## Essential keyboard shortcuts
-
-| Action | Shortcut |
+| I need to... | Action |
 |---|---|
-| Open the Chat view | ``Shortcut: workbench.action.chat.open`` |
-| Start a new chat | ``Shortcut: workbench.action.chat.newChat`` |
-| Open editor inline chat | ``Shortcut: inlineChat.start`` |
-| Open [terminal inline chat](/docs/chat/inline-chat.md#use-terminal-inline-chat) | ``Shortcut: workbench.action.terminal.chat.start`` |
-| Open [Quick Chat](/docs/chat/inline-chat.md#use-quick-chat) | ``Shortcut: workbench.action.quickchat.toggle`` |
-| Accept an inline suggestion | ``Shortcut: editor.action.inlineSuggest.commit`` |
-| Dismiss an inline suggestion | ``Shortcut: editor.action.inlineSuggest.hide`` |
+| Ground a request in my code | Select **Add Context** or type `#` to [attach files, symbols, or other context](/docs/chat/copilot-chat-context.md). Include relevant errors and test output. |
+| Balance quality, speed, and cost | Use the [model picker](/docs/agent-customization/language-models.md#change-the-model-for-chat), or **Auto** when available. Changing the model doesn't change the harness. |
+| Use another agent provider | Open **Session Target** and [choose a harness](/docs/agents/run/agent-harnesses.md#compare-agent-harnesses). Check its account and tool requirements. |
+| Use my own model credentials | Follow [BYOK setup](/docs/agent-customization/language-models.md#bring-your-own-language-model-key) for Copilot sessions. `feature(agent-host-byok-models)` Inline suggestions and semantic search still require the GitHub Copilot service. |
+| Reuse knowledge across conversations | Ask the agent to remember a durable convention with [[copilot.copilot_memory]](/docs/agents/run/memory.md#copilot-memory). [Review and delete cloud memories](/docs/agents/run/memory.md#review-and-delete-cloud-memories) on [product.prodname_github]. |
 
-For spoken interaction, see [Voice Mode](/docs/configure/accessibility/voice.md#use-voice-mode) `feature(voice-mode)` and [built-in dictation](/docs/configure/accessibility/voice.md#use-built-in-dictation) `feature(built-in-dictation)`.
+Agents can search your workspace and choose tools automatically. See [workspace context](/docs/agents/reference/workspace-context.md) for what they can find, and [AI credit usage guidance](/docs/agents/guides/optimize-usage.md) to manage conversation cost.
 
-## Chat reference
+To search yourself without exact keywords, use [semantic code search](/docs/editing/copilot-smart-actions.md#semantic-search-results-preview) (Preview) or [AI settings search](/docs/editing/copilot-smart-actions.md#search-settings-with-ai).
 
-### Chat tools
+## Customize and scale up
 
-Agents choose tools automatically. You do not need to name every tool in your prompt. Type `#` to browse available tools and context items, or reference a tool to direct the agent to a capability. See the [Tools and context reference](/docs/agents/reference/tools-reference.md) for individual names.
+### Tailor agents to your project
 
-### Slash commands
+Run **Chat: Open Customizations** to open the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) for your selected session. Start with a recurring need, rather than configuring every option.
 
-Type `/` to see commands available in the current session. Availability depends on the chat surface, harness, role, and enabled features.
-
-| Command | Purpose |
+| I want to... | Use |
 |---|---|
-| `/plan` | Research and propose an implementation plan. |
-| `/explain`, `/fix`, `/tests` | Explain code, suggest a fix, or generate tests. |
-| `/doc` | Generate documentation comments from editor inline chat. |
-| `/setupTests` (Experimental) | Get help choosing and setting up a test framework. |
-| `/new`, `/newNotebook` | Scaffold a workspace, file, or notebook. |
-| `/compact` | Compact conversation context. |
-| `/fork` | [Fork the conversation](/docs/agents/run/sessions/manage-sessions.md#fork-a-chat-session) with its history. |
-| `/fork <title>`, `/fork prompt <prompt>` | Name a fork, or fork and immediately send a prompt with attached context. Requires a supported Agent Host session. See [named and prompted forks](/docs/agents/run/sessions/manage-sessions.md#name-a-fork-or-send-a-prompt). |
-| `/clear` | Start a new chat and archive or mark the current chat as done. |
-| `/rename <name>`, `/help` | Rename a local chat, or list commands and agents in a local Ask chat. |
-| `/models`, `/tools` | Open the model picker, or configure tools for a local chat. |
-| `/init` | Generate or update workspace instructions in a local agent session. |
-| `/agents`, `/instructions`, `/skills`, `/prompts`, `/hooks` | Configure the corresponding customization type. In the Chat view, all are available with **Local** `feature(local-harness)`. Only `/prompts` and `/hooks` are available with **Copilot**. |
-| `/troubleshoot` | Analyze agent debug logs in a local or Copilot CLI session. |
-| `/debug` | Open the Chat Debug view from the Chat view, not the Agents window. |
-| `/sandbox policy` | Inspect the [effective sandbox policy](/docs/agents/run/agent-sandboxing.md#inspect-the-effective-sandbox-policy) for a Copilot session. |
-| `/<name>` | Invoke an agent skill or reusable prompt by name. |
+| Apply project conventions | [Instructions](/docs/agent-customization/custom-instructions.md) for coding standards and test commands. |
+| Reuse a task or multi-step workflow | [Agent skills](/docs/agent-customization/agent-skills.md), loaded when relevant or invoked by name. |
+| Define a specialized role | [Custom agents](/docs/agent-customization/custom-agents.md) with focused instructions and tools. |
+| Connect an external service | [Copilot connectors](/docs/agent-customization/copilot-connectors.md) `feature(copilot-connectors)` for supported services without server setup, or [MCP servers](/docs/agent-customization/mcp-servers.md) you configure yourself. |
+| Run commands at workflow events | [Hooks](/docs/agent-customization/hooks.md) supported by your harness. |
+| Install a packaged setup | [Agent plugins](/docs/agent-customization/agent-plugins.md) from [community or organization marketplaces](/docs/agent-customization/agent-plugins.md#install-a-plugin-from-a-marketplace). |
 
-For example, a skill in `.github/skills/webapp-testing/SKILL.md` can be invoked with `/webapp-testing`. For permission and Autopilot commands, see [approvals and permissions](/docs/agents/run/approvals.md).
+### Coordinate and continue work
 
-### Chat participants (deprecated)
+| I want to... | Start with |
+|---|---|
+| Manage independent tasks | Select **Open in Agents** to use the [Agents window](/docs/agents/run/agents-window.md). Use [separate worktrees](/docs/agents/guides/delegate-two-tasks.md) when changes must stay separate. |
+| Delegate part of a task | Ask for a [subagent](/docs/agents/run/subagents.md#subagents-by-harness) to investigate a bounded question and report back. |
+| Continue work from another device | Register your host through **Remote Connections** with [[copilot.github_environments]](/docs/agents/run/remote-agent-sessions.md#make-a-host-available-for-remote-access). `feature(github-environments)` Keep the host running and reachable. |
+| Work without keeping my machine online | Follow [cloud session setup](/docs/agents/run/cloud-sandbox-sessions.md#prerequisites), then select **Cloud** for a new session. `feature(cloud-sessions)` |
+| Repeat a task automatically | Select **Automations** in the Agents window to [create an automation](/docs/agents/run/automations.md#create-an-automation). Review a manual run before scheduling it. |
 
-Chat participants are not supported in the Copilot harness. Ask the agent directly and attach relevant context, or use a plugin with skills and MCP tools for a domain-specific workflow. See [Replace chat participants](/docs/agent-customization/migrate-customizations.md#replace-chat-participants).
+For unattended repository work, [cloud automations](/docs/agents/run/automations.md#choose-where-an-automation-runs) `feature(cloud-automations)` run on [product.prodname_github] without keeping your computer online.
 
 ## Next steps
 
-* [Apply AI best practices to your project](/docs/agents/best-practices.md).
-* [Look up AI settings](/docs/agents/reference/ai-settings.md).
+* [Find a step-by-step guide for your task](/docs/agents/guides/overview.md).
+* [Adapt a prompt example to your project](/docs/agents/guides/prompt-examples.md).
 
 
 ---
@@ -13005,8 +12996,8 @@ When you turn off an extension, its last-known canvas entries might remain visib
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/chat-view.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/chat-view
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/chat-view.md
-- **SHA256_FINGERPRINT**: `a3006c0cdb2b4a9f7975cab87bd91b1fd8c2072c29e96a97de10081e17eef16c`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.307226+00:00
+- **SHA256_FINGERPRINT**: `4460f02ed37fb5942326fba774c69b36a8ee166a7aceaeb5f1354c551c2ddfb4`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.672382+00:00
 ---
 
 **MetaDescription**: Use AI beside your code in the Chat view, ask questions, run agents, and choose a layout.
@@ -13106,7 +13097,7 @@ The Chat view offers several layout options within the main VS Code window. Choo
 
 The Chat view keeps the agent next to your code, so you can prompt, review, and edit in the same window. The Chat view has the following main areas:
 
-1. **Sessions list**: at the top of the view, where you can view and manage your sessions for the current workspace. Learn more about the [sessions list](/docs/agents/run/sessions/manage-sessions.md#sessions-list).
+1. **Sessions list**: at the top of the view, where you can view and manage your sessions for the current workspace. Learn more about the [sessions list](/docs/agents/run/sessions/manage-sessions.md#find-and-resume-a-session).
 
 1. **Chat conversation**: in the center, where you see the conversation history and the agent's responses, including the changes it makes to your code.
 

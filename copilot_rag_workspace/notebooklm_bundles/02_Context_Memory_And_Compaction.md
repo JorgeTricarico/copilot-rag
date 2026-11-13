@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 02_Context_Memory_And_Compaction
-- **Generado (UTC)**: 2026-11-11T05:27:05.014984+00:00
-- **Total Palabras**: 6,686 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-13T05:49:51.723671+00:00
+- **Total Palabras**: 6,935 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -447,8 +447,8 @@ To learn more about Copilot's security, privacy, compliance, and transparency, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/chat/copilot-chat-context.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/chat/copilot-chat-context
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/chat/copilot-chat-context.md
-- **SHA256_FINGERPRINT**: `96234d133ba00ddeede5c4cac5db308f0a904e4bcc2da07e6ac9a88860920e2a`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.657291+00:00
+- **SHA256_FINGERPRINT**: `ed562c976a902c94af37ff7c9df0c08a2bedba8949a8a723a14ea9c9f380ee3b`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.660249+00:00
 ---
 
 **MetaDescription**: Add files, symbols, images, browser content, and other context to AI prompts in Visual Studio Code for more relevant responses.
@@ -557,22 +557,19 @@ The browser toolbar has an **Add to Chat** split button with actions that let yo
 
 Learn how to [add browser context to chat](/docs/debugtest/integrated-browser.md#add-context-to-ai-chat). To let an agent interact with a page instead of attaching it as prompt context, see [browser tools for agents](/docs/debugtest/integrated-browser.md#browser-tools-for-agents).
 
-## Related resources
+## Next steps
 
-* [Use the Chat view](/docs/agents/run/chat-view.md)
-* [Manage agent sessions](/docs/agents/run/sessions/manage-sessions.md)
-* [Prompt examples](/docs/agents/guides/prompt-examples.md)
-* [Prompt engineering guide](/docs/agents/best-practices.md)
-* [Debug chat interactions](/docs/agents/agent-troubleshooting/chat-debug-view.md)
-* [Diagnose prompt caching with the Cache Explorer](/docs/agents/agent-troubleshooting/cache-explorer.md)
+* [Adapt a prompt to your project](/docs/agents/guides/prompt-examples.md#adapt-an-example-to-your-project) with relevant files, errors, and expected results.
+* [Explore a codebase](/docs/agents/guides/explore-a-codebase.md) and verify the explanation against source references.
+* If the response misses your intent, [get the agent back on track](/docs/agents/guides/get-agent-back-on-track.md) with focused feedback or a fresh conversation.
 
 
 ---
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/chat/inline-chat.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/chat/inline-chat
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/chat/inline-chat.md
-- **SHA256_FINGERPRINT**: `36b64551898ac8fe6c0f9f61531b6216fbe4f5987a68e3c976a9162d9ea42f28`
-- **LAST_VERIFIED_UTC**: 2026-11-06T05:48:21.526889+00:00
+- **SHA256_FINGERPRINT**: `c71a21e485c06966e202e19caff5b1480cc2fcf64c8f7faa6eabd9a01717fab9`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.669462+00:00
 ---
 
 **MetaDescription**: Use inline chat and Quick Chat in Visual Studio Code for focused edits, terminal help, and short AI conversations.
@@ -591,7 +588,7 @@ To use editor inline chat:
 
 1. Open a file in the editor.
 
-1. Open editor inline chat by using the ``Shortcut: inlinechat.start`` keyboard shortcut or by selecting **Open Inline Chat** from the Chat menu in the title bar.
+1. Open editor inline chat by using the ``Shortcut: inlineChat.start`` keyboard shortcut or by selecting **Open Inline Chat** from the Chat menu in the title bar.
 
 1. Type your prompt in the chat input field and press ``Enter``.
 
@@ -604,13 +601,48 @@ To use editor inline chat:
 
     ![Screenshot showing editor inline chat suggesting a non-recursive factorial implementation.](images/copilot-chat/inline-chat-recursion.png)
 
+### Try a focused edit
+
+After you [set up GitHub Copilot](/docs/setup/copilot.md), try an edit in a temporary file before using inline chat on your project.
+
+1. Create a file named `inline-chat-practice.js` in a temporary folder, open it in the editor, and add this function:
+
+    ```javascript
+    function greet(name) {
+        return `Hello, ${name}!`;
+    }
+    ```
+
+1. Select the function and press ``Shortcut: inlineChat.start``. Enter this prompt:
+
+    ```text
+    Trim spaces from both ends of name.
+    Use 'Guest' if name is empty or contains only spaces.
+    Keep the greeting format and change only this function.
+    ```
+
+    If the shortcut opens **Ask in Chat** instead, see [inline chat in active editing sessions](#inline-chat-in-active-editing-sessions). Use a new file that isn't part of that session for this exercise.
+
+1. Inspect the diff. Check that the change handles empty names without changing the greeting for a nonempty name. Select **Keep** to retain it or **Undo** to reject it.
+
+1. After keeping the change, copy the updated function and these calls into a browser's JavaScript console, or run them in your existing JavaScript runtime. The comments show the expected output:
+
+    ```javascript
+    console.log(greet('Ada'));     // Hello, Ada!
+    console.log(greet(' Ada '));   // Hello, Ada!
+    console.log(greet(''));        // Hello, Guest!
+    console.log(greet('   '));     // Hello, Guest!
+    ```
+
+If a result differs, select the function again and tell inline chat which input failed, what it returned, and what you expected. Review the revised diff and repeat all four checks.
+
 ### Inline chat in active editing sessions
 
-When a file belongs to an active chat editing session, pressing ``Shortcut: inlinechat.start`` opens "Ask in Chat" in the Chat view instead of regular inline chat. This routes your prompt into the existing session so it can use the full conversation context. The editor context menu also shows **Ask in Chat** instead of **Open Inline Chat** for these files.
+When a file belongs to an active chat editing session, pressing ``Shortcut: inlineChat.start`` opens "Ask in Chat" in the Chat view instead of regular inline chat. This routes your prompt into the existing session so it can use the full conversation context. The editor context menu also shows **Ask in Chat** instead of **Open Inline Chat** for these files.
 
 To always use regular inline chat, even for files that belong to a chat session, set ``inlineChat.askInChat`` to `false`.
 
-On files that don't belong to any chat session, ``Shortcut: inlinechat.start`` always opens regular inline chat, regardless of this setting.
+On files that don't belong to any chat session, ``Shortcut: inlineChat.start`` always opens regular inline chat, regardless of this setting.
 
 ### Show a visual hint on text selection (Experimental)
 

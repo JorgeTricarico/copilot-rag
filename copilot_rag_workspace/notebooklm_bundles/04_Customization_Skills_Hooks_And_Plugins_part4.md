@@ -1,7 +1,153 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part4
-- **Generado (UTC)**: 2026-11-12T19:42:46.890631+00:00
-- **Total Palabras**: 448,948 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-13T05:49:51.858180+00:00
+- **Total Palabras**: 449,555 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/game-engine/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/game-engine/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/game-engine/SKILL.md
+- **SHA256_FINGERPRINT**: `d3e8179618327ca190efaccee9a13254ed2a0a10c938c00da3ec73e042011b7c`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:28.938005+00:00
+---
+
+**description**: Expert skill for building web-based game engines and games using HTML5, Canvas, WebGL, and JavaScript. Use when asked to create games, build game engines, implement game physics, handle collision detection, set up game loops, manage sprites, add game controls, or work with 2D/3D rendering. Covers techniques for platformers, breakout-style games, maze games, tilemaps, audio, multiplayer via WebRTC, and publishing games.
+
+# Game Engine Skill
+
+Build web-based games and game engines using HTML5 Canvas, WebGL, and JavaScript. This skill includes starter templates, reference documentation, and step-by-step workflows for 2D and 3D game development with frameworks such as Phaser, Three.js, Babylon.js, and A-Frame.
+
+## When to Use This Skill
+
+- Building a game engine or game from scratch using web technologies
+- Implementing game loops, physics, collision detection, or rendering
+- Working with HTML5 Canvas, WebGL, or SVG for game graphics
+- Adding game controls (keyboard, mouse, touch, gamepad)
+- Creating 2D platformers, breakout-style games, maze games, or 3D experiences
+- Working with tilemaps, sprites, or animations
+- Adding audio to web games
+- Implementing multiplayer features with WebRTC or WebSockets
+- Optimizing game performance
+- Publishing and distributing web games
+
+## Prerequisites
+
+- Basic knowledge of HTML, CSS, and JavaScript
+- A modern web browser with Canvas/WebGL support
+- A text editor or IDE
+- Optional: Node.js for build tooling and local development servers
+
+## Core Concepts
+
+The following concepts form the foundation of every web-based game engine.
+
+### Game Loop
+
+Every game engine revolves around the game loop -- a continuous cycle of:
+
+1. **Process Input** - Read keyboard, mouse, touch, or gamepad input
+2. **Update State** - Update game object positions, physics, AI, and logic
+3. **Render** - Draw the current game state to the screen
+
+Use `requestAnimationFrame` for smooth, browser-optimized rendering.
+
+### Rendering
+
+- **Canvas 2D** - Best for 2D games, sprite-based rendering, and tilemaps
+- **WebGL** - Hardware-accelerated 3D and advanced 2D rendering
+- **SVG** - Vector-based graphics, good for UI elements
+- **CSS** - Useful for DOM-based game elements and transitions
+
+### Physics and Collision Detection
+
+- **2D Collision Detection** - AABB, circle, and SAT-based collision
+- **3D Collision Detection** - Bounding box, bounding sphere, and raycasting
+- **Velocity and Acceleration** - Basic Newtonian physics for movement
+- **Gravity** - Constant downward acceleration for platformers
+
+### Controls
+
+- **Keyboard** - Arrow keys, WASD, and custom key bindings
+- **Mouse** - Click, move, and pointer lock for FPS-style controls
+- **Touch** - Mobile touch events and virtual joysticks
+- **Gamepad** - Gamepad API for controller support
+
+### Audio
+
+- **Web Audio API** - Programmatic sound generation and spatial audio
+- **HTML5 Audio** - Simple audio playback for music and sound effects
+
+## Step-by-Step Workflows
+
+### Creating a Basic 2D Game
+
+1. Set up an HTML file with a `<canvas>` element
+2. Get the 2D rendering context
+3. Implement the game loop using `requestAnimationFrame`
+4. Create game objects with position, velocity, and size properties
+5. Handle keyboard/mouse input for player control
+6. Implement collision detection between game objects
+7. Add scoring, lives, and win/lose conditions
+8. Add sound effects and music
+
+### Building a 3D Game
+
+1. Choose a framework (Three.js, Babylon.js, A-Frame, or PlayCanvas)
+2. Set up the scene, camera, and renderer
+3. Load or create 3D models and textures
+4. Implement lighting and shaders
+5. Add physics and collision detection
+6. Implement player controls and camera movement
+7. Add audio and visual effects
+
+### Publishing a Game
+
+1. Optimize assets (compress images, minify code)
+2. Test across browsers and devices
+3. Choose distribution platform (web, app stores, game portals)
+4. Implement monetization if needed
+5. Promote through game communities and social media
+
+## Game Templates
+
+Starter templates are available in the `assets/` folder. Each template provides a complete, working example that can be used as a starting point for a new project.
+
+| Template | Description |
+|----------|-------------|
+| `paddle-game-template.md` | 2D Breakout-style game with pure JavaScript |
+| `2d-maze-game.md` | Maze game with device orientation controls |
+| `2d-platform-game.md` | Platformer game using Phaser framework |
+| `gameBase-template-repo.md` | Game base template repository structure |
+| `simple-2d-engine.md` | Simple 2D platformer engine with collisions |
+
+## Reference Documentation
+
+Detailed reference material is available in the `references/` folder. Consult these files for in-depth coverage of specific topics.
+
+| Reference | Topics Covered |
+|-----------|---------------|
+| `basics.md` | Game development introduction and anatomy |
+| `web-apis.md` | Canvas, WebGL, Web Audio, Gamepad, and other web APIs |
+| `techniques.md` | Collision detection, tilemaps, async scripts, audio |
+| `3d-web-games.md` | 3D theory, frameworks, shaders, WebXR |
+| `game-control-mechanisms.md` | Touch, keyboard, mouse, and gamepad controls |
+| `game-publishing.md` | Distribution, promotion, and monetization |
+| `algorithms.md` | Raycasting, collision, physics, vector math |
+| `terminology.md` | Game development glossary |
+| `game-engine-core-principles.md` | Core design principles for game engines |
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Canvas is blank | Check that you are calling drawing methods after getting the context and inside the game loop |
+| Game runs at different speeds | Use delta time in update calculations instead of fixed values |
+| Collision detection is inconsistent | Use continuous collision detection or reduce time steps for fast-moving objects |
+| Audio does not play | Browsers require user interaction before playing audio; trigger playback from a click handler |
+| Performance is poor | Profile with browser dev tools, reduce draw calls, use object pooling, and optimize asset sizes |
+| Touch controls are unresponsive | Prevent default touch behavior and handle touch events separately from mouse events |
+| WebGL context lost | Handle the `webglcontextlost` event and restore state on `webglcontextrestored` |
 
 
 ---
@@ -66881,6 +67027,96 @@ When updating a version, follow these steps:
 
 
 ---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/on-device-delegate/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/on-device-delegate/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/on-device-delegate/SKILL.md
+- **SHA256_FINGERPRINT**: `8ccd6652f651abd52f594cbffd8a42bf16971c05e0129749088297228233ef3e`
+- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:49.070201+00:00
+---
+
+**description**: Saves cloud-model context by briefing one bounded, read-heavy sub-task (more than about 25 KB of prose, or many files that no single command can answer) to the local-coding plugin''s on-device worker, which runs on the local MAI Code 1.1 Flash model. Use for log and test triage, summarizing many files, or extracting facts from large inputs. When the user names this skill, call the skill tool in the same response as your first other tool call, never as a separate step.
+
+# On-Device Delegate
+
+Send the bulky reading in a task to the on-device worker, then check its answer
+once. The main session keeps planning and answering. The worker reads the big
+inputs on the local model, so they never enter the main context.
+
+## Steps
+
+1. **Gate on what you would read.** If one command or a short script can
+   compute the answer, do it yourself now: no plan, no notes about this
+   skill. Delegate only when you would otherwise READ more than about 25 KB
+   of text into your context (prose, many files). Never delegate security
+   review or design decisions.
+2. **Check the worker.** The worker is the custom agent
+   `local-coding:on-device-worker` (the plugin id). If the task tool lists it
+   as plain `on-device-worker` instead (copied into an agents folder), use
+   that. If neither is available, work normally.
+3. **Brief.** Do not read the big input first. Make ONE task call:
+   - `name`: "on-device-<short-kebab>"
+   - `description`: 3-5 words
+   - `agent_type`: the worker id from step 2
+   - `mode`: "sync"
+   - `model`: the on-device model id named in the session's routing line,
+     exactly (if there is none:
+     "winml-azureml-mai-code-1.1-flash-on-device/MAI-Code-1.1-Flash-On-Device").
+     The worker does not pin a model, so without this it runs on your own
+     model.
+   - `prompt`, exactly:
+
+     ```text
+     GOAL: <one sentence>
+     INPUTS: <exact paths>
+     RULES: Read only INPUTS. At most 8 tool calls. Edit nothing but OUTPUT. No questions.
+     OUTPUT: <file path and exact format, or: reply only>
+     ANSWER: Reply ONCE with only <exact format>, then stop.
+     If you cannot, reply only: UNABLE: <reason>
+     ```
+
+4. **Check once.** At most ONE cheap check (format, a count, or one spot
+   check). Never recompute the answer or re-read the input. If the answer is
+   wrong, UNABLE, or the task call fails: do it yourself. Then finish.
+
+## Example
+
+User: "Use the on-device-delegate skill. From the logs under `logs\`, list
+every distinct error message with its count, most frequent first."
+
+Task prompt:
+
+```text
+GOAL: Count each distinct error message in the logs.
+INPUTS: logs\
+RULES: Read only INPUTS. At most 8 tool calls. Edit nothing but OUTPUT. No questions.
+OUTPUT: reply only
+ANSWER: Reply ONCE with only lines of the form "<count> <message>", most frequent first, then stop.
+If you cannot, reply only: UNABLE: <reason>
+```
+
+Check: confirm the lines match the format and spot-check one count with a
+single search. Then answer the user.
+
+## Limits
+
+- The worker can return a confident but wrong answer. The single check
+  catches format errors, not every wrong fact. Tell the user what you checked.
+- Expect minutes, not seconds, per delegated task, especially on the first
+  call while the local model loads.
+
+## Setup scripts
+
+[`scripts/`](scripts/) holds two setup scripts for the user, described in the
+local-coding plugin README. They are not part of a task: never run them while
+you work on the user's request.
+
+- [`scripts/Set-LocalOutputCap.ps1`](scripts/Set-LocalOutputCap.ps1) caps the
+  local model's output tokens in the user's `providers.json`.
+- [`scripts/Update-LocalCodingPlugin.ps1`](scripts/Update-LocalCodingPlugin.ps1)
+  installs or updates the plugin, then runs the cap script.
+
+
+---
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/onboard-context-matic/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/onboard-context-matic/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/onboard-context-matic/SKILL.md
@@ -87832,120 +88068,3 @@ You **MUST** follow this exact structure for the output:
 
 - **Benchmark**: Test with 50 common developer questions.
 - **Pass Rate**: 90% must match expected citations.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/premium-frontend-ui/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/premium-frontend-ui/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/premium-frontend-ui/SKILL.md
-- **SHA256_FINGERPRINT**: `ca5acde81036bc146ff4d2f20524f4c680d6084b8f9a2f27a7d02dafeb471b8d`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.127667+00:00
----
-
-**description**: A comprehensive guide for GitHub Copilot to craft immersive, high-performance web experiences with advanced motion, typography, and architectural craftsmanship.
-
-# Immersive Frontend UI Craftsmanship
-
-As an AI engineering assistant, your role when building premium frontend experiences goes beyond outputting functional HTML and CSS. You must architect **immersive digital environments**. This skill provides the blueprint for generating highly intentional, award-level web applications that prioritize aesthetic quality, deep interactivity, and flawless performance.
-
-When a user requests a high-end landing page, an interactive portfolio, or a specialized component that requires top-tier visual polish, apply the following rigorous standards to every line of code you generate.
-
----
-
-## 1. Establishing the Creative Foundation
-
-Before generating layout code, ensure you understand the core emotional resonance the UI should deliver. Do not default to generic, unopinionated code.
-
-Commit to a strong visual identity in your CSS and component structure:
-- **Editorial Brutalism**: High-contrast monochromatic palettes, oversized typography, sharp rectangular edges, and raw grid structures.
-- **Organic Fluidity**: Soft gradients, deeply rounded corners, glassmorphism overlays, and bouncy spring-based physics.
-- **Cyber / Technical**: Dark mode dominance, glowing neon accents, monospaced typography, and rapid, staggered reveal animations.
-- **Cinematic Pacing**: Full-viewport imagery, slow cross-fades, profound use of negative space, and scroll-dependent storytelling.
-
----
-
-## 2. Structural Requirements for Immersive UI
-
-When scaffolding a page or generating core components, include the following architectural layers to transform a standard page into an experience.
-
-### 2.1 The Entry Sequence (Preloading & Initialization)
-A blank screen is unacceptable. The user's first interaction must set expectations.
-- **Implementation**: Generate a lightweight preloader component that handles asset resolution (fonts, initial images, 3D models).
-- **Animation**: Output code that transitions the preloader away fluidly—such as a split-door reveal, a scale-up zoom, or a staggered text sweep.
-
-### 2.2 The Hero Architecture
-The top fold must command attention immediately.
-- **Visuals**: Output code that implements full-bleed containers (`100vh`/`100dvh`).
-- **Typography Engine**: Ensure headlines are broken down syntactically (e.g., span wrapping by word or character) to allow for cascading entrance animations.
-- **Depth**: Utilize subtle floating elements or background clipping paths to create a sense of scale and depth behind the primary copy.
-
-### 2.3 Fluid & Contextual Navigation
-- **Implementation**: Do not generate standard static navbars. Output sticky headers that react toscroll direction (hide on scroll down, reveal on scroll up).
-- **Interactivity**: Include hover states that reveal rich content (e.g., mega-menus that display image previews of the hovered link).
-
----
-
-## 3. The Motion Design System
-
-Animation is not an afterthought; it is the connective tissue of a premium site. Always implement the following motion principles:
-
-### 3.1 Scroll-Driven Narratives
-Generate code utilizing modern scroll libraries (like GSAP's ScrollTrigger) to tie animations to user progress.
-- **Pinned Containers**: Create sections that lock into the viewport while secondary content flows past or reveals itself.
-- **Horizontal Journeys**: Translate vertical scroll data into horizontal movement for specific galleries or showcases.
-- **Parallax Mapping**: Assign subtle, varying scroll-speeds to background elements, midground text, and foreground imagery.
-
-### 3.2 High-Fidelity Micro-Interactions
-The cursor is the user's avatar. Build interactions around it.
-- **Magnetic Components**: Write logic that calculates the distance between the mouse pointer and a button, pulling the button towards the cursor dynamically.
-- **Custom Tracking Elements**: Generate custom cursor components that follow the mouse with calculated interpolation (lerp) for a smooth drag effect.
-- **Dimensional Hover States**: Use CSS Transforms (`scale`, `rotateX`, `translate3d`) to give interactive elements weight and tactile feedback.
-
----
-
-## 4. Typography & Visual Texture
-
-The aesthetics of your generated code must reflect premium craftsmanship.
-
-- **Type Hierarchy**: Enforce massive contrast in scale. Headlines should utilize extreme sizing (`clamp()` functions spanning up to `12vw`), while body copy remains incredibly crisp (`16px-18px` minimum).
-- **Font Selection**: Always recommend or implement highly specified variable fonts or premium typefaces over system defaults.
-- **Atmospheric Filters**: Implement CSS/SVG noise overlays (`mix-blend-mode: overlay`, opacity `0.02 - 0.05`) to remove digital sterility and add photographic grain.
-- **Lighting & Glass**: Utilize `backdrop-filter: blur(x)` combined with ultra-thin, semi-transparent borders to create modern, frosted-glass depth.
-
----
-
-## 5. The Performance Imperative
-
-A beautiful site that stutters is a failure. Enforce strict performance guardrails in all generated code:
-
-- **Hardware Acceleration**: Only animate properties that do not trigger layout recalculations: `transform` and `opacity`. Code that animates `width`, `height`, `top`, or `margin` should be fiercely avoided.
-- **Render Optimization**: Apply `will-change: transform` intelligently on complex moving elements, but remove it post-animation to conserve memory.
-- **Responsive Degradation**: Wrap custom cursor logic and heavy hover animations in `@media (hover: hover) and (pointer: fine)` to ensure pristine performance on touch devices.
-- **Accessibility**: Wrap heavy continuous animations in `@media (prefers-reduced-motion: no-preference)`. Never sacrifice user accessibility for aesthetic flair.
-
----
-
-## 6. Implementation Ecosystem
-
-When the user asks you to implement these patterns, leverage industry-standard libraries tailored to their framework:
-
-### For React / Next.js Targets
-- Structure the application to support **Framer Motion** for layout transitions and spring physics.
-- Recommend **Lenis** (`@studio-freight/lenis`) for smooth scrolling context.
-- Implement **React Three Fiber** (`@react-three/fiber`) if webGL or 3D interactions are requested.
-
-### For Vanilla / HTML / Astro Targets
-- Rely heavily on **GSAP** (GreenSock Animation Platform) for timeline sequencing.
-- Utilize vanilla **Lenis** via CDN for scroll hijacking and smoothing.
-- Use **SplitType** for safe, accessible typography chunking.
-
----
-
-## Summary of Action
-
-Whenever you receive a prompt to "Build a premium landing page," "Create an Awwwards-style component," or "Design an immersive UI," you must automatically:
-1. Wrap the output in a robust, scroll-smoothed architecture.
-2. Provide CSS that guarantees perfect performance using composited layers.
-3. Integrate sweeping, staggered component entrances.
-4. Elevate the typography using fluid scales.
-5. Create an intentional, memorable aesthetic footprint.

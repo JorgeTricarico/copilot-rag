@@ -4,28 +4,24 @@
 
 Use this guide to sign in to GitHub Copilot in Visual Studio Code and manage your account. If you already have Copilot access, sign in with that GitHub account.
 
-For a different access path, follow the [[product.prodname_anthropic_claude] setup](/docs/agents/run/agent-harnesses.md#claude), [[product.prodname_openai_codex] setup](/docs/agents/run/agent-harnesses.md#codex), or [bring your own model key](/docs/agent-customization/language-models.md#bring-your-own-language-model-key). These routes have their own requirements; some agent workflows without GitHub sign-in are experimental.
+To use another provider's account or your own API key, see [other AI access options](#other-ai-access-options).
 
-<div class="docs-action" data-show-in-doc="false" data-show-in-sidebar="true" title="Get started with AI">
-Complete your first coding task with an AI agent in VS Code.
+<div class="docs-action" data-show-in-doc="false" data-show-in-sidebar="true" title="Choose your first AI task">
+Start with your own code or a guided sample project.
 
-* [Start quickstart](/docs/agents/quickstart.md)
+* [Explore your code without changing files](/docs/agents/guides/explore-a-codebase.md)
+* [Build a sample app](/docs/agents/quickstart.md)
 
 </div>
-
-> [!NOTE]
-> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), even with separate provider credentials. Contact the IT team that deployed the settings to discuss access.
 
 ## Before you start
 
 Review these account, usage, and data-handling details before you send project content to an AI model:
 
 * **Account access**: the recommended setup uses a GitHub account with a Copilot plan. If your employer provides Copilot, use the account and policies for your organization. Without a plan, signing in enrolls an eligible account in Copilot Free.
-* **Usage and billing**: models accessed through Copilot consume AI credits from your Copilot plan. Access through another provider's credentials follows that provider's usage and billing terms. Compare [harness authentication and billing options](/docs/agents/run/agent-harnesses.md#requirements-and-setup).
+* **Usage and billing**: models accessed through Copilot consume AI credits from your Copilot plan. Learn about [AI credits and model costs](/docs/agents/concepts/language-models.md#ai-credits-and-model-costs).
 * **Monitor usage**: open the Copilot status dashboard from the VS Code Status Bar to view the percentage of your monthly allowance that you used. Learn [how to monitor usage and what happens when you reach a limit](/docs/agents/agent-troubleshooting/faq.md#how-can-i-monitor-my-copilot-usage).
-* **Data handling**: review the [GitHub Copilot Trust Center](https://resources.github.com/copilot-trust-center/) and your organization's policies before you send work code. Models that use third-party credentials or your own API key follow that provider's terms. VS Code [telemetry settings](/docs/configure/telemetry.md) are separate from AI-provider data handling.
-
-BYOK can provide chat access without a Copilot plan, but it doesn't replace the GitHub Copilot service for inline suggestions, semantic search, or embeddings. Check the [requirements for your chosen BYOK workflow](/docs/agent-customization/language-models.md#bring-your-own-language-model-key).
+* **Data handling**: review the [GitHub Copilot Trust Center](https://resources.github.com/copilot-trust-center/) and your organization's policies before you send work code. VS Code [telemetry settings](/docs/configure/telemetry.md) are separate from AI-provider data handling.
 
 ## Set up GitHub Copilot
 
@@ -39,9 +35,11 @@ Follow these steps to get started with Copilot in VS Code:
 
     * If you don't have a Copilot subscription yet, you'll be signed up for the [Copilot Free plan](https://github.com/github-copilot/signup) and get a monthly allowance of inline suggestions and AI credits. Learn more about the different [GitHub Copilot plans](https://docs.github.com/en/copilot/get-started/plans).
 
-1. Start using Copilot in VS Code!
+1. Choose a first task:
 
-    Learn the basics with the [agents quickstart](/docs/agents/quickstart.md).
+    * **Use your own project**: [explore a codebase without changing files](/docs/agents/guides/explore-a-codebase.md) and check the explanation against your code.
+
+    * **Use a practice project**: [build and validate a small app](/docs/agents/quickstart.md) with recommended defaults.
 
 > [!IMPORTANT]
 > Telemetry in your free version of GitHub Copilot is currently enabled. By default, code suggestions that match public code, including code references in the VS Code and [github.com](https://github.com/copilot) experience, are allowed. You can opt out of telemetry data collection by disabling telemetry in VS Code by setting ``telemetry.telemetryLevel`` to `off`, or you can adjust both telemetry and code suggestion settings in [Copilot Settings](https://github.com/settings/copilot).
@@ -55,6 +53,17 @@ If your Copilot subscription is associated with a GitHub Enterprise (GHE) accoun
 1. In the sign in dialog, choose **Continue with GHE.com** and provide your GHE instance URL and credentials.
 
 If you need to switch between a GitHub.com account and a GHE account, see [Use a different GitHub account per workspace or profile](#use-a-different-github-account-per-workspace-or-profile) for instructions.
+
+## Other AI access options
+
+To use another provider's account, follow the [[product.prodname_anthropic_claude] setup](/docs/agents/run/agent-harnesses.md#claude) or [[product.prodname_openai_codex] setup](/docs/agents/run/agent-harnesses.md#codex). To connect a model with your own API key, follow the [bring your own key (BYOK) setup](/docs/agent-customization/language-models.md#bring-your-own-language-model-key). These routes have their own requirements. Some agent workflows without GitHub sign-in are experimental.
+
+Access through another provider's credentials follows that provider's usage, billing, and data-handling terms. Compare [harness authentication and billing options](/docs/agents/run/agent-harnesses.md#requirements-and-setup).
+
+BYOK can provide chat access without a Copilot plan, but it doesn't replace the GitHub Copilot service for inline suggestions, semantic search, or embeddings.
+
+> [!NOTE]
+> [product.prodname_anthropic_claude_short] and [product.prodname_openai_codex_short] harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), even with separate provider credentials. Contact the IT team that deployed the settings to discuss access.
 
 ## Use a different GitHub account with Copilot
 
@@ -117,4 +126,5 @@ To disable AI features for a specific workspace, configure the ``chat.disableAIF
 
 ## Next steps
 
-* Continue with the [Quickstart for using AI](/docs/agents/quickstart.md) to discover the key features for AI-powered development in VS Code.
+* [Explore your codebase without changing files](/docs/agents/guides/explore-a-codebase.md).
+* [Build and validate a sample app with an agent](/docs/agents/quickstart.md).

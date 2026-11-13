@@ -1,7 +1,7 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-12T19:42:46.963182+00:00",
-  "total_documents": 2108,
+  "last_sync_utc": "2026-11-13T05:49:51.938897+00:00",
+  "total_documents": 2119,
   "documents": {
     "anthropics_skills::README.md": {
       "doc_id": "anthropics_skills::README.md",
@@ -1504,10 +1504,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/README.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/README.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "42eb735a4e168d135a90f7f8618c6847f681ec4d",
-      "content_sha256": "2307f29f4041c35fbc6e59526907f4f15d2d5f1ba1ea12af491c668074bd0022",
-      "word_count": 5547,
-      "last_updated_utc": "2026-10-30T05:00:17.046673+00:00",
+      "git_blob_sha": "228160ab738a876b6327fdc3e2e0dc85adc75da3",
+      "content_sha256": "b44b3f0b5b810eb76396eec32af28fc6bc22c31e0839e68cd0da46d3a1628659",
+      "word_count": 5558,
+      "last_updated_utc": "2026-11-13T05:49:49.097043+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__README.md"
     },
     "github_awesome-copilot::agents/CSharpExpert.agent.md": {
@@ -2984,6 +2984,28 @@
       "last_updated_utc": "2026-10-21T03:45:03.082998+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_octopus-deploy-release-notes-mcp.agent.md"
     },
+    "github_awesome-copilot::agents/on-device-offload.agent.md": {
+      "doc_id": "github_awesome-copilot::agents/on-device-offload.agent.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/on-device-offload.agent.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/on-device-offload.agent.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "6902654b5ece560b7c951e7543f10ac4351a99c5",
+      "content_sha256": "331b189b28c1bc4a7ddcd97e1d5327802316af712b49acc2e8ebcf9b6f316f27",
+      "word_count": 771,
+      "last_updated_utc": "2026-11-13T05:49:49.085803+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__agents_on-device-offload.agent.md"
+    },
+    "github_awesome-copilot::agents/on-device-worker.agent.md": {
+      "doc_id": "github_awesome-copilot::agents/on-device-worker.agent.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/on-device-worker.agent.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/on-device-worker.agent.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "f9ada9bb0f1bc26ba468c3020f4ee56139c8fe7b",
+      "content_sha256": "b5c37740cd992d0ea1da04acbc103e8f67c7ac9ae58dd2028439eae4049c5d47",
+      "word_count": 208,
+      "last_updated_utc": "2026-11-13T05:49:49.083650+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__agents_on-device-worker.agent.md"
+    },
     "github_awesome-copilot::agents/one-shot-feature-issue-planner.agent.md": {
       "doc_id": "github_awesome-copilot::agents/one-shot-feature-issue-planner.agent.md",
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/one-shot-feature-issue-planner.agent.md",
@@ -3566,6 +3588,17 @@
       "word_count": 1021,
       "last_updated_utc": "2026-10-21T03:45:05.042128+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_salesforce-visualforce.agent.md"
+    },
+    "github_awesome-copilot::agents/sap-integration-suite-copilot.agent.md": {
+      "doc_id": "github_awesome-copilot::agents/sap-integration-suite-copilot.agent.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/sap-integration-suite-copilot.agent.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/sap-integration-suite-copilot.agent.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "41f1be878222c926f556eedbb523a053e88eeeff",
+      "content_sha256": "2a290b45a3c65ea348ddf64550115276d0f49a27a9bb96b97ea7f6c582cfe55b",
+      "word_count": 481,
+      "last_updated_utc": "2026-11-13T05:49:49.115050+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__agents_sap-integration-suite-copilot.agent.md"
     },
     "github_awesome-copilot::agents/sast-sca-security-analyzer.agent.md": {
       "doc_id": "github_awesome-copilot::agents/sast-sca-security-analyzer.agent.md",
@@ -15018,6 +15051,17 @@
       "last_updated_utc": "2026-10-21T03:45:37.583506+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_nuget-manager_SKILL.md"
     },
+    "github_awesome-copilot::skills/on-device-delegate/SKILL.md": {
+      "doc_id": "github_awesome-copilot::skills/on-device-delegate/SKILL.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/on-device-delegate/SKILL.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/on-device-delegate/SKILL.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "7bc8123a6316e9273e53a6a586bae9451d115088",
+      "content_sha256": "8ccd6652f651abd52f594cbffd8a42bf16971c05e0129749088297228233ef3e",
+      "word_count": 577,
+      "last_updated_utc": "2026-11-13T05:49:49.070201+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_on-device-delegate_SKILL.md"
+    },
     "github_awesome-copilot::skills/onboard-context-matic/SKILL.md": {
       "doc_id": "github_awesome-copilot::skills/onboard-context-matic/SKILL.md",
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/onboard-context-matic/SKILL.md",
@@ -18395,6 +18439,83 @@
       "last_updated_utc": "2026-10-21T03:45:48.469763+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__skills_sandbox-npm-install_SKILL.md"
     },
+    "github_awesome-copilot::skills/sap-cloud-integration/README.md": {
+      "doc_id": "github_awesome-copilot::skills/sap-cloud-integration/README.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/sap-cloud-integration/README.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/sap-cloud-integration/README.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "6e23ad4caa283f2ef385e58af1c97b671eace23e",
+      "content_sha256": "1d29ca6ff44ac723cc591af540491567361d21a5e496a4dfd4728e788dbead06",
+      "word_count": 420,
+      "last_updated_utc": "2026-11-13T05:49:49.084356+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_sap-cloud-integration_README.md"
+    },
+    "github_awesome-copilot::skills/sap-cloud-integration/SKILL.md": {
+      "doc_id": "github_awesome-copilot::skills/sap-cloud-integration/SKILL.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/sap-cloud-integration/SKILL.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/sap-cloud-integration/SKILL.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "4fdd26e1d48ef5cef2a019551dfeb54f905abb84",
+      "content_sha256": "a2ceeb7ea6ef89cd71564ad1f6aee354cfa6b77a17ff938bb4e9e7a825501e58",
+      "word_count": 813,
+      "last_updated_utc": "2026-11-13T05:49:49.080848+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_sap-cloud-integration_SKILL.md"
+    },
+    "github_awesome-copilot::skills/sap-cloud-integration/references/adapter-troubleshooting.md": {
+      "doc_id": "github_awesome-copilot::skills/sap-cloud-integration/references/adapter-troubleshooting.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/sap-cloud-integration/references/adapter-troubleshooting.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/sap-cloud-integration/references/adapter-troubleshooting.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "7a66c1003e22bc6b0b508b5770ad6df9463388ce",
+      "content_sha256": "9ae2ae64479e461566b4a1c34b43a06ea7e8d25453a6b7959325e8c3b42df1f7",
+      "word_count": 1252,
+      "last_updated_utc": "2026-11-13T05:49:49.081900+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_sap-cloud-integration_references_adapter-troubleshooting.md"
+    },
+    "github_awesome-copilot::skills/sap-cloud-integration/references/error-handling-reliability.md": {
+      "doc_id": "github_awesome-copilot::skills/sap-cloud-integration/references/error-handling-reliability.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/sap-cloud-integration/references/error-handling-reliability.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/sap-cloud-integration/references/error-handling-reliability.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "796785c4126c7dd64128f8bfefdad8685a1e1c5c",
+      "content_sha256": "9af19e129f4629517a78971ea7454cdc3424b32e418b9c31f0215010494f4d38",
+      "word_count": 969,
+      "last_updated_utc": "2026-11-13T05:49:49.145875+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_sap-cloud-integration_references_error-handling-reliability.md"
+    },
+    "github_awesome-copilot::skills/sap-cloud-integration/references/groovy-scripting.md": {
+      "doc_id": "github_awesome-copilot::skills/sap-cloud-integration/references/groovy-scripting.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/sap-cloud-integration/references/groovy-scripting.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/sap-cloud-integration/references/groovy-scripting.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "fd609b369615ba9479a35ac7fea329dbadf85543",
+      "content_sha256": "e5c1b9841f3c25bf1a4881ad6233a16dccf9b41338b41a003372c8cf918afdd7",
+      "word_count": 897,
+      "last_updated_utc": "2026-11-13T05:49:49.159048+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_sap-cloud-integration_references_groovy-scripting.md"
+    },
+    "github_awesome-copilot::skills/sap-cloud-integration/references/headers-properties-expressions.md": {
+      "doc_id": "github_awesome-copilot::skills/sap-cloud-integration/references/headers-properties-expressions.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/sap-cloud-integration/references/headers-properties-expressions.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/sap-cloud-integration/references/headers-properties-expressions.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "6566a525d35e4d608e04a650ebbfe3f9ef67528c",
+      "content_sha256": "e0c6aec3dfdf5e50e1191622d6d5ddb34c32f7bbc9fd777b2322ce35f736948a",
+      "word_count": 682,
+      "last_updated_utc": "2026-11-13T05:49:49.159786+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_sap-cloud-integration_references_headers-properties-expressions.md"
+    },
+    "github_awesome-copilot::skills/sap-cloud-integration/references/sap-documentation-index.md": {
+      "doc_id": "github_awesome-copilot::skills/sap-cloud-integration/references/sap-documentation-index.md",
+      "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/sap-cloud-integration/references/sap-documentation-index.md",
+      "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/skills/sap-cloud-integration/references/sap-documentation-index.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "23974578462b6feced375fe77199752b2047d6b1",
+      "content_sha256": "a4d94c6c8c8685e8b257c4447718f13ae07a80cbc1d4ad835c577578c360ca9a",
+      "word_count": 648,
+      "last_updated_utc": "2026-11-13T05:49:49.176098+00:00",
+      "local_clean_path": "clean_sources/github_awesome-copilot__skills_sap-cloud-integration_references_sap-documentation-index.md"
+    },
     "github_awesome-copilot::skills/scaffolding-oracle-to-postgres-migration-test-project/SKILL.md": {
       "doc_id": "github_awesome-copilot::skills/scaffolding-oracle-to-postgres-migration-test-project/SKILL.md",
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/skills/scaffolding-oracle-to-postgres-migration-test-project/SKILL.md",
@@ -21151,9 +21272,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "ed27a232494d308d62a3e593bc85cfe06451e5f9196be4208982752e83a3abf7",
-      "word_count": 21231,
-      "last_updated_utc": "2026-11-12T19:42:43.571287+00:00",
+      "content_sha256": "d6cb7450a50d89f295eccffe58a49daed4c71aabd9174561db4436e63db0a160",
+      "word_count": 21210,
+      "last_updated_utc": "2026-11-13T05:49:51.083257+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -21162,9 +21283,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "ed27a232494d308d62a3e593bc85cfe06451e5f9196be4208982752e83a3abf7",
-      "word_count": 21231,
-      "last_updated_utc": "2026-11-12T19:42:43.540908+00:00",
+      "content_sha256": "d6cb7450a50d89f295eccffe58a49daed4c71aabd9174561db4436e63db0a160",
+      "word_count": 21210,
+      "last_updated_utc": "2026-11-13T05:49:51.029252+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -21865,10 +21986,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/best-practices.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/best-practices",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "afe027e99167d0e0502a7901febfdde175b0152e",
-      "content_sha256": "dab797485fafe7a20646f0f2f70be6bfb9a654e2b48d741240c35bf818d3ba36",
-      "word_count": 2816,
-      "last_updated_utc": "2026-11-12T19:42:37.767471+00:00",
+      "git_blob_sha": "8c1a73cbef9533d0fcf1f02fa92f6638b3fbe0a8",
+      "content_sha256": "acfd6c51217ba24dddc589acb2531aaccc7e9d5d4ddd9075539b570dbaa01a99",
+      "word_count": 1991,
+      "last_updated_utc": "2026-11-13T05:49:47.624718+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_best-practices.md"
     },
     "microsoft_vscode-docs::docs/agents/cloud-continuity-tutorial.md": {
@@ -21986,10 +22107,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/add-a-feature.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/add-a-feature",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "afc2731fccdb8dbe3a8d08930b201a5bb4e3aab8",
-      "content_sha256": "39c8381ddb9d22f05c773db1e8265af385442adf27a2ec7def6524cb64eda1ab",
-      "word_count": 1224,
-      "last_updated_utc": "2026-10-20T22:05:30.450938+00:00",
+      "git_blob_sha": "b45682fe2f4168d956dd066ebaa48be173c00d87",
+      "content_sha256": "af607730e98aa9be29e9c7cbcf9da48d5a7ebea5be063789e7609650681eb52c",
+      "word_count": 1288,
+      "last_updated_utc": "2026-11-13T05:49:47.602920+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_add-a-feature.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/browser-agent-testing-guide.md": {
@@ -22052,10 +22173,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/fix-a-bug-with-agents.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/fix-a-bug-with-agents",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "6e0831f9824739975907adbb5e9db598da751cfd",
-      "content_sha256": "f25138462d2bc204dfc8c984d25e1b3caa8cfa4b57e98a202638a0e39e87a498",
-      "word_count": 1581,
-      "last_updated_utc": "2026-10-20T22:05:30.664296+00:00",
+      "git_blob_sha": "c290f6167b1e04ecee8b2aea40776fff673546b2",
+      "content_sha256": "c29c3114d44b443db8f23f9ef9a8653cd32ee18b0268cf22b1a14d7d0f3ed8fc",
+      "word_count": 1611,
+      "last_updated_utc": "2026-11-13T05:49:47.599153+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_fix-a-bug-with-agents.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/get-agent-back-on-track.md": {
@@ -22085,10 +22206,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/notebooks-with-ai.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/notebooks-with-ai",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "56b3e07d9cc129bff4c65ce84b054790a9d6bff4",
-      "content_sha256": "4cbf28bf8d7c363bb8bd411cd70400e8c2e4a3dd2447d2e950a73fd08cfad61d",
+      "git_blob_sha": "f75170d0e728618d030ca02332a76af61a3e678e",
+      "content_sha256": "2159b18fe9482cc8df922cb25c43970c4ed8dc8f69f6be21da9f340bb3f50e42",
       "word_count": 726,
-      "last_updated_utc": "2026-11-11T05:26:58.670102+00:00",
+      "last_updated_utc": "2026-11-13T05:49:47.604709+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_notebooks-with-ai.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/optimize-usage.md": {
@@ -22107,10 +22228,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/overview.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/overview",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "3b6d1fd89d5da9034da445a5df6f670d5a4a5fd7",
-      "content_sha256": "c5bf2e8fb60443b39de30125849e5cd2be0808945cfa6b175719a67f43146487",
-      "word_count": 776,
-      "last_updated_utc": "2026-11-11T05:26:58.774853+00:00",
+      "git_blob_sha": "57ede200fa141ff1b24867fc2dea5a21b2506d6e",
+      "content_sha256": "335c36c5a85a84c812a725a4162cbe3445d57728b012916bbdb93081d0453cf7",
+      "word_count": 861,
+      "last_updated_utc": "2026-11-13T05:49:47.574673+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_overview.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/prompt-examples.md": {
@@ -22118,10 +22239,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/prompt-examples.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/prompt-examples",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "cf7942c1d738b897dd6e59695eddb629b4612f99",
-      "content_sha256": "11dcb9bde7fc2d42f4cf3e10fbc3a27abbaa0a0b6a89634c0f6d438efd6a9d5a",
-      "word_count": 783,
-      "last_updated_utc": "2026-10-20T22:05:30.899648+00:00",
+      "git_blob_sha": "bc14124cd4b4a992c42c5a8d66609c822e0d067b",
+      "content_sha256": "c4c376efef9b451028a5ab5ce22e8316d93534b78d2ca0016e0f928a89770502",
+      "word_count": 1168,
+      "last_updated_utc": "2026-11-13T05:49:47.609905+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_prompt-examples.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/refactor-safely.md": {
@@ -22162,10 +22283,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/overview.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/overview",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "d05382a8d4df04185b749d3993843cf84622fe4b",
-      "content_sha256": "8f4d422a56b49b1c6cb9890fa0346fb9604f3d6ec24cb6086499ba7d3eb9b326",
-      "word_count": 1038,
-      "last_updated_utc": "2026-11-08T05:16:47.697128+00:00",
+      "git_blob_sha": "ead6ed73ccfd086592e4245648378ac98decee1e",
+      "content_sha256": "9cf430e260b12b28136e7cdf3f2ffc4723c8c3b8eba48f63819754b21c9f9f6a",
+      "word_count": 1094,
+      "last_updated_utc": "2026-11-13T05:49:47.612021+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_overview.md"
     },
     "microsoft_vscode-docs::docs/agents/quickstart.md": {
@@ -22173,10 +22294,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/quickstart.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/quickstart",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "91c52588eb7ed3db1e1ab3b1aac7aefe42984031",
-      "content_sha256": "23f36e770bc55853aef0a50eb5ef37f3613a22c3b197bcc44cbbdb70c9dd5e4f",
-      "word_count": 1970,
-      "last_updated_utc": "2026-11-06T19:05:32.183118+00:00",
+      "git_blob_sha": "9464ecccc0dd07360451ba1d48d8fff1f2b8277d",
+      "content_sha256": "f0624210228f8daf637d0b70414540ebb8992173f2b8f21bd1da0a77ac6ee6cd",
+      "word_count": 1928,
+      "last_updated_utc": "2026-11-13T05:49:47.611052+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_quickstart.md"
     },
     "microsoft_vscode-docs::docs/agents/reference/agent-plugin-reference.md": {
@@ -22195,10 +22316,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/ai-features-cheat-sheet.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/reference/ai-features-cheat-sheet",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "51f096c84b4e02219c595fc5b2b3dcfc7446462b",
-      "content_sha256": "02afcf3232c9ee1b980f48f32c79db3739b0041ad6e46a59196e5fb3968928e8",
-      "word_count": 1847,
-      "last_updated_utc": "2026-11-12T19:42:37.766567+00:00",
+      "git_blob_sha": "983a5abc43904175583aaf635593679b80c47883",
+      "content_sha256": "eb3e8023d8e138ebb042ffd95ba003252646ec70c435684778d292e64bdd8fa7",
+      "word_count": 1207,
+      "last_updated_utc": "2026-11-13T05:49:47.654501+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_reference_ai-features-cheat-sheet.md"
     },
     "microsoft_vscode-docs::docs/agents/reference/ai-settings.md": {
@@ -22393,10 +22514,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/chat-view.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/run/chat-view",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "497ffc1ab38b8ef9e8416ee5fed853ea113747f9",
-      "content_sha256": "a3006c0cdb2b4a9f7975cab87bd91b1fd8c2072c29e96a97de10081e17eef16c",
+      "git_blob_sha": "6526a4b9abd28d51927cd617e521070261a2b042",
+      "content_sha256": "4460f02ed37fb5942326fba774c69b36a8ee166a7aceaeb5f1354c551c2ddfb4",
       "word_count": 1494,
-      "last_updated_utc": "2026-11-11T05:26:59.307226+00:00",
+      "last_updated_utc": "2026-11-13T05:49:47.672382+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_run_chat-view.md"
     },
     "microsoft_vscode-docs::docs/agents/run/cloud-sandbox-sessions.md": {
@@ -22569,10 +22690,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/chat/copilot-chat-context.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/chat/copilot-chat-context",
       "bundle_name": "02_Context_Memory_And_Compaction",
-      "git_blob_sha": "a3607d39bccfd771805240b2ae575425ad3495e8",
-      "content_sha256": "96234d133ba00ddeede5c4cac5db308f0a904e4bcc2da07e6ac9a88860920e2a",
-      "word_count": 1180,
-      "last_updated_utc": "2026-11-11T05:26:59.657291+00:00",
+      "git_blob_sha": "2dfd3d56c81d2868cf23a99f14d73a5a60a4529a",
+      "content_sha256": "ed562c976a902c94af37ff7c9df0c08a2bedba8949a8a723a14ea9c9f380ee3b",
+      "word_count": 1197,
+      "last_updated_utc": "2026-11-13T05:49:47.660249+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_chat_copilot-chat-context.md"
     },
     "microsoft_vscode-docs::docs/chat/inline-chat.md": {
@@ -22580,10 +22701,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/chat/inline-chat.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/chat/inline-chat",
       "bundle_name": "02_Context_Memory_And_Compaction",
-      "git_blob_sha": "811739feb714d3f7c170165a95cb41ddc029c6f9",
-      "content_sha256": "36b64551898ac8fe6c0f9f61531b6216fbe4f5987a68e3c976a9162d9ea42f28",
-      "word_count": 838,
-      "last_updated_utc": "2026-11-06T05:48:21.526889+00:00",
+      "git_blob_sha": "8ee33ffa2fbe601f6cf00c7ec2aac1b5e276d999",
+      "content_sha256": "c71a21e485c06966e202e19caff5b1480cc2fcf64c8f7faa6eabd9a01717fab9",
+      "word_count": 1070,
+      "last_updated_utc": "2026-11-13T05:49:47.669462+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_chat_inline-chat.md"
     },
     "microsoft_vscode-docs::docs/setup/copilot.md": {
@@ -22591,10 +22712,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/setup/copilot.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/setup/copilot",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "47600c993d04701dfa80d9dafbef15b82b8b8bde",
-      "content_sha256": "a6296175b74efb45d45580359b17efb838911332433f26251dad5eceaccb1653",
-      "word_count": 1110,
-      "last_updated_utc": "2026-11-10T19:29:14.922563+00:00",
+      "git_blob_sha": "284e6201d18c5083b337a5b1a05c70bc10884a78",
+      "content_sha256": "cbe49d6efac2f885c156f8ee27bf9d085cc78e00b562eb7fc86fac8c6890f739",
+      "word_count": 1157,
+      "last_updated_utc": "2026-11-13T05:49:47.671375+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_setup_copilot.md"
     },
     "microsoft_vscode-docs::release-notes/v1_145.md": {

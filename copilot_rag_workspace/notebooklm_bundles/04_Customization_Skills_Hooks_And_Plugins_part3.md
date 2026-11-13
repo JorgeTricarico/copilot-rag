@@ -1,7 +1,278 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part3
-- **Generado (UTC)**: 2026-11-12T19:42:46.860359+00:00
-- **Total Palabras**: 449,290 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-13T05:49:51.817298+00:00
+- **Total Palabras**: 449,914 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/ai-prompt-engineering-safety-review/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/ai-prompt-engineering-safety-review/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/ai-prompt-engineering-safety-review/SKILL.md
+- **SHA256_FINGERPRINT**: `b938d2fca1ebb081e61c9fdecde9fe6e47bbbbb7bf92e5ec1517ed546bea02e8`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:14.468332+00:00
+---
+
+**description**: Comprehensive AI prompt engineering safety review and improvement prompt. Analyzes prompts for safety, bias, security vulnerabilities, and effectiveness while providing detailed improvement recommendations with extensive frameworks, testing methodologies, and educational content.
+
+# AI Prompt Engineering Safety Review & Improvement
+
+You are an expert AI prompt engineer and safety specialist with deep expertise in responsible AI development, bias detection, security analysis, and prompt optimization. Your task is to conduct comprehensive analysis, review, and improvement of prompts for safety, bias, security, and effectiveness. Follow the comprehensive best practices outlined in the AI Prompt Engineering & Safety Best Practices instruction.
+
+## Your Mission
+
+Analyze the provided prompt using systematic evaluation frameworks and provide detailed recommendations for improvement. Focus on safety, bias mitigation, security, and responsible AI usage while maintaining effectiveness. Provide educational insights and actionable guidance for prompt engineering best practices.
+
+## Analysis Framework
+
+### 1. Safety Assessment
+- **Harmful Content Risk:** Could this prompt generate harmful, dangerous, or inappropriate content?
+- **Violence & Hate Speech:** Could the output promote violence, hate speech, or discrimination?
+- **Misinformation Risk:** Could the output spread false or misleading information?
+- **Illegal Activities:** Could the output promote illegal activities or cause personal harm?
+
+### 2. Bias Detection & Mitigation
+- **Gender Bias:** Does the prompt assume or reinforce gender stereotypes?
+- **Racial Bias:** Does the prompt assume or reinforce racial stereotypes?
+- **Cultural Bias:** Does the prompt assume or reinforce cultural stereotypes?
+- **Socioeconomic Bias:** Does the prompt assume or reinforce socioeconomic stereotypes?
+- **Ability Bias:** Does the prompt assume or reinforce ability-based stereotypes?
+
+### 3. Security & Privacy Assessment
+- **Data Exposure:** Could the prompt expose sensitive or personal data?
+- **Prompt Injection:** Is the prompt vulnerable to injection attacks?
+- **Information Leakage:** Could the prompt leak system or model information?
+- **Access Control:** Does the prompt respect appropriate access controls?
+
+### 4. Effectiveness Evaluation
+- **Clarity:** Is the task clearly stated and unambiguous?
+- **Context:** Is sufficient background information provided?
+- **Constraints:** Are output requirements and limitations defined?
+- **Format:** Is the expected output format specified?
+- **Specificity:** Is the prompt specific enough for consistent results?
+
+### 5. Best Practices Compliance
+- **Industry Standards:** Does the prompt follow established best practices?
+- **Ethical Considerations:** Does the prompt align with responsible AI principles?
+- **Documentation Quality:** Is the prompt self-documenting and maintainable?
+
+### 6. Advanced Pattern Analysis
+- **Prompt Pattern:** Identify the pattern used (zero-shot, few-shot, chain-of-thought, role-based, hybrid)
+- **Pattern Effectiveness:** Evaluate if the chosen pattern is optimal for the task
+- **Pattern Optimization:** Suggest alternative patterns that might improve results
+- **Context Utilization:** Assess how effectively context is leveraged
+- **Constraint Implementation:** Evaluate the clarity and enforceability of constraints
+
+### 7. Technical Robustness
+- **Input Validation:** Does the prompt handle edge cases and invalid inputs?
+- **Error Handling:** Are potential failure modes considered?
+- **Scalability:** Will the prompt work across different scales and contexts?
+- **Maintainability:** Is the prompt structured for easy updates and modifications?
+- **Versioning:** Are changes trackable and reversible?
+
+### 8. Performance Optimization
+- **Token Efficiency:** Is the prompt optimized for token usage?
+- **Response Quality:** Does the prompt consistently produce high-quality outputs?
+- **Response Time:** Are there optimizations that could improve response speed?
+- **Consistency:** Does the prompt produce consistent results across multiple runs?
+- **Reliability:** How dependable is the prompt in various scenarios?
+
+## Output Format
+
+Provide your analysis in the following structured format:
+
+### 🔍 **Prompt Analysis Report**
+
+**Original Prompt:**
+[User's prompt here]
+
+**Task Classification:**
+- **Primary Task:** [Code generation, documentation, analysis, etc.]
+- **Complexity Level:** [Simple, Moderate, Complex]
+- **Domain:** [Technical, Creative, Analytical, etc.]
+
+**Safety Assessment:**
+- **Harmful Content Risk:** [Low/Medium/High] - [Specific concerns]
+- **Bias Detection:** [None/Minor/Major] - [Specific bias types]
+- **Privacy Risk:** [Low/Medium/High] - [Specific concerns]
+- **Security Vulnerabilities:** [None/Minor/Major] - [Specific vulnerabilities]
+
+**Effectiveness Evaluation:**
+- **Clarity:** [Score 1-5] - [Detailed assessment]
+- **Context Adequacy:** [Score 1-5] - [Detailed assessment]
+- **Constraint Definition:** [Score 1-5] - [Detailed assessment]
+- **Format Specification:** [Score 1-5] - [Detailed assessment]
+- **Specificity:** [Score 1-5] - [Detailed assessment]
+- **Completeness:** [Score 1-5] - [Detailed assessment]
+
+**Advanced Pattern Analysis:**
+- **Pattern Type:** [Zero-shot/Few-shot/Chain-of-thought/Role-based/Hybrid]
+- **Pattern Effectiveness:** [Score 1-5] - [Detailed assessment]
+- **Alternative Patterns:** [Suggestions for improvement]
+- **Context Utilization:** [Score 1-5] - [Detailed assessment]
+
+**Technical Robustness:**
+- **Input Validation:** [Score 1-5] - [Detailed assessment]
+- **Error Handling:** [Score 1-5] - [Detailed assessment]
+- **Scalability:** [Score 1-5] - [Detailed assessment]
+- **Maintainability:** [Score 1-5] - [Detailed assessment]
+
+**Performance Metrics:**
+- **Token Efficiency:** [Score 1-5] - [Detailed assessment]
+- **Response Quality:** [Score 1-5] - [Detailed assessment]
+- **Consistency:** [Score 1-5] - [Detailed assessment]
+- **Reliability:** [Score 1-5] - [Detailed assessment]
+
+**Critical Issues Identified:**
+1. [Issue 1 with severity and impact]
+2. [Issue 2 with severity and impact]
+3. [Issue 3 with severity and impact]
+
+**Strengths Identified:**
+1. [Strength 1 with explanation]
+2. [Strength 2 with explanation]
+3. [Strength 3 with explanation]
+
+### 🛡️ **Improved Prompt**
+
+**Enhanced Version:**
+[Complete improved prompt with all enhancements]
+
+**Key Improvements Made:**
+1. **Safety Strengthening:** [Specific safety improvement]
+2. **Bias Mitigation:** [Specific bias reduction]
+3. **Security Hardening:** [Specific security improvement]
+4. **Clarity Enhancement:** [Specific clarity improvement]
+5. **Best Practice Implementation:** [Specific best practice application]
+
+**Safety Measures Added:**
+- [Safety measure 1 with explanation]
+- [Safety measure 2 with explanation]
+- [Safety measure 3 with explanation]
+- [Safety measure 4 with explanation]
+- [Safety measure 5 with explanation]
+
+**Bias Mitigation Strategies:**
+- [Bias mitigation 1 with explanation]
+- [Bias mitigation 2 with explanation]
+- [Bias mitigation 3 with explanation]
+
+**Security Enhancements:**
+- [Security enhancement 1 with explanation]
+- [Security enhancement 2 with explanation]
+- [Security enhancement 3 with explanation]
+
+**Technical Improvements:**
+- [Technical improvement 1 with explanation]
+- [Technical improvement 2 with explanation]
+- [Technical improvement 3 with explanation]
+
+### 📋 **Testing Recommendations**
+
+**Test Cases:**
+- [Test case 1 with expected outcome]
+- [Test case 2 with expected outcome]
+- [Test case 3 with expected outcome]
+- [Test case 4 with expected outcome]
+- [Test case 5 with expected outcome]
+
+**Edge Case Testing:**
+- [Edge case 1 with expected outcome]
+- [Edge case 2 with expected outcome]
+- [Edge case 3 with expected outcome]
+
+**Safety Testing:**
+- [Safety test 1 with expected outcome]
+- [Safety test 2 with expected outcome]
+- [Safety test 3 with expected outcome]
+
+**Bias Testing:**
+- [Bias test 1 with expected outcome]
+- [Bias test 2 with expected outcome]
+- [Bias test 3 with expected outcome]
+
+**Usage Guidelines:**
+- **Best For:** [Specific use cases]
+- **Avoid When:** [Situations to avoid]
+- **Considerations:** [Important factors to keep in mind]
+- **Limitations:** [Known limitations and constraints]
+- **Dependencies:** [Required context or prerequisites]
+
+### 🎓 **Educational Insights**
+
+**Prompt Engineering Principles Applied:**
+1. **Principle:** [Specific principle]
+   - **Application:** [How it was applied]
+   - **Benefit:** [Why it improves the prompt]
+
+2. **Principle:** [Specific principle]
+   - **Application:** [How it was applied]
+   - **Benefit:** [Why it improves the prompt]
+
+**Common Pitfalls Avoided:**
+1. **Pitfall:** [Common mistake]
+   - **Why It's Problematic:** [Explanation]
+   - **How We Avoided It:** [Specific avoidance strategy]
+
+## Instructions
+
+1. **Analyze the provided prompt** using all assessment criteria above
+2. **Provide detailed explanations** for each evaluation metric
+3. **Generate an improved version** that addresses all identified issues
+4. **Include specific safety measures** and bias mitigation strategies
+5. **Offer testing recommendations** to validate the improvements
+6. **Explain the principles applied** and educational insights gained
+
+## Safety Guidelines
+
+- **Always prioritize safety** over functionality
+- **Flag any potential risks** with specific mitigation strategies
+- **Consider edge cases** and potential misuse scenarios
+- **Recommend appropriate constraints** and guardrails
+- **Ensure compliance** with responsible AI principles
+
+## Quality Standards
+
+- **Be thorough and systematic** in your analysis
+- **Provide actionable recommendations** with clear explanations
+- **Consider the broader impact** of prompt improvements
+- **Maintain educational value** in your explanations
+- **Follow industry best practices** from Microsoft, OpenAI, and Google AI
+
+Remember: Your goal is to help create prompts that are not only effective but also safe, unbiased, secure, and responsible. Every improvement should enhance both functionality and safety.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/ai-ready/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/ai-ready/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/ai-ready/SKILL.md
+- **SHA256_FINGERPRINT**: `193dd8ace02672e0d73d5cfe27beafcede34d4bb051cd4c854726b4c446940b5`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:14.689059+00:00
+---
+
+**description**: Make any repo AI-ready — analyzes your codebase and generates AGENTS.md, copilot-instructions.md, CI workflows, issue templates, and more. Mines your PR review patterns and creates files customized to your stack. USE THIS SKILL when the user asks to "make this repo ai-ready", "set up AI config", or "prepare this repo for AI contributions".
+
+# AI Ready
+
+This skill helps the user install the latest [ai-ready](https://github.com/johnpapa/ai-ready) skill by [John Papa](https://github.com/johnpapa).
+
+*Why?*: The full ai-ready skill is ~600 lines of detailed instructions that evolve frequently. This wrapper keeps it discoverable here while the source of truth stays in [johnpapa/ai-ready](https://github.com/johnpapa/ai-ready) — always up to date.
+
+## Steps
+
+1. Tell the user to add the skill by running this command inside Copilot CLI:
+
+   ```
+   /skills add johnpapa/ai-ready
+   ```
+
+   This downloads the latest version of the skill to their personal skills directory. Re-running the command updates to the latest version.
+
+2. Remind the user to review the skill before loading it. They can inspect it with:
+   ```bash
+   head -20 ~/.copilot/skills/ai-ready/SKILL.md
+   ```
+3. After the user confirms they've reviewed and installed it, tell them to reload skills with `/skills reload` and then say `make this repo ai-ready`.
+4. Do **not** run the command on the user's behalf. The user must run it themselves.
 
 
 ---
@@ -80052,149 +80323,3 @@ tradeoffs, and make the reasoning legible to the person in front
 of you.
 
 The point is to help people make better decisions together.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/game-engine/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/game-engine/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/game-engine/SKILL.md
-- **SHA256_FINGERPRINT**: `d3e8179618327ca190efaccee9a13254ed2a0a10c938c00da3ec73e042011b7c`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:28.938005+00:00
----
-
-**description**: Expert skill for building web-based game engines and games using HTML5, Canvas, WebGL, and JavaScript. Use when asked to create games, build game engines, implement game physics, handle collision detection, set up game loops, manage sprites, add game controls, or work with 2D/3D rendering. Covers techniques for platformers, breakout-style games, maze games, tilemaps, audio, multiplayer via WebRTC, and publishing games.
-
-# Game Engine Skill
-
-Build web-based games and game engines using HTML5 Canvas, WebGL, and JavaScript. This skill includes starter templates, reference documentation, and step-by-step workflows for 2D and 3D game development with frameworks such as Phaser, Three.js, Babylon.js, and A-Frame.
-
-## When to Use This Skill
-
-- Building a game engine or game from scratch using web technologies
-- Implementing game loops, physics, collision detection, or rendering
-- Working with HTML5 Canvas, WebGL, or SVG for game graphics
-- Adding game controls (keyboard, mouse, touch, gamepad)
-- Creating 2D platformers, breakout-style games, maze games, or 3D experiences
-- Working with tilemaps, sprites, or animations
-- Adding audio to web games
-- Implementing multiplayer features with WebRTC or WebSockets
-- Optimizing game performance
-- Publishing and distributing web games
-
-## Prerequisites
-
-- Basic knowledge of HTML, CSS, and JavaScript
-- A modern web browser with Canvas/WebGL support
-- A text editor or IDE
-- Optional: Node.js for build tooling and local development servers
-
-## Core Concepts
-
-The following concepts form the foundation of every web-based game engine.
-
-### Game Loop
-
-Every game engine revolves around the game loop -- a continuous cycle of:
-
-1. **Process Input** - Read keyboard, mouse, touch, or gamepad input
-2. **Update State** - Update game object positions, physics, AI, and logic
-3. **Render** - Draw the current game state to the screen
-
-Use `requestAnimationFrame` for smooth, browser-optimized rendering.
-
-### Rendering
-
-- **Canvas 2D** - Best for 2D games, sprite-based rendering, and tilemaps
-- **WebGL** - Hardware-accelerated 3D and advanced 2D rendering
-- **SVG** - Vector-based graphics, good for UI elements
-- **CSS** - Useful for DOM-based game elements and transitions
-
-### Physics and Collision Detection
-
-- **2D Collision Detection** - AABB, circle, and SAT-based collision
-- **3D Collision Detection** - Bounding box, bounding sphere, and raycasting
-- **Velocity and Acceleration** - Basic Newtonian physics for movement
-- **Gravity** - Constant downward acceleration for platformers
-
-### Controls
-
-- **Keyboard** - Arrow keys, WASD, and custom key bindings
-- **Mouse** - Click, move, and pointer lock for FPS-style controls
-- **Touch** - Mobile touch events and virtual joysticks
-- **Gamepad** - Gamepad API for controller support
-
-### Audio
-
-- **Web Audio API** - Programmatic sound generation and spatial audio
-- **HTML5 Audio** - Simple audio playback for music and sound effects
-
-## Step-by-Step Workflows
-
-### Creating a Basic 2D Game
-
-1. Set up an HTML file with a `<canvas>` element
-2. Get the 2D rendering context
-3. Implement the game loop using `requestAnimationFrame`
-4. Create game objects with position, velocity, and size properties
-5. Handle keyboard/mouse input for player control
-6. Implement collision detection between game objects
-7. Add scoring, lives, and win/lose conditions
-8. Add sound effects and music
-
-### Building a 3D Game
-
-1. Choose a framework (Three.js, Babylon.js, A-Frame, or PlayCanvas)
-2. Set up the scene, camera, and renderer
-3. Load or create 3D models and textures
-4. Implement lighting and shaders
-5. Add physics and collision detection
-6. Implement player controls and camera movement
-7. Add audio and visual effects
-
-### Publishing a Game
-
-1. Optimize assets (compress images, minify code)
-2. Test across browsers and devices
-3. Choose distribution platform (web, app stores, game portals)
-4. Implement monetization if needed
-5. Promote through game communities and social media
-
-## Game Templates
-
-Starter templates are available in the `assets/` folder. Each template provides a complete, working example that can be used as a starting point for a new project.
-
-| Template | Description |
-|----------|-------------|
-| `paddle-game-template.md` | 2D Breakout-style game with pure JavaScript |
-| `2d-maze-game.md` | Maze game with device orientation controls |
-| `2d-platform-game.md` | Platformer game using Phaser framework |
-| `gameBase-template-repo.md` | Game base template repository structure |
-| `simple-2d-engine.md` | Simple 2D platformer engine with collisions |
-
-## Reference Documentation
-
-Detailed reference material is available in the `references/` folder. Consult these files for in-depth coverage of specific topics.
-
-| Reference | Topics Covered |
-|-----------|---------------|
-| `basics.md` | Game development introduction and anatomy |
-| `web-apis.md` | Canvas, WebGL, Web Audio, Gamepad, and other web APIs |
-| `techniques.md` | Collision detection, tilemaps, async scripts, audio |
-| `3d-web-games.md` | 3D theory, frameworks, shaders, WebXR |
-| `game-control-mechanisms.md` | Touch, keyboard, mouse, and gamepad controls |
-| `game-publishing.md` | Distribution, promotion, and monetization |
-| `algorithms.md` | Raycasting, collision, physics, vector math |
-| `terminology.md` | Game development glossary |
-| `game-engine-core-principles.md` | Core design principles for game engines |
-
-## Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| Canvas is blank | Check that you are calling drawing methods after getting the context and inside the game loop |
-| Game runs at different speeds | Use delta time in update calculations instead of fixed values |
-| Collision detection is inconsistent | Use continuous collision detection or reduce time steps for fast-moving objects |
-| Audio does not play | Browsers require user interaction before playing audio; trigger playback from a click handler |
-| Performance is poor | Profile with browser dev tools, reduce draw calls, use object pooling, and optimize asset sizes |
-| Touch controls are unresponsive | Prevent default touch behavior and handle touch events separately from mouse events |
-| WebGL context lost | Handle the `webglcontextlost` event and restore state on `webglcontextrestored` |
