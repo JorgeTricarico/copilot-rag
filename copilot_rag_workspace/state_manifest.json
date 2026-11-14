@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-13T19:24:37.200883+00:00",
+  "last_sync_utc": "2026-11-14T05:39:41.246410+00:00",
   "total_documents": 2119,
   "documents": {
     "anthropics_skills::README.md": {
@@ -21272,9 +21272,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "3edf09f7496f2645096dc7010b2d76100010a474aa19eb38952111faf4dc9826",
-      "word_count": 19651,
-      "last_updated_utc": "2026-11-13T19:24:36.449894+00:00",
+      "content_sha256": "bfe65d38d9fa7e2f363ee44c1002a51b47dc6382c7fef5722591b344e9978dde",
+      "word_count": 19653,
+      "last_updated_utc": "2026-11-14T05:39:40.310212+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -21283,9 +21283,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "3edf09f7496f2645096dc7010b2d76100010a474aa19eb38952111faf4dc9826",
-      "word_count": 19651,
-      "last_updated_utc": "2026-11-13T19:24:36.483560+00:00",
+      "content_sha256": "bfe65d38d9fa7e2f363ee44c1002a51b47dc6382c7fef5722591b344e9978dde",
+      "word_count": 19653,
+      "last_updated_utc": "2026-11-14T05:39:40.269569+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -22800,10 +22800,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md",
       "canonical_web_url": "https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/chat/common/plugins/AGENTS_PLUGINS.md",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "0f75c01a317f24d43f066eba48a1203be3e0fcc3",
-      "content_sha256": "9b11e1cf853bd54ce742feea17f85c94c67aac0ab915d58b52406a11b5c67667",
-      "word_count": 2589,
-      "last_updated_utc": "2026-11-06T19:05:33.558748+00:00",
+      "git_blob_sha": "b463c3082a288112700d44d78582fc950d4645cf",
+      "content_sha256": "7bb89cade6c9dd419700881411bb1c3ca214998f80b21177dcf3890b5d852bb8",
+      "word_count": 2725,
+      "last_updated_utc": "2026-11-14T05:39:37.170869+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode__src_vs_workbench_contrib_chat_common_plugins_AGENTS_PLUGINS.md"
     },
     "microsoft_vscode::src/vscode-dts/vscode.proposed.agentEditorComments.d.ts": {
@@ -23296,9 +23296,9 @@
       "canonical_web_url": "https://github.blog/changelog/label/copilot/feed/",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
       "git_blob_sha": null,
-      "content_sha256": "fec01e6dea8eec2fc80a5ff40320ccf7ba4aa9a05c0b053562102cd8f9848732",
-      "word_count": 672,
-      "last_updated_utc": "2026-11-13T19:24:35.718560+00:00",
+      "content_sha256": "ee0909ce63a7343fbb9ff3f511556ffd7f0789a05655bb20997f6494657a8adf",
+      "word_count": 670,
+      "last_updated_utc": "2026-11-14T05:39:39.650404+00:00",
       "local_clean_path": "clean_sources/web__github_changelog_copilot_rss.md"
     },
     "web::vscode_api_contribution_points": {

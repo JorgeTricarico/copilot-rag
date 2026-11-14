@@ -1,5 +1,12 @@
 # GitHub Copilot Official Changelog Feed
 
+## Upcoming deprecation of selected GitHub Copilot models in December
+- **Date**: Fri, 13 Nov 2026 20:40:05 +0000
+- **URL**: https://github.blog/changelog/2026-11-13-upcoming-deprecation-of-selected-github-copilot-models-in-december
+
+We will deprecate the following models across all GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions) on December 14, 2026: Model Deprecation date...
+The post Upcoming deprecation of selected GitHub Copilot models in December appeared first on The GitHub Blog .
+
 ## GitHub Enterprise Server support in the GitHub Copilot app
 - **Date**: Fri, 13 Nov 2026 18:27:13 +0000
 - **URL**: https://github.blog/changelog/2026-11-13-github-enterprise-server-support-in-the-github-copilot-app
@@ -62,10 +69,3 @@ The post Copilot impact dashboard adds chat and VS Code agent usage appeared fir
 
 This week, Copilot comes to JetBrains Air and Xcode’s coding assistant, with updates to help you manage pull requests, settings, and agent sessions. GitHub Copilot app Set up Agent Merge...
 The post GitHub Copilot weekly releases — November 2 appeared first on The GitHub Blog .
-
-## @GitHub in Slack and Teams is generally available and more
-- **Date**: Fri, 06 Nov 2026 20:31:08 +0000
-- **URL**: https://github.blog/changelog/2026-11-06-github-copilot-in-slack-and-teams-is-generally-available
-
-Turn conversations into code with @GitHub in Slack and Teams! Investigate bugs, create issues, implement changes, and open pull requests—all without leaving your conversation. What’s new Build and review together...
-The post @GitHub in Slack and Teams is generally available and more appeared first on The GitHub Blog .
