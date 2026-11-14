@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-14T05:39:41.246410+00:00",
+  "last_sync_utc": "2026-11-14T17:48:14.458395+00:00",
   "total_documents": 2119,
   "documents": {
     "anthropics_skills::README.md": {
@@ -1086,10 +1086,10 @@
       "source_url": "https://raw.githubusercontent.com/anthropics/skills/main/skills/docx/SKILL.md",
       "canonical_web_url": "https://github.com/anthropics/skills/blob/main/skills/docx/SKILL.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "acc50ea0729fc4b22319b25f1277d0db6f3b429a",
-      "content_sha256": "e333b48b8ddd6cb5317124c7b30d0963500b01eaad2ee02d9d90d8a3ab064ad2",
-      "word_count": 965,
-      "last_updated_utc": "2026-10-21T03:45:57.632177+00:00",
+      "git_blob_sha": "8620c46411705b38e4d97f15325fc976911c4f89",
+      "content_sha256": "9ca83fc44eae19adc57ef326f20b88014c86ddf2490c67fb31f448d0a7ed340e",
+      "word_count": 1055,
+      "last_updated_utc": "2026-11-14T17:48:10.966661+00:00",
       "local_clean_path": "clean_sources/anthropics_skills__skills_docx_SKILL.md"
     },
     "anthropics_skills::skills/frontend-design/SKILL.md": {
@@ -1224,6 +1224,28 @@
       "last_updated_utc": "2026-10-21T03:45:57.967606+00:00",
       "local_clean_path": "clean_sources/anthropics_skills__skills_mcp-builder_reference_python_mcp_server.md"
     },
+    "anthropics_skills::skills/pdf/FORMS.md": {
+      "doc_id": "anthropics_skills::skills/pdf/FORMS.md",
+      "source_url": "https://raw.githubusercontent.com/anthropics/skills/main/skills/pdf/FORMS.md",
+      "canonical_web_url": "https://github.com/anthropics/skills/blob/main/skills/pdf/FORMS.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "13493857340a31c41970faf407327b57b0aac8e1",
+      "content_sha256": "d5df5757e23634cd8a1a37e092af6c3b3b63afb3fd3ce86337fce9017cc3ee9f",
+      "word_count": 1649,
+      "last_updated_utc": "2026-11-14T17:48:10.986790+00:00",
+      "local_clean_path": "clean_sources/anthropics_skills__skills_pdf_FORMS.md"
+    },
+    "anthropics_skills::skills/pdf/REFERENCE.md": {
+      "doc_id": "anthropics_skills::skills/pdf/REFERENCE.md",
+      "source_url": "https://raw.githubusercontent.com/anthropics/skills/main/skills/pdf/REFERENCE.md",
+      "canonical_web_url": "https://github.com/anthropics/skills/blob/main/skills/pdf/REFERENCE.md",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "7748e376a0f174cb36738599268c30227ebe1f3c",
+      "content_sha256": "9b52d876a97f230b701473cebb23a2be176db90716f7752412bab602974e3348",
+      "word_count": 1895,
+      "last_updated_utc": "2026-11-14T17:48:11.010556+00:00",
+      "local_clean_path": "clean_sources/anthropics_skills__skills_pdf_REFERENCE.md"
+    },
     "anthropics_skills::skills/pdf/SKILL.md": {
       "doc_id": "anthropics_skills::skills/pdf/SKILL.md",
       "source_url": "https://raw.githubusercontent.com/anthropics/skills/main/skills/pdf/SKILL.md",
@@ -1235,37 +1257,15 @@
       "last_updated_utc": "2026-10-21T03:45:57.996784+00:00",
       "local_clean_path": "clean_sources/anthropics_skills__skills_pdf_SKILL.md"
     },
-    "anthropics_skills::skills/pdf/forms.md": {
-      "doc_id": "anthropics_skills::skills/pdf/forms.md",
-      "source_url": "https://raw.githubusercontent.com/anthropics/skills/main/skills/pdf/forms.md",
-      "canonical_web_url": "https://github.com/anthropics/skills/blob/main/skills/pdf/forms.md",
-      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "6e7e1e0d9e6ae17215db3e130aea3c3c546487e6",
-      "content_sha256": "9530b3f57034792e0242a3abfe8b3c296466329551916f2ff6c5a70db78f7e44",
-      "word_count": 1649,
-      "last_updated_utc": "2026-10-21T03:45:58.179556+00:00",
-      "local_clean_path": "clean_sources/anthropics_skills__skills_pdf_forms.md"
-    },
-    "anthropics_skills::skills/pdf/reference.md": {
-      "doc_id": "anthropics_skills::skills/pdf/reference.md",
-      "source_url": "https://raw.githubusercontent.com/anthropics/skills/main/skills/pdf/reference.md",
-      "canonical_web_url": "https://github.com/anthropics/skills/blob/main/skills/pdf/reference.md",
-      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "41400bf4fc67f15fb062d43695ec92f078226023",
-      "content_sha256": "3c6e7c055461d28c2047556dcc65185f542805b0a3198d2fe24236ac07699696",
-      "word_count": 1893,
-      "last_updated_utc": "2026-10-21T03:45:58.194703+00:00",
-      "local_clean_path": "clean_sources/anthropics_skills__skills_pdf_reference.md"
-    },
     "anthropics_skills::skills/pptx/SKILL.md": {
       "doc_id": "anthropics_skills::skills/pptx/SKILL.md",
       "source_url": "https://raw.githubusercontent.com/anthropics/skills/main/skills/pptx/SKILL.md",
       "canonical_web_url": "https://github.com/anthropics/skills/blob/main/skills/pptx/SKILL.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "a90df9c7e8f47c474c58f367faba57b66ff14cbb",
-      "content_sha256": "a817baeeb92d27768be4ccd78afdaadfb5e201eb669eb8c9a473ce8af06e2e46",
-      "word_count": 3115,
-      "last_updated_utc": "2026-10-21T03:45:58.180715+00:00",
+      "git_blob_sha": "785fea6d36f74970eb38dd00af51651ff0792162",
+      "content_sha256": "c70697a288b88ce90eaf76c4b089b4ff6435737d245820d179ff22b0692c60b4",
+      "word_count": 4314,
+      "last_updated_utc": "2026-11-14T17:48:10.986492+00:00",
       "local_clean_path": "clean_sources/anthropics_skills__skills_pptx_SKILL.md"
     },
     "anthropics_skills::skills/skill-creator/SKILL.md": {
@@ -1482,10 +1482,10 @@
       "source_url": "https://raw.githubusercontent.com/anthropics/skills/main/skills/xlsx/SKILL.md",
       "canonical_web_url": "https://github.com/anthropics/skills/blob/main/skills/xlsx/SKILL.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "cc347203f2247b009b8ea34574bccfa62fce3669",
-      "content_sha256": "6c5bacadda690a1b68c855a890ef47f1aecabb9f0d2d251d063c0029818062e3",
-      "word_count": 1302,
-      "last_updated_utc": "2026-10-21T03:45:58.931535+00:00",
+      "git_blob_sha": "419ecd344b776826107eef93a9727af3772cb755",
+      "content_sha256": "5d3a1dcbbaeb530b82647b2ee753be1e232b949a1b0f4089d00ec4e16476951b",
+      "word_count": 1488,
+      "last_updated_utc": "2026-11-14T17:48:10.968362+00:00",
       "local_clean_path": "clean_sources/anthropics_skills__skills_xlsx_SKILL.md"
     },
     "anthropics_skills::spec/agent-skills-spec.md": {
