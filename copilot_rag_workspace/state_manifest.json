@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-14T17:48:14.458395+00:00",
+  "last_sync_utc": "2026-11-15T05:38:39.408067+00:00",
   "total_documents": 2119,
   "documents": {
     "anthropics_skills::README.md": {
@@ -21272,9 +21272,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "bfe65d38d9fa7e2f363ee44c1002a51b47dc6382c7fef5722591b344e9978dde",
+      "content_sha256": "4d2385a4a5f8db3082212203f3383261a5cdaa3f81c102aadc300d21321b4b25",
       "word_count": 19653,
-      "last_updated_utc": "2026-11-14T05:39:40.310212+00:00",
+      "last_updated_utc": "2026-11-15T05:38:38.662259+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -21283,9 +21283,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "bfe65d38d9fa7e2f363ee44c1002a51b47dc6382c7fef5722591b344e9978dde",
+      "content_sha256": "4d2385a4a5f8db3082212203f3383261a5cdaa3f81c102aadc300d21321b4b25",
       "word_count": 19653,
-      "last_updated_utc": "2026-11-14T05:39:40.269569+00:00",
+      "last_updated_utc": "2026-11-15T05:38:38.550842+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -21964,10 +21964,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/agent-troubleshooting/troubleshooting.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/agent-troubleshooting/troubleshooting",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "e2ea95d38964ef2a6d5bc304a315395aaed9a3d1",
-      "content_sha256": "cdc070ca6a3ee439a54716266bf7d8ef24d8cd7b18f59e0c9b213c7d8dbee5ae",
-      "word_count": 1472,
-      "last_updated_utc": "2026-11-11T05:26:58.152917+00:00",
+      "git_blob_sha": "65eba319021d6910bc48503adc532b9843a2b5e1",
+      "content_sha256": "2b8cabfe909c88bc1b28f8f90e88fe28d86be44a72fe009bad967d9edbddef73",
+      "word_count": 1486,
+      "last_updated_utc": "2026-11-15T05:38:34.915922+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_agent-troubleshooting_troubleshooting.md"
     },
     "microsoft_vscode-docs::docs/agents/agents-tutorial.md": {
@@ -22118,10 +22118,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/browser-agent-testing-guide.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/browser-agent-testing-guide",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "b2d3180d0ac3827083c6fa77ccc01433a5415978",
-      "content_sha256": "5ec6cb574d24a86b8e7aae087fe0c41c8d840f18577d5647aa331a75052d0e33",
-      "word_count": 1093,
-      "last_updated_utc": "2026-10-28T18:07:36.359836+00:00",
+      "git_blob_sha": "4e921ff68ddcf5bbf1add7829c931b057d5fc801",
+      "content_sha256": "b45dc623303012702bb75264a30f50b24348cf6d2c067dd15b502351b183d902",
+      "word_count": 1285,
+      "last_updated_utc": "2026-11-15T05:38:34.964587+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_browser-agent-testing-guide.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/context-engineering-guide.md": {
@@ -22173,10 +22173,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/fix-a-bug-with-agents.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/fix-a-bug-with-agents",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "c290f6167b1e04ecee8b2aea40776fff673546b2",
-      "content_sha256": "c29c3114d44b443db8f23f9ef9a8653cd32ee18b0268cf22b1a14d7d0f3ed8fc",
-      "word_count": 1611,
-      "last_updated_utc": "2026-11-13T05:49:47.599153+00:00",
+      "git_blob_sha": "3589067448f14afe560393647fb2d07bfd6c4151",
+      "content_sha256": "04fdcb94750fb5e66d595b278435e45c360cf495bf2e8f294722fdb2ca37d8ff",
+      "word_count": 1921,
+      "last_updated_utc": "2026-11-15T05:38:34.959351+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_fix-a-bug-with-agents.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/get-agent-back-on-track.md": {
@@ -22228,10 +22228,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/overview.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/overview",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "57ede200fa141ff1b24867fc2dea5a21b2506d6e",
-      "content_sha256": "335c36c5a85a84c812a725a4162cbe3445d57728b012916bbdb93081d0453cf7",
-      "word_count": 861,
-      "last_updated_utc": "2026-11-13T05:49:47.574673+00:00",
+      "git_blob_sha": "18d8999bc789ae7316af8583ec6863576b50d8d0",
+      "content_sha256": "e1c5ca0b5f5b59bf9418502b9988258136c83ad8af6924b09d1eeadaa5193fd5",
+      "word_count": 875,
+      "last_updated_utc": "2026-11-15T05:38:34.958600+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_overview.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/prompt-examples.md": {
@@ -22261,10 +22261,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/test-code-with-ai.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/test-code-with-ai",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "c6a58f43fed8959e175eb8d272790ab07dc854d2",
-      "content_sha256": "37cb57d30fe19acc0106754d2571210512ccdb4d2600f453b5fe67216df18083",
-      "word_count": 1361,
-      "last_updated_utc": "2026-11-11T05:26:58.806629+00:00",
+      "git_blob_sha": "4a43d1e1d2371f0019c87990eb54d8cbf38b7d05",
+      "content_sha256": "5cdf66233fd45ca829175f7251da99f02bfe6a59705db9582a63befd846d2cc3",
+      "word_count": 1362,
+      "last_updated_utc": "2026-11-15T05:38:34.954291+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_test-code-with-ai.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/test-driven-development-guide.md": {
@@ -22272,10 +22272,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/test-driven-development-guide.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/test-driven-development-guide",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "546e2496b906f412feb0f534dcb04a2959d2240c",
-      "content_sha256": "e4de9195693e274fc87e0b2feca68ae91d9cd6438b3c582e1f5d3f98114a20e9",
-      "word_count": 2351,
-      "last_updated_utc": "2026-11-11T05:26:58.779824+00:00",
+      "git_blob_sha": "0f7b1fcf26cd976631cc28cc2782e1b207f62295",
+      "content_sha256": "2dbddf2e00c817fcaa69e37d7f5439f1c8b8f543b265d95c49209316695d70c1",
+      "word_count": 1363,
+      "last_updated_utc": "2026-11-15T05:38:34.957444+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_test-driven-development-guide.md"
     },
     "microsoft_vscode-docs::docs/agents/overview.md": {

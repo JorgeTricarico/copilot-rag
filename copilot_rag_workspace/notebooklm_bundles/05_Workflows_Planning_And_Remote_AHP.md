@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-11-13T19:24:37.178189+00:00
-- **Total Palabras**: 159,648 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-15T05:38:39.390614+00:00
+- **Total Palabras**: 159,191 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -4364,8 +4364,8 @@ See [Report an unresolved issue](/docs/agents/agent-troubleshooting/troubleshoot
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/agent-troubleshooting/troubleshooting.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/agent-troubleshooting/troubleshooting
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/agent-troubleshooting/troubleshooting.md
-- **SHA256_FINGERPRINT**: `cdc070ca6a3ee439a54716266bf7d8ef24d8cd7b18f59e0c9b213c7d8dbee5ae`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.152917+00:00
+- **SHA256_FINGERPRINT**: `2b8cabfe909c88bc1b28f8f90e88fe28d86be44a72fe009bad967d9edbddef73`
+- **LAST_VERIFIED_UTC**: 2026-11-15T05:38:34.915922+00:00
 ---
 
 **MetaDescription**: Diagnose GitHub Copilot and agent issues in Visual Studio Code with targeted checks, logs, and network diagnostics.
@@ -4399,6 +4399,8 @@ Before you collect detailed logs:
 1. Open the Copilot status dashboard in the Status Bar and check whether you have reached an allowance. A temporary rate limit is separate from your monthly allowance.
 1. Check whether a workspace setting or organization policy turns off the affected feature. For agent availability, see [Agents are not available in chat](/docs/agents/agent-troubleshooting/faq.md#agents-are-not-available-in-chat).
 1. Reproduce the issue in a new chat session. When you compare two runs, keep the prompt, model, and available tools consistent.
+
+For organization-managed restrictions, contact your administrator. Administrators investigating unexpected restrictions can follow [managed-installation troubleshooting](/docs/enterprise/troubleshooting.md).
 
 ## Check customization diagnostics
 
@@ -5037,161 +5039,164 @@ You now have a feature whose implementation, tests, and review summary can be co
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/browser-agent-testing-guide.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/browser-agent-testing-guide
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/browser-agent-testing-guide.md
-- **SHA256_FINGERPRINT**: `5ec6cb574d24a86b8e7aae087fe0c41c8d840f18577d5647aa331a75052d0e33`
-- **LAST_VERIFIED_UTC**: 2026-10-28T18:07:36.359836+00:00
+- **SHA256_FINGERPRINT**: `b45dc623303012702bb75264a30f50b24348cf6d2c067dd15b502351b183d902`
+- **LAST_VERIFIED_UTC**: 2026-11-15T05:38:34.964587+00:00
 ---
 
-**MetaDescription**: Build and validate a web app with AI agents and browser tools in VS Code.
+**MetaDescription**: Validate a web app with AI browser tools in VS Code, reproduce a defect, and verify the fix.
 
 # Build and validate a web app with browser tools
 
-Browser tools give agents a closed development loop for web applications. The agent can create an app, open it in the integrated browser, interact with it against acceptance criteria, identify issues, fix them, and repeat the checks.
+Browser tools let an agent check a running web app instead of relying only on its source code. The agent can open the app, interact with it, inspect the result, and repeat a failing interaction after a fix.
 
-This guide walks you through that loop by building and validating a calculator app. For browser tool capabilities, session types, privacy controls, and prompting patterns, see [Use browser tools with agents](/docs/agents/run/browser-tools.md).
+In this guide, you build a calculator, validate it against explicit acceptance criteria, and practice reproducing and fixing a defect. Use the **Copilot** harness in the Chat view. The generated implementation can vary but the expected behavior stays the same.
+
+These interactive checks provide feedback during development. They don't automatically create a saved test suite or prove that the entire app is correct.
 
 ## Prerequisites
 
-To complete this guide, you need:
+* [Install Visual Studio Code](/download).
+* [Set up GitHub Copilot](/docs/setup/copilot.md).
+* Leave ``workbench.browser.enableChatTools`` turned on, which is the default.
 
-* [Visual Studio Code installed on your computer](/download)
-* [A GitHub Copilot subscription](/docs/setup/copilot.md)
-* The ``workbench.browser.enableChatTools`` setting turned on, which is the default
+The sample uses HTML, CSS, and JavaScript without a build step or additional dependencies.
 
-## What the agent validates
+## Define the acceptance criteria
 
-Before you ask the agent to test the calculator, define observable acceptance criteria:
+Decide what the agent should observe before asking it to validate the app. For this calculator, use the following checks:
 
-* Each digit button enters the correct value.
-* Addition, subtraction, multiplication, and division return the expected result.
-* **Clear** resets the calculator.
-* Dividing by zero shows an error instead of an invalid numeric result.
+| Check | Actions | Expected result |
+|-------|---------|-----------------|
+| Digit buttons | Clear the calculator, then select a digit. Repeat for each digit from 0 to 9. | The display shows the selected digit. |
+| Addition | Enter `3 + 5 =`. | `8` |
+| Subtraction | Enter `9 - 4 =`. | `5` |
+| Multiplication | Enter `6 * 7 =`. | `42` |
+| Division | Enter `8 / 2 =`. | `4` |
+| Clear | Enter `9 +`, select **Clear**, then enter `2 + 3 =`. | Clear displays `0` and resets the pending operation. The new calculation returns `5`. |
+| Division by zero | Enter `7 / 0 =`. | `Error`, not `Infinity` or `NaN`. |
 
-These criteria give the agent a clear definition of success and make its final verification report easier to review.
+Start each independent check with **Clear** so that a previous calculation doesn't affect the result.
 
-## Step 1: Verify browser tools
+## Step 1: Check browser tool availability
 
-Browser tools are generally available by default. Verify that they are selected for the request:
-
-1. Open the Chat view (``Shortcut: workbench.action.chat.open``) and select **Agent** from the Agents dropdown.
-
+1. Create a project folder and open it in VS Code.
+1. Open the Chat view (``Shortcut: workbench.action.chat.open``), start a new chat, and select **Copilot** as the **Session Target** and **Agent** from the agent picker.
 1. Select **Open Customizations** in the Chat view title bar > **Tools** and verify that **Integrated Browser** is selected.
 
-The agent can now use these tools to interact with web pages. If the tools are missing, verify that ``workbench.browser.enableChatTools`` is turned on. An organization policy can also turn off browser tools.
+If the tools are missing, check ``workbench.browser.enableChatTools``. Organization policy can also turn them off. See [browser tools troubleshooting](/docs/agents/run/browser-tools.md#troubleshoot-browser-tools).
 
-## Step 2: Ask the agent to build a calculator
+## Step 2: Build the calculator
 
-With browser tools enabled, ask the agent to create a simple calculator application.
+Ask the agent to build the app with the behavior you intend to verify:
 
-1. Create a new project folder and open it in VS Code.
+```prompt
+Create a calculator using index.html, styles.css, and script.js.
+Use plain HTML, CSS, and JavaScript without dependencies or a build step.
+It must work when index.html is opened directly in a browser.
 
-1. In the Chat view, enter the following prompt:
+Include buttons for digits 0-9, addition, subtraction, multiplication,
+division, Clear, and equals. Show the entered value and calculation result.
+Clear must reset the display to 0 and discard any pending operation.
+Division by zero must display Error rather than Infinity or NaN.
+```
 
-    ```prompt
-    Create a calculator with buttons for digits 0-9, operations (add, subtract, multiply, divide), clear, and equals. Use HTML, CSS, and JavaScript. Style it with a clean, modern design.
-    ```
+[Review the saved changes](/docs/agents/run/review-code-edits.md). If edits are pending review, select **Keep** to retain them or **Undo** to revert them. **Keep** clears pending review; the files are already saved to your workspace.
 
-1. Review the generated files as the agent creates `index.html`, `styles.css`, and `script.js`.
+Don't assume the generated function names or internal structure match another calculator implementation. Judge the app against the acceptance criteria.
 
-1. [Review the saved changes](/docs/agents/run/review-code-edits.md). If edits are pending review, select **Keep** to retain them or **Undo** to revert them. **Keep** clears pending review; the files are already saved to your workspace.
+## Step 3: Run the acceptance checks
 
-The agent has built the basic structure of the calculator application.
+Ask the agent to interact with the app without changing it during the check:
 
-## Step 3: Let the agent test the calculator
+```prompt
+Open index.html in the integrated browser and check the calculator by
+selecting its buttons. Start each independent check with Clear.
 
-Now ask the agent to open the calculator in the integrated browser and verify it works correctly.
+Verify:
+* Each digit button from 0 to 9 displays that digit after Clear.
+* 3 + 5 = 8, 9 - 4 = 5, 6 * 7 = 42, and 8 / 2 = 4.
+* Entering 9 + and then Clear displays 0. Entering 2 + 3 = afterward
+  returns 5, without retaining the previous operation.
+* 7 / 0 = displays Error, not Infinity or NaN.
 
-1. In the Chat view, enter the following prompt:
+Do not edit files. Report each check's actions, expected result, actual
+result, and pass or fail status. Mark checks you couldn't run as unverified.
+```
 
-    ```prompt
-    Open the calculator in the browser and validate it against these criteria:
-    each digit button enters the correct value; addition, subtraction,
-    multiplication, and division return the expected result; Clear resets
-    the calculator; and division by zero shows an error. Report the result
-    for each criterion. If any criterion fails, fix the issue and repeat
-    the complete validation.
-    ```
+Review the browser tool calls and reported results. A screenshot can support a visual observation, but it doesn't show that every interaction passed. If the agent can't open the page or complete an action, resolve that problem before treating the check as verified.
 
-1. Watch as the agent opens `index.html` in the integrated browser, parses the page content to understand the structure, and systematically tests each button and operation by simulating clicks and checking the results.
+The following video illustrates browser interaction with a calculator. Your generated layout and tool sequence might differ.
 
-    <video src="../images/browser-agent-testing-guide/agent-testing-calculator.mp4" title="Video showing the agent testing the calculator in the integrated browser." autoplay loop controls muted></video>
+<video src="../images/browser-agent-testing-guide/agent-testing-calculator.mp4" title="Video showing the agent testing the calculator in the integrated browser." autoplay loop controls muted></video>
 
-The agent reports which operations work correctly and identifies any issues it discovers.
+## Step 4: Reproduce and fix a defect
 
-## Step 4: Watch the agent debug and fix issues
+If an acceptance check failed, use that failure for this step. If all checks passed, introduce a controlled defect to practice the workflow:
 
-If the agent discovers bugs during testing, it automatically analyzes the problem and implements a fix.
+```prompt
+Introduce only this defect in the calculator: dividing by zero displays
+Infinity instead of Error. Keep the JavaScript syntactically valid and
+leave all other behavior unchanged. Do not fix the defect yet.
+```
 
-1. Let's introduce a bug by removing the division by zero check:
+Review the diff to confirm that only the intended behavior changed. Then reproduce the defect before requesting a fix:
 
-    ```javascript
-    function calculate() {
-        if (!operator || shouldReset) return;
+```prompt
+Reload the calculator to use the saved code. Select Clear, enter 7 / 0 =,
+and report the actual display value. It should be Error.
+Do not edit files during this check.
+```
 
-        const a = parseFloat(previous);
-        const b = parseFloat(current);
-        let result;
+After you observe the incorrect result, ask for a focused fix:
 
-        switch (operator) {
-        case '+': result = a + b; break;
-        case '-': result = a - b; break;
-        case '*': result = a * b; break;
-        case '/': result = a / b; break;
-    }
-    ```
+```prompt
+Fix the division-by-zero behavior so the display shows Error.
+Avoid unrelated changes.
 
-1. Ask the agent to reproduce the issue, fix it, and verify the acceptance criterion again:
+Reload the page and repeat the failing interaction. Then rerun every
+acceptance check from the earlier request, starting each with Clear.
+Report the actual results and any checks you couldn't complete.
+```
 
-    ```prompt
-    Test division by zero. If it produces an invalid numeric result instead
-    of an error, fix the issue. Then repeat the test and report the result.
-    ```
+For a different defect, replace the division-by-zero case with the actions and expected result from the failed check.
 
-1. Watch as the agent encounters an error when dividing by zero, then analyzes and fixes the code, and finally validates the bug fix.
+Review the fix and verification output. Reload after code changes so the agent checks the updated app, not a page still running the previous code.
 
-The agent has completed a full development cycle: build, validate, debug, fix, and revalidate by using browser tools.
+## Keep regression coverage
 
-## Step 5: Share a browser page with the agent (optional)
+Browser interaction during a chat isn't a saved automated test. To catch the same defect after future changes, add regression coverage to your project's test suite.
 
-You can also manually open web pages and explicitly share them with the agent for analysis or interaction. By default, the agent can only interact with web pages it opened itself.
+Use unit tests for isolated calculation behavior and browser tests for behavior that depends on the UI. Reuse an existing framework rather than introducing a second runner:
 
-1. Open the integrated browser by running the **Browser: Open Integrated Browser** command from the Command Palette (``Shortcut: workbench.action.showCommands``).
+```prompt
+Add a regression test for the defect we fixed using the project's existing
+test framework and conventions. Verify the expected behavior, not the
+implementation details, and run the relevant tests.
 
-1. Navigate to a web page you want the agent to analyze or interact with.
+If no suitable test framework exists, propose a minimal setup and wait
+for approval before installing dependencies or changing configuration.
+```
 
-1. Select the **Share with Agent** button in the browser toolbar.
+Review the assertions and execution output. See [Test existing code with AI](/docs/agents/guides/test-code-with-ai.md) for guidance on test quality, failures, and coverage.
 
-    A visual indicator on the browser tab shows that the page is actively shared with the agent.
+## Apply the workflow to your web app
 
-1. Ask the agent to perform actions on the shared page:
+For an existing project, give the agent the development-server command, app URL, a focused user journey, and expected results. Specify whether it should only report failures or also fix them.
 
-    ```prompt
-    What is the main heading on this page? Click the first link and tell me where it goes.
-    ```
+If a flow needs an existing browser session, [share a page with the agent](/docs/agents/run/browser-tools.md#share-an-existing-page). Sharing gives access to that page's current session, including its sign-in state. Use a test account and disposable data for actions that submit forms or change stored data.
 
-The agent can now access the shared page and perform interactions on your behalf. When you're done, select the **Share with Agent** button again to revoke access.
+Other useful checks include:
 
-> [!TIP]
-> Shared pages use your existing browser session, including cookies and login state. Pages opened by the agent use isolated ephemeral sessions, so they don't share cookies or storage with your other browser tabs.
+* **Forms**: test valid and invalid input, error messages, and successful submission.
+* **Responsive layouts**: compare navigation and content at specified desktop and mobile viewport sizes.
+* **Accessibility**: investigate labels, headings, and keyboard interactions. Agent checks aren't a complete accessibility audit; include manual keyboard and assistive-technology testing.
 
-## Try these scenarios
+For browser capabilities, session isolation, and privacy controls, see [Use browser tools with agents](/docs/agents/run/browser-tools.md).
 
-Now that you understand how browser tools work, try these scenarios to explore different use cases:
+## Next steps
 
-* **Form validation testing**: have the agent verify validation rules, error messages, and successful submission by building and testing a contact form
-
-* **Responsive layout verification**: ask the agent to screenshot a page at different viewport sizes and verify responsive behavior (for example, a landing page with navigation menus)
-
-* **Authentication flow testing**: let the agent test credential validation, error handling, and successful redirects in a login page
-
-* **Interactive functionality testing**: have the agent verify user interactions and state management
-
-* **Accessibility audits**: ask the agent to check any web page for missing alt text, heading hierarchy, keyboard navigation, and color contrast issues
-
-## Related resources
-
-* [Use browser tools with agents](/docs/agents/run/browser-tools.md)
-* [Integrated browser](/docs/debugtest/integrated-browser.md)
-* [Core concepts of AI in VS Code](/docs/agents/concepts/agents.md)
+* Use [test-driven development](/docs/agents/guides/test-driven-development-guide.md) to define behavior before implementation.
+* Learn how to [attach browser elements, screenshots, and console output to chat](/docs/debugtest/integrated-browser.md#add-context-to-ai-chat).
 
 
 ---
@@ -6160,15 +6165,19 @@ Keep the verified summary with your task. Promote stable project knowledge to sh
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/fix-a-bug-with-agents.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/fix-a-bug-with-agents
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/fix-a-bug-with-agents.md
-- **SHA256_FINGERPRINT**: `c29c3114d44b443db8f23f9ef9a8653cd32ee18b0268cf22b1a14d7d0f3ed8fc`
-- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.599153+00:00
+- **SHA256_FINGERPRINT**: `04fdcb94750fb5e66d595b278435e45c360cf495bf2e8f294722fdb2ca37d8ff`
+- **LAST_VERIFIED_UTC**: 2026-11-15T05:38:34.959351+00:00
 ---
 
-**MetaDescription**: Fix a pagination bug in a Node.js API with an AI agent in VS Code by reproducing it, adding regression tests, and reviewing the fix.
+**MetaDescription**: Fix an API bug with an agent in VS Code, add regression tests, and verify the result.
 
 # Tutorial: Fix an API bug with an agent
 
 Most software work starts with existing code and a bug report, not an empty project. In this tutorial, you use an AI agent in Visual Studio Code to investigate why a paginated API skips records, add a regression test that proves the bug, implement a focused fix, and verify the result.
+
+You work through five checkpoints: reproduce the symptom, review the diagnosis, observe a failing test, verify the fix, and review the diff. The walkthrough uses the **Copilot** harness in the Chat view.
+
+If you already have a bug to investigate, [apply the workflow to your own project](#apply-the-workflow-to-your-own-project) instead of setting up the sample.
 
 > [!NOTE]
 > The sample API fits in one file and uses only built-in Node.js modules, so you can focus on the debugging workflow. The same process applies when request handling, application logic, and tests are spread across a larger project.
@@ -6197,6 +6206,8 @@ Start with an API that has working tests but contains a pagination bug.
 1. In VS Code, select **File** > **Open Folder**, and then open the `pagination-bug` folder.
 
 1. Create a file named `issues-api.js` and paste in the following code:
+
+**Expand and copy the sample API code**
 
     ```javascript
     const assert = require("node:assert/strict");
@@ -6295,6 +6306,8 @@ Start with an API that has working tests but contains a pagination bug.
 
     Both tests pass. A passing test suite is useful evidence, but it doesn't prove that untested behavior is correct.
 
+    These tests call `getIssues` directly. The HTTP requests in the next section also exercise the server's request handling.
+
 1. Commit the starting point so that you can distinguish the agent's changes from the sample code:
 
     ```bash
@@ -6319,25 +6332,25 @@ Verify the report before asking the agent to change the code.
 1. Open another terminal and request the default page:
 
     ```bash
-    node -e "fetch('http://localhost:3000/issues').then(r => r.json()).then(d => console.log(d.issues.map(i => i.id)))"
+    node -e "fetch('http://localhost:3000/issues').then(r => r.json()).then(d => console.log(JSON.stringify(d.issues.map(i => i.id))))"
     ```
 
     The response contains the expected IDs:
 
     ```text
-    [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
+    [1,2,3,4,5,6,7,8,9,10]
     ```
 
 1. Request page two:
 
     ```bash
-    node -e "fetch('http://localhost:3000/issues?page=2').then(r => r.json()).then(d => console.log(d.issues.map(i => i.id)))"
+    node -e "fetch('http://localhost:3000/issues?page=2').then(r => r.json()).then(d => console.log(JSON.stringify(d.issues.map(i => i.id))))"
     ```
 
     The response confirms the reported gap:
 
     ```text
-    [ 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 ]
+    [21,22,23,24,25,26,27,28,29,30]
     ```
 
 1. In the terminal that runs the API, press ``Ctrl+C`` to stop it.
@@ -6348,7 +6361,7 @@ You now have a reproducible symptom and an expected result. Providing both helps
 
 Start with investigation instead of immediately asking for a fix. This gives you a chance to review the agent's understanding before it edits the project.
 
-1. Open the Chat view (``Shortcut: workbench.action.chat.open``) and select **Agent** from the agent picker.
+1. Open the Chat view (``Shortcut: workbench.action.chat.open``), start a new chat, and select **Copilot** as the **Session Target** and **Agent** from the agent picker.
 
 1. Enter the following prompt:
 
@@ -6416,30 +6429,47 @@ If a test still fails, give the agent the complete failure output and ask it to 
 
 ## Verify page boundaries
 
-The regression test covers the reported case. Check adjacent and boundary cases to make sure the fix doesn't only work for page two.
+The regression test covers the reported case. Add adjacent and boundary cases so that the suite also detects gaps, duplicates, or a lost final page.
 
-1. Start the API again:
+1. Ask the agent to extend the tests:
+
+    ```prompt
+    Add pagination boundary tests without changing the implementation:
+    - Pages 1 through 5 together return IDs 1 through 35 in order,
+      with no missing or duplicate IDs.
+    - Page 4 returns IDs 31-35 and page 5 is empty.
+    - Omitting page still matches page=1.
+    - Page values 0, -1, and 1.5 still return status 400.
+
+    Keep expected values independent of getIssues. Run the complete
+    test suite and report the command and results.
+    ```
+
+1. Review the assertions and confirm that all tests pass.
+
+1. Start the API again to verify the fixed behavior through HTTP:
 
     ```bash
     node issues-api.js serve
     ```
 
-1. In another terminal, request the first, second, fourth, and fifth pages:
+1. In another terminal, request all five pages:
 
     ```bash
-    node -e "(async () => { for (const p of [1, 2, 4, 5]) { const d = await fetch('http://localhost:3000/issues?page=' + p).then(r => r.json()); console.log('page ' + p + ':', d.issues.map(i => i.id)); } })()"
+    node -e "(async () => { for (const p of [1, 2, 3, 4, 5]) { const d = await fetch('http://localhost:3000/issues?page=' + p).then(r => r.json()); console.log('page ' + p + ': ' + JSON.stringify(d.issues.map(i => i.id))); } })()"
     ```
 
     Verify the following output:
 
     ```text
-    page 1: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
-    page 2: [ 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ]
-    page 4: [ 31, 32, 33, 34, 35 ]
+    page 1: [1,2,3,4,5,6,7,8,9,10]
+    page 2: [11,12,13,14,15,16,17,18,19,20]
+    page 3: [21,22,23,24,25,26,27,28,29,30]
+    page 4: [31,32,33,34,35]
     page 5: []
     ```
 
-    The responses have no gaps or duplicate IDs, the final partial page is preserved, and a page beyond the data is empty.
+    Together, the responses contain IDs 1-35 exactly once, the final partial page is preserved, and a page beyond the data is empty.
 
 1. Stop the API by pressing ``Ctrl+C``.
 
@@ -6457,7 +6487,7 @@ Before you commit an agent's work, inspect both the code and the evidence that s
     * The agent didn't add dependencies or unrelated refactoring.
     * The complete test suite and manual boundary checks pass.
 
-1. If the diff contains unrelated changes, ask the agent to revert them and rerun the tests.
+1. If the diff contains unrelated changes, ask the agent to remove only its unrelated edits and rerun the tests.
 
 1. Commit the verified fix:
 
@@ -6468,10 +6498,22 @@ Before you commit an agent's work, inspect both the code and the evidence that s
 
 You fixed a reproducible API defect by establishing the expected behavior before changing production code. This workflow gives you evidence for the diagnosis, protects the behavior with a regression test, and keeps the final change focused and reviewable.
 
+## Apply the workflow to your own project
+
+Use the same checkpoints with your existing codebase:
+
+1. Save your existing work and run the relevant tests as a baseline. Identify the project's test command and conventions before asking the agent to add tests.
+1. Provide the smallest reproduction you have: the command or action, relevant input, actual result, and expected behavior. Attach failure output and relevant source or test files as [chat context](/docs/chat/chat-overview.md#add-context-to-your-prompts).
+1. Ask the agent to investigate without editing files. If the symptom depends on runtime state, use the [debugger](/docs/debugtest/debugging.md) to inspect the failing path and share relevant stack traces or variable values.
+1. Add a regression test using the existing framework. Confirm that it fails because of the reported behavior before changing implementation code.
+1. Request a focused fix, run the targeted tests and related suite, and repeat the original reproduction. Review the diff before committing.
+
+If you can't reproduce the issue or the expected behavior is unclear, resolve that uncertainty before asking the agent to implement a fix.
+
 ## Next steps
 
 * Continue with the fixed API and [add an optional title filter](/docs/agents/guides/add-a-feature.md). Use the same repository to practice planning and testing a feature while preserving the pagination behavior you verified.
-* Explore more ways to [test with GitHub Copilot](/docs/agents/guides/test-code-with-ai.md).
+* Explore more ways to [add and validate tests with AI](/docs/agents/guides/test-code-with-ai.md).
 * Review how to [inspect, revise, and revert agent changes](/docs/agents/run/review-code-edits.md).
 
 
@@ -7489,8 +7531,8 @@ Use these measurements as an optimization loop:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/overview.md
-- **SHA256_FINGERPRINT**: `335c36c5a85a84c812a725a4162cbe3445d57728b012916bbdb93081d0453cf7`
-- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.574673+00:00
+- **SHA256_FINGERPRINT**: `e1c5ca0b5f5b59bf9418502b9988258136c83ad8af6924b09d1eeadaa5193fd5`
+- **LAST_VERIFIED_UTC**: 2026-11-15T05:38:34.958600+00:00
 ---
 
 **MetaDescription**: Find agent tutorials and guides for VS Code by task, from a first app to testing and project workflows.
@@ -7557,9 +7599,9 @@ Or jump to a task:
 
 * [Add tests to existing code](/docs/agents/guides/test-code-with-ai.md): generate and run tests, then review assertions, failures, and coverage. **Setup:** your project, Copilot in the Chat view.
 
-* [Validate a web app with browser tools](/docs/agents/guides/browser-agent-testing-guide.md): build a calculator app and test it against acceptance criteria. **Setup:** sample web app.
+* [Validate a web app with browser tools](/docs/agents/guides/browser-agent-testing-guide.md): build a calculator, reproduce a defect, and verify the fix against explicit acceptance criteria. **Setup:** sample web app, Copilot in the Chat view.
 
-* [Set up test-driven development](/docs/agents/guides/test-driven-development-guide.md): create custom agents and instructions for a repeatable test-first workflow. **Setup:** your repository with working tests, Local harness `feature(local-harness)` in the Chat view.
+* [Practice test-driven development](/docs/agents/guides/test-driven-development-guide.md): write a failing test, implement behavior, and refactor with a review checkpoint between phases. **Setup:** your repository with working tests, Copilot in the Chat view. Custom agents are optional.
 
 ## Customize and coordinate agents
 
@@ -7975,8 +8017,8 @@ You finish with a smaller or clearer implementation and evidence that the behavi
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/test-code-with-ai.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/test-code-with-ai
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/test-code-with-ai.md
-- **SHA256_FINGERPRINT**: `37cb57d30fe19acc0106754d2571210512ccdb4d2600f453b5fe67216df18083`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.806629+00:00
+- **SHA256_FINGERPRINT**: `5cdf66233fd45ca829175f7251da99f02bfe6a59705db9582a63befd846d2cc3`
+- **LAST_VERIFIED_UTC**: 2026-11-15T05:38:34.954291+00:00
 ---
 
 **MetaDescription**: Add and run tests for existing code with AI in Visual Studio Code, then review assertions, failures, and coverage.
@@ -8114,7 +8156,7 @@ Custom instructions guide the agent but don't enforce these safeguards. Review t
 ## Next steps
 
 * Follow a complete workflow to [fix an API bug with an agent](/docs/agents/guides/fix-a-bug-with-agents.md).
-* For a Local-harness example `feature(local-harness)`, set up a test-first workflow with [TDD custom agents and handoffs](/docs/agents/guides/test-driven-development-guide.md).
+* Practice [test-driven development with AI](/docs/agents/guides/test-driven-development-guide.md), with review checkpoints between writing a failing test, implementing behavior, and refactoring.
 * Try [testing web apps with browser agent tools](/docs/agents/guides/browser-agent-testing-guide.md).
 
 
@@ -8122,273 +8164,171 @@ Custom instructions guide the agent but don't enforce these safeguards. Review t
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/test-driven-development-guide.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/test-driven-development-guide
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/test-driven-development-guide.md
-- **SHA256_FINGERPRINT**: `e4de9195693e274fc87e0b2feca68ae91d9cd6438b3c582e1f5d3f98114a20e9`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.779824+00:00
+- **SHA256_FINGERPRINT**: `2dbddf2e00c817fcaa69e37d7f5439f1c8b8f543b265d95c49209316695d70c1`
+- **LAST_VERIFIED_UTC**: 2026-11-15T05:38:34.957444+00:00
 ---
 
-**MetaDescription**: Build a Local TDD workflow in VS Code with custom agents, handoffs, and instructions.
+**MetaDescription**: Practice test-driven development with AI in VS Code, using failing tests and review checkpoints.
 
-# Set up a test-driven development flow in VS Code
+# Practice test-driven development with AI
 
-Test-driven development (TDD) is a software development approach where you write tests before implementing functionality. This creates a tight feedback loop that improves code quality, catches bugs early, and ensures that the code meets your requirements. Visual Studio Code's AI capabilities can enhance your TDD workflow by guiding you through the different phases of writing tests, implementing code, running tests, and optimizing the code.
+Test-driven development (TDD) starts with a test that detects missing behavior, followed by the implementation that makes it pass. You then refactor while keeping the tests passing. These small [red-green-refactor cycles](https://martinfowler.com/bliki/TestDrivenDevelopment.html) give you evidence for each change.
 
-This guide shows you how to set up an AI-assisted test-driven development workflow in VS Code by using custom agents, handoffs, and custom instructions. The TDD roles and instructions apply to both the Local and Copilot agent harnesses. The runnable workflow in this guide uses the Local harness `feature(local-harness)` in the Chat view because it relies on handoff actions between the TDD agents.
+This guide shows you how to use an agent in Visual Studio Code for each phase, with a review checkpoint before you move to the next. Use the **Copilot** harness in the Chat view and your own repository. Custom agents and handoffs aren't required.
 
-**TDD overview**
-
-The core tenet of test-driven development is to write tests before implementation. The tests define the desired outcomes for the functionality you want to build. By writing tests first, you clarify requirements and identify edge cases to ensure that your code behaves as expected.
-
-TDD follows a three-phase cycle known as [red-green-refactor](https://martinfowler.com/bliki/TestDrivenDevelopment.html) and repeats for each small increment of functionality.
-
-The three phases are:
-
-* **Red phase**: Write a failing test for the functionality you want to develop.
-
-* **Green phase**: Write the minimal application code needed to make the test pass. Focus on making it work, not making it perfect.
-
-* **Refactor phase**: Improve the code quality while keeping all tests passing. Clean up duplication, improve naming, and enhance structure.
+If you want to cover behavior that already exists rather than develop new behavior, start with [Test existing code with AI](/docs/agents/guides/test-code-with-ai.md).
 
 ## Prerequisites
 
-Use your own repository for this workflow. Before you start:
+* [Set up GitHub Copilot](/docs/setup/copilot.md).
+* Open your repository in VS Code.
+* Install the project's dependencies and confirm that its test command runs from the integrated terminal.
 
-* Open the repository root as a folder or workspace in VS Code. The workflow stores shared customization files under `.github`.
-* Open the Chat view and select **Local** `feature(local-harness)` from the **Session Target** control. Run the TDD cycle and its handoffs in this view.
-* Install the project dependencies and confirm that you can run its test command from the integrated terminal. The custom agents use that command to verify each phase.
+If the project has no testing setup, [choose a framework and establish a test command](/docs/agents/guides/test-code-with-ai.md#identify-the-testing-setup) before starting the TDD cycle.
 
-If you use another harness, follow the guidance for [reusing customizations across harnesses](/docs/agent-customization/overview.md#reuse-customizations-across-harnesses) to adapt these TDD roles. You can package a portable workflow as an [agent skill](/docs/agent-customization/agent-skills.md).
+## Keep a review checkpoint between phases
 
-## Implementation overview
+Use separate requests for each phase instead of asking the agent to implement the entire feature at once.
 
-You can implement an AI-assisted TDD workflow in VS Code by using custom agents. Each phase of the TDD process (red, green, refactor) has a specific goal and requires different AI behavior. You create a custom agent for each phase that defines the specific role and guidelines for that phase.
+| Phase | Agent's task | Evidence to review before continuing |
+|-------|--------------|--------------------------------------|
+| Red | Add a focused test without implementing the behavior. | The test runs and fails because the expected behavior is missing. |
+| Green | Implement the behavior without weakening the test. | The new test and relevant existing tests pass. |
+| Refactor | Improve the structure without changing behavior, if needed. | The tests still pass and the diff stays within scope. |
 
-With custom agent handoffs, you can transition from one phase to the next once the AI completes its task. The custom agents are connected in a cycle that mirrors the TDD workflow:
+One agent can handle all three phases. Your separate requests and review checkpoints keep you involved; separate custom agents are an optional way to reuse the roles.
 
-* **Red phase** → runs a new test to verify that it fails for the expected reason, then hands off to **Green phase**
-* **Green phase** → runs tests to verify implementation, then hands off to **Refactor phase**
-* **Refactor phase** → runs tests to ensure they still pass, then hands off back to **Red phase** to start the next cycle
+## Establish the baseline
 
-If you have established test conventions, you can use [custom instructions](/docs/agent-customization/custom-instructions.md) to set up a testing context that guides the AI in generating tests that align with your project's standards.
+1. Open the Chat view (``Shortcut: workbench.action.chat.open``), start a new chat, and select **Copilot** as the **Session Target** and **Agent** from the agent picker.
 
-The following diagram shows how custom agents work together to implement the TDD workflow, with handoffs enabling smooth transitions between phases.
+1. Ask the agent to identify and run the relevant existing tests:
 
-![Diagram that shows the TDD implementation diagram for VS Code with testing instructions, and custom agents for the red, green, and refactor phases.](../images/test-driven-development-guide/tdd-implementation-diagram.png)
+    ```prompt
+    Inspect this project's test framework, test locations, and conventions.
+    Identify the commands for a focused test run and the related suite.
+    Run the relevant existing tests and report any failures or skipped tests.
+    Do not edit files, install dependencies, or change configuration.
+    ```
 
-> [!TIP]
-> You can further enhance the TDD workflow by adding a planning phase before starting the cycle. You can use the built-in plan agent or create a custom planning agent that helps clarify requirements and identify edge cases to cover with tests.
+1. Review the output and record existing failures. Resolve setup problems before proceeding so you can distinguish a new failing assertion from a test that can't run.
 
-## Step 1: Set up testing guidelines
+## Define one behavior
 
-If you have established test conventions and practices, create a custom instructions file (`testing.instructions.md`) to help the AI generate tests that align with your project's standards.
+Describe the expected behavior independently of the current implementation. Choose a small increment rather than asking the agent to generate a complete feature and its tests.
 
-**Why this helps**: Without explicit test conventions, AI might generate tests that don't match your project's style, use inconsistent patterns, or miss important test scenarios.
+For example, suppose you're adding a username validator with this contract:
 
-To set up testing guidelines:
+* Accept names containing 3 to 20 ASCII letters, digits, or underscores.
+* Reject names outside that length range.
+* Reject spaces and other characters.
 
-1. Run the **Chat: Create Instructions File** command in the Command Palette to create a new instructions file in your workspace.
+Start with the minimum length rule: `ab` is invalid and `abc` is valid. Later cycles can cover the maximum length and allowed characters. Adapt the function name and file paths to your project, and clarify unspecified inputs, such as `null`, before testing them.
 
-    * Select `.github/instructions` to create the instructions file in your workspace.
-    * Enter "testing" as the name for the instructions file.
+## Red: add and run a failing test
 
-    > [!NOTE]
-    > By using a `*.instructions.md` file instead of the `copilot.instructions.md` file, you can selectively apply these testing guidelines only to test files in your project instead of including them in all AI interactions.
+1. Ask the agent to add only the tests for the first increment:
 
-1. Update the instructions `applyTo` metadata to automatically apply them to test files. Also set the `description` metadata to indicate that these instructions provide testing context.
+    ```prompt
+    Add focused tests for validateUsername using the existing test framework.
+    For this increment, "ab" must return false and "abc" must return true.
+    Keep expected values explicit and independent of the implementation.
 
-    The following example updates the `applyTo` field to target all files in the `tests/` directory:
+    Do not implement the behavior or refactor existing code. If a new
+    function or type needs a minimal placeholder for tests to execute,
+    explain what is needed and wait for approval.
+
+    Run the targeted tests. Report the command, actual failure, and why
+    it demonstrates missing behavior rather than a test setup problem.
+    Stop after the test run so I can review it.
+    ```
+
+1. Review the test code and failure output. Confirm that the tests call the intended code and fail on the expected behavior, not an unrelated import, dependency, or configuration error.
+
+If the tests already pass, the selected behavior might already exist. Review the assertions and choose the next missing behavior; don't break correct code to manufacture a failing test.
+
+## Green: implement the behavior
+
+After you confirm the red-phase result, ask for the smallest implementation that satisfies the current tests:
+
+```prompt
+Implement the behavior covered by the failing tests. Preserve existing
+behavior and follow the project's conventions. Do not add unrelated
+features, dependencies, or refactoring.
+
+Do not delete or weaken assertions, skip tests, or change expected values
+to make the suite pass. If a test conflicts with the agreed requirements,
+explain the conflict before changing it.
+
+Run the targeted tests and the related suite. Report results, including
+failures, skipped tests, and anything you couldn't run. Stop for review.
+```
+
+Review the implementation diff and actual test output. The current tests should pass without changing their meaning, and previously passing related tests should remain passing.
+
+If a test fails, [identify whether the cause is setup, the expectation, or the implementation](/docs/agents/guides/test-code-with-ai.md#run-tests-and-investigate-failures) before accepting another edit.
+
+## Refactor: improve structure without changing behavior
+
+Refactor only when the passing implementation needs cleanup. A cycle doesn't require a refactor if the code is already clear.
+
+```prompt
+Review the passing implementation for a small, useful refactor.
+If none is needed, say so and leave the files unchanged.
+
+If you refactor, preserve observable behavior and the existing assertions.
+Do not add functionality or unrelated cleanup. Run the targeted tests and
+related suite afterward, then summarize the changes and results for review.
+```
+
+[Review the diff](/docs/agents/run/review-code-edits.md) and confirm that the tests still pass. If the refactor requires changing assertions, check whether the tests depend on implementation details or the proposed change alters behavior.
+
+Repeat the cycle for the next requirement. In the username example, add cases at lengths 20 and 21, then cover allowed and disallowed characters. Keep each increment small enough to review.
+
+## Make the workflow repeatable
+
+Once the workflow works in your project, save its conventions rather than repeating them in every request.
+
+### Save project instructions
+
+1. Run **Chat: Open Customizations** from the Command Palette (``Shortcut: workbench.action.showCommands``) and select **Instructions** in the Agent Customizations editor.
+
+1. Open your existing project instructions. If none exist, select `+` next to **Workspace** and choose a project instructions file offered for the Copilot harness.
+
+1. Add the verified test commands, framework, file locations, and relevant mocking conventions. Include safeguards such as:
 
     ```markdown
-    ---
-    description: 'Use these guidelines when generating or updating tests.'
-    applyTo: tests/**
-    ---
+    * Work on one agreed behavior at a time.
+    * In the red phase, add a test and confirm the expected failure before
+      implementing behavior.
+    * Do not weaken assertions, skip tests, or change expected values solely
+      to make tests pass.
+    * Run focused tests and the related suite after implementation changes.
+      Report failures, skipped tests, and checks that could not run.
+    * Stop for review between red, green, and refactor phases.
     ```
 
-1. Add your project's testing guidelines to the body of the instructions file.
+1. Save the instructions and [verify them in a new chat](/docs/agent-customization/custom-instructions.md#verify-your-instructions).
 
-    The following example provides a starting point for test conventions:
+If you prefer to create the file directly, use `.github/copilot-instructions.md` or `AGENTS.md` at the repository root. Keep phase and review rules in project-wide instructions because they apply to implementation changes as well as tests. For test-file-specific conventions, use [file-based instructions](/docs/agent-customization/custom-instructions.md#apply-instructions-to-specific-files-or-tasks).
 
-    ```markdown
-    ---
-    description: 'Use these guidelines when generating or updating tests.'
-    applyTo: tests/**
-    ---
-    # [Project Name] Testing Guidelines
+### Optionally create separate phase agents
 
-    ## Test conventions
-    * Write clear, focused tests that verify one behavior at a time
-    * Use descriptive test names that explain what is being tested and the expected outcome
-    * Follow Arrange-Act-Assert (AAA) pattern: set up test data, execute the code under test, verify results
-    * Keep tests independent - each test should run in isolation without depending on other tests
-    * Start with the simplest test case, then add edge cases and error conditions
-    * Tests should fail for the right reason - verify they catch the bugs they're meant to catch
-    * Mock external dependencies to keep tests fast and reliable
-    ```
+If your team repeatedly uses the same roles, open **Agents** in the Agent Customizations editor and select **New Agent** next to **Workspace**. Follow [Create a custom agent](/docs/agent-customization/custom-agents.md#create-a-custom-agent), using each phase's task and review criteria from this guide as its instructions.
 
-    > [!TIP]
-    > You can create an optional test structure template that defines sections and patterns for different test types (for example, `test-template.md`). Reference this template in your instructions file so the AI uses it when generating tests.
+Select the next phase's agent manually after reviewing the previous result. Verify the agents with your chosen harness before sharing them with the team.
 
-## Step 2: Create red phase custom agent
+> [!IMPORTANT]
+> Instructions guide behavior but don't enforce file-level restrictions. An agent with editing or terminal tools can change both tests and implementation. Review the diff and test output at every checkpoint.
 
-Create a "TDD-red" custom agent that focuses on the red phase of TDD. This custom agent is only responsible for writing failing tests based on the provided requirements and should not implement any application code. When completed, this agent hands off to the green phase custom agent.
+### Existing Local handoff workflows
 
-**Why this helps**: Without a focused mode, the AI might mix implementation suggestions with test creation, and miss the core TDD principle of writing tests first.
+The Local harness is deprecated `feature(local-harness)`. If you already use custom-agent handoffs, see the [Local handoff guidance](/docs/agent-customization/custom-agents.md#handoffs) and [move your workflow to the Copilot harness](/docs/agents/run/move-to-copilot.md). Handoff buttons aren't required for the review-driven workflow in this guide.
 
-To create the `.github/agents/TDD-red.agent.md` red phase [custom agent](/docs/agent-customization/custom-agents.md):
+## Next steps
 
-1. Run the **Chat: New Custom Agent** command in the Command Palette.
-
-    * Select `.github/agents` to create the custom agent definition in your workspace.
-    * Enter "TDD-red" as the name for the custom agent.
-
-1. Update the custom agent definition to describe the guidelines and rules for the red phase, and to specify a handoff to the green phase custom agent.
-
-    The following `TDD-red.agent.md` file provides a starting point for the red phase.
-
-    ```markdown
-    ---
-    name: TDD Red
-    description: TDD phase for writing FAILING tests
-    disable-model-invocation: false
-    user-invocable: true
-    tools: ['read', 'edit', 'search', 'execute']
-    handoffs:
-      - label: TDD Green
-        agent: TDD Green
-        prompt: Implement minimal implementation
-    ---
-    You are a test writer. When given a function name, specification, or requirements, write a complete test file or test function that asserts the expected behavior. Use the project's style and conventions. Do not write implementation code.
-
-    Run the targeted test and verify that it fails for the expected reason before handing off.
-    ```
-
-## Step 3: Create green phase custom agent
-
-Create a "TDD-green" custom agent that focuses on the green phase of TDD. This custom agent is only responsible for writing the minimal implementation code to make the tests pass, without modifying the test code. After implementing, this agent runs the tests to verify they pass, then hands off to the refactor phase custom agent.
-
-To create the `.github/agents/TDD-green.agent.md` green phase [custom agent](/docs/agent-customization/custom-agents.md):
-
-1. Run the **Chat: New Custom Agent** command in the Command Palette.
-
-    * Select `.github/agents` to create the custom agent definition in your workspace.
-    * Enter "TDD-green" as the name for the custom agent.
-
-1. Update the custom agent definition to describe the guidelines and rules for the green phase, and to specify a handoff to the refactor phase custom agent.
-
-    The following `TDD-green.agent.md` file provides a starting point:
-
-    ```markdown
-    ---
-    name: TDD Green
-    description: TDD phase for writing MINIMAL implementation to pass tests
-    disable-model-invocation: false
-    user-invocable: true
-    tools: ['read', 'search', 'edit', 'execute']
-    handoffs:
-      - label: TDD Refactor
-        agent: TDD Refactor
-        prompt: Refactor the implementation
-    ---
-
-    You are a code-implementer. Given a failing test case and context (existing codebase or module), write the minimal code change needed so that the test passes - no extra features. Do not write tests, only implementation.
-
-    After implementing changes, run the tests to verify they pass.
-    ```
-
-## Step 4: Create refactor phase custom agent
-
-Create a "TDD-refactor" custom agent that focuses on the refactor phase of TDD to improve code quality while keeping all tests passing. This agent is responsible for cleaning up code, removing duplication, improving naming, and enhancing structure without changing functionality. After refactoring, this agent runs the tests to ensure they still pass, then hands off back to the red phase to start the next TDD cycle.
-
-To create the `.github/agents/TDD-refactor.agent.md` refactor phase [custom chat agent](/docs/agent-customization/custom-agents.md):
-
-1. Run the **Chat: New Custom Agent** command in the Command Palette.
-
-    * Select `.github/agents` to create the custom agent definition in your workspace.
-    * Enter "TDD-refactor" as the name for the custom agent.
-
-1. Update the custom agent definition to describe the guidelines and rules for the refactor phase.
-
-    The following `TDD-refactor.agent.md` file provides a starting point:
-
-    ```markdown
-    ---
-    name: TDD Refactor
-    description: Refactor code while maintaining passing tests
-    tools: ['search', 'edit', 'read', 'execute']
-    disable-model-invocation: false
-    user-invocable: true
-    handoffs:
-      - label: TDD Red
-        agent: TDD Red
-        prompt: Start next TDD cycle with new test
-    ---
-    You are refactor-assistant. Given code that passes all tests, examine it and suggest or apply refactoring to improve readability/structure/DRYness, without changing behavior. No new functionality, no breaking changes.
-
-    After refactoring, run the tests to ensure all tests still pass and behavior is preserved.
-    ```
-
-## Use the TDD workflow to implement features
-
-Now that the TDD custom agents are set up, you can use them to implement features in your project using the TDD workflow.
-
-1. Open the Chat view and select the **TDD Red** agent from the agent dropdown menu.
-
-1. Provide a prompt that describes the feature or behavior you want to test.
-
-    For example:
-
-    ```text
-    Write tests for user registration with email validation and password requirements.
-    ```
-
-1. Review the generated tests and use the handoff actions to transition through the TDD cycle:
-
-    * Confirm that the new test fails for the expected reason, and then select **TDD Green** to implement the minimal code that makes the test pass.
-    * Confirm that the green agent's test run passes, and then select **TDD Refactor** to improve code quality.
-    * Confirm that the refactor agent's test run still passes, and then select **TDD Red** to start the next cycle with additional functionality.
-
-    Each handoff switches to its named agent and fills the chat input with the next prompt. Review or edit the prompt before you submit it. The handoffs don't submit automatically because their configurations omit the `send` property.
-
-## Troubleshooting and best practices
-
-### Common TDD pitfalls with AI
-
-**Running TDD without handoffs**: Using a single agent to complete the entire TDD cycle removes the human from the loop. Handoffs provide control points where you can assess each step, verify the AI's work, and steer the agent in the right direction before moving to the next phase.
-
-**Missing test coverage for features**: TDD agents focus on making existing tests pass and won't implement features that don't have corresponding tests. Ensure every requirement in your specification has test coverage before expecting the implementation to include it.
-
-**Skipping the red phase**: AI might suggest implementing code before writing tests.
-
-**Over-implementation**: AI might generate more code than needed to pass the current test. Review implementations critically and remove unnecessary complexity.
-
-**Testing implementation details**: Tests should verify behavior, not implementation. If refactoring requires changing tests, they might be too tightly coupled to implementation details.
-
-**Incomplete test coverage**: AI might miss edge cases or error conditions. Review generated tests critically and ask for additional tests covering boundary conditions, error scenarios, and edge cases.
-
-### Best practices for TDD with AI
-
-**Choose the right model for the task**: Different language models have different strengths. Consider using reasoning models for complex test generation and edge case identification. Use the model picker in the Chat view to switch models during your TDD workflow or define the `model` in your custom agent properties.
-
-**Validate test quality**: After AI generates a test, review it to ensure it fails for the right reason. Run the test before implementing to verify it catches the missing functionality.
-
-**Maintain incremental progress**: Take small steps through the TDD cycle. Write one test, implement minimal code, refactor, then repeat. Small iterations prevent large mistakes and keep the codebase working.
-
-**Run tests frequently**: Execute tests immediately after changes. Don't accumulate multiple changes before testing. Frequent test runs provide rapid feedback and catch issues early.
-
-**Use test coverage as a guide**: High coverage doesn't guarantee quality, but low coverage indicates untested behavior. Ask AI to suggest tests for uncovered code paths.
-
-**Maintain test independence**: Tests should run in any order without affecting each other. If tests depend on execution order or shared state, refactor to make them independent.
-
-**Update test context as needed**: As your project evolves, update the testing guidelines in your instructions file to reflect new conventions, frameworks, or practices.
-
-## Related resources
-
-Learn more about testing and AI customization in VS Code:
-
-* [Testing with AI](/docs/agents/guides/test-code-with-ai.md)
-* [Custom agents](/docs/agent-customization/custom-agents.md)
-* [Custom instructions](/docs/agent-customization/custom-instructions.md)
-* [Running tests with VS Code](/docs/debugtest/testing.md)
+* Apply a failing-test-first workflow to [fix an API bug](/docs/agents/guides/fix-a-bug-with-agents.md).
+* Use existing tests to [refactor safely](/docs/agents/guides/refactor-safely.md).
 
 
 ---
