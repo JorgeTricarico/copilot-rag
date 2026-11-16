@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-11-15T05:38:39.390614+00:00
-- **Total Palabras**: 159,191 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-16T05:38:53.567266+00:00
+- **Total Palabras**: 159,419 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -6165,8 +6165,8 @@ Keep the verified summary with your task. Promote stable project knowledge to sh
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/fix-a-bug-with-agents.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/fix-a-bug-with-agents
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/fix-a-bug-with-agents.md
-- **SHA256_FINGERPRINT**: `04fdcb94750fb5e66d595b278435e45c360cf495bf2e8f294722fdb2ca37d8ff`
-- **LAST_VERIFIED_UTC**: 2026-11-15T05:38:34.959351+00:00
+- **SHA256_FINGERPRINT**: `47313df34ebeaa888af43a4467be5a2d6180284374ebddb8d2865697e1133e60`
+- **LAST_VERIFIED_UTC**: 2026-11-16T05:38:48.341664+00:00
 ---
 
 **MetaDescription**: Fix an API bug with an agent in VS Code, add regression tests, and verify the result.
@@ -6507,6 +6507,24 @@ Use the same checkpoints with your existing codebase:
 1. Ask the agent to investigate without editing files. If the symptom depends on runtime state, use the [debugger](/docs/debugtest/debugging.md) to inspect the failing path and share relevant stack traces or variable values.
 1. Add a regression test using the existing framework. Confirm that it fails because of the reported behavior before changing implementation code.
 1. Request a focused fix, run the targeted tests and related suite, and repeat the original reproduction. Review the diff before committing.
+
+Use this prompt to start the investigation. Replace the placeholders with your reproduction and the evidence you collected. Remove credentials and other sensitive values from any output you share.
+
+```prompt
+Investigate this bug in the attached code. Do not edit files yet.
+
+Reproduction: <command or minimal steps, including relevant input>
+Expected result: <the behavior required by the contract>
+Actual result: <observed output or error>
+Debugger findings: <relevant stack trace or variable values, if available>
+Test setup: <framework, runtime or interpreter, and working directory>
+Test command: <the project's command for the relevant tests>
+
+Run the reproduction and relevant existing tests if the environment is
+available. Explain the cause with file references and propose a regression
+test that fails on the reported behavior. Identify anything you couldn't
+verify, and stop for review before changing code.
+```
 
 If you can't reproduce the issue or the expected behavior is unclear, resolve that uncertainty before asking the agent to implement a fix.
 
@@ -8017,8 +8035,8 @@ You finish with a smaller or clearer implementation and evidence that the behavi
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/test-code-with-ai.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/test-code-with-ai
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/test-code-with-ai.md
-- **SHA256_FINGERPRINT**: `5cdf66233fd45ca829175f7251da99f02bfe6a59705db9582a63befd846d2cc3`
-- **LAST_VERIFIED_UTC**: 2026-11-15T05:38:34.954291+00:00
+- **SHA256_FINGERPRINT**: `db22265310186a8d6c8642dd492d1f992d9bdd14fcea8665f02335e73fab6ed1`
+- **LAST_VERIFIED_UTC**: 2026-11-16T05:38:48.344669+00:00
 ---
 
 **MetaDescription**: Add and run tests for existing code with AI in Visual Studio Code, then review assertions, failures, and coverage.
@@ -8043,6 +8061,8 @@ A testing extension is optional for running tests in the terminal. To discover a
 
 Reuse the project's framework and test conventions instead of introducing a new test runner. This helps new tests work with existing test commands and avoids adding a second setup to maintain.
 
+Match the runtime or interpreter, working directory, environment setup, and runner options to the project's usual test run. An agent's terminal command doesn't necessarily use the same configuration as Test Explorer.
+
 1. Open the Chat view (``Shortcut: workbench.action.chat.open``), start a new chat, and select **Copilot** as the **Session Target** and **Agent** from the agent picker.
 
 1. Ask the agent to inspect the project before making changes:
@@ -8050,14 +8070,18 @@ Reuse the project's framework and test conventions instead of introducing a new 
     ```prompt
     Inspect this project's testing setup. Identify the test framework,
     where tests belong, and the commands for running a single test file
-    and the related suite. Find an existing test that demonstrates the
-    project's naming, assertions, and mocking conventions.
+    and the related suite. Include the runtime or interpreter, working
+    directory, required environment setup, and runner options.
+    Find an existing test that demonstrates the project's naming,
+    assertions, and mocking conventions.
     Do not edit files or install dependencies.
     ```
 
-1. Review the identified commands and ask the agent to run the relevant existing tests as a baseline. Record any failures so you can distinguish them from failures introduced by new tests.
+1. Confirm that the identified commands use the intended environment and test selection, then ask the agent to run the relevant existing tests as a baseline. Record any failures so you can distinguish them from failures introduced by new tests.
 
 If the project has no tests, ask the agent to propose a framework and a minimal setup first. Review the proposal before asking it to install dependencies or change configuration.
+
+If tests pass in Test Explorer but fail in the agent's terminal, compare the environment, runner options, and selected tests before changing assertions or implementation code. Provide a known working command and the failure output to help the agent isolate the difference.
 
 > [!TIP]
 > To reuse your testing conventions and safeguards across sessions, see [Make the workflow repeatable](#make-the-workflow-repeatable).

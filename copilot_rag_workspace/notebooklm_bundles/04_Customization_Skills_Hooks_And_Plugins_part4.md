@@ -1,5 +1,5 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part4
-- **Generado (UTC)**: 2026-11-14T17:48:14.409579+00:00
+- **Generado (UTC)**: 2026-11-16T05:38:53.522874+00:00
 - **Total Palabras**: 449,555 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
@@ -12019,8 +12019,8 @@ without modifying the event log.
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/gem-devops-guidelines/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/gem-devops-guidelines/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/gem-devops-guidelines/SKILL.md
-- **SHA256_FINGERPRINT**: `34ebc577af926db7263649311d25ee5c9311e4938c65a7ba6a92ed744df5cedb`
-- **LAST_VERIFIED_UTC**: 2026-11-03T05:55:35.462891+00:00
+- **SHA256_FINGERPRINT**: `d38883c7f8ce1e4d1bdbe08b2e848357a671ac3fa2b5c589073e10410e4e48f4`
+- **LAST_VERIFIED_UTC**: 2026-11-16T05:38:50.397443+00:00
 ---
 
 **description**: Design or review infrastructure, deployment, CI/CD, Docker, Kubernetes, health checks, rollback, feature flags, production readiness, and mobile release workflows. Use for DevOps, platform, container, pipeline, or release tasks.
@@ -12106,7 +12106,7 @@ Use environment variables (Twelve-Factor), separated by environment. Validate at
 - EAS: `eas build:configure`; `eas build -p ios|android --profile preview`; `eas update --branch production`; `--auto-submit`.
 - Fastlane: iOS `match`/`cert`/`sigh`/`pilot`; Android Gradle/`supply`.
 - Credentials in env/secret storage, never Git. Automate iOS signing with `fastlane match`; use `keytool` + Google Play App Signing for Android.
-- TestFlight: internal instant; external 90 days/100 testers. Google Play: internal/beta/production. Expect 1–7 days review.
+- TestFlight: internal instant; external 90 days/100 testers. Google Play: internal/beta/production. Expect 1-7 days review.
 - Rollback: EAS `eas update:rollback`; native release -> revert build; store release -> reduce phased rollout.
 
 
