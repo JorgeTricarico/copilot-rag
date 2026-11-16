@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-14T05:39:41.230482+00:00
-- **Total Palabras**: 18,869 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-16T21:47:50.942933+00:00
+- **Total Palabras**: 19,636 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1533,6 +1533,111 @@ We really appreciate people trying our new features as soon as they are ready, s
 
 
 ---
+# DOCUMENT_SOURCE: vscode_insiders::endgame-plan_348483
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/348483
+- **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/348483
+- **SHA256_FINGERPRINT**: `e43c6ed635e65240ccd7e2fc802a9be71e62dd31a296d26b8c7652eb89f3c8a4`
+- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:50.749865+00:00
+---
+
+# VS Code Insiders Roadmap: 1.147.0 Endgame
+- **Issue Number**: #348483
+- **Category**: `endgame-plan`
+- **State**: open
+- **Source Issue**: https://github.com/microsoft/vscode/issues/348483
+
+[Endgame guide](https://github.com/microsoft/vscode-internalbacklog/blob/main/guidelines/endgame-guide.md)
+
+# Before Monday 6AM Zurich time
+
+`@team`:
+- Update endgame availability
+- Test plan items created
+- Milestone only has TPIs. All other issues need to be closed
+- All closed issues in milestone labeled `on-testplan`, `bug`, or `verification-needed`
+- Verification steps added to `bug` and `verification-needed` issues
+
+# Monday morning  (Zurich)
+
+`@endgame-champ`:
+- [x] Unpin the previous endgame plan from the [VS Code issue tracker](https://github.com/microsoft/vscode/issues)
+- [x] Pin this endgame plan in the [VS Code issue tracker](https://github.com/microsoft/vscode/issues)
+- [x] Assign TPIs
+  - [x] Create TPI's for all verification needed bugs. Visit `Testing and Verification` on tools site, and generate groupings, then create TPIs. The TPI section below  will update with all of the generated items.
+- [x] Pause automatic releases (this also ensures chat-pre-release isn't released) after 10am. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=383))
+- [x] Run the [Start Endgame](https://github.com/microsoft/vscode-engineering/actions/workflows/start-endgame.yml) workflow
+
+  - PRs opened with auto-merge enabled — ensure they get reviewed and merged Monday morning so Insiders picks up the next milestone version:
+    - [x] Version bump (`microsoft/vscode`): https://github.com/microsoft/vscode/pull/348492
+    - [x] Endgame notebook milestone bump (`microsoft/vscode`): https://github.com/microsoft/vscode/pull/348491
+
+  - If you need to run these steps manually, see the [Branching guide](https://github.com/microsoft/vscode-internalbacklog/blob/main/guidelines/endgame-guide.md#branching).
+- [x] In absence of the tech writer, follow the steps in the [website endgame issue](https://github.com/microsoft/vscode-website/wiki#performing-a-weekly-release)
+
+# Monday morning (Redmond and Zurich)
+
+`@team`:
+- [Test plan items](https://github.com/issues?q=org%3Amicrosoft%20milestone%3A%221.147.0%22%20is%3Aissue%20is%3Aopen%20label%3Atestplan-item). All TPIs must be finished by noon. This includes verification TPIs.
+- Make sure your TPIs are being tested and ping folks if to confirm they will finish by noon.
+
+# Monday afternoon (Redmond and Zurich)
+
+`@team`:
+- Fix essential issues. Default to pushing to next iteration
+- Release notes
+
+# Monday EOD Redmond time
+
+`@team`:
+- All issues including late fixes, are verified ([query](https://github.com/issues?q=org%3Amicrosoft+milestone%3A%221.147.0%22+is%3Aissue+is%3Aclosed+reason%3Acompleted++label%3Abug+-label%3Averified+-label%3Aon-testplan+-label%3A*duplicate+-label%3Aduplicate+-label%3Ainvalid+-label%3A*as-designed+-label%3Aerror-telemetry+-label%3Averification-steps-needed+-label%3Az-author-verified+-label%3Aunreleased+-label%3A*not-reproducible+-label%3A*out-of-scope+sort%3Aupdated-asc))
+- Release notes written
+
+`@endgame-champ`:
+- [x] Build and release Insiders from `release/<x.y>` branch so we can finish verification. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
+- [ ] Build stable from `release/<x.y>` branch (do not release) so that the Zurich team would have a build to release given no candidates. ([Pipline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
+
+# Tuesday by noon CET
+
+`@team`:
+- Fix essential issues. Default to pushing to next iteration
+- Release notes
+
+`@endgame-champ`:
+- [ ] Generate "Thank you" section of the release notes in the `vnext` branch of the `vscode-docs` repo.
+    - [ ] [Acknowledge third-party pull requests](https://tools.code.visualstudio.com/acknowledgement) in release notes.
+    - [ ] Acknowledge [issue trackers](https://github.com/microsoft/vscode-internalbacklog/wiki/Community-Triage---Credits#community-triage---role-based) from the community (do the copy-paste variant) -
+- [ ] If this is not Patch Tuesday only:
+  - [ ] Build and release insiders from release/<x.y> (if there have been newer changes since last release)
+  - [ ] Build stable from release/<x.y> and release to MSFT folks
+  - [ ] Reenable automatic releases
+    - A build is scheduled for 7:00 PM Zurich time (`19:00 GMT+2`); make sure automatic releases are reenabled before then so we get an Insiders build from `main` on Tuesday evening.
+
+# Tuesday afternoon/Wednesday morning
+
+- In extreme cases, accept candidate changes
+    - [ ] Build stable from `release/<x.y>`. Do *not* bump the VS Code version.
+    - [ ] Release stable to MSFT folks
+
+# Wednesday
+`@endgame-champ`:
+- [ ] Publish website so that in-product release notes are ready
+- [ ] Start Stable rollout to everyone (start percentage: `20%`, end time UTC: `6AM next Wednesday`)
+- [ ] Deploy vscode.dev
+  - [ ] Verify the [release candidate](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) `release/x.y` passed the sanity tests in the last step
+  - [ ] [Kick off deploy](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) (Branch `release/x.y`, Deployment Target `prod`, needs peer approval)
+- [ ] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `auto`; the release pipeline job requires two approvals)
+- [ ] Publish socials (ping Cynthia)
+- [ ] [Publish @types/vscode](https://github.com/microsoft/vscode/wiki/Publish-vscode-types) if you find type diffs after running the steps
+- [ ] Create an official release
+  - [ ] Create a tag (make sure you pull the release branch first): `git tag <x.y.z>`
+  - [ ] Push the tag: `git push origin <x.y.z>`
+  - [ ] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right ... > Create Release. Use the version as title <x.y.z> and use the release link `https://code.visualstudio.com/updates/v<x_y>` for the description
+- [ ] Close milestone (**do not** delete it): https://github.com/microsoft/vscode/milestones
+- [ ] Move all remaining issues to "On Deck"
+- [ ] Ensure that the latest Insiders release from main has succeeded
+
+
+---
 # DOCUMENT_SOURCE: vscode_insiders::iteration-plan_271045
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/271045
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/271045
@@ -2164,11 +2269,18 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `ee0909ce63a7343fbb9ff3f511556ffd7f0789a05655bb20997f6494657a8adf`
-- **LAST_VERIFIED_UTC**: 2026-11-14T05:39:39.650404+00:00
+- **SHA256_FINGERPRINT**: `fc85fc3b0309a6d472de13b527a18b7854acfb9d89336502a75964f0b948f12d`
+- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:47.825226+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
+
+## GitHub Copilot models deprecated on November 16, 2026
+- **Date**: Mon, 16 Nov 2026 20:25:20 +0000
+- **URL**: https://github.blog/changelog/2026-11-16-github-copilot-models-deprecated-on-november-16-2026
+
+As of today, November 16, 2026, we have deprecated the following models across most GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions). Note...
+The post GitHub Copilot models deprecated on November 16, 2026 appeared first on The GitHub Blog .
 
 ## Upcoming deprecation of selected GitHub Copilot models in December
 - **Date**: Fri, 13 Nov 2026 20:40:05 +0000
@@ -2232,10 +2344,3 @@ The post Copilot code review: API management and review overview updates appeare
 
 The Agent adoption chart in the Copilot impact dashboard now includes Copilot Chat and the VS Code Agents window, so you can see engagement across nine Copilot experiences. The adoption...
 The post Copilot impact dashboard adds chat and VS Code agent usage appeared first on The GitHub Blog .
-
-## GitHub Copilot weekly releases — November 2
-- **Date**: Fri, 06 Nov 2026 21:00:26 +0000
-- **URL**: https://github.blog/changelog/2026-11-06-github-copilot-weekly-releases-november-2
-
-This week, Copilot comes to JetBrains Air and Xcode’s coding assistant, with updates to help you manage pull requests, settings, and agent sessions. GitHub Copilot app Set up Agent Merge...
-The post GitHub Copilot weekly releases — November 2 appeared first on The GitHub Blog .

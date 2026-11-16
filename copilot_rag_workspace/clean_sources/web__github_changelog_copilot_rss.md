@@ -1,5 +1,12 @@
 # GitHub Copilot Official Changelog Feed
 
+## GitHub Copilot models deprecated on November 16, 2026
+- **Date**: Mon, 16 Nov 2026 20:25:20 +0000
+- **URL**: https://github.blog/changelog/2026-11-16-github-copilot-models-deprecated-on-november-16-2026
+
+As of today, November 16, 2026, we have deprecated the following models across most GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions). Note...
+The post GitHub Copilot models deprecated on November 16, 2026 appeared first on The GitHub Blog .
+
 ## Upcoming deprecation of selected GitHub Copilot models in December
 - **Date**: Fri, 13 Nov 2026 20:40:05 +0000
 - **URL**: https://github.blog/changelog/2026-11-13-upcoming-deprecation-of-selected-github-copilot-models-in-december
@@ -62,10 +69,3 @@ The post Copilot code review: API management and review overview updates appeare
 
 The Agent adoption chart in the Copilot impact dashboard now includes Copilot Chat and the VS Code Agents window, so you can see engagement across nine Copilot experiences. The adoption...
 The post Copilot impact dashboard adds chat and VS Code agent usage appeared first on The GitHub Blog .
-
-## GitHub Copilot weekly releases — November 2
-- **Date**: Fri, 06 Nov 2026 21:00:26 +0000
-- **URL**: https://github.blog/changelog/2026-11-06-github-copilot-weekly-releases-november-2
-
-This week, Copilot comes to JetBrains Air and Xcode’s coding assistant, with updates to help you manage pull requests, settings, and agent sessions. GitHub Copilot app Set up Agent Merge...
-The post GitHub Copilot weekly releases — November 2 appeared first on The GitHub Blog .

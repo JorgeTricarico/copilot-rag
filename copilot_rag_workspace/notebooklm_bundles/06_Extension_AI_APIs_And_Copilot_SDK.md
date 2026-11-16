@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
-- **Generado (UTC)**: 2026-11-12T19:42:46.950974+00:00
-- **Total Palabras**: 124,780 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-16T21:47:50.939683+00:00
+- **Total Palabras**: 125,343 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -18687,8 +18687,8 @@ By following this pattern, you can ensure that the most important parts of your 
 # DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/tools.md
 - **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/tools
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/tools.md
-- **SHA256_FINGERPRINT**: `3f4abd6a3806ffd6defab1e6c1735e6bfc916896efbc9bad204828d8f96d6e8e`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.526148+00:00
+- **SHA256_FINGERPRINT**: `31f92f4b66b2e17dbda3a073be97e810fd3b2899caba7ef744ecc2484c0d5599`
+- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:44.631052+00:00
 ---
 
 **MetaDescription**: A guide to creating a language model tool and how to implement tool calling in a chat extension
@@ -18757,13 +18757,13 @@ The first step to define a language model tool in your extension is to define it
     | `name` | The unique name of the tool, used to reference the tool in the extension implementation code. Format the name in the format `{verb}_{noun}`. See [naming guidelines](#guidelines-and-conventions). |
     | `displayName` | The user-friendly name of the tool, used for displaying in the UI. |
 
-1. If the tool can be used with [agents](/docs/agents/overview.md#built-in-agents) or referenced in a chat prompt with `#`, add the following properties:
+1. If the tool can be used with [agents](/docs/agents/overview.md) or referenced in a chat prompt with `#`, add the following properties:
 
     Users can enable or disable the tool in the Chat view, similar to how this is done for [Model Context Protocol (MCP) tools](/docs/agent-customization/mcp-servers.md).
 
     | Property | Description |
     | -------- | ----------- |
-    | `canBeReferencedInPrompt` | Set to `true` if the tool can be used with [agents](/docs/agents/overview.md#built-in-agents) or referenced in chat. |
+    | `canBeReferencedInPrompt` | Set to `true` if the tool can be used with [agents](/docs/agents/overview.md) or referenced in chat. |
     | `toolReferenceName` | The name for users to reference the tool in a chat prompt via `#`. |
     | `icon` | The icon to display for the tool in the UI. |
     | `userDescription` | User-friendly description of the tool, used for displaying in the UI. |
@@ -25461,8 +25461,8 @@ declare module 'vscode' {
 # DOCUMENT_SOURCE: web::vscode_api_contribution_points
 - **CANONICAL_URL**: https://code.visualstudio.com/api/references/contribution-points
 - **RAW_SOURCE_URL**: https://code.visualstudio.com/api/references/contribution-points
-- **SHA256_FINGERPRINT**: `0452171dfcdbbbab21a891cc2666bab451de3f100ebf0ba598c60d8be69d1d4a`
-- **LAST_VERIFIED_UTC**: 2026-11-12T19:42:41.626524+00:00
+- **SHA256_FINGERPRINT**: `024b164b8e208fbcc41c56df7452ed3f0e53a40148870ffac16352f73d11560a`
+- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:47.060425+00:00
 ---
 
 # Contribution Points
@@ -25513,6 +25513,10 @@ languageModelChatProviders
 languageModelTools
 - menus
 menus
+- notebookRenderer
+notebookRenderer
+- notebooks
+notebooks
 - problemMatchers
 problemMatchers
 - problemPatterns
@@ -27499,6 +27503,126 @@ The order inside a group depends on the title or an order-attribute. The group-l
 ]
 }
 ```
+
+## contributes.notebookRenderer
+
+Contribute an output renderer for notebooks. Notebook renderers are responsible for taking cell output data with specific MIME types and displaying rich visual representations in notebook cells (ranging from plain text and images to interactive web components).
+Here is a basic notebookRenderer contribution:
+notebookRenderer
+
+```
+{
+"contributes"
+: {
+"notebookRenderer"
+: [
+{
+"id"
+:
+"my-notebook-renderer"
+,
+"displayName"
+:
+"My Custom Output Renderer"
+,
+"entrypoint"
+:
+"./out/renderer.js"
+,
+"mimeTypes"
+: [
+"application/vnd.my-custom-format+json"
+,
+"text/x-custom-data"
+]
+}
+]
+}
+}
+```
+
+notebookRenderer is an array, so your extension can contribute multiple output renderers.
+notebookRenderer
+- id - Unique identifier for the notebook renderer.
+id
+- displayName - Human-readable name of the renderer, displayed in VS Code's UI (such as output format pickers).
+displayName
+- entrypoint - Path to the script loaded in the webview to render output. Can be: A string path relative to the extension root (for example, "./out/renderer.js" ). An object specifying path and extends to augment an existing renderer (for example, {"extends": "vscode.markdown-it-renderer", "path": "./out/customMarkdown.js"} ).
+entrypoint
+- A string path relative to the extension root (for example, "./out/renderer.js" ).
+"./out/renderer.js"
+- An object specifying path and extends to augment an existing renderer (for example, {"extends": "vscode.markdown-it-renderer", "path": "./out/customMarkdown.js"} ).
+path
+extends
+{"extends": "vscode.markdown-it-renderer", "path": "./out/customMarkdown.js"}
+- mimeTypes - Array of MIME types that the renderer handles. Output with matching MIME types will be routed to this renderer.
+mimeTypes
+- requiresMessaging - (optional) Defines if communication with the extension host via createRendererMessaging is required. Possible values are "always" , "optional" , and "never" (default).
+requiresMessaging
+createRendererMessaging
+"always"
+"optional"
+"never"
+You can learn more in the Notebooks extension guide.
+
+## contributes.notebooks
+
+The notebooks contribution point is how your extension tells VS Code about the notebook document providers it supports. VS Code uses this to determine which notebook type to associate with matching files and how to identify your notebook in the UI.
+notebooks
+Here is a basic notebooks contribution:
+notebooks
+
+```
+{
+"contributes"
+: {
+"notebooks"
+: [
+{
+"type"
+:
+"my-custom-notebook"
+,
+"displayName"
+:
+"My Custom Notebook"
+,
+"selector"
+: [
+{
+"filenamePattern"
+:
+"*.customnb"
+}
+]
+}
+]
+}
+}
+```
+
+notebooks is an array, so your extension can contribute multiple notebook types.
+notebooks
+- type - Unique identifier for the notebook type. This is used in code when registering your notebook serializer with vscode.workspace.registerNotebookSerializer and controllers with vscode.notebooks.createNotebookController .
+type
+vscode.workspace.registerNotebookSerializer
+vscode.notebooks.createNotebookController
+- displayName - Human-readable name of the notebook type displayed in VS Code's UI.
+displayName
+- selector - Specifies which files the notebook is enabled for. An array of objects containing: filenamePattern - A glob pattern matching file names or extensions (for example, "*.customnb" or "**/notebooks/*.json" ). excludeFileNamePattern - (optional) A glob pattern specifying files to exclude from matching this notebook type.
+selector
+- filenamePattern - A glob pattern matching file names or extensions (for example, "*.customnb" or "**/notebooks/*.json" ).
+filenamePattern
+"*.customnb"
+"**/notebooks/*.json"
+- excludeFileNamePattern - (optional) A glob pattern specifying files to exclude from matching this notebook type.
+excludeFileNamePattern
+- priority - (optional, deprecated) Controls if the notebook editor is enabled automatically when opening a matching file. Possible values are "default" (attempt to use by default) and "option" (not default, but selectable by the user). Can be overridden by the user with the workbench.editorAssociations setting.
+priority
+"default"
+"option"
+workbench.editorAssociations
+You can learn more in the Notebooks extension guide.
 
 ## contributes.problemMatchers
 

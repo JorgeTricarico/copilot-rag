@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-11-14T05:39:41.229094+00:00
-- **Total Palabras**: 25,794 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-16T21:47:50.751531+00:00
+- **Total Palabras**: 25,856 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -71,8 +71,8 @@ When auditing, ensure docs accurately cover these areas:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/best-practices.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/best-practices
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/best-practices.md
-- **SHA256_FINGERPRINT**: `acfd6c51217ba24dddc589acb2531aaccc7e9d5d4ddd9075539b570dbaa01a99`
-- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.624718+00:00
+- **SHA256_FINGERPRINT**: `ac311bde254bd6bea595f30d97ae86bdf73a3d98e0a936473885e7d9c5e3cbaf`
+- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:44.613034+00:00
 ---
 
 **MetaDescription**: Use AI effectively in VS Code by choosing the right workflow, writing focused prompts, and reviewing results.
@@ -214,6 +214,8 @@ You don't need the following techniques to complete a first task. Use them when 
 ### Choose the right model
 
 Start with **Copilot Fusion** or **Auto** when available. If results, speed, or cost don't meet your needs, compare models on the same representative task rather than changing several options at once.
+
+For help choosing between Copilot Fusion, Auto, and individual models, see the [model selection guide](/docs/agents/guides/choose-a-model.md).
 
 * Use the [model picker](/docs/agent-customization/language-models.md) to browse available models and their requirements.
 * Use [**Compare Models**](/docs/agents/run/compare-models.md) in the Agents window to run the same prompt with multiple models and compare their results side by side.
@@ -940,8 +942,8 @@ The Agent Customizations editor provides a unified marketplace experience (Previ
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/language-models.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/language-models
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/language-models.md
-- **SHA256_FINGERPRINT**: `f5aea44708f14c15a008e01bdb9932f499b64fb99e324d914eabbc05457ac543`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.370542+00:00
+- **SHA256_FINGERPRINT**: `f066c53d731bf854a1efb183b82ac6e91bab12a7cb0c1929a0190d04fbf01965`
+- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:44.606839+00:00
 ---
 
 **MetaDescription**: Understand language models, tokens, context limits, and model choices for AI tasks in VS Code.
@@ -1007,6 +1009,10 @@ Learn how to [configure the thinking effort level](/docs/agent-customization/lan
 
 ## Choose the right model
 
+Start with Fusion, Auto, or an individual model, then evaluate results on your code.
+
+* [Compare and choose models](/docs/agents/guides/choose-a-model.md)
+
 Each model has different strengths. Some are optimized for speed and work well for quick edits and simple questions. Others have larger context windows or better reasoning capabilities, making them ideal for complex tasks. As a general guideline:
 
 * **Fast models** are best for quick code edits, boilerplate generation, and straightforward questions.
@@ -1014,6 +1020,8 @@ Each model has different strengths. Some are optimized for speed and work well f
 * **Large context models** can accommodate more source material or conversation history. The agent still needs to find and include the relevant information.
 
 You can switch models at any time, based on your needs for a particular task. For a detailed comparison, see [Choosing the right AI model for your task](https://docs.github.com/en/copilot/using-github-copilot/ai-models/choosing-the-right-ai-model-for-your-task) in the GitHub Copilot documentation.
+
+For a practical workflow, [compare and choose models for your coding tasks](/docs/agents/guides/choose-a-model.md) using Fusion, Auto, or individual models.
 
 ### Auto model selection
 
@@ -1390,8 +1398,8 @@ Neither replaces the applicable permission controls or your review of the result
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/overview.md
-- **SHA256_FINGERPRINT**: `9cf430e260b12b28136e7cdf3f2ffc4723c8c3b8eba48f63819754b21c9f9f6a`
-- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.612021+00:00
+- **SHA256_FINGERPRINT**: `627b5bee6e8c92d51abf6a6d3d3e22ffd240690867a26b657b020ac740848ee2`
+- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:44.598720+00:00
 ---
 
 **MetaDescription**: Choose AI workflows, models, and agents in VS Code, from inline suggestions to remote sessions.
@@ -1468,7 +1476,7 @@ For a first agent task, [use the quickstart](/docs/agents/quickstart.md) without
 
 | Choice | Options |
 |--------|---------|
-| **Models** | Choose [models from multiple providers](/docs/agent-customization/language-models.md) through GitHub Copilot, or use your own [API key (BYOK)](/docs/agent-customization/language-models.md#bring-your-own-language-model-key) or a supported local model. |
+| **Models** | Choose [models from multiple providers](/docs/agent-customization/language-models.md) through GitHub Copilot, or use your own [API key (BYOK)](/docs/agent-customization/language-models.md#bring-your-own-language-model-key) or a supported local model. For help deciding, [compare and choose models for your tasks](/docs/agents/guides/choose-a-model.md). |
 | **Agent harnesses** | Choose between Copilot, [product.prodname_anthropic_claude_short], or [product.prodname_openai_codex_short] based on its [tools and workflows](/docs/agents/run/agent-harnesses.md#compare-agent-harnesses). |
 | **Access and billing** | Use your existing GitHub Copilot plan, a supported provider account, or an API key. Check [requirements for your harness](/docs/agents/run/agent-harnesses.md#requirements-and-setup). |
 | **Customization** | Tailor agents with [plugins](/docs/agent-customization/agent-plugins.md), [project instructions](/docs/agents/guides/customize-copilot-guide.md), and [skills](/docs/agent-customization/agent-skills.md). Connect external tools through [Model Context Protocol (MCP) servers](/docs/agent-customization/mcp-servers.md). |

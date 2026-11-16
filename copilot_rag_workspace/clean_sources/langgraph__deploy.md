@@ -10,7 +10,7 @@ When you are ready to deploy your LangGraph agent to production, choose a hostin
 
 > [!TIP]
 >
-> LangSmith offers multiple deployment options beyond Cloud, including [hybrid](https://docs.langchain.com/langsmith/hybrid.md), [standalone servers](https://docs.langchain.com/langsmith/deploy-standalone-server.md), and [self-hosted with control plane](https://docs.langchain.com/langsmith/deploy-with-control-plane.md). For more information, see the [LangSmith Agent Server overview](https://docs.langchain.com/langsmith/deployment.md).
+> LangSmith offers multiple deployment options beyond Cloud, including [hybrid](https://docs.langchain.com/langsmith/hybrid.md), [standalone servers](https://docs.langchain.com/langsmith/deploy-standalone-server.md), and [self-hosted with control plane](https://docs.langchain.com/langsmith/deploy-with-control-plane.md). For more information, see [Deploy agents](https://docs.langchain.com/langsmith/deploy-overview.md).
 
 ## LangSmith Cloud
 

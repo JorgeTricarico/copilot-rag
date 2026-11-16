@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-11-16T05:38:53.567266+00:00
-- **Total Palabras**: 159,419 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-16T21:47:50.931993+00:00
+- **Total Palabras**: 160,974 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -5200,6 +5200,182 @@ For browser capabilities, session isolation, and privacy controls, see [Use brow
 
 
 ---
+# DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/choose-a-model.md
+- **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/choose-a-model
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/choose-a-model.md
+- **SHA256_FINGERPRINT**: `e2aa09767ba57a77abbe972999f53468a451a1f2f1880fb77a4335b917101e74`
+- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:44.626189+00:00
+---
+
+**MetaDescription**: Decide when to use Copilot Fusion, Auto, or an individual model, and compare models on coding tasks to balance quality, time, and cost.
+
+# Compare and choose models for your coding tasks
+
+Choosing the right model can be difficult when you need to balance code quality, response time, and cost. This guide helps you decide when to let Copilot choose models, when to select one yourself, and when to compare results on your own code.
+
+## Choose your path
+
+If you're unsure where to start, use Fusion or Auto for your next task and let it choose the model for you. Choose a different path when you need a specific capability or evidence about which model works better for your tasks.
+
+<div class="card-grid">
+    <a class="card" href="#_let-fusion-or-auto-choose">
+        <div>
+            <p><strong>Let Fusion or Auto choose</strong></p>
+            <p>Start coding without hand-selecting a model for each task.</p>
+        </div>
+    </a>
+    <a class="card" href="#_choose-an-individual-model">
+        <div>
+            <p><strong>Choose an individual model</strong></p>
+            <p>Use a particular capability or control the model and its settings.</p>
+        </div>
+    </a>
+    <a class="card" href="#_compare-models-on-your-code-preview">
+        <div>
+            <p><strong>Compare models side by side</strong></p>
+            <p>Try the same task with different models, then choose based on the results.</p>
+        </div>
+    </a>
+</div>
+
+The examples use the [Copilot harness](/docs/agents/run/agent-harnesses.md#copilot). [Set up GitHub Copilot](/docs/setup/copilot.md) first. Available models and Fusion tiers depend on your account and organization policies.
+
+## Let Fusion or Auto choose
+
+Use this path when you want to focus on the task rather than model selection. In a new chat, select **Copilot Fusion** or **Auto** from the model picker and send your task.
+
+* **Copilot Fusion** chooses the best model for the task. It can use one model or coordinate several, such as having one draft a solution and another review it. You receive one final response.
+
+* **Auto**, when shown, selects one model per request based on task complexity and model availability.
+
+![Screenshot of the model picker, showing the Copilot Fusion option.](../images/choose-a-model-guide/model-picker-copilot-fusion.png)
+
+Start with the recommended configuration. See [Fusion setup and effort levels](/docs/agent-customization/language-models.md#use-copilot-fusion) or [Auto configuration](/docs/agent-customization/language-models.md#use-auto-model-selection) for the available options.
+
+Review the result as you would any AI-generated change. If it meets your needs within your time and credit budget, keep using that approach. Fusion's additional model calls can use more time and AI credits. Compare alternatives if the extra work isn't helping.
+
+## Choose an individual model
+
+Use this path when you already prefer a model, need a particular capability, or want control over its configuration. Use the [current model comparison reference](https://docs.github.com/en/copilot/reference/ai-models/model-comparison) to find candidates that fit your task:
+
+| Your task or constraint | What to look for |
+|---|---|
+| Routine edits or short questions | Fast responses and lower usage costs. |
+| Difficult debugging, planning, or multi-file changes | Reasoning capabilities, then verify the result on your code. |
+| Working from a screenshot or a large amount of context | Support for image input or a context window that fits the material. |
+
+Select the model in the model picker. Start with its recommended thinking effort rather than increasing it for every task. Learn how to [change models and configure their settings](/docs/agent-customization/language-models.md#change-the-model-for-chat).
+
+If two models both look suitable, use the comparison workflow below to choose based on your work rather than a general ranking.
+
+## Compare models on your code (Preview)
+
+Use the side by side model comparison functionality in the Agents window when you want to explore alternatives, improve an unsatisfactory result, or choose a model for a recurring task. It runs the same prompt with multiple explicit models in parallel, each in an isolated worktree.
+
+Find the full setup instructions and learn how to synthesize a result from multiple attempts.
+
+* [Open the model comparison reference](/docs/agents/run/compare-models.md)
+
+### Prepare a small task
+
+For this walkthrough:
+
+* Open a trusted Git repository with at least one commit and a Git remote.
+* Make sure you can run the relevant tests. Resolve setup problems before comparing models.
+* Preserve unrelated work and commit the starting code. Worktrees don't include your uncommitted changes. See [worktree requirements](/docs/agents/run/agents-window.md#choose-where-an-agent-makes-changes).
+
+Choose a bounded task with a result you can check. For example, if your app has a profile form:
+
+```prompt
+Require a display name of 1 to 50 characters in the profile form.
+Reject whitespace-only names and show an inline validation error.
+Preserve the existing styling and behavior of other fields.
+Add tests for valid, empty, whitespace-only, and overlong names.
+Run <test-command> and report the results, including anything you couldn't verify.
+```
+
+Replace the example with a task from your project and its actual test command. Keep the prompt, starting commit, harness, project instructions, tools, and permissions the same for each attempt. Start with two or three models, not the entire catalog.
+
+Each attempt and optional judge evaluation uses models and adds to your usage.
+
+> [!CAUTION]
+> Check the session's permissions before launching. **Allow all** skips tool approval prompts. Worktrees separate file changes, not access to your machine or network. Review [agent sandboxing](/docs/agents/run/agent-sandboxing.md) before running a comparison.
+
+### Run the comparison
+
+1. In the Agents window, select **New**, choose your repository and the Copilot harness, then open the model picker and select **Compare Models**.
+
+    ![Screenshot showing the model picker with the Compare Models option selected.](../images/compare-models/compare-models-icon.png)
+
+1. Select two or three models. Keep their recommended configurations for your first comparison.
+
+1. To get an automated assessment, select **Configure Judge** and choose a judge model. Otherwise, compare the attempts yourself.
+
+1. Select **Done**, enter your task prompt, and select **Run N Attempts**.
+
+The attempts run concurrently. You can open each session to inspect its progress and changes. For additional setup options, including synthesis, see the [model comparison reference](/docs/agents/run/compare-models.md).
+
+### Review the results and choose
+
+If you selected a judge, it evaluates the attempts and provides a scorecard with a recommendation, validation evidence, time, and token usage. Select **Open Attempt N** to inspect a session and its changes.
+
+![Screenshot showing the judge scorecard with a recommended attempt, time and token usage, and validation evidence.](../images/compare-models/bake-off-results.png)
+
+With or without a judge, make the final decision using these checks:
+
+| Check | How to decide |
+|---|---|
+| Correctness | Review the changes and run the relevant tests in the attempt's worktree. Reject results that miss the task's requirements, even if they are faster or cheaper. |
+| Maintainability | Prefer focused changes that follow your project's conventions and don't require unrelated dependencies or edits. |
+| Time and effort | Include your review, follow-up prompts, and manual corrections, not only the initial response time. |
+| Cost | [Check reported AI credit usage](#check-credit-usage), including follow-ups. Account for judge usage separately as comparison overhead. |
+
+The judge's recommendation isn't proof of correctness.
+
+#### Check credit usage
+
+Open an attempt's chat session to inspect its reported usage:
+
+* **Per request:** hover over a chat response to see that turn's credit consumption.
+
+* **Per session:** select the context window control in the chat input. The **Session Info** popover shows the total reported credits under **Session Cost**.
+
+Compare each attempt's session total after any follow-up corrections. Account for the judge's session usage separately as comparison overhead, rather than adding it to one candidate's cost.
+
+Token totals, including those in the judge's scorecard, can be incomplete and aren't AI credit costs. If credit usage isn't shown, treat it as unknown, not zero. For monthly usage details, see [Monitor your usage](/docs/agents/guides/optimize-usage.md#monitor-your-usage).
+
+Open the attempt that meets your requirements and continue there. Before keeping its implementation, [review and integrate the worktree changes](/docs/agents/run/review-code-edits.md). Selecting a result doesn't merge it into your original working tree.
+
+### Compare Fusion, Auto, or models in separate sessions
+
+**Compare Models** doesn't offer Fusion or Auto and isn't available in the Chat view. Use separate sessions for those comparisons. This is also an alternative when you need manual approvals that your worktree session doesn't offer.
+
+**Compare using separate sessions**
+
+1. Create separate worktrees from the same starting commit. Don't start a candidate from another attempt's changes.
+1. Open each worktree as its own workspace and start a fresh chat. For manual approvals, use folder sessions with a supported permission level.
+1. Keep the same harness, instructions, tools, permissions, and project setup. Select Fusion, Auto, or an individual model, and note its configuration.
+1. Send the same prompt without including other attempts' answers. Apply the [same review checks](#review-the-results-and-choose) to every result.
+
+Compare Fusion's complete result and usage, not an assumed underlying model. If you change harnesses too, you're comparing complete agent setups rather than only models.
+
+## Decide what to use next
+
+* **The result works for you:** keep the model or automatic selection approach for similar tasks. No further comparison is required.
+
+* **The result misses your requirements:** check the prompt, context, and project setup before changing models. Use [Get an agent back on track](/docs/agents/guides/get-agent-back-on-track.md) to choose a recovery action.
+
+* **You're choosing for recurring work:** try the promising option on another representative task before treating it as your default. One successful attempt doesn't establish the best model for every task.
+
+Revisit your choice when your work, available models, or pricing changes.
+
+## Related resources
+
+* [Understand language models](/docs/agents/concepts/language-models.md)
+* [Find prompt examples](/docs/agents/guides/prompt-examples.md)
+
+
+---
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/context-engineering-guide.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/context-engineering-guide
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/context-engineering-guide.md
@@ -7396,8 +7572,8 @@ To keep the cell that an agent is running in view, enable the ``github.copilot.c
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/optimize-usage.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/optimize-usage
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/optimize-usage.md
-- **SHA256_FINGERPRINT**: `cce52e69123c9148edbd4207232c14fef29f38d7f63c87d2ed1e3901aa92a75f`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:30.873942+00:00
+- **SHA256_FINGERPRINT**: `fe2328155b2f3f0b28532924e17c03b6327163d24807938002c6e680e3b47336`
+- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:44.607944+00:00
 ---
 
 **MetaDescription**: Reduce AI credit usage in VS Code with efficient models, scoped tools, and focused context.
@@ -7410,12 +7586,7 @@ Each GitHub Copilot plan includes a monthly allowance of [AI credits](https://do
 
 The lowest-cost model does not always produce the lowest-cost result. A model that needs retries or creates rework can cost more than a capable model that completes the task reliably. The inverse is also true: not every task requires a complex, reasoning model, and routing simple or repetitive tasks to a lighter model avoids paying for capability you don't need.
 
-Start from the [AI model comparison table](https://docs.github.com/en/copilot/reference/ai-models/model-comparison) and [best practices for model selection](/docs/agents/best-practices.md#choose-the-right-model) for general guidance, then use representative tasks from your own work to compare credit usage against response quality:
-
-1. Define the expected result and how you will assess its quality.
-1. Run each task more than once because model output is nondeterministic.
-1. Compare task completion, output quality, reliability, duration, and credit consumption.
-1. Choose the lowest-cost model that consistently meets your requirements, and reevaluate as models change.
+Follow the [Compare and choose models guide](/docs/agents/guides/choose-a-model.md) to evaluate Fusion, Auto, or explicit models on representative tasks. Compare correctness, reliability, time, and credit consumption, including retries and corrections. For current model capabilities, see the [AI model comparison table](https://docs.github.com/en/copilot/reference/ai-models/model-comparison).
 
 For a low-maintenance default, use **auto model selection** to let VS Code route each request to an efficient model based on task complexity, model health, and availability. For repeatable workflows, configure a preferred model in a [custom agent](/docs/agent-customization/custom-agents.md).
 
@@ -7549,8 +7720,8 @@ Use these measurements as an optimization loop:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/overview.md
-- **SHA256_FINGERPRINT**: `e1c5ca0b5f5b59bf9418502b9988258136c83ad8af6924b09d1eeadaa5193fd5`
-- **LAST_VERIFIED_UTC**: 2026-11-15T05:38:34.958600+00:00
+- **SHA256_FINGERPRINT**: `d0d695545614cea68d592c0c805873445a28eb6a90f26b71aa6e35a63aa11892`
+- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:44.632713+00:00
 ---
 
 **MetaDescription**: Find agent tutorials and guides for VS Code by task, from a first app to testing and project workflows.
@@ -7632,6 +7803,8 @@ Or jump to a task:
 * [Continue a cloud session in your terminal](/docs/agents/cloud-continuity-tutorial.md) `feature(cloud-sessions)`: explore a repository in the cloud, then continue the same session in your terminal. **Setup:** your private repository, cloud session access, and Copilot CLI.
 
 ## Improve results and recover
+
+* [Compare and choose models](/docs/agents/guides/choose-a-model.md): start with Fusion, Auto, or an individual model, then compare results when you need more evidence. **Use your own repository with working tests.**
 
 * [Get an agent back on track](/docs/agents/guides/get-agent-back-on-track.md): choose whether to steer a request, recover unwanted changes, or reset conversation context.
 
@@ -8359,8 +8532,8 @@ The Local harness is deprecated `feature(local-harness)`. If you already use cus
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/quickstart.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/quickstart
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/quickstart.md
-- **SHA256_FINGERPRINT**: `f0624210228f8daf637d0b70414540ebb8992173f2b8f21bd1da0a77ac6ee6cd`
-- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.611052+00:00
+- **SHA256_FINGERPRINT**: `a0d4e457d5668208d533c826c8b4da287fdd4346f1e46653b4f56ee5dd852a45`
+- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:44.723706+00:00
 ---
 
 **MetaDescription**: Build and validate a web app with an AI agent in VS Code, then review and recover changes.
@@ -8579,6 +8752,7 @@ When you no longer need the app, run these steps to clean up your local resource
 * [Explore a codebase without changing files](/docs/agents/guides/explore-a-codebase.md).
 * [Build a complete app and learn the editor, browser, and source control workflows](/docs/agents/agents-tutorial.md).
 * [Review the recommended security baseline](/docs/agents/run/security.md#recommended-security-baseline).
+* [Choose between Fusion, Auto, and individual models for your tasks](/docs/agents/guides/choose-a-model.md).
 
 
 ---
@@ -13250,8 +13424,8 @@ The service manages cloud resources separately from the session list. Preserve w
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/compare-models.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/compare-models
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/compare-models.md
-- **SHA256_FINGERPRINT**: `5aef6dd128848af05059e147367627162929f481fdc12aa22d037dca75c06ce7`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.321286+00:00
+- **SHA256_FINGERPRINT**: `b281cfaf498b651e67e97e6236631f151bae8def202c76dfbe8618437f368b1d`
+- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:44.722451+00:00
 ---
 
 **MetaDescription**: Compare model responses and code changes side by side in the Agents window, then continue with the strongest result.
@@ -13261,6 +13435,8 @@ The service manages cloud resources separately from the session list. Preserve w
 Run the same prompt with multiple models or agent harnesses in the Agents window, then compare their responses or implementations side by side. Use a folderless chat to compare ideas and plans, or a Git repository to compare code changes in isolated worktrees. Choose the strongest attempt or synthesize a combined result from the best parts of several attempts.
 
 Model comparison is available only in the Agents window. It isn't available in the editor Chat view.
+
+For help deciding when to compare models, evaluating results, and trying Fusion separately, follow the [Compare and choose models guide](/docs/agents/guides/choose-a-model.md).
 
 ## Prerequisites
 

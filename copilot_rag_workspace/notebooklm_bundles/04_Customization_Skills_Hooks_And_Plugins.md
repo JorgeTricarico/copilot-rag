@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins
-- **Generado (UTC)**: 2026-11-16T05:38:53.441540+00:00
-- **Total Palabras**: 448,470 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-16T21:47:50.762142+00:00
+- **Total Palabras**: 448,468 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -24437,8 +24437,8 @@ Announce document completion. Provide a few final tips:
 # DOCUMENT_SOURCE: anthropics_skills::skills/docx/SKILL.md
 - **CANONICAL_URL**: https://github.com/anthropics/skills/blob/main/skills/docx/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/anthropics/skills/main/skills/docx/SKILL.md
-- **SHA256_FINGERPRINT**: `9ca83fc44eae19adc57ef326f20b88014c86ddf2490c67fb31f448d0a7ed340e`
-- **LAST_VERIFIED_UTC**: 2026-11-14T17:48:10.966661+00:00
+- **SHA256_FINGERPRINT**: `55f8c0310f1309cd37818707c93d8ff1e1e95bfb9fc7b7a522c72b5b5aabbaef`
+- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:46.514041+00:00
 ---
 
 **description**: Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx files) or Word templates (.dotx files). Triggers include: any mention of 'Word doc', 'word document', '.docx', '.dotx', or requests to produce professional documents with formatting like tables of contents, headings, page numbers, or letterheads. Also use when extracting or reorganizing content from .docx or .dotx files, inserting or replacing images in documents, performing find-and-replace in Word files, working with tracked changes or comments, or converting content into a polished Word document. If the user asks for a 'report', 'memo', 'letter', 'template', or similar deliverable as a Word or .docx file, use this skill. Do NOT use for PDFs, spreadsheets, Google Docs, or general coding tasks unrelated to document generation.
@@ -24450,7 +24450,7 @@ A `.docx` is a ZIP archive of XML files. Choose your approach by task:
 | Task | Approach |
 |---|---|
 | **Create** a new document | Write a `docx` (npm) script — see gotchas below |
-| **Edit** an existing document | `unzip` → edit `word/document.xml` → `zip` (docx-js cannot open existing files) |
+| **Edit** an existing document | unpack → edit `word/document.xml` → `zip` (docx-js cannot open existing files) |
 | **Read** content | `pandoc -t markdown file.docx` |
 
 > Script paths below are relative to this skill's directory.
@@ -24490,11 +24490,10 @@ ls page-*.jpg   # then Read the images
 Legacy `.doc` files must be converted first: `python scripts/office/soffice.py --headless --convert-to docx file.doc`.
 
 ```bash
-unzip -q doc.docx -d unpacked/
-find unpacked -type l -delete   # strip symlink entries — docx from external parties is untrusted
+python3 -c "import sys,zipfile; zipfile.ZipFile(sys.argv[1]).extractall('unpacked')" doc.docx   # not unzip, which restores symlinks — docx from external parties is untrusted
 python scripts/merge_runs.py unpacked/   # coalesce fragmented runs so text is findable
 # edit unpacked/word/document.xml in place — do NOT reformat or pretty-print
-(cd unpacked && rm -f ../out.docx && zip -XrD ../out.docx .)
+(cd unpacked && rm -f ../out.docx && zip -XrDy ../out.docx .)
 python scripts/office/validate.py out.docx --original doc.docx   # XSD checks; --auto-repair fixes common issues
 # redlining? add --author "<the name you redlined under>" to check every edit is tracked
 ```
@@ -29689,8 +29688,8 @@ with open("encrypted.pdf", "wb") as output:
 # DOCUMENT_SOURCE: anthropics_skills::skills/pptx/SKILL.md
 - **CANONICAL_URL**: https://github.com/anthropics/skills/blob/main/skills/pptx/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/anthropics/skills/main/skills/pptx/SKILL.md
-- **SHA256_FINGERPRINT**: `c70697a288b88ce90eaf76c4b089b4ff6435737d245820d179ff22b0692c60b4`
-- **LAST_VERIFIED_UTC**: 2026-11-14T17:48:10.986492+00:00
+- **SHA256_FINGERPRINT**: `51e47c7a028dcd0878d460457a179c33c233f2c44d53a726e28c6617903081fa`
+- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:46.549176+00:00
 ---
 
 **description**: Use this skill any time a .pptx or .potx file is involved in any way — as input, output, or both. This includes: creating slide decks, pitch decks, or presentations; reading, parsing, or extracting text from any .pptx or .potx file (even if the extracted content will be used elsewhere, like in an email or summary); editing, modifying, or updating existing presentations; combining or splitting slide files; working with templates (.potx), layouts, speaker notes, or comments. Trigger whenever the user mentions \"deck,\" \"slides,\" \"presentation,\" or references a .pptx or .potx filename, regardless of what they plan to do with the content afterward. If a .pptx or .potx file needs to be opened, created, or touched, use this skill.
@@ -29702,7 +29701,7 @@ A `.pptx` is a ZIP archive of XML files. Choose your approach by task:
 | Task | Approach |
 |---|---|
 | **Create** a new deck | Write a `pptxgenjs` script — see gotchas below — and build it as a [structured deck](#structured-decks) unless the user asks for a quick throwaway |
-| **Edit** an existing deck, or build from a template | unzip → edit `ppt/slides/slideN.xml` → zip |
+| **Edit** an existing deck, or build from a template | unpack → edit `ppt/slides/slideN.xml` → zip |
 | **Read** content | `python scripts/slide_text.py deck.pptx` (one block per slide under `` markers); visual grid: `python scripts/thumbnail.py deck.pptx` |
 
 ## Scripts
@@ -29767,7 +29766,7 @@ python scripts/add_slide.py unpacked/ slide2.xml --after slide2.xml   # duplicat
 # reorder / delete slides = edit <p:sldIdLst> in ppt/presentation.xml
 python scripts/clean.py unpacked/                                     # after deletions: removes orphaned slides, media, rels
 # edit slide content in ppt/slides/slideN.xml
-(cd unpacked && rm -f ../out.pptx && zip -XrD ../out.pptx .)          # zip from INSIDE the dir; rm first or deleted parts survive
+(cd unpacked && rm -f ../out.pptx && zip -XrDy ../out.pptx .)         # zip from INSIDE the dir; rm first or deleted parts survive
 python scripts/office/validate.py out.pptx --original deck.pptx
 ```
 

@@ -6,6 +6,8 @@ Run the same prompt with multiple models or agent harnesses in the Agents window
 
 Model comparison is available only in the Agents window. It isn't available in the editor Chat view.
 
+For help deciding when to compare models, evaluating results, and trying Fusion separately, follow the [Compare and choose models guide](/docs/agents/guides/choose-a-model.md).
+
 ## Prerequisites
 
 Before you start, make sure you have:

@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-11-16T05:38:53.548454+00:00
-- **Total Palabras**: 441,900 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-16T21:47:50.911875+00:00
+- **Total Palabras**: 441,930 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -67610,8 +67610,8 @@ For an old Local setup, **Chat: Configure Hooks** lists its files, and the **Git
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/language-models.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/language-models
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/language-models.md
-- **SHA256_FINGERPRINT**: `296ca905720406435bce9f2fa62e160f1ca33b11a0365cbc438af705846147fc`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:57.918551+00:00
+- **SHA256_FINGERPRINT**: `f3a2998bfb7855a37d102f8bda8b124fee5086420677d90e182ca57718cb45c1`
+- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:44.618889+00:00
 ---
 
 **MetaDescription**: Configure chat, inline, and voice models in VS Code. Use your own API key or run models on your device.
@@ -67647,6 +67647,8 @@ You can further extend the list of available models by [using your own language 
 
 > [!NOTE]
 > If you are a Copilot Business or Copilot Enterprise user, your administrator needs to enable certain models for your organization by opting in to `Editor Preview Features` in the [Copilot policy settings](https://docs.github.com/en/enterprise-cloud@latest/copilot/managing-copilot/managing-github-copilot-in-your-organization/managing-policies-for-copilot-in-your-organization#enabling-copilot-features-in-your-organization) on GitHub.com.
+
+If you're unsure which option to use, follow the [Compare and choose models guide](/docs/agents/guides/choose-a-model.md) to start with Fusion, Auto, or an individual model and evaluate it on your own code.
 
 To compare solutions to the same coding task, use [model comparison](/docs/agents/run/compare-models.md) in the Agents window. Run one prompt with multiple models or harnesses, then review the results side by side.
 

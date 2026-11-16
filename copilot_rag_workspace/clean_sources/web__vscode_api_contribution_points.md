@@ -46,6 +46,10 @@ languageModelChatProviders
 languageModelTools
 - menus
 menus
+- notebookRenderer
+notebookRenderer
+- notebooks
+notebooks
 - problemMatchers
 problemMatchers
 - problemPatterns
@@ -2032,6 +2036,126 @@ The order inside a group depends on the title or an order-attribute. The group-l
 ]
 }
 ```
+
+## contributes.notebookRenderer
+
+Contribute an output renderer for notebooks. Notebook renderers are responsible for taking cell output data with specific MIME types and displaying rich visual representations in notebook cells (ranging from plain text and images to interactive web components).
+Here is a basic notebookRenderer contribution:
+notebookRenderer
+
+```
+{
+"contributes"
+: {
+"notebookRenderer"
+: [
+{
+"id"
+:
+"my-notebook-renderer"
+,
+"displayName"
+:
+"My Custom Output Renderer"
+,
+"entrypoint"
+:
+"./out/renderer.js"
+,
+"mimeTypes"
+: [
+"application/vnd.my-custom-format+json"
+,
+"text/x-custom-data"
+]
+}
+]
+}
+}
+```
+
+notebookRenderer is an array, so your extension can contribute multiple output renderers.
+notebookRenderer
+- id - Unique identifier for the notebook renderer.
+id
+- displayName - Human-readable name of the renderer, displayed in VS Code's UI (such as output format pickers).
+displayName
+- entrypoint - Path to the script loaded in the webview to render output. Can be: A string path relative to the extension root (for example, "./out/renderer.js" ). An object specifying path and extends to augment an existing renderer (for example, {"extends": "vscode.markdown-it-renderer", "path": "./out/customMarkdown.js"} ).
+entrypoint
+- A string path relative to the extension root (for example, "./out/renderer.js" ).
+"./out/renderer.js"
+- An object specifying path and extends to augment an existing renderer (for example, {"extends": "vscode.markdown-it-renderer", "path": "./out/customMarkdown.js"} ).
+path
+extends
+{"extends": "vscode.markdown-it-renderer", "path": "./out/customMarkdown.js"}
+- mimeTypes - Array of MIME types that the renderer handles. Output with matching MIME types will be routed to this renderer.
+mimeTypes
+- requiresMessaging - (optional) Defines if communication with the extension host via createRendererMessaging is required. Possible values are "always" , "optional" , and "never" (default).
+requiresMessaging
+createRendererMessaging
+"always"
+"optional"
+"never"
+You can learn more in the Notebooks extension guide.
+
+## contributes.notebooks
+
+The notebooks contribution point is how your extension tells VS Code about the notebook document providers it supports. VS Code uses this to determine which notebook type to associate with matching files and how to identify your notebook in the UI.
+notebooks
+Here is a basic notebooks contribution:
+notebooks
+
+```
+{
+"contributes"
+: {
+"notebooks"
+: [
+{
+"type"
+:
+"my-custom-notebook"
+,
+"displayName"
+:
+"My Custom Notebook"
+,
+"selector"
+: [
+{
+"filenamePattern"
+:
+"*.customnb"
+}
+]
+}
+]
+}
+}
+```
+
+notebooks is an array, so your extension can contribute multiple notebook types.
+notebooks
+- type - Unique identifier for the notebook type. This is used in code when registering your notebook serializer with vscode.workspace.registerNotebookSerializer and controllers with vscode.notebooks.createNotebookController .
+type
+vscode.workspace.registerNotebookSerializer
+vscode.notebooks.createNotebookController
+- displayName - Human-readable name of the notebook type displayed in VS Code's UI.
+displayName
+- selector - Specifies which files the notebook is enabled for. An array of objects containing: filenamePattern - A glob pattern matching file names or extensions (for example, "*.customnb" or "**/notebooks/*.json" ). excludeFileNamePattern - (optional) A glob pattern specifying files to exclude from matching this notebook type.
+selector
+- filenamePattern - A glob pattern matching file names or extensions (for example, "*.customnb" or "**/notebooks/*.json" ).
+filenamePattern
+"*.customnb"
+"**/notebooks/*.json"
+- excludeFileNamePattern - (optional) A glob pattern specifying files to exclude from matching this notebook type.
+excludeFileNamePattern
+- priority - (optional, deprecated) Controls if the notebook editor is enabled automatically when opening a matching file. Possible values are "default" (attempt to use by default) and "option" (not default, but selectable by the user). Can be overridden by the user with the workbench.editorAssociations setting.
+priority
+"default"
+"option"
+workbench.editorAssociations
+You can learn more in the Notebooks extension guide.
 
 ## contributes.problemMatchers
 

@@ -57,7 +57,7 @@ Edge topology itself is *not* persisted in the checkpoint. Adding, removing, or 
 
 Before you remove a node, rename a State key, or otherwise make a change that older threads cannot tolerate, you want to know whether any threads are currently parked on the version of the code you are about to drop. LangGraph itself does not maintain a search index over thread state, so the answer depends on where your graph runs.
 
-**If you deploy to [LangSmith](https://docs.langchain.com/langsmith/deployment.md).** Use the Agent Server's thread search to filter by status. The `status` field accepts `idle`, `busy`, `interrupted`, and `error`, so you can bulk-query for `interrupted` or `busy` threads, optionally narrowed with metadata filters. See [Filter by thread status](https://docs.langchain.com/langsmith/use-threads.md#filter-by-thread-status) and [List threads](https://docs.langchain.com/langsmith/use-threads.md#list-threads).
+**If you [deploy to LangSmith](https://docs.langchain.com/langsmith/deploy-overview.md).** Use the Agent Server's thread search to filter by status. The `status` field accepts `idle`, `busy`, `interrupted`, and `error`, so you can bulk-query for `interrupted` or `busy` threads, optionally narrowed with metadata filters. See [Filter by thread status](https://docs.langchain.com/langsmith/use-threads.md#filter-by-thread-status) and [List threads](https://docs.langchain.com/langsmith/use-threads.md#list-threads).
 
 **Anywhere LangGraph runs.** Use [LangSmith tracing](https://docs.langchain.com/oss/python/langgraph/observability.md) to monitor which nodes are being entered and exited in production. This is the most reliable signal that a node or state field is no longer reachable in any active code path.
 
