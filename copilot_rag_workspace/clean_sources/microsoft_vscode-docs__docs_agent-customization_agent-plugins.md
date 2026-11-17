@@ -97,7 +97,7 @@ After the trial, close the review tab and remove `plugin-review.md` if you don't
 Plugin providers can create shareable deep links to help users register a marketplace or install a specific named plugin directly in VS Code.
 
 > [!IMPORTANT]
-> Agent plugins are distinct from VS Code extensions. To install an extension from the [product.prodname_vs_marketplace], use `vscode:extension/<publisher>.<extensionName>` as described in [URL handling](/docs/configure/command-line.md#url-handling).
+> Agent plugins are distinct from VS Code extensions. To install an extension from the [product.prodname_vs_marketplace], use `vscode:extension/<publisher>.<extensionName>` as described in [URL handling](/docs/configure/command-line.md#opening-vs-code-with-urls).
 
 #### Install a specific plugin
 

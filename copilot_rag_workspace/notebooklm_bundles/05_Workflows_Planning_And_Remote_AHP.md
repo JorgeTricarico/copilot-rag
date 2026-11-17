@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-11-16T21:47:50.931993+00:00
-- **Total Palabras**: 160,974 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-17T20:39:13.083205+00:00
+- **Total Palabras**: 160,970 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -273,8 +273,8 @@ For a complete list of slash commands for Copilot CLI, see [Cli Command Referenc
 # DOCUMENT_SOURCE: github_docs::content/copilot/reference/copilot-cli-reference/cli-command-reference.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-command-reference.md
-- **SHA256_FINGERPRINT**: `65eed5a1faf571e188b5b7c387d851622b7aa07bfbaa261c3b0e69f9d1300188`
-- **LAST_VERIFIED_UTC**: 2026-11-11T19:24:21.316109+00:00
+- **SHA256_FINGERPRINT**: `8c5769b0f556eb11829454a2680ba4f26615ad4eda444f9e5761d42c23bbad1f`
+- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:06.490057+00:00
 ---
 
 **title**: GitHub Copilot CLI command reference
@@ -1473,7 +1473,7 @@ The CLI automatically configures `github-mcp-server` when authentication is avai
 |--------|-------------|------------------------|
 | `github-mcp-server` | GitHub integration, including repository access and code search. | Enabled by default when authentication is available. The exposed tools depend on your configuration. |
 | `WorkIQ` | Hosted MCP server associated with a Microsoft Entra account. | Discovered after you sign in with a Microsoft Entra account. Disabled by default. See [Account-derived WorkIQ](#account-derived-workiq). |
-| `browser-use` | Browser interaction through a bundled plugin. | Available in CLI versions that include the plugin. Disabled by default. Enable it with `/mcp enable browser-use`, install the matching browser extension and [copilot.copilot_cli_npm_version], then run `/browser-use:activate` or start a new session. The legacy server name is `github-copilot-browser`. |
+| `browser-use` | Browser interaction through a bundled plugin. | Available in CLI versions that include the plugin. Disabled by default. Install the browser extension, enable the plugin with `/plugin`, and start a new session. The legacy server name is `github-copilot-browser`. See [Browser Use](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/browser-use). |
 | `computer-use` | Desktop application interaction through a bundled plugin. | Available for local sessions on macOS and Windows. Disabled by default. Enable it with `/computer on`. On macOS, Accessibility and Screen Recording permissions are required. See [Computer Use](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/computer-use). |
 
 Managed settings can prevent you from enabling a server or its plugin.
@@ -9410,8 +9410,8 @@ For unattended repository work, [cloud automations](/docs/agents/run/automations
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/ai-settings.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/ai-settings
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/ai-settings.md
-- **SHA256_FINGERPRINT**: `27604f2f35732ea3a88e8dd1722eefa6dcbe8665d7ae37453e6e059097b1a3b3`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.924728+00:00
+- **SHA256_FINGERPRINT**: `fbb49ccba092cc42d939b87b3bf724aadcde72ecadb067d34d19db976d064bfa`
+- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:05.914157+00:00
 ---
 
 **MetaDescription**: Configure AI features and agents in Visual Studio Code, including chat, agent sessions, dictation, and accessibility settings.
@@ -9632,7 +9632,7 @@ The following settings configure the Local harness sandbox `feature(local-harnes
 
 ## Agent sessions
 
-Use the [session lists](/docs/agents/run/sessions/manage-sessions.md#sessions-list) to manage local and remote agent sessions, switch between tasks, and track their progress.
+Use the [session lists](/docs/agents/run/sessions/manage-sessions.md#find-and-resume-a-session) to manage local and remote agent sessions, switch between tasks, and track their progress.
 
 ### Session experience
 
@@ -9674,7 +9674,7 @@ Use the [session lists](/docs/agents/run/sessions/manage-sessions.md#sessions-li
 | ``chat.agentHost.remoteConnections`` _(Preview)_<br/>Choose the method for [enabling remote access to this machine](/docs/agents/run/remote-agent-sessions.md#make-a-host-available-for-remote-access): `devTunnel` or `githubEnvironment`. Selecting a method in **Remote Connections** starts sharing. **Off** stops sharing without changing the preference. Editing this setting directly stops sharing. | `"devTunnel"` |
 | ``chat.agentHost.githubEnvironments.enabled`` `feature(github-environments)`<br/>Allow sharing this machine as a [[copilot.github_environment]](/docs/agents/run/remote-agent-sessions.md#github-environments), and discovering and connecting to other registered machines. Subject to rollout and organization policy. | `true` |
 | ``chat.workspaceRemoteAgentHosts`` _(Experimental)_<br/>Configure WebSocket Agent Hosts for the Chat view with an `address`, `name`, and optional `connectionToken`. Requires a trusted workspace. Connected hosts receive your [product.prodname_github] credentials, so configure only hosts you trust and keep tokens private. | `[]` |
-| ``chat.remoteAgentHostsAutoConnect`` _(Experimental)_<br/>Automatically connect to eligible remote hosts. For [[copilot.github_environments]](/docs/agents/run/remote-agent-sessions.md#connect-from-another-client) in the installed Agents window, first connect explicitly. Reconnection is scoped to the profile and account. Explicit disconnect suppresses it until you connect manually. | `true` |
+| ``chat.remoteAgentHostsAutoConnect`` _(Experimental)_<br/>Automatically connect to eligible remote hosts. For [[copilot.github_environments]](/docs/agents/run/remote-agent-sessions.md#github-environments) in the installed Agents window, first connect explicitly. Reconnection is scoped to the profile and account. Explicit disconnect suppresses it until you connect manually. | `true` |
 | ``github.copilot.chat.localIndex.enabled``<br/>Enable local session tracking for [session insights](/docs/agents/run/sessions/session-history.md#query-session-history-with-chronicle) and `/chronicle` commands. | `true` |
 | ``chat.sessionSync.enabled`` _(Experimental)_<br/>Sync [session history](/docs/agents/run/sessions/session-history.md#enable-or-disable-session-sync-experimental) to GitHub.com for cross-device access. Requires ``github.copilot.chat.localIndex.enabled``. Set a preference explicitly and check the [sync status](/docs/agents/run/sessions/session-history.md#session-sync-status). | `false` |
 | ``chat.sessionSync.excludeRepositories`` _(Experimental)_<br/>Repository patterns to exclude from [session sync](/docs/agents/run/sessions/session-history.md#exclude-repositories-from-sync). Use exact `owner/repo` names or glob patterns like `my-org/*`. Matching sessions are not uploaded by session sync. | `[]` |
@@ -12421,8 +12421,8 @@ The agent can also use the `#artifactRules` tool to override the extraction rule
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/automations.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/automations
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/automations.md
-- **SHA256_FINGERPRINT**: `2d7de5827f75847d54af237418eed2fb74b51c026e0baff7acd72fef921a962d`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:26.979129+00:00
+- **SHA256_FINGERPRINT**: `9776cd8960339b95038176b168d4f7763f829c0c8f69094048758e5f2d08a0c0`
+- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:05.791356+00:00
 ---
 
 **MetaDescription**: Automate routine agent tasks locally or in GitHub from the Agents window, with schedules, repository triggers, and run history.
@@ -12437,7 +12437,7 @@ This article explains how to choose between local and cloud automations, and how
 
 ## Prerequisites
 
-* Set up and open the [Agents window](/docs/agents/run/agents-window.md#prerequisites) with an available agent.
+* Set up and open the [Agents window](/docs/agents/run/agents-window.md#open-the-agents-window) with an available agent.
 * For cloud automations `feature(cloud-automations)`, sign in with a GitHub.com account that has write access to an eligible private repository. Your Copilot plan and organization must allow automations. See [GitHub automation availability and permissions](https://docs.github.com/en/copilot/concepts/agent-capabilities/agent-powered-workflows-and-operations/about-automations#availability-and-permissions).
 
 Automations and cloud automation management are on by default. If **Automations** isn't visible in the sidebar, check that ``chat.automations.enabled`` is on. If **Run in the Cloud** isn't available in the creation form, also check ``chat.automations.cloud.enabled``. Turning on these settings doesn't grant access to the GitHub service.
@@ -13295,8 +13295,8 @@ Set ``workbench.startupEditor`` to `agentSessionsWelcomePage` to show recent ses
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/cloud-sandbox-sessions.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/cloud-sandbox-sessions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/cloud-sandbox-sessions.md
-- **SHA256_FINGERPRINT**: `29714920a0212355b40e4e212331755c9ddb22f095af01f4318d94fef1dab7ee`
-- **LAST_VERIFIED_UTC**: 2026-11-08T05:16:47.790646+00:00
+- **SHA256_FINGERPRINT**: `93df5024a72efe88a76f2997016ab702b535c5c87ee0ff48133829721fcbf48c`
+- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:05.962066+00:00
 ---
 
 **MetaDescription**: Run and continue cloud sessions from VS Code without keeping your development machine online.
@@ -13374,7 +13374,7 @@ To pick up the same task, open its existing session rather than create another *
 
 1. Sign in to VS Code with the account that owns the cloud session.
 
-1. Find the session in the [sessions list](/docs/agents/run/sessions/manage-sessions.md#sessions-list). Check the repository and list filters if it isn't visible.
+1. Find the session in the [sessions list](/docs/agents/run/sessions/manage-sessions.md#find-and-resume-a-session). Check the repository and list filters if it isn't visible.
 
 1. Open the session and check its connection state before sending a follow-up.
 
@@ -13424,8 +13424,8 @@ The service manages cloud resources separately from the session list. Preserve w
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/compare-models.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/compare-models
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/compare-models.md
-- **SHA256_FINGERPRINT**: `b281cfaf498b651e67e97e6236631f151bae8def202c76dfbe8618437f368b1d`
-- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:44.722451+00:00
+- **SHA256_FINGERPRINT**: `3e3be4f0fec4718dc48e311acfc058161aa2d95af70951c9535aa8406708fbca`
+- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:05.849196+00:00
 ---
 
 **MetaDescription**: Compare model responses and code changes side by side in the Agents window, then continue with the strongest result.
@@ -13442,7 +13442,7 @@ For help deciding when to compare models, evaluating results, and trying Fusion 
 
 Before you start, make sure you have:
 
-* Met the [Agents window prerequisites](/docs/agents/run/agents-window.md#prerequisites).
+* Met the [Agents window prerequisites](/docs/agents/run/agents-window.md#open-the-agents-window).
 * Access to an eligible Agent Host harness.
 
 For a folderless comparison, use a harness that supports [quick chats](/docs/agents/run/agents-window.md#start-a-quick-chat). Folderless comparisons run independent chats without worktrees.

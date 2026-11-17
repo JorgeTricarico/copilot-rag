@@ -44,6 +44,8 @@ languages
 languageModelChatProviders
 - languageModelTools
 languageModelTools
+- localizations
+localizations
 - menus
 menus
 - notebookRenderer
@@ -1657,6 +1659,68 @@ true
 | tags | string[] | No | Tags used to categorize or group the tool. |
 
 See the Language Model Tool API guide for implementation details, including how to handle confirmations, stream results, and define typed input parameters.
+
+## contributes.localizations
+
+Contribute display language translations for VS Code or other extensions (commonly used in Language Pack extensions).
+Here is an example localizations contribution:
+localizations
+
+```
+{
+"contributes"
+: {
+"localizations"
+: [
+{
+"languageId"
+:
+"es"
+,
+"languageName"
+:
+"Spanish"
+,
+"localizedLanguageName"
+:
+"Español"
+,
+"translations"
+: [
+{
+"id"
+:
+"vscode"
+,
+"path"
+:
+"./translations/main.i18n.json"
+}
+]
+}
+]
+}
+}
+```
+
+Each entry in the localizations array supports the following properties:
+localizations
+- languageId - (required) Identifier of the language into which the display strings are translated (for example, "es" or "zh-cn" ).
+languageId
+"es"
+"zh-cn"
+- languageName - Name of the language in English.
+languageName
+- localizedLanguageName - Name of the language in the contributed language.
+localizedLanguageName
+- translations - (required) Array of translation entries associated with the language. Each item requires: id - Identifier of VS Code or the extension that the translation targets. Use "vscode" for VS Code itself, or publisherId.extensionName for an extension. path - Relative path to the JSON file containing the translations for the language.
+translations
+- id - Identifier of VS Code or the extension that the translation targets. Use "vscode" for VS Code itself, or publisherId.extensionName for an extension.
+id
+"vscode"
+publisherId.extensionName
+- path - Relative path to the JSON file containing the translations for the language.
+path
 
 ## contributes.menus
 

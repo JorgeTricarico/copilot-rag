@@ -12,7 +12,7 @@ For help deciding when to compare models, evaluating results, and trying Fusion 
 
 Before you start, make sure you have:
 
-* Met the [Agents window prerequisites](/docs/agents/run/agents-window.md#prerequisites).
+* Met the [Agents window prerequisites](/docs/agents/run/agents-window.md#open-the-agents-window).
 * Access to an eligible Agent Host harness.
 
 For a folderless comparison, use a harness that supports [quick chats](/docs/agents/run/agents-window.md#start-a-quick-chat). Folderless comparisons run independent chats without worktrees.

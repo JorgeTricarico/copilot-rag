@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
-- **Generado (UTC)**: 2026-11-16T21:47:50.939683+00:00
-- **Total Palabras**: 125,343 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-17T20:39:13.090216+00:00
+- **Total Palabras**: 125,565 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -25461,8 +25461,8 @@ declare module 'vscode' {
 # DOCUMENT_SOURCE: web::vscode_api_contribution_points
 - **CANONICAL_URL**: https://code.visualstudio.com/api/references/contribution-points
 - **RAW_SOURCE_URL**: https://code.visualstudio.com/api/references/contribution-points
-- **SHA256_FINGERPRINT**: `024b164b8e208fbcc41c56df7452ed3f0e53a40148870ffac16352f73d11560a`
-- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:47.060425+00:00
+- **SHA256_FINGERPRINT**: `7e8518130035e9478813f8e6bb3821cad29c99c9106aaf65a80283d5cd27e87f`
+- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:09.899207+00:00
 ---
 
 # Contribution Points
@@ -25511,6 +25511,8 @@ languages
 languageModelChatProviders
 - languageModelTools
 languageModelTools
+- localizations
+localizations
 - menus
 menus
 - notebookRenderer
@@ -27124,6 +27126,68 @@ true
 | tags | string[] | No | Tags used to categorize or group the tool. |
 
 See the Language Model Tool API guide for implementation details, including how to handle confirmations, stream results, and define typed input parameters.
+
+## contributes.localizations
+
+Contribute display language translations for VS Code or other extensions (commonly used in Language Pack extensions).
+Here is an example localizations contribution:
+localizations
+
+```
+{
+"contributes"
+: {
+"localizations"
+: [
+{
+"languageId"
+:
+"es"
+,
+"languageName"
+:
+"Spanish"
+,
+"localizedLanguageName"
+:
+"Español"
+,
+"translations"
+: [
+{
+"id"
+:
+"vscode"
+,
+"path"
+:
+"./translations/main.i18n.json"
+}
+]
+}
+]
+}
+}
+```
+
+Each entry in the localizations array supports the following properties:
+localizations
+- languageId - (required) Identifier of the language into which the display strings are translated (for example, "es" or "zh-cn" ).
+languageId
+"es"
+"zh-cn"
+- languageName - Name of the language in English.
+languageName
+- localizedLanguageName - Name of the language in the contributed language.
+localizedLanguageName
+- translations - (required) Array of translation entries associated with the language. Each item requires: id - Identifier of VS Code or the extension that the translation targets. Use "vscode" for VS Code itself, or publisherId.extensionName for an extension. path - Relative path to the JSON file containing the translations for the language.
+translations
+- id - Identifier of VS Code or the extension that the translation targets. Use "vscode" for VS Code itself, or publisherId.extensionName for an extension.
+id
+"vscode"
+publisherId.extensionName
+- path - Relative path to the JSON file containing the translations for the language.
+path
 
 ## contributes.menus
 

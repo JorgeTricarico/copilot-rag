@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-11-16T21:47:50.751531+00:00
-- **Total Palabras**: 25,856 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-17T20:39:12.951952+00:00
+- **Total Palabras**: 25,855 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -382,8 +382,8 @@ A worktree is a Git code-isolation boundary, not a security boundary. It does no
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/agent-host.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/agent-host
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/agent-host.md
-- **SHA256_FINGERPRINT**: `217680780cacc7034549da2cabcea0dcc4adfaddaf05a186610861e04614bb84`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.249648+00:00
+- **SHA256_FINGERPRINT**: `c7c3aadeccb6e95d259e1d2621e2afa8851267ccfc350f2432eeeccff725b0e3`
+- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:05.844825+00:00
 ---
 
 **MetaDescription**: Understand how the VS Code Agent Host manages sessions, execution environments, and connected clients.
@@ -436,8 +436,6 @@ The following diagram illustrates local, container, and dev tunnel deployments.
 ![Screenshot showing desktop and browser clients connecting to Agent Hosts. The desktop client can use a host workspace or a Dev Container, while the browser connects to a development machine through a dev tunnel.](../images/concepts/agent-host-deployment.svg)
 
 Clients display and control sessions. The Agent Host owns them. Desktop and browser clients can connect to the same tunnel host.
-
-`feature(agent-host-dev-containers)`
 
 For a Dev Container session, the Agent Host runs inside the project's container. The container can run on your machine or on a supported SSH, Tunnel, or WSL host, while the Agents window remains on your machine. Workspace file edits and commands use the tools and dependencies inside the container, rather than those installed directly on the source host.
 

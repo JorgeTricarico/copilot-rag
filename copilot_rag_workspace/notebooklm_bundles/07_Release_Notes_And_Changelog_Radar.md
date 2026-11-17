@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-17T07:15:08.383201+00:00
-- **Total Palabras**: 19,631 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-17T20:39:13.093138+00:00
+- **Total Palabras**: 19,638 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1536,8 +1536,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_348483
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/348483
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/348483
-- **SHA256_FINGERPRINT**: `41e42b9d649a62292e682e5ff71ddb967bfe8b728f4ec5a1bb5713eecd183542`
-- **LAST_VERIFIED_UTC**: 2026-11-17T07:15:08.381384+00:00
+- **SHA256_FINGERPRINT**: `e623310f38b516c8563a4c5161f2771a895124859a8a84a67159af351203680e`
+- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:12.950845+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.147.0 Endgame
@@ -1603,13 +1603,13 @@ We really appreciate people trying our new features as soon as they are ready, s
 - Release notes
 
 `@endgame-champ`:
-- [ ] Generate "Thank you" section of the release notes in the `vnext` branch of the `vscode-docs` repo.
-    - [ ] [Acknowledge third-party pull requests](https://tools.code.visualstudio.com/acknowledgement) in release notes.
-    - [ ] Acknowledge [issue trackers](https://github.com/microsoft/vscode-internalbacklog/wiki/Community-Triage---Credits#community-triage---role-based) from the community (do the copy-paste variant) -
-- [ ] If this is not Patch Tuesday only:
-  - [ ] Build and release insiders from release/<x.y> (if there have been newer changes since last release)
-  - [ ] Build stable from release/<x.y> and release to MSFT folks
-  - [ ] Reenable automatic releases
+- [x] Generate "Thank you" section of the release notes in the `vnext` branch of the `vscode-docs` repo.
+    - [x] [Acknowledge third-party pull requests](https://tools.code.visualstudio.com/acknowledgement) in release notes.
+    - [x] Acknowledge [issue trackers](https://github.com/microsoft/vscode-internalbacklog/wiki/Community-Triage---Credits#community-triage---role-based) from the community (do the copy-paste variant) -
+- [x] If this is not Patch Tuesday only:
+  - [x] Build and release insiders from release/<x.y> (if there have been newer changes since last release)
+  - [x] Build stable from release/<x.y> and release to MSFT folks
+  - [x] Reenable automatic releases
     - A build is scheduled for 7:00 PM Zurich time (`19:00 GMT+2`); make sure automatic releases are reenabled before then so we get an Insiders build from `main` on Tuesday evening.
 
 # Tuesday afternoon/Wednesday morning
@@ -2269,78 +2269,78 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `1b197035c1dd7a0632af6cded853249466a047213b6f45bd5a322a83ecf7a733`
-- **LAST_VERIFIED_UTC**: 2026-11-17T07:15:06.953591+00:00
+- **SHA256_FINGERPRINT**: `61134a3f23d017d443d55e9e14836e67926e4f49411e2489d991f7c14a08d845`
+- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:10.623653+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
 
-## GitHub Copilot weekly releases — November 9
-- **Date**: Mon, 16 Nov 2026 21:34:53 +0000
-- **URL**: https://github.blog/changelog/2026-11-16-github-copilot-weekly-releases-november-9
+## OpenAI’s GPT-6.2 Astra and GPT-6.2 Sol now available
+- **Date**: Tue, 17 Nov 2026 20:20:29 +0000
+- **URL**: https://github.blog/changelog/2026-11-17-openais-gpt-6-2-astra-and-gpt-6-2-sol-now-available
 
-This week, bring GitHub Enterprise Server repositories into the Copilot app and see which agent sessions need you first in VS Code. You can also try two new models, Claude...
-The post GitHub Copilot weekly releases — November 9 appeared first on The GitHub Blog .
+OpenAI’s GPT-6.2 Astra and GPT-6.2 Sol are now generally available in GitHub Copilot. Both models are designed for agentic coding and code review, with stronger coding judgment than earlier GPT-6...
+The post OpenAI’s GPT-6.2 Astra and GPT-6.2 Sol now available appeared first on The GitHub Blog .
 
-## GitHub Copilot models deprecated on November 16, 2026
-- **Date**: Mon, 16 Nov 2026 20:25:20 +0000
-- **URL**: https://github.blog/changelog/2026-11-16-github-copilot-models-deprecated-on-november-16-2026
+## GitHub Copilot Fusion updates: more availability, benchmarks, and models
+- **Date**: Tue, 17 Nov 2026 18:04:48 +0000
+- **URL**: https://github.blog/changelog/2026-11-17-github-copilot-fusion-updates-more-availability-benchmarks-and-models
 
-As of today, November 16, 2026, we have deprecated the following models across most GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions). Note...
-The post GitHub Copilot models deprecated on November 16, 2026 appeared first on The GitHub Blog .
+Today, we’re expanding GitHub Copilot Fusion with new models, available on more Copilot surfaces, and results on two public Terminal-Bench leaderboards, giving you more ways to use Fusion and compare...
+The post GitHub Copilot Fusion updates: more availability, benchmarks, and models appeared first on The GitHub Blog .
 
-## Control where GitHub Copilot customizations come from
-- **Date**: Mon, 16 Nov 2026 19:48:33 +0000
-- **URL**: https://github.blog/changelog/2026-11-16-control-where-github-copilot-customizations-come-from
+## GitHub Copilot app, Microsoft Ignite releases
+- **Date**: Tue, 17 Nov 2026 18:03:42 +0000
+- **URL**: https://github.blog/changelog/2026-11-17-github-copilot-app-microsoft-ignite-releases
 
-As an enterprise administrator, you can now require selected GitHub Copilot customizations to come from plugins or managed settings, rather than standalone user or project configuration. Combined with marketplace restrictions,...
-The post Control where GitHub Copilot customizations come from appeared first on The GitHub Blog .
+Copilot is most useful when it can work where you do. The GitHub Copilot app now supports your Azure DevOps repositories, your GitHub Enterprise Server instance, and the browser you’re...
+The post GitHub Copilot app, Microsoft Ignite releases appeared first on The GitHub Blog .
 
-## VS Code retires the Local harness in February 2027
-- **Date**: Mon, 16 Nov 2026 19:22:56 +0000
-- **URL**: https://github.blog/changelog/2026-11-16-vs-code-retires-the-local-harness-in-february-2027
+## Copilot code review: Adaptive effort, secret detection, and more
+- **Date**: Tue, 17 Nov 2026 18:02:05 +0000
+- **URL**: https://github.blog/changelog/2026-11-17-copilot-code-review-adaptive-effort-secret-detection-and-more
 
-Visual Studio Code 1.146 deprecates the Local harness, the older software that coordinates the model, context, and tools for GitHub Copilot agent sessions in the editor. The Local harness will...
-The post VS Code retires the Local harness in February 2027 appeared first on The GitHub Blog .
+GitHub Copilot code review now helps you catch more issues earlier, with less effort. Adaptive matches review depth to each pull request, so routine changes get a quick pass and...
+The post Copilot code review: Adaptive effort, secret detection, and more appeared first on The GitHub Blog .
 
-## Upcoming deprecation of selected GitHub Copilot models in December
-- **Date**: Fri, 13 Nov 2026 20:40:05 +0000
-- **URL**: https://github.blog/changelog/2026-11-13-upcoming-deprecation-of-selected-github-copilot-models-in-december
+## MAI Code 2 and MAI Code 2 Flash in GitHub Copilot
+- **Date**: Tue, 17 Nov 2026 18:01:45 +0000
+- **URL**: https://github.blog/changelog/2026-11-17-mai-code-2-and-mai-code-2-flash-in-github-copilot
 
-We will deprecate the following models across all GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions) on December 14, 2026: Model Deprecation date...
-The post Upcoming deprecation of selected GitHub Copilot models in December appeared first on The GitHub Blog .
+The next generation of Microsoft AI (MAI) coding models has arrived in GitHub Copilot. Introducing MAI Code 2 and MAI Code 2 Flash, two new models that represent a major...
+The post MAI Code 2 and MAI Code 2 Flash in GitHub Copilot appeared first on The GitHub Blog .
 
-## GitHub Enterprise Server support in the GitHub Copilot app
-- **Date**: Fri, 13 Nov 2026 18:27:13 +0000
-- **URL**: https://github.blog/changelog/2026-11-13-github-enterprise-server-support-in-the-github-copilot-app
+## GitHub Copilot in JetBrains, Ignite releases
+- **Date**: Tue, 17 Nov 2026 18:00:59 +0000
+- **URL**: https://github.blog/changelog/2026-11-17-github-copilot-in-jetbrains-ignite-releases
 
-You can now bring your work on GitHub Enterprise Server (GHES) into the GitHub Copilot app. Add your GHES account to work with remote repositories, issues, and pull requests. This...
-The post GitHub Enterprise Server support in the GitHub Copilot app appeared first on The GitHub Blog .
+This update brings remote access, on-device voice dictation, and browser use controls to GitHub Copilot for JetBrains. Copilot users in JetBrains IDEs also get context usage shortcuts, historical diffs, simpler...
+The post GitHub Copilot in JetBrains, Ignite releases appeared first on The GitHub Blog .
 
-## Gemini 4 Hydrogen in GitHub Copilot
-- **Date**: Fri, 13 Nov 2026 18:23:48 +0000
-- **URL**: https://github.blog/changelog/2026-11-13-gemini-4-hydrogen-in-github-copilot
+## Monitor GitHub Copilot activity through Microsoft Agent 365
+- **Date**: Tue, 17 Nov 2026 18:00:59 +0000
+- **URL**: https://github.blog/changelog/2026-11-17-monitor-github-copilot-activity-through-microsoft-agent-365
 
-Gemini 4 Hydrogen, Google’s latest Flash model, is now generally available in GitHub Copilot. It is designed for fast, efficient agentic coding, tool use, and multistep workflows, with improved instruction...
-The post Gemini 4 Hydrogen in GitHub Copilot appeared first on The GitHub Blog .
+Enterprises can now stream GitHub Copilot agent activity directly into Microsoft Agent 365. This lets you bring audit data from across GitHub Copilot clients into Microsoft’s agent control plane, where...
+The post Monitor GitHub Copilot activity through Microsoft Agent 365 appeared first on The GitHub Blog .
 
-## GitHub App support for Enterprise Copilot seat management
-- **Date**: Wed, 11 Nov 2026 00:10:31 +0000
-- **URL**: https://github.blog/changelog/2026-11-10-github-app-support-for-enterprise-copilot-seat-management
+## GitHub Copilot CLI adds Microsoft Entra sign-in as a preview
+- **Date**: Tue, 17 Nov 2026 18:00:35 +0000
+- **URL**: https://github.blog/changelog/2026-11-17-github-copilot-cli-adds-microsoft-entra-sign-in-as-a-preview
 
-Enterprise GitHub Apps can now call the enterprise-level Copilot seat management APIs to control which users and enterprise teams are assigned Copilot seats. The Copilot seat management APIs are accessible...
-The post GitHub App support for Enterprise Copilot seat management appeared first on The GitHub Blog .
+GitHub Copilot CLI now supports Microsoft Entra authentication in public preview. You can sign in with your Microsoft Entra account to silently authenticate to a linked GitHub Enterprise Managed User...
+The post GitHub Copilot CLI adds Microsoft Entra sign-in as a preview appeared first on The GitHub Blog .
 
-## Gemini 4 Carbon in GitHub Copilot
-- **Date**: Tue, 10 Nov 2026 19:26:51 +0000
-- **URL**: https://github.blog/changelog/2026-11-10-gemini-4-carbon-in-github-copilot
+## Track Copilot code review outcomes in Repository insights
+- **Date**: Tue, 17 Nov 2026 18:00:35 +0000
+- **URL**: https://github.blog/changelog/2026-11-17-track-copilot-code-review-outcomes-in-repository-insights
 
-Gemini 4 Carbon, Google’s latest model, is now generally available in GitHub Copilot. It is designed for complex coding, agentic, and reasoning tasks, with a focus on secure code generation...
-The post Gemini 4 Carbon in GitHub Copilot appeared first on The GitHub Blog .
+You can now see how Copilot code review feedback lands in each repository. A new “Repository insights” page, the first item in a repository’s Insights tab, brings Copilot code review...
+The post Track Copilot code review outcomes in Repository insights appeared first on The GitHub Blog .
 
-## C++ language server now auto-configures MSBuild builds
-- **Date**: Tue, 10 Nov 2026 17:04:10 +0000
-- **URL**: https://github.blog/changelog/2026-11-10-c-language-server-now-auto-configures-msbuild-builds
+## GitHub Copilot Evals is now in public preview
+- **Date**: Tue, 17 Nov 2026 18:00:33 +0000
+- **URL**: https://github.blog/changelog/2026-11-17-github-copilot-evals-is-now-in-public-preview
 
-The Microsoft C++ Language Server for GitHub Copilot CLI now bundles its MSBuild compile commands extractor and invokes it automatically. An agent no longer needs to discover and run a...
-The post C++ language server now auto-configures MSBuild builds appeared first on The GitHub Blog .
+You can now use GitHub Copilot Evals to optimize GitHub Copilot for yourself. As your prompts, models, skills, and tools change, are you still getting the most out of Copilot?...
+The post GitHub Copilot Evals is now in public preview appeared first on The GitHub Blog .

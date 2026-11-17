@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-11-16T21:47:50.911875+00:00
-- **Total Palabras**: 441,930 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-17T20:39:13.063438+00:00
+- **Total Palabras**: 442,010 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -66031,8 +66031,8 @@ Behavior depends on where you set the flag:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/agent-plugins.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/agent-plugins
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-plugins.md
-- **SHA256_FINGERPRINT**: `7261246e05418d12480d699493c0cf43de87ffca0c4e99708445d3d28af9a136`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:57.877556+00:00
+- **SHA256_FINGERPRINT**: `fa48f0ce5dc0e04227a2b8978ba8369c5fbfaaba3ff8153747daf8954798d21a`
+- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:05.746197+00:00
 ---
 
 **MetaDescription**: Find, install, and manage agent plugins from marketplaces in VS Code.
@@ -66134,7 +66134,7 @@ After the trial, close the review tab and remove `plugin-review.md` if you don't
 Plugin providers can create shareable deep links to help users register a marketplace or install a specific named plugin directly in VS Code.
 
 > [!IMPORTANT]
-> Agent plugins are distinct from VS Code extensions. To install an extension from the [product.prodname_vs_marketplace], use `vscode:extension/<publisher>.<extensionName>` as described in [URL handling](/docs/configure/command-line.md#url-handling).
+> Agent plugins are distinct from VS Code extensions. To install an extension from the [product.prodname_vs_marketplace], use `vscode:extension/<publisher>.<extensionName>` as described in [URL handling](/docs/configure/command-line.md#opening-vs-code-with-urls).
 
 #### Install a specific plugin
 
@@ -67360,8 +67360,8 @@ The response's **References** section, where available, helps check inclusion, n
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/hooks.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/hooks
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/hooks.md
-- **SHA256_FINGERPRINT**: `cfbbfe66c9a90cdc517879ff54beec7e94ecd32ba1a8aafcf335c7d5b1536698`
-- **LAST_VERIFIED_UTC**: 2026-11-12T19:42:37.648347+00:00
+- **SHA256_FINGERPRINT**: `3bcca3df1cac6aae58c894bddf1984ae0ec7ca582730c5a17b8a79d9d7f88d13`
+- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:05.737561+00:00
 ---
 
 **MetaDescription**: Reuse and configure agent hooks for personal and shared workflows in VS Code.
@@ -67511,7 +67511,9 @@ If you prefer to create the files directly, use `~/.copilot/hooks/`, or `$COPILO
 
 ## Configure commands and event data
 
-A command hook receives event data as JSON on standard input (stdin). It can return one JSON output object on standard output (stdout). Keep diagnostic text separate from that output.
+A command hook receives event data as JSON on standard input (stdin). It can return one final JSON output object on standard output (stdout). Keep ordinary diagnostic text on standard error (stderr). Redirect or suppress diagnostic output from child processes, such as package managers or dependency installers, if it would otherwise reach the hook's stdout. Extra text can invalidate the JSON response even when the hook exits successfully.
+
+GitHub Copilot CLI also supports [structured progress messages](https://docs.github.com/en/copilot/reference/hooks-reference#progress-messages) on stdout before the final response. Each progress message must be a complete JSON object on its own line. Recognized progress lines are removed before the remaining output is parsed as one JSON document.
 
 The Copilot harness supports a cross-platform `command` fallback and platform-specific `bash` or `powershell` commands. Command arguments belong in the command string. A shell-free `exec` and `args` form is also available; these arguments are not a replacement for the event JSON on stdin.
 
@@ -68982,8 +68984,8 @@ A separate report, [microsoft/vscode#342961](https://github.com/microsoft/vscode
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/overview.md
-- **SHA256_FINGERPRINT**: `8747680a91bfa1e747b70e1134c5bda46ef8db29006ca94d80b92ef56259b48a`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.034883+00:00
+- **SHA256_FINGERPRINT**: `cf5d9e0541b93eb0d8e4f1478eab0c28405ffb3bcf34691504cfbb6a25b2c652`
+- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:05.849960+00:00
 ---
 
 **MetaDescription**: Find, create, and manage agent customizations for a session's harness, workspace, and environment in VS Code.
@@ -69272,7 +69274,7 @@ These links navigate within the selected session's customization context. They d
   ```
 
 > [!NOTE]
-> For VS Code Insiders, use the `vscode-insiders://` scheme instead of `vscode://`. To share links on web pages or markdown badges, use the HTTPS redirect wrapper: `https://vscode.dev/redirect?url=<url-encoded-vscode-URL>`. For more information on URL handlers, see [URL handling](/docs/configure/command-line.md#url-handling).
+> For VS Code Insiders, use the `vscode-insiders://` scheme instead of `vscode://`. To share links on web pages or markdown badges, use the HTTPS redirect wrapper: `https://vscode.dev/redirect?url=<url-encoded-vscode-URL>`. For more information on URL handlers, see [URL handling](/docs/configure/command-line.md#opening-vs-code-with-urls).
 
 ### Manage canvas extensions
 

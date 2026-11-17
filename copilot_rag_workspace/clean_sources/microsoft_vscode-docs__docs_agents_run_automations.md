@@ -10,7 +10,7 @@ This article explains how to choose between local and cloud automations, and how
 
 ## Prerequisites
 
-* Set up and open the [Agents window](/docs/agents/run/agents-window.md#prerequisites) with an available agent.
+* Set up and open the [Agents window](/docs/agents/run/agents-window.md#open-the-agents-window) with an available agent.
 * For cloud automations `feature(cloud-automations)`, sign in with a GitHub.com account that has write access to an eligible private repository. Your Copilot plan and organization must allow automations. See [GitHub automation availability and permissions](https://docs.github.com/en/copilot/concepts/agent-capabilities/agent-powered-workflows-and-operations/about-automations#availability-and-permissions).
 
 Automations and cloud automation management are on by default. If **Automations** isn't visible in the sidebar, check that ``chat.automations.enabled`` is on. If **Run in the Cloud** isn't available in the creation form, also check ``chat.automations.cloud.enabled``. Turning on these settings doesn't grant access to the GitHub service.
