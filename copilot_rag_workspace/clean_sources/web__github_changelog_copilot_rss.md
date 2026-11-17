@@ -1,11 +1,32 @@
 # GitHub Copilot Official Changelog Feed
 
+## GitHub Copilot weekly releases — November 9
+- **Date**: Mon, 16 Nov 2026 21:34:53 +0000
+- **URL**: https://github.blog/changelog/2026-11-16-github-copilot-weekly-releases-november-9
+
+This week, bring GitHub Enterprise Server repositories into the Copilot app and see which agent sessions need you first in VS Code. You can also try two new models, Claude...
+The post GitHub Copilot weekly releases — November 9 appeared first on The GitHub Blog .
+
 ## GitHub Copilot models deprecated on November 16, 2026
 - **Date**: Mon, 16 Nov 2026 20:25:20 +0000
 - **URL**: https://github.blog/changelog/2026-11-16-github-copilot-models-deprecated-on-november-16-2026
 
 As of today, November 16, 2026, we have deprecated the following models across most GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions). Note...
 The post GitHub Copilot models deprecated on November 16, 2026 appeared first on The GitHub Blog .
+
+## Control where GitHub Copilot customizations come from
+- **Date**: Mon, 16 Nov 2026 19:48:33 +0000
+- **URL**: https://github.blog/changelog/2026-11-16-control-where-github-copilot-customizations-come-from
+
+As an enterprise administrator, you can now require selected GitHub Copilot customizations to come from plugins or managed settings, rather than standalone user or project configuration. Combined with marketplace restrictions,...
+The post Control where GitHub Copilot customizations come from appeared first on The GitHub Blog .
+
+## VS Code retires the Local harness in February 2027
+- **Date**: Mon, 16 Nov 2026 19:22:56 +0000
+- **URL**: https://github.blog/changelog/2026-11-16-vs-code-retires-the-local-harness-in-february-2027
+
+Visual Studio Code 1.146 deprecates the Local harness, the older software that coordinates the model, context, and tools for GitHub Copilot agent sessions in the editor. The Local harness will...
+The post VS Code retires the Local harness in February 2027 appeared first on The GitHub Blog .
 
 ## Upcoming deprecation of selected GitHub Copilot models in December
 - **Date**: Fri, 13 Nov 2026 20:40:05 +0000
@@ -48,24 +69,3 @@ The post Gemini 4 Carbon in GitHub Copilot appeared first on The GitHub Blog .
 
 The Microsoft C++ Language Server for GitHub Copilot CLI now bundles its MSBuild compile commands extractor and invokes it automatically. An agent no longer needs to discover and run a...
 The post C++ language server now auto-configures MSBuild builds appeared first on The GitHub Blog .
-
-## Claude Fable 5.2 in GitHub Copilot
-- **Date**: Mon, 09 Nov 2026 16:46:43 +0000
-- **URL**: https://github.blog/changelog/2026-11-09-claude-fable-5-2-in-github-copilot
-
-Claude Fable 5.2, Anthropic’s newest Fable model, is now generally available in GitHub Copilot. You can use it for complex, multistep coding tasks across large codebases. In early testing, Fable...
-The post Claude Fable 5.2 in GitHub Copilot appeared first on The GitHub Blog .
-
-## Copilot code review: API management and review overview updates
-- **Date**: Sat, 07 Nov 2026 00:27:19 +0000
-- **URL**: https://github.blog/changelog/2026-11-06-copilot-code-review-api-management-and-review-overview-updates
-
-You can now manage GitHub Copilot code review settings through the REST and GraphQL APIs, from enterprise policy down to individual repositories. Copilot’s review overview comment is now more compact,...
-The post Copilot code review: API management and review overview updates appeared first on The GitHub Blog .
-
-## Copilot impact dashboard adds chat and VS Code agent usage
-- **Date**: Fri, 06 Nov 2026 22:17:28 +0000
-- **URL**: https://github.blog/changelog/2026-11-06-copilot-impact-dashboard-adds-chat-and-vs-code-agent-usage
-
-The Agent adoption chart in the Copilot impact dashboard now includes Copilot Chat and the VS Code Agents window, so you can see engagement across nine Copilot experiences. The adoption...
-The post Copilot impact dashboard adds chat and VS Code agent usage appeared first on The GitHub Blog .

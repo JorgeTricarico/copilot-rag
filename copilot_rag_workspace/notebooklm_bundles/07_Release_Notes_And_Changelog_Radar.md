@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-16T21:47:50.942933+00:00
-- **Total Palabras**: 19,636 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-17T07:15:08.383201+00:00
+- **Total Palabras**: 19,631 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1536,8 +1536,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_348483
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/348483
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/348483
-- **SHA256_FINGERPRINT**: `e43c6ed635e65240ccd7e2fc802a9be71e62dd31a296d26b8c7652eb89f3c8a4`
-- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:50.749865+00:00
+- **SHA256_FINGERPRINT**: `41e42b9d649a62292e682e5ff71ddb967bfe8b728f4ec5a1bb5713eecd183542`
+- **LAST_VERIFIED_UTC**: 2026-11-17T07:15:08.381384+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.147.0 Endgame
@@ -1594,7 +1594,7 @@ We really appreciate people trying our new features as soon as they are ready, s
 
 `@endgame-champ`:
 - [x] Build and release Insiders from `release/<x.y>` branch so we can finish verification. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
-- [ ] Build stable from `release/<x.y>` branch (do not release) so that the Zurich team would have a build to release given no candidates. ([Pipline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
+- [x] Build stable from `release/<x.y>` branch (do not release) so that the Zurich team would have a build to release given no candidates. ([Pipline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
 
 # Tuesday by noon CET
 
@@ -2269,11 +2269,18 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `fc85fc3b0309a6d472de13b527a18b7854acfb9d89336502a75964f0b948f12d`
-- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:47.825226+00:00
+- **SHA256_FINGERPRINT**: `1b197035c1dd7a0632af6cded853249466a047213b6f45bd5a322a83ecf7a733`
+- **LAST_VERIFIED_UTC**: 2026-11-17T07:15:06.953591+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
+
+## GitHub Copilot weekly releases — November 9
+- **Date**: Mon, 16 Nov 2026 21:34:53 +0000
+- **URL**: https://github.blog/changelog/2026-11-16-github-copilot-weekly-releases-november-9
+
+This week, bring GitHub Enterprise Server repositories into the Copilot app and see which agent sessions need you first in VS Code. You can also try two new models, Claude...
+The post GitHub Copilot weekly releases — November 9 appeared first on The GitHub Blog .
 
 ## GitHub Copilot models deprecated on November 16, 2026
 - **Date**: Mon, 16 Nov 2026 20:25:20 +0000
@@ -2281,6 +2288,20 @@ Legend of annotations:
 
 As of today, November 16, 2026, we have deprecated the following models across most GitHub Copilot experiences (including Copilot Chat, inline edits, ask and agent modes, and code completions). Note...
 The post GitHub Copilot models deprecated on November 16, 2026 appeared first on The GitHub Blog .
+
+## Control where GitHub Copilot customizations come from
+- **Date**: Mon, 16 Nov 2026 19:48:33 +0000
+- **URL**: https://github.blog/changelog/2026-11-16-control-where-github-copilot-customizations-come-from
+
+As an enterprise administrator, you can now require selected GitHub Copilot customizations to come from plugins or managed settings, rather than standalone user or project configuration. Combined with marketplace restrictions,...
+The post Control where GitHub Copilot customizations come from appeared first on The GitHub Blog .
+
+## VS Code retires the Local harness in February 2027
+- **Date**: Mon, 16 Nov 2026 19:22:56 +0000
+- **URL**: https://github.blog/changelog/2026-11-16-vs-code-retires-the-local-harness-in-february-2027
+
+Visual Studio Code 1.146 deprecates the Local harness, the older software that coordinates the model, context, and tools for GitHub Copilot agent sessions in the editor. The Local harness will...
+The post VS Code retires the Local harness in February 2027 appeared first on The GitHub Blog .
 
 ## Upcoming deprecation of selected GitHub Copilot models in December
 - **Date**: Fri, 13 Nov 2026 20:40:05 +0000
@@ -2323,24 +2344,3 @@ The post Gemini 4 Carbon in GitHub Copilot appeared first on The GitHub Blog .
 
 The Microsoft C++ Language Server for GitHub Copilot CLI now bundles its MSBuild compile commands extractor and invokes it automatically. An agent no longer needs to discover and run a...
 The post C++ language server now auto-configures MSBuild builds appeared first on The GitHub Blog .
-
-## Claude Fable 5.2 in GitHub Copilot
-- **Date**: Mon, 09 Nov 2026 16:46:43 +0000
-- **URL**: https://github.blog/changelog/2026-11-09-claude-fable-5-2-in-github-copilot
-
-Claude Fable 5.2, Anthropic’s newest Fable model, is now generally available in GitHub Copilot. You can use it for complex, multistep coding tasks across large codebases. In early testing, Fable...
-The post Claude Fable 5.2 in GitHub Copilot appeared first on The GitHub Blog .
-
-## Copilot code review: API management and review overview updates
-- **Date**: Sat, 07 Nov 2026 00:27:19 +0000
-- **URL**: https://github.blog/changelog/2026-11-06-copilot-code-review-api-management-and-review-overview-updates
-
-You can now manage GitHub Copilot code review settings through the REST and GraphQL APIs, from enterprise policy down to individual repositories. Copilot’s review overview comment is now more compact,...
-The post Copilot code review: API management and review overview updates appeared first on The GitHub Blog .
-
-## Copilot impact dashboard adds chat and VS Code agent usage
-- **Date**: Fri, 06 Nov 2026 22:17:28 +0000
-- **URL**: https://github.blog/changelog/2026-11-06-copilot-impact-dashboard-adds-chat-and-vs-code-agent-usage
-
-The Agent adoption chart in the Copilot impact dashboard now includes Copilot Chat and the VS Code Agents window, so you can see engagement across nine Copilot experiences. The adoption...
-The post Copilot impact dashboard adds chat and VS Code agent usage appeared first on The GitHub Blog .
