@@ -1,371 +1,7 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-17T20:39:13.093138+00:00
-- **Total Palabras**: 19,638 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-18T20:12:53.534127+00:00
+- **Total Palabras**: 20,710 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
-
-
----
-# DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_145.md
-- **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_145
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_145.md
-- **SHA256_FINGERPRINT**: `e9c0319f506900c85aa6f46f1900f802075b54fff14d437fdb441a35ac39ea26`
-- **LAST_VERIFIED_UTC**: 2026-11-10T19:29:14.895709+00:00
----
-
-**MetaDescription**: Learn what's new in Visual Studio Code 1.145
-
-# Visual Studio Code 1.145
-
-**Update 1.145.1**: The update addresses these [issues](https://github.com/microsoft/vscode/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.145.1).
-
-**Update 1.145.2**: The update addresses these [issues](https://github.com/microsoft/vscode/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.145.2).
-
-**Update 1.145.3**: The update addresses these [security issues](https://github.com/microsoft/vscode/issues?q=milestone%3A1.145.3+state%3Aclosed+label%3Acandidate).
-
-## Release highlights
-
-This week, your remote agent sessions feel a bit more local. Preview apps and use canvases right in VS Code, fine-tune automation schedules with cron, and turn down the noise in chat. And when you need a break, Blobby is ready to play.
-
-* [Remote agents](#remote-agents): Preview apps and use interactive canvases from remote agent sessions without leaving the Agents window.
-
-* [Automations](#cron-schedules-and-custom-agents-for-local-automations): Run recurring agent tasks on custom schedules beyond the built-in presets with cron.
-
-* [Agent verbosity](#choose-agent-verbosity): Keep chats concise or see the full details of the agent's reasoning and tool calls, your choice.
-
-* [File exclusions](#show-specific-files-in-excluded-folders): Exclude folders while keeping the files you need visible and searchable.
-
-* [Fun](#blobby-jump-game-experimental): Take a short break with a platform-jumping game starring Blobby, the VS Code pet.
-
-## Remote agents
-
-### Browse over remote agent host connections (Preview)
-
-**Setting**: ``workbench.browser.enableRemoteProxy``
-
-When an agent session runs on a [remote agent host](https://code.visualstudio.com/docs/agents/run/remote-agent-sessions), the integrated browser in the Agents window now loads pages through that host, as it already does in [remote workspaces](https://code.visualstudio.com/updates/v1_125#_browse-over-remote-connections-preview). When the agent starts a dev server on the remote machine, you can open it right in the Agents window to preview the app, validate the agent's changes, and give it feedback, as you would in a local session.
-
-![Screenshot showing the URL bar in the integrated browser, showing 'Connected via kyles-mbp'.](images/1_145/remote-browser.webp)
-
-Enable ``workbench.browser.enableRemoteProxy`` to try it out, and file any issues you encounter in the [VS Code repository](https://github.com/microsoft/vscode/issues).
-
-### Remote canvases (Preview)
-
-**Settings**: ``workbench.browser.enableRemoteProxy``, ``chat.canvases.enabled``
-
-Thanks to the remote agent host connections support, you can now also use [canvases](https://code.visualstudio.com/docs/agents/run/canvases) that are hosted on a remote agent host.
-
-Enable ``chat.canvases.enabled`` and ``workbench.browser.enableRemoteProxy`` to try it out, and file any issues you encounter in the [VS Code repository](https://github.com/microsoft/vscode/issues).
-
-## Agents
-
-### Mix and match agent harnesses in one session (Preview)
-
-**Setting**: ``chat.agentHost.multipleChatProviders.enabled``
-
-[Nested sessions](https://code.visualstudio.com/docs/agents/run/sessions/manage-sessions#_run-multiple-chats-in-a-session) let you keep related conversations together within a single main chat session. Previously, every nested session inherited its parent session's harness. If you wanted a second opinion from another agent, you had to start a separate session and lose that grouping.
-
-In this release, nested sessions can use different harnesses than their parent session. For example, ask Claude to review the plan that a Copilot chat wrote, or give Codex the same task, side by side in the same session. When you create a new nested session, use the harness picker to switch to a different harness.
-
-Each chat has its own model, agent, and permission levels, based on its harness. Changing them in one chat doesn't affect the others. When you move a chat, it keeps its history and continues with its selected harness. When you fork a nested session, it continues with the same configuration.
-
-A chat that uses a different harness than its session names its harness when you hover over its chat tab or its row in the sessions list.
-
-<video src="images/1_145/multi-harness-session.mp4" title="Video showing a Copilot session in the Agents window where Claude and Codex nested sessions are added through the harness picker, each answering with its own model and permissions." autoplay loop controls muted></video>
-
-Enable ``chat.agentHost.multipleChatProviders.enabled`` to get started. Let us know what you think by [filing an issue](https://github.com/microsoft/vscode/issues).
-
-### Cron schedules and custom agents for local automations
-
-Instead of manually running agent tasks one by one, you can use [automations](https://code.visualstudio.com/docs/agents/run/automations) to schedule and run them automatically, either on demand or on a set schedule.
-
-This release gives you more flexibility for local automations and keeps the Automations view focused on active work:
-
-* **Use cron schedules:** Select **Cron** to enter a five-field cron expression when the other schedule presets aren't precise enough. The dialog validates the expression and describes the resulting schedule. Cron schedules are not available for cloud automations.
-
-* **Use workspace custom agents:** Choose a custom agent from the selected workspace when you create or edit a local automation.
-
-* **Focus on active automations:** Disabled automations appear in a collapsed **Disabled automations** section, so they don't obscure run history and active automations.
-
-![Screenshot showing the Cron schedule editor for a local automation.](images/1_145/cron-automations.webp)
-
-Learn more about [creating and managing agent automations](https://code.visualstudio.com/docs/agents/run/automations).
-
-### Pin canvases to sidebar (Experimental)
-
-**Setting**: ``chat.canvases.enabled``
-
-To make it easier to access frequently used canvases, you can now pin a canvas to appear in the left sidebar. To pin a canvas, open it and select the **Add to Sidebar** button above the canvas. Pinned canvases remain accessible in the sidebar even when you navigate away from them.
-
-<video src="images/1_145/pinned-canvases.mp4" title="Video showing how to pin a canvas to the sidebar in VS Code." autoplay loop controls muted></video>
-
-### Copilot harness
-
-The Copilot harness continues to be the default for new sessions in VS Code. It's our latest harness, built on the Copilot SDK, a shared foundation that helps align behavior, capabilities, and improvements across Copilot products.
-
-When you start a new session, **Copilot** in the harness picker indicates that the session uses the Copilot harness. In VS Code, you can keep Copilot harness sessions running in the background and access them from both the VS Code editor window and the Agents window. These sessions run through the [Agent Host](https://code.visualstudio.com/docs/agents/concepts/agent-host).
-
-To help you adopt the Copilot harness with your existing workflows, we've added a [Local-to-Copilot harness transition guide](https://code.visualstudio.com/docs/agents/run/move-to-copilot). It covers customization compatibility, session continuity, and organization rollout and verification.
-
-Thank you for the feedback that continues to shape these improvements. Please continue [filing issues](https://github.com/microsoft/vscode/issues) about your experience, especially if a workflow or integration prevents your organization from moving off the Local harness.
-
-Learn how to [work with the Copilot harness](https://code.visualstudio.com/docs/agents/run/agent-harnesses), or explore the architecture and workflows in the [agent host blog post](https://code.visualstudio.com/blogs/2026/08/26/agent-host-architecture).
-
-### Working set improvements (Experimental)
-
-**Setting**: ``chat.editor.workingSet.enabled``
-
-Last release, we introduced the working set for Copilot harness sessions, letting you review pending agent edits. You can **keep** or **undo** changes, as you could do with the Local harness.
-
-![Screenshot of the working set in Copilot harness sessions.](images/1_145/working-set.webp)
-
-We are further improving the working set experience in Copilot harness sessions:
-
-* Files in WSL, Dev Containers, and SSH workspaces open from the working set on the correct host.
-* When several tool calls edit the same file in parallel, the working set tracks those edits and the editor's inline review controls remain available after editing finishes.
-
-The working set functionality remains enabled by default in the editor window. Learn more about [reviewing agent edits with the working set](https://code.visualstudio.com/docs/agents/run/review-code-edits#_review-pending-edits-with-the-working-set), including which edits it tracks.
-
-### Improved guidance when required sandboxing is unavailable
-
-[Agent sandboxing](https://code.visualstudio.com/docs/agents/run/agent-sandboxing) limits what terminal commands can access, like the file system and network resources. Your organization can require it with managed settings that disallow bypassing the sandbox.
-
-If your organization requires sandboxing but your machine can't run it, the warning banner explains why terminal commands are blocked and how to resolve the problem. It shows the specific cause, such as a missing dependency, and links to troubleshooting steps.
-
-If your account and organization support [cloud sessions (Experimental)](https://code.visualstudio.com/docs/agents/run/cloud-agent-sessions), consider running agent tools in the cloud instead of on your machine.
-
-## Chat
-
-### Choose agent verbosity (Experimental)
-
-**Setting**: ``chat.persistentProgressVerbosity``
-
-Keep long chats readable, or follow the agent's reasoning and tool calls in detail when you need to understand its actions. Open the Chat view's **More Actions** menu and select **View Mode**:
-
-* **Conversation**: Focus on the conversation. Reasoning and tool calls are grouped into collapsed sections between blocks of response text. Expand a section to inspect its details.
-* **Verbose**: Follow each step with tool calls expanded, without an internal scrolling limit on tool groups.
-* **Compact** (default): Preview tool calls while they run, then collapse completed groups to expandable summary rows.
-
-You can switch modes without starting a new chat. The modes change how the conversation is displayed, not its context or the work the agent performs.
-
-<video src="images/1_145/chat-view-modes.mp4" title="Video showing the same Copilot harness session with GPT-6.1 Terra at default model settings, Interactive mode, and Allow All permissions in Conversation, Verbose, and Compact chat views side by side." autoplay loop controls muted></video>
-
-With persistent progress enabled, the active progress indicator stays above the chat input while you scroll back through a response. If you prefer an animated input border instead, enable ``chat.progressBorder.enabled``.
-
-### Chat performance improvements
-
-Reopen and browse long Copilot harness chats more smoothly. VS Code reuses existing reasoning titles and renders terminal output as you reveal it. Terminal output in restored tool calls is rendered when you expand or reveal it, rather than all at once.
-
-This release also reduces repeated progress updates and layout measurements when restoring and navigating long conversations.
-
-### Inline chat attachments (Experimental)
-
-**Setting**: ``chat.inlineAttachments.enabled``
-
-Keep file references and other context next to the instructions they belong to. Enable this setting to insert attachment pills at the cursor in your prompt, rather than in a separate row above the input.
-
-Move across, select, or delete an attachment pill as a single character. Previous messages keep the pills inline, so references stay with the surrounding instructions.
-
-Inline attachments are on by default in Insiders and off by default in Stable.
-
-![Screenshot showing file and image attachment pills inline with the surrounding text in the chat input.](images/1_145/chat-inline-attachments.webp)
-
-### Attach files from anywhere on your computer
-
-Previously, to give chat a file outside your workspace, such as a screenshot or mockup on your desktop, you had to drag it in from your file manager or ask the agent to find it. Select **Add Context** (`+`) > **Files** to choose one or more files with the standard file dialog, even in a new chat without a workspace. In cloud sessions, the chooser lists only images.
-
-![Screenshot showing the Add Context menu in chat with the Files entry above Image from Clipboard and Screenshot Window.](images/1_145/chat-attach-files-menu.webp)
-
-When [sandboxing](https://code.visualstudio.com/docs/agents/run/agent-sandboxing) is enabled in Copilot harness sessions, the agent can read the files and folders you attach, even when they're outside the workspace. Each attached path is readable for the rest of the session, but the agent can't write to it, and the access isn't saved to your settings. With Manual permissions, the agent no longer asks before reading an attached file. If your organization's managed settings define their own list of readable paths, attachments aren't added to it.
-
-## MCP
-
-### Support for tools provided by MCP apps
-
-MCP apps are interactive interfaces provided by MCP servers. They can now register tools that the language model can call in its next request.
-
-For example, the [ShaderToy server](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples/shadertoy-server) lets the model iterate on shaders in real time.
-
-### Managed MCP allowlist precedence
-
-For MCP servers started by VS Code, the enterprise-managed `allowedMcpServers` list takes precedence over registry-only access, so your organization can approve servers without publishing them to its registry. See the [Enterprise section on managed MCP allowlists](#managed-mcp-allowlists-take-precedence-over-registry-only-access) for configuration details and restrictions.
-
-## Editor Experience
-
-### Show specific files in excluded folders
-
-**Settings**: ``files.exclude``, ``search.exclude``
-
-You can filter which files and folders are shown in the Explorer, Search, and Quick Open by using the ``files.exclude`` and ``search.exclude`` settings.
-
-To keep part of an excluded folder visible, prefix a pattern with `!` in ``files.exclude``. Matching files and folders show in the Explorer, Search, and Quick Open, even when another pattern or `.gitignore` excludes them. Exceptions in ``search.exclude`` apply only to Search and Quick Open.
-
-```json
-"files.exclude": {
-    "node_modules": true,
-    "!node_modules/@types": true
-}
-```
-
-Exceptions never hide files. Patterns such as `!**/node_modules/@types` match at any depth but can make searches slower.
-
-### Smart subgraph titles in Mermaid diagrams
-
-Edges in [Mermaid diagrams](https://code.visualstudio.com/docs/languages/markdown#_mermaid-diagram-rendering) no longer cover subgraph titles. A title moves to the side when an edge would cross it. With the default `vscode` Mermaid theme, subgraphs are outlined instead of filled, so nested subgraphs stand out.
-
-![Screenshot showing a Mermaid diagram with nested subgraphs before and after the change: edges no longer cross the subgraph titles, and the subgraphs are outlined instead of filled.](images/1_145/mermaid-subgraph-titles-before-after.webp)
-
-## Enterprise
-
-### Organization-required plugins can't be uninstalled
-
-When your organization requires an [agent plugin](https://code.visualstudio.com/docs/agent-customization/agent-plugins), for example with the `enabledPlugins` managed setting, the **Customizations** views previously offered **Uninstall** for it. That action always failed and changed to **Retry Uninstall**, which also failed. The same happened for the prompts, skills, agents, hooks, and MCP servers that the plugin contributes.
-
-```json
-{
-    "enabledPlugins": {
-        "my-plugin@my-marketplace": true
-    }
-}
-```
-
-The **Uninstall** action for these plugins and their contributions is now disabled and a message is shown on hover and keyboard focus. This applies to **Browse**, the plugin details, the plugin editor, and the plugin and MCP server menus.
-
-![Screenshot showing an organization-required plugin in Browse customizations with a disabled Uninstall button and a hover saying the plugin is managed by your organization.](images/1_145/managed-plugin-uninstall-disabled.webp)
-
-### Managed MCP allowlists take precedence over registry-only access
-
-Previously, when an organization limited MCP to servers from its registry and also defined an allowlist in managed settings, VS Code still required each server to be in the registry. Servers that the allowlist approved but that weren't published to the registry couldn't run.
-
-The enterprise-managed `allowedMcpServers` list is now authoritative. A server that matches the list can run even if it isn't in the registry, and a registry server that doesn't match is blocked. For example, the following [enterprise-managed settings](https://docs.github.com/en/copilot/how-tos/administer-copilot/manage-for-enterprise/use-managed-settings/get-started) allow one remote server and one local server:
-
-```json
-{
-    "allowedMcpServers": [
-        { "serverUrl": "https://mcp.example.com/mcp" },
-        { "serverCommand": ["node", "approved-server.js"] }
-    ]
-}
-```
-
-* An empty list (`[]`) blocks all servers. If the list is absent, the registry restriction applies as before.
-* User and workspace allowlists can't add servers to the enterprise list.
-* `deniedMcpServers` and turning off MCP still take precedence over the allowlist.
-* Prefer `serverUrl` and `serverCommand` rules. A `serverName` rule matches a label that the server's author chooses.
-
-> **Note**: This change applies to MCP servers that VS Code starts, not to servers managed by the Agent Host.
-
-## Contributions to extensions
-
-### GitHub Pull Requests
-
-There has been more progress on the [GitHub Pull Requests](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github) extension, which enables you to work on, create, and manage pull requests and issues. New features include:
-
-* The pull request overview timeline shows more events, including label, milestone, and title changes, review requests and dismissals, draft and ready-for-review changes, force pushes, branch restores, auto-merge changes, and merge queue updates.
-* Pull request description templates support issue variables such as `${issueTitle}`, `${issueNumber}`, and `${issueNumberLabel}`, filled in from the issue associated with the branch by "Start Working on Issue".
-* When you stack pull requests, you're prompted to disable auto-merge on any pull request in the stack that has it enabled.
-
-Review the [changelog for the 0.176.0](https://github.com/microsoft/vscode-pull-request-github/blob/main/CHANGELOG.md#01760) release of the extension to learn about everything in the release.
-
-## Extension Authoring
-
-### Timeline API finalized
-
-Extensions published to the Marketplace can add their own history to the Timeline view, next to Git commits and Local History. Register providers with `workspace.registerTimelineProvider` for files and folders, or `workspace.registerWorkspaceTimelineProvider` for the whole workspace. Set `TimelineItem.resourceUri` to the resource's content as of that entry so users can compare it with other entries by using **Compare Selected**.
-
-Learn more about the Timeline API in the [Timeline API documentation](https://code.visualstudio.com/api/extension-guides/timeline).
-
-## Fun!
-
-### Blobby jump game (Experimental)
-
-Take a short break with Blobby, the VS Code pet. Enter `/vscode-pet` in chat to show Blobby. On the new-session screen in the Agents window, choose **Play Jump Game** from Blobby's context menu. Hold the spacebar to charge a jump and use the arrow keys to aim for the next platform. The game remembers your high score on this device.
-
-<video src="images/1_145/blobby-jump-game.mp4" title="Video showing Blobby charging jumps, landing on platforms, and increasing the hop counter in the Agents window." autoplay loop controls muted></video>
-
-## Deprecated features and settings
-
-### New deprecations in this release
-
-#### Install Extension tool removed from the Local harness
-
-The **Install Extension** (`#installExtension`) agent tool is no longer available in Local agent sessions. When you create a new workspace from chat, the agent no longer installs extensions. Instead, it adds the extensions the project needs to `.vscode/extensions.json`, so you can review and install them from the Extensions view. When you run a Python cell in a Jupyter notebook without the Jupyter extension, the kernel picker prompts you to install it.
-
-If your custom agents or prompt files reference `#installExtension`, remove that reference.
-
-#### Run VS Code Command tool removed from the Local harness
-
-The **Run VS Code Command** (`#runCommand`) agent tool is no longer available in Local agent sessions. Built-in workflows that relied on it now work without it. For example, when chat diagnoses network issues, it asks you to run **Developer: Chat Diagnostics** and share the report.
-
-If your custom agents or prompt files reference `#runCommand`, remove that reference.
-
-#### Workspace creation tool and slash command removed from the Local harness
-
-The **Create New Workspace** (`#newWorkspace`, previously `#new`) agent tool and the `/new` slash command are no longer available in Local agent sessions. The **Generate New Workspace** link on the Welcome page is also no longer available. The dedicated project-setup skills are removed.
-
-To create a project, open an empty folder and describe the project you want in an agent session. The agent uses its standard tools to create files, run scaffolding commands, and configure tasks.
-
-Remove references to `#newWorkspace`, `#new`, `/new`, `project-setup-info-local`, and `project-setup-info-context7` from your custom agents and prompt files. The `github.copilot.chat.newWorkspaceCreation.enabled`, `github.copilot.chat.newWorkspace.useContext7`, and `github.copilot.chat.useProjectTemplates` settings are also removed. Notebook creation is unchanged.
-
-### Upcoming deprecations
-
-None
-
-## Notable fixes
-
-* When an organization turned off the Claude or Codex agent, users who had picked that agent before got a read-only chat with no input from **New Chat** (`+`), **New Chat Editor**, and new windows. New chats now fall back to the default harness, and an unsent prompt carries over. Your previous choice applies again if the policy is lifted. _[#345207](https://github.com/microsoft/vscode/pull/345207)_
-
-* When an organization set MCP access to registry only in its GitHub Copilot policies, a failed policy refresh, for example from a network error or rate limiting, removed the restriction until the next successful refresh. VS Code now keeps the last known registry policy, and clears it only when GitHub reports that no registry applies. _[#344895](https://github.com/microsoft/vscode/pull/344895)_
-
-## Thank you
-
-### Issue tracking
-
-Contributions to our issue tracking:
-
-* [@gjsjohnmurray (John Murray)](https://github.com/gjsjohnmurray)
-* [@RedCMD (RedCMD)](https://github.com/RedCMD)
-* [@IllusionMH (Andrii Dieiev)](https://github.com/IllusionMH)
-* [@albertosantini (Alberto Santini)](https://github.com/albertosantini)
-
-### Pull requests
-
-Contributions to `vscode`:
-
-* [@bompus (Aaron Queen)](https://github.com/bompus): Refresh markdown preview html before a hidden panel is rebuilt [PR #334681](https://github.com/microsoft/vscode/pull/334681)
-* [@cipheraxat (Akshat Anand)](https://github.com/cipheraxat): web: release `code -w -g file:line` once the file's editor closes [PR #344740](https://github.com/microsoft/vscode/pull/344740)
-* [@denizguney (Deniz Güney Yıldırım)](https://github.com/denizguney): test: add mock reset configuration and test coverage support [PR #338159](https://github.com/microsoft/vscode/pull/338159)
-* [@hardikkaurani (Hardik K)](https://github.com/hardikkaurani): fix(arrays): throw TypeError for negative indices in quickSelect [PR #342816](https://github.com/microsoft/vscode/pull/342816)
-* [@hirossan4049 (hirose)](https://github.com/hirossan4049): editorFind: fix swapped findMatch foreground colors (#228782) [PR #270395](https://github.com/microsoft/vscode/pull/270395)
-* [@kinqsradio (Anh Dang)](https://github.com/kinqsradio)
-  * Fix requireLocalPort for range, regex, and host-and-port rules [PR #344185](https://github.com/microsoft/vscode/pull/344185)
-  * Preserve inherited port protocol for exact-port attributes [PR #344764](https://github.com/microsoft/vscode/pull/344764)
-* [@nathan-vincent-dev (nathan vincent)](https://github.com/nathan-vincent-dev): Fix typos "curent" and "filterd" [PR #345134](https://github.com/microsoft/vscode/pull/345134)
-* [@Nikhil-4404 (Nikhil Kumar)](https://github.com/Nikhil-4404): Fix SSE stream-wide byte order mark handling [PR #344094](https://github.com/microsoft/vscode/pull/344094)
-* [@pl4nty (Tom Plant)](https://github.com/pl4nty): win32: fix installer's context menu COM surrogate kill command [PR #344505](https://github.com/microsoft/vscode/pull/344505)
-* [@rfeltis (Ralph Feltis)](https://github.com/rfeltis): Log telemetry when the closed-chat promo pip is armed [PR #337997](https://github.com/microsoft/vscode/pull/337997)
-* [@RReverser (Ingvar Stepanyan)](https://github.com/RReverser): Fix copilot code reference output channel race [PR #342272](https://github.com/microsoft/vscode/pull/342272)
-* [@SimonSiefke (Simon Siefke)](https://github.com/SimonSiefke)
-  * fix: task system readiness races [PR #342418](https://github.com/microsoft/vscode/pull/342418)
-  * fix: memory leak in terminal auto replies [PR #336022](https://github.com/microsoft/vscode/pull/336022)
-* [@spencrr (Spencer Schoenberg)](https://github.com/spencrr): agentHost: add setting to turn off Copilot's Co-authored-by trailer [PR #339437](https://github.com/microsoft/vscode/pull/339437)
-* [@VaggelisGian (Vaggelis Giannopoulos)](https://github.com/VaggelisGian): Progress: store scoped while state with start time and delay swapped [PR #332735](https://github.com/microsoft/vscode/pull/332735)
-* [@vscodebot-pr (VS Code PR Bot)](https://github.com/vscodebot-pr): fix: guard ListView dynamic-height probe against shrunk model (fixes #333550) [PR #333563](https://github.com/microsoft/vscode/pull/333563)
-* [@wozhenbang2004 (Kayokoi)](https://github.com/wozhenbang2004): testing: respect keybindings before type-to-filter [PR #344892](https://github.com/microsoft/vscode/pull/344892)
-* [@wycats (Yehuda Katz)](https://github.com/wycats): Recognize userPromptTransformed plugin hooks in Copilot sessions [PR #345068](https://github.com/microsoft/vscode/pull/345068)
-
-Contributions to `vscode-pull-request-github`:
-
-* [@kinqsradio (Anh Dang)](https://github.com/kinqsradio): Fix orphan stack worktree cleanup through macOS path aliases [PR #9100](https://github.com/microsoft/vscode-pull-request-github/pull/9100)
-* [@tamird (Tamir Duberstein)](https://github.com/tamird): Batch Git config reads for branch operations [PR #8978](https://github.com/microsoft/vscode-pull-request-github/pull/8978)
-
----
-
-We really appreciate people trying our new features as soon as they are ready, so check back here often and learn what's new.
-
->If you'd like to read release notes for previous VS Code versions, go to [Updates](https://code.visualstudio.com/updates) on [code.visualstudio.com](https://code.visualstudio.com).
-
-<a id="scroll-to-top" role="button" title="Scroll to top" aria-label="scroll to top" href="#"><span class="icon"></span></a>
-<link rel="stylesheet" type="text/css" href="css/inproduct_releasenotes.css"/>
 
 
 ---
@@ -740,53 +376,558 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_147.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_147
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_147.md
-- **SHA256_FINGERPRINT**: `e78f7de20dfd3d24d765751261fbef76e49d617e2004b2511c092cc75fa691dd`
-- **LAST_VERIFIED_UTC**: 2026-11-13T19:24:32.484744+00:00
+- **SHA256_FINGERPRINT**: `63145c311de7b03c43ef2fecb6bf0465bc62e016b0b9f39bff0b568df194ae46`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.831114+00:00
 ---
 
-**MetaDescription**: Learn what is new in Visual Studio Code Insiders, including agent session management, chat resources, and Markdown editing.
+**MetaDescription**: Learn what's new in Visual Studio Code 1.147
 
 # Visual Studio Code 1.147
+
+## Release highlights
+
+Have a task in mind but not ready to send it? This week, save requests as drafts or schedule them for later. When you're ready, let a model router match the task to your preferred model. And when a result is easier to show than explain, ask for a chart or mockup.
+
+* [Send later (Experimental)](#send-later-for-chat-requests-experimental): Schedule local agent requests and follow-ups for later in the Agents window.
+
+* [Browser integration (Preview)](#browser-integration): Let agents control your default browser, and preview remote HTML files without copying them to your machine.
+
+* [Draft requests (Experimental)](#save-and-resume-drafts-experimental): Keep multiple unsent requests with their context and configuration in the Agents window, ready to send when you are.
+
+* [Customize assisted permissions](#more-context-for-assisted-permissions): Tell the permission reviewer which actions you consider safe and which should need your approval.
+
+* [Visual chat responses](#html-previews-and-native-visuals-in-agent-responses): Review reports, mockups, and charts inline in the Agents window with HTML previews and experimental native visuals.
+
+* [Model routers (Experimental)](#decision-model-based-model-routers-experimental): Let a model router choose from your preferred models for different tasks.
+
+<br/>
+Happy coding!
+
+## Agent sessions
+
+### Send Later for chat requests (Experimental)
+
+**Setting**: ``sessions.sendLater.enabled`` (Agents window only)
+
+Sometimes you want an agent to run a request after some time has passed. You might want to check a build after it finishes, or follow up on a review in the morning. With the Send Later feature, you can postpone sending a chat request until a specific time.
+
+You can schedule a chat request by using the **Send Later** menu on the send button in chat.
+
+![Screenshot showing the Send Later menu with preset times.](images/1_147/send-later-menu.webp)
+
+For a specific time, select **Choose Date and Time**, pick a day in the calendar and a time from the dropdown, and select **Schedule**.
+
+![Screenshot showing the Send Later date and time picker with a calendar, a time dropdown, and a Schedule button.](images/1_147/send-later-date-time.webp)
+
+Where the request waits depends on where you scheduled it:
+
+* **New session**: In the **Drafts** section of the sessions list.
+* **Existing chat**: In that chat's **Scheduled** area, with its send time. If the agent is still busy at the scheduled time, the request waits its turn instead of interrupting.
+
+![Screenshot showing a scheduled message in a chat, labeled with the date and time it will be sent.](images/1_147/send-later-scheduled-message.webp)
+
+Alternatively, you can ask the agent to schedule a request for you by using plain language in the chat prompt, for example: `"Check the build in 10 minutes."`
+
+The agent schedules a one-time, text-only request in the current chat and confirms when it will be sent. The request appears in the chat's **Scheduled** area, like one you scheduled from the menu.
+
+![Screenshot showing an agent confirming a request to check the build in 10 minutes, with the follow-up listed in the chat's Scheduled area.](images/1_147/send-later-ask-agent.webp)
+
+The local agent host must be running at the scheduled time. Scheduling doesn't wake a sleeping computer. A missed request is processed once the host is available again.
+
+To manage your scheduled requests (edit, send immediately, reschedule, or cancel), use the options available when you hover over them in the chat or session list. To find sessions with pending requests, look for the clock indicator in the session list, or select **Scheduled Only** in the sessions filter menu.
+
+Learn more about scheduling requests in the [Send Later documentation](https://code.visualstudio.com/docs/agents/run/agents-window#_send-a-request-later).
+
+> **Note**: Scheduled requests work only for sessions on **This Computer** and require automations to be enabled (``chat.automations.enabled``).
+
+### Save and resume drafts (Experimental)
+
+**Setting**: ``sessions.drafts.enabled``
+
+Previously, the new-session input held a single unsent request at a time. With drafts, you can keep several unsent requests side by side, each with its own workspace, agent, and configuration, and come back to any of them later.
+
+When you leave a new session that has content, VS Code saves it to the **Drafts** section of the sessions list. Nothing is sent, and no agent session starts. To jump right back, select **Open Draft** in the notification.
+
+![Screenshot showing the Drafts section in the sessions list with two saved drafts.](images/1_147/sessions-drafts.webp)
+
+Each draft keeps everything you set up: text, attachments, inline references, workspace, agent, model, and other configuration. Drafts survive reloads and restarts.
+
+From the Drafts list, you can preview, open, or delete a draft. When you send a draft, it's removed only after the request is accepted, so a failed send doesn't lose your work.
+
+Turning off the setting hides the Drafts section but keeps your saved drafts.
+
+### Share remote environments as GitHub Environments
+
+Share a remote as a GitHub Environment to pick up its agent sessions from another device or supported Copilot app, using your GitHub account.
+
+To share a connected SSH host, WSL distribution, or Dev Tunnel, open the Remote Environments editor in the Agents window and select **Share as GitHub Environment** (GitHub icon) on the remote's row.
+
+A shared remote stays in its group and shows a GitHub icon after its name. Select the action again to stop sharing.
+
+![Screenshot showing the Remote Environments editor with the Share Build Server as GitHub Environment action on a connected SSH host, and a Dev Tunnel that is already shared.](images/1_147/remote-environments-share-github-environment.webp)
+
+Learn more about [remote agent sessions](https://code.visualstudio.com/docs/agents/run/remote-agent-sessions).
+
+### Keep chat sessions across Dev Container rebuilds (Experimental)
+
+**Settings**: ``dev.containers.stateVolume.enabled``, ``chat.agentHost.devContainer.stateVolume.enabled``
+
+Rebuilding a Dev Container used to remove the Copilot chat sessions stored inside it. When you enable these settings, VS Code stores the user and agent state of a new Dev Container on a Docker volume, preserving your chat sessions across rebuilds.
+
+> **Important**: A container gets the volume only when it's created with the setting enabled, so rebuild once to start keeping your sessions.
+
+### Inbox mode improvements (Experimental)
+
+**Setting**: ``sessions.list.inboxEnabled``
+
+Inbox mode groups your Agents window sessions by what needs your attention. You can switch to Inbox mode at any time with **Grouping > Inbox Mode** in the sessions list. The ``sessions.list.inboxEnabled`` setting makes it the default grouping.
+
+This release builds on your feedback to make Inbox mode more useful and manageable:
+
+* **Acknowledge sessions you've handled**
+
+    If a session doesn't need your attention but isn't finished, you can mark it as acknowledged (eye icon). Acknowledging a session moves it out of the Inbox and into the **Acknowledged** section. The session isn't marked as read or done, archived, or closed.
+
+    When there is new activity in the session, it returns to the Inbox. You can acknowledge several selected sessions at once.
+
+* **Focus on one workspace or environment**
+
+    Use the workspace and environment pickers at the top of the sessions list to see only the sessions you care about right now. The filter applies to every section, including pinned and archived sessions, and is remembered across reloads.
+
+    ![Screenshot showing Inbox mode with workspace and environment pickers above the Pinned and Inbox sections.](images/1_147/sessions-inbox-scope.webp)
+
+## Agent experience
+
+### Decision model-based model routers (Experimental)
+
+**Setting**: `chat.copilot.modelRouter.enabled`
+
+With a model router, you describe which model you want for which kind of work. A decision model, `gpt-6-luna-decisions`, then matches your request to one of your routes, and VS Code runs the chat on that route's model. A router is a YAML file in `~/.agents/model-routers/` that appears in the model picker in [Copilot harness](https://code.visualstudio.com/docs/agents/run/agent-harnesses#_copilot) sessions.
+
+Model routers are at an early stage, and your feedback will help shape them. Tell us what works and what doesn't by [filing an issue](https://github.com/microsoft/vscode/issues).
+
+```yaml
+version: 1
+description: Opus to build, GPT-6 Luna for quick questions.
+routes:
+  - model: opus
+    when: Building or changing code over many steps, such as a feature, a bug fix, or a refactor.
+  - model: gpt-6-luna
+    when: Quick answers and small chores, such as where something is or what a setting does.
+```
+
+To try model routers, add `"chat.copilot.modelRouter.enabled": true` to your user [`settings.json`](https://code.visualstudio.com/docs/configure/settings#_settings-json-file) file.
+
+To author a router, type `/model-router` in a Copilot harness chat and describe how you want your requests routed. Then select the router in the model picker.
+
+### Model comparison improvements (Preview)
+
+[Model comparison](https://code.visualstudio.com/docs/agents/run/compare-models) lets you run the same prompt across models in the Agents window, so you can review, judge, and combine their results. This release makes comparisons easier to find and understand:
+
+* **Comparisons stay with their chat**: When you [ask an agent to run a comparison](https://code.visualstudio.com/docs/agents/run/compare-models#_ask-an-agent-to-run-a-comparison), it appears beneath that chat in the sessions list. The agent's response includes an **Open Comparison** action to go straight to the results.
+
+* **See how a comparison was set up**: Hover over a comparison in the sessions list to see its original settings: repository, isolation, base branch, each attempt's model and effort level, judge, and synthesizer. You no longer need to open each attempt to check.
+
+    ![Screenshot showing the Original comparison settings hover over a comparison in the sessions list, listing the repository, isolation, base branch, four attempts, judge, and synthesizer.](images/1_147/compare-models-settings-hover.webp)
+
+### HTML previews and native visuals in agent responses
+
+**Settings**: ``chat.htmlPreview.enabled``, ``chat.nativeComponents.enabled`` (Agents window only)
+
+Some agent responses are easier to review as a visual or a chart than as text, such as a comparison of approaches, a mockup, or build times before and after a change. In the [Agents window](https://code.visualstudio.com/docs/agents/run/agents-window), agents can show these inline in the response in two ways. Each has its own setting, which is off by default.
+
+* **HTML previews**: For free-form layouts, such as reports, diagrams, and mockups. Previews display HTML, CSS, tables, inline SVG, and expandable sections. Scripts, forms, external links, and external resources aren't supported. Enable ``chat.htmlPreview.enabled`` and use the built-in `/html-preview` [skill](https://code.visualstudio.com/docs/agent-customization/agent-skills) in your request, for example `/html-preview compare the two caching approaches`.
+
+* **Native visuals (Experimental)**: For data, such as key numbers and comparisons. Agents can show metrics, badges, tables, bar charts, and expandable details that VS Code renders itself, so they match your theme, including high-contrast themes. Enable ``chat.nativeComponents.enabled`` and use the built-in `/vscode-ui` skill in your request, for example `/vscode-ui compare the full and incremental build times`.
+
+<video src="images/1_147/html-preview-native-visuals.mp4" title="Video showing agent responses in the Agents window: an inline HTML preview with three mockups, native visuals with metrics, a bar chart, and a table, and an HTML preview of a chart with hover details." autoplay loop controls muted></video>
+
+Both appear as part of the response, without a title bar or permanent buttons. Right-click a preview or visual and select **Show Source** to see its markup. For an HTML preview, you can also select **Open Preview** for a larger view or **Save HTML** to export a self-contained HTML file.
+
+### Automations
+
+Automations allow you to define tasks that run automatically based on specific triggers and conditions. You can create, manage, and monitor automations from the Automations view in the Agents window. This release adds guided setup, end dates, and filters for automation runs:
+
+* **Agent-guided automation creation**
+
+    Creating an automation with an agent is now a more guided experience. The agent helps you define what a successful result looks like, decide when the automation runs, and choose where it runs. To start, ask an agent to create an automation. You can also select **Create with Agent** in the Automations view to continue in chat.
+
+    If you prefer configuring everything yourself, open the dropdown next to **Create with Agent** and select **Create Manually**.
+
+* **Set an end date for automations**
+
+    Automations can stop automatically after a specified duration. Set an end date when creating an automation with an agent, or choose **Days**, **Weeks**, or **Months** under **Advanced Settings** in the manual configuration form. Select **Never** to remove an existing end date.
+
+* **Filter automation runs in session lists**
+
+    Automation runs are hidden from session lists by default. Use the **Automations** filter to include or exclude them in the Agents window and the editor Chat sessions list.
+
+### More context for assisted permissions
+
+**Setting**: ``chat.permissions.assisted.instructions``
+
+With [assisted permissions](https://code.visualstudio.com/docs/agents/run/approvals#_permission-levels), an LLM reviewer assesses each tool call in Copilot harness sessions and approves low-risk calls for you. Previously, the reviewer relied only on its default guidance, so it couldn't account for what you consider safe or risky in your own work.
+
+Use ``chat.permissions.assisted.instructions`` to give the LLM reviewer your own instructions, for example:
+
+```text
+Always ask before installing packages or pushing to a remote.
+Running tests and read-only Git commands doesn't need my approval.
+```
+
+Your instructions take precedence over the reviewer's default guidance. Changes to the setting apply to sessions that are already open. They can't override permission rules, organization policy, or the sandbox, and they aren't sent to the agent.
+
+The reviewer also takes into account who asked for the work:
+
+* **Automations and other agents**: Requests that an [automation](https://code.visualstudio.com/docs/agents/run/automations) starts or that another agent sends are no longer treated as if you wrote them. In these sessions, tool calls might ask for approval where they previously didn't.
+
+* **Your answers**: Your answers to an agent's questions and plan reviews count, including when you decline. An approval can cover later work that your answer describes, and a refusal can block an action that was approved before.
+
+### Arrange the Details panel around the editor (Experimental)
+
+**Settings**: ``sessions.experimental.detailsPosition``, ``sessions.experimental.floatingDetails`` (Agents window only)
+
+In the Agents window, you can position Files, Changes, and other Details views around the editor to make better use of the available space. Open **View > Appearance > Details Position** and choose **Left**, **Right**, **Above Editor**, **Below Editor**, or **Floating**. **Right** is the default.
+
+Floating Details overlays the editor instead of reserving space. Hover over or focus the widget to preview its contents, then select the pin control to keep it open. You can also drag and resize it.
+
+<video src="images/1_147/details-position.mp4" title="Video showing floating and docked Details views in the Agents window." autoplay loop controls muted></video>
+
+### View extension info
+
+The Extensions section of Customizations shows the same detailed information about each installed extension, including its version, publisher, and available commands, as you can from the Extensions view in the editor window.
+
+![Screenshot of the GitHub Pull Requests extension in the Extensions section of Customizations.](images/1_147/customizations-extensions.webp)
+
+## Chat
+
+### Attach screenshots of other apps (Experimental)
+
+**Setting**: ``chat.appWindowScreenshots.enabled``
+
+Give the agent a view of the app you're building, even when it runs in another application. Select **Add Context** > **Screenshot App Window** and choose a window, such as a browser or simulator.
+
+You can also press ``Shortcut: workbench.action.chat.attachAppWindowScreenshot`` while another app is in the foreground to capture its window and attach it to the chat. From VS Code, the shortcut captures the app window you just left. You can mark up the image before sending.
+
+<video src="images/1_147/app-screenshots-demo.mp4" title="Video showing screenshots from other apps being added to chat." autoplay loop controls muted></video>
+
+### Capture and mark up images in chat
+
+Select **Mark Up** on any image attachment in the chat input to crop it, draw arrows or shapes, or add text before sending. This works with screenshots, pasted images, and images attached from files, so you can point out a layout problem or highlight the part you want changed.
+
+### Inline chat attachment pills (Experimental)
+
+**Setting**: ``chat.inlineAttachments.enabled``
+
+[Inline chat attachments](https://code.visualstudio.com/updates/v1_145#_inline-chat-attachments-experimental) show files, images, and other context as pills at the position where you added them in your prompt, so references stay next to the instructions they belong to. Recent updates make the pills more useful in the chat input and in sent requests:
+
+* **Preview and open GitHub references**: Hover over or focus a GitHub issue or pull request pill to see its title, status, and description. Select the pill to open the issue or pull request. In sent requests, where selecting a pill previously did nothing, this also works when inline attachments are off.
+
+* **Rearrange pills by dragging**: Drag a pill to a new position in the same chat input, rather than removing the context and attaching it again.
+
+* **Clearer sent requests**: Sent requests show attached images as thumbnails above the text, in addition to the inline pills. Pills and slash commands line up with the surrounding text. Image and GitHub pills are restored after you reload the window, instead of appearing as plain links.
+
+![Screenshot showing an image pill and two file pills inline with the prompt text in the chat input, each next to the instruction it belongs to.](images/1_147/chat-inline-attachments.webp)
+
+Inline attachments are enabled by default in Insiders and off by default in Stable.
+
+## Browser integration
+
+### Let agents use your browser with browser use (Preview)
+
+**Setting**: ``chat.agentHost.browserUse.enabled``
+
+Browser Use lets agents interact directly with your default browser (Google Chrome or Microsoft Edge). This complements VS Code's integrated browser, for example by allowing agents to reuse existing authenticated sessions and interact with web pages outside of VS Code.
+
+Browser Use requires the [GitHub Copilot browser extension](https://chromewebstore.google.com/detail/github-copilot/hblomdgalaelcilcdepgohfcogjiijhe), a [Copilot harness](https://code.visualstudio.com/docs/agents/run/agent-harnesses) session that runs on your own machine, and Node.js 22 or later on your `PATH`.
+
+To get started with Browser Use:
+
+1. Enable the ``chat.agentHost.browserUse.enabled`` setting and restart VS Code.
+1. Open a local Copilot session and enter `/plugin enable browser-use` to enable the browser-use plugin.
+1. Ask Copilot to perform a browser task, for example: `Open my app at localhost:3000, check the navigation, and capture a screenshot.`
+1. Approve site access when prompted; complete sign-in and sensitive steps yourself.
+1. Run `/browser-use:doctor` and follow its guidance to check your setup in case of any issues.
+
+### Preview remote HTML files in the integrated browser (Preview)
+
+**Setting**: ``workbench.browser.enableRemoteProxy``
+
+You can now open HTML files from a remote workspace, such as SSH, WSL, or a Dev Container, in the [integrated browser](https://code.visualstudio.com/docs/debugtest/integrated-browser), just like [local HTML files](https://code.visualstudio.com/updates/v1_134#_open-html-files-in-the-integrated-browser-by-default). In the Explorer, right-click an HTML file and select **Open in Integrated Browser**. The page keeps its `file://` address, and the file and the resources it references, such as scripts, styles, images, and fonts, load from the remote workspace. Remote files only load from folders you trust.
+
+This also works in the Agents window for sessions on a [remote agent host](https://code.visualstudio.com/docs/agents/run/remote-agent-sessions), so you and the agent can preview a page the agent wrote without copying it to your machine.
+
+Enable ``workbench.browser.enableRemoteProxy`` to try it out, and file any issues you encounter in the [VS Code repository](https://github.com/microsoft/vscode/issues).
+
+### Open non-localhost links in the integrated browser
+
+**Setting**: ``workbench.externalUriOpeners``
+
+Localhost links could already open in the integrated browser with ``workbench.browser.openLocalhostLinks``. The integrated browser is now listed as an opener in the ``workbench.externalUriOpeners`` setting, so you can choose it for other links instead of using the default browser. For example, to open links to your company's sites in the integrated browser:
+
+```json
+"workbench.externalUriOpeners": {
+  "*.contoso.com": "workbench.integratedBrowser"
+}
+```
+
+Use `*` as the pattern to open every link there instead.
+
+### Turn off dimming in the integrated browser
+
+**Setting**: ``workbench.browser.dimOnOverlay``
+
+When something overlaps the integrated browser, such as a tab hover or a tooltip, the page pauses and dims. As hovers come and go, the page repeatedly darkens and returns to normal, which might appear as flicker and be uncomfortable for users who are sensitive to it.
+
+You can now disable ``workbench.browser.dimOnOverlay`` to keep the page undimmed while it's paused. Notifications still dim the page.
+
+## Sandboxing
+
+### Retry with updated permissions inside the sandbox
+
+If a terminal command fails because it can't access a file or folder, you can grant access at the session, workspace, or user level. With [sandbox bypass](https://code.visualstudio.com/docs/agents/run/agent-sandboxing#_control-approval-and-fallback-behavior) enabled, Copilot can use that permission to retry the command inside the sandbox instead of asking to run it outside.
+
+<video src="images/1_147/sandboxing.mp4" title="Video showing file access approval and a command retry inside the sandbox." autoplay loop controls muted></video>
+
+Use the approval dropdown to choose where the permission applies:
+
+* **Allow for This Session** (default): Applies to all chats in this session, even after you resume it.
+* **Allow for This Workspace** (when available): Applies to sessions with the same workspace folders on the same Agent Host. The host saves the permission without changing your workspace settings.
+* **Allow for This User**: Saves the permission in your User settings so it applies across sessions and workspaces.
+
+The command retries inside the sandbox. None of these options grants permission to run outside it.
+
+## Accessibility
+
+### Clearer focus and session attention
+
+In high-contrast themes, Agents window controls now use a dashed outline for pointer hover and a solid outline for keyboard focus and open or expanded states. This makes it easier to follow your focus when navigating.
+
+Sessions that need input are also easier to spot: light themes use a clearer amber indicator, and high-contrast themes show a marker at the left edge of the session row. You can customize the color with `agentSessionNeedsInput.foreground` in ``workbench.colorCustomizations``.
+
+![Screenshot showing needs-input markers on session rows in high-contrast dark and light themes.](images/1_147/session-needs-input-high-contrast.webp)
+
+## Editor Experience
+
+### Customize panel corners and spacing
+
+**Setting**: ``workbench.sizeCustomizations``
+
+Customize panel corners and spacing in the editor window and in Agents windows with the Modern UI enabled. Set corner radii in whole pixels from 0 to 8 and spacing from 0 to 16. For example, you can use square panel corners, add space between panels, and give agent chat panels their own corners:
+
+```json
+{
+  "workbench.sizeCustomizations": {
+    "panels.cornerRadius": 0,
+    "panels.spacing": 12,
+    "agentsWindow.chatPanels.cornerRadius": 4
+  }
+}
+```
+
+<video src="images/1_147/size-customizations.mp4" title="Video showing size customizations in the Editor window." autoplay loop controls muted></video>
+
+Compact layouts remain gapless, and the setting doesn't change controls, individual tabs, or native window corners.
+
+### Connected panel tabs (Experimental)
+
+With the Modern UI enabled, the connected tab style now extends from editor tabs to horizontal panel and side bar tabs. Selected views visually connect to their content, including when the Activity Bar is at the top or bottom. Choose `connected` (the default) or `pill` with ``workbench.experimental.modernUIEditorTabStyle``. The default vertical Activity Bar is unchanged.
+
+![Screenshot showing connected tabs extending from editor tabs to horizontal panel and side bar tabs.](images/1_147/connected-panel-tabs.webp)
+
+### Edit Markdown tables cell by cell
+
+Editing a Markdown table in the source means keeping pipes and separator rows intact by hand. In the Markdown editor, tables stay rendered while you edit them, and you edit one cell at a time.
+
+![Screenshot of a Markdown table in the Markdown editor, with the cursor in a cell that shows its bold syntax while you edit it.](images/1_147/markdown-editor-table-editing.webp)
+
+### Collapsible details sections in the Markdown editor
+
+Long documents often hide optional content in `` sections. The Markdown editor now renders `` and `<summary>` as collapsible sections, like GitHub does. Sections with the `open` attribute start expanded, and other sections start collapsed.
+
+![Screenshot of the Markdown editor showing an expanded details section with its source tags and pin, and a collapsed section below it.](images/1_147/markdown-editor-details-sections.webp)
+
+## Enterprise
+
+### Permit Claude and Codex alongside managed settings
+
+Previously, any Copilot [enterprise-managed setting](https://code.visualstudio.com/docs/enterprise/manage-ai-settings) disabled the Claude and Codex [harnesses](https://code.visualstudio.com/docs/agents/run/agent-harnesses), because they don't enforce those settings. An organization couldn't govern Copilot and still offer Claude or Codex to its developers.
+
+Administrators can now permit one or both harnesses by listing them in `vscode.allowedHarnesses`:
+
+```json
+{
+  "permissions": {
+    "disableBypassPermissionsMode": "disable"
+  },
+  "vscode": {
+    "allowedHarnesses": ["claude", "codex"]
+  }
+}
+```
+
+![Screenshot showing a managed settings file that lists claude and codex in allowedHarnesses, next to the harness picker offering Claude and Codex below Copilot and Local.](images/1_147/allowed-harnesses.webp)
+
+* The list permits the harnesses it names and blocks the others, so an empty list blocks both. Without the setting, managed settings disable both harnesses, as before.
+* Valid entries are `claude` and `codex`, in lowercase. Other entries are ignored.
+* Permitting a harness only lifts this restriction. Other controls still apply, such as `vscode.temporaryAllowLocalHarness: false`.
+* Set it in file-based or MDM-managed settings. Server-managed settings don't support it yet.
+
+> **Note:** Permitting a harness doesn't make it enforce your managed settings. Claude and Codex sessions run without Copilot's managed permission, sandbox, MCP, and plugin controls.
+
+### Regular expressions in managed shell permission rules
+
+Previously, managed shell permission rules matched only exact text or `*` wildcards, so a single rule couldn't cover alternatives or word boundaries. In Copilot harness sessions, `Shell(...)`, `Bash(...)`, and `PowerShell(...)` rules in [enterprise-managed settings](https://code.visualstudio.com/docs/enterprise/manage-ai-settings) accept a JavaScript regular expression written as `/pattern/flags` in `permissions.deny`, `permissions.ask`, and `permissions.allow`.
+
+For example, require approval for commands that start with `git push` or `git pull`:
+
+```json
+{
+  "permissions": {
+    "ask": ["Shell(/^git\\s+(push|pull)\\b/)"]
+  }
+}
+```
+
+## Contributions to extensions
+
+### GitHub Pull Requests
+
+There has been more progress on the [GitHub Pull Requests](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github) extension, which enables you to work on, create, and manage pull requests and issues. New features include:
+
+* When GitHub Actions workflows are waiting for a maintainer's approval, such as for a pull request from a first-time contributor, the checks section of the pull request overview has an **Approve workflows to run** button.
+
+* Comments and other timeline items in the pull request overview use the full width once they're below the sidebar, and the overview switches to a single column below 1000px wide instead of 768px.
+
+* In the Agents window, the pull request overview can be split into **Timeline**, **Checks/Merge**, and **Metadata** tabs with the experimental setting `"githubPullRequests.experimental.agentsOverviewTabs"`. The Timeline tab shows the number of unresolved conversations, and the Checks/Merge tab shows whether the pull request is ready to merge.
+
+Review the [changelog for the 0.180.0](https://github.com/microsoft/vscode-pull-request-github/blob/main/CHANGELOG.md#01800) release of the extension to learn about everything in the release.
+
+## Deprecated features and settings
+
+### New deprecations in this release
+
+* VS Code desktop on **macOS Ventura** and **macOS Sonoma** is deprecated. For details, see the [VS Code FAQ](https://code.visualstudio.com/docs/supporting/faq#_can-i-run-vs-code-on-old-macos-versions).
+
+* VS Code desktop on **32-bit ARM Linux** is deprecated. For details, see the [VS Code FAQ](https://code.visualstudio.com/docs/supporting/faq#_can-i-run-vs-code-on-32-bit-arm-linux).
+
+* The experimental AI usage statistics in the Status Bar (`editor.aiStats.enabled`) are removed because of low usage.
+
+### Upcoming deprecations
+
+* [The Local harness is deprecated](https://code.visualstudio.com/updates/v1_146#_copilot-harness-and-deprecation-of-the-local-harness) and will be removed in February 2027.
+
+## Thank you
+
+### Issue tracking
+
+Contributions to our issue tracking:
+
+* [@gjsjohnmurray (John Murray)](https://github.com/gjsjohnmurray)
+* [@RedCMD (RedCMD)](https://github.com/RedCMD)
+* [@IllusionMH (Andrii Dieiev)](https://github.com/IllusionMH)
+* [@albertosantini (Alberto Santini)](https://github.com/albertosantini)
+
+### Pull requests
+
+Contributions to `vscode`:
+
+* [@AAAkater](https://github.com/AAAkater): agentHost: fix incorrect model attribution in Codex subagent responses [PR #340470](https://github.com/microsoft/vscode/pull/340470)
+* [@Aryan9891 (Aryan Sachin)](https://github.com/Aryan9891): fix(terminal): support multiple action view items for create terminal dropdown (#346848) [PR #346854](https://github.com/microsoft/vscode/pull/346854)
+* [@Boulea7 (Langning Zhang)](https://github.com/Boulea7): Fix PWA manifest start URL for server base paths [PR #330360](https://github.com/microsoft/vscode/pull/330360)
+* [@DivyaRaval1909 (Divya Raval)](https://github.com/DivyaRaval1909): Hide action list item icon and submenu indicator from screen readers [PR #339952](https://github.com/microsoft/vscode/pull/339952)
+* [@Iyanuoluwa007 (Oke Iyanuoluwa Enoch)](https://github.com/Iyanuoluwa007): Report problems of pending lines when a task problem collector is done [PR #346122](https://github.com/microsoft/vscode/pull/346122)
+* [@mcumming (Michael Cummings (MSFT))](https://github.com/mcumming): Never send Entra sign-in tokens to the marketplace [PR #343689](https://github.com/microsoft/vscode/pull/343689)
+* [@NeoMetric](https://github.com/NeoMetric): agentHost: stream BYOK model output as it is produced [PR #341851](https://github.com/microsoft/vscode/pull/341851)
+* [@rudy-07 (Rudransh Shekhar)](https://github.com/rudy-07): terminal-suggest: fix root directory check in npm and yarn package.json lookup [PR #347265](https://github.com/microsoft/vscode/pull/347265)
+* [@sameerihs (Sameer)](https://github.com/sameerihs)
+  * Reset notebook controller language restrictions [PR #347068](https://github.com/microsoft/vscode/pull/347068)
+  * Clean up obsolete webview resource caches [PR #346867](https://github.com/microsoft/vscode/pull/346867)
+  * Use pending URLs when restoring browser tabs [PR #346996](https://github.com/microsoft/vscode/pull/346996)
+  * Invalidate cached TS responses after document reopen [PR #347028](https://github.com/microsoft/vscode/pull/347028)
+  * Keep the latest debugger source refresh [PR #347124](https://github.com/microsoft/vscode/pull/347124)
+  * Track forwarded tunnel connections by socket [PR #347033](https://github.com/microsoft/vscode/pull/347033)
+  * Keep task problem markers scoped to each terminal [PR #346994](https://github.com/microsoft/vscode/pull/346994)
+  * Isolate copied notebook output items [PR #347117](https://github.com/microsoft/vscode/pull/347117)
+  * Cancel stale format-on-type requests [PR #347115](https://github.com/microsoft/vscode/pull/347115)
+  * Keep configuration retries on their original file [PR #347074](https://github.com/microsoft/vscode/pull/347074)
+  * Keep in-memory working copy backups distinct [PR #347066](https://github.com/microsoft/vscode/pull/347066)
+  * Serialize rapid virtual document refreshes [PR #346986](https://github.com/microsoft/vscode/pull/346986)
+  * Clear buffered results before a new Quick Search [PR #347031](https://github.com/microsoft/vscode/pull/347031)
+* [@ShakilUrRehman21 (SHAKIL UR REHMAN)](https://github.com/ShakilUrRehman21): map: preserve custom toKey and re-key on ResourceMap copy [PR #347344](https://github.com/microsoft/vscode/pull/347344)
+* [@shoutoutuoadi325 (Zhiqi Zhang)](https://github.com/shoutoutuoadi325): Fix UTF-16 column counts in TextLength [PR #345715](https://github.com/microsoft/vscode/pull/345715)
+* [@SimonSiefke (Simon Siefke)](https://github.com/SimonSiefke)
+  * fix: memory leak in word highlighter [PR #346673](https://github.com/microsoft/vscode/pull/346673)
+  * fix: memory leak in task providers [PR #338231](https://github.com/microsoft/vscode/pull/338231)
+  * fix: memory leak in untitled editor resolution [PR #346674](https://github.com/microsoft/vscode/pull/346674)
+  * perf: avoid rescanning test children in Test Explorer [PR #347176](https://github.com/microsoft/vscode/pull/347176)
+  * perf: batch Test Explorer test run updates [PR #346656](https://github.com/microsoft/vscode/pull/346656)
+  * fix: memory leak in test results terminal [PR #347183](https://github.com/microsoft/vscode/pull/347183)
+  * feature: reduce idle CPU usage by up to 75% [PR #338767](https://github.com/microsoft/vscode/pull/338767)
+  * fix: race condition in notebook kernel picker [PR #341483](https://github.com/microsoft/vscode/pull/341483)
+  * fix: memory leak in SCM repository context keys [PR #346683](https://github.com/microsoft/vscode/pull/346683)
+  * fix: memory leak in emitter warning names [PR #347966](https://github.com/microsoft/vscode/pull/347966)
+  * perf: reduce memory usage by 44 kB [PR #342392](https://github.com/microsoft/vscode/pull/342392)
+  * fix: memory leak in markersView [PR #348007](https://github.com/microsoft/vscode/pull/348007)
+* [@trivikr (Trivikram Kamat)](https://github.com/trivikr): Add --hidden-window to run extension tests without showing a window [PR #344174](https://github.com/microsoft/vscode/pull/344174)
+* [@wasim-builds (MOHAMMED WASIM KHAN)](https://github.com/wasim-builds): fix: prevent DisposableStore leak per tree node in ExtHostTreeView (#346620) [PR #346727](https://github.com/microsoft/vscode/pull/346727)
+* [@wozhenbang2004 (Kayokoi)](https://github.com/wozhenbang2004): Fix authentication provider cleanup when an extension host stops [PR #345127](https://github.com/microsoft/vscode/pull/345127)
+* [@wynnsimon (wynn)](https://github.com/wynnsimon): fix: Fix findWithArgs ignoring empty search strings (#151311) [PR #334803](https://github.com/microsoft/vscode/pull/334803)
+* [@YOSHII-Hiroto (吉井 啓人(YOSHII, Hiroto))](https://github.com/YOSHII-Hiroto): Fix element picker with mobile emulation [PR #332183](https://github.com/microsoft/vscode/pull/332183)
+
+Contributions to `vscode-pull-request-github`:
+
+* [@hungud (Uong Dong Hung)](https://github.com/hungud): fix: handle null review comment commit in parseGraphQLComment (fixes #9159) [PR #9168](https://github.com/microsoft/vscode-pull-request-github/pull/9168)
+
+---
+
+We really appreciate people trying our new features as soon as they are ready, so check back here often and learn what's new.
+
+>If you'd like to read release notes for previous VS Code versions, go to [Updates](https://code.visualstudio.com/updates) on [code.visualstudio.com](https://code.visualstudio.com).
+
+<a id="scroll-to-top" role="button" title="Scroll to top" aria-label="scroll to top" href="#"><span class="icon"></span></a>
+<link rel="stylesheet" type="text/css" href="css/inproduct_releasenotes.css"/>
+
+
+---
+# DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_148.md
+- **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_148
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_148.md
+- **SHA256_FINGERPRINT**: `f77009fbe4a5018f954be803457bdfdc52633e2d9641ad44344e31fdd6d43316`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.712347+00:00
+---
+
+**MetaDescription**: Learn what is new in the latest Visual Studio Code Insiders build, including agent session management and editor tab improvements.
+
+# Visual Studio Code 1.148
 
 Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://go.microsoft.com/fwlink/?LinkID=533687), [Bluesky](https://bsky.app/profile/vscode.dev), [Instagram](https://www.instagram.com/vscode)
 
 ---
 
-_Last updated: November 13, 2026_
+_Last updated: November 18, 2026_
 
-Welcome to the 1.147  release of Visual Studio Code.
+Welcome to the 1.148  release of Visual Studio Code.
 
 Happy Coding!
 
 ---
 
-## November 12, 2026
+## November 17, 2026
 
-* Add an editor tab bar **+** menu for creating text files, Markdown documents, chats, and integrated browser tabs. _[#347849: Experimental new tab (+) button in the editor tab bar](https://github.com/microsoft/vscode/issues/347849)_
-* Add actions for generating code, starting a chat, choosing a language, or reopening an untitled file in another editor. _[#347848: Experiment: show a list of actions in the hint of new untitled files](https://github.com/microsoft/vscode/issues/347848)_
-* Name images pasted into chat after their source file when available. _[#347828: Chat: name pasted images after their source file](https://github.com/microsoft/vscode/issues/347828)_
-* Start the Agents window's **Open Folder** dialog at the parent of the selected local folder to reduce navigation between sibling projects. _[#335652: Choose Folder: Make parent folder of current folder the starting point](https://github.com/microsoft/vscode/issues/335652)_
-* Use toolbar menus to filter and sort worktrees in the Agents window's cleanup editor. _[#347138: Controls area for worktree cleanup could use some design love](https://github.com/microsoft/vscode/issues/347138)_
-* Show minimap section headers for single-line `#region` comments in HTML and CSS files. _[#210637: Minimap section headers are not shown for regions in HTML and CSS](https://github.com/microsoft/vscode/issues/210637)_
-* Add the proposed `contribTitleBar` API for contributing buttons to editor and Agents window title bars during [local extension development](https://code.visualstudio.com/api/advanced-topics/using-proposed-api). _[#347839: Proposed API: let extensions contribute buttons to the title bar of the editor and Agents windows](https://github.com/microsoft/vscode/issues/347839)_
-* Remove the experimental **AI Usage Statistics** Status Bar widget. _[#340001: Remove the AI Usage Statistics widget](https://github.com/microsoft/vscode/issues/340001)_
+* Stay in the current session after replying in experimental **Inbox Mode** by setting ``sessions.list.inboxAutoAdvance`` to `off`. _[#348715: Inbox: when I replied to a message in a session, the jump to the next session was jarring](https://github.com/microsoft/vscode/issues/348715)_
 
-## November 11, 2026
+## November 16, 2026
 
-* Share agent sessions between the Agents window and WSL, Remote - SSH, or Dev Container editor windows when both windows use the same agent host. _[#346859: Share agent host sessions between the Agents Window and WSL, SSH and Dev Container editor windows](https://github.com/microsoft/vscode/issues/346859)_
-* Drag sessions between compatible inbox categories to pin, hold, clear, archive, or resume them (Experimental). _[#346934: Inbox mode: Sessions cannot be dragged between groups](https://github.com/microsoft/vscode/issues/346934)_
-* Enable opening all web links in the integrated browser. _[#316528: Option to open all links in Integrated Browser](https://github.com/microsoft/vscode/issues/316528)_
+* Inbox Mode shows session counts beside category labels and lets you collapse **Inbox**. _[#348711: Inbox headers need more intuitive state differences and move the location of count](https://github.com/microsoft/vscode/issues/348711)_
 
-## November 10, 2026
+* Inbox Mode uses stronger headings and visible collapse arrows to distinguish session categories from conversations. _[#348709: It's hard to differentiate between headers (Working, on hold) with sessions](https://github.com/microsoft/vscode/issues/348709)_
 
-* Add an inline **Merge Pull Request** action for eligible sessions in inbox mode (Experimental). _[#346936: Inbox mode: Ready to Merge sessions have no inline Merge action](https://github.com/microsoft/vscode/issues/346936)_
-* Hide empty categories in inbox mode (Experimental), while keeping **Inbox** visible. _[#346938: Inbox mode: Empty sections take up too much vertical space](https://github.com/microsoft/vscode/issues/346938)_
-* Hover over a Compare Models (Preview) parent chat in the Agents window to see its original settings. _[#347109: Model compare: show original settings on hover of the parent chat](https://github.com/microsoft/vscode/issues/347109)_
-* Shorten worktree cleanup confirmations while retaining the session restoration reminder. _[#347134: Worktree cleanup confirmation is unncessarily wordy](https://github.com/microsoft/vscode/issues/347134)_
-* Add support for collapsible `` sections in the Markdown editor (Experimental). _[#347433: Markdown editor: render ``/`<summary>` as collapsible sections](https://github.com/microsoft/vscode/issues/347433)_
-* Add support for viewing pinned chat files above the chat input (Experimental). _[#345427: Let extensions dock views above the chat input](https://github.com/microsoft/vscode/issues/345427)_
-* Add context menu option to hide VS Code pet (Experimental). _[#346510: Remove option for vscode-pet](https://github.com/microsoft/vscode/issues/346510)_
-* Filter inbox sessions by workspace and execution environment (Experimental). _[#347488: Add workspace and environment scope pickers to Inbox](https://github.com/microsoft/vscode/issues/347488)_
+* Send Later shows relative send times, such as 'Sends in 5 minutes', for scheduled messages and **Drafts** entries in the Agents window. _[#348622: Send Later: Show relative time until scheduled messages are sent](https://github.com/microsoft/vscode/issues/348622)_
+
+* In the Agents window, the **Send** dropdown opens the scheduling time picker directly when experimental **Send Later** is the only secondary action. _[#348482: Single-entry menu: Send Later...](https://github.com/microsoft/vscode/issues/348482)_
+
+* The "new tab (+)" button opens tabs at the end of the group and selects your last-used action by default. _[#348560: New tab button: open at the end, recent entry as default](https://github.com/microsoft/vscode/issues/348560)_
 
 ---
 
@@ -1536,8 +1677,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_348483
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/348483
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/348483
-- **SHA256_FINGERPRINT**: `e623310f38b516c8563a4c5161f2771a895124859a8a84a67159af351203680e`
-- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:12.950845+00:00
+- **SHA256_FINGERPRINT**: `9dbcea81aa96067516c05e0121025ced0b445b81a74060c7e902009855c33f06`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:53.362937+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.147.0 Endgame
@@ -1620,21 +1761,21 @@ We really appreciate people trying our new features as soon as they are ready, s
 
 # Wednesday
 `@endgame-champ`:
-- [ ] Publish website so that in-product release notes are ready
-- [ ] Start Stable rollout to everyone (start percentage: `20%`, end time UTC: `6AM next Wednesday`)
-- [ ] Deploy vscode.dev
-  - [ ] Verify the [release candidate](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) `release/x.y` passed the sanity tests in the last step
-  - [ ] [Kick off deploy](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) (Branch `release/x.y`, Deployment Target `prod`, needs peer approval)
-- [ ] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `auto`; the release pipeline job requires two approvals)
-- [ ] Publish socials (ping Cynthia)
-- [ ] [Publish @types/vscode](https://github.com/microsoft/vscode/wiki/Publish-vscode-types) if you find type diffs after running the steps
-- [ ] Create an official release
-  - [ ] Create a tag (make sure you pull the release branch first): `git tag <x.y.z>`
-  - [ ] Push the tag: `git push origin <x.y.z>`
-  - [ ] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right ... > Create Release. Use the version as title <x.y.z> and use the release link `https://code.visualstudio.com/updates/v<x_y>` for the description
-- [ ] Close milestone (**do not** delete it): https://github.com/microsoft/vscode/milestones
-- [ ] Move all remaining issues to "On Deck"
-- [ ] Ensure that the latest Insiders release from main has succeeded
+- [x] Publish website so that in-product release notes are ready
+- [x] Start Stable rollout to everyone (start percentage: `20%`, end time UTC: `6AM next Wednesday`)
+- [x] Deploy vscode.dev
+  - [x] Verify the [release candidate](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) `release/x.y` passed the sanity tests in the last step
+  - [x] [Kick off deploy](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) (Branch `release/x.y`, Deployment Target `prod`, needs peer approval)
+- [x] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `auto`; the release pipeline job requires two approvals)
+- [x] Publish socials (ping Cynthia)
+- [x] [Publish @types/vscode](https://github.com/microsoft/vscode/wiki/Publish-vscode-types) if you find type diffs after running the steps
+- [x] Create an official release
+  - [x] Create a tag (make sure you pull the release branch first): `git tag <x.y.z>`
+  - [x] Push the tag: `git push origin <x.y.z>`
+  - [x] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right ... > Create Release. Use the version as title <x.y.z> and use the release link `https://code.visualstudio.com/updates/v<x_y>` for the description
+- [x] Close milestone (**do not** delete it): https://github.com/microsoft/vscode/milestones
+- [x] Move all remaining issues to "On Deck"
+- [x] Ensure that the latest Insiders release from main has succeeded
 
 
 ---
@@ -2269,11 +2410,18 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `61134a3f23d017d443d55e9e14836e67926e4f49411e2489d991f7c14a08d845`
-- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:10.623653+00:00
+- **SHA256_FINGERPRINT**: `f4b6430249228043e0bed7f1b7ac95ce717b90dfcd9c694dffc59f1a72202e32`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:51.650885+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
+
+## Customize GitHub Copilot for your team
+- **Date**: Wed, 18 Nov 2026 16:00:13 +0000
+- **URL**: https://github.blog/changelog/2026-11-18-customize-github-copilot-for-your-team
+
+You can now share the GitHub Copilot plugins your team relies on without asking every member to repeat the same setup. Team customizations are generally available for organization teams. Team...
+The post Customize GitHub Copilot for your team appeared first on The GitHub Blog .
 
 ## OpenAI’s GPT-6.2 Astra and GPT-6.2 Sol now available
 - **Date**: Tue, 17 Nov 2026 20:20:29 +0000
@@ -2337,10 +2485,3 @@ The post GitHub Copilot CLI adds Microsoft Entra sign-in as a preview appeared f
 
 You can now see how Copilot code review feedback lands in each repository. A new “Repository insights” page, the first item in a repository’s Insights tab, brings Copilot code review...
 The post Track Copilot code review outcomes in Repository insights appeared first on The GitHub Blog .
-
-## GitHub Copilot Evals is now in public preview
-- **Date**: Tue, 17 Nov 2026 18:00:33 +0000
-- **URL**: https://github.blog/changelog/2026-11-17-github-copilot-evals-is-now-in-public-preview
-
-You can now use GitHub Copilot Evals to optimize GitHub Copilot for yourself. As your prompts, models, skills, and tools change, are you still getting the most out of Copilot?...
-The post GitHub Copilot Evals is now in public preview appeared first on The GitHub Blog .

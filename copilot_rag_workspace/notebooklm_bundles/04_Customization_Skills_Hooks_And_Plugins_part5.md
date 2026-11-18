@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-11-18T06:39:35.054845+00:00
-- **Total Palabras**: 443,727 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-18T20:12:53.505238+00:00
+- **Total Palabras**: 443,890 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -66377,8 +66377,8 @@ Behavior depends on where you set the flag:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/agent-plugins.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/agent-plugins
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-plugins.md
-- **SHA256_FINGERPRINT**: `fa48f0ce5dc0e04227a2b8978ba8369c5fbfaaba3ff8153747daf8954798d21a`
-- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:05.746197+00:00
+- **SHA256_FINGERPRINT**: `c642d764e4aa14cdabe223478386c64eab2bc965c61a681b0526d62e971d707e`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:46.841393+00:00
 ---
 
 **MetaDescription**: Find, install, and manage agent plugins from marketplaces in VS Code.
@@ -66559,14 +66559,23 @@ If you only need a skill, consider [using or adapting an existing skill](/docs/a
 
 ### Enable or disable plugins
 
-Where offered by the selected harness, you can enable or disable a plugin globally or for a specific workspace. Enablement is separate from where the plugin is installed:
+Where offered by the selected harness, you can enable or disable a plugin globally or for a specific workspace. Enablement is separate from where the plugin is installed.
 
-1. Select the intended session. In the Agent Customizations editor, select **Plugins** and open the plugin's details.
-1. Use **Enable** or **Disable** to change its global state, or **Enable (Workspace)** or **Disable (Workspace)** for the current workspace. Use the button's dropdown menu to choose an available scope.
+For Copilot harness sessions:
 
-Global enablement isn't isolated to the active user profile. The enabled state is stored separately from the plugin configuration, so a workspace enablement choice doesn't change shared workspace settings. For remote sessions, check whether the plugin is host-owned or supplied by the connected client before changing it. See [customization context and change scope](/docs/agent-customization/overview.md#understand-what-a-change-affects).
+1. Select the intended session. In the Agent Customizations editor, select **Plugins**. If the controls show **Waiting for Session Start**, send a message to start the session before changing enablement.
 
-Policy-managed plugins are identified as managed by policy, and their toggles are locked.
+1. For workspace-only changes, open the plugin's actions menu and select **Manage Enablement for This Workspace**. This creates an override matching the current enabled state and adds a **This Workspace** badge. Choosing the scope alone doesn't turn the plugin on or off.
+
+1. Use the plugin's switch to enable or disable it. With a workspace override, the switch changes that workspace's state. Without an override, it changes the global state.
+
+To remove the workspace override, select the **This Workspace** badge or open the plugin's actions menu, and choose **Use Global Enablement**. The plugin follows its global state again, which can change whether it is enabled.
+
+Workspace overrides are saved in `enabledPlugins` in `.github/copilot/settings.json`, relative to the selected chat's working directory. Review this project-file change before committing or sharing it.
+
+Workspace overrides are supported for marketplace-installed plugins, not direct installations. Policy-managed plugins are identified as managed by policy, and their toggles are locked. Other harnesses can offer different enablement controls and scopes.
+
+Global enablement isn't isolated to the active user profile. For remote sessions, check whether the plugin is host-owned or supplied by the connected client before changing it. See [customization context and change scope](/docs/agent-customization/overview.md#understand-what-a-change-affects).
 
 When a plugin is disabled, its skills, agents, hooks, MCP servers, slash commands, and automation templates are no longer available. For example, skills from a disabled plugin do not appear in **Chat: Configure Skills**, and automation templates do not appear in **Templates from Plugins**. Disabled plugins appear with a dimmed style in the Agent Customizations editor.
 
@@ -66640,7 +66649,7 @@ Projects can recommend plugins for team members by configuring plugin settings i
 
 In the Local harness `feature(local-harness)`, VS Code shows a notification the first time a chat message is sent. To browse and install plugins from the project's marketplaces, open the Agent Customizations editor and select **Browse**, or select **Plugins** > **Browse Marketplace** if the unified Browse experience is unavailable.
 
-In the Copilot harness, `.github/copilot/settings.json` supplies repository plugin and marketplace defaults. You can turn off optional plugins in **Plugins** in the Agent Customizations editor without changing the shared defaults. Enterprise-managed settings take precedence over repository defaults and your choices.
+In the Copilot harness, `.github/copilot/settings.json` supplies repository plugin and marketplace defaults. [Workspace enablement changes](#enable-or-disable-plugins) made in the Agent Customizations editor update `enabledPlugins` in that file. They aren't private preferences, so review them before sharing the configuration. Enterprise-managed settings take precedence over repository defaults and your choices.
 
 For the configuration fields, naming rules, and a complete example, see [workspace plugin settings](/docs/agents/reference/agent-plugin-reference.md#workspace-plugin-settings). Review a recommended plugin before enabling it, just as you would a plugin you discover yourself.
 
@@ -66700,8 +66709,8 @@ Use the [agent plugin authoring reference](/docs/agents/reference/agent-plugin-r
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/agent-skills.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/agent-skills
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-skills.md
-- **SHA256_FINGERPRINT**: `182ac3959e2a5430bc177bb1e0ab8841dd84a14a72e6d7070ea31b8b87e451a9`
-- **LAST_VERIFIED_UTC**: 2026-11-12T19:42:37.726496+00:00
+- **SHA256_FINGERPRINT**: `8289088d7080c237bd0d30edaabcfaf2bb30a98c63a0183b934b6a025a72a5a9`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:46.792956+00:00
 ---
 
 **MetaDescription**: Find, adapt, and create Agent Skills in VS Code for reusable workflows with supported agents.
@@ -66756,6 +66765,7 @@ Use custom instructions when you want to:
 
 Skills can come from the following sources:
 
+* **Built-in skills:** The Agents window includes skills such as `/automate` to [turn a task into a recurring automation](/docs/agents/run/automations.md#create-an-automation-from-chat). No installation is needed.
 * **Project or personal files:** [Create a skill](#create-a-skill), [copy and adapt one](#copy-and-adapt-an-existing-skill), or use skills included in a repository.
 * **Marketplaces and plugins:** [Install individual skills](#install-a-skill-from-the-customization-marketplace-preview) or use skills bundled in an [agent plugin](/docs/agent-customization/agent-plugins.md).
 * **Extensions:** Installed VS Code extensions can [contribute skills](#contribute-skills-from-extensions).
@@ -66913,7 +66923,7 @@ To reuse repository skills with [product.prodname_openai_codex], [configure the 
 
 If skills in `.github/skills/` have duplicate names across workspace roots, the primary root takes precedence.
 
-The Codex harness is disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
+The Codex harness is disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), unless your administrator explicitly permits it. Contact the IT team that deployed the settings to discuss access.
 
 ### Local
 
@@ -67706,8 +67716,8 @@ The response's **References** section, where available, helps check inclusion, n
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/hooks.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/hooks
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/hooks.md
-- **SHA256_FINGERPRINT**: `3bcca3df1cac6aae58c894bddf1984ae0ec7ca582730c5a17b8a79d9d7f88d13`
-- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:05.737561+00:00
+- **SHA256_FINGERPRINT**: `adbfb9d3b3293851ef288a90d1fd3dc41771b7e0bc3c2f0afc9fd71d68cb0521`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:46.838285+00:00
 ---
 
 **MetaDescription**: Reuse and configure agent hooks for personal and shared workflows in VS Code.
@@ -67722,7 +67732,7 @@ Use the [Agent Customizations editor](#find-and-manage-hooks) to create and mana
 > Individual provider implementations can have a different lifecycle status and release schedule.
 
 > [!IMPORTANT]
-> Your organization might restrict which hooks can run. Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access. Administrators can learn how to [manage hooks in enterprise environments](/docs/enterprise/manage-ai-settings.md#enable-or-disable-hooks).
+> Your organization might restrict which hooks can run. Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), unless your administrator explicitly permits them. Contact the IT team that deployed the settings to discuss access. Administrators can learn how to [manage hooks in enterprise environments](/docs/enterprise/manage-ai-settings.md#enable-or-disable-hooks).
 
 ## Choose the hook implementation for your session
 
@@ -68593,8 +68603,8 @@ Yes, you can use BYOK models, including local models, without a Copilot plan and
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/migrate-customizations.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/migrate-customizations
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/migrate-customizations.md
-- **SHA256_FINGERPRINT**: `8525b7f6444c56007abbe6d1d43e17a8ed2aa4d745be91d0cbd1c53e616421d5`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.026576+00:00
+- **SHA256_FINGERPRINT**: `f2cda2c6dab50a195d79ddd8cbbec171906a681bcc82c594de6f30f8a38664e1`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:47.008081+00:00
 ---
 
 **MetaDescription**: Migrate agent customizations and resolve harness compatibility gaps in VS Code.
@@ -68610,7 +68620,7 @@ The Local harness `feature(local-harness)` is deprecated and will be removed by 
 > [!NOTE]
 > This article covers migration to the Copilot harness. For the Claude or Codex harness, use the locations and formats in the provider documentation.
 >
-> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), unless your administrator explicitly permits them. Contact the IT team that deployed the settings to discuss access.
 
 ## Choose a migration path
 

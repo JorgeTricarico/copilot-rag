@@ -33,7 +33,7 @@ The Chat view opens in the Secondary Side Bar, next to your editor. To open the 
 ## Start a session
 
 > [!NOTE]
-> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), unless your administrator explicitly permits them. Contact the IT team that deployed the settings to discuss access.
 
 1. Open the project you want to work on and select **New Chat** (`+`) or press ``Shortcut: workbench.action.chat.newChat``.
 

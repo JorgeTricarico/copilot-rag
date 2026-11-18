@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 02_Context_Memory_And_Compaction
-- **Generado (UTC)**: 2026-11-13T05:49:51.723671+00:00
-- **Total Palabras**: 6,935 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-18T20:12:53.365177+00:00
+- **Total Palabras**: 7,639 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -171,8 +171,8 @@ An existing repository index can remain available when external ingest is disabl
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/chat/chat-overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/chat/chat-overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/chat/chat-overview.md
-- **SHA256_FINGERPRINT**: `c47b1f14bc52c892bb6cc85c017d0d7646dbb89b3e624a95a4da25724b021fa6`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.639818+00:00
+- **SHA256_FINGERPRINT**: `83cd0b760f65703a5660c78e5a9deabc1b3b5ceba8b5da95e5728030955a040d`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.711031+00:00
 ---
 
 **MetaDescription**: Use chat in VS Code to ask about code, send requests, add context, and review AI-generated changes.
@@ -268,6 +268,28 @@ Providing the right context helps the AI generate more relevant and accurate res
 
 Learn more about [managing context for AI](/docs/chat/copilot-chat-context.md).
 
+## Request visual responses
+
+In the Agents window, ask for a visual response when a layout, chart, or table makes a result clearer than text alone. Two built-in [skills](/docs/agent-customization/agent-skills.md) support different kinds of output:
+
+* **HTML previews**: reports, diagrams, comparisons, and static UI mockups. Enable ``chat.htmlPreview.enabled`` and include `/html-preview` in your request.
+
+* **Native visuals (Experimental)**: metrics, badges, tables, bar charts, and expandable details rendered by VS Code to match your theme, including high contrast themes. Enable ``chat.nativeComponents.enabled`` and include `/vscode-ui` in your request.
+
+Both settings are off by default. For example:
+
+```prompt
+/html-preview compare the two caching approaches in a visual report.
+```
+
+```prompt
+/vscode-ui compare the full and incremental build times.
+```
+
+HTML previews support self-contained HTML and CSS, tables, inline SVG, and expandable sections. They don't support scripts, forms, external links, or external resources. Use them for static documents, not running applications.
+
+Right-click a preview or native visual and select **Show Source** to inspect its markup. For an HTML preview, select **Open Preview** for a larger view or **Save HTML** to export a sanitized, self-contained HTML file. When the corresponding rendering setting is off, visual response blocks appear as source code instead.
+
 ## Generate and edit images
 
 `feature(image-generation)`
@@ -301,6 +323,8 @@ To turn off image generation, set ``chat.copilot.imageGeneration.model`` to **Of
 ## Image carousel
 
 You can select images or videos in chat responses to open a dedicated carousel view. Media files from tool results (such as the integrated browser, Playwright, or other MCP servers) and inlined in assistant messages are all accessible from the carousel.
+
+On desktop, you can also open an image attached to the chat input and select **Mark Up** to draw or crop it before sending. See [Mark up an image](/docs/chat/copilot-chat-context.md#mark-up-an-image).
 
 ![Screenshot showing the image carousel view with multiple images.](images/chat-sessions/image-carousel.png)
 
@@ -447,8 +471,8 @@ To learn more about Copilot's security, privacy, compliance, and transparency, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/chat/copilot-chat-context.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/chat/copilot-chat-context
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/chat/copilot-chat-context.md
-- **SHA256_FINGERPRINT**: `ed562c976a902c94af37ff7c9df0c08a2bedba8949a8a723a14ea9c9f380ee3b`
-- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.660249+00:00
+- **SHA256_FINGERPRINT**: `094faeb2dbb158aa6524a1d5b0b66694fedabc45658a3aff60d17c164366e49f`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.712120+00:00
 ---
 
 **MetaDescription**: Add files, symbols, images, browser content, and other context to AI prompts in Visual Studio Code for more relevant responses.
@@ -511,9 +535,11 @@ You can attach project and GitHub context to a request:
 
 * In any chat input, select **Add Context** (`+` icon), and then select **Issue...** or **Pull Request...**. If multiple GitHub repositories are available, select a repository before you choose the issue or pull request.
 
-* Paste a GitHub issue or pull request URL directly into the prompt. The URL remains in the prompt, and VS Code automatically adds the item as a context attachment.
+* Paste a GitHub issue or pull request URL directly into the prompt. VS Code automatically adds the item as a context attachment.
 
 You can attach multiple items. The attachments are preserved in a draft and included when you send the request. Learn more about [starting an agent session in the Agents window](/docs/agents/run/agents-window.md#start-an-agent-session).
+
+With ``chat.inlineAttachments.enabled`` enabled (Experimental), you can preview GitHub items in your Chat view draft. Hover over a reference, or highlight it with the arrow keys, to see its title, status, and description. Select it or press ``Enter`` while highlighted to open the item without sending the draft. Press ``Escape`` to dismiss the preview.
 
 ### Reference content from the web
 
@@ -540,10 +566,47 @@ Ask Copilot directly about your code, terminal output, or editor settings and at
 
 Chat supports vision capabilities, which means you can attach an image as context to your chat prompt and ask questions about it. For example, attach a screenshot of a block of code and ask to explain it, or attach a sketch of a UI and ask the agent to implement it.
 
-Vision analyzes image input and doesn't generate image output. To create an image or edit an existing one, use [image generation](/docs/chat/chat-overview.md#generate-and-edit-images) in a Copilot harness session.
+Select a model that supports images to ask questions about visual content. Vision analyzes image input and doesn't generate image output. To generate an image or ask an image model to edit one, use [image generation](/docs/chat/chat-overview.md#generate-and-edit-images) in a Copilot harness session. To highlight details yourself before sending an image, [mark up the attachment](#mark-up-an-image).
 
 > [!TIP]
 > You can drag and drop an image from a web browser onto the Chat view to add it as context.
+
+### Capture the VS Code window
+
+On desktop, capture the whole VS Code window or a selected area without saving an image file first:
+
+1. Select a model that supports images. **Screenshot Window** is only available when the selected model and session support image attachments.
+1. In the chat input, select **Add Context** (`+` icon) > **Screenshot Window**.
+1. When the cursor becomes a camera, select anywhere in the window or press ``Enter`` to capture the whole window. Drag to capture an area instead. Press ``Escape`` to cancel.
+
+The screenshot is attached to the chat input. Add a prompt describing the problem or change you want, then send it.
+
+### Capture another app window
+
+`feature(chat-app-window-screenshots)`
+
+On desktop, attach a screenshot of another app, such as a browser or simulator, to show the agent what you're building.
+
+1. Enable ``chat.appWindowScreenshots.enabled`` if needed. It is on by default in Insiders and off by default in Stable.
+1. Focus the chat input where you want the screenshot, then switch to the app you want to capture.
+1. Press ``Shortcut: workbench.action.chat.attachAppWindowScreenshot``. VS Code comes to the front with the screenshot attached. If you use the shortcut while VS Code is in front, it captures the app window you just left.
+
+The shortcut works system-wide while the feature is enabled. To choose a window instead, select **Add Context** > **Screenshot App Window**, or run **Chat: Pick App Window to Screenshot** from the Command Palette.
+
+On macOS, follow the setup dialog to grant Screen Recording permission, then restart VS Code. On Wayland, choose the window in the system's window picker.
+
+> [!NOTE]
+> The shortcut attaches to the chat input that last had focus. In the Agents window, this can differ from the session selected in the sessions list. Confirm the destination before sending.
+
+### Mark up an image
+
+On desktop, draw, add shapes, arrows, or text, and crop any image attached to the chat input. This works for screenshots and for images you paste or drop into chat.
+
+1. Select **Mark Up** (pencil icon) at the end of the image attachment. Alternatively, open the image preview and select **Mark Up** in its toolbar.
+1. Use the drawing and crop tools to highlight the relevant details.
+1. Select **Done** to update the attached image, then add your prompt and send it.
+
+Taking a screenshot or marking up an image doesn't send a chat request. Review the image for sensitive content before sending it.
 
 ## Add browser context
 

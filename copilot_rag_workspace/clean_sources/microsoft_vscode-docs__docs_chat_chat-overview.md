@@ -91,6 +91,28 @@ Providing the right context helps the AI generate more relevant and accurate res
 
 Learn more about [managing context for AI](/docs/chat/copilot-chat-context.md).
 
+## Request visual responses
+
+In the Agents window, ask for a visual response when a layout, chart, or table makes a result clearer than text alone. Two built-in [skills](/docs/agent-customization/agent-skills.md) support different kinds of output:
+
+* **HTML previews**: reports, diagrams, comparisons, and static UI mockups. Enable ``chat.htmlPreview.enabled`` and include `/html-preview` in your request.
+
+* **Native visuals (Experimental)**: metrics, badges, tables, bar charts, and expandable details rendered by VS Code to match your theme, including high contrast themes. Enable ``chat.nativeComponents.enabled`` and include `/vscode-ui` in your request.
+
+Both settings are off by default. For example:
+
+```prompt
+/html-preview compare the two caching approaches in a visual report.
+```
+
+```prompt
+/vscode-ui compare the full and incremental build times.
+```
+
+HTML previews support self-contained HTML and CSS, tables, inline SVG, and expandable sections. They don't support scripts, forms, external links, or external resources. Use them for static documents, not running applications.
+
+Right-click a preview or native visual and select **Show Source** to inspect its markup. For an HTML preview, select **Open Preview** for a larger view or **Save HTML** to export a sanitized, self-contained HTML file. When the corresponding rendering setting is off, visual response blocks appear as source code instead.
+
 ## Generate and edit images
 
 `feature(image-generation)`
@@ -124,6 +146,8 @@ To turn off image generation, set ``chat.copilot.imageGeneration.model`` to **Of
 ## Image carousel
 
 You can select images or videos in chat responses to open a dedicated carousel view. Media files from tool results (such as the integrated browser, Playwright, or other MCP servers) and inlined in assistant messages are all accessible from the carousel.
+
+On desktop, you can also open an image attached to the chat input and select **Mark Up** to draw or crop it before sending. See [Mark up an image](/docs/chat/copilot-chat-context.md#mark-up-an-image).
 
 ![Screenshot showing the image carousel view with multiple images.](images/chat-sessions/image-carousel.png)
 

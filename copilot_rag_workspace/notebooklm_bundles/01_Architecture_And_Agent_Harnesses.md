@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-11-17T20:39:12.951952+00:00
-- **Total Palabras**: 25,855 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-18T20:12:53.364468+00:00
+- **Total Palabras**: 25,881 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -274,8 +274,8 @@ For monorepos or projects with multiple services, use [multi-root workspaces](/d
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/agent-harnesses.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/agent-harnesses
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/agent-harnesses.md
-- **SHA256_FINGERPRINT**: `b511c616577721b3d31508631ea5fc628d41763aedf4540d670a29a0378f42af`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.226462+00:00
+- **SHA256_FINGERPRINT**: `f1af60e05b62d5e8d0275e14216d676ccf48ee6d69f877ae943ffb034d4f4fcd`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:47.193557+00:00
 ---
 
 **MetaDescription**: Understand agent harnesses, model access, execution environments, and code isolation in VS Code.
@@ -350,7 +350,7 @@ The **Session Target** UI control presents harnesses and the Cloud execution tar
 For the available choices and setup requirements, see [compare agent harnesses](/docs/agents/run/agent-harnesses.md#compare-agent-harnesses).
 
 > [!NOTE]
-> Claude and Codex harness integrations are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access. Selecting a Claude or OpenAI model in the Copilot harness is a separate choice and does not switch harnesses.
+> Claude and Codex harness integrations are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), unless your administrator explicitly permits them. Contact the IT team that deployed the settings to discuss access. Selecting a Claude or OpenAI model in the Copilot harness is a separate choice and does not switch harnesses.
 
 ## Relate execution environments and code isolation
 
@@ -382,8 +382,8 @@ A worktree is a Git code-isolation boundary, not a security boundary. It does no
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/agent-host.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/agent-host
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/agent-host.md
-- **SHA256_FINGERPRINT**: `c7c3aadeccb6e95d259e1d2621e2afa8851267ccfc350f2432eeeccff725b0e3`
-- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:05.844825+00:00
+- **SHA256_FINGERPRINT**: `47543f01b2c19a70a5a6022723d16a80efcf9ab06bb7c55b999609ac7773c148`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:47.191358+00:00
 ---
 
 **MetaDescription**: Understand how the VS Code Agent Host manages sessions, execution environments, and connected clients.
@@ -405,7 +405,7 @@ Separating the agent from the window that displays it provides these capabilitie
 * **Dedicated process**: agents run in their own process, where they won't be blocked by busy extensions.
 
 > [!NOTE]
-> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), unless your administrator explicitly permits them. Contact the IT team that deployed the settings to discuss access.
 
 ## Process architecture
 
@@ -1518,8 +1518,8 @@ For keyboard, screen reader, and low-vision workflows, learn how to use the [Acc
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/agent-harnesses.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/agent-harnesses
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/agent-harnesses.md
-- **SHA256_FINGERPRINT**: `89d08343bbb9f2c4238c2458e4fc0007d5ff5e8805b5a654679b81a8ededf979`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.108773+00:00
+- **SHA256_FINGERPRINT**: `40989e45fb758fc3b4b2633a5d0457eadcda0f25c84815b65bae5acf7ea0fb7e`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.094828+00:00
 ---
 
 **MetaDescription**: Compare agent harnesses and built-in agents in Visual Studio Code, select one for a session, and review provider requirements.
@@ -1558,7 +1558,7 @@ A session can group chats that use different harnesses with [mixed-harness chats
 Available models depend on the harness and how you [access models](/docs/agent-customization/language-models.md#choose-how-to-access-models), such as through a GitHub Copilot subscription, another supported account, or your own API key. Harness-specific customizations, including [hooks](/docs/agent-customization/hooks.md#choose-the-hook-implementation-for-your-session), follow the selected harness.
 
 > [!NOTE]
-> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), including managed permission or sandbox settings. Contact the IT team that deployed the settings to discuss access. If you don't know the owner, ask your IT help desk to find the responsible administrator.
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), including managed permission or sandbox settings, unless your administrator explicitly permits them. Contact the IT team that deployed the settings to discuss access. If you don't know the owner, ask your IT help desk to find the responsible administrator.
 
 ## Select a harness
 
@@ -1660,7 +1660,7 @@ To use Codex in the Chat view, install and enable the [OpenAI Codex extension](h
 #### Agent Host integration (Experimental)
 
 > [!NOTE]
-> The Codex Agent Host integration is disabled when [enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), even with a ChatGPT account or the integration's user setting set to `true`. Contact the IT team that deployed the settings to discuss access.
+> The Codex Agent Host integration is disabled when [enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), unless your administrator explicitly permits it. A ChatGPT account or the integration's user setting set to `true` doesn't override that restriction. Contact the IT team that deployed the settings to discuss access.
 
 Enable ``chat.agentHost.codexAgent.enabled`` to make Codex available in the Agents window without the [product.prodname_openai_codex] extension.
 

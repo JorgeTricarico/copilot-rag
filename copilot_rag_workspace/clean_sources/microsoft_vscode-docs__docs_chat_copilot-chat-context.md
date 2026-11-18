@@ -58,9 +58,11 @@ You can attach project and GitHub context to a request:
 
 * In any chat input, select **Add Context** (`+` icon), and then select **Issue...** or **Pull Request...**. If multiple GitHub repositories are available, select a repository before you choose the issue or pull request.
 
-* Paste a GitHub issue or pull request URL directly into the prompt. The URL remains in the prompt, and VS Code automatically adds the item as a context attachment.
+* Paste a GitHub issue or pull request URL directly into the prompt. VS Code automatically adds the item as a context attachment.
 
 You can attach multiple items. The attachments are preserved in a draft and included when you send the request. Learn more about [starting an agent session in the Agents window](/docs/agents/run/agents-window.md#start-an-agent-session).
+
+With ``chat.inlineAttachments.enabled`` enabled (Experimental), you can preview GitHub items in your Chat view draft. Hover over a reference, or highlight it with the arrow keys, to see its title, status, and description. Select it or press ``Enter`` while highlighted to open the item without sending the draft. Press ``Escape`` to dismiss the preview.
 
 ### Reference content from the web
 
@@ -87,10 +89,47 @@ Ask Copilot directly about your code, terminal output, or editor settings and at
 
 Chat supports vision capabilities, which means you can attach an image as context to your chat prompt and ask questions about it. For example, attach a screenshot of a block of code and ask to explain it, or attach a sketch of a UI and ask the agent to implement it.
 
-Vision analyzes image input and doesn't generate image output. To create an image or edit an existing one, use [image generation](/docs/chat/chat-overview.md#generate-and-edit-images) in a Copilot harness session.
+Select a model that supports images to ask questions about visual content. Vision analyzes image input and doesn't generate image output. To generate an image or ask an image model to edit one, use [image generation](/docs/chat/chat-overview.md#generate-and-edit-images) in a Copilot harness session. To highlight details yourself before sending an image, [mark up the attachment](#mark-up-an-image).
 
 > [!TIP]
 > You can drag and drop an image from a web browser onto the Chat view to add it as context.
+
+### Capture the VS Code window
+
+On desktop, capture the whole VS Code window or a selected area without saving an image file first:
+
+1. Select a model that supports images. **Screenshot Window** is only available when the selected model and session support image attachments.
+1. In the chat input, select **Add Context** (`+` icon) > **Screenshot Window**.
+1. When the cursor becomes a camera, select anywhere in the window or press ``Enter`` to capture the whole window. Drag to capture an area instead. Press ``Escape`` to cancel.
+
+The screenshot is attached to the chat input. Add a prompt describing the problem or change you want, then send it.
+
+### Capture another app window
+
+`feature(chat-app-window-screenshots)`
+
+On desktop, attach a screenshot of another app, such as a browser or simulator, to show the agent what you're building.
+
+1. Enable ``chat.appWindowScreenshots.enabled`` if needed. It is on by default in Insiders and off by default in Stable.
+1. Focus the chat input where you want the screenshot, then switch to the app you want to capture.
+1. Press ``Shortcut: workbench.action.chat.attachAppWindowScreenshot``. VS Code comes to the front with the screenshot attached. If you use the shortcut while VS Code is in front, it captures the app window you just left.
+
+The shortcut works system-wide while the feature is enabled. To choose a window instead, select **Add Context** > **Screenshot App Window**, or run **Chat: Pick App Window to Screenshot** from the Command Palette.
+
+On macOS, follow the setup dialog to grant Screen Recording permission, then restart VS Code. On Wayland, choose the window in the system's window picker.
+
+> [!NOTE]
+> The shortcut attaches to the chat input that last had focus. In the Agents window, this can differ from the session selected in the sessions list. Confirm the destination before sending.
+
+### Mark up an image
+
+On desktop, draw, add shapes, arrows, or text, and crop any image attached to the chat input. This works for screenshots and for images you paste or drop into chat.
+
+1. Select **Mark Up** (pencil icon) at the end of the image attachment. Alternatively, open the image preview and select **Mark Up** in its toolbar.
+1. Use the drawing and crop tools to highlight the relevant details.
+1. Select **Done** to update the attached image, then add your prompt and send it.
+
+Taking a screenshot or marking up an image doesn't send a chat request. Review the image for sensitive content before sending it.
 
 ## Add browser context
 

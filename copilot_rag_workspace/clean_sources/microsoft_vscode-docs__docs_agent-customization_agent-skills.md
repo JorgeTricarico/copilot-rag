@@ -50,6 +50,7 @@ Use custom instructions when you want to:
 
 Skills can come from the following sources:
 
+* **Built-in skills:** The Agents window includes skills such as `/automate` to [turn a task into a recurring automation](/docs/agents/run/automations.md#create-an-automation-from-chat). No installation is needed.
 * **Project or personal files:** [Create a skill](#create-a-skill), [copy and adapt one](#copy-and-adapt-an-existing-skill), or use skills included in a repository.
 * **Marketplaces and plugins:** [Install individual skills](#install-a-skill-from-the-customization-marketplace-preview) or use skills bundled in an [agent plugin](/docs/agent-customization/agent-plugins.md).
 * **Extensions:** Installed VS Code extensions can [contribute skills](#contribute-skills-from-extensions).
@@ -207,7 +208,7 @@ To reuse repository skills with [product.prodname_openai_codex], [configure the 
 
 If skills in `.github/skills/` have duplicate names across workspace roots, the primary root takes precedence.
 
-The Codex harness is disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
+The Codex harness is disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), unless your administrator explicitly permits it. Contact the IT team that deployed the settings to discuss access.
 
 ### Local
 

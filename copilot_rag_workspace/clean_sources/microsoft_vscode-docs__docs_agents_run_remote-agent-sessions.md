@@ -35,6 +35,8 @@ Enable remote access to start or continue agent sessions from another device whi
 
 Run these steps on the host machine to make it available for remote access.
 
+If you're already connected to an SSH host, WSL distribution, or dev tunnel, you can instead [share that remote as a [copilot.github_environment]](#share-a-remote-as-a-github-environment) from the client machine.
+
 1. On the host machine, open the Agents window, or use an Agent Host-backed session in the Chat view in an editor window.
 
 1. Open **Remote Connections** (antenna icon) in the Agents window title bar or the Chat view input area.
@@ -197,6 +199,8 @@ The **Remote Connections** control in the Chat view enables access to the machin
 
 ### Disconnect or stop sharing
 
+For an SSH, WSL, or tunnel remote shared as a [copilot.github_environment], you can [keep sharing when you disconnect](#share-a-remote-as-a-github-environment) to continue its sessions through that environment.
+
 * **Disconnect a client** to end that client's connection. This doesn't stop the host or its running tasks.
 
 * **Stop sharing the host** by opening **Remote Connections** on the host and selecting **Off**. This stops sharing without changing the preferred connection method.
@@ -230,6 +234,30 @@ You can also open the editor from the **Environment** picker:
 1. Open the **Environment** picker and select **Manage**.
 
     ![Screenshot showing the Environment picker and its Manage entry.](../images/remote-agent-sessions/environment-picker-manage.png)
+
+#### Share a remote as a [copilot.github_environment]
+
+`feature(github-environments)`
+
+Share an SSH host, WSL distribution, or dev tunnel to continue its agent sessions through [copilot.github_environments], including from another machine. Sharing requires [copilot.github_environments] to be enabled and available for your account, and a remote Agent Host that supports sharing.
+
+1. In **Manage Remote Environments**, connect to the remote.
+1. On its row, select **Share \<name\> as [product.prodname_github] Environment** (Octocat icon). Complete any sign-in prompts.
+1. When you disconnect from the shared remote, choose what should happen:
+
+    | Choice | Effect |
+    |---|---|
+    | **Keep Sharing** | End the direct connection but keep the remote Agent Host running and available as a [copilot.github_environment]. |
+    | **Stop Sharing** | Stop sharing the remote as a [copilot.github_environment], then disconnect. |
+    | **Cancel** | Keep the direct connection. |
+
+With **Keep Sharing**, the remote appears under **[copilot.github_environments_caps]** in remote environment management and the environment picker. Continue its existing sessions without starting new conversations. Their pins and groups are preserved. On another machine, sign in with the same [product.prodname_github] account.
+
+When you reconnect directly, the same sessions return to that connection and the separate [copilot.github_environment] entry is hidden. Sessions aren't duplicated.
+
+To stop sharing while directly connected, select **Stop Sharing \<name\> as [product.prodname_github] Environment** on the remote's row.
+
+Keep the remote machine running and reachable. **Keep Sharing** doesn't move execution to managed cloud compute. Sharing grants access to the host's supported sessions, tools, and workspace resources. Review [remote connection security](/docs/agents/run/security.md#remote-connections-and-github-environments) before enabling it.
 
 #### Find and organize remote machines
 
@@ -287,6 +315,8 @@ The **Use Dev Container** option appears only when the source machine advertises
 `feature(integrated-browser-remote)`
 
 In the installed Agents window, use the integrated browser to preview a web app running on a supported session host without forwarding its port. Enable ``workbench.browser.enableRemoteProxy``, leave ``workbench.browser.dataStorage`` at `default`, and open the app's original localhost URL. Check that the remote indicator in the address bar identifies the intended host.
+
+You can also [preview remote HTML files directly](/docs/debugtest/integrated-browser.md#open-remote-html-files) without starting a web server.
 
 Select **Share with Agent** to let the agent interact with your page, or ask it to open the app and validate a user flow. See [browsing through a remote agent host](/docs/debugtest/integrated-browser.md#browse-through-a-remote-agent-host) for supported hosts, storage behavior, and connection troubleshooting.
 

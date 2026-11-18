@@ -1,5 +1,12 @@
 # GitHub Copilot Official Changelog Feed
 
+## Customize GitHub Copilot for your team
+- **Date**: Wed, 18 Nov 2026 16:00:13 +0000
+- **URL**: https://github.blog/changelog/2026-11-18-customize-github-copilot-for-your-team
+
+You can now share the GitHub Copilot plugins your team relies on without asking every member to repeat the same setup. Team customizations are generally available for organization teams. Team...
+The post Customize GitHub Copilot for your team appeared first on The GitHub Blog .
+
 ## OpenAI’s GPT-6.2 Astra and GPT-6.2 Sol now available
 - **Date**: Tue, 17 Nov 2026 20:20:29 +0000
 - **URL**: https://github.blog/changelog/2026-11-17-openais-gpt-6-2-astra-and-gpt-6-2-sol-now-available
@@ -62,10 +69,3 @@ The post GitHub Copilot CLI adds Microsoft Entra sign-in as a preview appeared f
 
 You can now see how Copilot code review feedback lands in each repository. A new “Repository insights” page, the first item in a repository’s Insights tab, brings Copilot code review...
 The post Track Copilot code review outcomes in Repository insights appeared first on The GitHub Blog .
-
-## GitHub Copilot Evals is now in public preview
-- **Date**: Tue, 17 Nov 2026 18:00:33 +0000
-- **URL**: https://github.blog/changelog/2026-11-17-github-copilot-evals-is-now-in-public-preview
-
-You can now use GitHub Copilot Evals to optimize GitHub Copilot for yourself. As your prompts, models, skills, and tools change, are you still getting the most out of Copilot?...
-The post GitHub Copilot Evals is now in public preview appeared first on The GitHub Blog .

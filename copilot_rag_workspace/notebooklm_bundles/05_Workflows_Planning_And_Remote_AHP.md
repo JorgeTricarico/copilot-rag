@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-11-17T20:39:13.083205+00:00
-- **Total Palabras**: 160,970 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-18T20:12:53.527241+00:00
+- **Total Palabras**: 164,284 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -5683,8 +5683,8 @@ Learn more about customizing AI in VS Code:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/customize-copilot-guide.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/customize-copilot-guide
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/customize-copilot-guide.md
-- **SHA256_FINGERPRINT**: `3e06513d26fba8778bfcf422f65528ea1ec736695d8232793954f9d45f9a0532`
-- **LAST_VERIFIED_UTC**: 2026-11-12T19:42:37.763845+00:00
+- **SHA256_FINGERPRINT**: `ffb278b808b3d40338172b812f806180c2dc75b3a6f62bb48cbaf20b6f03ca53`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:47.553625+00:00
 ---
 
 **MetaDescription**: Improve your project's AI guidance with focused instructions, scoped rules, agents, and skills in VS Code.
@@ -5711,7 +5711,7 @@ Choose the article's tabs for your harness, not your language model. For example
 > Work in the current folder rather than a new worktree so new sessions can access your uncommitted customization files. In the Agents window, leave **New Worktree** unselected.
 
 > [!NOTE]
-> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), unless your administrator explicitly permits them. Contact the IT team that deployed the settings to discuss access.
 
 ### Review your existing setup
 
@@ -5949,6 +5949,8 @@ For a complete test procedure and guidance on refining the agent's role, see [Ve
 ### Skills for repeatable procedures
 
 Use an agent skill when you repeatedly explain the same multi-step procedure. Package the procedure for an agent to use rather than creating a separate role just to repeat that workflow. Use scoped instructions instead when you need a convention for particular files, not a procedure to carry out.
+
+To run an agent task on a recurring schedule rather than invoke it yourself, [create an automation](/docs/agents/run/automations.md).
 
 The [validate-change skill in the API project example](#example-customize-an-api-project) packages the process of selecting and running relevant checks, then summarizing their results.
 
@@ -6900,8 +6902,8 @@ Reduce the need for recovery by making the intended outcome observable:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/monitoring-agents.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/monitoring-agents
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/monitoring-agents.md
-- **SHA256_FINGERPRINT**: `a2442769b013e51f6d4db245bb0c1b721265366cf71b2945e731eb2552072798`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.627001+00:00
+- **SHA256_FINGERPRINT**: `d0f764e11baf0a3ca42058e4a52f4addb8f344de3d39a3fd3e78fb8a2cbfc91f`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:47.606941+00:00
 ---
 
 **MetaDescription**: Monitor GitHub Copilot agents in VS Code with OpenTelemetry traces, metrics, events, and identity controls.
@@ -7302,7 +7304,7 @@ The CLI runtime only supports `otlp-http`. When `otlp-grpc` is configured, the t
 ### Claude agent
 
 > [!NOTE]
-> The Claude harness is disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), including managed telemetry settings. Contact the IT team that deployed the settings to discuss access.
+> The Claude harness is disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), including managed telemetry settings, unless your administrator explicitly permits it. Permitting Claude doesn't make it enforce managed telemetry settings. Contact the IT team that deployed the settings to discuss access.
 
 When OTel is enabled, Claude agent sessions produce extension-level spans under service `copilot-chat` that follow the GenAI semantic conventions. The extension creates spans by intercepting Claude SDK messages and proxying LLM calls through a local HTTP server.
 
@@ -7843,8 +7845,8 @@ Start with a bounded task: [explore the codebase](/docs/agents/guides/explore-a-
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/prompt-examples.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/prompt-examples
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/prompt-examples.md
-- **SHA256_FINGERPRINT**: `c4c376efef9b451028a5ab5ce22e8316d93534b78d2ca0016e0f928a89770502`
-- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.609905+00:00
+- **SHA256_FINGERPRINT**: `41268904628b97d3a2115873a8d7d829a32ed35aa208d1272a1525e76d08b54a`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:47.742529+00:00
 ---
 
 **MetaDescription**: Use chat prompts in VS Code to explore code, build features, refactor, debug, and test.
@@ -8046,6 +8048,25 @@ Now add unit tests for the validation logic
 ```
 
 By building on earlier responses, the AI maintains context from the previous steps and generates more coherent code.
+
+## Schedule follow-up work
+
+These examples use the Agents window. For a one-time reminder in the same conversation, enable [Send Later](/docs/agents/run/agents-window.md#send-a-request-later) `feature(agents-window-send-later)` with a supported local desktop Agent Host, then ask:
+
+```prompt
+In 30 minutes, remind me in this chat to review the test results.
+```
+
+For work that repeats, [create an automation from chat](/docs/agents/run/automations.md#create-an-automation-from-chat):
+
+```prompt
+/automate Create a local automation for this repository that runs daily
+at 9:00 AM in my local time zone.
+Summarize commits from the last 24 hours. Do not modify files or publish anything.
+Save it disabled so I can review the configuration before enabling it.
+```
+
+Review the proposed configuration before confirming creation, then test the automation before enabling its schedule. Normal tool approvals apply to both examples. Local scheduled work requires your computer to be awake and the Agent Host available.
 
 ## Tips for crafting effective prompts
 
@@ -8759,8 +8780,8 @@ When you no longer need the app, run these steps to clean up your local resource
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/agent-plugin-reference.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/agent-plugin-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/agent-plugin-reference.md
-- **SHA256_FINGERPRINT**: `54f6091582102dd39672488ad24aa9911aeffb4502ba976a099276a1fcbeb6ab`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.861732+00:00
+- **SHA256_FINGERPRINT**: `bdd06b078dd211bcb1167d3e5a6b78eb6ba7776f8a73bcf4f40329762d83f1d2`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:47.813793+00:00
 ---
 
 **MetaDescription**: Package skills, agents, MCP servers, hooks, and automation templates with agent plugins in VS Code.
@@ -8944,11 +8965,23 @@ The frontmatter supports these fields:
 
 | Field | Required | Description |
 |-------|:--------:|-------------|
-| `version` | Yes | File format version. Use `1`. |
+| `version` | Yes | File format version. Use `1`, or `2` when including `disableConditions`. |
 | `id` | Yes | Identifier that is unique within the plugin. Use lowercase letters, numbers, periods, or hyphens, with a maximum of 64 characters. |
 | `name` | Yes | Display name for the template. |
 | `description` | No | Short description of the automation's purpose. |
 | `schedule` | Yes | Manual, hourly, or five-field cron schedule. |
+| `disableConditions` | No | One `afterDate` condition with a `date` set to an ISO 8601 timestamp with a time zone. Requires version `2`. |
+
+To include an [end date](/docs/agents/run/automations.md#set-an-end-date), use these fields alongside the other required frontmatter fields:
+
+```yaml
+version: 2
+disableConditions:
+  - kind: afterDate
+    date: "2027-01-31T17:00:00Z"
+```
+
+Replace the example timestamp with the intended future cutoff. The end date is fixed, not a duration that restarts when someone uses the template. It stops scheduled runs without stopping an active run or preventing manual runs. End dates require a local or remote Agent Host and aren't supported for GitHub cloud automations.
 
 Use one of these schedule formats:
 
@@ -9271,8 +9304,8 @@ For marketplace schemas and distribution details, see the [Agent Plugins specifi
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/ai-features-cheat-sheet.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/ai-features-cheat-sheet
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/ai-features-cheat-sheet.md
-- **SHA256_FINGERPRINT**: `eb3e8023d8e138ebb042ffd95ba003252646ec70c435684778d292e64bdd8fa7`
-- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.654501+00:00
+- **SHA256_FINGERPRINT**: `67f134590866a56318ddbf5813f90f97c4d428f55170a020fda0744b73eec1c1`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:47.873251+00:00
 ---
 
 **MetaDescription**: Choose AI features in VS Code for coding, planning, testing, and reviewing changes.
@@ -9349,6 +9382,7 @@ These commands work in Copilot harness sessions. Type `/` in the chat input to s
 | `/plan <task>` | Research the task and propose a plan before implementation. |
 | `/compact` | [Summarize earlier conversation context](/docs/agents/run/sessions/manage-sessions.md#compact-conversation-context). |
 | `/fork` | [Copy the conversation with its history](/docs/agents/run/sessions/manage-sessions.md#fork-a-chat-session) to explore another approach. Forking doesn't isolate file changes. |
+| `/automate` | [Create a recurring automation from a completed task or a new idea](/docs/agents/run/automations.md#create-an-automation-from-chat) in the Agents window. |
 | `/<skill-name>` | [Run an installed skill](/docs/agent-customization/agent-skills.md#use-skills-as-slash-commands) by name. |
 
 ## Get better results
@@ -9396,7 +9430,7 @@ Run **Chat: Open Customizations** to open the [Agent Customizations editor](/doc
 | Delegate part of a task | Ask for a [subagent](/docs/agents/run/subagents.md#subagents-by-harness) to investigate a bounded question and report back. |
 | Continue work from another device | Register your host through **Remote Connections** with [[copilot.github_environments]](/docs/agents/run/remote-agent-sessions.md#make-a-host-available-for-remote-access). `feature(github-environments)` Keep the host running and reachable. |
 | Work without keeping my machine online | Follow [cloud session setup](/docs/agents/run/cloud-sandbox-sessions.md#prerequisites), then select **Cloud** for a new session. `feature(cloud-sessions)` |
-| Repeat a task automatically | Select **Automations** in the Agents window to [create an automation](/docs/agents/run/automations.md#create-an-automation). Review a manual run before scheduling it. |
+| Repeat a task automatically | Enter `/automate` in the Agents window to [turn the task into an automation](/docs/agents/run/automations.md#create-an-automation-from-chat). Review the proposed prompt and schedule, then check a manual run before enabling recurring work. |
 
 For unattended repository work, [cloud automations](/docs/agents/run/automations.md#choose-where-an-automation-runs) `feature(cloud-automations)` run on [product.prodname_github] without keeping your computer online.
 
@@ -9410,8 +9444,8 @@ For unattended repository work, [cloud automations](/docs/agents/run/automations
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/ai-settings.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/ai-settings
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/ai-settings.md
-- **SHA256_FINGERPRINT**: `fbb49ccba092cc42d939b87b3bf724aadcde72ecadb067d34d19db976d064bfa`
-- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:05.914157+00:00
+- **SHA256_FINGERPRINT**: `eafab70308736031a0e92bc3bebb3b272d9543d7f1458545977236b988820749`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:47.940199+00:00
 ---
 
 **MetaDescription**: Configure AI features and agents in Visual Studio Code, including chat, agent sessions, dictation, and accessibility settings.
@@ -9426,7 +9460,7 @@ The team is continuously working on improving the AI features in VS Code and add
 > If you don't yet have a Copilot subscription, you can use Copilot for free by signing up for the [Copilot Free plan](https://github.com/github-copilot/signup) and get a monthly allowance of inline suggestions and AI credits.
 
 > [!NOTE]
-> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), including managed permission or sandbox settings. Enabling their user settings does not override that restriction. Contact the IT team that deployed the settings to discuss access. If you don't know the owner, ask your IT help desk to find the responsible administrator.
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), including managed permission or sandbox settings, unless your administrator explicitly permits them. Enabling their user settings does not override that restriction. Contact the IT team that deployed the settings to discuss access. If you don't know the owner, ask your IT help desk to find the responsible administrator.
 
 Use the following links to jump to the settings for a specific area:
 
@@ -9486,6 +9520,8 @@ Use the following links to jump to the settings for a specific area:
 | ``chat.notifyWindowOnResponseReceived``<br/>Configure when to show an OS notification when a chat response is received: `off` to never show notifications, `windowNotFocused` (default) to show notifications only when the VS Code window is not focused, `always` to always show notifications. | `"windowNotFocused"` |
 | ``chat.requestQueuing.defaultAction``<br/>Configure the default action for the **Send** button while a request is in progress: `queue` adds the message to the queue, `steer` signals the current request to yield. | `"queue"` |
 | ``chat.math.enabled`` <br/>Enable or disable math rendering with [KaTeX](https://katex.org) in chat. | `false` |
+| ``chat.htmlPreview.enabled``<br/>Render [HTML previews](/docs/chat/chat-overview.md#request-visual-responses) in Agents window responses. When off, preview blocks appear as source code. | `false` |
+| ``chat.nativeComponents.enabled`` _(Experimental)_<br/>Render [native visuals](/docs/chat/chat-overview.md#request-visual-responses), such as metrics, tables, and bar charts, in Agents window responses. When off, visual blocks appear as source code. | `false` |
 | ``imageCarousel.chat.enabled``<br/>Enable the image carousel for browsing images from chat responses. Select image pills in tool results or assistant messages to open a carousel view. | `true` |
 
 ### Chat editing and artifacts
@@ -9511,6 +9547,7 @@ Use the following links to jump to the settings for a specific area:
 |------------------------|---------------|
 | ``github.copilot.chat.scopeSelection``<br/>Whether to prompt for a specific symbol scope if you use `/explain` and the active editor has no selection. | `false` |
 | ``github.copilot.chat.codesearch.enabled`` _(Preview)_<br/>When using `#codebase` in the prompt, the agent automatically discovers relevant files to be edited. | `false` |
+| ``chat.appWindowScreenshots.enabled`` `feature(chat-app-window-screenshots)`<br/>[Attach screenshots of other app windows](/docs/chat/copilot-chat-context.md#capture-another-app-window) to chat on desktop, with a system-wide shortcut or window picker. | `true` (Insiders)<br/>`false` (Stable) |
 | ``imageCarousel.chat.enabled``<br/>Enable the image carousel for browsing images from chat responses. Select image pills in tool results or assistant messages to open a carousel view. | `true` |
 | ``chat.copilot.imageGeneration.model`` `feature(image-generation)`<br/>Select the image model that Copilot uses to [generate and edit images](/docs/chat/chat-overview.md#generate-and-edit-images). Values are `off` and `gpt-image-2.5-flare` (GPT Image 2.5 Flare). Image generation requires account and tool access and uses additional AI credits. | `"gpt-image-2.5-flare"` (Insiders)<br/>`"off"` (Stable) |
 | ``chat.copilot.imageGeneration.watermark`` `feature(image-generation)`<br/>Request a visible 'Made with AI' label on [generated or edited images](/docs/chat/chat-overview.md#generate-and-edit-images) in new and existing Copilot sessions. Labels are generated by the image model and aren't guaranteed. This setting doesn't turn on image generation, and turning it off doesn't remove existing labels from input images. | `false` |
@@ -9518,6 +9555,7 @@ Use the following links to jump to the settings for a specific area:
 | ``chat.sendElementsToChat.attachCSS``<br/>Include CSS styles when adding elements from the integrated browser to chat context. | `true` |
 | ``chat.sendElementsToChat.attachImages``<br/>Include images when adding elements from the integrated browser to chat context. | `true` |
 | ``workbench.browser.enableChatTools``<br/>Enable [browser tools](/docs/debugtest/integrated-browser.md#browser-tools-for-agents) that let agents interact with pages in the integrated browser. | `true` |
+| ``chat.agentHost.browserUse.enabled`` _(Preview)_<br/>Offer [browser use](/docs/agents/run/browser-tools.md#use-chrome-or-edge-with-browser-use-preview) for local Copilot sessions to work in Chrome or Edge. Requires the browser extension, Node.js 22 or later, and plugin enablement. Restart VS Code after changing this setting. | `false` |
 | ``chat.useClaudeMdFile``<br/>Enable or disable using `CLAUDE.md` files as always-on custom instructions. | `true` |
 | ``chat.useNestedAgentsMdFiles`` `feature(nested-agents-md-files)`<br/>List `AGENTS.md` files in workspace subfolders for on-demand loading in Local harness sessions `feature(local-harness)`. Requires ``chat.useAgentsMdFile`` to be enabled. Does not affect other harnesses. | `false` |
 | ``github.copilot.chat.customOAIModels`` _(Deprecated)_<br/>Configure custom OpenAI-compatible models for chat. Deprecated in favor of the [Custom Endpoint](/docs/agent-customization/language-models.md#add-a-custom-endpoint-model) provider, which supports Chat Completions, Responses, and Messages APIs. | `[]` |
@@ -9558,6 +9596,7 @@ Use the following links to jump to the settings for a specific area:
 |------------------------|---------------|
 | ``chat.tools.compressOutput.enabled`` _(Preview)_<br/>Compress large terminal output before sending it to the model to reduce context window usage. Collapses unchanged diff hunks, drops lockfile diffs, and strips install progress. | `false` |
 | ``chat.tools.terminal.autoReplyToPrompts`` <br/>Automatically reply to terminal prompts with a default answer. | `false` |
+| ``chat.permissions.assisted.instructions``<br/>Give the [Assisted permissions reviewer](/docs/agents/run/approvals.md#customize-assisted-permissions) instructions for Copilot sessions. Applies to open sessions without overriding permission rules, organization policy, or sandbox restrictions. | `""` |
 | `setting(chat.tools.terminal.terminalProfile.<platform>)`<br/>Configure which terminal profile to use for chat terminal commands on each platform. | `""` |
 | ``chat.tools.terminal.outputLocation`` _(Experimental)_<br/>Configure where terminal command output appears: inline in chat or in the integrated terminal. | `"chat"` |
 | ``chat.tools.terminal.outputReflow``<br/>Reflow [terminal output previews](/docs/agents/run/tools.md#run-terminal-commands) to fit the chat width. Turn this off to preserve the terminal's column width and scroll horizontally. | `true` |
@@ -9642,7 +9681,9 @@ Use the [session lists](/docs/agents/run/sessions/manage-sessions.md#find-and-re
 | ``chat.viewSessions.enabled`` <br/>Show the agent sessions list in the Chat view. | `true` |
 | ``chat.viewSessions.orientation`` <br/>Control the layout orientation of the sessions list in the Chat view. | `"sideBySide"` |
 | ``chat.agentSessions.showExternal`` _(Experimental)_<br/>Control which [sessions from supported external applications](/docs/agents/run/sessions/manage-sessions.md#view-sessions-from-other-applications) appear in the session lists. Values are `none`, `recent`, `last24Hours`, `last7Days`, and `last30Days`. Discovery limits still apply. | `"last7Days"` |
-| ``sessions.list.inboxEnabled`` `feature(sessions-list-inbox)`<br/>Show [Inbox Mode in the sessions list Grouping menu](/docs/agents/run/sessions/organize-sessions.md#triage-sessions-with-inbox-mode) in the Agents window to triage work without archiving sessions. Turning this off preserves saved triage and grouping choices. | `false` |
+| ``sessions.drafts.enabled`` `feature(agents-window-drafts)`<br/>Save unsent New Session requests as [drafts](/docs/agents/run/agents-window.md#save-and-resume-drafts) in the Agents window when you navigate away. Turning this off hides saved drafts without deleting them. | `false` |
+| ``sessions.sendLater.enabled`` `feature(agents-window-send-later)`<br/>[Schedule requests to send later](/docs/agents/run/agents-window.md#send-a-request-later) in the Agents window. Requires Automations and a supported local desktop Agent Host. Turning this off doesn't cancel accepted schedules, which remain manageable in Automations. | `false` |
+| ``sessions.list.inboxEnabled`` `feature(sessions-list-inbox)`<br/>Use [Inbox Mode](/docs/agents/run/sessions/organize-sessions.md#triage-sessions-with-inbox-mode) as the default sessions list grouping when no grouping has been chosen. Explicit grouping choices take precedence. | `false` |
 | ``sessions.list.inlineActions`` `feature(sessions-list-inline-actions)`<br/>Show [Fix Checks and Address Comments actions](/docs/agents/run/sessions/organize-sessions.md#fix-checks-and-address-comments-from-the-sessions-list) beneath eligible sessions and chats in the Agents window. Actions run in the background without opening the chat or changing permissions. | `false` |
 | ``chat.agentSessions.sessionStorageCleanupSuggestion.enabled`` _(Experimental)_<br/>Show a suggestion to [clean up inactive session worktrees](/docs/agents/run/sessions/manage-sessions.md#clean-up-session-worktrees) when they use at least 5 GiB or 20 worktrees are eligible for cleanup. | `false` |
 | ``chat.agentSessions.autoMarkAsDoneMergedSessionsAfterDays`` `feature(automatic-session-cleanup)`<br/>Control the number of inactive days before an eligible session with a merged pull request is [automatically marked as done](/docs/agents/run/sessions/manage-sessions.md#automatically-clean-up-merged-sessions). Set to `0` to disable automatic cleanup. The recommended value is `15`. | `0` |
@@ -9693,6 +9734,7 @@ Use the [session lists](/docs/agents/run/sessions/manage-sessions.md#find-and-re
 | ``chat.copilot.localModel.useInAuto`` `feature(on-device-models)`<br/>Enable Auto to route turns to the active on-device model, with cloud fallback. Changes take effect immediately. | `false` |
 | ``chat.copilot.localModel.llamaServerPath`` `feature(on-device-models)`<br/>Specify the absolute path to a user-installed `llama-server` executable. VS Code doesn't install llama.cpp. | `""` |
 | ``chat.agentHost.devContainer.enabled``<br/>Show **Use Dev Container** for eligible local folders and folders on SSH, Tunnel, or WSL hosts, and [run sessions in the project's Dev Container](/docs/agents/run/agents-window.md#run-a-session-in-a-dev-container). | `true` |
+| ``chat.agentHost.devContainer.stateVolume.enabled`` `feature(dev-container-state-volume)`<br/>[Preserve user and agent state across Dev Container rebuilds](/docs/devcontainers/create-dev-container.md#preserve-chat-sessions-across-rebuilds) in the Agents window with a per-container volume. Applies to newly created containers, not existing ones. | `false` |
 | ``chat.agentHost.cloudSandbox.enabled`` `feature(cloud-sessions)`<br/>Create and discover [cloud sessions](/docs/agents/run/cloud-sandbox-sessions.md). In the Agents window, use cloud sessions instead of the Copilot cloud agent workflow on [product.prodname_github] Actions for new **Cloud** sessions. Requires ``chat.remoteAgentHostsEnabled`` and service access. | `false` |
 | ``chat.agentHost.cloudSandbox.autoConnectOnOpen`` `feature(cloud-sessions)`<br/>Connect to or wake a cloud environment when opening or restoring its chat in the Agents window. Turn off to wait until you start composing or explicitly connect. | `true` |
 | ``chat.agentHost.cloudSandbox.earlyPreparation`` `feature(cloud-sessions)`<br/>Prepare an eligible cloud environment while composing a new Cloud chat. This can allocate compute before the prompt is sent. | `false` |
@@ -10467,8 +10509,8 @@ Settings-based code generation and test generation instructions are deprecated. 
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/hooks-reference.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/hooks-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/hooks-reference.md
-- **SHA256_FINGERPRINT**: `f283d88663fbb46b5774e6683b6bec5c253bf49c16211e44a7c9fb8f1a6b1dcc`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.983254+00:00
+- **SHA256_FINGERPRINT**: `7ea799e6f6be81563a45a7919c8a47190a5733fae5edb369c0992ff8013111af`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:47.947028+00:00
 ---
 
 **MetaDescription**: Review legacy Local hook schemas when migrating to Copilot in VS Code.
@@ -10484,7 +10526,7 @@ For hooks executed by a provider harness, use the corresponding provider documen
 * For **Codex** sessions, use the [Codex hooks documentation](https://developers.openai.com/codex/hooks/).
 
 > [!NOTE]
-> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), unless your administrator explicitly permits them. Contact the IT team that deployed the settings to discuss access.
 
 If you select **Local** `feature(local-harness)` from the **Session Target** UI control, use this reference even when the hook file uses a Copilot or Claude-compatible format. The Local harness `feature(local-harness)` maps the configuration and then sends the payloads documented here.
 
@@ -11006,8 +11048,8 @@ Use **Add Context** or drag items into chat to attach other context, such as ima
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/agent-sandboxing.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/agent-sandboxing
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/agent-sandboxing.md
-- **SHA256_FINGERPRINT**: `2e5ddf2f140451f53b685680c3b596610ce86f56d7424b4eba2e503b38e79b76`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.106674+00:00
+- **SHA256_FINGERPRINT**: `db26c903b2b21484f783c8c6eff811ff93dda703991ad8a01b2ddfcdf185e047`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.078079+00:00
 ---
 
 **MetaDescription**: Configure file system and network isolation for Copilot agents and troubleshoot sandbox failures.
@@ -11186,6 +11228,25 @@ The ``chat.agent.sandbox.fileSystem.allowDevToolAccess`` setting defaults to `tr
 
 Use `/sandbox policy` to inspect the effective permissions, including runtime defaults and organization-managed restrictions.
 
+### Choose the scope of a path approval
+
+When a sandboxed command needs additional file access, **Allow sandbox path access and retry?** offers a scoped grant. Review the displayed path and whether the request needs read or read/write access. A grant can cover a folder and its contents, not only the file that triggered the request.
+
+Use the approval dropdown to choose the narrowest scope that meets your needs:
+
+| Option | Where access applies |
+|---|---|
+| **Allow for This Session** (default) | All chats in the current session, including after reload or resume. Unrelated sessions don't receive the grant. User and Workspace settings remain unchanged. |
+| **Allow for This Workspace** (when available) | Sessions with the same set of workspace folders on the same Agent Host. The grant is saved privately on that host and survives reopening the workspace, without changing User or Workspace settings. |
+| **Allow for This User** | Saved in local User settings under ``chat.agent.sandbox.fileSystem.userConfiguredPaths``. Applies across sessions and workspaces, and is forwarded to connected Agent Hosts. |
+| **Skip** | Declines this request without saving access or a permanent deny rule. |
+
+These grants retry the operation **inside the sandbox** and remain subject to organization-managed restrictions. They don't approve running the command outside the sandbox.
+
+Path-grant prompts require [sandbox bypass](#control-approval-and-fallback-behavior) to be allowed by your settings and managed policy. Allowing bypass makes the confirmation available. It doesn't automatically approve access.
+
+After granting access, [inspect the effective sandbox policy](#inspect-the-effective-sandbox-policy) to check the session's permissions.
+
 ### Read attached files and folders
 
 In Copilot harness sessions with sandboxing enabled, files and folders that you explicitly [attach to a message](/docs/chat/copilot-chat-context.md#add-files-as-context) can receive read access for the session. The grant covers the attached file or the contents of the attached folder. This additional access is read-only and is never saved to sandbox settings.
@@ -11265,6 +11326,8 @@ Your organization can enforce network restrictions that you cannot relax with a 
 ## Control approval and fallback behavior
 
 If a command is blocked, check the applicable [file system](#configure-file-system-access) or [network](#configure-network-access) restriction first. Grant only the access needed for the task rather than turning off the sandbox.
+
+When offered, use a [scoped path approval](#choose-the-scope-of-a-path-approval) to retry inside the sandbox instead of allowing an unsandboxed command.
 
 If a command cannot run inside the sandbox, the agent can ask for confirmation to run it outside the sandbox. The ``chat.agent.sandbox.allowUnsandboxedCommands`` setting controls this fallback:
 
@@ -11472,8 +11535,8 @@ If a setting is locked or you need access that policy denies, contact your admin
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/agents-window-configuration.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/agents-window-configuration
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/agents-window-configuration.md
-- **SHA256_FINGERPRINT**: `ae922f252000f01118821b15d21e1a2c5aff79790ad0f35619025184883c3753`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.144711+00:00
+- **SHA256_FINGERPRINT**: `e0f3dae53e787ee9fdaf711a3bdbe0cd8e4212789b98b6175cdc7f97598f04bd`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.145518+00:00
 ---
 
 **MetaDescription**: Configure accounts, models, layout, settings, extensions, and editors in the Agents window.
@@ -11496,7 +11559,7 @@ The Agents window uses the accounts and model credentials available in VS Code:
 For account requirements, billing options, and integration setup, see [Agent harness requirements and setup](/docs/agents/run/agent-harnesses.md#requirements-and-setup).
 
 > [!NOTE]
-> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), even with separate provider credentials. Contact the IT team that deployed the settings to discuss access.
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), unless your administrator explicitly permits them. Separate provider credentials don't override that restriction. Contact the IT team that deployed the settings to discuss access.
 
 [product.prodname_anthropic_claude_short], ChatGPT-backed [product.prodname_openai_codex_short], and BYOK models can run in the desktop Agents window without [product.prodname_github] sign-in when you configure the supported provider credentials. Features that require [product.prodname_github] authentication prompt you to sign in when needed. The browser-based Agents window always requires [product.prodname_github] sign-in.
 
@@ -11668,8 +11731,8 @@ Unread sessions still in progress aren't counted. Reading or archiving a session
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/agents-window.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/agents-window
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/agents-window.md
-- **SHA256_FINGERPRINT**: `6c6288706b6bf4acbf97ea69c6c6ec65cc8e6ff06ce0cee817f0daf4267b3f52`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.148241+00:00
+- **SHA256_FINGERPRINT**: `0ccb36ba0e64aa8abbb8e9edc5ce398b4440eb87e9dcd3225000820905b1d397`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.124263+00:00
 ---
 
 **MetaDescription**: Start and manage parallel agent sessions, review changes, and finish pull requests in the Agents window.
@@ -11738,7 +11801,7 @@ Choose a task with a clear outcome and checks you can run to verify it. The foll
     You can optionally change the [agent harness](/docs/agents/run/agent-harnesses.md#compare-agent-harnesses), agent, or model.
 
 > [!TIP]
-> To start a session in the background without navigating into it, press ``Alt+Enter`` or hold ``Alt`` and select **Send**. Focus stays in the composer so you can start another task. Select **Open Session** in the confirmation to open the sent conversation. With the [Inbox mode setting](/docs/agents/run/sessions/organize-sessions.md#turn-on-inbox-mode) enabled, you can also press ``Ctrl+Enter`` (``Cmd+Enter`` on macOS).
+> To start a session in the background without navigating into it, press ``Alt+Enter`` or hold ``Alt`` and select **Send**. Focus stays in the composer so you can start another task. Select **Open Session** in the confirmation to open the sent conversation. With [Inbox grouping](/docs/agents/run/sessions/organize-sessions.md#turn-on-inbox-mode) selected, you can also press ``Ctrl+Enter`` (``Cmd+Enter`` on macOS).
 
 ### Choose where an agent makes changes
 
@@ -11763,6 +11826,80 @@ Dev Container sessions work directly in the container workspace and don't suppor
 
 > [!IMPORTANT]
 > Worktrees isolate working files, not the agent's access to your machine or external services. Either isolation mode supports the permission levels offered by your harness. For operating system-level restrictions, configure [agent sandboxing](/docs/agents/run/agent-sandboxing.md) or use [cloud sessions](/docs/agents/run/cloud-sandbox-sessions.md).
+
+### Save and resume drafts
+
+`feature(agents-window-drafts)`
+
+Prepare requests for several tasks and return to them when you're ready to send them. In the Agents window, drafts save unsent **New Session** requests without starting an agent session.
+
+1. Open Settings (``Shortcut: workbench.action.openSettings``) and enable ``sessions.drafts.enabled``. The setting is off by default.
+
+1. Select **New Session** and compose a request, including any context attachments and session options.
+
+1. Navigate to another conversation. When the new-session input is no longer visible, the request is saved in **Drafts** in the sidebar.
+
+1. Select **Resume Draft** beside a saved draft, or **Open Draft** in the notification. Review or edit the request, then send it when you're ready.
+
+Each draft keeps its text, attachments, inline references, workspace, agent, model, and configuration. Saved drafts remain available after restarting the window. To save a new draft, navigate away from the input first. Restarting alone doesn't add it to **Drafts**.
+
+The draft is removed from the list after the request is accepted. To discard one without sending it, select **Delete Draft**.
+
+Turning off ``sessions.drafts.enabled`` hides saved drafts and stops saving new ones, but doesn't delete them. Turn it back on to access them again.
+
+## Send a request later
+
+`feature(agents-window-send-later)`
+
+Use **Send Later** to start a new task or send a follow-up to an existing conversation at a future time. For tasks that repeat, [create an automation](/docs/agents/run/automations.md) instead.
+
+Enable ``sessions.sendLater.enabled``, which is off by default, and keep ``chat.automations.enabled`` enabled. Send Later currently only works on the local machine and not for remote agent sessions.
+
+1. Compose a request in **New Session** or an existing conversation. For a new session, choose its workspace, agent, model, and other session options.
+
+1. Open the **Send** dropdown and select **Send Later**.
+
+1. Choose a preset, such as **In 5 Minutes** or **Tomorrow Morning** (9 AM the next day). Each preset shows its exact local send time.
+
+    For a custom time, select **Choose Date and Time**, choose a future date and time, and select **Schedule**. The time dropdown uses 15-minute steps. Select **Exact Time** to choose a precise minute. Review the date, time, and time zone before scheduling.
+
+A scheduled new-session request appears under **Drafts**. Use **Preview** to check its prompt, time, workspace, and model. A scheduled follow-up appears inside its original conversation, including a nested chat, rather than as a new sidebar draft.
+
+At the scheduled time, a follow-up uses that conversation's current configuration. If the conversation is busy, the request joins its queue without interrupting or steering the active turn.
+
+> [!NOTE]
+> Keep your computer awake and the Agent Host running for on-time delivery. Scheduling doesn't wake a sleeping computer or start a stopped host. Pending requests survive window reloads, and a missed send catches up once when the host becomes available.
+
+### Change or cancel a scheduled request
+
+To update or manage a scheduled request, right-click a scheduled chat request and select an action.
+
+| Action | Effect |
+|---|---|
+| **Reschedule** | Change the send time without changing the destination. |
+| **Send Now** | Send immediately, or queue the request if its conversation is busy. It doesn't send again at the original time. |
+| **Edit** | For an existing-chat request, change its text and send time, then select **Save**. |
+| **Cancel Schedule** | Cancel delivery and retain the request content. For a new session, cancellation keeps an ordinary draft if saved drafts are enabled, or restores the content to the composer otherwise. |
+| **Edit as Draft** | For a new-session request, cancel the schedule and reopen its content in the composer. |
+
+Recovery doesn't overwrite other unsent input. If cancellation reports an uncertain outcome, check **Automations** before sending the request again.
+
+Turning off ``sessions.sendLater.enabled`` doesn't cancel accepted schedules. Manage those requests in **Automations**.
+
+> [!TIP]
+> To view the list of scheduled requests, select the **Scheduled Only** filter option in the sessions list.
+
+### Ask the agent to schedule a follow-up
+
+You can ask the agent to schedule a text-only request in the same conversation:
+
+```prompt
+In 30 minutes, remind me in this chat to review the test results.
+```
+
+An explicit one-time request doesn't require a separate `Create it` message. Review the scheduling tool approval if prompted. Scheduling doesn't approve future tool actions.
+
+The request targets the exact calling conversation unless you explicitly ask for a new session. You can also ask the agent to reschedule, cancel, or send a pending request now. Use the chat UI for requests with attachments.
 
 ## Work with multiple sessions
 
@@ -11916,7 +12053,7 @@ On desktop, you can run sessions using supported provider credentials instead of
 * Configure a [supported BYOK model](/docs/agent-customization/language-models.md#bring-your-own-language-model-key) for the Agents window.
 
 > [!NOTE]
-> [product.prodname_anthropic_claude_short] and [product.prodname_openai_codex_short] harnesses are disabled when [enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), even with separate credentials. Existing sessions aren't deleted. Contact the IT team that deployed the settings to discuss access.
+> [product.prodname_anthropic_claude_short] and [product.prodname_openai_codex_short] harnesses are disabled when [enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), unless your administrator explicitly permits them. Separate credentials don't override that restriction. Existing sessions aren't deleted. Contact the IT team that deployed the settings to discuss access.
 
 If no provider is configured, select **Add Models** or **Sign In** in the window. Models and operations that require [product.prodname_github] authentication prompt you when needed. The browser-based Agents window requires [product.prodname_github] sign-in.
 
@@ -11947,6 +12084,8 @@ To switch back before starting, select **Use This Computer** or **Use Remote Hos
 If startup fails, check the workspace-specific **Dev Container** Output channel. The picker option isn't available for unsupported hosts or folders nested inside another remote environment. Dev Container support is on by default through ``chat.agentHost.devContainer.enabled``.
 
 Idle containers stop after five minutes when no session is working, waiting for input, or holding an unsent draft. Continuing a session restarts the container without losing the conversation. Change the timeout with ``chat.agentHost.devContainer.idleTimeout`` (`300` seconds by default, `0` to turn off automatic shutdown). Marking sessions as done or deleting them can still remove the container.
+
+Restarting an existing container is different from rebuilding or replacing it. To keep container-stored chat sessions across replacements, enable ``chat.agentHost.devContainer.stateVolume.enabled`` before creating the container. See [Preserve chat sessions across rebuilds](/docs/devcontainers/create-dev-container.md#preserve-chat-sessions-across-rebuilds) `feature(dev-container-state-volume)`, especially the warning about the first rebuild of an existing container.
 
 ### Start a session from a pull request
 
@@ -12011,7 +12150,7 @@ To stop monitoring the pull request, select **[copilot.agent_merge_caps]** in th
 
 ### Schedule recurring tasks
 
-Automations run saved agent tasks on a schedule or, for cloud automations `feature(cloud-automations)`, in response to supported repository events. Select **Automations** in the sidebar to get started. Learn how to [create and manage agent automations](/docs/agents/run/automations.md).
+Automations run saved agent tasks on a schedule or, for cloud automations `feature(cloud-automations)`, in response to supported repository events. To turn a completed task into an automation, enter `/automate` in its chat. To start from a new idea, select **Automations** in the sidebar, and then select **Create with Agent**. Follow the [chat-based creation workflow](/docs/agents/run/automations.md#create-an-automation-from-chat) to review the proposal, save it, and check a first run.
 
 ## Configure the Agents window
 
@@ -12050,8 +12189,8 @@ Use ``git.worktreeIncludeFiles`` to [copy ignored files into new worktrees](/doc
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/approvals.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/approvals
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/approvals.md
-- **SHA256_FINGERPRINT**: `ef597109b3d996153cb994631c738072063c786691a2ec0081635c9b3949bcdc`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.162366+00:00
+- **SHA256_FINGERPRINT**: `59d1c2dd4c78e7aacb892951b9c9d6c63cda2572ab3122cb20dfd15b161fca54`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.174203+00:00
 ---
 
 **MetaDescription**: Manage agent permission levels, tool approvals, terminal auto-approval, and sandboxing in VS Code.
@@ -12108,6 +12247,22 @@ Sandboxing is independent of the permission level. **Allow all** and **Autopilot
 > [!CAUTION]
 > **Allow all** and **Autopilot** skip confirmation for potentially destructive actions, including file edits, terminal commands, and external tool calls. The first time you select either option, a warning dialog asks you to confirm. Use these options only when you trust the workspace and understand the [security implications](/docs/agents/run/security.md).
 
+### Customize Assisted permissions
+
+Use ``chat.permissions.assisted.instructions`` to tell the Assisted permissions reviewer which actions need your confirmation in Copilot harness sessions. For example:
+
+```json
+{
+  "chat.permissions.assisted.instructions": "Always ask before installing packages or pushing to a remote. Running tests and read-only Git commands doesn't need my approval."
+}
+```
+
+These instructions go to the reviewer, not the agent. They take precedence over the reviewer's default guidance but can't override permission rules, organization policy, or sandbox restrictions. Changes apply to sessions that are already open.
+
+The reviewer also distinguishes your requests from requests sent by [automations](/docs/agents/run/automations.md) or other agents. Automated and delegated requests aren't treated as instructions you wrote, so they might require approval where your own request wouldn't.
+
+Your answers to agent questions and plan reviews also inform the review, including when you decline. An answer can authorize the follow-up work it describes, and a refusal can block an action that you approved earlier.
+
 ### How Autopilot works
 
 **Autopilot** is an agent mode, not a permission level. Select it from the mode picker in the chat input to let the agent work autonomously until it determines that the task is complete. Autopilot:
@@ -12129,7 +12284,7 @@ Advanced Autopilot delegates the completion decision to a separate model. After 
 ### Claude permission modes
 
 > [!NOTE]
-> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), including managed permission or sandbox settings. Their permission modes do not override that restriction. Contact the IT team that deployed the settings to discuss access.
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), including managed permission or sandbox settings, unless your administrator explicitly permits them. Their permission modes do not override organization restrictions. Contact the IT team that deployed the settings to discuss access.
 
 [Claude harness sessions](/docs/agents/run/agent-harnesses.md#claude) support these permission modes:
 
@@ -12191,7 +12346,9 @@ On your machine, terminal and URL approvals stay in sync with your **user** sett
 * **Always Allow Fetching** updates request approval in ``chat.tools.urls.autoApprove``, without enabling response auto-approval.
 * Changes to those user settings are also applied to the local Agent Host. Workspace settings are not copied.
 
-Remote agent sessions keep their own approvals. Your local settings are not pushed to a remote host, and choosing **Always Allow** there does not change your local settings.
+Remote agent sessions keep their own tool approvals. The local terminal and URL approval settings described above aren't pushed to a remote host, and choosing **Always Allow** there doesn't change your local settings.
+
+Sandbox path-access requests use [separate approval scopes](/docs/agents/run/agent-sandboxing.md#choose-the-scope-of-a-path-approval). Unlike the tool approvals above, **Allow for This User** saves sandbox path access in local User settings and shares it with connected Agent Hosts.
 
 **Local** harness sessions `feature(local-harness)` retain their existing approval options, including workspace-scoped approvals where supported.
 
@@ -12421,19 +12578,21 @@ The agent can also use the `#artifactRules` tool to override the extraction rule
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/automations.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/automations
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/automations.md
-- **SHA256_FINGERPRINT**: `9776cd8960339b95038176b168d4f7763f829c0c8f69094048758e5f2d08a0c0`
-- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:05.791356+00:00
+- **SHA256_FINGERPRINT**: `c53b8eef0ffb0a7f4fdd5e58d9c50693846514756d8360d130903c7e5ca57f69`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.162739+00:00
 ---
 
 **MetaDescription**: Automate routine agent tasks locally or in GitHub from the Agents window, with schedules, repository triggers, and run history.
 
 # Create and manage agent automations
 
-Automations run agent tasks from a saved prompt and session configuration. Use them for work such as summarizing repository changes or triaging issues without starting each session manually. Run an automation on demand, on a recurring schedule, or, for cloud automations, in response to supported repository events. You can also start from a template or share an automation as a reusable file.
+Automations run agent tasks from a saved prompt and session configuration. Use them for work such as summarizing repository changes or triaging issues without starting each session manually. Run an automation on demand, on a recurring schedule, or, for cloud automations, in response to supported repository events. You can ask an agent to create an automation, start from a template, or share an automation as a reusable file.
 
 Run an automation locally when the task needs your development environment. Run it in GitHub's cloud `feature(cloud-automations)` when you want recurring repository work to continue while VS Code and your computer are off.
 
 This article explains how to choose between local and cloud automations, and how to create, monitor, and safely manage them.
+
+For a one-time request in a new session or an existing conversation, use [Send Later](/docs/agents/run/agents-window.md#send-a-request-later) `feature(agents-window-send-later)`.
 
 ## Prerequisites
 
@@ -12457,11 +12616,11 @@ Automations start a run when a trigger fires. They are different from [cloud ses
 
 ## Create an automation
 
-Choose local or cloud execution:
+For guided setup, [create an automation from chat](#create-an-automation-from-chat) with the built-in `/automate` skill. To enter the configuration yourself, follow the steps for local or cloud execution:
 
 1. In the Agents window sidebar, select **Automations**.
 
-1. Create a new automation or select one of the [starter templates](#start-from-a-template). Starting from a template prepopulates the prompt and schedule fields.
+1. Select the dropdown next to **Create with Agent**, and then select **Create Manually**. Alternatively, select one of the [starter templates](#start-from-a-template) to prepopulate the prompt and schedule fields.
 
 1. Leave **Run in the Cloud** off.
 
@@ -12484,7 +12643,7 @@ Choose local or cloud execution:
 
     You can choose between **Manual** or a [recurring schedule](#set-a-recurring-schedule).
 
-1. Optionally, in the advanced settings, enable or disable the use of customizations.
+1. Optionally, expand **Advanced Settings** to choose customizations or [set an end date](#set-an-end-date).
 
 1. Review your automation settings, and then select **Create**.
 
@@ -12497,7 +12656,7 @@ Choose local or cloud execution:
 
 1. In the Agents window sidebar, select **Automations**.
 
-1. Create a new automation or select one of the [starter templates](#start-from-a-template). Starting from a template prepopulates the prompt and schedule fields.
+1. Select the dropdown next to **Create with Agent**, and then select **Create Manually**. Alternatively, select one of the [starter templates](#start-from-a-template) to prepopulate the prompt and schedule fields.
 
 1. Turn on **Run in the Cloud**.
 
@@ -12536,18 +12695,38 @@ The cloud service runs the prompt in the selected repository. It doesn't use you
 
 ## Create an automation from chat
 
-You can also create an automation by asking in a normal chat in the Agents window. Describe the task, where it should run, and its schedule. For example:
+Use the built-in `/automate` skill in the Agents window to turn a completed task or a new idea into a recurring automation. The agent helps draft a reusable prompt and configuration for you to review before saving.
+
+Start in any of these ways:
+
+* **Reuse a completed task:** Enter `/automate` in the same chat. The agent uses the relevant goal, inputs, scope, and expected result, rather than saving the entire conversation. Add instructions after `/automate` to adjust what should repeat.
+* **Start from a new idea:** In a new chat, enter `/automate` followed by the task you want to repeat. If you enter `/automate` without context, the agent suggests examples and helps you define a task.
+* **Start from the Automations view:** Select **Automations** in the sidebar, and then select **Create with Agent**. This opens a new-session page with `/automate` prefilled. Add your task description and send the prompt.
+
+For example, start a new chat with:
 
 ```prompt
-Create a local automation for this workspace that runs daily at 9:00 AM.
+/automate Create a local automation for this workspace that runs daily
+at 9:00 AM in my local time zone.
 Summarize commits from the last 24 hours, grouped by feature, fix, and maintenance.
 Return the summary in the session. Do not modify files.
+Stop scheduled runs two weeks from now.
 Save the automation disabled so I can review it before enabling scheduled runs.
 ```
 
-The agent creates the automation through the normal tool-approval flow. Review any approval request before allowing creation. Then open **Automations** to review the saved prompt, execution environment, schedule, and permissions before enabling scheduled runs.
+1. Answer questions about missing task or schedule details. The agent uses relevant information from the conversation instead of asking you to repeat it.
 
-For a custom cadence, specify a cron expression and the time zone:
+1. Review the proposed name, exact prompt, [execution environment](#choose-where-an-automation-runs), workspace, schedule, time zone, and any [end date](#set-an-end-date). Check any proposed [permissions](/docs/agents/run/approvals.md#permission-levels) and constraints before proceeding.
+
+1. Ask for changes, or say `Create it` to save the reviewed automation. Invoking `/automate` alone doesn't confirm creation. Normal tool approvals and organization policies still apply.
+
+1. Open **Automations** to review the saved configuration, then [run and review the automation](#run-and-review-an-automation) before enabling recurring work.
+
+For an explicit [one-time scheduling request](/docs/agents/run/agents-window.md#ask-the-agent-to-schedule-a-follow-up), you don't need a separate `Create it` message. Normal tool approvals still apply.
+
+You can also ask the agent to change or remove an existing automation's end date. Review the resolved date and time zone before confirming the change. End dates stop future scheduled runs, not a run already in progress.
+
+You can also ask for an automation in ordinary chat without invoking `/automate`. For a custom cadence, specify a cron expression and the time zone:
 
 ```prompt
 Create a local Agent Host automation for this workspace.
@@ -12607,6 +12786,24 @@ For local automations, keep these execution requirements in mind:
 * An automation runs one session at a time. Another scheduled occurrence doesn't start a parallel run of the same automation.
 
 Cloud schedules run on GitHub rather than through your local scheduler. You can close the Agents window or turn off your computer without stopping the schedule.
+
+### Set an end date
+
+Set an end date for temporary work, such as a daily release summary that should run for two weeks. End dates are supported for automations on local or [remote Agent Hosts](/docs/agents/run/remote-agent-sessions.md), but not GitHub cloud automations.
+
+1. Create or edit an automation, and expand **Advanced Settings**.
+
+1. Under **Disables after**, select **Days**, **Weeks**, or **Months**, and enter a positive whole number.
+
+1. Review the estimated end date and time, and then select **Create** or **Save**.
+
+The duration is converted to a fixed end date when you save, using your local calendar. Reopening the form or editing unrelated fields doesn't extend it. Changing the duration calculates a new end date from the time you save.
+
+When the end date is reached, the automation disables future scheduled runs, including catch-up runs. It doesn't stop an active run or prevent you from selecting **Run now**.
+
+To remove the end date, select **Never** under **Disables after** and save, or select **More Actions** > **Remove end date** on the automation card. Removing the end date doesn't re-enable a disabled automation.
+
+To resume scheduled runs, set a future end date or remove it, and then enable the automation. If you enable an expired automation from its card, **Remove expiration and enable** removes the cutoff and resumes scheduling without an end date.
 
 ### Use a cron schedule
 
@@ -12686,9 +12883,12 @@ Export a local automation as a `.automation.md` file to reuse it on another mach
 
 * Name and prompt.
 * Manual, hourly, daily, weekly, or cron schedule.
+* An optional end date.
 * File format version and portable identifier.
 
 Exported cron schedules use `timeZone: local`, so the importing machine uses its own local time zone. A cron schedule whose configured time zone differs from your current local time zone can't be exported.
+
+Files with an end date use [format version `2`](/docs/agents/reference/agent-plugin-reference.md#automation-template-format) and preserve the fixed cutoff, not a duration that restarts on import. [Review or change the end date](#set-an-end-date) before enabling an imported automation.
 
 The file doesn't include the workspace, provider, model, permissions, enabled state, or run history. The person who imports the file chooses these options locally.
 
@@ -12706,7 +12906,7 @@ You can open the exported file in an editor to review its prompt and schedule be
 
 1. Select **Import Automation** in the Automations view, and then choose a `.automation.md` file. You can also drag one `.automation.md` file anywhere over the view.
 
-1. In the **New Automation** dialog, review the imported name, prompt, and schedule.
+1. In the **New Automation** dialog, review the imported name, prompt, schedule, and any end date.
 
 1. Choose the workspace, agent, model, permissions, and isolation for the automation.
 
@@ -12716,7 +12916,7 @@ VS Code rejects unsupported files instead of silently changing their schedule or
 
 ## Manage an automation
 
-* **Edit**: select the automation's name, update its supported fields, and select **Save**. A cloud automation's repository and **Owner** can't change after creation. Create another automation to use a different repository or owner, and disable the original if it should no longer run.
+* **Edit**: select the automation's name, update its supported fields, and select **Save**. For time-limited work, [set or change an end date](#set-an-end-date). A cloud automation's repository and **Owner** can't change after creation. Create another automation to use a different repository or owner, and disable the original if it should no longer run.
 * **Enable or disable future runs**: select **More Actions** > **Enable** or **Disable**. Disabling an automation doesn't stop a run already in progress.
 * **Duplicate**: select **More Actions** > **Duplicate**, review the copy in the **New Automation** dialog, and select **Create**. Duplicate event-triggered cloud automations on GitHub to preserve their complete configuration.
 * **Stop an active run**: select **Stop** for the run in **History** when available. This requests cancellation, not a rollback of completed actions.
@@ -12755,6 +12955,7 @@ Cloud automation support in VS Code currently has these limitations:
 
 * Available repositories, event types, filters, models, and tools depend on GitHub service support and your account's permissions.
 * A cloud automation uses the cloud model and tool configuration. It doesn't accept local mode or approval settings, custom agents, or local MCP configuration.
+* Cloud automations don't support end dates. Disable or delete the automation when scheduled or event-triggered work should stop.
 * Unsupported trigger configuration must be managed on GitHub. It isn't replaced when you edit other supported fields.
 
 ## Next steps
@@ -12768,8 +12969,8 @@ Cloud automation support in VS Code currently has these limitations:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/browser-tools.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/browser-tools
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/browser-tools.md
-- **SHA256_FINGERPRINT**: `67bbf5ff4989128f6de77fe9a069b0d272d2dc877869cdcc1142b4c3fd4f0598`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:27.003617+00:00
+- **SHA256_FINGERPRINT**: `8ee272acdb07dc024752ccf99ccc83db4fdf7814c8e187edb2beeffeff9f14c0`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.238245+00:00
 ---
 
 **MetaDescription**: Use browser tools with agents in VS Code to inspect web apps, test user flows, and fix issues.
@@ -12874,6 +13075,20 @@ By default, an agent can't access browser pages that you opened. To grant access
 A visual indicator shows that the page is shared. Select **Share with Agent** again to revoke access immediately.
 
 If an agent needs access to an unshared tab, it can ask you to share one. In autopilot mode, VS Code declines these requests automatically to protect your privacy.
+
+## Use Chrome or Edge with browser use (Preview)
+
+Use browser use when a task needs a site you're signed in to in Google Chrome or Microsoft Edge, rather than the integrated browser. Browser use is available for Copilot harness sessions that run on your own machine.
+
+Before you start, install the [GitHub Copilot browser extension](https://chromewebstore.google.com/detail/github-copilot/hblomdgalaelcilcdepgohfcogjiijhe) in Chrome or Edge and make sure Node.js 22 or later is on your `PATH`.
+
+1. Enable ``chat.agentHost.browserUse.enabled``, which is off by default, and restart VS Code.
+
+1. In a Copilot chat, run `/plugin enable browser-use`.
+
+1. Start a new session and ask the agent to use Chrome or Edge for your task.
+
+If the agent can't connect to your browser, run `/browser-use:doctor` to check your setup.
 
 ## Test apps on remote agent hosts
 
@@ -13143,8 +13358,8 @@ When you turn off an extension, its last-known canvas entries might remain visib
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/chat-view.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/chat-view
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/chat-view.md
-- **SHA256_FINGERPRINT**: `4460f02ed37fb5942326fba774c69b36a8ee166a7aceaeb5f1354c551c2ddfb4`
-- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.672382+00:00
+- **SHA256_FINGERPRINT**: `fb0a49c314942f7a81efe9568073d6d3307edcd0c6cdfcf2e88dd93941d92408`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.267173+00:00
 ---
 
 **MetaDescription**: Use AI beside your code in the Chat view, ask questions, run agents, and choose a layout.
@@ -13182,7 +13397,7 @@ The Chat view opens in the Secondary Side Bar, next to your editor. To open the 
 ## Start a session
 
 > [!NOTE]
-> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), unless your administrator explicitly permits them. Contact the IT team that deployed the settings to discuss access.
 
 1. Open the project you want to work on and select **New Chat** (`+`) or press ``Shortcut: workbench.action.chat.newChat``.
 
@@ -13424,8 +13639,8 @@ The service manages cloud resources separately from the session list. Preserve w
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/compare-models.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/compare-models
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/compare-models.md
-- **SHA256_FINGERPRINT**: `3e3be4f0fec4718dc48e311acfc058161aa2d95af70951c9535aa8406708fbca`
-- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:05.849196+00:00
+- **SHA256_FINGERPRINT**: `7f28af90011d334525cac2e1241fcc760b729954c8592c0ae79c833cc5cede63`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.297564+00:00
 ---
 
 **MetaDescription**: Compare model responses and code changes side by side in the Agents window, then continue with the strongest result.
@@ -13508,6 +13723,8 @@ For example:
 Compare two available models on the task 'Suggest tests for a command-line calculator'.
 Use a judge to evaluate their answers.
 ```
+
+The comparison appears beneath the conversation that started it in the sessions list. Select **Open Comparison** in the agent's tool response to open the results.
 
 ## Compare the results
 
@@ -14401,8 +14618,8 @@ These options apply to the built-in Plan agent in Local harness `feature(local-h
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/remote-agent-sessions.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/remote-agent-sessions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/remote-agent-sessions.md
-- **SHA256_FINGERPRINT**: `5268c474549cc78f9403c27c2cbd9b89c515b98e85a1f8b6dfd04b828f5e3b3b`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.461229+00:00
+- **SHA256_FINGERPRINT**: `5a832e76d28b03aad59d12f18f66fc3c898464da087751b5ccf2504b04622380`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.445658+00:00
 ---
 
 **MetaDescription**: Continue agent work from another machine or start tasks on a remote host with VS Code.
@@ -14441,6 +14658,8 @@ Opening a remote project in the editor is a separate workflow, described under [
 Enable remote access to start or continue agent sessions from another device while the project, tools, and execution stay on the host machine. Remote clients can access its Agent Host-backed sessions, such as a Copilot session. **Local** harness sessions `feature(local-harness)` and older extension-host sessions aren't shared this way.
 
 Run these steps on the host machine to make it available for remote access.
+
+If you're already connected to an SSH host, WSL distribution, or dev tunnel, you can instead [share that remote as a [copilot.github_environment]](#share-a-remote-as-a-github-environment) from the client machine.
 
 1. On the host machine, open the Agents window, or use an Agent Host-backed session in the Chat view in an editor window.
 
@@ -14604,6 +14823,8 @@ The **Remote Connections** control in the Chat view enables access to the machin
 
 ### Disconnect or stop sharing
 
+For an SSH, WSL, or tunnel remote shared as a [copilot.github_environment], you can [keep sharing when you disconnect](#share-a-remote-as-a-github-environment) to continue its sessions through that environment.
+
 * **Disconnect a client** to end that client's connection. This doesn't stop the host or its running tasks.
 
 * **Stop sharing the host** by opening **Remote Connections** on the host and selecting **Off**. This stops sharing without changing the preferred connection method.
@@ -14637,6 +14858,30 @@ You can also open the editor from the **Environment** picker:
 1. Open the **Environment** picker and select **Manage**.
 
     ![Screenshot showing the Environment picker and its Manage entry.](../images/remote-agent-sessions/environment-picker-manage.png)
+
+#### Share a remote as a [copilot.github_environment]
+
+`feature(github-environments)`
+
+Share an SSH host, WSL distribution, or dev tunnel to continue its agent sessions through [copilot.github_environments], including from another machine. Sharing requires [copilot.github_environments] to be enabled and available for your account, and a remote Agent Host that supports sharing.
+
+1. In **Manage Remote Environments**, connect to the remote.
+1. On its row, select **Share \<name\> as [product.prodname_github] Environment** (Octocat icon). Complete any sign-in prompts.
+1. When you disconnect from the shared remote, choose what should happen:
+
+    | Choice | Effect |
+    |---|---|
+    | **Keep Sharing** | End the direct connection but keep the remote Agent Host running and available as a [copilot.github_environment]. |
+    | **Stop Sharing** | Stop sharing the remote as a [copilot.github_environment], then disconnect. |
+    | **Cancel** | Keep the direct connection. |
+
+With **Keep Sharing**, the remote appears under **[copilot.github_environments_caps]** in remote environment management and the environment picker. Continue its existing sessions without starting new conversations. Their pins and groups are preserved. On another machine, sign in with the same [product.prodname_github] account.
+
+When you reconnect directly, the same sessions return to that connection and the separate [copilot.github_environment] entry is hidden. Sessions aren't duplicated.
+
+To stop sharing while directly connected, select **Stop Sharing \<name\> as [product.prodname_github] Environment** on the remote's row.
+
+Keep the remote machine running and reachable. **Keep Sharing** doesn't move execution to managed cloud compute. Sharing grants access to the host's supported sessions, tools, and workspace resources. Review [remote connection security](/docs/agents/run/security.md#remote-connections-and-github-environments) before enabling it.
 
 #### Find and organize remote machines
 
@@ -14694,6 +14939,8 @@ The **Use Dev Container** option appears only when the source machine advertises
 `feature(integrated-browser-remote)`
 
 In the installed Agents window, use the integrated browser to preview a web app running on a supported session host without forwarding its port. Enable ``workbench.browser.enableRemoteProxy``, leave ``workbench.browser.dataStorage`` at `default`, and open the app's original localhost URL. Check that the remote indicator in the address bar identifies the intended host.
+
+You can also [preview remote HTML files directly](/docs/debugtest/integrated-browser.md#open-remote-html-files) without starting a web server.
 
 Select **Share with Agent** to let the agent interact with your page, or ask it to open the app and validate a user flow. See [browsing through a remote agent host](/docs/debugtest/integrated-browser.md#browse-through-a-remote-agent-host) for supported hosts, storage behavior, and connection troubleshooting.
 
@@ -14999,8 +15246,8 @@ For Local harness sessions, use ``chat.editing.autoAcceptDelay`` to automaticall
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/security.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/security
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/security.md
-- **SHA256_FINGERPRINT**: `0acec96b50c1e2a0ed4cb76cdb954a1162719bd1480b898a52bb2630f3ef0cef`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.483303+00:00
+- **SHA256_FINGERPRINT**: `e453e061fd09ba03344f732853daa361bb2c17da529e13fb03a20f9e21af5ac5`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.476625+00:00
 ---
 
 **MetaDescription**: Protect development environments when using AI agents and MCP servers in VS Code with approvals and sandboxing.
@@ -15090,13 +15337,15 @@ VS Code limits the potential impact of agent actions by controlling their scope 
 ### Approvals and review
 
 > [!NOTE]
-> Claude and Codex harnesses cannot enforce Copilot enterprise-managed settings. They are disabled when [enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), including managed permission or sandbox settings. Contact the IT team that deployed the settings to discuss approved harnesses.
+> Claude and Codex harnesses cannot enforce Copilot enterprise-managed settings. They are disabled when [enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), including managed permission or sandbox settings, unless your administrator explicitly permits them. Contact the IT team that deployed the settings to discuss approved harnesses.
 
 VS Code uses a permission-based security model where you maintain control over potentially risky operations.
 
 * **Permission levels**: In a Copilot harness session, use the [permissions picker](/docs/agents/run/approvals.md#permission-levels) to choose how tool calls are approved. **Manual permissions** uses your configured approval settings. **Assisted permissions** uses an LLM judge to evaluate each tool call and asks for your approval when the judge does not approve it. **Allow all** auto-approves all tool calls. **Autopilot** is an agent mode that auto-approves all tools and drives the agent to continue working until the task is complete. Available controls depend on the harness and code isolation. For Local harness sessions `feature(local-harness)`, Autopilot is a permission level instead.
 
 * **Terminal approval**: Before executing terminal commands, the agent requests explicit user approval. When terminal auto-approval is enabled, configurable per-command rules (including regex patterns) auto-approve safe commands while prompting for potentially dangerous ones. All subcommands in a compound command must match an approved rule.
+
+* **Password handling (Experimental)**: Supported shell-authentication prompts in Copilot harness sessions mask passwords and passphrases. The answer is passed to the requesting program, not sent to the model or saved in chat history. Review the displayed command and only provide credentials to programs and destinations you trust. This protection applies only to the dedicated authentication prompt. Don't paste passwords into ordinary chat messages or include them in command text.
 
 * **Tool approval**: MCP tool invocations require explicit user approval, which you can grant at different scopes: session-level for temporary access, workspace-level for project-specific trust, or user-level for broader permissions.
 
@@ -15250,8 +15499,8 @@ Learn more about [managing AI settings in enterprise environments](/docs/enterpr
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/sessions/manage-sessions.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/sessions/manage-sessions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/sessions/manage-sessions.md
-- **SHA256_FINGERPRINT**: `3a0b71d28bba5c7a3424f9f3c613530ba95f856b975239d6817428afc4cade55`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.509662+00:00
+- **SHA256_FINGERPRINT**: `566d03d626df9200474f11782b5a5502a53f88ec60b34692cdc81e0ff07d81ba`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.498858+00:00
 ---
 
 **MetaDescription**: Find, continue, organize, and finish agent sessions in VS Code without losing track of ongoing work.
@@ -15265,6 +15514,8 @@ A [session](/docs/agents/concepts/sessions.md) groups the workspace, code change
 ## Find and resume a session
 
 Open an existing session to continue its conversation rather than start the task again.
+
+For an unsent **New Session** request in the Agents window, [resume a saved draft](/docs/agents/run/agents-window.md#save-and-resume-drafts) instead.
 
 1. Open the sessions list in the interface you use:
 
@@ -15308,7 +15559,7 @@ Supported tunnel connections can also reopen the same session in either window. 
 To change the harness instead, see [Continue with a different harness](/docs/agents/run/agent-harnesses.md#continue-with-a-different-harness).
 
 > [!NOTE]
-> [product.prodname_anthropic_claude_short] and [product.prodname_openai_codex_short] harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Existing sessions aren't deleted. Contact the IT team that deployed the settings to discuss access.
+> [product.prodname_anthropic_claude_short] and [product.prodname_openai_codex_short] harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), unless your administrator explicitly permits them. Existing sessions aren't deleted. Contact the IT team that deployed the settings to discuss access.
 
 ### View sessions from other applications
 
@@ -15515,7 +15766,7 @@ Stable context and forks can preserve prompt caching to reduce cost and latency.
 Keep related work together or prioritize what needs attention without finishing the session:
 
 * [Pin sessions and create custom groups](/docs/agents/run/sessions/organize-sessions.md#pin-and-group-sessions) to keep related tasks accessible.
-* [Triage sessions with Inbox mode](/docs/agents/run/sessions/organize-sessions.md#triage-sessions-with-inbox-mode) to dismiss or defer work without archiving it.
+* [Triage sessions with Inbox mode](/docs/agents/run/sessions/organize-sessions.md#triage-sessions-with-inbox-mode) to acknowledge or defer work without archiving it.
 * [Move chats between sessions](/docs/agents/run/sessions/organize-sessions.md#move-chats-between-sessions-experimental) to reorganize conversations without changing their working folders.
 
 ## Finish and restore sessions
@@ -15525,7 +15776,7 @@ Choose the action that matches what you want to keep:
 | Action | Effect |
 |---|---|
 | Close a chat tab | Hide the conversation without deleting it. Reopen it when needed. |
-| [Dismiss from Inbox](/docs/agents/run/sessions/organize-sessions.md#dismiss-defer-or-finish-work) | Move the session to **Done** in Inbox mode without stopping or archiving it. New activity can bring it back. |
+| [Acknowledge](/docs/agents/run/sessions/organize-sessions.md#acknowledge-defer-or-finish-work) | Clear current Inbox activity without stopping, marking read, or archiving the session. Unpinned sessions move to **Acknowledged** until new activity or a new notification. |
 | Archive or mark as done | Remove completed work from the active list while retaining its conversation. Worktree or container resources can be removed as described below. |
 | Delete | Permanently remove the conversation. Associated worktrees or containers can also be removed. |
 
@@ -15541,7 +15792,7 @@ Choose the action that matches what you want to keep:
 
 For a worktree session, archiving commits uncommitted changes to the session branch before removing the worktree folder. If changes can't be preserved or the folder can't be removed, the worktree remains. The branch and commits are retained, so restoring re-creates the worktree.
 
-For a [Dev Container session](/docs/agents/run/agents-window.md#run-a-session-in-a-dev-container), marking done removes the container without waiting for idle shutdown, but only if no other session or unsent draft uses it. Restoring starts a replacement container and retains the conversation.
+For a [Dev Container session](/docs/agents/run/agents-window.md#run-a-session-in-a-dev-container), marking done removes the container without waiting for idle shutdown, but only if no other session or unsent draft uses it. Restoring starts a replacement container. To retain container-stored conversations across replacements, [configure a persistent state volume](/docs/devcontainers/create-dev-container.md#preserve-chat-sessions-across-rebuilds) `feature(dev-container-state-volume)` before creating the container.
 
 > [!NOTE]
 > A Local session automatically archived by [enterprise runtime policy enforcement](/docs/enterprise/manage-ai-settings.md#runtime-policies-and-harness-selection) remains read-only while the policy applies. Continue in its replacement Copilot session instead.
@@ -15643,8 +15894,8 @@ A folder move uses the destination's existing files, without moving or copying t
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/sessions/organize-sessions.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/sessions/organize-sessions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/sessions/organize-sessions.md
-- **SHA256_FINGERPRINT**: `8eb050a3999e9dab9e05dde78289e6211ba7ba87510af344882d17adc1772840`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.525246+00:00
+- **SHA256_FINGERPRINT**: `899fe6ca600d1aacad6923d8ba2226e52833d19dc5ff53c3b91d2475222066b5`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.466591+00:00
 ---
 
 **MetaDescription**: Organize agent sessions and triage work that needs attention in the Agents window without archiving it.
@@ -15683,13 +15934,13 @@ Group sessions by workspace or topic when you want to find a conversation. Use I
 
 ### Turn on Inbox mode
 
-1. Open Settings (``Shortcut: workbench.action.openSettings``) and turn on ``sessions.list.inboxEnabled``. The setting is off by default.
+* In the sessions list, select **Filter Sessions** > **Grouping** > **Inbox Mode**.
 
-1. In the sessions list, select **Filter Sessions** > **Grouping** > **Inbox Mode**.
+The ``sessions.list.inboxEnabled`` setting chooses Inbox as the initial default only when you haven't selected a grouping. Changing the setting doesn't override a saved grouping choice.
 
-![Screenshot of Inbox mode in the Agents window sessions list.](../../images/organize-sessions/inbox-mode-sessions-list.png)
+![Screenshot showing Inbox mode in the Agents window sessions list.](../../images/organize-sessions/inbox-mode-sessions-list.png)
 
-**Pinned** and **Inbox** appear above the other categories:
+**Pinned** and **Inbox** appear above the other categories. Pinned sessions stay in **Pinned** when acknowledged, held, or snoozed, but still follow the workspace and environment filters.
 
 | Category | What to look for |
 |---|---|
@@ -15697,28 +15948,45 @@ Group sessions by workspace or topic when you want to find a conversation. Use I
 | **Working** | Sessions whose agents are still working. |
 | **Ready to merge** | Sessions whose relevant open pull requests are all non-draft and have passing CI, with no other requests for attention. |
 | **On hold** | Sessions you've put on hold or snoozed. |
-| **Done** | Dismissed work and earlier completed sessions. Placement here doesn't by itself mean a session is archived. |
+| **Acknowledged** | Work whose current activity you've handled without archiving it. Expand this category to find acknowledged sessions. |
+| **Done** or **Archived** | Archived sessions. The label follows the session archive action's wording. |
 
 Failed, pending, or absent checks don't qualify a session for **Ready to merge**. Passing CI doesn't guarantee that a pull request can be merged. Review the changes before merging.
 
-### Dismiss, defer, or finish work
+For sessions whose provider supports merging, select **Merge** on the **Ready to merge** row to merge its pull request.
 
-Right-click a session to choose a triage action. You can select multiple sessions to apply the same action together.
+### Focus on a workspace or environment
+
+Use the workspace and environment pickers above the list to show matching sessions across every category, including **Pinned** and **On hold**. Select **All Workspaces** and **All Environments** to clear both filters. Selections persist after reloading the window.
+
+These filters don't change the **New Session** destination or filter the **Automations** catalog. An open conversation stays open even if its row is filtered out.
+
+### Acknowledge, defer, or finish work
+
+Right-click a session to choose a triage action. You can select multiple sessions to apply the same action together. **Acknowledge** is also available as the eye action on Inbox rows.
 
 | Action | Effect |
 |---|---|
-| **Dismiss from Inbox** | Move the session to **Done** in Inbox mode without archiving it. New activity or notifications can bring it back. |
-| **Return to Inbox** | Clear the triage choice. The session returns to the category appropriate to its current status. |
-| **Put on Hold** | Keep the session in **On hold** until you return it to the Inbox workflow. |
-| **Snooze** | Move the session to **On hold** until a chosen time or new activity, depending on the option you select. |
-| **Mark Session as Done** | [Archive the session](/docs/agents/run/sessions/manage-sessions.md#archive-sessions), which can also clean up its worktree or container. |
+| **Acknowledge** | Clear the current activity. Unpinned sessions move to **Acknowledged**. New activity or a new notification clears the acknowledgement. |
+| **Put on Hold** | Keep the session in **On hold** until you explicitly resume it. New activity and reloads don't release it. |
+| **Snooze** | Move the session to **On hold** until the chosen time, without returning early on new activity. Choose **Until New Activity** instead to return on new activity or a new notification. |
+| **Return to Inbox** | Clear the triage choice. The session returns to the category appropriate to its current activity, not necessarily **Inbox**. |
+| Archive or mark as done | [Archive the session](/docs/agents/run/sessions/manage-sessions.md#archive-sessions), which can also clean up its worktree or container. |
 
 > [!IMPORTANT]
-> Dismissing, holding, or snoozing a session doesn't stop its agent or archive the session. The row's close icon is **Dismiss from Inbox**; the checkmark is **Mark Session as Done**.
+> Acknowledging, holding, or snoozing a session doesn't stop its agent, mark it as read, or archive it. Opening or reading a conversation doesn't acknowledge its activity.
 
-Select **Undo** in the notification to reverse a triage action. Triage choices persist after reloading the window.
+When an acknowledgement or snooze ends, unpinned sessions return to the category matching their current activity. Triage choices persist after reloading the window.
 
-To return to project-based organization, choose another option under **Grouping**. Switching grouping or turning off ``sessions.list.inboxEnabled`` preserves your custom organization and saved triage choices.
+You can also drag one or more sessions onto **Pinned**, **On hold**, or the archive section to apply the corresponding action. To release a hold or snooze, select **Return to Inbox** or drag the session into the category matching its current activity.
+
+To return to project-based organization, choose another option under **Grouping**. Switching grouping preserves your custom organization and saved triage choices.
+
+### Work through the Inbox
+
+Open a conversation from **Inbox** and send a reply. After the request is accepted, the next visible Inbox conversation opens in the current order, within your workspace and environment filters. At the end of the list, the previous remaining conversation opens. If no visible Inbox conversations remain, focus returns to the **Inbox** heading.
+
+Starting a new session, sending in the background to another conversation, or replying outside **Inbox** doesn't advance through the Inbox.
 
 ## Fix checks and address comments from the sessions list
 
@@ -15959,8 +16227,8 @@ Reindex after restoring session files from a backup, an unexpected crash, manual
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/subagents.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/subagents
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/subagents.md
-- **SHA256_FINGERPRINT**: `f183d50d0f0bd8e8569584b98e0ce1f2d56bae9efe95814b8f3c24c3381089ca`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.589822+00:00
+- **SHA256_FINGERPRINT**: `19c8b0202390b9c9492f342304c648a907525e0a2e0b00313243bb3fe56b6cbf`
+- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.548059+00:00
 ---
 
 **MetaDescription**: Delegate focused tasks to context-isolated subagents in VS Code and review results in the main chat.
@@ -15993,7 +16261,7 @@ For a quick lookup or a small edit, a direct request is usually enough. Delegati
 Your [agent harness](/docs/agents/run/agent-harnesses.md#compare-agent-harnesses) determines how subagents run and which configuration options they support. [Select a harness](/docs/agents/run/agent-harnesses.md#select-a-harness) before you submit the first prompt.
 
 > [!NOTE]
-> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability). Contact the IT team that deployed the settings to discuss access.
+> Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), unless your administrator explicitly permits them. Contact the IT team that deployed the settings to discuss access.
 >
 > Provider documentation also covers CLI workflows. Commands and configuration options can differ in VS Code. Use the [harness guide](/docs/agents/run/agent-harnesses.md) for integration-specific setup and limitations.
 
