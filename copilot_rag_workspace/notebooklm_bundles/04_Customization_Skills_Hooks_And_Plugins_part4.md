@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part4
-- **Generado (UTC)**: 2026-11-17T20:39:13.037975+00:00
-- **Total Palabras**: 449,555 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-18T06:39:35.013280+00:00
+- **Total Palabras**: 449,616 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -82062,6 +82062,180 @@ on, swallows the error and passes the lint. Catching that shape is a review job.
 
 
 ---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/polytype-middleware/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/polytype-middleware/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/polytype-middleware/SKILL.md
+- **SHA256_FINGERPRINT**: `77837585ed60d045107b750dbd9a3308f077e9fb663bd1299d693a8fb1443a94`
+- **LAST_VERIFIED_UTC**: 2026-11-18T06:39:30.534826+00:00
+---
+
+**description**: Design or review the public API of a PolyType middleware library so it stays complete on net472 and netstandard2.0 while modern .NET callers use where T : IShapeable<T> with no witness. Use when adding generic methods, witness or TProvider overloads, extension members, or a #if NET / #if !NET split.
+
+# PolyType middleware APIs
+
+A PolyType middleware library sits on `PolyType.IShapeable<T>` and ships one package to every target framework its consumers use. Modern .NET callers get a constrained, witness-free API. Downlevel callers (`net472`, `netstandard2.0`) still get a complete API, usually with a witness type parameter. Callers that still run on .NET 8 or .NET 9 use that downlevel surface.
+
+Use the same shape for every friendly operation. The modern assembly is the downlevel surface plus the constrained members.
+
+## Why the members are split
+
+`IShapeable<T>.GetTypeShape()` is a static abstract interface member. `where T : IShapeable<T>` compiles only in the modern assembly. That constraint is the witness-free API: the caller names `T`, and `T` supplies its own shape.
+
+A generic constraint is not part of the method signature. Two methods in the same declaration space cannot differ only by `where T : IShapeable<T>`.
+
+Keep two declarations with the same parameters:
+
+1. A member declared on the type, compiled only under `#if NET`, with the constraint, forwarding to `T.GetTypeShape()` or `TProvider.GetTypeShape()`.
+2. An extension member compiled for every TFM, with no `IShapeable<T>` constraint, forwarding to `TypeShapeResolver.ResolveDynamicOrThrow<T>()` or `ResolveDynamicOrThrow<T, TProvider>()`.
+
+Overload resolution prefers an applicable instance member over an extension. When `T : IShapeable<T>`, the constrained member wins. When the constraint is not met, the extension is still a candidate.
+
+The extension stays in the modern assembly. Wrapping it in `#if !NET` removes that surface from the modern build. Constrained overloads are additive.
+
+The constrained path is the fast, AOT-friendly one: the shape is a static call. The extension looks the shape up dynamically and throws `NotSupportedException` at runtime when the source generator did not emit it.
+
+## Preprocessor
+
+Use `#if NET` for members and attributes that exist only on modern .NET. Use `#if !NET` for implementations that exist only on downlevel TFMs, such as polyfills and missing runtime APIs.
+
+The SDK defines `NET` for .NET 5 and later. `net472` and `netstandard2.0` are `!NET`. Select this split with `NET` and `!NET`. Leave `NET8_0_OR_GREATER`, `NET8_0`, and other version-specific symbols unused.
+
+`#if !NET` is for downlevel-only implementation. It is not a way to hide the public extension from modern .NET.
+
+## The pattern
+
+Friendly overloads only obtain a shape and forward. Real work takes `ITypeShape<T>` or `ITypeShapeProvider` and exists on every TFM, with no `#if`.
+
+The sample is one method, `ShapeMiddleware.Process`. Copy this split for each operation. `IShapeable<T>`, `ITypeShape<T>`, and `TypeShapeResolver` come from PolyType. `PreferDotNetAlternativeApi` is an attribute the library defines so an analyzer can see the dynamic member. Null checks throw `ArgumentNullException` directly. `ArgumentNullException.ThrowIfNull` is not in the `net472` or `netstandard2.0` reference assemblies. The `extension` block sits in a top-level static class. C# rejects that block at namespace scope.
+
+```csharp
+public sealed class ShapeMiddleware
+{
+    // Real work. Every TFM.
+    public void Process<T>(T? value, ITypeShape<T> shape)
+    {
+        if (shape is null)
+        {
+            throw new ArgumentNullException(nameof(shape));
+        }
+
+        // use shape
+    }
+
+#if NET
+    public void Process<T>(T? value)
+        where T : IShapeable<T>
+        => this.Process(value, T.GetTypeShape());
+
+    public void Process<T, TProvider>(T? value)
+        where TProvider : IShapeable<T>
+        => this.Process(value, TProvider.GetTypeShape());
+#endif
+}
+
+public static class ShapeMiddlewareExtensions
+{
+    extension(ShapeMiddleware self)
+    {
+#if NET
+        [PreferDotNetAlternativeApi("Use the method that constrains T : IShapeable<T>.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Obsolete("T must implement IShapeable<T>, or pass a witness type.", error: true)] // omit Obsolete when this fallback must still compile
+#endif
+        public void Process<T>(T? value)
+        {
+            if (self is null)
+            {
+                throw new ArgumentNullException(nameof(self));
+            }
+
+            self.Process(value, TypeShapeResolver.ResolveDynamicOrThrow<T>());
+        }
+
+#if NET
+        [PreferDotNetAlternativeApi("Use the method that constrains TProvider : IShapeable<T>.")]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Obsolete("TProvider must implement IShapeable<T>.", error: true)] // omit Obsolete when this fallback must still compile
+#endif
+        public void Process<T, TProvider>(T? value)
+        {
+            if (self is null)
+            {
+                throw new ArgumentNullException(nameof(self));
+            }
+
+            self.Process(value, TypeShapeResolver.ResolveDynamicOrThrow<T, TProvider>());
+        }
+    }
+}
+```
+
+`where T : IShapeable<T>` calls `T.GetTypeShape()`. That is the witness-free API for `[GenerateShape]` on `T`. `where TProvider : IShapeable<T>` calls `TProvider.GetTypeShape()`. That is the witness API for `[GenerateShapeFor<T>]`. `T` itself is not constrained on the witness member. The witness extension takes `TProvider` as a type argument only. It does not repeat `where TProvider : IShapeable<T>`. Its `PreferDotNetAlternativeApi` and `Obsolete` text names `TProvider`, the type that must provide the shape.
+
+A caller whose type has `[GenerateShape]` writes `middleware.Process(value)` on modern .NET. A type the caller does not own, including a top-level array, needs a witness: `middleware.Process<ExternalType, Witness>(value)`. Passing an `ITypeShape<T>` or `ITypeShapeProvider` explicitly works on every TFM with no source generator: `middleware.Process(value, shape)`.
+
+The first two calls compile on every TFM. On modern .NET they bind to the members declared on the type. On downlevel they bind to the extension, so the file needs the namespace import. State that in the remarks on the type.
+
+A static operation uses the same split. Declare the constrained method on the type under `#if NET`. Put the unconstrained member in an `extension` block inside a top-level static class, on every TFM. Consumers need C# 14 (`LangVersion` 14) to call extension members, including when the project targets .NET Framework or .NET Standard. The runtime does not need to be modern. Guard the extension block from a documentation tool only when that tool cannot parse it.
+
+When the dynamic member cannot be an extension because the type already has an instance method with those parameters, give the dynamic member a different name. A second instance method that differs only by the constraint is illegal. Keep the constrained member's name under `#if NET`, and compile the distinctly named dynamic member for every TFM with the same parameters and the same `#if NET` attributes.
+
+## Attributes
+
+Apply `EditorBrowsable`, `PreferDotNetAlternativeApi`, and `Obsolete` only inside `#if NET`, on the dynamic member. The downlevel compilation of that same method stays an ordinary public API: visible, not obsolete, and not hidden.
+
+| Attribute | Role |
+| --- | --- |
+| `[EditorBrowsable(EditorBrowsableState.Never)]` | Hides the dynamic member from modern completion. It stays in metadata and in overload resolution. |
+| `[PreferDotNetAlternativeApi(message)]` | Marker the library defines. An analyzer can warn when a caller actually invokes the marked member, so a multi-targeting project can suppress that warning. |
+| `[Obsolete("...", error: true)]` | Turns a modern binding to the dynamic member into a compile error. |
+
+Include `Obsolete(..., error: true)` when a modern call that misses the constraint should not compile. Leave it off when an unconstrained `T` must still compile against the modern assembly and fail at runtime if no shape was generated. The extension remains in the assembly either way. A call site that satisfies `where T : IShapeable<T>` binds to the member on the type and never sees the obsolete extension.
+
+`EditorBrowsable.Never` on the modern build is what makes completion offer the constrained overloads on the type. Applying it while compiling `net472` or `netstandard2.0` hides the only API those TFMs have.
+
+The library may ship an analyzer that reads the marker attribute and steers .NET callers toward the constrained overload. Document the suppression for multi-targeting projects.
+
+## Do
+
+- Put the implementation on an `ITypeShape<T>` or `ITypeShapeProvider` method that exists on every TFM. Friendly overloads only fetch a shape and forward.
+- Under `#if NET`, add `where T : IShapeable<T>` and `where TProvider : IShapeable<T>` as members of the type. Call `T.GetTypeShape()` or `TProvider.GetTypeShape()`.
+- Keep an unconstrained extension, or a differently named instance method, on every TFM, including the modern one. Resolve with `TypeShapeResolver.ResolveDynamicOrThrow<T>()` or `ResolveDynamicOrThrow<T, TProvider>()`.
+- Keep the parameter list of the dynamic member identical to the constrained member. The declaration site and the constraint are what differ.
+- Put `EditorBrowsable.Never`, `PreferDotNetAlternativeApi`, and `Obsolete` only inside `#if NET`.
+- Offer both generic shapes when the operation can run on a type the caller owns and on a type they do not own. Top-level arrays need a witness even when the element type has `[GenerateShape]`.
+- State in the type remarks that downlevel projects need the namespace import to see the extensions.
+- Generate repeated overload pairs from one template so the constrained half and the extension half stay aligned.
+- When a warning is preferable to a hard error, ship an analyzer that reads an attribute on the dynamic member, and document a suppression for multi-targeting projects.
+
+## Do not
+
+- Do not remove the dynamic member from the modern assembly, and do not wrap it in `#if !NET`. Constrained overloads are additive.
+- Do not declare the constrained overload as a second extension with the same parameters. That is a duplicate signature. The member on the type is what overload resolution prefers.
+- Do not put `where T : IShapeable<T>` or `where TProvider : IShapeable<T>` on the downlevel member. Those constraints do not compile for `net472` or `netstandard2.0`, and they remove the dynamic fallback.
+- Do not make the common case pass `ITypeShape<T>` or a witness. Witness-free `where T : IShapeable<T>` is the modern API for `[GenerateShape]` types.
+- Do not drop the witness overload. External types and top-level arrays still need `TProvider`.
+- Do not change the dynamic member's parameters, name, or visibility when adding the constrained member, except when a second instance method needs a distinct name.
+- Do not apply `EditorBrowsable.Never` or `Obsolete` to the downlevel compilation. That is the API those callers have.
+- Do not mark the dynamic member `Obsolete(error: true)` when an unconstrained `T` must still compile against the modern assembly.
+- Do not choose the modern API with `NET8_0_OR_GREATER`, `NET8_0`, or any other version-specific symbol. Use `#if NET` and `#if !NET`.
+
+## Review checklist
+
+1. Every friendly operation has an `ITypeShape<T>` or `ITypeShapeProvider` implementation on every TFM.
+2. `#if NET` adds `where T : IShapeable<T>` on the type, calling `T.GetTypeShape()`, with no witness parameter.
+3. `#if NET` adds `where TProvider : IShapeable<T>` on the type, calling `TProvider.GetTypeShape()`.
+4. The unconstrained extension, or the distinctly named instance method, is compiled into the modern assembly as well as `net472` and `netstandard2.0`.
+5. `EditorBrowsable`, `Obsolete`, and `PreferDotNetAlternativeApi` sit inside `#if NET` on that dynamic member.
+6. The preprocessor symbols are `NET` and `!NET`.
+7. A `netstandard2.0` caller can finish the operation with a witness type argument and a namespace import.
+8. A modern caller whose type has `[GenerateShape]` can call the operation with a single type argument.
+9. Generated overload pairs come from one template, and both halves match.
+
+For more examples, see [Nerdbank.MessagePack](https://github.com/AArnott/Nerdbank.MessagePack).
+
+
+---
 # DOCUMENT_SOURCE: github_awesome-copilot::skills/ponder/SKILL.md
 - **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/ponder/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/ponder/SKILL.md
@@ -87722,349 +87896,3 @@ Re-running the workflow that produced an artifact is a UI-only, user-confirmed a
 ## Recovery
 
 If the canvas misbehaves, call `restart_canvas`: it keeps the port, token, and running jobs. Use `docs` to open the built-in Docs tab, which also lists keyboard shortcuts (press `?`).
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/pr-dashboard/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/pr-dashboard/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/pr-dashboard/SKILL.md
-- **SHA256_FINGERPRINT**: `33e1928ec6a542d7da82f7222a45dccd90bee06676064359df892125a90f0a58`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:41.918150+00:00
----
-
-**description**: Open a GitHub PR dashboard in the browser. Use when the user asks to see their pull requests, open the PR dashboard, show PRs for a date range, or check PR status. Trigger phrases include "show my PRs", "open PR dashboard", "pull request dashboard".
-
-# PR Dashboard
-
-Generates and opens a GitHub PR dashboard in the browser for a given date range and role filter.
-
-**Prerequisites:** GitHub CLI (`gh`) must be installed and authenticated (`gh auth login`).
-
-## What to do
-
-Find the CLI script bundled with this skill and run it:
-
-```bash
-SKILL_SCRIPT=$(find ~/.copilot -name "pr-dashboard-cli.mjs" -path "*/pr-dashboard/scripts/*" 2>/dev/null | head -1)
-node "$SKILL_SCRIPT" "<query>" "<role>"
-```
-
-- `<query>`: the date range the user specified (default: `last 7 days`)
-- `<role>`: one of `Authored by me`, `Requested reviews`, `Assigned to me`, `All` (default: `Authored by me`)
-
-## Parsing the user's request
-
-Extract the date range and role from the user's message. Examples:
-
-| User says | query | role |
-|---|---|---|
-| show my PRs | `last 7 days` | `Authored by me` |
-| show my PRs last 2 weeks | `last 2 weeks` | `Authored by me` |
-| PR dashboard this month reviews | `this month` | `Requested reviews` |
-| PR dashboard march 2026 assigned | `march 2026` | `Assigned to me` |
-| show all PRs last 30 days | `last 30 days` | `All` |
-
-**Role keyword mapping:**
-- "my PRs", "authored", "I wrote" → `Authored by me`
-- "reviews", "review requested", "reviewing" → `Requested reviews`
-- "assigned" → `Assigned to me`
-- "all", "involves me" → `All`
-
-## Supported date range formats
-
-The script understands natural language — pass it through as-is:
-- `last 7 days`, `last 2 weeks`, `last 30 days`
-- `this week`, `last week`, `this month`, `last month`
-- `march 2026`, `feb 2025`
-- `2026-01-01 - 2026-03-31`
-- `2025` (whole year)
-
-## After running
-
-Tell the user the dashboard is opening in their browser. The script outputs progress to stdout. If it exits with an error, show the error output and suggest they run `gh auth login` if it's an auth issue.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/pr-screenshots/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/pr-screenshots/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/pr-screenshots/SKILL.md
-- **SHA256_FINGERPRINT**: `d54ab73b2b97e8537f31e7acdb25c54974190c4e0ef33cb34ff4c15cc7a43bbe`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.042408+00:00
----
-
-**description**: Embed before/after screenshots and annotated images in pull request descriptions. Covers PR description patterns, image upload for Azure DevOps and GitHub, and sizing best practices.
-
-# PR Screenshots
-
-Embed before/after screenshots in pull request descriptions so reviewers can see the visual change without checking out the branch.
-
-## When to Use This Skill
-
-Use this skill when a PR changes something visible:
-
-- Layout, styling, CSS
-- Charts, dashboards, data visualizations
-- UI components, forms, modals
-- Error messages, CLI output, log formatting
-
-## PR Description Pattern
-
-Place screenshots directly in the PR description body. Avoid wrapping them in `` collapse — reviewers are more likely to look at images they can see without clicking.
-
-```markdown
-**Before** — brief description of the problem:
-
-![before](url-to-before-image)
-
-**After** — brief description of the fix:
-
-![after](url-to-after-image)
-```
-
-Keep the text brief. A sentence or two per image describing what the reader should notice. Let the image carry most of the communication.
-
-### Multiple changes
-
-For PRs with several visual changes, use separate before/after pairs with headings:
-
-```markdown
-## Filter bar alignment
-
-**Before** — 1px border clash between adjacent buttons:
-
-![before-filters](url)
-
-**After** — borders overlap cleanly, hover tint added:
-
-![after-filters](url)
-
-## Chart tooltip
-
-**Before** — tooltip clipped at container edge:
-
-![before-tooltip](url)
-
-**After** — tooltip repositions to stay visible:
-
-![after-tooltip](url)
-```
-
-## Image Sizing
-
-- **Take screenshots at native 1x resolution** — don't resize with PIL (creates artifacts)
-- **Control display size in HTML** when images are too large:
-  ```html
-  <img src="url" width="600" alt="description">
-  ```
-- **Before/after pairs must use the same viewport width and crop** — otherwise the comparison is meaningless
-
-## Uploading Images
-
-### Azure DevOps
-
-Upload images as PR attachments via the REST API:
-
-```powershell
-$token = az account get-access-token `
-    --resource "499b84ac-1321-427f-aa17-267ca6975798" `
-    --query accessToken -o tsv
-
-$base = "https://{org}.visualstudio.com/{projectId}/_apis/git/repositories/{repoId}"
-$url = "$base/pullRequests/{prId}/attachments/screenshot.png?api-version=7.1-preview.1"
-
-# Use HttpClient — Invoke-RestMethod can corrupt binary data
-$client = New-Object System.Net.Http.HttpClient
-$client.DefaultRequestHeaders.Authorization = `
-    New-Object System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", $token)
-$content = New-Object System.Net.Http.ByteArrayContent(
-    , [System.IO.File]::ReadAllBytes("screenshot.png")
-)
-$content.Headers.ContentType = `
-    [System.Net.Http.Headers.MediaTypeHeaderValue]::new("application/octet-stream")
-$resp = $client.PostAsync($url, $content).Result
-```
-
-Reference in the PR description:
-
-```markdown
-![description](https://{org}.visualstudio.com/{projectId}/_apis/git/repositories/{repoId}/pullRequests/{prId}/attachments/screenshot.png)
-```
-
-**Azure DevOps gotchas:**
-
-- **Use `{org}.visualstudio.com` NOT `dev.azure.com/{org}`** — AzDO's markdown renderer uses `.visualstudio.com`. The `dev.azure.com` format loads noticeably slower
-- Use `POST` not `PUT` (PUT returns 405)
-- API version must be `7.1-preview.1`
-- Can't re-upload with the same filename — use a new name (e.g. `screenshot-v2.png`)
-- Use `HttpClient` not `Invoke-RestMethod` — IRM can corrupt binary data
-- Repo-relative paths don't work in PR descriptions — must use full URLs
-- Don't commit images to the branch just for PR screenshots
-
-### GitHub
-
-> **⚠️ Work in progress.** GitHub's drag-and-drop image upload uses internal endpoints that require browser cookies. There's no clean public API for uploading images to PR descriptions yet.
-
-**Current workaround:** Commit images to a `pr-assets` orphan branch and reference via blob URLs (`github.com/{owner}/{repo}/blob/pr-assets/{file}?raw=true`). It works but is clunky — contributions for a better approach are welcome.
-
-## Guidelines
-
-1. **Capture before state BEFORE making changes** — it's easy to forget, and reconstructing the original state later is slow and error-prone
-2. **Keep descriptions brief** — a sentence or two per image pointing out what changed is enough
-3. **Prefer visible images over collapsed sections** — screenshots behind `` tags are easy to skip
-4. **Annotate when the change is subtle** — use the `image-annotations` skill to add callouts when the difference isn't immediately obvious
-5. **Match viewport and crop** between before/after pairs so the comparison is meaningful
-
-## Limitations
-
-- GitHub image upload requires workarounds (no public API for PR description images)
-- Azure DevOps attachment filenames can't be reused — plan naming ahead
-- Very large images (>10MB) may not render inline on some platforms
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/prd/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/prd/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/prd/SKILL.md
-- **SHA256_FINGERPRINT**: `7b9dd520e51acbcfb930b42eef6d07e3dbaaf0f16109bf80010ab49931244d12`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.002368+00:00
----
-
-**description**: Generate high-quality Product Requirements Documents (PRDs) for software systems and AI-powered features. Includes executive summaries, user stories, technical specifications, and risk analysis.
-
-# Product Requirements Document (PRD)
-
-## Overview
-
-Design comprehensive, production-grade Product Requirements Documents (PRDs) that bridge the gap between business vision and technical execution. This skill works for modern software systems, ensuring that requirements are clearly defined.
-
-## When to Use
-
-Use this skill when:
-
-- Starting a new product or feature development cycle
-- Translating a vague idea into a concrete technical specification
-- Defining requirements for AI-powered features
-- Stakeholders need a unified "source of truth" for project scope
-- User asks to "write a PRD", "document requirements", or "plan a feature"
-
----
-
-## Operational Workflow
-
-### Phase 1: Discovery (The Interview)
-
-Before writing a single line of the PRD, you **MUST** interrogate the user to fill knowledge gaps. Do not assume context.
-
-**Ask about:**
-
-- **The Core Problem**: Why are we building this now?
-- **Success Metrics**: How do we know it worked?
-- **Constraints**: Budget, tech stack, or deadline?
-
-### Phase 2: Analysis & Scoping
-
-Synthesize the user's input. Identify dependencies and hidden complexities.
-
-- Map out the **User Flow**.
-- Define **Non-Goals** to protect the timeline.
-
-### Phase 3: Technical Drafting
-
-Generate the document using the **Strict PRD Schema** below.
-
----
-
-## PRD Quality Standards
-
-### Requirements Quality
-
-Use concrete, measurable criteria. Avoid "fast", "easy", or "intuitive".
-
-```diff
-# Vague (BAD)
-- The search should be fast and return relevant results.
-- The UI must look modern and be easy to use.
-
-# Concrete (GOOD)
-+ The search must return results within 200ms for a 10k record dataset.
-+ The search algorithm must achieve >= 85% Precision@10 in benchmark evals.
-+ The UI must follow the 'Vercel/Next.js' design system and achieve 100% Lighthouse Accessibility score.
-```
-
----
-
-## Strict PRD Schema
-
-You **MUST** follow this exact structure for the output:
-
-### 1. Executive Summary
-
-- **Problem Statement**: 1-2 sentences on the pain point.
-- **Proposed Solution**: 1-2 sentences on the fix.
-- **Success Criteria**: 3-5 measurable KPIs.
-
-### 2. User Experience & Functionality
-
-- **User Personas**: Who is this for?
-- **User Stories**: `As a [user], I want to [action] so that [benefit].`
-- **Acceptance Criteria**: Bulleted list of "Done" definitions for each story.
-- **Non-Goals**: What are we NOT building?
-
-### 3. AI System Requirements (If Applicable)
-
-- **Tool Requirements**: What tools and APIs are needed?
-- **Evaluation Strategy**: How to measure output quality and accuracy.
-
-### 4. Technical Specifications
-
-- **Architecture Overview**: Data flow and component interaction.
-- **Integration Points**: APIs, DBs, and Auth.
-- **Security & Privacy**: Data handling and compliance.
-
-### 5. Risks & Roadmap
-
-- **Phased Rollout**: MVP -> v1.1 -> v2.0.
-- **Technical Risks**: Latency, cost, or dependency failures.
-
----
-
-## Implementation Guidelines
-
-### DO (Always)
-
-- **Define Testing**: For AI systems, specify how to test and validate output quality.
-- **Iterate**: Present a draft and ask for feedback on specific sections.
-
-### DON'T (Avoid)
-
-- **Skip Discovery**: Never write a PRD without asking at least 2 clarifying questions first.
-- **Hallucinate Constraints**: If the user didn't specify a tech stack, ask or label it as `TBD`.
-
----
-
-## Example: Intelligent Search System
-
-### 1. Executive Summary
-
-**Problem**: Users struggle to find specific documentation snippets in massive repositories.
-**Solution**: An intelligent search system that provides direct answers with source citations.
-**Success**:
-
-- Reduce search time by 50%.
-- Citation accuracy >= 95%.
-
-### 2. User Stories
-
-- **Story**: As a developer, I want to ask natural language questions so I don't have to guess keywords.
-- **AC**:
-  - Supports multi-turn clarification.
-  - Returns code blocks with "Copy" button.
-
-### 3. AI System Architecture
-
-- **Tools Required**: `codesearch`, `grep`, `webfetch`.
-
-### 4. Evaluation
-
-- **Benchmark**: Test with 50 common developer questions.
-- **Pass Rate**: 90% must match expected citations.
