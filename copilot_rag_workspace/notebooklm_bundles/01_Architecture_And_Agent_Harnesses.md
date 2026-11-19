@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-11-18T20:12:53.364468+00:00
-- **Total Palabras**: 25,881 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-19T20:14:50.414799+00:00
+- **Total Palabras**: 25,908 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -382,8 +382,8 @@ A worktree is a Git code-isolation boundary, not a security boundary. It does no
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/agent-host.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/agent-host
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/agent-host.md
-- **SHA256_FINGERPRINT**: `47543f01b2c19a70a5a6022723d16a80efcf9ab06bb7c55b999609ac7773c148`
-- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:47.191358+00:00
+- **SHA256_FINGERPRINT**: `24b73e0877d5b8601259ce981062f48fa06c16597de4147f90bd224b73894c47`
+- **LAST_VERIFIED_UTC**: 2026-11-19T20:14:43.079707+00:00
 ---
 
 **MetaDescription**: Understand how the VS Code Agent Host manages sessions, execution environments, and connected clients.
@@ -455,7 +455,7 @@ For sessions on your own remote machines, keep the machine and the process servi
 
 Cloud session execution doesn't depend on keeping your local application open. The service manages the environment's availability and lifetime. A stored conversation doesn't guarantee that its cloud environment is still available. See [continue an existing cloud session](/docs/agents/run/cloud-sandbox-sessions.md#continue-an-existing-cloud-session).
 
-Connected clients can contribute tools, such as browser tools or tools from installed extensions. The Agent Host adds those definitions to the session and routes each tool call back to the contributing client. These tools require that client to remain connected. Learn how to [manage tool availability](/docs/agents/run/tools.md#manage-tool-availability-for-the-copilot-harness).
+Connected clients can contribute tools, such as browser tools or tools from installed extensions. The Agent Host adds those definitions to the session and routes each tool call back to the contributing client. These tools require that client to remain connected. Learn how to [manage tool availability](/docs/agents/run/tools.md#manage-available-tools).
 
 ## Agent Host Protocol
 
@@ -1264,8 +1264,8 @@ Review the tool name and inputs before you approve a call. Learn more about [tru
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/trust-and-safety.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/trust-and-safety
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/trust-and-safety.md
-- **SHA256_FINGERPRINT**: `a6566cd1ab1d6a75086586eefebd890587847f31957922c728d66423ef5587df`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.435815+00:00
+- **SHA256_FINGERPRINT**: `5b0e54a8dabc59bcf33d3331bc657786576c4e84fa16e0758d36dd16ee1034f5`
+- **LAST_VERIFIED_UTC**: 2026-11-19T20:14:43.130464+00:00
 ---
 
 **MetaDescription**: Understand AI limitations, data handling, approvals, and isolation in VS Code.
@@ -1298,7 +1298,7 @@ Treat AI-generated output as a draft that requires your judgment. For nondetermi
 Agents can read files, edit code, run terminal commands, and call external services. VS Code's trust model layers several control mechanisms so you remain in charge of what reaches your codebase:
 
 * **Review before integrating.** Agents can save edits directly in the session folder or worktree. Inspect the changes in a diff before you commit, merge, or create a pull request. For supported sessions, [checkpoints](/docs/agents/run/review-code-edits.md#edit-requests-and-restore-checkpoints) restore affected workspace files and chat to an earlier point.
-* **Approve sensitive actions.** With [Manual permissions](/docs/agents/run/approvals.md#permission-levels) in Copilot harness sessions, actions that aren't covered by your approval settings require confirmation. File edits might be auto-approved. Configure [sensitive-file approval](/docs/agents/run/review-code-edits.md#require-approval-before-sensitive-edits) when an edit must require confirmation before it is applied.
+* **Review actions that need confirmation.** With [Manual permissions](/docs/agents/run/approvals.md#permission-levels) in Copilot sessions, runtime decisions, rules, and saved approvals can permit actions automatically. Other actions require confirmation. [Sensitive-file approval](/docs/agents/run/review-code-edits.md#require-approval-before-sensitive-edits) adds review for supported edits, but isn't a filesystem restriction or a guarantee of prompts in every permission mode.
 * **Constrain autonomy.** Choose the [available tools](/docs/agents/run/tools.md#manage-available-tools) and the [permission level](/docs/agents/run/approvals.md#permission-levels) appropriate for the task. Making a tool available and approving a specific use of that tool are separate decisions.
 * **Restrict process access.** [Agent sandboxing](#agent-sandboxing) limits the file system and network resources that covered processes can access. It complements approval checks rather than replacing them.
 * **Trust boundaries.** VS Code uses trust decisions for workspaces, extensions, MCP servers, and network domains. Workspace MCP servers inherit Workspace Trust.
@@ -1314,7 +1314,7 @@ VS Code's security model uses trust boundaries to limit the potential impact of 
 * **Workspace**: controls whether VS Code enables features like tasks, debugging, and workspace settings that can execute code from the project. An untrusted workspace runs in [restricted mode](/docs/editing/workspaces/workspace-trust.md), which also disables agents.
 * **Extension publisher**: controls whether extensions from a given publisher can be installed and run. VS Code prompts you to [trust the publisher](/docs/configure/extensions/extension-runtime-security.md) before activating their extensions.
 * **MCP server**: controls whether an MCP server can start and provide tools. Servers configured in `.vscode/mcp.json` or workspace-root `.mcp.json` inherit Workspace Trust. Servers from other sources can require a [separate MCP server trust decision](/docs/agents/run/manage-mcp-servers.md#mcp-server-trust) and prompt again after configuration changes.
-* **Network domain**: controls whether the agent can fetch content from a URL, integrated with the [Trusted Domains](/docs/editing/editingevolved.md#outgoing-link-protection) list. Network controls for fetch and browser tools are separate from [sandbox network controls](/docs/agents/run/agent-sandboxing.md#configure-network-access) for terminal commands.
+* **Network destination**: [URL approval](/docs/agents/run/approvals.md#url-approval) controls requests to a site. Some editor-managed tools, including Local harness web fetch `feature(local-harness)`, use the [Trusted Domains](/docs/editing/editingevolved.md#outgoing-link-protection) list. Don't assume every harness uses that list or asks you to review the returned content. URL approval and [sandbox network restrictions](/docs/agents/run/agent-sandboxing.md#configure-network-access) are different controls.
 
 Trust permits access or execution; it doesn't certify that every result or action is safe. For configuring and reviewing these decisions, see [AI security in VS Code](/docs/agents/run/security.md).
 
@@ -1349,7 +1349,7 @@ Turning on sandboxing doesn't block outbound network access by default. Configur
 
 ### Why sandboxing matters
 
-Approval-based security requires you to confirm each terminal command or tool call before it runs. While this provides control, it has practical limits:
+Approval checks can pause a tool call for review, while runtime decisions and saved approvals can let other calls run automatically. Relying on approval decisions alone has practical limits:
 
 * **Approval fatigue.** Repeatedly approving commands can cause you to pay less attention to what you're approving, especially during long agent sessions.
 
@@ -1518,8 +1518,8 @@ For keyboard, screen reader, and low-vision workflows, learn how to use the [Acc
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/agent-harnesses.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/agent-harnesses
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/agent-harnesses.md
-- **SHA256_FINGERPRINT**: `40989e45fb758fc3b4b2633a5d0457eadcda0f25c84815b65bae5acf7ea0fb7e`
-- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.094828+00:00
+- **SHA256_FINGERPRINT**: `0624165b871c1e2d534d21efb5f8422c0713da63ebecded03732e7b859f7e625`
+- **LAST_VERIFIED_UTC**: 2026-11-19T20:14:43.260032+00:00
 ---
 
 **MetaDescription**: Compare agent harnesses and built-in agents in Visual Studio Code, select one for a session, and review provider requirements.
@@ -1585,7 +1585,7 @@ After selecting a harness, choose an available built-in agent from the agent pic
 | **Copilot** | <ul><li>**Ask** answers questions and researches your codebase without making changes. It only uses read-only tools and can't edit files or run state-changing commands.</li><li>**Agent** implements changes and validates the result.</li><li>**[Plan](/docs/agents/run/planning.md)** researches a task and creates an implementation plan for you to review. Invoke it with `/plan`.</li></ul> |
 | **Local** `feature(local-harness)` | <ul><li>**Ask** answers questions without changing your code.</li><li>**Agent** implements changes and validates the result.</li><li>**Plan** researches a task and creates an implementation plan for you to review.</li></ul> |
 
-Switching agents doesn't change the harness. You can also select [custom agents](/docs/agent-customization/custom-agents.md) from the same picker. In the Copilot harness, [Autopilot](/docs/agents/run/approvals.md#how-autopilot-works) is a mode with its own workflow, not an additional built-in agent.
+Switching agents doesn't change the harness. You can also select [custom agents](/docs/agent-customization/custom-agents.md) from the same picker. In the Copilot harness, [Autopilot](/docs/agents/run/approvals.md#autopilot-mode) is a mode with its own workflow, not an additional built-in agent.
 
 Your harness choice is separate from where the session changes code. In the Agents window, you can also [choose between a folder and a worktree](/docs/agents/run/agents-window.md#choose-where-an-agent-makes-changes) or [run a session in a Dev Container](/docs/agents/run/agents-window.md#run-a-session-in-a-dev-container).
 
@@ -1624,7 +1624,7 @@ To use supported models through your own credentials, follow the [Experimental A
 
 For managed user accounts on GHE.com, complete the setup in [Using GitHub Copilot with an account on GHE.com](https://docs.github.com/en/copilot/managing-copilot/configure-personal-settings/using-github-copilot-with-an-account-on-ghecom).
 
-Before reusing a Local harness `feature(local-harness)` session's configuration, check [tool availability](/docs/agents/run/tools.md#manage-tool-availability-for-the-copilot-harness) and [MCP configuration compatibility](/docs/agents/reference/mcp-configuration.md#configuration-file). Copilot harness sessions don't have access to every built-in or extension-provided tool. The shared SDK runtime also does not imply identical tools, models, permissions, or customizations across products, or that all sessions and personal settings synchronize.
+Before reusing a Local harness `feature(local-harness)` session's configuration, check [tool availability](/docs/agents/run/tools.md#manage-available-tools) and [MCP configuration compatibility](/docs/agents/reference/mcp-configuration.md#configuration-file). Copilot harness sessions don't have access to every built-in or extension-provided tool. The shared SDK runtime also does not imply identical tools, models, permissions, or customizations across products, or that all sessions and personal settings synchronize.
 
 For enterprise SDK Policy Hooks requirements, see [enterprise hook configuration](/docs/enterprise/manage-ai-settings.md#enable-or-disable-hooks).
 
@@ -1754,7 +1754,7 @@ The Copilot harness provides these benefits:
 
 Start with **Copilot** for day-to-day coding and agent tasks, especially when you want to continue work between the Chat view and Agents window, or keep work running after closing an editor window.
 
-If your workflow depends on specific tools or customizations that aren't supported by the Copilot harness, please [let us know](https://github.com/microsoft/vscode/issues). Before moving an existing workflow, check [tool availability](/docs/agents/run/tools.md#manage-tool-availability-for-the-copilot-harness), [MCP configuration compatibility](/docs/agents/reference/mcp-configuration.md#configuration-file), and [hook compatibility](/docs/agent-customization/hooks.md#migrate-hooks-between-harnesses).
+If your workflow depends on specific tools or customizations that aren't supported by the Copilot harness, please [let us know](https://github.com/microsoft/vscode/issues). Before moving an existing workflow, check [tool availability](/docs/agents/run/tools.md#manage-available-tools), [MCP configuration compatibility](/docs/agents/reference/mcp-configuration.md#configuration-file), and [hook compatibility](/docs/agent-customization/hooks.md#migrate-hooks-between-harnesses).
 
 ### Can I keep the Local harness available while migrating?
 

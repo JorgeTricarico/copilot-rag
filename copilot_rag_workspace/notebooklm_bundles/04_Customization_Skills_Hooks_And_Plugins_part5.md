@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-11-19T06:41:23.786145+00:00
-- **Total Palabras**: 443,890 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-19T20:14:50.558109+00:00
+- **Total Palabras**: 443,891 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -67256,8 +67256,8 @@ To use the service again, [connect it from the Agent Customizations editor](#con
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/custom-agents.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/custom-agents
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/custom-agents.md
-- **SHA256_FINGERPRINT**: `16dd326b58abcbc218f25da9de0f9a8da709c58432cf9c9bfa22a54111d1b15c`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:57.840571+00:00
+- **SHA256_FINGERPRINT**: `b4bae9bf9487f81729c09ea4a11ca3fe8fb7c85ae64486d242f7d93199d3b150`
+- **LAST_VERIFIED_UTC**: 2026-11-19T20:14:43.114829+00:00
 ---
 
 **MetaDescription**: Reuse, create, and manage custom agents in VS Code for specialized development roles and workflows.
@@ -67446,7 +67446,7 @@ Save the file, then try the handoff. If you prefer to create the file directly, 
 
 Set `send: true` to submit the handoff prompt automatically. For all properties, including selecting a model for the next step, see the [handoff field reference](/docs/agents/reference/custom-agent-file-reference.md#handoff-fields).
 
-Handoffs switch the active agent in your conversation. To delegate work without switching the main agent, use [subagents](/docs/agents/run/subagents.md#delegate-implementation-to-a-worker).
+Handoffs switch the active agent in your conversation. To delegate work without switching the main agent, [request a subagent](/docs/agents/run/subagents.md#delegate-a-task).
 
 ## Troubleshoot custom agents
 
@@ -67466,7 +67466,7 @@ For unresolved problems, [inspect chat interactions](/docs/agents/agent-troubles
 
 * [Custom agent file reference](/docs/agents/reference/custom-agent-file-reference.md)
 * [Configure AI for your codebase](/docs/agents/guides/customize-copilot-guide.md)
-* [Coordinate research and implementation with subagents](/docs/agents/run/subagents.md#delegate-implementation-to-a-worker)
+* [Create and use a reusable subagent](/docs/agents/run/subagents.md#run-a-custom-agent-as-a-subagent)
 
 
 ---
@@ -68603,8 +68603,8 @@ Yes, you can use BYOK models, including local models, without a Copilot plan and
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/migrate-customizations.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/migrate-customizations
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/migrate-customizations.md
-- **SHA256_FINGERPRINT**: `f2cda2c6dab50a195d79ddd8cbbec171906a681bcc82c594de6f30f8a38664e1`
-- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:47.008081+00:00
+- **SHA256_FINGERPRINT**: `6d8cfffc9bb92d5a58c4bec6af813125818278c759d8f9cb2ba8ada0c8c3813f`
+- **LAST_VERIFIED_UTC**: 2026-11-19T20:14:43.107603+00:00
 ---
 
 **MetaDescription**: Migrate agent customizations and resolve harness compatibility gaps in VS Code.
@@ -69323,7 +69323,7 @@ Review both the coordinator's Markdown instructions and its `tools` list. Prefer
 
 Finding an agent file does not mean that its tool list is compatible with the selected harness. Local delegation references such as `agent/runSubagent` and user-defined tool sets aren't portable Copilot tool configurations. Qualified client-tool references, including `vscode/<tool>`, can be valid when those tools are provided to the Copilot session.
 
-Review each entry in `tools` against the capabilities available in the Copilot session. Select Copilot before [editing the agent file](/docs/agents/reference/custom-agent-file-reference.md#edit-a-custom-agent-file) and use its completions to preserve canonical tool references. Check the [Tools tab](/docs/agents/run/tools.md#manage-tool-availability-for-the-copilot-harness), the [custom agent tool reference](/docs/agents/reference/custom-agent-file-reference.md#tools), and [tool-set migration guidance](#replace-tool-sets). Keep required capabilities explicitly configured. Removing the entire tool restriction is not an equivalent migration.
+Review each entry in `tools` against the capabilities available in the Copilot session. Select Copilot before [editing the agent file](/docs/agents/reference/custom-agent-file-reference.md#edit-a-custom-agent-file) and use its completions to preserve canonical tool references. Check the [Tools tab](/docs/agents/run/tools.md#manage-available-tools), the [custom agent tool reference](/docs/agents/reference/custom-agent-file-reference.md#tools), and [tool-set migration guidance](#replace-tool-sets). Keep required capabilities explicitly configured. Removing the entire tool restriction is not an equivalent migration.
 
 Do not assume that removing a prefix or replacing a tool name fixes every discovery error. These editor hints aren't proof of a runtime tool-discovery failure.
 
@@ -69340,8 +69340,8 @@ A separate report, [microsoft/vscode#342961](https://github.com/microsoft/vscode
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/overview.md
-- **SHA256_FINGERPRINT**: `cf5d9e0541b93eb0d8e4f1478eab0c28405ffb3bcf34691504cfbb6a25b2c652`
-- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:05.849960+00:00
+- **SHA256_FINGERPRINT**: `e929ecef6d042e3e7989bf2ff6a7db5bc8b7f485afc9fae6c9b2c326c58244ca`
+- **LAST_VERIFIED_UTC**: 2026-11-19T20:14:43.115950+00:00
 ---
 
 **MetaDescription**: Find, create, and manage agent customizations for a session's harness, workspace, and environment in VS Code.
@@ -69570,7 +69570,7 @@ The inventory can include customizations from these sources:
 | **Remote host** | User-level configuration and installed customizations on the machine or in the Dev Container that runs the agent. |
 | **Connected client** | Eligible user instructions, skills, custom agents, and contributions from plugins, extensions, and the Agents window. The client can also supply tools and supported MCP configurations. |
 
-Client contributions depend on harness compatibility, discovery, and your enablement and sync choices. Connecting from another machine preserves the existing session's host-owned customizations, but can change the client contributions. [Client tools](/docs/agents/run/tools.md#manage-tool-availability-for-the-copilot-harness) require the client to remain connected.
+Client contributions depend on harness compatibility, discovery, and your enablement and sync choices. Connecting from another machine preserves the existing session's host-owned customizations, but can change the client contributions. [Client tools](/docs/agents/run/tools.md#manage-available-tools) require the client to remain connected.
 
 For Dev Container sessions, configure host-owned customizations in the container's user home or workspace. The outer machine's user configuration isn't automatically inherited.
 

@@ -390,7 +390,7 @@ For continuity across apps and devices, use [[copilot.github_environments]](/doc
 [copilot.agent_merge_caps] monitors a session's pull request and asks the agent to address blockers. It can address reviews, fix failed required checks, resolve conflicts or update a branch, and optionally merge the result. It requires ``chat.agentMerge.enabled`` and a supported session.
 
 > [!CAUTION]
-> [copilot.agent_merge_caps] starts agent turns, changes and syncs the pull request branch, and consumes model requests. Enabling it changes the session to [Autopilot](/docs/agents/run/approvals.md#how-autopilot-works) with [Assisted permissions](/docs/agents/run/approvals.md#permission-levels). Review its options before enabling automatic merging.
+> [copilot.agent_merge_caps] starts agent turns, changes and syncs the pull request branch, and consumes model requests. Enabling it changes the session to [Autopilot](/docs/agents/run/approvals.md#autopilot-mode) with [Assisted permissions](/docs/agents/run/approvals.md#permission-levels). Review its options before enabling automatic merging.
 
 1. Enable ``chat.agentMerge.enabled`` and open a session associated with a pull request.
 
