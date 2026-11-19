@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-18T20:12:53.542819+00:00",
+  "last_sync_utc": "2026-11-19T06:41:23.820433+00:00",
   "total_documents": 2121,
   "documents": {
     "anthropics_skills::README.md": {
@@ -2417,10 +2417,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-browser-tester.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-browser-tester.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "6d553236b52fc49abd6abf3a64b57363e83b2fb9",
-      "content_sha256": "f7e89bd741158720e23cf31603af473d30e6204cb7a1e94adca8e7cc5e5d4261",
-      "word_count": 359,
-      "last_updated_utc": "2026-11-16T05:38:50.148302+00:00",
+      "git_blob_sha": "aae67163840d86a6574fb3c97901f55619b287e4",
+      "content_sha256": "4dd5c0d5cc9aeb414336a733b1a5ce4f568e90e83c6264e5e11149801b59ad4b",
+      "word_count": 415,
+      "last_updated_utc": "2026-11-19T06:41:20.381651+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-browser-tester.agent.md"
     },
     "github_awesome-copilot::agents/gem-code-simplifier.agent.md": {
@@ -2439,10 +2439,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-debugger.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-debugger.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "bcc3848e08e90af7f557a785362fe81b98212d0e",
-      "content_sha256": "cdf9aa3dc12250d0435258703a0da30be0d2e72165697da30ebac37a7cd2f96a",
-      "word_count": 377,
-      "last_updated_utc": "2026-11-16T05:38:50.163446+00:00",
+      "git_blob_sha": "99f7b5dd04128a8e9949909981307014f3d1f328",
+      "content_sha256": "dddbe7a8f3bb28d0a5856421150c7a805c44d6412c98f98b7a1d9d9b606c8cae",
+      "word_count": 360,
+      "last_updated_utc": "2026-11-19T06:41:20.347985+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-debugger.agent.md"
     },
     "github_awesome-copilot::agents/gem-devops.agent.md": {
@@ -2450,10 +2450,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-devops.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-devops.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "8a057353e6c5515f2e1bae0e7ca5a44d85d37812",
-      "content_sha256": "d398751577763b107caefa4418fcbb25afc55144eafe3dbd94e848430ac91fc5",
-      "word_count": 348,
-      "last_updated_utc": "2026-11-16T05:38:50.237525+00:00",
+      "git_blob_sha": "3543f2220797c70e99622b766bdcf8b3411d474c",
+      "content_sha256": "6085acf30d10ff5bbcabe335be14546dd95f9f84bb3e660a7ea9a1187043c055",
+      "word_count": 332,
+      "last_updated_utc": "2026-11-19T06:41:20.332543+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-devops.agent.md"
     },
     "github_awesome-copilot::agents/gem-documentation-writer.agent.md": {
@@ -2461,10 +2461,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-documentation-writer.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-documentation-writer.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "3b12294039d60d64cb41388c814a41390f1bf538",
-      "content_sha256": "1c1b077cd1868e24d2edd9ba1c8bf774b2031766068154124dff5dd121303da6",
-      "word_count": 367,
-      "last_updated_utc": "2026-11-16T05:38:50.233546+00:00",
+      "git_blob_sha": "4fba8de402697c5d9995253821c0cbbaf9ff3cad",
+      "content_sha256": "82519c4d2f919cdf0162746823293dae2fd02b44961f603f231d3f7aed37ede5",
+      "word_count": 354,
+      "last_updated_utc": "2026-11-19T06:41:20.326673+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-documentation-writer.agent.md"
     },
     "github_awesome-copilot::agents/gem-implementer.agent.md": {
@@ -2472,10 +2472,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-implementer.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-implementer.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "299bfa06b10b7e7d99ed32b2f696a4501d3736a3",
-      "content_sha256": "113e7fde6a649fcc7002a54b28137c7098604120fb4a86b559f05a7b773d7780",
-      "word_count": 493,
-      "last_updated_utc": "2026-11-16T05:38:50.278795+00:00",
+      "git_blob_sha": "eb95e33a2152522f0e7972cfa684b542b7268447",
+      "content_sha256": "64ff0cb5537dd75cb379660b32e17cad6ab766d60fc0b527795ff03251bfa5bb",
+      "word_count": 519,
+      "last_updated_utc": "2026-11-19T06:41:20.423406+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-implementer.agent.md"
     },
     "github_awesome-copilot::agents/gem-mobile-tester.agent.md": {
@@ -2483,10 +2483,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-mobile-tester.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-mobile-tester.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "e93382650b394acce4f8ae32c0c5b1ba923a12fd",
-      "content_sha256": "fe7321e9252d99fa9ea2aa27cad00277e963b7e507e3b0c1e963baf628e5b15c",
-      "word_count": 426,
-      "last_updated_utc": "2026-11-16T05:38:50.278451+00:00",
+      "git_blob_sha": "9571adee4fe5bb323c6815a02ed4a39173d0090a",
+      "content_sha256": "80491cb674f03a6468ab423483988849c98552de17cdf2fa9c422078158cc318",
+      "word_count": 412,
+      "last_updated_utc": "2026-11-19T06:41:20.345487+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-mobile-tester.agent.md"
     },
     "github_awesome-copilot::agents/gem-orchestrator.agent.md": {
@@ -2494,10 +2494,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-orchestrator.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-orchestrator.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "b51e278648ec66bb32e95b6c9ca3716e7fe702c4",
-      "content_sha256": "4ddb3df7fa4f323ff5468df06ea9e93f3d5f6e4524c0e3af66c414ea76b71866",
-      "word_count": 1656,
-      "last_updated_utc": "2026-11-16T05:38:50.259523+00:00",
+      "git_blob_sha": "54ac637dde5b3886db5d194c13ca75d054082de9",
+      "content_sha256": "582a75375a2e088daadbbfea2ececbd3b2948503e34a15f70e6ad24f9f8977be",
+      "word_count": 1427,
+      "last_updated_utc": "2026-11-19T06:41:20.348535+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-orchestrator.agent.md"
     },
     "github_awesome-copilot::agents/gem-planner.agent.md": {
@@ -2505,10 +2505,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-planner.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-planner.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "c98f543b59ef06cf9bc04ac66e4df8a32ca2b2a2",
-      "content_sha256": "9cd2f16ca5c5c79b924ec708a89a7c4f9e85f5294547e8b4618e97ccd5d38c6a",
-      "word_count": 1172,
-      "last_updated_utc": "2026-11-16T05:38:50.331606+00:00",
+      "git_blob_sha": "6723080f54be8875eff8c903d63c99d69faa33ef",
+      "content_sha256": "6ba94f61223c65ec9db4fc0a8e94c1ecbf156334ee148ec18e0abe5f989d3dd1",
+      "word_count": 1158,
+      "last_updated_utc": "2026-11-19T06:41:20.351104+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-planner.agent.md"
     },
     "github_awesome-copilot::agents/gem-researcher.agent.md": {
@@ -2516,10 +2516,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-researcher.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-researcher.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "1e5583b02dfb022207079d3255e8bb60a116e362",
-      "content_sha256": "9775feb74511c26ad40a89e592c575febf892b7313fd84d8d7394fb584aa1de1",
-      "word_count": 529,
-      "last_updated_utc": "2026-11-16T05:38:50.314770+00:00",
+      "git_blob_sha": "c2c86864860ccb73356250d460c7df87379ce519",
+      "content_sha256": "93e20685e99758519a6b3760d194090f0b98b6ac6c0502cbe4839dff5124c556",
+      "word_count": 498,
+      "last_updated_utc": "2026-11-19T06:41:20.424415+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-researcher.agent.md"
     },
     "github_awesome-copilot::agents/gem-reviewer.agent.md": {
@@ -2527,10 +2527,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-reviewer.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-reviewer.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "d1e8eb2d4f265bec687539b6a0664ec5cadb9f3e",
-      "content_sha256": "e5094432c9e12ad94005938e73ecc01e0f23e349af27bc128daba8026bdc4400",
-      "word_count": 725,
-      "last_updated_utc": "2026-11-16T05:38:50.372629+00:00",
+      "git_blob_sha": "2df8afc18da946087956c008d828cbe86aace4d0",
+      "content_sha256": "f5ef51e351e3e94778e1e2d235b75f2ff9cdf7b3a85d1563e7e0bc46c4c90d7e",
+      "word_count": 748,
+      "last_updated_utc": "2026-11-19T06:41:20.421393+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-reviewer.agent.md"
     },
     "github_awesome-copilot::agents/gem-skill-creator.agent.md": {
@@ -2538,10 +2538,10 @@
       "source_url": "https://raw.githubusercontent.com/github/awesome-copilot/main/agents/gem-skill-creator.agent.md",
       "canonical_web_url": "https://github.com/github/awesome-copilot/blob/main/agents/gem-skill-creator.agent.md",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "b92180cd91123c9152346bcb46ad2f4514fa108c",
-      "content_sha256": "33ff40df90b1b62e646717c29eac0ce906350ed668bb95e6da6dafd133185a82",
-      "word_count": 339,
-      "last_updated_utc": "2026-11-16T05:38:50.391010+00:00",
+      "git_blob_sha": "a3da2d666184ab8840876d829945f87deddef6a4",
+      "content_sha256": "990869279ab16bd07b61a3626c500118ab9bf6463ff0e7d7ebeaf1ed89a90600",
+      "word_count": 336,
+      "last_updated_utc": "2026-11-19T06:41:20.445205+00:00",
       "local_clean_path": "clean_sources/github_awesome-copilot__agents_gem-skill-creator.agent.md"
     },
     "github_awesome-copilot::agents/gilfoyle.agent.md": {
@@ -21272,9 +21272,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "09a72fa8dbf6bf18fcce2b1a2711098db267a7b6ee2174bbd6bdf4f37c8099a7",
+      "content_sha256": "477a693344981706276025dc0ae274c485bac0a3e1883942a566bb8d2a941ddb",
       "word_count": 19877,
-      "last_updated_utc": "2026-11-18T20:12:52.337272+00:00",
+      "last_updated_utc": "2026-11-19T06:41:22.710380+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -21283,9 +21283,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "09a72fa8dbf6bf18fcce2b1a2711098db267a7b6ee2174bbd6bdf4f37c8099a7",
+      "content_sha256": "477a693344981706276025dc0ae274c485bac0a3e1883942a566bb8d2a941ddb",
       "word_count": 19877,
-      "last_updated_utc": "2026-11-18T20:12:52.306397+00:00",
+      "last_updated_utc": "2026-11-19T06:41:22.660479+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -22745,10 +22745,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_147.md",
       "canonical_web_url": "https://code.visualstudio.com/updates/v1_147",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
-      "git_blob_sha": "628b3cc04dc3e1a04994c6abc6b5bccbb384333f",
-      "content_sha256": "63145c311de7b03c43ef2fecb6bf0465bc62e016b0b9f39bff0b568df194ae46",
-      "word_count": 4814,
-      "last_updated_utc": "2026-11-18T20:12:48.831114+00:00",
+      "git_blob_sha": "75e93168470c18d6dfac1871adaeeb32f8d7a989",
+      "content_sha256": "cebd0059d77e6d11a9304b2b234e096583a22333e51679ee8d16c73560549778",
+      "word_count": 4896,
+      "last_updated_utc": "2026-11-19T06:41:18.562969+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__release-notes_v1_147.md"
     },
     "microsoft_vscode-docs::release-notes/v1_148.md": {
@@ -22855,10 +22855,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts",
       "canonical_web_url": "https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts",
       "bundle_name": "06_Extension_AI_APIs_And_Copilot_SDK",
-      "git_blob_sha": "2a0a73aaff836d103f7bbd7b09aa489258ce6f22",
-      "content_sha256": "61f4983577f0a81c9ef7ebbe7560b9edc19158357aafbd18f9dca5408aa3eff0",
-      "word_count": 1905,
-      "last_updated_utc": "2026-11-09T22:06:25.903957+00:00",
+      "git_blob_sha": "db409ace9f96751d83aae0f9470e2740f6779be3",
+      "content_sha256": "3066452f47ce6447869c17085e1e6ab26598d5a1e3024d0cadd317daec582e56",
+      "word_count": 1976,
+      "last_updated_utc": "2026-11-19T06:41:19.251114+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode__src_vscode-dts_vscode.proposed.chatArtifactIntegrations.d.ts.md"
     },
     "microsoft_vscode::src/vscode-dts/vscode.proposed.chatContextProvider.d.ts": {
@@ -23318,9 +23318,9 @@
       "canonical_web_url": "https://github.blog/changelog/label/copilot/feed/",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
       "git_blob_sha": null,
-      "content_sha256": "f4b6430249228043e0bed7f1b7ac95ce717b90dfcd9c694dffc59f1a72202e32",
-      "word_count": 678,
-      "last_updated_utc": "2026-11-18T20:12:51.650885+00:00",
+      "content_sha256": "92be5b3b64c24928c4b5570d787980d0f8e152fbab24bba88543b0f2dfb65ac2",
+      "word_count": 670,
+      "last_updated_utc": "2026-11-19T06:41:21.910391+00:00",
       "local_clean_path": "clean_sources/web__github_changelog_copilot_rss.md"
     },
     "web::vscode_api_contribution_points": {

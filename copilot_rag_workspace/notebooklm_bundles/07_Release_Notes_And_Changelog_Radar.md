@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-18T20:12:53.534127+00:00
-- **Total Palabras**: 20,710 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-19T06:41:23.812305+00:00
+- **Total Palabras**: 20,784 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -376,8 +376,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_147.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_147
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_147.md
-- **SHA256_FINGERPRINT**: `63145c311de7b03c43ef2fecb6bf0465bc62e016b0b9f39bff0b568df194ae46`
-- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.831114+00:00
+- **SHA256_FINGERPRINT**: `cebd0059d77e6d11a9304b2b234e096583a22333e51679ee8d16c73560549778`
+- **LAST_VERIFIED_UTC**: 2026-11-19T06:41:18.562969+00:00
 ---
 
 **MetaDescription**: Learn what's new in Visual Studio Code 1.147
@@ -630,6 +630,16 @@ Select **Mark Up** on any image attachment in the chat input to crop it, draw ar
 ![Screenshot showing an image pill and two file pills inline with the prompt text in the chat input, each next to the instruction it belongs to.](images/1_147/chat-inline-attachments.webp)
 
 Inline attachments are enabled by default in Insiders and off by default in Stable.
+
+## MCP
+
+### Skills over MCP
+
+[Skills over MCP](https://github.com/modelcontextprotocol/ext-skills) (SEP-2640) is now enabled by default, allowing MCP servers to automatically provide skills to the model.
+
+The first time you connect to an MCP server that provides skills, you are asked to allow them into your model context. Afterwards, the model can interact with these skills and you can see them on the **Skills** tab of the Agent Customizations editor.
+
+You can opt out of skills over MCP by disabling the ``chat.agentHost.mcpSkills.enabled`` setting.
 
 ## Browser integration
 
@@ -2410,11 +2420,25 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `f4b6430249228043e0bed7f1b7ac95ce717b90dfcd9c694dffc59f1a72202e32`
-- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:51.650885+00:00
+- **SHA256_FINGERPRINT**: `92be5b3b64c24928c4b5570d787980d0f8e152fbab24bba88543b0f2dfb65ac2`
+- **LAST_VERIFIED_UTC**: 2026-11-19T06:41:21.910391+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
+
+## Connect Supabase, Box, Calendly, and more to Copilot
+- **Date**: Wed, 18 Nov 2026 22:04:50 +0000
+- **URL**: https://github.blog/changelog/2026-11-18-connect-supabase-box-calendly-and-more-to-copilot
+
+You can now connect eight more services to Copilot using GitHub-verified MCP servers, or connectors, available in public preview. They join more than 25 services you can already connect, like...
+The post Connect Supabase, Box, Calendly, and more to Copilot appeared first on The GitHub Blog .
+
+## Gemini 4 Neon in GitHub Copilot
+- **Date**: Wed, 18 Nov 2026 21:49:21 +0000
+- **URL**: https://github.blog/changelog/2026-11-18-gemini-4-neon-in-github-copilot
+
+Gemini 4 Neon is now generally available in GitHub Copilot. It is designed for agentic coding, multistep tool use, and knowledge work. According to Google, Gemini 4 Neon delivers quality...
+The post Gemini 4 Neon in GitHub Copilot appeared first on The GitHub Blog .
 
 ## Customize GitHub Copilot for your team
 - **Date**: Wed, 18 Nov 2026 16:00:13 +0000
@@ -2471,17 +2495,3 @@ The post GitHub Copilot in JetBrains, Ignite releases appeared first on The GitH
 
 Enterprises can now stream GitHub Copilot agent activity directly into Microsoft Agent 365. This lets you bring audit data from across GitHub Copilot clients into Microsoft’s agent control plane, where...
 The post Monitor GitHub Copilot activity through Microsoft Agent 365 appeared first on The GitHub Blog .
-
-## GitHub Copilot CLI adds Microsoft Entra sign-in as a preview
-- **Date**: Tue, 17 Nov 2026 18:00:35 +0000
-- **URL**: https://github.blog/changelog/2026-11-17-github-copilot-cli-adds-microsoft-entra-sign-in-as-a-preview
-
-GitHub Copilot CLI now supports Microsoft Entra authentication in public preview. You can sign in with your Microsoft Entra account to silently authenticate to a linked GitHub Enterprise Managed User...
-The post GitHub Copilot CLI adds Microsoft Entra sign-in as a preview appeared first on The GitHub Blog .
-
-## Track Copilot code review outcomes in Repository insights
-- **Date**: Tue, 17 Nov 2026 18:00:35 +0000
-- **URL**: https://github.blog/changelog/2026-11-17-track-copilot-code-review-outcomes-in-repository-insights
-
-You can now see how Copilot code review feedback lands in each repository. A new “Repository insights” page, the first item in a repository’s Insights tab, brings Copilot code review...
-The post Track Copilot code review outcomes in Repository insights appeared first on The GitHub Blog .

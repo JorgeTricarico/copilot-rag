@@ -249,6 +249,16 @@ Select **Mark Up** on any image attachment in the chat input to crop it, draw ar
 
 Inline attachments are enabled by default in Insiders and off by default in Stable.
 
+## MCP
+
+### Skills over MCP
+
+[Skills over MCP](https://github.com/modelcontextprotocol/ext-skills) (SEP-2640) is now enabled by default, allowing MCP servers to automatically provide skills to the model.
+
+The first time you connect to an MCP server that provides skills, you are asked to allow them into your model context. Afterwards, the model can interact with these skills and you can see them on the **Skills** tab of the Agent Customizations editor.
+
+You can opt out of skills over MCP by disabling the ``chat.agentHost.mcpSkills.enabled`` setting.
+
 ## Browser integration
 
 ### Let agents use your browser with browser use (Preview)

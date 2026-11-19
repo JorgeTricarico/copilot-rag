@@ -1,5 +1,19 @@
 # GitHub Copilot Official Changelog Feed
 
+## Connect Supabase, Box, Calendly, and more to Copilot
+- **Date**: Wed, 18 Nov 2026 22:04:50 +0000
+- **URL**: https://github.blog/changelog/2026-11-18-connect-supabase-box-calendly-and-more-to-copilot
+
+You can now connect eight more services to Copilot using GitHub-verified MCP servers, or connectors, available in public preview. They join more than 25 services you can already connect, like...
+The post Connect Supabase, Box, Calendly, and more to Copilot appeared first on The GitHub Blog .
+
+## Gemini 4 Neon in GitHub Copilot
+- **Date**: Wed, 18 Nov 2026 21:49:21 +0000
+- **URL**: https://github.blog/changelog/2026-11-18-gemini-4-neon-in-github-copilot
+
+Gemini 4 Neon is now generally available in GitHub Copilot. It is designed for agentic coding, multistep tool use, and knowledge work. According to Google, Gemini 4 Neon delivers quality...
+The post Gemini 4 Neon in GitHub Copilot appeared first on The GitHub Blog .
+
 ## Customize GitHub Copilot for your team
 - **Date**: Wed, 18 Nov 2026 16:00:13 +0000
 - **URL**: https://github.blog/changelog/2026-11-18-customize-github-copilot-for-your-team
@@ -55,17 +69,3 @@ The post GitHub Copilot in JetBrains, Ignite releases appeared first on The GitH
 
 Enterprises can now stream GitHub Copilot agent activity directly into Microsoft Agent 365. This lets you bring audit data from across GitHub Copilot clients into Microsoft’s agent control plane, where...
 The post Monitor GitHub Copilot activity through Microsoft Agent 365 appeared first on The GitHub Blog .
-
-## GitHub Copilot CLI adds Microsoft Entra sign-in as a preview
-- **Date**: Tue, 17 Nov 2026 18:00:35 +0000
-- **URL**: https://github.blog/changelog/2026-11-17-github-copilot-cli-adds-microsoft-entra-sign-in-as-a-preview
-
-GitHub Copilot CLI now supports Microsoft Entra authentication in public preview. You can sign in with your Microsoft Entra account to silently authenticate to a linked GitHub Enterprise Managed User...
-The post GitHub Copilot CLI adds Microsoft Entra sign-in as a preview appeared first on The GitHub Blog .
-
-## Track Copilot code review outcomes in Repository insights
-- **Date**: Tue, 17 Nov 2026 18:00:35 +0000
-- **URL**: https://github.blog/changelog/2026-11-17-track-copilot-code-review-outcomes-in-repository-insights
-
-You can now see how Copilot code review feedback lands in each repository. A new “Repository insights” page, the first item in a repository’s Insights tab, brings Copilot code review...
-The post Track Copilot code review outcomes in Repository insights appeared first on The GitHub Blog .

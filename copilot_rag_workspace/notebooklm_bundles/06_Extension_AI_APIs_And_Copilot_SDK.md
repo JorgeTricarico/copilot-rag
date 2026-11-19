@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
-- **Generado (UTC)**: 2026-11-17T20:39:13.090216+00:00
-- **Total Palabras**: 125,565 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-19T06:41:23.806666+00:00
+- **Total Palabras**: 125,636 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -19141,8 +19141,8 @@ declare module 'vscode' {
 # DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts
-- **SHA256_FINGERPRINT**: `61f4983577f0a81c9ef7ebbe7560b9edc19158357aafbd18f9dca5408aa3eff0`
-- **LAST_VERIFIED_UTC**: 2026-11-09T22:06:25.903957+00:00
+- **SHA256_FINGERPRINT**: `3066452f47ce6447869c17085e1e6ab26598d5a1e3024d0cadd317daec582e56`
+- **LAST_VERIFIED_UTC**: 2026-11-19T06:41:19.251114+00:00
 ---
 
 # VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatArtifactIntegrations.d.ts`
@@ -19167,6 +19167,16 @@ declare module 'vscode' {
 		readonly icon: ThemeIcon;
 		readonly description?: string;
 		readonly detailsId: string;
+	}
+
+	/** The presentation of the artifact as a whole. */
+	export interface ChatArtifactMainPresentation extends ChatArtifactPresentation {
+		/**
+		 * Labels the artifact where it shows as a pill of its own, rather than as a row of a pill's dropdown, which shows
+		 * {@link ChatArtifactPresentation.label label}. Keep it short, such as its kind and number: `Papercut #7`.
+		 * One line of plain text. Defaults to the label.
+		 */
+		readonly pillLabel?: string;
 	}
 
 	export interface ChatArtifactSection extends ChatArtifactPresentation {
@@ -19244,7 +19254,7 @@ declare module 'vscode' {
 	/** A complete presentation snapshot; replacing it and firing onDidChange updates every observing surface. */
 	export interface ChatArtifactIntegrationState {
 		readonly availability?: ChatArtifactAvailability;
-		readonly main?: ChatArtifactPresentation;
+		readonly main?: ChatArtifactMainPresentation;
 		/**
 		 * Gives this artifact a pill of its own, shared with every other artifact assigned the same ID, including those of
 		 * other providers, and named by {@link ChatArtifactIntegrationProvider.groupLabel}. Without one, the artifact is listed
@@ -19421,7 +19431,7 @@ declare module 'vscode' {
 	export type ChatArtifactMatchResult = ChatArtifactResourceMatch | {
 		readonly kind: 'authenticationRequired';
 		readonly reason: string;
-		readonly main: ChatArtifactPresentation;
+		readonly main: ChatArtifactMainPresentation;
 	};
 
 	export interface ChatArtifactIntegrationProvider {
