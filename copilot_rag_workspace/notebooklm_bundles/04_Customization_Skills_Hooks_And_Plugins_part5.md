@@ -1,5 +1,5 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-11-19T20:14:50.558109+00:00
+- **Generado (UTC)**: 2026-11-20T19:47:44.744352+00:00
 - **Total Palabras**: 443,891 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
@@ -69340,8 +69340,8 @@ A separate report, [microsoft/vscode#342961](https://github.com/microsoft/vscode
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/overview.md
-- **SHA256_FINGERPRINT**: `e929ecef6d042e3e7989bf2ff6a7db5bc8b7f485afc9fae6c9b2c326c58244ca`
-- **LAST_VERIFIED_UTC**: 2026-11-19T20:14:43.115950+00:00
+- **SHA256_FINGERPRINT**: `b901b23764a7b8ca4bf98e5318d9e6b979d98bcdca443e96d87ae936390c4034`
+- **LAST_VERIFIED_UTC**: 2026-11-20T19:47:38.786553+00:00
 ---
 
 **MetaDescription**: Find, create, and manage agent customizations for a session's harness, workspace, and environment in VS Code.
@@ -69531,7 +69531,7 @@ Changes made from one session's editor aren't necessarily limited to that sessio
 
 Available global, workspace, or session enablement actions depend on the customization type and harness. Check the action's scope before applying it. A global action isn't confined to the selected session, even when the customization is stored in the workspace.
 
-For detailed controls, see [plugin enablement](/docs/agent-customization/agent-plugins.md#enable-or-disable-plugins), [MCP server enablement](/docs/agents/run/manage-mcp-servers.md#enable-or-disable-mcp-servers), and [tool availability](/docs/agents/run/tools.md#manage-available-tools).
+For detailed controls, see [plugin enablement](/docs/agent-customization/agent-plugins.md#enable-or-disable-plugins), [MCP server enablement](/docs/agents/run/manage-mcp-servers.md#control-or-remove-a-server), and [tool availability](/docs/agents/run/tools.md#manage-available-tools).
 
 ## Troubleshoot customization issues
 

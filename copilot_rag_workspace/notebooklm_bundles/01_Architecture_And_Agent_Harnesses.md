@@ -1,5 +1,5 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-11-19T20:14:50.414799+00:00
+- **Generado (UTC)**: 2026-11-20T19:47:44.568158+00:00
 - **Total Palabras**: 25,908 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
@@ -71,8 +71,8 @@ When auditing, ensure docs accurately cover these areas:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/best-practices.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/best-practices
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/best-practices.md
-- **SHA256_FINGERPRINT**: `ac311bde254bd6bea595f30d97ae86bdf73a3d98e0a936473885e7d9c5e3cbaf`
-- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:44.613034+00:00
+- **SHA256_FINGERPRINT**: `c7b6ab604bcbef0a82c872c4239c8f8ca461fbcd2a3f087e82fe7ee088855bca`
+- **LAST_VERIFIED_UTC**: 2026-11-20T19:47:38.702832+00:00
 ---
 
 **MetaDescription**: Use AI effectively in VS Code by choosing the right workflow, writing focused prompts, and reviewing results.
@@ -201,7 +201,7 @@ AI-generated code can contain bugs, security issues, or subtle logic errors. Alw
 
 * **Run tests after AI changes.** Include test cases in your prompt so the AI can verify its own work. If the AI doesn't run tests automatically, run them yourself before moving on.
 
-* **Use checkpoints to rewind file edits and chat.** If the agent goes off track, use [checkpoints](/docs/agents/run/review-code-edits.md#edit-requests-and-restore-checkpoints) to restore affected workspace files and chat history. Checkpoints don't reverse completed commands or changes to external services.
+* **Use checkpoints to rewind file edits and chat.** If the agent goes off track, use [checkpoints](/docs/agents/run/review-code-edits.md#restore-a-checkpoint) to restore affected workspace files and chat history. Checkpoints don't reverse completed commands or changes to external services.
 
 * **Check for security issues.** Review AI-generated code for common vulnerabilities such as injection flaws, hardcoded secrets, or missing input validation. Avoid pasting credentials or sensitive data into prompts.
 
@@ -1264,8 +1264,8 @@ Review the tool name and inputs before you approve a call. Learn more about [tru
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/trust-and-safety.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/trust-and-safety
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/trust-and-safety.md
-- **SHA256_FINGERPRINT**: `5b0e54a8dabc59bcf33d3331bc657786576c4e84fa16e0758d36dd16ee1034f5`
-- **LAST_VERIFIED_UTC**: 2026-11-19T20:14:43.130464+00:00
+- **SHA256_FINGERPRINT**: `5aaefaae7e1d80c551bcb6c9d01ecd60f31cd84bc200f16e381713a09c3a6715`
+- **LAST_VERIFIED_UTC**: 2026-11-20T19:47:38.741348+00:00
 ---
 
 **MetaDescription**: Understand AI limitations, data handling, approvals, and isolation in VS Code.
@@ -1297,7 +1297,7 @@ Treat AI-generated output as a draft that requires your judgment. For nondetermi
 
 Agents can read files, edit code, run terminal commands, and call external services. VS Code's trust model layers several control mechanisms so you remain in charge of what reaches your codebase:
 
-* **Review before integrating.** Agents can save edits directly in the session folder or worktree. Inspect the changes in a diff before you commit, merge, or create a pull request. For supported sessions, [checkpoints](/docs/agents/run/review-code-edits.md#edit-requests-and-restore-checkpoints) restore affected workspace files and chat to an earlier point.
+* **Review before integrating.** Agents can save edits directly in the session folder or worktree. Inspect the changes in a diff before you commit, merge, or create a pull request. For supported sessions, [checkpoints](/docs/agents/run/review-code-edits.md#restore-a-checkpoint) restore affected workspace files and chat to an earlier point.
 * **Review actions that need confirmation.** With [Manual permissions](/docs/agents/run/approvals.md#permission-levels) in Copilot sessions, runtime decisions, rules, and saved approvals can permit actions automatically. Other actions require confirmation. [Sensitive-file approval](/docs/agents/run/review-code-edits.md#require-approval-before-sensitive-edits) adds review for supported edits, but isn't a filesystem restriction or a guarantee of prompts in every permission mode.
 * **Constrain autonomy.** Choose the [available tools](/docs/agents/run/tools.md#manage-available-tools) and the [permission level](/docs/agents/run/approvals.md#permission-levels) appropriate for the task. Making a tool available and approving a specific use of that tool are separate decisions.
 * **Restrict process access.** [Agent sandboxing](#agent-sandboxing) limits the file system and network resources that covered processes can access. It complements approval checks rather than replacing them.

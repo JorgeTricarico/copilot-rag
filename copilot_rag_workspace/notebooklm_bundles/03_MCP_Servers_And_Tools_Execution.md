@@ -1,5 +1,5 @@
 # COMPENDIO RAG NOTEBOOKLM: 03_MCP_Servers_And_Tools_Execution
-- **Generado (UTC)**: 2026-11-19T20:14:50.415594+00:00
+- **Generado (UTC)**: 2026-11-20T19:47:44.569094+00:00
 - **Total Palabras**: 8,159 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
@@ -156,8 +156,8 @@ For editing connections, server output, and sharing configuration, see [Manage a
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/mcp-configuration.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/mcp-configuration
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/mcp-configuration.md
-- **SHA256_FINGERPRINT**: `f0ed8e4fa70a71268863137646e1db849c0b7fab37bbbacbfebe7c696c39ccc8`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:59.031267+00:00
+- **SHA256_FINGERPRINT**: `27e576b1f9a02bbd015fca1261d141982212e179567bd15389610b8c583cadfd`
+- **LAST_VERIFIED_UTC**: 2026-11-20T19:47:38.659936+00:00
 ---
 
 **MetaDescription**: Configure MCP servers for the Copilot harness with portable files, authentication, and tool controls.
@@ -317,7 +317,7 @@ These settings are relevant to Copilot setup or its connected editor. They don't
 | ``chat.agent.sandbox.mcpServers`` | Configure MCP server inclusion in the [Copilot harness sandbox](/docs/agents/run/agent-sandboxing.md). Review the required session sandbox settings; this is separate from Local per-server sandboxing. |
 | ``accessibility.verbosity.mcpServerConfiguration`` | Control whether the MCP configuration form announces information about opening Accessibility Help. |
 
-Copilot reads its native configuration independently of the editor's discovery setting. The editor's autostart and sampling-model settings also don't control the native runtime. Use [server enablement](/docs/agents/run/manage-mcp-servers.md#enable-or-disable-mcp-servers) to prevent a server from starting, and review the [Copilot sampling approval flow](/api/extension-guides/ai/mcp.md#sampling) for model requests.
+Copilot reads its native configuration independently of the editor's discovery setting. The editor's autostart and sampling-model settings also don't control the native runtime. Use [server enablement](/docs/agents/run/manage-mcp-servers.md#control-or-remove-a-server) to prevent a server from starting, and review the [Copilot sampling approval flow](/api/extension-guides/ai/mcp.md#sampling) for model requests.
 
 For the full settings list, see the [AI Settings Reference](/docs/agents/reference/ai-settings.md). Settings for the deprecated Local path are listed under [editor-managed settings](#editor-managed-settings).
 

@@ -78,12 +78,12 @@ Use the following links to jump to the settings for a specific area:
 
 | Setting and Description | Default |
 |------------------------|---------------|
-| ``chat.editor.workingSet.enabled`` `feature(editor-working-set)`<br/>Show the [working set](/docs/agents/run/review-code-edits.md#review-agent-changes) for Copilot harness sessions in the editor window, with **Keep**, **Undo**, and **View All Edits** controls. Turn off to show the Changes pill instead. Does not enable the working set for Claude or Codex. In the Agents window, this setting is fixed to `false`. | `true` |
+| ``chat.editor.workingSet.enabled`` `feature(editor-working-set)`<br/>Show the [working set](/docs/agents/run/review-code-edits.md#review-pending-edits-with-the-working-set) for Copilot harness sessions in the editor window, with **Keep**, **Undo**, and **View All Edits** controls. Turn off to show the Changes pill instead. Does not enable the working set for Claude or Codex. In the Agents window, this setting is fixed to `false`. | `true` |
 | ``chat.artifacts.enabled`` `feature(agent-artifacts)`<br/>Show the [artifacts panel](/docs/agents/run/artifacts.md) in chat. | `false` |
 | ``chat.artifacts.rules.byMimeType`` `feature(agent-artifacts)`<br/>Rules for extracting artifacts from tool results by MIME type pattern. Maps MIME type patterns (such as `"image/*"`) to a group configuration. | `{ "image/*": { "groupName": "Screenshots", "onlyShowGroup": true } }` |
 | ``chat.artifacts.rules.byFilePath`` `feature(agent-artifacts)`<br/>Rules for extracting artifacts from written files by file path glob pattern. Maps glob patterns (such as `"**/*plan*.md"`) to a group configuration. | `{ "**/*plan*.md": { "groupName": "Plans" } }` |
 | ``chat.artifacts.rules.byMemoryFilePath`` `feature(agent-artifacts)`<br/>Rules for extracting artifacts from memory tool writes by memory file path glob pattern. Maps glob patterns to a group configuration. | `{ "**/*plan*.md": { "groupName": "Plans" } }` |
-| ``chat.checkpoints.enabled`` <br/>Enable or disable [checkpoints](/docs/agents/run/review-code-edits.md#edit-requests-and-restore-checkpoints) in the chat. | `true` |
+| ``chat.checkpoints.enabled`` <br/>Enable or disable [checkpoints](/docs/agents/run/review-code-edits.md#restore-a-checkpoint) in the chat. | `true` |
 | ``chat.checkpoints.showFileChanges`` <br/>Show a summary of file changes at the end of each chat request. | `false` |
 | ``chat.editRequests``<br/>Enable or disable [editing previous chat requests](/docs/agents/run/review-code-edits.md#edit-a-previous-chat-request). | `"inline"` |
 | ``chat.editing.confirmEditRequestRemoval``<br/>Ask for confirmation before undoing an edit. | `true` |
