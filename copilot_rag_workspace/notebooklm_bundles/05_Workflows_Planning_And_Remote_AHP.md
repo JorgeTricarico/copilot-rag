@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-11-20T19:47:44.770078+00:00
-- **Total Palabras**: 163,480 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-21T06:20:18.711599+00:00
+- **Total Palabras**: 164,199 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -273,8 +273,8 @@ For a complete list of slash commands for Copilot CLI, see [Cli Command Referenc
 # DOCUMENT_SOURCE: github_docs::content/copilot/reference/copilot-cli-reference/cli-command-reference.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-command-reference.md
-- **SHA256_FINGERPRINT**: `b837ffdfffbca4f7e7f4fa9584f34d767d4f35a1a07ebf6540517fa972d7615b`
-- **LAST_VERIFIED_UTC**: 2026-11-20T19:47:39.239800+00:00
+- **SHA256_FINGERPRINT**: `8a68a52d03491209a4789e2a719aec7cfc2eb2c662f29f9f2ec77c37287aaeff`
+- **LAST_VERIFIED_UTC**: 2026-11-21T06:20:14.639485+00:00
 ---
 
 **title**: GitHub Copilot CLI command reference
@@ -1949,6 +1949,12 @@ When a shell command needs tool approval and access to paths outside the allowed
 
 Use `/reset-allowed-tools` to clear session approvals for the current session.
 
+### Session approvals on resume
+
+When you resume a session with `copilot --resume`, the CLI restores approvals you granted for the rest of that session for commands, tools, URLs, parent-domain scopes, and file paths. It also restores session denials, so requests covered by these decisions do not prompt again.
+
+Directory approvals and approvals granted automatically by the safety review or a policy are not restored. Current managed policy still applies.
+
 ### Parent-domain URL approvals
 
 URL approval prompts can offer a parent-domain scope, such as `https://*.example.com`, in addition to the exact origin. This approves every subdomain of the registrable domain, such as `api.example.com` and `flow.example.com`, for the rest of the session.
@@ -1985,6 +1991,8 @@ Shell commands are analyzed before execution to identify potentially dangerous p
 
 High-risk commands can trigger additional warnings and approval prompts. Whether a request needs your approval depends on the permissions in effect.
 
+The Bash tool identifies executables, file write redirections, and possible URLs in command arguments. Read-only commands such as `cat` and `ls` are automatically approved, subject to applicable restrictions. If a script cannot be parsed, the CLI shows a warning and always prompts for approval of the full script. Allow rules and session approvals do not apply to that request.
+
 When sandboxing is enabled and the **Allow sandbox bypass** setting is on (the default), a synchronous shell command that's blocked by the sandbox's filesystem or network policy prompts you to re-run it outside the sandbox—no model round-trip is required. Approving the prompt re-runs the command and returns its output. Declining keeps the sandboxed (blocked) result.
 
 A sandbox bypass prompt also offers a **Yes, and disable the sandbox for the rest of this session** option. Choosing it turns off sandboxing for every remaining command in the current session, not just the command being approved. This only applies to the current session—starting a new session with `/new` sandboxes commands again, and the option has no effect on the saved `sandbox` configuration setting or on other running sessions.
@@ -1998,6 +2006,14 @@ A command that fails with an `EPERM` or `EACCES` diagnostic naming a sandbox-blo
 When a denial is caused by a symlink whose target escapes what the sandbox policy grants, the denial explains that the granted path's link points outside the grant and names the real target, so you know exactly which path to add to your sandbox policy.
 
 For more information, see [Configuring Local Sandbox Settings](https://docs.github.com/en/copilot/how-tos/cloud-and-local-sandboxes/configuring-local-sandbox-settings#allowing-sandbox-bypass).
+
+#### File and subagent permissions
+
+By default, file access is limited to the current working directory and its subdirectories, and the system temporary directory. File edits require `write` permission or explicit approval, except for session workspace files such as plans and checkpoints, which are automatically approved. A file edit that also needs access to a path outside the allowed directories can request both approvals in a single prompt.
+
+When sandboxing is enabled and bypass is allowed, `apply_patch` and the `view`, `create`, `str_replace`, and `insert` operations of `str_replace_editor` prompt to run outside the sandbox if its filesystem policy denies the path. Approval applies once, and the timeline marks the operation as a sandbox bypass.
+
+Subagents inherit permissions from the parent session and cannot escalate them.
 
 #### Environment variable denylist
 
@@ -2103,8 +2119,8 @@ OTel is off by default with zero overhead. It activates when any of the followin
 # DOCUMENT_SOURCE: github_docs::content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md
-- **SHA256_FINGERPRINT**: `26b3d4bc98310d6a3e6f29b2ed6962c93c0876591943aa6ea29efe9fc8c0e0e3`
-- **LAST_VERIFIED_UTC**: 2026-11-20T19:47:39.270229+00:00
+- **SHA256_FINGERPRINT**: `476b6f709ee8a5c21c9b123c33c3ff17179cf79c5c9da232bdca69e626d928b2`
+- **LAST_VERIFIED_UTC**: 2026-11-21T06:20:14.649332+00:00
 ---
 
 **title**: GitHub Copilot CLI configuration directory
@@ -2832,6 +2848,8 @@ Repository defaults are optional: set `enabledPlugins` entries to `false` in rep
 
 These settings apply across all your sessions and repositories. You can use the `/settings` slash command to run an interactive dialog, or use specific slash commands to update individual values, or edit this file directly.
 
+Only settings with a public description can be changed with `/settings KEY VALUE`. Array and record settings, and some security-sensitive keys such as `statusLine.command`, must be edited through the dialog or directly in `settings.json`.
+
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | `allowedUrls` | `string[]` | `[]` | URLs or domains allowed without prompting. Supports exact URLs, domain patterns, and wildcard subdomains (for example, `"*.github.com"`). |
@@ -2848,7 +2866,7 @@ These settings apply across all your sessions and repositories. You can use the 
 | `compactPaste` | `boolean` | `true` | Collapse large pastes (more than 10 lines) into compact tokens. In shell mode or after a leading slash command, pastes are inserted in full. |
 | `companyAnnouncements` | `string[]` | `[]` | Custom messages shown randomly on startup. One message is randomly selected each time the CLI starts. Useful for team announcements or reminders. |
 | `connectors` | `boolean` | `true` | Enable Copilot Connectors when available. Set to `false` to disable. |
-| `continueOnAutoMode` | `boolean` | `false` | Automatically switch to auto mode when rate-limited. When `true`, eligible rate limit errors trigger an automatic switch to auto mode and retry. Does not apply to global rate limits or BYOK providers. |
+| `continueOnAutoMode` | `boolean` | `false` | Automatically switch to auto mode and retry when a per-model, weekly, or integration rate limit is reached. Also applies to Copilot rate limit errors without a specific code. Does not apply to global rate limits or BYOK providers. |
 | `copyOnSelect` | `boolean` | `true` (macOS), `false` (other) | Automatically copy mouse-selected text to the system clipboard. |
 | `customAgents.defaultLocalOnly` | `boolean` | `false` | Only use local custom agents (no remote organization or enterprise agents). |
 | `defaultMode` | `"interactive"` \| `"plan"` \| `"autopilot"` | `"interactive"` | The agent mode that new interactive sessions start in. The `--mode`, `--autopilot`, and `--plan` options take precedence. Resumed sessions keep their own mode, and the setting is ignored for `-p`/`--prompt`, `--server`, and `--acp` runs. |
@@ -2957,6 +2975,40 @@ On macOS, sandboxed commands can open direct TCP connections to local ports, suc
 Sandbox settings are user-level or enterprise-managed. They are not repository-overridable. For configuration steps and network limitations, see [Configuring Local Sandbox Settings](https://docs.github.com/en/copilot/how-tos/cloud-and-local-sandboxes/configuring-local-sandbox-settings).
 
 Sandboxing is powered by [Microsoft eXecution Container (MXC)](https://github.com/microsoft/mxc?utm_source=cli-config-directory-reference-article-microsoft-mxc&utm_medium=docs&utm_campaign=universe-2026), which provides platform-specific containment backends. Copilot CLI uses Seatbelt on macOS, Bubblewrap on Linux, and ProcessContainer on Windows.
+
+#### Proxy client certificates
+
+When an `https://` proxy configured through `proxyUrl`, `HTTPS_PROXY`, or `HTTP_PROXY` requests a client certificate, the CLI automatically selects an operating-system-managed identity for mutual TLS (mTLS). No certificate path, private key, or passphrase setting is required, and private keys remain in the platform store.
+
+| Platform | Identity source |
+|----------|-----------------|
+| Windows | Current user's `MY` certificate store |
+| macOS | User Keychain search list, including a preferred identity for the proxy host |
+| Linux (glibc) | Chromium-compatible NSS database and its configured PKCS#11 modules |
+| Linux (musl) and other platforms | Unsupported. Ordinary proxy behavior is unchanged. |
+
+Client identity selection applies only to `https://` proxies, not direct requests, `NO_PROXY` matches, or `http://` proxies. The CLI reads the platform store on every request, so certificate rotation or smart-card insertion does not require a restart.
+
+#### PowerShell startup flags
+
+The `powershellFlags` setting controls flags passed before the runtime's own flags. Removing `-NoProfile`, for example by setting `["-NoLogo"]`, loads your PowerShell profile, including its aliases, modules, and functions. This can slow startup, produce unexpected output, or change shell behavior.
+
+An empty array loads the profile and shows the PowerShell version banner. You can also add `-Sta` for single-threaded apartment mode for COM interoperability, or `-ExecutionPolicy`, followed by `Bypass`, to change the execution policy.
+
+Do not include flags that conflict with the runtime's command execution, lifecycle, or output handling:
+
+| Flags | Conflict |
+|-------|----------|
+| `-Command`, `-c`, `-CommandWithArgs`, `-cwa` | Replace or conflict with the runtime's command |
+| `-File`, `-f` | Execute a script file instead of the runtime's command |
+| `-EncodedCommand`, `-e` | Replace the command source with Base64-encoded input |
+| `-NoExit`, `-noe` | Prevent runtime-managed shutdown |
+| `-NonInteractive`, `-noni` | Suppress runtime-managed prompts |
+| `-InputFormat`, `-OutputFormat` | Change serialization and break text-based output parsing |
+| `-ServerMode`, `-SSHServerMode` | Start a remoting endpoint instead of a shell |
+| `-Help`, `-?`, `-Version` | Print information and exit instead of running commands |
+
+The runtime uses `-NoExit -Command` for interactive sessions and `-Command` for one-shot execution.
 
 ### Repository settings (`.github/copilot/settings.json`)
 
@@ -3085,6 +3137,8 @@ Only the following keys are supported in MDM managed settings.
 | `sandbox.sandboxLspServers` | Boolean, defaults to `true`. When sandboxing is enabled, language servers start under the session's sandbox policy. Set to `false` to run language servers outside the sandbox, subject to the managed sandbox policy floor. |
 | `shellShortcut` | Force-enable or force-disable the `$` interactive shell shortcut for all users. A managed value always overrides the user's own `shellShortcut` setting. |
 | `strictKnownMarketplaces` | Restrict plugins to an allowlist of known marketplaces (a JSON array of marketplace specs). The allowlist also governs built-in marketplaces once set—an empty array (`[]`) hides and blocks every marketplace, including built-ins, not just user- or repository-added ones. |
+| `strictPluginOnlyCustomization` | Block standalone user and repository customizations. Set to `true` for skills, agents, hooks, and MCP servers, or an array such as `["skills", "mcp"]` to restrict only the named surfaces. Plugin-provided and managed customizations remain eligible. Omit to preserve existing behavior. For hook-specific restrictions, see [Hooks Reference](https://docs.github.com/en/copilot/reference/hooks-reference#managed-hook-restrictions). |
+| `allowManagedHooksOnly` | Restrict hook sources to enterprise-managed hooks and hooks from plugins required by managed policy. Hook-specific behavior is described in the hooks reference linked above. |
 | `telemetry` | Push baseline OpenTelemetry export configuration: `enabled`, `endpoint`, `protocol`, `headers`, `resourceAttributes`, `captureContent`, `lockCaptureContent`, `serviceName`, and `headersProvider`. See [Opentelemetry Reference](https://docs.github.com/en/copilot/reference/enterprise-administrators/opentelemetry-reference). |
 
 > [!NOTE]

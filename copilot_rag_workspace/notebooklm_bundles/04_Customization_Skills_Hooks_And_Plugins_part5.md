@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-11-20T19:47:44.744352+00:00
-- **Total Palabras**: 443,891 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-21T06:20:18.684536+00:00
+- **Total Palabras**: 444,002 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -65438,8 +65438,8 @@ Xquik is an independent third-party service. Not affiliated with X Corp. "Twitte
 # DOCUMENT_SOURCE: github_docs::content/copilot/reference/hooks-reference.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/hooks-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/hooks-reference.md
-- **SHA256_FINGERPRINT**: `a51a083bf7b63feda220991aa4e636b478f08daabf491a96aad19549851681c3`
-- **LAST_VERIFIED_UTC**: 2026-11-09T22:06:24.931493+00:00
+- **SHA256_FINGERPRINT**: `41f1fc237f6da322501a690d4a86ef855f006b578b1901107806f8a8ad2070fa`
+- **LAST_VERIFIED_UTC**: 2026-11-21T06:20:14.606744+00:00
 ---
 
 **title**: GitHub Copilot hooks reference
@@ -65490,6 +65490,19 @@ Policy hooks are discovered from two sources:
 Policy hook files use the same hook configuration format as user and project hooks (`{ "version": 1, "hooks": { ... } }`). On POSIX systems, policy files must be owned by root and must not be group- or world-writable.
 
 Policy hooks are intended for use by enterprise IT administrators and require elevated privileges to install. End users cannot modify them. Policy hooks always run on the host, even when the session sandbox is enabled—see [Sandboxed sessions](#sandboxed-sessions).
+
+### Managed hook restrictions
+
+These restrictions apply to **Copilot CLI only**.
+
+Managed settings can restrict which hook sources are eligible:
+
+| Setting | Effect |
+|---------|--------|
+| `strictPluginOnlyCustomization: true`, or an array containing `"hooks"` | Blocks standalone user and repository hooks. Hooks from plugins or managed settings remain eligible. |
+| `allowManagedHooksOnly: true` | Allows only enterprise-managed hooks and hooks from plugins required by managed `enabledPlugins`. Blocks user hooks, repository hooks, and hooks from otherwise user-enabled plugins. |
+
+These restrictions use the most restrictive value across managed sources. A hook restriction or a managed-only setting of `true` cannot be relaxed by another source. Normal managed permission and sandbox policies still apply.
 
 ### Agent-scoped hooks
 
