@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-19T06:41:23.812305+00:00
-- **Total Palabras**: 20,784 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-21T18:53:51.404562+00:00
+- **Total Palabras**: 20,785 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -8,8 +8,8 @@
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_146.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_146
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_146.md
-- **SHA256_FINGERPRINT**: `8c558cdf823345cce7a49fab46171309c6a96cbf42f81b162e37ae3929036f26`
-- **LAST_VERIFIED_UTC**: 2026-11-11T19:24:20.851579+00:00
+- **SHA256_FINGERPRINT**: `f4a0f4575cfa355f2fea25e3bfb4e605c5fdf565904eebdb3c6756243d07c231`
+- **LAST_VERIFIED_UTC**: 2026-11-21T18:53:47.570173+00:00
 ---
 
 **MetaDescription**: Learn what's new in Visual Studio Code 1.146
@@ -156,7 +156,7 @@ Learn more about [making a host available for remote access](https://code.visual
 
 ### Agent Host support for virtual repositories
 
-VS Code supports virtual workspaces, allowing you to do things like [viewing a GitHub repository without having to clone it](https://code.visualstudio.com/docs/sourcecontrol/github#_github-repositories-extension).
+VS Code supports virtual workspaces, allowing you to do things like [view a GitHub repository without having to clone it](https://code.visualstudio.com/docs/sourcecontrol/github#_github-repositories-extension).
 
 The Copilot harness previously did not work in virtual repositories. In this release, we added support for virtual repositories, so you can use the same Copilot features and workflows as you do in local folders.
 
@@ -376,8 +376,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_147.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_147
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_147.md
-- **SHA256_FINGERPRINT**: `cebd0059d77e6d11a9304b2b234e096583a22333e51679ee8d16c73560549778`
-- **LAST_VERIFIED_UTC**: 2026-11-19T06:41:18.562969+00:00
+- **SHA256_FINGERPRINT**: `98817e26b28ec56e52ffefa61bb09d044cf0324a9e299dd2992d63628d38cc08`
+- **LAST_VERIFIED_UTC**: 2026-11-21T18:53:47.562044+00:00
 ---
 
 **MetaDescription**: Learn what's new in Visual Studio Code 1.147
@@ -595,7 +595,7 @@ Floating Details overlays the editor instead of reserving space. Hover over or f
 
 ### View extension info
 
-The Extensions section of Customizations shows the same detailed information about each installed extension, including its version, publisher, and available commands, as you can from the Extensions view in the editor window.
+The Extensions section of Customizations shows the same detailed information about each installed extension, including its version, publisher, and available commands, as you can find in the Extensions view in the editor window.
 
 ![Screenshot of the GitHub Pull Requests extension in the Extensions section of Customizations.](images/1_147/customizations-extensions.webp)
 

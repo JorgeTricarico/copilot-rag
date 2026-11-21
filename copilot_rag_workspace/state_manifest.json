@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-21T06:20:18.728601+00:00",
+  "last_sync_utc": "2026-11-21T18:53:51.416822+00:00",
   "total_documents": 2121,
   "documents": {
     "anthropics_skills::README.md": {
@@ -21272,9 +21272,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "86c186c52787aa8f6295f1e78ec50c0b3cb6f74cd513f42cc9c5b7597811b8d5",
-      "word_count": 19731,
-      "last_updated_utc": "2026-11-21T06:20:17.683277+00:00",
+      "content_sha256": "84808751f30c2d090e30e277e513dca6970345ce9abca84c3132e25dcd3b1d42",
+      "word_count": 19732,
+      "last_updated_utc": "2026-11-21T18:53:50.594420+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -21283,9 +21283,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "86c186c52787aa8f6295f1e78ec50c0b3cb6f74cd513f42cc9c5b7597811b8d5",
-      "word_count": 19731,
-      "last_updated_utc": "2026-11-21T06:20:17.690941+00:00",
+      "content_sha256": "84808751f30c2d090e30e277e513dca6970345ce9abca84c3132e25dcd3b1d42",
+      "word_count": 19732,
+      "last_updated_utc": "2026-11-21T18:53:50.585741+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -21481,9 +21481,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/interrupts",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "d991871d93324e4cd8dc16fddd0e184cb2c3580b90e4236df23184ecd27438f4",
-      "word_count": 5417,
-      "last_updated_utc": "2026-11-02T21:32:59.913279+00:00",
+      "content_sha256": "ad58bf1ff6824e447e160b8f11a9079ed0182ec276e68758710074cae5cfed4b",
+      "word_count": 5547,
+      "last_updated_utc": "2026-11-21T18:53:50.599158+00:00",
       "local_clean_path": "clean_sources/langgraph__interrupts.md"
     },
     "langgraph::local-server": {
@@ -22734,10 +22734,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_146.md",
       "canonical_web_url": "https://code.visualstudio.com/updates/v1_146",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
-      "git_blob_sha": "20a3384a791cd42ef7874ecfa22260e2950a6867",
-      "content_sha256": "8c558cdf823345cce7a49fab46171309c6a96cbf42f81b162e37ae3929036f26",
+      "git_blob_sha": "50b483556bbbc475063db2ab21d3a5137f434ea9",
+      "content_sha256": "f4a0f4575cfa355f2fea25e3bfb4e605c5fdf565904eebdb3c6756243d07c231",
       "word_count": 3660,
-      "last_updated_utc": "2026-11-11T19:24:20.851579+00:00",
+      "last_updated_utc": "2026-11-21T18:53:47.570173+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__release-notes_v1_146.md"
     },
     "microsoft_vscode-docs::release-notes/v1_147.md": {
@@ -22745,10 +22745,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_147.md",
       "canonical_web_url": "https://code.visualstudio.com/updates/v1_147",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
-      "git_blob_sha": "75e93168470c18d6dfac1871adaeeb32f8d7a989",
-      "content_sha256": "cebd0059d77e6d11a9304b2b234e096583a22333e51679ee8d16c73560549778",
-      "word_count": 4896,
-      "last_updated_utc": "2026-11-19T06:41:18.562969+00:00",
+      "git_blob_sha": "0e1f725d118032baa23a247129e870917b45280a",
+      "content_sha256": "98817e26b28ec56e52ffefa61bb09d044cf0324a9e299dd2992d63628d38cc08",
+      "word_count": 4897,
+      "last_updated_utc": "2026-11-21T18:53:47.562044+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__release-notes_v1_147.md"
     },
     "microsoft_vscode-docs::release-notes/v1_148.md": {
