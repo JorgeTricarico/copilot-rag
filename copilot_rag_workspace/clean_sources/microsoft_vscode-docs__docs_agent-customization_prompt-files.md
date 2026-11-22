@@ -77,7 +77,7 @@ Select **Local** `feature(local-harness)` in the Chat view before running the pr
 > [!TIP]
 > Use the ``chat.promptFilesRecommendations`` setting to show prompts as recommended actions when starting a new chat session.
 >
-> ![Screenshot showing a "explain" prompt file recommendation in the Chat view.](images/customization/prompt-file-recommendations.png)
+> ![Screenshot showing an "explain" prompt file recommendation in the Chat view.](images/customization/prompt-file-recommendations.png)
 
 ## Verify and refine a prompt file
 

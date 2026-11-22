@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-22T05:51:58.604808+00:00",
+  "last_sync_utc": "2026-11-22T19:14:54.308402+00:00",
   "total_documents": 2121,
   "documents": {
     "anthropics_skills::README.md": {
@@ -21755,10 +21755,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/language-model.md",
       "canonical_web_url": "https://code.visualstudio.com/api/extension-guides/ai/language-model",
       "bundle_name": "06_Extension_AI_APIs_And_Copilot_SDK",
-      "git_blob_sha": "0d9ee73a7e080aa7fcd1e4a64b75a4dd3c5d92e9",
-      "content_sha256": "0edc0ff2be71606b6eeeb985cc21d066a326e1eda9d49b4ed1c49a121e2bed62",
+      "git_blob_sha": "2fe4bb09274b011f7a7a22ad20562246599b30eb",
+      "content_sha256": "bf42794b55b36c94ca1327ebd2cbb1d5b5b38bb81bce7f71b18479f47cc55f4c",
       "word_count": 1935,
-      "last_updated_utc": "2026-10-21T03:44:53.300434+00:00",
+      "last_updated_utc": "2026-11-22T19:14:49.721080+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__api_extension-guides_ai_language-model.md"
     },
     "microsoft_vscode-docs::api/extension-guides/ai/mcp.md": {
@@ -21865,10 +21865,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/language-models.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/language-models",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "cff9252655dac56258bd8f15f9a8c8c8ce4c6060",
-      "content_sha256": "f3a2998bfb7855a37d102f8bda8b124fee5086420677d90e182ca57718cb45c1",
-      "word_count": 6325,
-      "last_updated_utc": "2026-11-16T21:47:44.618889+00:00",
+      "git_blob_sha": "75c2322d4c3046b06862a7011742bd1ffebedfb6",
+      "content_sha256": "12dcaecb3f349b727dcbe6cbc1c24cd07d558f57db68e8271c9504a11bd2aa4f",
+      "word_count": 6324,
+      "last_updated_utc": "2026-11-22T19:14:49.748463+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_language-models.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/mcp-servers.md": {
@@ -21909,10 +21909,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/prompt-files.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/prompt-files",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "fbb228daca751ff2fb2c46411b26bdd939a12f62",
-      "content_sha256": "89c0a742526dc70219741acda6f285777f17f34e9e5704856932e0bb2e5a8d46",
+      "git_blob_sha": "83c0ae29b7e5301dac5ab6c5722dadd3e6bb0c40",
+      "content_sha256": "c8e5818ff3ee590ef79a1219084b64f3b7bfad9743c212fab2a18e325ea76ea8",
       "word_count": 1907,
-      "last_updated_utc": "2026-11-12T19:42:37.710907+00:00",
+      "last_updated_utc": "2026-11-22T19:14:49.750451+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_prompt-files.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/tool-sets.md": {
@@ -22415,10 +22415,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/workspace-context.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/reference/workspace-context",
       "bundle_name": "02_Context_Memory_And_Compaction",
-      "git_blob_sha": "d5807d3efaf5d86c2b4ab80dabd4ebe09f21714f",
-      "content_sha256": "8cd30db0dc3ad45dd326b70140295631e43d8f5d2524874d6d4ffa104fe51dc0",
-      "word_count": 1844,
-      "last_updated_utc": "2026-11-04T19:33:26.794373+00:00",
+      "git_blob_sha": "f31db0f1a2848f51ddee021e07de8f60e9e23c59",
+      "content_sha256": "88b08c9f6e3d143216bbf08a83570d258e0d4b097d0e724544d2ac55cb26d33c",
+      "word_count": 1843,
+      "last_updated_utc": "2026-11-22T19:14:49.715057+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_reference_workspace-context.md"
     },
     "microsoft_vscode-docs::docs/agents/run/agent-harnesses.md": {
@@ -22679,10 +22679,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/tools.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/run/tools",
       "bundle_name": "03_MCP_Servers_And_Tools_Execution",
-      "git_blob_sha": "b11892bd4d77136595a37b9af091836d952f0bf0",
-      "content_sha256": "bb8beb43287f246da79dbe86e1d2ea074759958d31ccdf4db3ab220697793786",
+      "git_blob_sha": "8ea94c5fbb7dc65f85fe93ffaa932036b7b268a2",
+      "content_sha256": "24c0f7bf30df0435f908500449369025b3dd102cf075b80adaa24fd03e5343a7",
       "word_count": 2581,
-      "last_updated_utc": "2026-11-19T20:14:43.471008+00:00",
+      "last_updated_utc": "2026-11-22T19:14:49.720362+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_run_tools.md"
     },
     "microsoft_vscode-docs::docs/chat/chat-overview.md": {

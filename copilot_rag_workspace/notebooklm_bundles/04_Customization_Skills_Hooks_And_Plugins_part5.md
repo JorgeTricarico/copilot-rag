@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-11-21T06:20:18.684536+00:00
-- **Total Palabras**: 444,002 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-22T19:14:54.274948+00:00
+- **Total Palabras**: 444,001 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -67981,8 +67981,8 @@ For an old Local setup, **Chat: Configure Hooks** lists its files, and the **Git
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/language-models.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/language-models
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/language-models.md
-- **SHA256_FINGERPRINT**: `f3a2998bfb7855a37d102f8bda8b124fee5086420677d90e182ca57718cb45c1`
-- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:44.618889+00:00
+- **SHA256_FINGERPRINT**: `12dcaecb3f349b727dcbe6cbc1c24cd07d558f57db68e8271c9504a11bd2aa4f`
+- **LAST_VERIFIED_UTC**: 2026-11-22T19:14:49.748463+00:00
 ---
 
 **MetaDescription**: Configure chat, inline, and voice models in VS Code. Use your own API key or run models on your device.
@@ -68265,7 +68265,7 @@ VS Code provides different options to add more language models:
 > [!NOTE]
 > If you are a Copilot Business or Enterprise user, your administrator can disable the **Bring Your Own Language Model Key in VS Code** policy in the [Copilot policy settings](https://github.com/settings/copilot/features) on GitHub.com. For more details, see the [GitHub Copilot documentation](https://docs.github.com/en/copilot/how-tos/administer-copilot/manage-for-enterprise/use-your-own-api-keys).
 
-### Add a model from a built in provider
+### Add a model from a built-in provider
 
 Pick from a set of common providers that are ready to use in VS Code. Depending on the provider, you need an API key and other configuration details like the endpoint URL.
 
@@ -69703,8 +69703,8 @@ For analysis guidance and skill evaluations with [Waza](https://github.com/micro
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/prompt-files.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/prompt-files
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/prompt-files.md
-- **SHA256_FINGERPRINT**: `89c0a742526dc70219741acda6f285777f17f34e9e5704856932e0bb2e5a8d46`
-- **LAST_VERIFIED_UTC**: 2026-11-12T19:42:37.710907+00:00
+- **SHA256_FINGERPRINT**: `c8e5818ff3ee590ef79a1219084b64f3b7bfad9743c212fab2a18e325ea76ea8`
+- **LAST_VERIFIED_UTC**: 2026-11-22T19:14:49.750451+00:00
 ---
 
 **MetaDescription**: Use prompt files with the deprecated Local harness in VS Code, or migrate workflows to agent skills.
@@ -69786,7 +69786,7 @@ Select **Local** `feature(local-harness)` in the Chat view before running the pr
 > [!TIP]
 > Use the ``chat.promptFilesRecommendations`` setting to show prompts as recommended actions when starting a new chat session.
 >
-> ![Screenshot showing a "explain" prompt file recommendation in the Chat view.](images/customization/prompt-file-recommendations.png)
+> ![Screenshot showing an "explain" prompt file recommendation in the Chat view.](images/customization/prompt-file-recommendations.png)
 
 ## Verify and refine a prompt file
 

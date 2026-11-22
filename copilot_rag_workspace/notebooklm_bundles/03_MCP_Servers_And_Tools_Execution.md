@@ -1,5 +1,5 @@
 # COMPENDIO RAG NOTEBOOKLM: 03_MCP_Servers_And_Tools_Execution
-- **Generado (UTC)**: 2026-11-20T19:47:44.569094+00:00
+- **Generado (UTC)**: 2026-11-22T19:14:54.100859+00:00
 - **Total Palabras**: 8,159 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
@@ -659,8 +659,8 @@ These settings control the editor's MCP client, which the deprecated Local harne
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/tools.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/tools
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/tools.md
-- **SHA256_FINGERPRINT**: `bb8beb43287f246da79dbe86e1d2ea074759958d31ccdf4db3ab220697793786`
-- **LAST_VERIFIED_UTC**: 2026-11-19T20:14:43.471008+00:00
+- **SHA256_FINGERPRINT**: `24c0f7bf30df0435f908500449369025b3dd102cf075b80adaa24fd03e5343a7`
+- **LAST_VERIFIED_UTC**: 2026-11-22T19:14:49.720362+00:00
 ---
 
 **MetaDescription**: Use agent tools in VS Code to inspect code, run commands, verify results, and manage available capabilities.
@@ -831,7 +831,7 @@ Setting it to `off` removes these limits without changing approval requirements 
 
 `feature(computer-use)`
 
-Use [copilot.computer_use] when a task needs a desktop application that the agent's other tools can't reach. For web applications, use [browser tools](#use-browser-tools) instead.
+Use [copilot.computer_use] when a task needs a desktop application that the agent's other tools can't reach. For web applications, use [browser tools](#interact-with-the-browser) instead.
 
 [copilot.computer_use_caps] is available for local [Copilot harness sessions](/docs/agents/run/agent-harnesses.md#copilot) on macOS and Windows. It isn't available for the Local, Claude, or Codex harnesses, Linux, or remote or cloud hosts.
 

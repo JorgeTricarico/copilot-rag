@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 02_Context_Memory_And_Compaction
-- **Generado (UTC)**: 2026-11-18T20:12:53.365177+00:00
-- **Total Palabras**: 7,639 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-22T19:14:54.100335+00:00
+- **Total Palabras**: 7,638 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -8,8 +8,8 @@
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/reference/workspace-context.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/reference/workspace-context
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/workspace-context.md
-- **SHA256_FINGERPRINT**: `8cd30db0dc3ad45dd326b70140295631e43d8f5d2524874d6d4ffa104fe51dc0`
-- **LAST_VERIFIED_UTC**: 2026-11-04T19:33:26.794373+00:00
+- **SHA256_FINGERPRINT**: `88b08c9f6e3d143216bbf08a83570d258e0d4b097d0e724544d2ac55cb26d33c`
+- **LAST_VERIFIED_UTC**: 2026-11-22T19:14:49.715057+00:00
 ---
 
 **MetaDescription**: Understand how Copilot agents search workspace code, gather context, and work within indexing and exclusion limits.
@@ -103,7 +103,7 @@ You can view the indexing status in the Copilot status dashboard in the VS Code 
 
 The index source determines availability and how quickly the index becomes available for the first time:
 
-* **GitHub repositories**: GitHub indexes the GitHub repositories in your workspace. Sign in with your GitHub account to use them. This index only needs to be built once per repository, which means it is often instantly available. GitHub builds and updates this index when needed. This is fast for small and medium sized projects, but might take some time if your repository contains hundreds of thousands of files. Remote indexing works for repositories hosted on GitHub.com or GitHub Enterprise Cloud. It is not supported for GitHub Enterprise Server.
+* **GitHub repositories**: GitHub indexes the GitHub repositories in your workspace. Sign in with your GitHub account to use them. This index only needs to be built once per repository, which means it is often instantly available. GitHub builds and updates this index when needed. This is fast for small and medium-sized projects, but might take some time if your repository contains hundreds of thousands of files. Remote indexing works for repositories hosted on GitHub.com or GitHub Enterprise Cloud. It is not supported for GitHub Enterprise Server.
 
 * **Azure DevOps repositories**: Indexes are automatically built and maintained. Sign in with your Microsoft account in VS Code for Copilot to start using the index. Check the Copilot Status Bar item for the current index status.
 

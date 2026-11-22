@@ -166,7 +166,7 @@ Setting it to `off` removes these limits without changing approval requirements 
 
 `feature(computer-use)`
 
-Use [copilot.computer_use] when a task needs a desktop application that the agent's other tools can't reach. For web applications, use [browser tools](#use-browser-tools) instead.
+Use [copilot.computer_use] when a task needs a desktop application that the agent's other tools can't reach. For web applications, use [browser tools](#interact-with-the-browser) instead.
 
 [copilot.computer_use_caps] is available for local [Copilot harness sessions](/docs/agents/run/agent-harnesses.md#copilot) on macOS and Windows. It isn't available for the Local, Claude, or Codex harnesses, Linux, or remote or cloud hosts.
 

@@ -1,5 +1,5 @@
 # COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
-- **Generado (UTC)**: 2026-11-19T06:41:23.806666+00:00
+- **Generado (UTC)**: 2026-11-22T19:14:54.302686+00:00
 - **Total Palabras**: 125,636 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
@@ -17736,8 +17736,8 @@ You can find the complete source code for this tutorial in the [vscode-extension
 # DOCUMENT_SOURCE: microsoft_vscode-docs::api/extension-guides/ai/language-model.md
 - **CANONICAL_URL**: https://code.visualstudio.com/api/extension-guides/ai/language-model
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/api/extension-guides/ai/language-model.md
-- **SHA256_FINGERPRINT**: `0edc0ff2be71606b6eeeb985cc21d066a326e1eda9d49b4ed1c49a121e2bed62`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:53.300434+00:00
+- **SHA256_FINGERPRINT**: `bf42794b55b36c94ca1327ebd2cbb1d5b5b38bb81bce7f71b18479f47cc55f4c`
+- **LAST_VERIFIED_UTC**: 2026-11-22T19:14:49.721080+00:00
 ---
 
 **MetaDescription**: A guide to adding AI-powered features to a VS Code extension by using language models and natural language understanding.
@@ -17804,7 +17804,7 @@ Once you've built the prompt, select the language model by using the [`selectCha
 
 To select the language model, you can specify the following properties: `vendor`, `id`, `family`, or `version`. Use these properties to either broadly match all models of a given vendor or family, or select one specific model by its ID. Learn more about these properties in the [API reference](/api/references/vscode-api#LanguageModelChat).
 
-> **Note**: Currently, `gpt-4o`, `gpt-4o-mini`, `o1`, `o1-mini`, `claude-3.5-sonnet` are supported for the language model family. If you are unsure what model to use, we recommend `gpt-4o` for it's performance and quality. For interactions directly in the editor, we recommend `gpt-4o-mini` for it's performance.
+> **Note**: Currently, `gpt-4o`, `gpt-4o-mini`, `o1`, `o1-mini`, `claude-3.5-sonnet` are supported for the language model family. If you are unsure what model to use, we recommend `gpt-4o` for its performance and quality. For interactions directly in the editor, we recommend `gpt-4o-mini` for its performance.
 
 If there are no models that match the specified criteria, the `selectChatModels` method returns an empty array. Your extension must appropriately handle this case.
 
