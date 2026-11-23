@@ -1,7 +1,7 @@
 # VS Code Insiders Roadmap: 1.147.0 Endgame
 - **Issue Number**: #348483
 - **Category**: `endgame-plan`
-- **State**: open
+- **State**: closed
 - **Source Issue**: https://github.com/microsoft/vscode/issues/348483
 
 [Endgame guide](https://github.com/microsoft/vscode-internalbacklog/blob/main/guidelines/endgame-guide.md)

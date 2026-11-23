@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-11-20T19:47:44.568158+00:00
-- **Total Palabras**: 25,908 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-23T23:37:12.474048+00:00
+- **Total Palabras**: 25,550 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1940,8 +1940,8 @@ To disable AI features for a specific workspace, configure the ``chat.disableAIF
 # DOCUMENT_SOURCE: microsoft_vscode::src/vs/workbench/contrib/chat/chatCodeOrganization.md
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/chat/chatCodeOrganization.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vs/workbench/contrib/chat/chatCodeOrganization.md
-- **SHA256_FINGERPRINT**: `88f6f5e74ab0e90245913709f70026b832597aad94dc93a78237326a43fe824b`
-- **LAST_VERIFIED_UTC**: 2026-11-10T19:29:16.440947+00:00
+- **SHA256_FINGERPRINT**: `b1a82f2e1d0a213c241e49d1f170c7464e77b0d42408e36613572b4f7840d48c`
+- **LAST_VERIFIED_UTC**: 2026-11-23T23:37:08.348140+00:00
 ---
 
 # workbench/contrib/chat Code Organization
@@ -1959,10 +1959,6 @@ Onboarding tours, new-session composer tips and first-run notices, Agents Window
 For local testing, set `"experiments.override.chatOpenInAgentsTitleBarLabel": "Try Agents"` in user settings with a fresh profile/data directory. Assignments are refreshed through the assignment service. A triggered scorecard can use `monacoworkbench/experimentTrigger` with `treatmentName == "chatOpenInAgentsTitleBarLabel"`; eligible rendered actions log the trigger in both control and treatment.
 
 The boolean treatment `chatOpenInAgentsTitleBarExpandOnHover` applies to all users, independently of the copy experiment. It defaults to `true`; `false` keeps the action icon-only on pointer hover, while keyboard focus still reveals the label. Tooltips, accessible names, and action behavior remain available. Set `"experiments.override.chatOpenInAgentsTitleBarExpandOnHover": false` to test locally. Its `experimentTrigger` fires on pointer hover in both arms after the assignment resolves.
-
-The experimental setting `chat.titleBar.openInAgentsWindow.richHover` (`experiment: { mode: 'auto' }`) controls what users who are new to the Agents Window (`createdSessionCount < 2`) see when they hover or focus the action. `none` keeps the simple tooltip and the expanding label. The other values show a hover card (`AgentsWindowHoverCard`: a compact graphic, a title, a description, and an Open Agents Window button) and keep the action icon-only, even on keyboard focus. Each is named after its graphic, like the values of `chat.welcomePage.agentsWindowGraphic`: `manyWindowsToOne` shows editor windows for several projects becoming one Agents Window, and `windowComparison` shows the editor window and the Agents Window side by side. The card uses the same managed hover as the tooltip, so it also shows on keyboard focus and can be focused with Cmd/Ctrl+K Cmd/Ctrl+I. Other users always see the simple tooltip, and the action switches as the count or the setting changes. Its `experimentTrigger` (`treatmentName == "config.chat.titleBar.openInAgentsWindow.richHover"`) fires in every arm when a new user hovers or focuses the action. While the card shows, the label never does, so the card arms neither apply nor trigger the copy and expansion treatments. Set `"chat.titleBar.openInAgentsWindow.richHover": "manyWindowsToOne"` or `"windowComparison"` with a fresh profile/data directory to test locally.
-
-The experimental advanced setting `chat.titleBar.openInAgentsWindow.richHoverOnClick` (`experiment: { mode: 'auto' }`, default `false`) applies only while the action shows the hover card. When enabled, activating the action by click, tap, Enter or Space opens the card with focus on its Open Agents Window button, instead of opening the Agents Window. It is an ordinary hover otherwise: it closes when the pointer leaves the action and the card, on Escape, on a click outside it, or when the action is activated again. So new users open the Agents Window with two clicks, or with one click on the button of the card that shows on hover. Users who don't see the card, because they have created two or more sessions or `richHover` is `none`, are unaffected. Its `experimentTrigger` (`treatmentName == "config.chat.titleBar.openInAgentsWindow.richHoverOnClick"`) fires in every arm when a user who sees the card activates the action. Set it together with a card value of `richHover` and a fresh profile/data directory to test locally.
 
 ## Key Folders
 

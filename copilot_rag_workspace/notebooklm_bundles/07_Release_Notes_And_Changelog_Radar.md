@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-21T18:53:51.404562+00:00
-- **Total Palabras**: 20,785 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-23T23:37:12.607569+00:00
+- **Total Palabras**: 21,780 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -903,8 +903,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_148.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_148
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_148.md
-- **SHA256_FINGERPRINT**: `f77009fbe4a5018f954be803457bdfdc52633e2d9641ad44344e31fdd6d43316`
-- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:48.712347+00:00
+- **SHA256_FINGERPRINT**: `73caa09149dbf845835be68440e0bf6e9bef8f0ef730659036357e07e89611c0`
+- **LAST_VERIFIED_UTC**: 2026-11-23T23:37:07.009112+00:00
 ---
 
 **MetaDescription**: Learn what is new in the latest Visual Studio Code Insiders build, including agent session management and editor tab improvements.
@@ -915,7 +915,7 @@ Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://
 
 ---
 
-_Last updated: November 18, 2026_
+_Last updated: November 23, 2026_
 
 Welcome to the 1.148  release of Visual Studio Code.
 
@@ -923,21 +923,39 @@ Happy Coding!
 
 ---
 
+## November 21, 2026
+
+* Sign in to sites that use HTTP Basic authentication directly in the integrated browser. _[#300149: Integrated browser: Enable Http Basic Authentication](https://github.com/microsoft/vscode/issues/300149)_
+
+* Enter text in `window.prompt()` dialogs in the integrated browser. _[#347876: Integrated browser: support window.prompt()](https://github.com/microsoft/vscode/issues/347876)_
+
+## November 20, 2026
+
+* In screen-reader mode, the Agents window opens Markdown files and diffs in the text editor by default (Experimental). _[#349533: Make Agents window Markdown editor defaults screen-reader-aware](https://github.com/microsoft/vscode/issues/349533)_
+
+* In experimental **Inbox Mode**, set ``sessions.list.inboxAutoAdvance`` to `newSession` to focus the **New Session** chat input after replying. _[#349317: Inbox: Add an option to focus the New Session chat input after replying](https://github.com/microsoft/vscode/issues/349317)_
+
+## November 19, 2026
+
+* Use ``sessions.keepAwakeWhileWorking`` to prevent idle sleep while an agent works on a supported host (Preview). _[#348891: Agents window: keep the computer awake while a local agent is working](https://github.com/microsoft/vscode/issues/348891)_
+
+* The first time experimental **Inbox Mode** advances after a reply, it highlights the session you replied to so you can return to it. _[#349307: Spotlight the replied-to session when Inbox automatically advances](https://github.com/microsoft/vscode/issues/349307)_
+
 ## November 17, 2026
 
 * Stay in the current session after replying in experimental **Inbox Mode** by setting ``sessions.list.inboxAutoAdvance`` to `off`. _[#348715: Inbox: when I replied to a message in a session, the jump to the next session was jarring](https://github.com/microsoft/vscode/issues/348715)_
 
 ## November 16, 2026
 
-* Inbox Mode shows session counts beside category labels and lets you collapse **Inbox**. _[#348711: Inbox headers need more intuitive state differences and move the location of count](https://github.com/microsoft/vscode/issues/348711)_
+* Experimental **Inbox Mode** shows session counts beside category labels and lets you collapse **Inbox**. _[#348711: Inbox headers need more intuitive state differences and move the location of count](https://github.com/microsoft/vscode/issues/348711)_
 
-* Inbox Mode uses stronger headings and visible collapse arrows to distinguish session categories from conversations. _[#348709: It's hard to differentiate between headers (Working, on hold) with sessions](https://github.com/microsoft/vscode/issues/348709)_
+* Experimental **Inbox Mode** uses stronger headings and visible collapse arrows to distinguish session categories from conversations. _[#348709: It's hard to differentiate between headers (Working, on hold) with sessions](https://github.com/microsoft/vscode/issues/348709)_
 
-* Send Later shows relative send times, such as 'Sends in 5 minutes', for scheduled messages and **Drafts** entries in the Agents window. _[#348622: Send Later: Show relative time until scheduled messages are sent](https://github.com/microsoft/vscode/issues/348622)_
+* Experimental **Send Later** shows relative send times, such as 'Sends in 5 minutes', for scheduled messages and **Drafts** entries in the Agents window. _[#348622: Send Later: Show relative time until scheduled messages are sent](https://github.com/microsoft/vscode/issues/348622)_
 
 * In the Agents window, the **Send** dropdown opens the scheduling time picker directly when experimental **Send Later** is the only secondary action. _[#348482: Single-entry menu: Send Later...](https://github.com/microsoft/vscode/issues/348482)_
 
-* The "new tab (+)" button opens tabs at the end of the group and selects your last-used action by default. _[#348560: New tab button: open at the end, recent entry as default](https://github.com/microsoft/vscode/issues/348560)_
+* The experimental new tab (+) button opens tabs at the end of the group and highlights your last-used action in the menu. _[#348560: New tab button: open at the end, recent entry as default](https://github.com/microsoft/vscode/issues/348560)_
 
 ---
 
@@ -1687,14 +1705,14 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_348483
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/348483
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/348483
-- **SHA256_FINGERPRINT**: `9dbcea81aa96067516c05e0121025ced0b445b81a74060c7e902009855c33f06`
-- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:53.362937+00:00
+- **SHA256_FINGERPRINT**: `6155adabb15d02aa0bcbf4a9612b44b7acb202c76ad87acd77034fe946b5db2b`
+- **LAST_VERIFIED_UTC**: 2026-11-23T23:37:12.473169+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.147.0 Endgame
 - **Issue Number**: #348483
 - **Category**: `endgame-plan`
-- **State**: open
+- **State**: closed
 - **Source Issue**: https://github.com/microsoft/vscode/issues/348483
 
 [Endgame guide](https://github.com/microsoft/vscode-internalbacklog/blob/main/guidelines/endgame-guide.md)
@@ -1786,6 +1804,112 @@ We really appreciate people trying our new features as soon as they are ready, s
 - [x] Close milestone (**do not** delete it): https://github.com/microsoft/vscode/milestones
 - [x] Move all remaining issues to "On Deck"
 - [x] Ensure that the latest Insiders release from main has succeeded
+
+
+---
+# DOCUMENT_SOURCE: vscode_insiders::endgame-plan_349753
+- **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/349753
+- **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/349753
+- **SHA256_FINGERPRINT**: `033ae8708f7619b53b9f08c80995e7fd4953bf739a94badc35aa13c7f93a9ffd`
+- **LAST_VERIFIED_UTC**: 2026-11-23T23:37:12.472584+00:00
+---
+
+# VS Code Insiders Roadmap: 1.148.0 Endgame
+- **Issue Number**: #349753
+- **Category**: `endgame-plan`
+- **State**: open
+- **Source Issue**: https://github.com/microsoft/vscode/issues/349753
+
+[Endgame guide](https://github.com/microsoft/vscode-internalbacklog/blob/main/guidelines/endgame-guide.md)
+
+# Before Monday 6AM Zurich time
+
+`@team`:
+- Update endgame availability
+- Test plan items created
+- Milestone only has TPIs. All other issues need to be closed
+- All closed issues in milestone labeled `on-testplan`, `bug`, or `verification-needed`
+- Verification steps added to `bug` and `verification-needed` issues
+
+# Monday morning  (Zurich)
+
+`@endgame-champ`:
+- [x] Unpin the previous endgame plan from the [VS Code issue tracker](https://github.com/microsoft/vscode/issues)
+- [x] Pin this endgame plan in the [VS Code issue tracker](https://github.com/microsoft/vscode/issues)
+- [x] Assign TPIs
+  - [x] Create TPI's for all verification needed bugs. Visit `Testing and Verification` on tools site, and generate groupings, then create TPIs. The TPI section below  will update with all of the generated items.
+- [x] Pause automatic releases (this also ensures chat-pre-release isn't released) after 10am. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=383))
+- [x] Run the [Start Endgame](https://dev.azure.com/monacotools/Monaco/_build?definitionId=730) pipeline. It replaces the workflow below, which can no longer sign in to Azure. It pushes the version bump and endgame notebook branches but doesn't open their PRs: open them from the links it adds under this task, enable auto-merge, and get them approved.
+
+  - Open these PRs, enable auto-merge, and get them reviewed and merged Monday morning so Insiders picks up the next milestone version:
+    - [x] Version bump (`microsoft/vscode`): [open the PR](https://github.com/microsoft/vscode/compare/main...automation/bump-version-1.149.0?quick_pull=1&title=Bump%20version%20to%201.149.0&body=Automated%20version%20bump%20after%20release%20branch%20creation.%0A%0A1.148.0%20%E2%86%92%201.149.0%20(copilot%200.76.0%20%E2%86%92%200.77.0)%0A%0A**How%20this%20bump%20was%20generated%3A**%0A-%20The%20edits%20of%20%60scripts%2Fvscode-version-bump%2Fbump-version-fields.ts%60%20in%20microsoft%2Fvscode-engineering%2C%20which%20only%20change%20the%20version%20values%0A%0ATriggered%20by%20%5Bpipeline%20run%5D(https%3A%2F%2Fdev.azure.com%2Fmonacotools%2FMonaco%2F_build%2Fresults%3FbuildId%3D502599))
+    - [x] Endgame notebook milestone bump (`microsoft/vscode`): [open the PR](https://github.com/microsoft/vscode/compare/main...automation/update-endgame-notebooks-1.148?quick_pull=1&title=Update%20endgame%20notebook%20milestones%20to%201.148.0&body=Automated%20milestone%20update%20for%20endgame%20notebooks.%0A%0AUpdated%20milestone%20to%201.148.0%20in%3A%0A-%20%60.vscode%2Fnotebooks%2Fendgame.github-issues%60%0A-%20%60.vscode%2Fnotebooks%2Fmy-endgame.github-issues%60%0A%0ATriggered%20by%20%5Bpipeline%20run%5D(https%3A%2F%2Fdev.azure.com%2Fmonacotools%2FMonaco%2F_build%2Fresults%3FbuildId%3D502599))
+
+- [ ] ~~Run the [Start Endgame](https://github.com/microsoft/vscode-engineering/actions/workflows/start-endgame.yml) workflow~~
+  - ~~If you need to run these steps manually, see the [Branching guide](https://github.com/microsoft/vscode-internalbacklog/blob/main/guidelines/endgame-guide.md#branching).~~
+- [x] In absence of the tech writer, follow the steps in the [website endgame issue](https://github.com/microsoft/vscode-website/wiki#performing-a-weekly-release)
+
+# Monday morning (Redmond and Zurich)
+
+`@team`:
+- [Test plan items](https://github.com/issues?q=org%3Amicrosoft%20milestone%3A%221.148.0%22%20is%3Aissue%20is%3Aopen%20label%3Atestplan-item). All TPIs must be finished by noon. This includes verification TPIs.
+- Make sure your TPIs are being tested and ping folks if to confirm they will finish by noon.
+
+# Monday afternoon (Redmond and Zurich)
+
+`@team`:
+- Fix essential issues. Default to pushing to next iteration
+- Release notes
+
+# Monday EOD Redmond time
+
+`@team`:
+- All issues including late fixes, are verified ([query](https://github.com/issues?q=org%3Amicrosoft+milestone%3A%221.148.0%22+is%3Aissue+is%3Aclosed+reason%3Acompleted++label%3Abug+-label%3Averified+-label%3Aon-testplan+-label%3A*duplicate+-label%3Aduplicate+-label%3Ainvalid+-label%3A*as-designed+-label%3Aerror-telemetry+-label%3Averification-steps-needed+-label%3Az-author-verified+-label%3Aunreleased+-label%3A*not-reproducible+-label%3A*out-of-scope+sort%3Aupdated-asc))
+- Release notes written
+
+`@endgame-champ`:
+- [ ] Build and release Insiders from `release/<x.y>` branch so we can finish verification. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
+- [ ] Build stable from `release/<x.y>` branch (do not release) so that the Zurich team would have a build to release given no candidates. ([Pipline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
+
+# Tuesday by noon CET
+
+`@team`:
+- Fix essential issues. Default to pushing to next iteration
+- Release notes
+
+`@endgame-champ`:
+- [ ] Generate "Thank you" section of the release notes in the `vnext` branch of the `vscode-docs` repo.
+    - [ ] [Acknowledge third-party pull requests](https://tools.code.visualstudio.com/acknowledgement) in release notes.
+    - [ ] Acknowledge [issue trackers](https://github.com/microsoft/vscode-internalbacklog/wiki/Community-Triage---Credits#community-triage---role-based) from the community (do the copy-paste variant) -
+- [ ] If this is not Patch Tuesday only:
+  - [ ] Build and release insiders from release/<x.y> (if there have been newer changes since last release)
+  - [ ] Build stable from release/<x.y> and release to MSFT folks
+  - [ ] Reenable automatic releases
+    - A build is scheduled for 7:00 PM Zurich time (`19:00 GMT+2`); make sure automatic releases are reenabled before then so we get an Insiders build from `main` on Tuesday evening.
+
+# Tuesday afternoon/Wednesday morning
+
+- In extreme cases, accept candidate changes
+    - [ ] Build stable from `release/<x.y>`. Do *not* bump the VS Code version.
+    - [ ] Release stable to MSFT folks
+
+# Wednesday
+`@endgame-champ`:
+- [ ] Publish website so that in-product release notes are ready
+- [ ] Start Stable rollout to everyone (start percentage: `20%`, end time UTC: `6AM next Wednesday`)
+- [ ] Deploy vscode.dev
+  - [ ] Verify the [release candidate](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) `release/x.y` passed the sanity tests in the last step
+  - [ ] [Kick off deploy](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) (Branch `release/x.y`, Deployment Target `prod`, needs peer approval)
+- [ ] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `auto`; the release pipeline job requires two approvals)
+- [ ] Publish socials (ping Cynthia)
+- [ ] [Publish @types/vscode](https://github.com/microsoft/vscode/wiki/Publish-vscode-types) if you find type diffs after running the steps
+- [ ] Create an official release
+  - [ ] Create a tag (make sure you pull the release branch first): `git tag <x.y.z>`
+  - [ ] Push the tag: `git push origin <x.y.z>`
+  - [ ] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right ... > Create Release. Use the version as title <x.y.z> and use the release link `https://code.visualstudio.com/updates/v<x_y>` for the description
+- [ ] Close milestone (**do not** delete it): https://github.com/microsoft/vscode/milestones
+- [ ] Move all remaining issues to "On Deck"
+- [ ] Ensure that the latest Insiders release from main has succeeded
 
 
 ---

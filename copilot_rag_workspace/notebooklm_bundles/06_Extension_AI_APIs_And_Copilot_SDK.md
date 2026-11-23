@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
-- **Generado (UTC)**: 2026-11-22T19:14:54.302686+00:00
-- **Total Palabras**: 125,636 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-23T23:37:12.605318+00:00
+- **Total Palabras**: 125,637 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -25471,8 +25471,8 @@ declare module 'vscode' {
 # DOCUMENT_SOURCE: web::vscode_api_contribution_points
 - **CANONICAL_URL**: https://code.visualstudio.com/api/references/contribution-points
 - **RAW_SOURCE_URL**: https://code.visualstudio.com/api/references/contribution-points
-- **SHA256_FINGERPRINT**: `7e8518130035e9478813f8e6bb3821cad29c99c9106aaf65a80283d5cd27e87f`
-- **LAST_VERIFIED_UTC**: 2026-11-17T20:39:09.899207+00:00
+- **SHA256_FINGERPRINT**: `0356ef49ce677a8c484815349fec5c977c43343534f4407cd0f4666a91dae29d`
+- **LAST_VERIFIED_UTC**: 2026-11-23T23:37:09.452816+00:00
 ---
 
 # Contribution Points
@@ -26275,7 +26275,7 @@ editPresentation
 #### Unsupported JSON Schema properties
 
 Not supported in the configuration section are:
-- $ref and definition : The configuration schemas needs to be self-contained and cannot make assumptions how the aggregated settings JSON schema document looks like.
+- $ref and definition : The configuration schemas need to be self-contained and cannot make assumptions about what the aggregated settings JSON schema document looks like.
 $ref
 definition
 For more details on these and other features, see the JSON Schema Reference .
@@ -28690,7 +28690,7 @@ SVGs are recommended for images given their ability to scale and their support f
 
 ### Completion events
 
-By default, if no completionEvents events are provided, the step will be checked off when any of it's buttons are clicked, or if the step has no buttons, when it is opened. If finer control is required, a list of completionEvents can be provided.
+By default, if no completionEvents events are provided, the step will be checked off when any of its buttons are clicked, or if the step has no buttons, when it is opened. If finer control is required, a list of completionEvents can be provided.
 completionEvents
 completionEvents
 Available completion events include:

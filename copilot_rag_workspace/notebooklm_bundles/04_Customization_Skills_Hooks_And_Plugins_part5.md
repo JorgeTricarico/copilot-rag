@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-11-22T19:14:54.274948+00:00
-- **Total Palabras**: 444,001 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-23T23:37:12.581424+00:00
+- **Total Palabras**: 444,003 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -67981,8 +67981,8 @@ For an old Local setup, **Chat: Configure Hooks** lists its files, and the **Git
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/language-models.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/language-models
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/language-models.md
-- **SHA256_FINGERPRINT**: `12dcaecb3f349b727dcbe6cbc1c24cd07d558f57db68e8271c9504a11bd2aa4f`
-- **LAST_VERIFIED_UTC**: 2026-11-22T19:14:49.748463+00:00
+- **SHA256_FINGERPRINT**: `1c1c910a42fed0de6fd0b5c64f369ebcc4be83c5d1a6a2ec85874229deef9d12`
+- **LAST_VERIFIED_UTC**: 2026-11-23T23:37:07.028603+00:00
 ---
 
 **MetaDescription**: Configure chat, inline, and voice models in VS Code. Use your own API key or run models on your device.
@@ -68404,8 +68404,8 @@ In addition to the [common model properties](#model-configuration-reference) the
 | `apiType` | _(Optional)_ Override the API type for this model (`chat-completions`, `responses`, or `messages`). Defaults to the provider-level `apiType`, or is inferred from the `url` when neither is set. |
 | `contextWindow` | _(Optional)_ The model's full context window (input + output) in tokens, for example `1000000` for a 1M-token model. When set, you can omit `maxInputTokens` and VS Code derives it as `contextWindow - maxOutputTokens`. |
 | `modelOptions` | _(Optional)_ An object of request parameters sent with every request to the model, such as `temperature` and `top_p`. For example, `"modelOptions": { "temperature": 0.2 }`. |
-| `requestHeaders` | _(Optional)_ An object of additional HTTP headers to include with requests to this model, for example to authenticate through a gateway or vanity domain. See [Custom authentication headers](#custom-authentication-headers). |
-| `statefulResponses` | _(Optional)_ Whether the Responses API server retains prior responses. Defaults to `true`. Set to `false` for stateless servers to send full conversation history with each request. Applies only to the Responses API. See [Stateful Responses API endpoints](#stateful-responses-api-endpoints). |
+| `requestHeaders` | _(Optional)_ An object of additional HTTP headers to include with requests to this model, for example to authenticate through a gateway or vanity domain. See **Custom authentication headers** below. |
+| `statefulResponses` | _(Optional)_ Whether the Responses API server retains prior responses. Defaults to `true`. Set to `false` for stateless servers to send full conversation history with each request. Applies only to the Responses API. See **Stateful Responses API endpoints** below. |
 
 ##### Endpoint URL resolution
 
@@ -68616,8 +68616,8 @@ Yes, you can use BYOK models, including local models, without a Copilot plan and
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/migrate-customizations.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/migrate-customizations
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/migrate-customizations.md
-- **SHA256_FINGERPRINT**: `6d8cfffc9bb92d5a58c4bec6af813125818278c759d8f9cb2ba8ada0c8c3813f`
-- **LAST_VERIFIED_UTC**: 2026-11-19T20:14:43.107603+00:00
+- **SHA256_FINGERPRINT**: `81d866d9fe7b2a1f3d1edc0cb9e51b97960b4bdd99e6788ec72d2372647b8c4e`
+- **LAST_VERIFIED_UTC**: 2026-11-23T23:37:07.006232+00:00
 ---
 
 **MetaDescription**: Migrate agent customizations and resolve harness compatibility gaps in VS Code.
@@ -69249,7 +69249,7 @@ Inventory the responsibilities of your participant before choosing its component
 
 Neither an elicitation response nor an MCP App confirmation replaces host tool approvals or service authorization.
 
-MCP Apps require a client that supports their UI. Provide a useful text or structured tool result for clients without that support. Test app behavior in each target client instead of assuming that every Copilot interface renders the same controls. In VS Code, review the [MCP Apps behavior and limitations](/api/extension-guides/ai/mcp.md#vs-code-behavior-and-limitations), including how apps add messages and context.
+MCP Apps require a client that supports their UI. Provide a useful text or structured tool result for clients without that support. Test app behavior in each target client instead of assuming that every Copilot interface renders the same controls. In VS Code, review the [MCP Apps behavior and limitations](/api/extension-guides/ai/mcp.md#mcp-apps), including how apps add messages and context.
 
 #### Example: migrate a code tutor to a plugin
 
