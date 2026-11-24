@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-24T09:08:10.742832+00:00
-- **Total Palabras**: 21,779 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-24T22:07:18.332860+00:00
+- **Total Palabras**: 21,771 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1810,8 +1810,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_349753
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/349753
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/349753
-- **SHA256_FINGERPRINT**: `03b0fb6fcaaeb2b90feafd274e07a3c4b3efd9330e1cbb8f80557232689829ce`
-- **LAST_VERIFIED_UTC**: 2026-11-24T09:08:10.740857+00:00
+- **SHA256_FINGERPRINT**: `20ab566891598d6b1df3f65b346a94fd6583b143f2b3b84646d2d8a6a8cfa2c8`
+- **LAST_VERIFIED_UTC**: 2026-11-24T22:07:18.329580+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.148.0 Endgame
@@ -1869,7 +1869,7 @@ We really appreciate people trying our new features as soon as they are ready, s
 
 `@endgame-champ`:
 - [x] Build and release Insiders from `release/<x.y>` branch so we can finish verification. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
-- [ ] Build stable from `release/<x.y>` branch (do not release) so that the Zurich team would have a build to release given no candidates. ([Pipline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
+- [x] Build stable from `release/<x.y>` branch (do not release) so that the Zurich team would have a build to release given no candidates. ([Pipline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
 
 # Tuesday by noon CET
 
@@ -1878,13 +1878,13 @@ We really appreciate people trying our new features as soon as they are ready, s
 - Release notes
 
 `@endgame-champ`:
-- [ ] Generate "Thank you" section of the release notes in the `vnext` branch of the `vscode-docs` repo.
-    - [ ] [Acknowledge third-party pull requests](https://tools.code.visualstudio.com/acknowledgement) in release notes.
-    - [ ] Acknowledge [issue trackers](https://github.com/microsoft/vscode-internalbacklog/wiki/Community-Triage---Credits#community-triage---role-based) from the community (do the copy-paste variant) -
-- [ ] If this is not Patch Tuesday only:
-  - [ ] Build and release insiders from release/<x.y> (if there have been newer changes since last release)
-  - [ ] Build stable from release/<x.y> and release to MSFT folks
-  - [ ] Reenable automatic releases
+- [x] Generate "Thank you" section of the release notes in the `vnext` branch of the `vscode-docs` repo.
+    - [x] [Acknowledge third-party pull requests](https://tools.code.visualstudio.com/acknowledgement) in release notes.
+    - [x] Acknowledge [issue trackers](https://github.com/microsoft/vscode-internalbacklog/wiki/Community-Triage---Credits#community-triage---role-based) from the community (do the copy-paste variant) -
+- [x] If this is not Patch Tuesday only:
+  - [x] Build and release insiders from release/<x.y> (if there have been newer changes since last release)
+  - [x] Build stable from release/<x.y> and release to MSFT folks
+  - [x] Reenable automatic releases
     - A build is scheduled for 7:00 PM Zurich time (`19:00 GMT+2`); make sure automatic releases are reenabled before then so we get an Insiders build from `main` on Tuesday evening.
 
 # Tuesday afternoon/Wednesday morning

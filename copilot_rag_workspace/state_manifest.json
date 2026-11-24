@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-24T09:08:10.756459+00:00",
+  "last_sync_utc": "2026-11-24T22:07:18.346046+00:00",
   "total_documents": 2122,
   "documents": {
     "anthropics_skills::README.md": {
@@ -21272,9 +21272,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "cf9d85874946ad3360c7d338760de612dfe013454fdb4322fd31e350242da78e",
+      "content_sha256": "569759c6cc2a149f9496bc6624549a6f61a3ab9537c857b75b8ccc53efae2492",
       "word_count": 15734,
-      "last_updated_utc": "2026-11-24T09:08:09.767861+00:00",
+      "last_updated_utc": "2026-11-24T22:07:17.589718+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -21283,9 +21283,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "cf9d85874946ad3360c7d338760de612dfe013454fdb4322fd31e350242da78e",
+      "content_sha256": "569759c6cc2a149f9496bc6624549a6f61a3ab9537c857b75b8ccc53efae2492",
       "word_count": 15734,
-      "last_updated_utc": "2026-11-24T09:08:09.570397+00:00",
+      "last_updated_utc": "2026-11-24T22:07:17.567588+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -21393,9 +21393,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/event-streaming",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "bdd5a954392d151e138a7700e068f52f66a4b2cb8da8b63bad17b870c91dbc44",
-      "word_count": 2732,
-      "last_updated_utc": "2026-11-23T23:37:11.009358+00:00",
+      "content_sha256": "ee4323e3362f6a8cf9620c47e2296634b29533b88b0e03ceb469936b87016e4e",
+      "word_count": 2748,
+      "last_updated_utc": "2026-11-24T22:07:15.569259+00:00",
       "local_clean_path": "clean_sources/langgraph__event-streaming.md"
     },
     "langgraph::fault-tolerance": {
@@ -21689,10 +21689,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/.github/skills/docs-product-alignment/SKILL.md",
       "canonical_web_url": "https://github.com/microsoft/vscode-docs/blob/main/.github/skills/docs-product-alignment/SKILL.md",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "adbd3a95ff6780a35f9a51375889bd083d22909d",
-      "content_sha256": "c84f7b6b0388f5f8d5ff9366bad79ea4f81693c6f7fb021ba642f5f7e73596b5",
-      "word_count": 576,
-      "last_updated_utc": "2026-10-20T22:05:29.667457+00:00",
+      "git_blob_sha": "a8c7c6d173c07c245e06acc27ce06161267ff099",
+      "content_sha256": "68d705aae780c9a794a641d3da115082eb00720e3bd90f6acc9d03066fec3f7d",
+      "word_count": 574,
+      "last_updated_utc": "2026-11-24T22:07:10.883340+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__.github_skills_docs-product-alignment_SKILL.md"
     },
     "microsoft_vscode-docs::api/extension-guides/ai/ai-extensibility-overview.md": {
@@ -23252,9 +23252,9 @@
       "canonical_web_url": "https://github.com/microsoft/vscode/issues/349753",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
       "git_blob_sha": null,
-      "content_sha256": "03b0fb6fcaaeb2b90feafd274e07a3c4b3efd9330e1cbb8f80557232689829ce",
-      "word_count": 784,
-      "last_updated_utc": "2026-11-24T09:08:10.740857+00:00",
+      "content_sha256": "20ab566891598d6b1df3f65b346a94fd6583b143f2b3b84646d2d8a6a8cfa2c8",
+      "word_count": 776,
+      "last_updated_utc": "2026-11-24T22:07:18.329580+00:00",
       "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_349753.md"
     },
     "vscode_insiders::iteration-plan_271045": {

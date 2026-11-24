@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-11-23T23:37:12.474048+00:00
-- **Total Palabras**: 25,550 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-24T22:07:18.331491+00:00
+- **Total Palabras**: 25,548 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -8,11 +8,11 @@
 # DOCUMENT_SOURCE: microsoft_vscode-docs::.github/skills/docs-product-alignment/SKILL.md
 - **CANONICAL_URL**: https://github.com/microsoft/vscode-docs/blob/main/.github/skills/docs-product-alignment/SKILL.md
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/.github/skills/docs-product-alignment/SKILL.md
-- **SHA256_FINGERPRINT**: `c84f7b6b0388f5f8d5ff9366bad79ea4f81693c6f7fb021ba642f5f7e73596b5`
-- **LAST_VERIFIED_UTC**: 2026-10-20T22:05:29.667457+00:00
+- **SHA256_FINGERPRINT**: `68d705aae780c9a794a641d3da115082eb00720e3bd90f6acc9d03066fec3f7d`
+- **LAST_VERIFIED_UTC**: 2026-11-24T22:07:10.883340+00:00
 ---
 
-**description**: Audit and update docs/copilot/ documentation to accurately reflect current VS Code AI capabilities. Use when: competitive analysis reveals gaps, product launches new features, docs use outdated framing, or keyword coverage needs strengthening for discoverability by users and AI agents. Produces a gap analysis plus targeted edits across affected files.
+**description**: Audit and update docs/agents/ documentation to accurately reflect current VS Code AI capabilities. Use when: competitive analysis reveals gaps, product launches new features, docs use outdated framing, or keyword coverage needs strengthening for discoverability by users and AI agents. Produces a gap analysis plus targeted edits across affected files.
 
 # Documentation Product Alignment
 
@@ -35,9 +35,8 @@ Audit VS Code Copilot documentation against current product capabilities and pro
 5. **Verify.** Search changed files for banned words, em-dashes, and MetaDescription length violations. Confirm that each changed page still serves its recorded primary persona and reader intent.
 
 **High-traffic pages to always check:**
-- [docs/copilot/overview.md](/docs/copilot/overview.md), [docs/copilot/concepts/overview.md](/docs/agents/concepts/overview.md), [docs/agents/reference/ai-features-cheat-sheet.md](/docs/agents/reference/ai-features-cheat-sheet.md)
-- [docs/copilot/getting-started.md](/docs/copilot/getting-started.md), [docs/agents/overview.md](/docs/agents/overview.md)
-- [docs/agents/reference/workspace-context.md](/docs/agents/reference/workspace-context.md), [docs/agents/agent-troubleshooting/faq.md](/docs/agents/agent-troubleshooting/faq.md)
+- [docs/agents/overview.md](/docs/agents/overview.md), [docs/agents/concepts/overview.md](/docs/agents/concepts/overview.md), [docs/agents/reference/ai-features-cheat-sheet.md](/docs/agents/reference/ai-features-cheat-sheet.md)
+- [docs/agents/quickstart.md](/docs/agents/quickstart.md), [docs/agents/reference/workspace-context.md](/docs/agents/reference/workspace-context.md), [docs/agents/agent-troubleshooting/faq.md](/docs/agents/agent-troubleshooting/faq.md)
 
 ## Terminology
 

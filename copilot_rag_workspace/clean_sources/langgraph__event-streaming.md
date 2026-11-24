@@ -239,7 +239,11 @@ The `messages` channel models output as content blocks. The data's `event` field
 * `content-block-finish`
 * `message-finish`
 
-Content blocks have explicit boundaries: a block starts, emits zero or more deltas, and finishes before the next block in the same message starts. This makes token streaming, reasoning blocks, tool-call blocks, and multimodal content explicit without requiring provider-specific formats. `message-finish` may include token usage; unrecoverable model-call failures arrive as message error events.
+Content blocks have explicit boundaries: a block starts, emits zero or more deltas, and finishes before the next block in the same message starts. This makes token streaming, reasoning blocks, tool-call blocks, and multimodal content explicit without requiring provider-specific formats.
+
+`message-finish` may include token usage and why the model stopped, in `finish_reason`, `normalized_finish_reason`, and `finish_state`; see [Finish reason](https://docs.langchain.com/oss/python/langchain/messages.md#finish-reason) for the values.
+
+Unrecoverable model-call failures arrive as message error events.
 
 Each `content-block-delta` event carries one delta for the block at its `index`:
 
