@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-23T23:37:12.612272+00:00",
+  "last_sync_utc": "2026-11-24T09:08:10.756459+00:00",
   "total_documents": 2122,
   "documents": {
     "anthropics_skills::README.md": {
@@ -21272,9 +21272,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "0d9ead628ee45f5f2fff0b0bbbd5dbeaad9ce8d9bbaa3536d0ba3626df1268d4",
-      "word_count": 15720,
-      "last_updated_utc": "2026-11-23T23:37:11.284593+00:00",
+      "content_sha256": "cf9d85874946ad3360c7d338760de612dfe013454fdb4322fd31e350242da78e",
+      "word_count": 15734,
+      "last_updated_utc": "2026-11-24T09:08:09.767861+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -21283,9 +21283,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "0d9ead628ee45f5f2fff0b0bbbd5dbeaad9ce8d9bbaa3536d0ba3626df1268d4",
-      "word_count": 15720,
-      "last_updated_utc": "2026-11-23T23:37:11.049688+00:00",
+      "content_sha256": "cf9d85874946ad3360c7d338760de612dfe013454fdb4322fd31e350242da78e",
+      "word_count": 15734,
+      "last_updated_utc": "2026-11-24T09:08:09.570397+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -23252,9 +23252,9 @@
       "canonical_web_url": "https://github.com/microsoft/vscode/issues/349753",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
       "git_blob_sha": null,
-      "content_sha256": "033ae8708f7619b53b9f08c80995e7fd4953bf739a94badc35aa13c7f93a9ffd",
-      "word_count": 785,
-      "last_updated_utc": "2026-11-23T23:37:12.472584+00:00",
+      "content_sha256": "03b0fb6fcaaeb2b90feafd274e07a3c4b3efd9330e1cbb8f80557232689829ce",
+      "word_count": 784,
+      "last_updated_utc": "2026-11-24T09:08:10.740857+00:00",
       "local_clean_path": "clean_sources/vscode_insiders__endgame-plan_349753.md"
     },
     "vscode_insiders::iteration-plan_271045": {

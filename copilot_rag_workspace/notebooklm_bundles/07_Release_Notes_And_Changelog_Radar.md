@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-23T23:37:12.607569+00:00
-- **Total Palabras**: 21,780 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-24T09:08:10.742832+00:00
+- **Total Palabras**: 21,779 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1810,8 +1810,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_349753
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/349753
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/349753
-- **SHA256_FINGERPRINT**: `033ae8708f7619b53b9f08c80995e7fd4953bf739a94badc35aa13c7f93a9ffd`
-- **LAST_VERIFIED_UTC**: 2026-11-23T23:37:12.472584+00:00
+- **SHA256_FINGERPRINT**: `03b0fb6fcaaeb2b90feafd274e07a3c4b3efd9330e1cbb8f80557232689829ce`
+- **LAST_VERIFIED_UTC**: 2026-11-24T09:08:10.740857+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.148.0 Endgame
@@ -1868,7 +1868,7 @@ We really appreciate people trying our new features as soon as they are ready, s
 - Release notes written
 
 `@endgame-champ`:
-- [ ] Build and release Insiders from `release/<x.y>` branch so we can finish verification. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
+- [x] Build and release Insiders from `release/<x.y>` branch so we can finish verification. ([Pipeline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
 - [ ] Build stable from `release/<x.y>` branch (do not release) so that the Zurich team would have a build to release given no candidates. ([Pipline Link](https://dev.azure.com/monacotools/Monaco/_build?definitionId=111))
 
 # Tuesday by noon CET
