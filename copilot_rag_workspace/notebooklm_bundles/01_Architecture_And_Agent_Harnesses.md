@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-11-24T22:07:18.331491+00:00
-- **Total Palabras**: 25,548 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-25T07:44:07.870122+00:00
+- **Total Palabras**: 25,675 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -273,8 +273,8 @@ For monorepos or projects with multiple services, use [multi-root workspaces](/d
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/agent-harnesses.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/agent-harnesses
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/agent-harnesses.md
-- **SHA256_FINGERPRINT**: `f1af60e05b62d5e8d0275e14216d676ccf48ee6d69f877ae943ffb034d4f4fcd`
-- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:47.193557+00:00
+- **SHA256_FINGERPRINT**: `2683dc1a12d774cef5c0c2ab9fc7ca039cc71f0e95d070933546e5d14c503dee`
+- **LAST_VERIFIED_UTC**: 2026-11-25T07:44:01.206335+00:00
 ---
 
 **MetaDescription**: Understand agent harnesses, model access, execution environments, and code isolation in VS Code.
@@ -366,7 +366,7 @@ The diagram shows where sessions work on code, not where you connect from or whe
 
 Selecting a Dev Container changes the execution environment, not the harness. For supported hosts, interfaces, and setup, see [run a session in a Dev Container](/docs/agents/run/agents-window.md#run-a-session-in-a-dev-container).
 
-For sessions that offer folder and worktree options, code isolation controls which working directory receives changes. Folder isolation applies edits directly to your current workspace, including its uncommitted changes. Worktree isolation gives the session a separate [Git worktree](/docs/sourcecontrol/branches-worktrees.md#understanding-worktrees) based on committed Git state. Dev Container sessions work directly in the container workspace and don't support **New Worktree**.
+For sessions that offer folder and worktree options, code isolation controls which working directory receives changes. Folder isolation applies edits directly to your current workspace. Worktree isolation gives the session a separate working directory based on committed Git state. For the comparison, requirements, and setup in either interface, see [Work with agents in worktrees](/docs/agents/run/worktrees.md).
 
 A worktree is a Git code-isolation boundary, not a security boundary. It does not restrict commands, network access, or access to files outside the worktree. Use [agent sandboxing](/docs/agents/run/agent-sandboxing.md) for operating system-level file system and network restrictions.
 
@@ -939,8 +939,8 @@ The Agent Customizations editor provides a unified marketplace experience (Previ
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/language-models.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/language-models
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/language-models.md
-- **SHA256_FINGERPRINT**: `f066c53d731bf854a1efb183b82ac6e91bab12a7cb0c1929a0190d04fbf01965`
-- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:44.606839+00:00
+- **SHA256_FINGERPRINT**: `4d13b73da9607366af1ad82cb497268add544439ef94632b5a4a1583a5cf7ebf`
+- **LAST_VERIFIED_UTC**: 2026-11-25T07:44:01.362933+00:00
 ---
 
 **MetaDescription**: Understand language models, tokens, context limits, and model choices for AI tasks in VS Code.
@@ -1038,6 +1038,16 @@ Consider Fusion for substantial, well-scoped coding tasks where additional revie
 
 Learn how to [use Copilot Fusion](/docs/agent-customization/language-models.md#use-copilot-fusion). For details about orchestration, see [GitHub Copilot Fusion](https://docs.github.com/en/copilot/concepts/models/copilot-fusion) in the GitHub documentation.
 
+### Model routers
+
+`feature(model-routers)`
+
+A model router selects from routes you define for recurring work. Each route describes the requests it should handle and the model to use, with optional thinking effort, context size, and guidance for the agent. Unlike Auto or Fusion, which choose models for you, a router uses your own model choices and routing criteria.
+
+Use a router when you already have model preferences for different tasks and want to reuse them. For example, choose a reasoning model for multi-file changes and a faster model for small edits. Routing and guidance are model-driven, not guarantees about the result or its cost.
+
+Model routers are available in VS Code Insiders for Copilot harness sessions. Learn how to [create and use a model router](/docs/agent-customization/language-models.md#use-model-routers).
+
 ### AI credits and model costs
 
 GitHub Copilot plans use [AI credits](https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals) to measure usage. Consumption depends on the model's rates and the tokens processed, not only the number of messages you send. Check your plan for its allowance and usage limits.
@@ -1074,8 +1084,8 @@ For supported providers, harness compatibility, sign-in requirements, and setup,
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/sessions.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/sessions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/sessions.md
-- **SHA256_FINGERPRINT**: `b969eb433800c3c5afb9d5bc0c5949f2cc14ce59869b3da7876e80a367892787`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.410535+00:00
+- **SHA256_FINGERPRINT**: `83189ccc83c8c1d9670b98ea20e338199c25ed5515ef70f6beaca8da0beeaf4d`
+- **LAST_VERIFIED_UTC**: 2026-11-25T07:44:01.370544+00:00
 ---
 
 **MetaDescription**: Understand sessions and chats in VS Code, and choose when to start a chat, fork, or create a session.
@@ -1112,7 +1122,7 @@ Supported nested sessions can use a different folder or worktree, and some harne
 
 For example, you're adding a sign-in form. Use one chat to build the form and another chat in the same session to write tests. The test-writing chat can read the implementation files once they're saved, but it doesn't inherit the first chat's conversation. Include requirements such as rejecting an empty email address in the second chat's prompt, rather than relying on your earlier discussion.
 
-Both chats can edit the same files if they use the same folder or worktree. When you need separate working directories, choose **New Worktree** for a nested session, where supported, or use separate top-level sessions with [worktree isolation](/docs/agents/run/agents-window.md#choose-where-an-agent-makes-changes).
+Both chats can edit the same files if they use the same folder or worktree. When you need separate working directories, choose **New Worktree** for a nested session, where supported, or use separate top-level sessions with [worktree isolation](/docs/agents/run/worktrees.md#choose-folder-or-worktree-isolation).
 
 ## Choose a new chat, a fork, or a new session
 
@@ -1127,7 +1137,7 @@ Continue in the same chat when you're working on the same task and its conversat
 A fork can open as another chat in the same session or as a new session, depending on the harness. Forking a conversation isn't the same as creating a Git branch or a separate worktree. For example, a fork of a Copilot worktree session continues to use the original worktree.
 
 > [!IMPORTANT]
-> Separate conversations don't guarantee separate files. If two chats or sessions use the same folder or worktree, their edits affect the same files. Choose separate worktrees for nested or top-level sessions, where supported, when changes must stay separate. Learn how to [choose where an agent makes changes](/docs/agents/run/agents-window.md#choose-where-an-agent-makes-changes).
+> Separate conversations don't guarantee separate files. If two chats or sessions use the same folder or worktree, their edits affect the same files. Choose separate worktrees for nested or top-level sessions, where supported, when changes must stay separate. Learn how to [choose where an agent makes changes](/docs/agents/run/worktrees.md#choose-folder-or-worktree-isolation).
 
 Sessions can run in parallel and keep running when you switch between them. To return an existing conversation and affected workspace files to an earlier point instead of branching the conversation, see [Restore a checkpoint](/docs/agents/run/review-code-edits.md#restore-a-checkpoint).
 
@@ -1517,8 +1527,8 @@ For keyboard, screen reader, and low-vision workflows, learn how to use the [Acc
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/agent-harnesses.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/agent-harnesses
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/agent-harnesses.md
-- **SHA256_FINGERPRINT**: `0624165b871c1e2d534d21efb5f8422c0713da63ebecded03732e7b859f7e625`
-- **LAST_VERIFIED_UTC**: 2026-11-19T20:14:43.260032+00:00
+- **SHA256_FINGERPRINT**: `0fa84edb767db691cd03656fc5ffd3979c407f86323a56e7e96f8a677348bf65`
+- **LAST_VERIFIED_UTC**: 2026-11-25T07:44:02.072813+00:00
 ---
 
 **MetaDescription**: Compare agent harnesses and built-in agents in Visual Studio Code, select one for a session, and review provider requirements.
@@ -1586,7 +1596,7 @@ After selecting a harness, choose an available built-in agent from the agent pic
 
 Switching agents doesn't change the harness. You can also select [custom agents](/docs/agent-customization/custom-agents.md) from the same picker. In the Copilot harness, [Autopilot](/docs/agents/run/approvals.md#autopilot-mode) is a mode with its own workflow, not an additional built-in agent.
 
-Your harness choice is separate from where the session changes code. In the Agents window, you can also [choose between a folder and a worktree](/docs/agents/run/agents-window.md#choose-where-an-agent-makes-changes) or [run a session in a Dev Container](/docs/agents/run/agents-window.md#run-a-session-in-a-dev-container).
+Your harness choice is separate from where the session changes code. For supported sessions in either interface, [choose between a folder and a worktree](/docs/agents/run/worktrees.md#choose-folder-or-worktree-isolation). In the Agents window, you can also [run a session in a Dev Container](/docs/agents/run/agents-window.md#run-a-session-in-a-dev-container).
 
 ### Identify your current harness
 

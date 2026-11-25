@@ -1,470 +1,7 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part5
-- **Generado (UTC)**: 2026-11-23T23:37:12.581424+00:00
-- **Total Palabras**: 444,003 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-25T07:44:08.042082+00:00
+- **Total Palabras**: 442,558 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/pr-dashboard/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/pr-dashboard/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/pr-dashboard/SKILL.md
-- **SHA256_FINGERPRINT**: `33e1928ec6a542d7da82f7222a45dccd90bee06676064359df892125a90f0a58`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:41.918150+00:00
----
-
-**description**: Open a GitHub PR dashboard in the browser. Use when the user asks to see their pull requests, open the PR dashboard, show PRs for a date range, or check PR status. Trigger phrases include "show my PRs", "open PR dashboard", "pull request dashboard".
-
-# PR Dashboard
-
-Generates and opens a GitHub PR dashboard in the browser for a given date range and role filter.
-
-**Prerequisites:** GitHub CLI (`gh`) must be installed and authenticated (`gh auth login`).
-
-## What to do
-
-Find the CLI script bundled with this skill and run it:
-
-```bash
-SKILL_SCRIPT=$(find ~/.copilot -name "pr-dashboard-cli.mjs" -path "*/pr-dashboard/scripts/*" 2>/dev/null | head -1)
-node "$SKILL_SCRIPT" "<query>" "<role>"
-```
-
-- `<query>`: the date range the user specified (default: `last 7 days`)
-- `<role>`: one of `Authored by me`, `Requested reviews`, `Assigned to me`, `All` (default: `Authored by me`)
-
-## Parsing the user's request
-
-Extract the date range and role from the user's message. Examples:
-
-| User says | query | role |
-|---|---|---|
-| show my PRs | `last 7 days` | `Authored by me` |
-| show my PRs last 2 weeks | `last 2 weeks` | `Authored by me` |
-| PR dashboard this month reviews | `this month` | `Requested reviews` |
-| PR dashboard march 2026 assigned | `march 2026` | `Assigned to me` |
-| show all PRs last 30 days | `last 30 days` | `All` |
-
-**Role keyword mapping:**
-- "my PRs", "authored", "I wrote" → `Authored by me`
-- "reviews", "review requested", "reviewing" → `Requested reviews`
-- "assigned" → `Assigned to me`
-- "all", "involves me" → `All`
-
-## Supported date range formats
-
-The script understands natural language — pass it through as-is:
-- `last 7 days`, `last 2 weeks`, `last 30 days`
-- `this week`, `last week`, `this month`, `last month`
-- `march 2026`, `feb 2025`
-- `2026-01-01 - 2026-03-31`
-- `2025` (whole year)
-
-## After running
-
-Tell the user the dashboard is opening in their browser. The script outputs progress to stdout. If it exits with an error, show the error output and suggest they run `gh auth login` if it's an auth issue.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/pr-screenshots/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/pr-screenshots/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/pr-screenshots/SKILL.md
-- **SHA256_FINGERPRINT**: `d54ab73b2b97e8537f31e7acdb25c54974190c4e0ef33cb34ff4c15cc7a43bbe`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.042408+00:00
----
-
-**description**: Embed before/after screenshots and annotated images in pull request descriptions. Covers PR description patterns, image upload for Azure DevOps and GitHub, and sizing best practices.
-
-# PR Screenshots
-
-Embed before/after screenshots in pull request descriptions so reviewers can see the visual change without checking out the branch.
-
-## When to Use This Skill
-
-Use this skill when a PR changes something visible:
-
-- Layout, styling, CSS
-- Charts, dashboards, data visualizations
-- UI components, forms, modals
-- Error messages, CLI output, log formatting
-
-## PR Description Pattern
-
-Place screenshots directly in the PR description body. Avoid wrapping them in `` collapse — reviewers are more likely to look at images they can see without clicking.
-
-```markdown
-**Before** — brief description of the problem:
-
-![before](url-to-before-image)
-
-**After** — brief description of the fix:
-
-![after](url-to-after-image)
-```
-
-Keep the text brief. A sentence or two per image describing what the reader should notice. Let the image carry most of the communication.
-
-### Multiple changes
-
-For PRs with several visual changes, use separate before/after pairs with headings:
-
-```markdown
-## Filter bar alignment
-
-**Before** — 1px border clash between adjacent buttons:
-
-![before-filters](url)
-
-**After** — borders overlap cleanly, hover tint added:
-
-![after-filters](url)
-
-## Chart tooltip
-
-**Before** — tooltip clipped at container edge:
-
-![before-tooltip](url)
-
-**After** — tooltip repositions to stay visible:
-
-![after-tooltip](url)
-```
-
-## Image Sizing
-
-- **Take screenshots at native 1x resolution** — don't resize with PIL (creates artifacts)
-- **Control display size in HTML** when images are too large:
-  ```html
-  <img src="url" width="600" alt="description">
-  ```
-- **Before/after pairs must use the same viewport width and crop** — otherwise the comparison is meaningless
-
-## Uploading Images
-
-### Azure DevOps
-
-Upload images as PR attachments via the REST API:
-
-```powershell
-$token = az account get-access-token `
-    --resource "499b84ac-1321-427f-aa17-267ca6975798" `
-    --query accessToken -o tsv
-
-$base = "https://{org}.visualstudio.com/{projectId}/_apis/git/repositories/{repoId}"
-$url = "$base/pullRequests/{prId}/attachments/screenshot.png?api-version=7.1-preview.1"
-
-# Use HttpClient — Invoke-RestMethod can corrupt binary data
-$client = New-Object System.Net.Http.HttpClient
-$client.DefaultRequestHeaders.Authorization = `
-    New-Object System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", $token)
-$content = New-Object System.Net.Http.ByteArrayContent(
-    , [System.IO.File]::ReadAllBytes("screenshot.png")
-)
-$content.Headers.ContentType = `
-    [System.Net.Http.Headers.MediaTypeHeaderValue]::new("application/octet-stream")
-$resp = $client.PostAsync($url, $content).Result
-```
-
-Reference in the PR description:
-
-```markdown
-![description](https://{org}.visualstudio.com/{projectId}/_apis/git/repositories/{repoId}/pullRequests/{prId}/attachments/screenshot.png)
-```
-
-**Azure DevOps gotchas:**
-
-- **Use `{org}.visualstudio.com` NOT `dev.azure.com/{org}`** — AzDO's markdown renderer uses `.visualstudio.com`. The `dev.azure.com` format loads noticeably slower
-- Use `POST` not `PUT` (PUT returns 405)
-- API version must be `7.1-preview.1`
-- Can't re-upload with the same filename — use a new name (e.g. `screenshot-v2.png`)
-- Use `HttpClient` not `Invoke-RestMethod` — IRM can corrupt binary data
-- Repo-relative paths don't work in PR descriptions — must use full URLs
-- Don't commit images to the branch just for PR screenshots
-
-### GitHub
-
-> **⚠️ Work in progress.** GitHub's drag-and-drop image upload uses internal endpoints that require browser cookies. There's no clean public API for uploading images to PR descriptions yet.
-
-**Current workaround:** Commit images to a `pr-assets` orphan branch and reference via blob URLs (`github.com/{owner}/{repo}/blob/pr-assets/{file}?raw=true`). It works but is clunky — contributions for a better approach are welcome.
-
-## Guidelines
-
-1. **Capture before state BEFORE making changes** — it's easy to forget, and reconstructing the original state later is slow and error-prone
-2. **Keep descriptions brief** — a sentence or two per image pointing out what changed is enough
-3. **Prefer visible images over collapsed sections** — screenshots behind `` tags are easy to skip
-4. **Annotate when the change is subtle** — use the `image-annotations` skill to add callouts when the difference isn't immediately obvious
-5. **Match viewport and crop** between before/after pairs so the comparison is meaningful
-
-## Limitations
-
-- GitHub image upload requires workarounds (no public API for PR description images)
-- Azure DevOps attachment filenames can't be reused — plan naming ahead
-- Very large images (>10MB) may not render inline on some platforms
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/prd/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/prd/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/prd/SKILL.md
-- **SHA256_FINGERPRINT**: `7b9dd520e51acbcfb930b42eef6d07e3dbaaf0f16109bf80010ab49931244d12`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.002368+00:00
----
-
-**description**: Generate high-quality Product Requirements Documents (PRDs) for software systems and AI-powered features. Includes executive summaries, user stories, technical specifications, and risk analysis.
-
-# Product Requirements Document (PRD)
-
-## Overview
-
-Design comprehensive, production-grade Product Requirements Documents (PRDs) that bridge the gap between business vision and technical execution. This skill works for modern software systems, ensuring that requirements are clearly defined.
-
-## When to Use
-
-Use this skill when:
-
-- Starting a new product or feature development cycle
-- Translating a vague idea into a concrete technical specification
-- Defining requirements for AI-powered features
-- Stakeholders need a unified "source of truth" for project scope
-- User asks to "write a PRD", "document requirements", or "plan a feature"
-
----
-
-## Operational Workflow
-
-### Phase 1: Discovery (The Interview)
-
-Before writing a single line of the PRD, you **MUST** interrogate the user to fill knowledge gaps. Do not assume context.
-
-**Ask about:**
-
-- **The Core Problem**: Why are we building this now?
-- **Success Metrics**: How do we know it worked?
-- **Constraints**: Budget, tech stack, or deadline?
-
-### Phase 2: Analysis & Scoping
-
-Synthesize the user's input. Identify dependencies and hidden complexities.
-
-- Map out the **User Flow**.
-- Define **Non-Goals** to protect the timeline.
-
-### Phase 3: Technical Drafting
-
-Generate the document using the **Strict PRD Schema** below.
-
----
-
-## PRD Quality Standards
-
-### Requirements Quality
-
-Use concrete, measurable criteria. Avoid "fast", "easy", or "intuitive".
-
-```diff
-# Vague (BAD)
-- The search should be fast and return relevant results.
-- The UI must look modern and be easy to use.
-
-# Concrete (GOOD)
-+ The search must return results within 200ms for a 10k record dataset.
-+ The search algorithm must achieve >= 85% Precision@10 in benchmark evals.
-+ The UI must follow the 'Vercel/Next.js' design system and achieve 100% Lighthouse Accessibility score.
-```
-
----
-
-## Strict PRD Schema
-
-You **MUST** follow this exact structure for the output:
-
-### 1. Executive Summary
-
-- **Problem Statement**: 1-2 sentences on the pain point.
-- **Proposed Solution**: 1-2 sentences on the fix.
-- **Success Criteria**: 3-5 measurable KPIs.
-
-### 2. User Experience & Functionality
-
-- **User Personas**: Who is this for?
-- **User Stories**: `As a [user], I want to [action] so that [benefit].`
-- **Acceptance Criteria**: Bulleted list of "Done" definitions for each story.
-- **Non-Goals**: What are we NOT building?
-
-### 3. AI System Requirements (If Applicable)
-
-- **Tool Requirements**: What tools and APIs are needed?
-- **Evaluation Strategy**: How to measure output quality and accuracy.
-
-### 4. Technical Specifications
-
-- **Architecture Overview**: Data flow and component interaction.
-- **Integration Points**: APIs, DBs, and Auth.
-- **Security & Privacy**: Data handling and compliance.
-
-### 5. Risks & Roadmap
-
-- **Phased Rollout**: MVP -> v1.1 -> v2.0.
-- **Technical Risks**: Latency, cost, or dependency failures.
-
----
-
-## Implementation Guidelines
-
-### DO (Always)
-
-- **Define Testing**: For AI systems, specify how to test and validate output quality.
-- **Iterate**: Present a draft and ask for feedback on specific sections.
-
-### DON'T (Avoid)
-
-- **Skip Discovery**: Never write a PRD without asking at least 2 clarifying questions first.
-- **Hallucinate Constraints**: If the user didn't specify a tech stack, ask or label it as `TBD`.
-
----
-
-## Example: Intelligent Search System
-
-### 1. Executive Summary
-
-**Problem**: Users struggle to find specific documentation snippets in massive repositories.
-**Solution**: An intelligent search system that provides direct answers with source citations.
-**Success**:
-
-- Reduce search time by 50%.
-- Citation accuracy >= 95%.
-
-### 2. User Stories
-
-- **Story**: As a developer, I want to ask natural language questions so I don't have to guess keywords.
-- **AC**:
-  - Supports multi-turn clarification.
-  - Returns code blocks with "Copy" button.
-
-### 3. AI System Architecture
-
-- **Tools Required**: `codesearch`, `grep`, `webfetch`.
-
-### 4. Evaluation
-
-- **Benchmark**: Test with 50 common developer questions.
-- **Pass Rate**: 90% must match expected citations.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/premium-frontend-ui/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/premium-frontend-ui/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/premium-frontend-ui/SKILL.md
-- **SHA256_FINGERPRINT**: `ca5acde81036bc146ff4d2f20524f4c680d6084b8f9a2f27a7d02dafeb471b8d`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.127667+00:00
----
-
-**description**: A comprehensive guide for GitHub Copilot to craft immersive, high-performance web experiences with advanced motion, typography, and architectural craftsmanship.
-
-# Immersive Frontend UI Craftsmanship
-
-As an AI engineering assistant, your role when building premium frontend experiences goes beyond outputting functional HTML and CSS. You must architect **immersive digital environments**. This skill provides the blueprint for generating highly intentional, award-level web applications that prioritize aesthetic quality, deep interactivity, and flawless performance.
-
-When a user requests a high-end landing page, an interactive portfolio, or a specialized component that requires top-tier visual polish, apply the following rigorous standards to every line of code you generate.
-
----
-
-## 1. Establishing the Creative Foundation
-
-Before generating layout code, ensure you understand the core emotional resonance the UI should deliver. Do not default to generic, unopinionated code.
-
-Commit to a strong visual identity in your CSS and component structure:
-- **Editorial Brutalism**: High-contrast monochromatic palettes, oversized typography, sharp rectangular edges, and raw grid structures.
-- **Organic Fluidity**: Soft gradients, deeply rounded corners, glassmorphism overlays, and bouncy spring-based physics.
-- **Cyber / Technical**: Dark mode dominance, glowing neon accents, monospaced typography, and rapid, staggered reveal animations.
-- **Cinematic Pacing**: Full-viewport imagery, slow cross-fades, profound use of negative space, and scroll-dependent storytelling.
-
----
-
-## 2. Structural Requirements for Immersive UI
-
-When scaffolding a page or generating core components, include the following architectural layers to transform a standard page into an experience.
-
-### 2.1 The Entry Sequence (Preloading & Initialization)
-A blank screen is unacceptable. The user's first interaction must set expectations.
-- **Implementation**: Generate a lightweight preloader component that handles asset resolution (fonts, initial images, 3D models).
-- **Animation**: Output code that transitions the preloader away fluidly—such as a split-door reveal, a scale-up zoom, or a staggered text sweep.
-
-### 2.2 The Hero Architecture
-The top fold must command attention immediately.
-- **Visuals**: Output code that implements full-bleed containers (`100vh`/`100dvh`).
-- **Typography Engine**: Ensure headlines are broken down syntactically (e.g., span wrapping by word or character) to allow for cascading entrance animations.
-- **Depth**: Utilize subtle floating elements or background clipping paths to create a sense of scale and depth behind the primary copy.
-
-### 2.3 Fluid & Contextual Navigation
-- **Implementation**: Do not generate standard static navbars. Output sticky headers that react toscroll direction (hide on scroll down, reveal on scroll up).
-- **Interactivity**: Include hover states that reveal rich content (e.g., mega-menus that display image previews of the hovered link).
-
----
-
-## 3. The Motion Design System
-
-Animation is not an afterthought; it is the connective tissue of a premium site. Always implement the following motion principles:
-
-### 3.1 Scroll-Driven Narratives
-Generate code utilizing modern scroll libraries (like GSAP's ScrollTrigger) to tie animations to user progress.
-- **Pinned Containers**: Create sections that lock into the viewport while secondary content flows past or reveals itself.
-- **Horizontal Journeys**: Translate vertical scroll data into horizontal movement for specific galleries or showcases.
-- **Parallax Mapping**: Assign subtle, varying scroll-speeds to background elements, midground text, and foreground imagery.
-
-### 3.2 High-Fidelity Micro-Interactions
-The cursor is the user's avatar. Build interactions around it.
-- **Magnetic Components**: Write logic that calculates the distance between the mouse pointer and a button, pulling the button towards the cursor dynamically.
-- **Custom Tracking Elements**: Generate custom cursor components that follow the mouse with calculated interpolation (lerp) for a smooth drag effect.
-- **Dimensional Hover States**: Use CSS Transforms (`scale`, `rotateX`, `translate3d`) to give interactive elements weight and tactile feedback.
-
----
-
-## 4. Typography & Visual Texture
-
-The aesthetics of your generated code must reflect premium craftsmanship.
-
-- **Type Hierarchy**: Enforce massive contrast in scale. Headlines should utilize extreme sizing (`clamp()` functions spanning up to `12vw`), while body copy remains incredibly crisp (`16px-18px` minimum).
-- **Font Selection**: Always recommend or implement highly specified variable fonts or premium typefaces over system defaults.
-- **Atmospheric Filters**: Implement CSS/SVG noise overlays (`mix-blend-mode: overlay`, opacity `0.02 - 0.05`) to remove digital sterility and add photographic grain.
-- **Lighting & Glass**: Utilize `backdrop-filter: blur(x)` combined with ultra-thin, semi-transparent borders to create modern, frosted-glass depth.
-
----
-
-## 5. The Performance Imperative
-
-A beautiful site that stutters is a failure. Enforce strict performance guardrails in all generated code:
-
-- **Hardware Acceleration**: Only animate properties that do not trigger layout recalculations: `transform` and `opacity`. Code that animates `width`, `height`, `top`, or `margin` should be fiercely avoided.
-- **Render Optimization**: Apply `will-change: transform` intelligently on complex moving elements, but remove it post-animation to conserve memory.
-- **Responsive Degradation**: Wrap custom cursor logic and heavy hover animations in `@media (hover: hover) and (pointer: fine)` to ensure pristine performance on touch devices.
-- **Accessibility**: Wrap heavy continuous animations in `@media (prefers-reduced-motion: no-preference)`. Never sacrifice user accessibility for aesthetic flair.
-
----
-
-## 6. Implementation Ecosystem
-
-When the user asks you to implement these patterns, leverage industry-standard libraries tailored to their framework:
-
-### For React / Next.js Targets
-- Structure the application to support **Framer Motion** for layout transitions and spring physics.
-- Recommend **Lenis** (`@studio-freight/lenis`) for smooth scrolling context.
-- Implement **React Three Fiber** (`@react-three/fiber`) if webGL or 3D interactions are requested.
-
-### For Vanilla / HTML / Astro Targets
-- Rely heavily on **GSAP** (GreenSock Animation Platform) for timeline sequencing.
-- Utilize vanilla **Lenis** via CDN for scroll hijacking and smoothing.
-- Use **SplitType** for safe, accessible typography chunking.
-
----
-
-## Summary of Action
-
-Whenever you receive a prompt to "Build a premium landing page," "Create an Awwwards-style component," or "Design an immersive UI," you must automatically:
-1. Wrap the output in a robust, scroll-smoothed architecture.
-2. Provide CSS that guarantees perfect performance using composited layers.
-3. Integrate sweeping, staggered component entrances.
-4. Elevate the typography using fluid scales.
-5. Create an intentional, memorable aesthetic footprint.
 
 
 ---
@@ -67729,8 +67266,8 @@ The response's **References** section, where available, helps check inclusion, n
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/hooks.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/hooks
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/hooks.md
-- **SHA256_FINGERPRINT**: `adbfb9d3b3293851ef288a90d1fd3dc41771b7e0bc3c2f0afc9fd71d68cb0521`
-- **LAST_VERIFIED_UTC**: 2026-11-18T20:12:46.838285+00:00
+- **SHA256_FINGERPRINT**: `09a844544818cac67ddd25f98d58b758b29a4bcb1c6a7c1e14870d9cdcb5a266`
+- **LAST_VERIFIED_UTC**: 2026-11-25T07:44:00.829035+00:00
 ---
 
 **MetaDescription**: Reuse and configure agent hooks for personal and shared workflows in VS Code.
@@ -67769,6 +67306,8 @@ The Local harness `feature(local-harness)` has a separate [Local hooks reference
 Sharing a hook file location does not establish runtime compatibility. Event naming can select a different payload, tool names and arguments can change, and output or error behavior can differ.
 
 Follow the [hook migration procedure and compatibility matrix](/docs/agent-customization/migrate-customizations.md#migrate-hooks) before reusing a hook. Select the destination harness and start a test session; changing only the language model does not test migration.
+
+For hook files marked as using the deprecated Local format, start with [Migrate with Agent](/docs/agent-customization/migrate-customizations.md#migrate-local-format-hooks-with-the-agent). The migration reviews the configuration and its supporting scripts together.
 
 ## Reuse hooks from a plugin
 
@@ -67861,7 +67400,7 @@ The Copilot harness reads inline hook settings in `.github/copilot/settings.json
 
 Applicable hooks from multiple sources run together. A new repository hook does not replace a user or plugin hook for the same event. Check for duplicates before enabling a migrated copy.
 
-Also preserve disabled state. Local settings such as `chat.useHooks` do not prevent the Copilot harness from loading a configuration. Follow the [preparation steps](/docs/agent-customization/migrate-customizations.md#prepare-hooks-for-migration) before switching.
+Also preserve disabled state. [Execution controls](#control-which-hooks-run) differ between harnesses and hook sources. Follow the [preparation steps](/docs/agent-customization/migrate-customizations.md#prepare-hooks-for-migration) before switching.
 
 In remote sessions and containers, the user folder and executable dependencies belong to the environment where the runtime runs. Local editor settings such as `chat.hookFilesLocations` do not configure Copilot discovery.
 
@@ -67877,6 +67416,15 @@ To use a new hook across repositories:
 For example, adapt the [diagnostic hook](#create-your-first-copilot-hook) by placing `log-tool-use.cjs` in the user hook folder and updating its command path. Start a new session and verify its log as described above. Check the **Hooks** page for duplicate commands before testing.
 
 If you prefer to create the files directly, use `~/.copilot/hooks/`, or `$COPILOT_HOME/hooks/` when `COPILOT_HOME` is set, for the configuration and script.
+
+## Control which hooks run
+
+In Copilot sessions, repository hooks require a [trusted working folder](/docs/editing/workspaces/workspace-trust.md). Hooks declared by custom agents run only when every folder in the session is trusted. The **Hooks** page shows hooks that cannot run with a **Won't run** badge and an explanation.
+
+To turn off repository and custom-agent hooks, set ``chat.useHooks`` to `false` in **User** settings. Copilot uses the User setting or an enforced `ChatHooks` policy, not the workspace setting. An open chat applies the change from its next message, after any running background subagents finish.
+
+> [!IMPORTANT]
+> This setting is not a global hook switch. User hooks, policy hooks, and hooks that the runtime loads from installed plugin folders still run. Administrators can use [managed hook-source controls](/docs/enterprise/manage-ai-settings.md#restrict-hook-sources) to restrict which sources are eligible.
 
 ## Configure commands and event data
 
@@ -67903,7 +67451,7 @@ Choose an event for the action you need:
 | Check whether the agent should finish its turn | `agentStop` |
 | Clean up when the session terminates | `sessionEnd` |
 
-See the [event reference](https://docs.github.com/en/copilot/reference/hooks-reference#hook-event-input-payloads) for the full event list, timing, fields, and subagent coverage. Not all outputs are consumed by every event. For example, command-hook output is ignored for `userPromptSubmitted`; programmatic SDK prompt rewriting is a different API.
+See the [event reference](https://docs.github.com/en/copilot/reference/hooks-reference#hook-event-input-payloads) for the full event list, timing, fields, and subagent coverage. Not all outputs are consumed by every event.
 
 Event names also select the input format. `preToolUse` receives `toolName` and `toolArgs`. The compatible `PreToolUse` alias receives snake_case fields, but can report Claude-style tool names such as `Read`, `Write`, and `Edit`. Neither format guarantees the same tool arguments as an old Local hook.
 
@@ -67919,6 +67467,8 @@ For `preToolUse`, return a documented top-level decision:
 ```
 
 Return `{}` for no decision. `ask` requires an interactive approval flow; do not assume it will pause an unattended session for approval. A `postToolUse` hook can add top-level `additionalContext`, but cannot undo an action that has already completed.
+
+A hook can also block a submitted prompt before it reaches the model. See [Troubleshoot hooks](#troubleshoot-hooks) for how blocked prompts, denied tools, and hook failures appear in chat.
 
 Treat error handling as part of the hook contract. GitHub documents command `preToolUse` errors as denying the tool call, but timeouts as falling through to normal permissions, including for policy hooks. Other events and HTTP hooks have different failure behavior. Test the [exit-code and timeout rules](https://docs.github.com/en/copilot/reference/hooks-reference#exit-codes-for-command-hooks) instead of assuming that every failure blocks work.
 
@@ -67941,7 +67491,7 @@ Keep agent-specific automation in the agent's frontmatter. Moving a command to a
 Use this section only to identify an existing Local setup before [migrating it](/docs/agent-customization/migrate-customizations.md#migrate-hooks).
 
 * Local discovers repository and user hook files, configured `chat.hookFilesLocations`, and agent or plugin hooks. Claude settings files require `chat.useClaudeHooks`.
-* `chat.useHooks` controls Local execution. These settings do not configure the shared Copilot runtime.
+* ``chat.useHooks`` controls Local execution and also [controls some Copilot hook sources](#control-which-hooks-run). `chat.hookFilesLocations` and `chat.useClaudeHooks` do not configure the shared Copilot runtime.
 * The Local parser accepts PascalCase and Copilot event aliases, command aliases, and nested Claude command groups. It ignores matcher values and still sends Local payloads.
 * Local agent-scoped hooks require a trusted workspace and `chat.useHooks`. A scoped `Stop` hook is treated as `SubagentStop` when the agent runs as a subagent.
 
@@ -67950,12 +67500,17 @@ The [Local reference](/docs/agents/reference/hooks-reference.md) retains the con
 ## Troubleshoot hooks
 
 1. Confirm the **Session Target**, installed runtime version, and hook source.
+1. Open **Hooks** in the Agent Customizations editor. Review any **Won't run** explanation and notices about hook files that could not load. For a deprecated Local-format hook, follow [Migrate with Agent](/docs/agent-customization/migrate-customizations.md#migrate-local-format-hooks-with-the-agent).
 1. Check whether another user, repository, settings, agent, or plugin source contributes the same command.
 1. Run the script directly with a non-sensitive event fixture. Check its exit status and exact JSON output, including malformed-input behavior.
 1. Start a disposable session and confirm the hook fires for the expected event and tool. A file shown in the editor is not proof that its script executed.
 1. Check dependencies, path quoting, `cwd`, and permissions in the execution environment. Test timeouts separately from command errors.
 
-Use the [agent debug logs](/docs/agents/agent-troubleshooting/chat-debug-view.md#agent-debug-logs-panel) and the provider's diagnostics to investigate. Avoid logging complete prompts, arguments, results, or environment variables that might contain sensitive data.
+In a live Copilot chat, a blocked prompt shows the hook's reason instead of a model reply. Tool calls denied by a hook show the reason and are identified as blocked by hooks rather than ordinary failures. When the runtime identifies a failed hook's source, the diagnostic also names its configuration file. A warning about unusable output means that the runtime did not use the reported output, not that it disabled the hook.
+
+Use ``chat.hooks.showWarnings`` to show hook execution errors and warnings. It is on by default in Insiders. **Disable Hook Warnings** hides these diagnostics without disabling hooks. Blocked-prompt errors remain visible even with warnings off.
+
+Some hook notices and blocked-tool details are not retained when you reopen a chat. Use the [agent debug logs](/docs/agents/agent-troubleshooting/chat-debug-view.md#agent-debug-logs-panel) and the provider's diagnostics to investigate. Avoid logging complete prompts, arguments, results, or environment variables that might contain sensitive data.
 
 For an old Local setup, **Chat: Configure Hooks** lists its files, and the **GitHub Copilot Chat Hooks** output channel shows its command errors.
 
@@ -67981,8 +67536,8 @@ For an old Local setup, **Chat: Configure Hooks** lists its files, and the **Git
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/language-models.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/language-models
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/language-models.md
-- **SHA256_FINGERPRINT**: `1c1c910a42fed0de6fd0b5c64f369ebcc4be83c5d1a6a2ec85874229deef9d12`
-- **LAST_VERIFIED_UTC**: 2026-11-23T23:37:07.028603+00:00
+- **SHA256_FINGERPRINT**: `b9fdcd064f927570d79f7594f5a122fa627ea90a1f13913ed88211b5ebe288c3`
+- **LAST_VERIFIED_UTC**: 2026-11-25T07:44:00.889352+00:00
 ---
 
 **MetaDescription**: Configure chat, inline, and voice models in VS Code. Use your own API key or run models on your device.
@@ -68093,6 +67648,95 @@ To use Copilot Fusion:
 1. In the model picker, select **Copilot Fusion**, then choose an available tier: **Standard**, **High**, or **Max**.
 
 Enabling the setting doesn't grant access to Fusion tiers. If the service doesn't offer a Fusion tier that your account can run, the picker continues to show **Auto** instead.
+
+## Use model routers
+
+`feature(model-routers)`
+
+Unlike Auto or Fusion, which choose models for you, a model router uses your own model choices and routing criteria. Define routes for recurring work, such as a faster model for small edits and a reasoning model for multi-file changes.
+
+> [!NOTE]
+> Model routers are available in VS Code Insiders for [Copilot harness sessions](/docs/agents/run/agent-harnesses.md#copilot) and are off by default.
+
+### Create and select a router
+
+1. Enable ``chat.copilot.modelRouter.enabled`` in the Settings editor.
+
+1. Open a local folder in the [Agents window](/docs/agents/run/agents-window.md) and start a **Copilot** chat.
+
+1. In the model picker, select **Routers** > **Create a Router**, or **New Router** if you already have one.
+
+1. The action adds `/model-router` to your draft. Describe your routing preferences and send the request:
+
+    ```prompt
+    /model-router Use a reasoning model for debugging and multi-file changes, and a faster model for small edits. Choose models available to my account.
+    ```
+
+1. Review the router and any file or tool approvals. The skill validates it with `check_model_router`. Reopen **Routers** and select your router.
+
+Send a task. The routing line identifies the route, model, and effort. The response footer identifies the answering model.
+
+Open a router's **Details** to inspect its routes, model configurations, and switching mode. Select its file name to edit it. New and changed files are detected without reloading.
+
+### Write a router file
+
+Alternatively, create `<name>.model-router.yaml` in `~/.agents/model-routers/` on macOS or Linux, or `%USERPROFILE%\.agents\model-routers\` on Windows. Use lowercase letters, digits, and single hyphens for `<name>`, such as `daily-driver`.
+
+Routers in `~/.copilot/model-routers/` are also supported. For duplicate names, `~/.agents/` takes precedence.
+
+Adapt this example's models to your account, manually or with `/model-router`:
+
+```yaml
+version: 1
+display-name: Daily Driver
+description: Reasoning for multi-file work, faster responses for small edits.
+routes:
+  - name: build
+    model: opus
+    effort: high
+    when: Debugging, implementing features, or changing behavior across files.
+    guidance: Inspect the relevant code before editing. Run the relevant tests after changes.
+  - name: quick
+    model: haiku
+    effort: low
+    when: Small, well-defined edits, such as renaming a local variable or updating a comment.
+```
+
+* **Models:** Use a family for its newest available released model, an exact ID for a particular version, or a preference list such as `[opus, haiku]`.
+* **Criteria:** Describe the work in `when`, with optional `examples` to distinguish requests. Put your preferred fallback first: an unclear first request uses the first available route.
+* **Effort:** Set a supported `effort` level, or let the router choose when routing a request. Top-level `effort: off` keeps model defaults and ignores route effort.
+* **Context:** Set `context-size: long` for a larger supported window. Once a chat uses long context, subsequent models retain it where supported.
+
+After manual edits, ask `/model-router` to check for unavailable models, unsupported effort levels, and invalid YAML.
+
+### Control switching and route guidance
+
+By default, the first message after you select a router determines its route for the rest of the chat. To switch routes as the work changes, add at the top level:
+
+```yaml
+switching: auto
+```
+
+Short continuation replies generally keep the current route. Evaluate edited routing criteria in a new chat.
+
+A route's `guidance` instructs the main agent, including steps, [skills](/docs/agent-customization/agent-skills.md), or [custom agents](/docs/agent-customization/custom-agents.md) to use. Switching routes replaces that guidance. Running background subagents delay guidance changes until a routed turn after they finish.
+
+Top-level `guidance` influences routing decisions, not the agent's work. Put instructions such as running tests in route guidance. Guidance doesn't enforce workflows or permissions.
+
+Switching models resets the prompt cache and can increase [AI credit usage](/docs/agents/concepts/language-models.md#ai-credits-and-model-costs). Guidance changes, higher effort, and larger context windows can also add cost.
+
+### Check unexpected routing
+
+For unexpected choices, ask `/model-router` to review overlapping criteria and add representative examples. Models must be available to your account and permitted by organization policies.
+
+| Condition | Behavior |
+|---|---|
+| All models in a route are unavailable | The route is skipped. |
+| Router file is invalid, missing, or has no available models | The chat keeps its current model and shows a notice. |
+| Routing is unavailable for the first request | The first available route is used, with a notice. |
+| Routing fails for a later request | The current route is kept. |
+
+A fallback isn't necessarily the best match for your task.
 
 ## Use on-device models
 
@@ -68616,8 +68260,8 @@ Yes, you can use BYOK models, including local models, without a Copilot plan and
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agent-customization/migrate-customizations.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agent-customization/migrate-customizations
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/migrate-customizations.md
-- **SHA256_FINGERPRINT**: `81d866d9fe7b2a1f3d1edc0cb9e51b97960b4bdd99e6788ec72d2372647b8c4e`
-- **LAST_VERIFIED_UTC**: 2026-11-23T23:37:07.006232+00:00
+- **SHA256_FINGERPRINT**: `e7fbe62d4b9016efb448563830b74f9384fdc06ef47ec1b89c6a1db219354d70`
+- **LAST_VERIFIED_UTC**: 2026-11-25T07:44:00.987309+00:00
 ---
 
 **MetaDescription**: Migrate agent customizations and resolve harness compatibility gaps in VS Code.
@@ -68643,7 +68287,7 @@ The Local harness `feature(local-harness)` is deprecated and will be removed by 
 | Workspace or user prompt files | Project or user skills | [Convert prompt files](#convert-prompt-files-to-skills). Use **Migrate with Agent** when the workflow also needs an agent or tool configuration. | Explicit invocation and any omitted `agent`, `model`, or `tools` properties |
 | Agents and instructions in profile user data | Copilot user folders | [Move user customizations](#move-user-agents-and-instructions). | Discovery and behavior in a new Copilot session |
 | Files in configured search locations | Native workspace or user folders | [Move files from configured locations](#move-customizations-from-configured-locations). | Destination scope and duplicate active copies |
-| Hooks in files, settings, agents, or plugins | Supported Copilot hook sources and scripts | [Migrate hooks manually](#migrate-hooks). No automatic hook conversion is available. | Event timing, script inputs and outputs, approvals, and failure paths |
+| Hooks in files, settings, agents, or plugins | Supported Copilot hook sources and scripts | Use [Migrate with Agent](#migrate-local-format-hooks-with-the-agent) for detected Local-format files, or [migrate manually](#prepare-hooks-for-migration). No automatic hook conversion is available. | Event timing, script inputs and outputs, approvals, and failure paths |
 | User-defined tool sets | Workflow-specific tool configuration | [Replace tool-set references](#replace-tool-sets). | Required capabilities and tool restrictions |
 | Chat participants | A publisher-provided replacement or a direct agent request | [Replace participant workflows](#replace-chat-participants). | Service access, attached context, and expected results |
 | Plugins or extension-provided customizations | A compatible installation | [Manage these separately](#customizations-without-automatic-migration). | Publisher setup, harness compatibility, and required extensions |
@@ -68895,7 +68539,7 @@ The migration list does not automatically convert every customization type:
 * **Custom agents with Local harness-specific behavior**: use **Migrate with Agent** when an agent depends on Local harness `feature(local-harness)` tool names, tool sets, hooks, or other behavior that needs semantic changes.
 * **Tool sets**: deprecated and not supported in the Copilot harness. [Replace tool-set references](#replace-tool-sets) with tools configured for the workflow.
 * **Chat participants**: deprecated and not supported in the Copilot harness. [Replace participant capabilities](#replace-chat-participants) with plugins that combine skills, MCP tools, and, when needed, MCP Apps.
-* **Hooks**: there is no automatic hook migration. Follow [Migrate hooks](#migrate-hooks) to review discovery, command configuration, script inputs, and output decisions.
+* **Hooks**: there is no automatic hook conversion. Use [Migrate with Agent](#migrate-local-format-hooks-with-the-agent) for detected Local-format files. For other sources or manual migration, follow [Migrate hooks](#migrate-hooks) to review discovery, command configuration, script inputs, and output decisions.
 * **Plugins and marketplaces**: manage these separately from the migration list. See [Discover and install plugins](/docs/agent-customization/agent-plugins.md#discover-and-install-plugins).
 * **Extension-provided customizations**: extensions can provide tools, MCP servers, custom agents, skills, and instructions. Keep the contributing extension installed. Extension tools are available only in editor chat while the extension runs. Learn how to [manage extension tools for the Copilot harness](/docs/agents/run/tools.md#add-extension-tools-for-the-copilot-harness).
 
@@ -68907,12 +68551,26 @@ This procedure applies to personal hooks as well as shared hooks. VS Code, the G
 
 The [Copilot hooks reference](https://docs.github.com/en/copilot/reference/hooks-reference) documents the shared configuration and command-hook payloads. The [Local hooks reference](/docs/agents/reference/hooks-reference.md) describes the source format for an existing Local hook.
 
+### Migrate Local-format hooks with the agent
+
+The Agent Customizations editor marks detected Local-format hooks as **Needs attention**. This warning identifies a compatibility risk, not proof that the hook is broken.
+
+1. Complete [Prepare hooks for migration](#prepare-hooks-for-migration) before starting.
+1. In **Hooks**, open the affected hook and select **Review Migrations**. Alternatively, [open the migration list](#open-the-migration-list) directly.
+1. Review the **Local-Format Hooks** group, which lists your detected workspace and user hook files.
+1. Select **Migrate with Agent** in a local **Copilot** session. The agent reviews the hook file and its scripts together and asks before changing the intended behavior.
+1. Review the resulting changes and [verify the migration](#verify-the-migration) before relying on the hook.
+
+Unlike a file move, hook migration can update the configuration and scripts in place. The recovery bundle includes the hook file and directly referenced scripts within the workspace or hook folder. Keep your own backup of other dependencies. For plugin or administrator-managed hooks, work with the publisher or administrator instead of changing an installed copy.
+
+To migrate manually, use the preparation, source inventory, and conversion guidance below.
+
 ### Prepare hooks for migration
 
 Before editing a configuration or starting a Copilot session:
 
 1. Back up the original configuration **and** its scripts, including user settings that are not in source control.
-1. Record which hooks are enabled, disabled, or excluded by Local discovery settings. `chat.useHooks`, `chat.useClaudeHooks`, and `chat.hookFilesLocations` do not preserve those choices in the Copilot harness. A previously ignored file can become active without being moved.
+1. Record which hooks are enabled, disabled, or excluded by Local discovery settings. In Copilot sessions, ``chat.useHooks`` uses User settings or policy to control repository and custom-agent hooks, but does not stop user hooks, policy hooks, or hooks loaded directly from plugin folders. `chat.useClaudeHooks` and `chat.hookFilesLocations` do not configure Copilot discovery. A previously ignored file can become active without being moved. Review [hook execution controls](/docs/agent-customization/hooks.md#control-which-hooks-run).
 1. Keep unvalidated configurations outside discovered sources. For example, stage a standalone file with a `.json.disabled` suffix, and use a new script filename rather than overwriting the original. For inline settings, prepare the new `hooks` entries separately before merging them.
 1. Preserve intentionally disabled hooks using the destination's controls. Do not activate the original and converted configurations together.
 
@@ -68965,7 +68623,7 @@ Use this table to find the event that corresponds to the same point in the agent
 | Local event | Copilot event | Behavior to verify |
 |-------------|---------------|--------------------|
 | `SessionStart` | `sessionStart` | Copilot includes new and resumed sessions. Do not assume `source` is always `new`. |
-| `UserPromptSubmit` | `userPromptSubmitted` | Runs for a submitted prompt. Command-hook output is ignored for this event; programmatic SDK prompt rewriting is not a shell-hook feature. |
+| `UserPromptSubmit` | `userPromptSubmitted` | Runs before the submitted prompt reaches the model. Verify any prompt-blocking behavior and the reason shown in chat. |
 | `PreToolUse` | `preToolUse` | Runs before a tool executes. Verify the tool name, argument schema, and permission result. |
 | `PostToolUse` | `postToolUse` | Runs after a successful tool. Copilot has a separate `postToolUseFailure` event. |
 | `PreCompact` | `preCompact` | Copilot documents manual and automatic triggers. It is a notification, not a way to prevent compaction. |

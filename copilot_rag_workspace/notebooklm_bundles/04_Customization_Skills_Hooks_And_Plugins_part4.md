@@ -1,691 +1,7 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part4
-- **Generado (UTC)**: 2026-11-23T23:37:12.557240+00:00
-- **Total Palabras**: 449,616 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-25T07:44:08.003185+00:00
+- **Total Palabras**: 449,823 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/game-engine/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/game-engine/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/game-engine/SKILL.md
-- **SHA256_FINGERPRINT**: `d3e8179618327ca190efaccee9a13254ed2a0a10c938c00da3ec73e042011b7c`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:28.938005+00:00
----
-
-**description**: Expert skill for building web-based game engines and games using HTML5, Canvas, WebGL, and JavaScript. Use when asked to create games, build game engines, implement game physics, handle collision detection, set up game loops, manage sprites, add game controls, or work with 2D/3D rendering. Covers techniques for platformers, breakout-style games, maze games, tilemaps, audio, multiplayer via WebRTC, and publishing games.
-
-# Game Engine Skill
-
-Build web-based games and game engines using HTML5 Canvas, WebGL, and JavaScript. This skill includes starter templates, reference documentation, and step-by-step workflows for 2D and 3D game development with frameworks such as Phaser, Three.js, Babylon.js, and A-Frame.
-
-## When to Use This Skill
-
-- Building a game engine or game from scratch using web technologies
-- Implementing game loops, physics, collision detection, or rendering
-- Working with HTML5 Canvas, WebGL, or SVG for game graphics
-- Adding game controls (keyboard, mouse, touch, gamepad)
-- Creating 2D platformers, breakout-style games, maze games, or 3D experiences
-- Working with tilemaps, sprites, or animations
-- Adding audio to web games
-- Implementing multiplayer features with WebRTC or WebSockets
-- Optimizing game performance
-- Publishing and distributing web games
-
-## Prerequisites
-
-- Basic knowledge of HTML, CSS, and JavaScript
-- A modern web browser with Canvas/WebGL support
-- A text editor or IDE
-- Optional: Node.js for build tooling and local development servers
-
-## Core Concepts
-
-The following concepts form the foundation of every web-based game engine.
-
-### Game Loop
-
-Every game engine revolves around the game loop -- a continuous cycle of:
-
-1. **Process Input** - Read keyboard, mouse, touch, or gamepad input
-2. **Update State** - Update game object positions, physics, AI, and logic
-3. **Render** - Draw the current game state to the screen
-
-Use `requestAnimationFrame` for smooth, browser-optimized rendering.
-
-### Rendering
-
-- **Canvas 2D** - Best for 2D games, sprite-based rendering, and tilemaps
-- **WebGL** - Hardware-accelerated 3D and advanced 2D rendering
-- **SVG** - Vector-based graphics, good for UI elements
-- **CSS** - Useful for DOM-based game elements and transitions
-
-### Physics and Collision Detection
-
-- **2D Collision Detection** - AABB, circle, and SAT-based collision
-- **3D Collision Detection** - Bounding box, bounding sphere, and raycasting
-- **Velocity and Acceleration** - Basic Newtonian physics for movement
-- **Gravity** - Constant downward acceleration for platformers
-
-### Controls
-
-- **Keyboard** - Arrow keys, WASD, and custom key bindings
-- **Mouse** - Click, move, and pointer lock for FPS-style controls
-- **Touch** - Mobile touch events and virtual joysticks
-- **Gamepad** - Gamepad API for controller support
-
-### Audio
-
-- **Web Audio API** - Programmatic sound generation and spatial audio
-- **HTML5 Audio** - Simple audio playback for music and sound effects
-
-## Step-by-Step Workflows
-
-### Creating a Basic 2D Game
-
-1. Set up an HTML file with a `<canvas>` element
-2. Get the 2D rendering context
-3. Implement the game loop using `requestAnimationFrame`
-4. Create game objects with position, velocity, and size properties
-5. Handle keyboard/mouse input for player control
-6. Implement collision detection between game objects
-7. Add scoring, lives, and win/lose conditions
-8. Add sound effects and music
-
-### Building a 3D Game
-
-1. Choose a framework (Three.js, Babylon.js, A-Frame, or PlayCanvas)
-2. Set up the scene, camera, and renderer
-3. Load or create 3D models and textures
-4. Implement lighting and shaders
-5. Add physics and collision detection
-6. Implement player controls and camera movement
-7. Add audio and visual effects
-
-### Publishing a Game
-
-1. Optimize assets (compress images, minify code)
-2. Test across browsers and devices
-3. Choose distribution platform (web, app stores, game portals)
-4. Implement monetization if needed
-5. Promote through game communities and social media
-
-## Game Templates
-
-Starter templates are available in the `assets/` folder. Each template provides a complete, working example that can be used as a starting point for a new project.
-
-| Template | Description |
-|----------|-------------|
-| `paddle-game-template.md` | 2D Breakout-style game with pure JavaScript |
-| `2d-maze-game.md` | Maze game with device orientation controls |
-| `2d-platform-game.md` | Platformer game using Phaser framework |
-| `gameBase-template-repo.md` | Game base template repository structure |
-| `simple-2d-engine.md` | Simple 2D platformer engine with collisions |
-
-## Reference Documentation
-
-Detailed reference material is available in the `references/` folder. Consult these files for in-depth coverage of specific topics.
-
-| Reference | Topics Covered |
-|-----------|---------------|
-| `basics.md` | Game development introduction and anatomy |
-| `web-apis.md` | Canvas, WebGL, Web Audio, Gamepad, and other web APIs |
-| `techniques.md` | Collision detection, tilemaps, async scripts, audio |
-| `3d-web-games.md` | 3D theory, frameworks, shaders, WebXR |
-| `game-control-mechanisms.md` | Touch, keyboard, mouse, and gamepad controls |
-| `game-publishing.md` | Distribution, promotion, and monetization |
-| `algorithms.md` | Raycasting, collision, physics, vector math |
-| `terminology.md` | Game development glossary |
-| `game-engine-core-principles.md` | Core design principles for game engines |
-
-## Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| Canvas is blank | Check that you are calling drawing methods after getting the context and inside the game loop |
-| Game runs at different speeds | Use delta time in update calculations instead of fixed values |
-| Collision detection is inconsistent | Use continuous collision detection or reduce time steps for fast-moving objects |
-| Audio does not play | Browsers require user interaction before playing audio; trigger playback from a click handler |
-| Performance is poor | Profile with browser dev tools, reduce draw calls, use object pooling, and optimize asset sizes |
-| Touch controls are unresponsive | Prevent default touch behavior and handle touch events separately from mouse events |
-| WebGL context lost | Handle the `webglcontextlost` event and restore state on `webglcontextrestored` |
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/game-engine/assets/2d-maze-game.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/game-engine/assets/2d-maze-game.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/game-engine/assets/2d-maze-game.md
-- **SHA256_FINGERPRINT**: `13d33e9010ce43d2ef01a2aaa1019e18d5b3b408091bf98c1f7f14d972fb9892`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:28.999020+00:00
----
-
-# 2D Maze Game Template
-
-A mobile-optimized 2D maze game where players guide a ball through a labyrinth of obstacles to reach a target hole. The game uses the **Device Orientation API** for tilt-based motion controls on mobile devices and keyboard arrow keys on desktop. Built with the **Phaser** framework (v2.x with Arcade Physics), it features multi-level progression, collision detection, audio feedback, vibration haptics, and a timer system.
-
-**Source reference:** [MDN - HTML5 Gamedev Phaser Device Orientation](https://developer.mozilla.org/en-US/docs/Games/Tutorials/HTML5_Gamedev_Phaser_Device_Orientation)
-**Live demo:** [Cyber Orb](https://orb.enclavegames.com/)
-**Source code:** [GitHub - EnclaveGames/Cyber-Orb](https://github.com/EnclaveGames/Cyber-Orb)
-
----
-
-## Game Concept
-
-The player controls a ball (the "orb") by tilting their mobile device or pressing arrow keys. The ball rolls through a maze of horizontal and vertical wall segments. The objective on each level is to navigate the ball to a hole at the top of the screen while avoiding walls. Collisions with walls trigger a bounce, a sound effect, and optional vibration. A timer tracks how long the player takes per level and across the entire game.
-
----
-
-## Project Structure
-
-```
-project/
-  index.html
-  src/
-    phaser-arcade-physics.2.2.2.min.js
-    Boot.js
-    Preloader.js
-    MainMenu.js
-    Howto.js
-    Game.js
-  img/
-    ball.png
-    hole.png
-    element-horizontal.png
-    element-vertical.png
-    button-start.png
-    loading-bg.png
-    loading-bar.png
-  audio/
-    bounce.ogg
-    bounce.mp3
-    bounce.m4a
-```
-
----
-
-## Phaser Setup and Initialization
-
-### HTML Entry Point
-
-```html
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>Cyber Orb</title>
-  <style>
-    body { margin: 0; background: #333; }
-  </style>
-  <script src="src/phaser-arcade-physics.2.2.2.min.js"></script>
-  <script src="src/Boot.js"></script>
-  <script src="src/Preloader.js"></script>
-  <script src="src/MainMenu.js"></script>
-  <script src="src/Howto.js"></script>
-  <script src="src/Game.js"></script>
-</head>
-<body>
-  <script>
-    (() => {
-      const game = new Phaser.Game(320, 480, Phaser.CANVAS, "game");
-      game.state.add("Boot", Ball.Boot);
-      game.state.add("Preloader", Ball.Preloader);
-      game.state.add("MainMenu", Ball.MainMenu);
-      game.state.add("Howto", Ball.Howto);
-      game.state.add("Game", Ball.Game);
-      game.state.start("Boot");
-    })();
-  </script>
-</body>
-</html>
-```
-
-- Canvas size: `320 x 480`
-- Renderer: `Phaser.CANVAS` (alternatives: `Phaser.WEBGL`, `Phaser.AUTO`)
-
----
-
-## Game State Architecture
-
-The game follows a linear state flow:
-
-```
-Boot --> Preloader --> MainMenu --> Howto --> Game
-```
-
-### Boot State
-
-Loads minimal assets for the loading screen and configures scaling.
-
-```javascript
-const Ball = {
-  _WIDTH: 320,
-  _HEIGHT: 480,
-};
-
-Ball.Boot = function (game) {};
-Ball.Boot.prototype = {
-  preload() {
-    this.load.image("preloaderBg", "img/loading-bg.png");
-    this.load.image("preloaderBar", "img/loading-bar.png");
-  },
-  create() {
-    this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-    this.game.scale.pageAlignHorizontally = true;
-    this.game.scale.pageAlignVertically = true;
-    this.game.state.start("Preloader");
-  },
-};
-```
-
-### Preloader State
-
-Displays a visual loading bar while loading all game assets. Audio is loaded in multiple formats for cross-browser compatibility.
-
-```javascript
-Ball.Preloader = function (game) {};
-Ball.Preloader.prototype = {
-  preload() {
-    this.preloadBg = this.add.sprite(
-      (Ball._WIDTH - 297) * 0.5,
-      (Ball._HEIGHT - 145) * 0.5,
-      "preloaderBg"
-    );
-    this.preloadBar = this.add.sprite(
-      (Ball._WIDTH - 158) * 0.5,
-      (Ball._HEIGHT - 50) * 0.5,
-      "preloaderBar"
-    );
-    this.load.setPreloadSprite(this.preloadBar);
-
-    this.load.image("ball", "img/ball.png");
-    this.load.image("hole", "img/hole.png");
-    this.load.image("element-w", "img/element-horizontal.png");
-    this.load.image("element-h", "img/element-vertical.png");
-    this.load.spritesheet("button-start", "img/button-start.png", 146, 51);
-    this.load.audio("audio-bounce", [
-      "audio/bounce.ogg",
-      "audio/bounce.mp3",
-      "audio/bounce.m4a",
-    ]);
-  },
-  create() {
-    this.game.state.start("MainMenu");
-  },
-};
-```
-
-### MainMenu State
-
-Displays the title screen with a start button.
-
-```javascript
-Ball.MainMenu = function (game) {};
-Ball.MainMenu.prototype = {
-  create() {
-    this.add.sprite(0, 0, "screen-mainmenu");
-    this.gameTitle = this.add.sprite(Ball._WIDTH * 0.5, 40, "title");
-    this.gameTitle.anchor.set(0.5, 0);
-
-    this.startButton = this.add.button(
-      Ball._WIDTH * 0.5, 200, "button-start",
-      this.startGame, this,
-      2, 0, 1  // hover, out, down frames
-    );
-    this.startButton.anchor.set(0.5, 0);
-    this.startButton.input.useHandCursor = true;
-  },
-  startGame() {
-    this.game.state.start("Howto");
-  },
-};
-```
-
-### Howto State
-
-A single-click instruction screen before gameplay begins.
-
-```javascript
-Ball.Howto = function (game) {};
-Ball.Howto.prototype = {
-  create() {
-    this.buttonContinue = this.add.button(
-      0, 0, "screen-howtoplay",
-      this.startGame, this
-    );
-  },
-  startGame() {
-    this.game.state.start("Game");
-  },
-};
-```
-
----
-
-## Device Orientation API Usage
-
-The Device Orientation API provides real-time data about the physical tilt of a device. Two axes are used:
-
-| Property | Axis | Range | Effect |
-|----------|------|-------|--------|
-| `event.gamma` | Left/right tilt | -90 to 90 degrees | Horizontal ball velocity |
-| `event.beta` | Front/back tilt | -180 to 180 degrees | Vertical ball velocity |
-
-### Registering the Listener
-
-```javascript
-// In the Game state's create() method
-window.addEventListener("deviceorientation", this.handleOrientation);
-```
-
-### Handling Orientation Events
-
-```javascript
-handleOrientation(e) {
-  const x = e.gamma; // left-right tilt
-  const y = e.beta;  // front-back tilt
-  Ball._player.body.velocity.x += x;
-  Ball._player.body.velocity.y += y;
-}
-```
-
-### Tilt Behavior
-
-- Tilt device left: negative gamma, ball rolls left
-- Tilt device right: positive gamma, ball rolls right
-- Tilt device forward: positive beta, ball rolls down
-- Tilt device backward: negative beta, ball rolls up
-
-The tilt angle directly maps to velocity increments -- the steeper the tilt, the greater the force applied to the ball each frame.
-
----
-
-## Core Game Mechanics
-
-### Game State Structure
-
-```javascript
-Ball.Game = function (game) {};
-Ball.Game.prototype = {
-  create() {},
-  initLevels() {},
-  showLevel(level) {},
-  updateCounter() {},
-  managePause() {},
-  manageAudio() {},
-  update() {},
-  wallCollision() {},
-  handleOrientation(e) {},
-  finishLevel() {},
-};
-```
-
-### Ball Creation and Physics
-
-```javascript
-// In create()
-this.ball = this.add.sprite(this.ballStartPos.x, this.ballStartPos.y, "ball");
-this.ball.anchor.set(0.5);
-this.physics.enable(this.ball, Phaser.Physics.ARCADE);
-this.ball.body.setSize(18, 18);
-this.ball.body.bounce.set(0.3, 0.3);
-```
-
-- Anchor at center `(0.5, 0.5)` for rotation around midpoint
-- Physics body: 18x18 pixels
-- Bounce coefficient: 0.3 (retains 30% velocity after wall collision)
-
-### Keyboard Controls (Desktop Fallback)
-
-```javascript
-// In create()
-this.keys = this.game.input.keyboard.createCursorKeys();
-
-// In update()
-if (this.keys.left.isDown) {
-  this.ball.body.velocity.x -= this.movementForce;
-} else if (this.keys.right.isDown) {
-  this.ball.body.velocity.x += this.movementForce;
-}
-if (this.keys.up.isDown) {
-  this.ball.body.velocity.y -= this.movementForce;
-} else if (this.keys.down.isDown) {
-  this.ball.body.velocity.y += this.movementForce;
-}
-```
-
-### Hole (Goal) Setup
-
-```javascript
-this.hole = this.add.sprite(Ball._WIDTH * 0.5, 90, "hole");
-this.physics.enable(this.hole, Phaser.Physics.ARCADE);
-this.hole.anchor.set(0.5);
-this.hole.body.setSize(2, 2);
-```
-
-The hole has a tiny 2x2 collision body for precise overlap detection.
-
----
-
-## Level System
-
-### Level Data Format
-
-Each level is an array of wall segment objects with position and type:
-
-```javascript
-this.levelData = [
-  [{ x: 96, y: 224, t: "w" }],                           // Level 1
-  [
-    { x: 72, y: 320, t: "w" },
-    { x: 200, y: 320, t: "h" },
-    { x: 72, y: 150, t: "w" },
-  ],                                                       // Level 2
-  // ... more levels
-];
-```
-
-- `x, y`: Position in pixels
-- `t`: Type -- `"w"` for horizontal wall, `"h"` for vertical wall
-
-### Building Levels
-
-```javascript
-initLevels() {
-  for (let i = 0; i < this.maxLevels; i++) {
-    const newLevel = this.add.group();
-    newLevel.enableBody = true;
-    newLevel.physicsBodyType = Phaser.Physics.ARCADE;
-
-    for (const item of this.levelData[i]) {
-      newLevel.create(item.x, item.y, `element-${item.t}`);
-    }
-
-    newLevel.setAll("body.immovable", true);
-    newLevel.visible = false;
-    this.levels.push(newLevel);
-  }
-}
-```
-
-### Showing a Level
-
-```javascript
-showLevel(level) {
-  const lvl = level || this.level;
-  if (this.levels[lvl - 2]) {
-    this.levels[lvl - 2].visible = false;
-  }
-  this.levels[lvl - 1].visible = true;
-}
-```
-
----
-
-## Collision Detection
-
-### Wall Collisions (Bounce)
-
-```javascript
-// In update()
-this.physics.arcade.collide(
-  this.ball, this.borderGroup,
-  this.wallCollision, null, this
-);
-this.physics.arcade.collide(
-  this.ball, this.levels[this.level - 1],
-  this.wallCollision, null, this
-);
-```
-
-`collide` causes the ball to bounce off walls and triggers the callback.
-
-### Hole Overlap (Pass-Through Detection)
-
-```javascript
-this.physics.arcade.overlap(
-  this.ball, this.hole,
-  this.finishLevel, null, this
-);
-```
-
-`overlap` detects intersection without physical collision response.
-
-### Wall Collision Callback
-
-```javascript
-wallCollision() {
-  if (this.audioStatus) {
-    this.bounceSound.play();
-  }
-  if ("vibrate" in window.navigator) {
-    window.navigator.vibrate(100);
-  }
-}
-```
-
----
-
-## Audio System
-
-```javascript
-// In create()
-this.bounceSound = this.game.add.audio("audio-bounce");
-
-// Toggle
-manageAudio() {
-  this.audioStatus = !this.audioStatus;
-}
-```
-
----
-
-## Vibration API
-
-```javascript
-if ("vibrate" in window.navigator) {
-  window.navigator.vibrate(100); // 100ms vibration pulse
-}
-```
-
-Feature-detect before calling. Provides tactile feedback on supported mobile devices.
-
----
-
-## Timer System
-
-```javascript
-// In create()
-this.timer = 0;
-this.totalTimer = 0;
-this.timerText = this.game.add.text(15, 15, "Time: 0", this.fontBig);
-this.totalTimeText = this.game.add.text(120, 30, "Total time: 0", this.fontSmall);
-this.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);
-
-// Counter callback
-updateCounter() {
-  this.timer++;
-  this.timerText.setText(`Time: ${this.timer}`);
-  this.totalTimeText.setText(`Total time: ${this.totalTimer + this.timer}`);
-}
-```
-
----
-
-## Level Completion
-
-```javascript
-finishLevel() {
-  if (this.level >= this.maxLevels) {
-    this.totalTimer += this.timer;
-    alert(`Congratulations, game completed!\nTotal time: ${this.totalTimer}s`);
-    this.game.state.start("MainMenu");
-  } else {
-    alert(`Level ${this.level} completed!`);
-    this.totalTimer += this.timer;
-    this.timer = 0;
-    this.level++;
-    this.timerText.setText(`Time: ${this.timer}`);
-    this.totalTimeText.setText(`Total time: ${this.totalTimer}`);
-    this.levelText.setText(`Level: ${this.level} / ${this.maxLevels}`);
-    this.ball.body.x = this.ballStartPos.x;
-    this.ball.body.y = this.ballStartPos.y;
-    this.ball.body.velocity.x = 0;
-    this.ball.body.velocity.y = 0;
-    this.showLevel();
-  }
-}
-```
-
----
-
-## Complete Update Loop
-
-```javascript
-update() {
-  // Keyboard input
-  if (this.keys.left.isDown) {
-    this.ball.body.velocity.x -= this.movementForce;
-  } else if (this.keys.right.isDown) {
-    this.ball.body.velocity.x += this.movementForce;
-  }
-  if (this.keys.up.isDown) {
-    this.ball.body.velocity.y -= this.movementForce;
-  } else if (this.keys.down.isDown) {
-    this.ball.body.velocity.y += this.movementForce;
-  }
-
-  // Wall collisions
-  this.physics.arcade.collide(
-    this.ball, this.borderGroup, this.wallCollision, null, this
-  );
-  this.physics.arcade.collide(
-    this.ball, this.levels[this.level - 1], this.wallCollision, null, this
-  );
-
-  // Hole overlap
-  this.physics.arcade.overlap(
-    this.ball, this.hole, this.finishLevel, null, this
-  );
-}
-```
-
----
-
-## Phaser API Quick Reference
-
-| Function | Purpose |
-|----------|---------|
-| `this.add.sprite(x, y, key)` | Create a game object |
-| `this.add.group()` | Create a container for objects |
-| `this.add.button(x, y, key, cb, ctx, over, out, down)` | Create interactive button |
-| `this.add.text(x, y, text, style)` | Create text display |
-| `this.physics.enable(obj, system)` | Enable physics on object |
-| `this.physics.arcade.collide(a, b, cb)` | Detect collision with bounce |
-| `this.physics.arcade.overlap(a, b, cb)` | Detect overlap without bounce |
-| `this.load.image(key, path)` | Load image asset |
-| `this.load.spritesheet(key, path, w, h)` | Load sprite animation sheet |
-| `this.load.audio(key, paths[])` | Load audio with format fallbacks |
-| `this.game.add.audio(key)` | Instantiate audio object |
-| `this.time.events.loop(interval, cb, ctx)` | Create repeating timer |
 
 
 ---
@@ -87896,3 +87212,466 @@ Re-running the workflow that produced an artifact is a UI-only, user-confirmed a
 ## Recovery
 
 If the canvas misbehaves, call `restart_canvas`: it keeps the port, token, and running jobs. Use `docs` to open the built-in Docs tab, which also lists keyboard shortcuts (press `?`).
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/pr-dashboard/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/pr-dashboard/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/pr-dashboard/SKILL.md
+- **SHA256_FINGERPRINT**: `33e1928ec6a542d7da82f7222a45dccd90bee06676064359df892125a90f0a58`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:41.918150+00:00
+---
+
+**description**: Open a GitHub PR dashboard in the browser. Use when the user asks to see their pull requests, open the PR dashboard, show PRs for a date range, or check PR status. Trigger phrases include "show my PRs", "open PR dashboard", "pull request dashboard".
+
+# PR Dashboard
+
+Generates and opens a GitHub PR dashboard in the browser for a given date range and role filter.
+
+**Prerequisites:** GitHub CLI (`gh`) must be installed and authenticated (`gh auth login`).
+
+## What to do
+
+Find the CLI script bundled with this skill and run it:
+
+```bash
+SKILL_SCRIPT=$(find ~/.copilot -name "pr-dashboard-cli.mjs" -path "*/pr-dashboard/scripts/*" 2>/dev/null | head -1)
+node "$SKILL_SCRIPT" "<query>" "<role>"
+```
+
+- `<query>`: the date range the user specified (default: `last 7 days`)
+- `<role>`: one of `Authored by me`, `Requested reviews`, `Assigned to me`, `All` (default: `Authored by me`)
+
+## Parsing the user's request
+
+Extract the date range and role from the user's message. Examples:
+
+| User says | query | role |
+|---|---|---|
+| show my PRs | `last 7 days` | `Authored by me` |
+| show my PRs last 2 weeks | `last 2 weeks` | `Authored by me` |
+| PR dashboard this month reviews | `this month` | `Requested reviews` |
+| PR dashboard march 2026 assigned | `march 2026` | `Assigned to me` |
+| show all PRs last 30 days | `last 30 days` | `All` |
+
+**Role keyword mapping:**
+- "my PRs", "authored", "I wrote" → `Authored by me`
+- "reviews", "review requested", "reviewing" → `Requested reviews`
+- "assigned" → `Assigned to me`
+- "all", "involves me" → `All`
+
+## Supported date range formats
+
+The script understands natural language — pass it through as-is:
+- `last 7 days`, `last 2 weeks`, `last 30 days`
+- `this week`, `last week`, `this month`, `last month`
+- `march 2026`, `feb 2025`
+- `2026-01-01 - 2026-03-31`
+- `2025` (whole year)
+
+## After running
+
+Tell the user the dashboard is opening in their browser. The script outputs progress to stdout. If it exits with an error, show the error output and suggest they run `gh auth login` if it's an auth issue.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/pr-screenshots/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/pr-screenshots/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/pr-screenshots/SKILL.md
+- **SHA256_FINGERPRINT**: `d54ab73b2b97e8537f31e7acdb25c54974190c4e0ef33cb34ff4c15cc7a43bbe`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.042408+00:00
+---
+
+**description**: Embed before/after screenshots and annotated images in pull request descriptions. Covers PR description patterns, image upload for Azure DevOps and GitHub, and sizing best practices.
+
+# PR Screenshots
+
+Embed before/after screenshots in pull request descriptions so reviewers can see the visual change without checking out the branch.
+
+## When to Use This Skill
+
+Use this skill when a PR changes something visible:
+
+- Layout, styling, CSS
+- Charts, dashboards, data visualizations
+- UI components, forms, modals
+- Error messages, CLI output, log formatting
+
+## PR Description Pattern
+
+Place screenshots directly in the PR description body. Avoid wrapping them in `` collapse — reviewers are more likely to look at images they can see without clicking.
+
+```markdown
+**Before** — brief description of the problem:
+
+![before](url-to-before-image)
+
+**After** — brief description of the fix:
+
+![after](url-to-after-image)
+```
+
+Keep the text brief. A sentence or two per image describing what the reader should notice. Let the image carry most of the communication.
+
+### Multiple changes
+
+For PRs with several visual changes, use separate before/after pairs with headings:
+
+```markdown
+## Filter bar alignment
+
+**Before** — 1px border clash between adjacent buttons:
+
+![before-filters](url)
+
+**After** — borders overlap cleanly, hover tint added:
+
+![after-filters](url)
+
+## Chart tooltip
+
+**Before** — tooltip clipped at container edge:
+
+![before-tooltip](url)
+
+**After** — tooltip repositions to stay visible:
+
+![after-tooltip](url)
+```
+
+## Image Sizing
+
+- **Take screenshots at native 1x resolution** — don't resize with PIL (creates artifacts)
+- **Control display size in HTML** when images are too large:
+  ```html
+  <img src="url" width="600" alt="description">
+  ```
+- **Before/after pairs must use the same viewport width and crop** — otherwise the comparison is meaningless
+
+## Uploading Images
+
+### Azure DevOps
+
+Upload images as PR attachments via the REST API:
+
+```powershell
+$token = az account get-access-token `
+    --resource "499b84ac-1321-427f-aa17-267ca6975798" `
+    --query accessToken -o tsv
+
+$base = "https://{org}.visualstudio.com/{projectId}/_apis/git/repositories/{repoId}"
+$url = "$base/pullRequests/{prId}/attachments/screenshot.png?api-version=7.1-preview.1"
+
+# Use HttpClient — Invoke-RestMethod can corrupt binary data
+$client = New-Object System.Net.Http.HttpClient
+$client.DefaultRequestHeaders.Authorization = `
+    New-Object System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", $token)
+$content = New-Object System.Net.Http.ByteArrayContent(
+    , [System.IO.File]::ReadAllBytes("screenshot.png")
+)
+$content.Headers.ContentType = `
+    [System.Net.Http.Headers.MediaTypeHeaderValue]::new("application/octet-stream")
+$resp = $client.PostAsync($url, $content).Result
+```
+
+Reference in the PR description:
+
+```markdown
+![description](https://{org}.visualstudio.com/{projectId}/_apis/git/repositories/{repoId}/pullRequests/{prId}/attachments/screenshot.png)
+```
+
+**Azure DevOps gotchas:**
+
+- **Use `{org}.visualstudio.com` NOT `dev.azure.com/{org}`** — AzDO's markdown renderer uses `.visualstudio.com`. The `dev.azure.com` format loads noticeably slower
+- Use `POST` not `PUT` (PUT returns 405)
+- API version must be `7.1-preview.1`
+- Can't re-upload with the same filename — use a new name (e.g. `screenshot-v2.png`)
+- Use `HttpClient` not `Invoke-RestMethod` — IRM can corrupt binary data
+- Repo-relative paths don't work in PR descriptions — must use full URLs
+- Don't commit images to the branch just for PR screenshots
+
+### GitHub
+
+> **⚠️ Work in progress.** GitHub's drag-and-drop image upload uses internal endpoints that require browser cookies. There's no clean public API for uploading images to PR descriptions yet.
+
+**Current workaround:** Commit images to a `pr-assets` orphan branch and reference via blob URLs (`github.com/{owner}/{repo}/blob/pr-assets/{file}?raw=true`). It works but is clunky — contributions for a better approach are welcome.
+
+## Guidelines
+
+1. **Capture before state BEFORE making changes** — it's easy to forget, and reconstructing the original state later is slow and error-prone
+2. **Keep descriptions brief** — a sentence or two per image pointing out what changed is enough
+3. **Prefer visible images over collapsed sections** — screenshots behind `` tags are easy to skip
+4. **Annotate when the change is subtle** — use the `image-annotations` skill to add callouts when the difference isn't immediately obvious
+5. **Match viewport and crop** between before/after pairs so the comparison is meaningful
+
+## Limitations
+
+- GitHub image upload requires workarounds (no public API for PR description images)
+- Azure DevOps attachment filenames can't be reused — plan naming ahead
+- Very large images (>10MB) may not render inline on some platforms
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/prd/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/prd/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/prd/SKILL.md
+- **SHA256_FINGERPRINT**: `7b9dd520e51acbcfb930b42eef6d07e3dbaaf0f16109bf80010ab49931244d12`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.002368+00:00
+---
+
+**description**: Generate high-quality Product Requirements Documents (PRDs) for software systems and AI-powered features. Includes executive summaries, user stories, technical specifications, and risk analysis.
+
+# Product Requirements Document (PRD)
+
+## Overview
+
+Design comprehensive, production-grade Product Requirements Documents (PRDs) that bridge the gap between business vision and technical execution. This skill works for modern software systems, ensuring that requirements are clearly defined.
+
+## When to Use
+
+Use this skill when:
+
+- Starting a new product or feature development cycle
+- Translating a vague idea into a concrete technical specification
+- Defining requirements for AI-powered features
+- Stakeholders need a unified "source of truth" for project scope
+- User asks to "write a PRD", "document requirements", or "plan a feature"
+
+---
+
+## Operational Workflow
+
+### Phase 1: Discovery (The Interview)
+
+Before writing a single line of the PRD, you **MUST** interrogate the user to fill knowledge gaps. Do not assume context.
+
+**Ask about:**
+
+- **The Core Problem**: Why are we building this now?
+- **Success Metrics**: How do we know it worked?
+- **Constraints**: Budget, tech stack, or deadline?
+
+### Phase 2: Analysis & Scoping
+
+Synthesize the user's input. Identify dependencies and hidden complexities.
+
+- Map out the **User Flow**.
+- Define **Non-Goals** to protect the timeline.
+
+### Phase 3: Technical Drafting
+
+Generate the document using the **Strict PRD Schema** below.
+
+---
+
+## PRD Quality Standards
+
+### Requirements Quality
+
+Use concrete, measurable criteria. Avoid "fast", "easy", or "intuitive".
+
+```diff
+# Vague (BAD)
+- The search should be fast and return relevant results.
+- The UI must look modern and be easy to use.
+
+# Concrete (GOOD)
++ The search must return results within 200ms for a 10k record dataset.
++ The search algorithm must achieve >= 85% Precision@10 in benchmark evals.
++ The UI must follow the 'Vercel/Next.js' design system and achieve 100% Lighthouse Accessibility score.
+```
+
+---
+
+## Strict PRD Schema
+
+You **MUST** follow this exact structure for the output:
+
+### 1. Executive Summary
+
+- **Problem Statement**: 1-2 sentences on the pain point.
+- **Proposed Solution**: 1-2 sentences on the fix.
+- **Success Criteria**: 3-5 measurable KPIs.
+
+### 2. User Experience & Functionality
+
+- **User Personas**: Who is this for?
+- **User Stories**: `As a [user], I want to [action] so that [benefit].`
+- **Acceptance Criteria**: Bulleted list of "Done" definitions for each story.
+- **Non-Goals**: What are we NOT building?
+
+### 3. AI System Requirements (If Applicable)
+
+- **Tool Requirements**: What tools and APIs are needed?
+- **Evaluation Strategy**: How to measure output quality and accuracy.
+
+### 4. Technical Specifications
+
+- **Architecture Overview**: Data flow and component interaction.
+- **Integration Points**: APIs, DBs, and Auth.
+- **Security & Privacy**: Data handling and compliance.
+
+### 5. Risks & Roadmap
+
+- **Phased Rollout**: MVP -> v1.1 -> v2.0.
+- **Technical Risks**: Latency, cost, or dependency failures.
+
+---
+
+## Implementation Guidelines
+
+### DO (Always)
+
+- **Define Testing**: For AI systems, specify how to test and validate output quality.
+- **Iterate**: Present a draft and ask for feedback on specific sections.
+
+### DON'T (Avoid)
+
+- **Skip Discovery**: Never write a PRD without asking at least 2 clarifying questions first.
+- **Hallucinate Constraints**: If the user didn't specify a tech stack, ask or label it as `TBD`.
+
+---
+
+## Example: Intelligent Search System
+
+### 1. Executive Summary
+
+**Problem**: Users struggle to find specific documentation snippets in massive repositories.
+**Solution**: An intelligent search system that provides direct answers with source citations.
+**Success**:
+
+- Reduce search time by 50%.
+- Citation accuracy >= 95%.
+
+### 2. User Stories
+
+- **Story**: As a developer, I want to ask natural language questions so I don't have to guess keywords.
+- **AC**:
+  - Supports multi-turn clarification.
+  - Returns code blocks with "Copy" button.
+
+### 3. AI System Architecture
+
+- **Tools Required**: `codesearch`, `grep`, `webfetch`.
+
+### 4. Evaluation
+
+- **Benchmark**: Test with 50 common developer questions.
+- **Pass Rate**: 90% must match expected citations.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/premium-frontend-ui/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/premium-frontend-ui/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/premium-frontend-ui/SKILL.md
+- **SHA256_FINGERPRINT**: `ca5acde81036bc146ff4d2f20524f4c680d6084b8f9a2f27a7d02dafeb471b8d`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:42.127667+00:00
+---
+
+**description**: A comprehensive guide for GitHub Copilot to craft immersive, high-performance web experiences with advanced motion, typography, and architectural craftsmanship.
+
+# Immersive Frontend UI Craftsmanship
+
+As an AI engineering assistant, your role when building premium frontend experiences goes beyond outputting functional HTML and CSS. You must architect **immersive digital environments**. This skill provides the blueprint for generating highly intentional, award-level web applications that prioritize aesthetic quality, deep interactivity, and flawless performance.
+
+When a user requests a high-end landing page, an interactive portfolio, or a specialized component that requires top-tier visual polish, apply the following rigorous standards to every line of code you generate.
+
+---
+
+## 1. Establishing the Creative Foundation
+
+Before generating layout code, ensure you understand the core emotional resonance the UI should deliver. Do not default to generic, unopinionated code.
+
+Commit to a strong visual identity in your CSS and component structure:
+- **Editorial Brutalism**: High-contrast monochromatic palettes, oversized typography, sharp rectangular edges, and raw grid structures.
+- **Organic Fluidity**: Soft gradients, deeply rounded corners, glassmorphism overlays, and bouncy spring-based physics.
+- **Cyber / Technical**: Dark mode dominance, glowing neon accents, monospaced typography, and rapid, staggered reveal animations.
+- **Cinematic Pacing**: Full-viewport imagery, slow cross-fades, profound use of negative space, and scroll-dependent storytelling.
+
+---
+
+## 2. Structural Requirements for Immersive UI
+
+When scaffolding a page or generating core components, include the following architectural layers to transform a standard page into an experience.
+
+### 2.1 The Entry Sequence (Preloading & Initialization)
+A blank screen is unacceptable. The user's first interaction must set expectations.
+- **Implementation**: Generate a lightweight preloader component that handles asset resolution (fonts, initial images, 3D models).
+- **Animation**: Output code that transitions the preloader away fluidly—such as a split-door reveal, a scale-up zoom, or a staggered text sweep.
+
+### 2.2 The Hero Architecture
+The top fold must command attention immediately.
+- **Visuals**: Output code that implements full-bleed containers (`100vh`/`100dvh`).
+- **Typography Engine**: Ensure headlines are broken down syntactically (e.g., span wrapping by word or character) to allow for cascading entrance animations.
+- **Depth**: Utilize subtle floating elements or background clipping paths to create a sense of scale and depth behind the primary copy.
+
+### 2.3 Fluid & Contextual Navigation
+- **Implementation**: Do not generate standard static navbars. Output sticky headers that react toscroll direction (hide on scroll down, reveal on scroll up).
+- **Interactivity**: Include hover states that reveal rich content (e.g., mega-menus that display image previews of the hovered link).
+
+---
+
+## 3. The Motion Design System
+
+Animation is not an afterthought; it is the connective tissue of a premium site. Always implement the following motion principles:
+
+### 3.1 Scroll-Driven Narratives
+Generate code utilizing modern scroll libraries (like GSAP's ScrollTrigger) to tie animations to user progress.
+- **Pinned Containers**: Create sections that lock into the viewport while secondary content flows past or reveals itself.
+- **Horizontal Journeys**: Translate vertical scroll data into horizontal movement for specific galleries or showcases.
+- **Parallax Mapping**: Assign subtle, varying scroll-speeds to background elements, midground text, and foreground imagery.
+
+### 3.2 High-Fidelity Micro-Interactions
+The cursor is the user's avatar. Build interactions around it.
+- **Magnetic Components**: Write logic that calculates the distance between the mouse pointer and a button, pulling the button towards the cursor dynamically.
+- **Custom Tracking Elements**: Generate custom cursor components that follow the mouse with calculated interpolation (lerp) for a smooth drag effect.
+- **Dimensional Hover States**: Use CSS Transforms (`scale`, `rotateX`, `translate3d`) to give interactive elements weight and tactile feedback.
+
+---
+
+## 4. Typography & Visual Texture
+
+The aesthetics of your generated code must reflect premium craftsmanship.
+
+- **Type Hierarchy**: Enforce massive contrast in scale. Headlines should utilize extreme sizing (`clamp()` functions spanning up to `12vw`), while body copy remains incredibly crisp (`16px-18px` minimum).
+- **Font Selection**: Always recommend or implement highly specified variable fonts or premium typefaces over system defaults.
+- **Atmospheric Filters**: Implement CSS/SVG noise overlays (`mix-blend-mode: overlay`, opacity `0.02 - 0.05`) to remove digital sterility and add photographic grain.
+- **Lighting & Glass**: Utilize `backdrop-filter: blur(x)` combined with ultra-thin, semi-transparent borders to create modern, frosted-glass depth.
+
+---
+
+## 5. The Performance Imperative
+
+A beautiful site that stutters is a failure. Enforce strict performance guardrails in all generated code:
+
+- **Hardware Acceleration**: Only animate properties that do not trigger layout recalculations: `transform` and `opacity`. Code that animates `width`, `height`, `top`, or `margin` should be fiercely avoided.
+- **Render Optimization**: Apply `will-change: transform` intelligently on complex moving elements, but remove it post-animation to conserve memory.
+- **Responsive Degradation**: Wrap custom cursor logic and heavy hover animations in `@media (hover: hover) and (pointer: fine)` to ensure pristine performance on touch devices.
+- **Accessibility**: Wrap heavy continuous animations in `@media (prefers-reduced-motion: no-preference)`. Never sacrifice user accessibility for aesthetic flair.
+
+---
+
+## 6. Implementation Ecosystem
+
+When the user asks you to implement these patterns, leverage industry-standard libraries tailored to their framework:
+
+### For React / Next.js Targets
+- Structure the application to support **Framer Motion** for layout transitions and spring physics.
+- Recommend **Lenis** (`@studio-freight/lenis`) for smooth scrolling context.
+- Implement **React Three Fiber** (`@react-three/fiber`) if webGL or 3D interactions are requested.
+
+### For Vanilla / HTML / Astro Targets
+- Rely heavily on **GSAP** (GreenSock Animation Platform) for timeline sequencing.
+- Utilize vanilla **Lenis** via CDN for scroll hijacking and smoothing.
+- Use **SplitType** for safe, accessible typography chunking.
+
+---
+
+## Summary of Action
+
+Whenever you receive a prompt to "Build a premium landing page," "Create an Awwwards-style component," or "Design an immersive UI," you must automatically:
+1. Wrap the output in a robust, scroll-smoothed architecture.
+2. Provide CSS that guarantees perfect performance using composited layers.
+3. Integrate sweeping, staggered component entrances.
+4. Elevate the typography using fluid scales.
+5. Create an intentional, memorable aesthetic footprint.

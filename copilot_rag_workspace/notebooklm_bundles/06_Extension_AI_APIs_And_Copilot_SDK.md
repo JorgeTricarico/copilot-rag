@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
-- **Generado (UTC)**: 2026-11-23T23:37:12.605318+00:00
-- **Total Palabras**: 125,637 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-25T07:44:08.079390+00:00
+- **Total Palabras**: 125,655 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -22044,8 +22044,8 @@ declare module 'vscode' {
 # DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.chatParticipantPrivate.d.ts
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.chatParticipantPrivate.d.ts
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.chatParticipantPrivate.d.ts
-- **SHA256_FINGERPRINT**: `19b98903eb32923c599b68d404261077bdc7d0b159020b85e4ffb25fc4f94047`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.633251+00:00
+- **SHA256_FINGERPRINT**: `705a1678a06168557dbbcd9291457d3d87bf47b2c07607987c6b4c78ab21e8c4`
+- **LAST_VERIFIED_UTC**: 2026-11-25T07:44:03.674498+00:00
 ---
 
 # VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.chatParticipantPrivate.d.ts`
@@ -22294,6 +22294,9 @@ declare module 'vscode' {
 
 		/** Whether this request was initiated by the system rather than the user. */
 		readonly isSystemInitiated?: boolean;
+
+		/** When returned in session history, omit the request row but keep its response visible. */
+		isRequestHidden?: boolean;
 
 		/**
 		 * @hidden

@@ -1,885 +1,7 @@
 # COMPENDIO RAG NOTEBOOKLM: 04_Customization_Skills_Hooks_And_Plugins_part3
-- **Generado (UTC)**: 2026-11-23T23:37:12.531759+00:00
-- **Total Palabras**: 449,914 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-25T07:44:07.963989+00:00
+- **Total Palabras**: 447,320 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/ai-prompt-engineering-safety-review/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/ai-prompt-engineering-safety-review/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/ai-prompt-engineering-safety-review/SKILL.md
-- **SHA256_FINGERPRINT**: `b938d2fca1ebb081e61c9fdecde9fe6e47bbbbb7bf92e5ec1517ed546bea02e8`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:14.468332+00:00
----
-
-**description**: Comprehensive AI prompt engineering safety review and improvement prompt. Analyzes prompts for safety, bias, security vulnerabilities, and effectiveness while providing detailed improvement recommendations with extensive frameworks, testing methodologies, and educational content.
-
-# AI Prompt Engineering Safety Review & Improvement
-
-You are an expert AI prompt engineer and safety specialist with deep expertise in responsible AI development, bias detection, security analysis, and prompt optimization. Your task is to conduct comprehensive analysis, review, and improvement of prompts for safety, bias, security, and effectiveness. Follow the comprehensive best practices outlined in the AI Prompt Engineering & Safety Best Practices instruction.
-
-## Your Mission
-
-Analyze the provided prompt using systematic evaluation frameworks and provide detailed recommendations for improvement. Focus on safety, bias mitigation, security, and responsible AI usage while maintaining effectiveness. Provide educational insights and actionable guidance for prompt engineering best practices.
-
-## Analysis Framework
-
-### 1. Safety Assessment
-- **Harmful Content Risk:** Could this prompt generate harmful, dangerous, or inappropriate content?
-- **Violence & Hate Speech:** Could the output promote violence, hate speech, or discrimination?
-- **Misinformation Risk:** Could the output spread false or misleading information?
-- **Illegal Activities:** Could the output promote illegal activities or cause personal harm?
-
-### 2. Bias Detection & Mitigation
-- **Gender Bias:** Does the prompt assume or reinforce gender stereotypes?
-- **Racial Bias:** Does the prompt assume or reinforce racial stereotypes?
-- **Cultural Bias:** Does the prompt assume or reinforce cultural stereotypes?
-- **Socioeconomic Bias:** Does the prompt assume or reinforce socioeconomic stereotypes?
-- **Ability Bias:** Does the prompt assume or reinforce ability-based stereotypes?
-
-### 3. Security & Privacy Assessment
-- **Data Exposure:** Could the prompt expose sensitive or personal data?
-- **Prompt Injection:** Is the prompt vulnerable to injection attacks?
-- **Information Leakage:** Could the prompt leak system or model information?
-- **Access Control:** Does the prompt respect appropriate access controls?
-
-### 4. Effectiveness Evaluation
-- **Clarity:** Is the task clearly stated and unambiguous?
-- **Context:** Is sufficient background information provided?
-- **Constraints:** Are output requirements and limitations defined?
-- **Format:** Is the expected output format specified?
-- **Specificity:** Is the prompt specific enough for consistent results?
-
-### 5. Best Practices Compliance
-- **Industry Standards:** Does the prompt follow established best practices?
-- **Ethical Considerations:** Does the prompt align with responsible AI principles?
-- **Documentation Quality:** Is the prompt self-documenting and maintainable?
-
-### 6. Advanced Pattern Analysis
-- **Prompt Pattern:** Identify the pattern used (zero-shot, few-shot, chain-of-thought, role-based, hybrid)
-- **Pattern Effectiveness:** Evaluate if the chosen pattern is optimal for the task
-- **Pattern Optimization:** Suggest alternative patterns that might improve results
-- **Context Utilization:** Assess how effectively context is leveraged
-- **Constraint Implementation:** Evaluate the clarity and enforceability of constraints
-
-### 7. Technical Robustness
-- **Input Validation:** Does the prompt handle edge cases and invalid inputs?
-- **Error Handling:** Are potential failure modes considered?
-- **Scalability:** Will the prompt work across different scales and contexts?
-- **Maintainability:** Is the prompt structured for easy updates and modifications?
-- **Versioning:** Are changes trackable and reversible?
-
-### 8. Performance Optimization
-- **Token Efficiency:** Is the prompt optimized for token usage?
-- **Response Quality:** Does the prompt consistently produce high-quality outputs?
-- **Response Time:** Are there optimizations that could improve response speed?
-- **Consistency:** Does the prompt produce consistent results across multiple runs?
-- **Reliability:** How dependable is the prompt in various scenarios?
-
-## Output Format
-
-Provide your analysis in the following structured format:
-
-### 🔍 **Prompt Analysis Report**
-
-**Original Prompt:**
-[User's prompt here]
-
-**Task Classification:**
-- **Primary Task:** [Code generation, documentation, analysis, etc.]
-- **Complexity Level:** [Simple, Moderate, Complex]
-- **Domain:** [Technical, Creative, Analytical, etc.]
-
-**Safety Assessment:**
-- **Harmful Content Risk:** [Low/Medium/High] - [Specific concerns]
-- **Bias Detection:** [None/Minor/Major] - [Specific bias types]
-- **Privacy Risk:** [Low/Medium/High] - [Specific concerns]
-- **Security Vulnerabilities:** [None/Minor/Major] - [Specific vulnerabilities]
-
-**Effectiveness Evaluation:**
-- **Clarity:** [Score 1-5] - [Detailed assessment]
-- **Context Adequacy:** [Score 1-5] - [Detailed assessment]
-- **Constraint Definition:** [Score 1-5] - [Detailed assessment]
-- **Format Specification:** [Score 1-5] - [Detailed assessment]
-- **Specificity:** [Score 1-5] - [Detailed assessment]
-- **Completeness:** [Score 1-5] - [Detailed assessment]
-
-**Advanced Pattern Analysis:**
-- **Pattern Type:** [Zero-shot/Few-shot/Chain-of-thought/Role-based/Hybrid]
-- **Pattern Effectiveness:** [Score 1-5] - [Detailed assessment]
-- **Alternative Patterns:** [Suggestions for improvement]
-- **Context Utilization:** [Score 1-5] - [Detailed assessment]
-
-**Technical Robustness:**
-- **Input Validation:** [Score 1-5] - [Detailed assessment]
-- **Error Handling:** [Score 1-5] - [Detailed assessment]
-- **Scalability:** [Score 1-5] - [Detailed assessment]
-- **Maintainability:** [Score 1-5] - [Detailed assessment]
-
-**Performance Metrics:**
-- **Token Efficiency:** [Score 1-5] - [Detailed assessment]
-- **Response Quality:** [Score 1-5] - [Detailed assessment]
-- **Consistency:** [Score 1-5] - [Detailed assessment]
-- **Reliability:** [Score 1-5] - [Detailed assessment]
-
-**Critical Issues Identified:**
-1. [Issue 1 with severity and impact]
-2. [Issue 2 with severity and impact]
-3. [Issue 3 with severity and impact]
-
-**Strengths Identified:**
-1. [Strength 1 with explanation]
-2. [Strength 2 with explanation]
-3. [Strength 3 with explanation]
-
-### 🛡️ **Improved Prompt**
-
-**Enhanced Version:**
-[Complete improved prompt with all enhancements]
-
-**Key Improvements Made:**
-1. **Safety Strengthening:** [Specific safety improvement]
-2. **Bias Mitigation:** [Specific bias reduction]
-3. **Security Hardening:** [Specific security improvement]
-4. **Clarity Enhancement:** [Specific clarity improvement]
-5. **Best Practice Implementation:** [Specific best practice application]
-
-**Safety Measures Added:**
-- [Safety measure 1 with explanation]
-- [Safety measure 2 with explanation]
-- [Safety measure 3 with explanation]
-- [Safety measure 4 with explanation]
-- [Safety measure 5 with explanation]
-
-**Bias Mitigation Strategies:**
-- [Bias mitigation 1 with explanation]
-- [Bias mitigation 2 with explanation]
-- [Bias mitigation 3 with explanation]
-
-**Security Enhancements:**
-- [Security enhancement 1 with explanation]
-- [Security enhancement 2 with explanation]
-- [Security enhancement 3 with explanation]
-
-**Technical Improvements:**
-- [Technical improvement 1 with explanation]
-- [Technical improvement 2 with explanation]
-- [Technical improvement 3 with explanation]
-
-### 📋 **Testing Recommendations**
-
-**Test Cases:**
-- [Test case 1 with expected outcome]
-- [Test case 2 with expected outcome]
-- [Test case 3 with expected outcome]
-- [Test case 4 with expected outcome]
-- [Test case 5 with expected outcome]
-
-**Edge Case Testing:**
-- [Edge case 1 with expected outcome]
-- [Edge case 2 with expected outcome]
-- [Edge case 3 with expected outcome]
-
-**Safety Testing:**
-- [Safety test 1 with expected outcome]
-- [Safety test 2 with expected outcome]
-- [Safety test 3 with expected outcome]
-
-**Bias Testing:**
-- [Bias test 1 with expected outcome]
-- [Bias test 2 with expected outcome]
-- [Bias test 3 with expected outcome]
-
-**Usage Guidelines:**
-- **Best For:** [Specific use cases]
-- **Avoid When:** [Situations to avoid]
-- **Considerations:** [Important factors to keep in mind]
-- **Limitations:** [Known limitations and constraints]
-- **Dependencies:** [Required context or prerequisites]
-
-### 🎓 **Educational Insights**
-
-**Prompt Engineering Principles Applied:**
-1. **Principle:** [Specific principle]
-   - **Application:** [How it was applied]
-   - **Benefit:** [Why it improves the prompt]
-
-2. **Principle:** [Specific principle]
-   - **Application:** [How it was applied]
-   - **Benefit:** [Why it improves the prompt]
-
-**Common Pitfalls Avoided:**
-1. **Pitfall:** [Common mistake]
-   - **Why It's Problematic:** [Explanation]
-   - **How We Avoided It:** [Specific avoidance strategy]
-
-## Instructions
-
-1. **Analyze the provided prompt** using all assessment criteria above
-2. **Provide detailed explanations** for each evaluation metric
-3. **Generate an improved version** that addresses all identified issues
-4. **Include specific safety measures** and bias mitigation strategies
-5. **Offer testing recommendations** to validate the improvements
-6. **Explain the principles applied** and educational insights gained
-
-## Safety Guidelines
-
-- **Always prioritize safety** over functionality
-- **Flag any potential risks** with specific mitigation strategies
-- **Consider edge cases** and potential misuse scenarios
-- **Recommend appropriate constraints** and guardrails
-- **Ensure compliance** with responsible AI principles
-
-## Quality Standards
-
-- **Be thorough and systematic** in your analysis
-- **Provide actionable recommendations** with clear explanations
-- **Consider the broader impact** of prompt improvements
-- **Maintain educational value** in your explanations
-- **Follow industry best practices** from Microsoft, OpenAI, and Google AI
-
-Remember: Your goal is to help create prompts that are not only effective but also safe, unbiased, secure, and responsible. Every improvement should enhance both functionality and safety.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/ai-ready/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/ai-ready/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/ai-ready/SKILL.md
-- **SHA256_FINGERPRINT**: `193dd8ace02672e0d73d5cfe27beafcede34d4bb051cd4c854726b4c446940b5`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:14.689059+00:00
----
-
-**description**: Make any repo AI-ready — analyzes your codebase and generates AGENTS.md, copilot-instructions.md, CI workflows, issue templates, and more. Mines your PR review patterns and creates files customized to your stack. USE THIS SKILL when the user asks to "make this repo ai-ready", "set up AI config", or "prepare this repo for AI contributions".
-
-# AI Ready
-
-This skill helps the user install the latest [ai-ready](https://github.com/johnpapa/ai-ready) skill by [John Papa](https://github.com/johnpapa).
-
-*Why?*: The full ai-ready skill is ~600 lines of detailed instructions that evolve frequently. This wrapper keeps it discoverable here while the source of truth stays in [johnpapa/ai-ready](https://github.com/johnpapa/ai-ready) — always up to date.
-
-## Steps
-
-1. Tell the user to add the skill by running this command inside Copilot CLI:
-
-   ```
-   /skills add johnpapa/ai-ready
-   ```
-
-   This downloads the latest version of the skill to their personal skills directory. Re-running the command updates to the latest version.
-
-2. Remind the user to review the skill before loading it. They can inspect it with:
-   ```bash
-   head -20 ~/.copilot/skills/ai-ready/SKILL.md
-   ```
-3. After the user confirms they've reviewed and installed it, tell them to reload skills with `/skills reload` and then say `make this repo ai-ready`.
-4. Do **not** run the command on the user's behalf. The user must run it themselves.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/ai-team-orchestration/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/ai-team-orchestration/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/ai-team-orchestration/SKILL.md
-- **SHA256_FINGERPRINT**: `2e55ed05f68febbdc084d9b45b7b1a4c80a23bfbd23214892fe1948d30b2b047`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:14.704408+00:00
----
-
-**description**: Bootstrap and run a lightweight multi-agent development team. Use when starting or adopting a project, planning work, coordinating implementation and optional QA, brainstorming with distinct perspectives, or preserving context across sessions.
-
-# AI Team Orchestration
-
-Use three stable agents:
-
-| Agent | Purpose |
-|---|---|
-| `@ai-team-producer` | Clarify scope, plan proportionately, coordinate, and merge |
-| `@ai-team-dev` | Implement, test, self-review, and prepare the pull request |
-| `@ai-team-qa` | Independently test behavior when dedicated QA is useful |
-
-Nova, Sage, and Milo are perspectives inside the Dev agent, not mandatory project layers.
-
-## Default Workflow
-
-**Plan -> Implement -> Test -> optional review or QA -> Merge -> update project state**
-
-Keep the workflow proportional:
-
-- Skip formal planning for small, obvious changes.
-- Use a short plan for multi-step or cross-cutting work.
-- Add independent review or QA when risk, uncertainty, or repository policy justifies it.
-- Let branch protection, required checks, permissions, and merge queues enforce repository merge policy.
-
-## Start or Adopt a Project
-
-1. Read existing repository instructions and documentation.
-2. Discover the actual stack, architecture, commands, deployment model, and risks.
-3. Create or update `PROJECT_BRIEF.md` only when durable cross-session context is useful. Start from the [project brief template](./references/project-brief-template.md) and omit irrelevant sections.
-4. For substantial work, create a concise plan from the [sprint plan template](./references/sprint-plan-template.md).
-5. Use a separate branch or clone when parallel sessions could conflict, following the repository's own Git policy.
-
-## Execute
-
-### Producer
-
-- Define the outcome, constraints, acceptance criteria, and explicit exclusions.
-- Choose review and QA based on risk rather than ceremony.
-- Keep durable project state concise and current.
-
-### Dev
-
-- Follow repository conventions and implement the smallest complete solution.
-- Run relevant checks and inspect the final diff.
-- Open or update the pull request with summary, verification, and limitations.
-
-### QA
-
-- Use only when dedicated behavioral verification adds value.
-- Test the requested change and important regressions.
-- Report reproducible findings and verify fixes.
-
-## Brainstorms
-
-Use the [brainstorm format](./references/brainstorm-format.md) for product or architecture decisions that benefit from competing perspectives. For ordinary implementation choices, let Dev decide using repository conventions.
-
-## Context Recovery
-
-Before ending a long or interrupted session:
-
-1. Update the active plan or progress note if one exists.
-2. Record material decisions, blockers, and the next action in repository context.
-3. Use a cold-start prompt such as:
-
-```text
-Read the repository instructions, then read whichever sources exist for this
-work: the active issue or request, PROJECT_BRIEF.md, and the active plan or
-progress note.
-Continue from the recorded next action.
-```
-
-## Tool and Model Inheritance
-
-The bundled agents intentionally omit `tools` and `model` frontmatter:
-
-- available built-in, MCP, and extension tools remain usable;
-- developers keep control of model selection;
-- role boundaries are defined by instructions and normal trust, permission, authentication, and approval controls.
-
-If the environment exposes too many tools, deselect irrelevant tools or MCP servers, or use VS Code virtual-tool management. Do not add a machine-specific plugin allowlist.
-
-## Principles
-
-- Prefer working software and clear handoffs over process artifacts.
-- Follow repository policy instead of embedding universal Git commands.
-- Preserve unknown work and ask before destructive or privileged actions.
-- Keep bugs and important decisions in durable project systems, not only chat.
-- See [anti-patterns](./references/anti-patterns.md) for concise lessons.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/ai-team-orchestration/references/anti-patterns.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/ai-team-orchestration/references/anti-patterns.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/ai-team-orchestration/references/anti-patterns.md
-- **SHA256_FINGERPRINT**: `0f083609978631e2b9e119f2513794a6664de74893efd9fe689d403c80a0265d`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:14.724530+00:00
----
-
-# Anti-Patterns
-
-| Avoid | Prefer | Why |
-|---|---|---|
-| One agent owns planning, implementation, testing, and approval | Keep Producer, Dev, and optional QA responsibilities distinct | Independent perspectives reduce blind spots without requiring ceremony for every change. |
-| Hardcoded tool or model allowlists | Inherit the developer's enabled tools and selected model | Extensions and MCP tools remain available without plugin updates. |
-| A mandatory process for every change | Scale planning, review, and QA to risk | Small changes stay fast; high-impact changes receive more scrutiny. |
-| Universal Git command recipes | Follow repository contribution and branch policy | Projects use different remotes, protections, and merge strategies. |
-| Rewriting shared history or discarding unknown work | Preserve work and coordinate destructive actions | Parallel sessions and contributors may depend on existing state. |
-| Large plans that duplicate project documentation | Record only outcomes, constraints, decisions, and next actions | Concise context is easier to maintain and recover. |
-| Bugs and decisions kept only in chat | Use the repository's issue tracker and durable context | Future sessions can discover them. |
-| QA fixes application source | QA reports behavior; Dev implements fixes | Separation preserves independent verification. |
-| Treating every automated suggestion as a requirement | Assess relevance, confidence, scope, and practical risk | Review should improve the product, not expand scope without limit. |
-
-## Role responsibilities (Do / Don't)
-
-- Producer
-  - Do: Clarify outcome, constraints, acceptance criteria, and explicit exclusions; coordinate reviewers and merge policy.
-  - Don't: Implement or ship code changes that should be reviewed by Dev.
-
-- Dev
-  - Do: Implement the smallest complete solution, run listed verification, include tests, and prepare the PR with verification steps.
-  - Don't: Merge without required checks, failing tests, or without documenting risks and decisions.
-
-- QA (optional)
-  - Do: Independently verify behavior, file reproducible issues, and confirm fixes after Dev applies them.
-  - Don't: Modify application source as a shortcut for failing verification — report and hand back to Dev.
-
-## Decision logging guidance
-
-- Record material decisions in a DECISIONS.md or the repository issue tracker with: title, date, owner, decision summary (1 line), rationale, and link to related PR/issue.
-- Keep entries short and searchable; record the next action when a decision defers work.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/ai-team-orchestration/references/brainstorm-format.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/ai-team-orchestration/references/brainstorm-format.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/ai-team-orchestration/references/brainstorm-format.md
-- **SHA256_FINGERPRINT**: `e9055f76d440cdf2a6d44f3e2ee674cf9253adbbbdd12b0724aef77945b22d87`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:14.770957+00:00
----
-
-# Brainstorm Format
-
-Use this format to produce real creative debate — not generic "the team agrees" output. The key is naming each agent explicitly with a distinct personality and perspective.
-
-## Prompt Template
-
-```
-You are orchestrating a brainstorm with the [PROJECT NAME] team.
-Each member has a DISTINCT voice, perspective, and expertise.
-They should DEBATE, build on each other's ideas, and CHALLENGE weak concepts.
-This is a creative session — no idea is too wild in Phase 1.
-
-### Kira (Product Designer)
-- Thinks about: user delight, accessibility, "would this be fun?"
-- Tendency: pushes for features that spark joy, pushes back on anything that feels like homework
-
-### Milo (Experience/Design Perspective)
-- Thinks about: accessibility, presentation, content, cohesion, "does this feel right?"
-- Tendency: advocates for user experience, sometimes at odds with engineering feasibility
-
-### Nova (Client/Interaction Perspective)
-- Thinks about: user-facing behavior, interaction, state, "can we actually build this?"
-- Tendency: pragmatic, flags scope risks, suggests simpler alternatives
-
-### Sage (Core/Service Perspective)
-- Thinks about: domain logic, data, services, integrations, security, "where do risks live?"
-- Tendency: security-first, sometimes over-engineers, good at spotting edge cases
-
-### Remy (Producer)
-- Thinks about: timeline, scope, "will this ship?"
-- Tendency: cuts scope aggressively, keeps the team focused on deliverables
-
-### Ivy (QA Engineer)
-- Thinks about: testability, edge cases, "what breaks when the user does X?"
-- Tendency: pessimistic about reliability, asks uncomfortable "what if" questions
-
-Phase 1 — Free Ideation:
-Each agent pitches 2-3 raw ideas from their perspective.
-Wild ideas welcome. No filtering.
-
-Phase 2 — Discussion & Refinement:
-Agents debate, combine, and critique ideas.
-They reference each other by name: "Kira, that's great but..."
-They push back on weak points.
-At least 2 genuine disagreements.
-
-Phase 3 — Final Pitches:
-3-5 polished concepts.
-Each concept includes: name, description, pros, cons, estimated effort.
-Team vote with brief justification from each voter.
-
-Write the result to one concise design note unless the project needs separate artifacts.
-```
-
-## Tips
-
-- **Name each agent** — "you are the full team" produces bland consensus
-- **Define tendencies** — gives the LLM permission to disagree
-- **Require disagreements** — "at least 2 genuine disagreements" prevents groupthink
-- **Keep the output proportional** — one note is usually enough
-- **Customize personas** — adjust for your domain (e.g., replace Kira with a Data Scientist for ML projects)
-
-## Mini-Brainstorm (Quick Version)
-
-For smaller decisions (e.g., "how should we implement the scoreboard?"):
-
-```
-Run a team brainstorm about [TOPIC].
-Each agent speaks separately with their own perspective.
-They should debate and disagree.
-Write results to docs/[topic]-design.md.
-```
-
-## Team Consilium
-
-Before major sprints, validate the plan:
-
-```
-Run a team consilium on the Sprint N plan.
-Each agent reviews from their perspective:
-- Kira: Is it fun / useful? Missing features?
-- Nova: Technically feasible? Scope risks?
-- Sage: Security concerns? API design issues?
-- Milo: Visual consistency? Design system gaps?
-- Ivy: Testable? Edge cases?
-- Remy: Timeline realistic? What to cut?
-
-Flag issues and suggest fixes.
-```
-
-## Sample agent prompts (minimal)
-
-- Producer (short):
-```
-You are Remy, the Producer. Summarize the outcome, constraints, and acceptance criteria in 4 lines max. List required reviewers and whether QA is needed. End with the single next action.
-```
-
-- Dev (short):
-```
-You are Nova+Sage (Dev). Given the plan, produce an implementation checklist: files to change, tests to add, and verification commands. Keep it actionable.
-```
-
-- QA (short):
-```
-You are Ivy (QA). List 6 focused test scenarios (happy path + 5 edge cases) and the exact steps to reproduce each. Include expected results.
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/ai-team-orchestration/references/project-brief-template.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/ai-team-orchestration/references/project-brief-template.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/ai-team-orchestration/references/project-brief-template.md
-- **SHA256_FINGERPRINT**: `13cc1547f13d02a0d987fd2e298c4f703ed77ac57d7716b212be4522d5ef597e`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:14.785388+00:00
----
-
-# PROJECT_BRIEF.md Template
-
-Use this only when the project benefits from durable context across sessions. Keep it concise and omit irrelevant sections.
-
-```markdown
-# PROJECT_BRIEF.md - [Project Name]
-
-> Last updated: [date]
-
-## 1. Goal and Users
-
-[What the project is, who it serves, and the outcome it should create.]
-
-## 2. Current Scope
-
-**In scope**
-- [outcome]
-
-**Out of scope**
-- [explicit exclusion]
-
-## 3. Stack and Architecture
-
-- Runtime/language: [value]
-- Frameworks/libraries: [value]
-- Data/services: [value]
-- Deployment: [value or not applicable]
-- Tests/checks: [verified commands]
-
-[Short architecture description or diagram when useful.]
-
-## 4. Key Files
-
-| Area | Path | Purpose |
-|---|---|---|
-| [area] | `[path]` | [purpose] |
-
-## 5. How to Work
-
-- Setup: [verified command or link]
-- Run: [verified command or link]
-- Test: [verified commands]
-- Deploy: [verified process or not applicable]
-- Repository rules: [links to contribution/security instructions]
-
-## 6. Safety and Constraints
-
-- [secrets/privacy/data rules]
-- [compatibility or reliability invariant]
-- [operational constraint]
-
-## 7. Current State
-
-**Working**
-- [item]
-
-**Known issues**
-- [issue/link]
-
-**Next**
-- [next outcome]
-
-## 8. Team and Handoff
-
-- Producer: scope, coordination, and merge
-- Dev: implementation and verification
-- QA: optional independent behavioral verification
-
-## Onboarding checklist (add to brief)
-
-- Setup verified: `npm ci` / `pip -r requirements.txt`
-- Tests run: `npm test` / `pytest -q`
-- Lint pass: `npm run lint`
-- Where to find CI logs and deploy dashboards
-
-## Where to record decisions
-
-- Add short entries to DECISIONS.md or create an issue with the decision tag. Each entry should include: title, date, owner, 1-line summary, rationale, and link to PR/issue.
-
-Record material decisions, blockers, and the next action here or in the active plan. Use GitHub Issues or the repository's tracker for bugs and follow-up work.
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/ai-team-orchestration/references/sprint-plan-template.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/ai-team-orchestration/references/sprint-plan-template.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/ai-team-orchestration/references/sprint-plan-template.md
-- **SHA256_FINGERPRINT**: `4ee452464ac4cb25a594060b1a0b1d34f6fdde66c2122f07c3cbc7a1ad2f2fde`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:14.691345+00:00
----
-
-# Work Plan Template
-
-Use this for substantial work. Small, clear changes can proceed directly from the issue or request.
-
-```markdown
-# [Work Item] - Plan
-
-## Goal
-
-[One observable outcome.]
-
-## Context
-
-- Relevant issue/request: [link or summary]
-- Repository instructions: [links]
-- Important constraints: [list]
-
-## In Scope
-
-- [deliverable]
-
-## Out of Scope
-
-- [explicit exclusion]
-
-## Tasks
-
-1. [task]
-2. [task]
-3. [task]
-
-## Acceptance Criteria
-
-- [ ] [observable behavior]
-- [ ] Relevant repository checks pass (example: `npm run lint`, `npm test`)
-- [ ] Tests covering the change are added or validated
-- [ ] Documentation/context is updated when behavior or operation changed
-
-## Verification
-
-- Automated: [commands or checks]
-  - Example: `npm ci && npm run test` or `pytest -q`
-  - Example: `npm run lint && npm run build`
-- Manual: [focused scenarios, if useful]
-- Independent review: required / optional / not needed - [reason]
-- QA: required / optional / not needed - [reason]
-
-## PR Checklist (add to PR body)
-
-- Branch name follows repo policy (e.g., `feat/`, `fix/`, or `chore/`)
-- Description: short summary, why, and acceptance criteria
-- Verification steps included (commands & manual checks)
-- Tests added or existing tests updated
-- Relevant docs/PROJECT_BRIEF updated if behavior changed
-- Reviewers: @team or specific owners
-- Required checks: list CI jobs that must pass
-- Release notes / changelog entry: yes/no
-
-## Risks and Decisions
-
-- [risk or material decision]
-
-## QA risk matrix (when to require QA)
-
-- High impact × High uncertainty = QA required
-- High impact × Low uncertainty = QA recommended
-- Low impact × High uncertainty = QA recommended
-- Low impact × Low uncertainty = QA optional
-
-## Next Action
-
-[owner and immediate next step]
-```
-
-## Progress Note
-
-For long-running work, keep a short progress note:
-
-```markdown
-# [Work Item] - Progress
-
-- Completed: [items]
-- In progress: [item]
-- Blocked: [issue or none]
-- Decisions: [material decisions]
-- Verification so far: [results]
-- Next action: [specific action]
-```
-
-## Dev Handoff
-
-```text
-Read the repository instructions, PROJECT_BRIEF.md when present, and this plan.
-Implement the in-scope work, run the listed verification, update durable context
-when needed, and prepare a pull request. Do not merge.
-```
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/anti-ui-slop/MODIFICATIONS.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/anti-ui-slop/MODIFICATIONS.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/anti-ui-slop/MODIFICATIONS.md
-- **SHA256_FINGERPRINT**: `5d84775dccdfbd3b9a1bfa634a79b17ad2742b6ab04f3684cd966f35294e9a39`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:14.797624+00:00
----
-
-# Modifications notice
-
-Uizze packages a licensed design stack pinned at version 4.1.1, commit 5a149f3fdb1b5793f10567233b1dcab98fc305fd. Uizze maintains the router, reference policy, packaging, versioning, and distribution. Product-facing instructions use Uizze terminology.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/anti-ui-slop/SKILL.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/anti-ui-slop/SKILL.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/anti-ui-slop/SKILL.md
-- **SHA256_FINGERPRINT**: `9f20ee6ddf032bb870a37527b1380b80143795b5b99c934f4e80799143c93d8c`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:14.887369+00:00
----
-
-**description**: Stop coding agents from shipping generic UI. Use UIZZE''s 800,000+ real web and iOS screens to build product-specific interfaces, define a design contract, cover required states, and run a hard finish gate. Use when designing, implementing, redesigning, critiquing, or pre-ship reviewing a web or iOS interface in Codex, Claude Code, Cursor, Copilot, or another coding agent. Trigger with "anti-ui-slop", "stop UI slop", "ground this UI in real screens", or "run the UI finish gate".
-
-> **Stop AI coding agents from shipping generic UI.**
-
-# Stop Making UI Slop
-
-Build product-specific UI with 800,000+ real web and iOS screens via [UIZZE](https://uizze.com).
-
-![Stop Making UI Slop with UIZZE](https://uizze.com/landing/anti-ui-slop-skill-banner.png)
-
-## Overview
-
-Use the product brief, existing UI, components, and local design system to make intentional interfaces. Uizze supplies focused design guidance and, when useful, a small number of relevant visual references.
-
-## Prerequisites
-
-- A screen or component to build, redesign, or review — a file path or a short description.
-- The product's existing components, design tokens, and visual language, so the build extends them instead of inventing a new system.
-- Optional access to the paid Uizze MCP for focused references and hosted materials.
-
-## Authentication
-
-- The free skill and public catalogue work without an account, token, MCP connection, dependency, script, or executable.
-- The optional full UIZZE MCP may use the host's normal connection and authentication flow. Never claim it is connected without an actual host result.
-
-## Work from the product
-
-Read the brief, existing UI, components, tokens, and constraints before designing. They always outrank this skill. Keep familiar interaction conventions and make the product's own objects, workflow, and priorities visually clear. Do not add novelty for its own sake.
-
-## Load one playbook
-
-Choose at most one file for the current request:
-
-- New interface or major redesign: `reference/new-work.md`
-- Product or dashboard work: `reference/operate.md`
-- Refinement and polish: `reference/polish.md`
-- Simplification or distillation: `reference/distill.md`
-- Explicit audit: `reference/audit.md`
-- Native iOS work: `reference/ios.md`
-
-Do not load a second playbook. Apply judgment rather than treating its examples as a checklist.
-
-## Optional Uizze evidence
-
-Read `references/uizze-reference-policy.md` before using the paid MCP. It exposes exactly `find_ui_references` and `find_ui_materials`. Use them only when a concrete unresolved visual or material question would benefit from evidence. If they return nothing, continue silently.
-
-## Finish
-
-Complete the requested scope. When the environment supports it, render and inspect once. Fix observable breakage such as clipping, overlap, distorted media, inaccessible controls, or inert interactions. Keep the handoff concise.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/anti-ui-slop/reference/audit.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/anti-ui-slop/reference/audit.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/anti-ui-slop/reference/audit.md
-- **SHA256_FINGERPRINT**: `0e8e36dbca739b4b545bb45608f18def6263402bc8268e263d653e3f05f90c39`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.038196+00:00
----
-
-# Audit an implemented interface
-
-Review only what can be observed in the implementation or rendered result. Do not invent missing requirements or turn personal taste into a defect.
-
-Inspect:
-
-- task clarity and hierarchy;
-- consistency with the product's existing system;
-- layout, overflow, media treatment, and responsive behavior;
-- interaction feedback and necessary loading, empty, error, success, disabled, and recovery states;
-- labels, focus, keyboard access, target size, and contrast;
-- obvious performance problems visible in the experience.
-
-Return at most three material findings, ordered by user impact. For each finding, name the observable evidence and the smallest concrete correction. If nothing material is visible, say so briefly. An audit does not modify the product unless the user also asked for fixes.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/anti-ui-slop/reference/distill.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/anti-ui-slop/reference/distill.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/anti-ui-slop/reference/distill.md
-- **SHA256_FINGERPRINT**: `5cf9acf215f145ae152a53314f3a95f119b9984aa0cf7da8d61caf75619a65e9`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:15.034226+00:00
----
-
-# Simplify an interface
-
-Remove obstacles between the user and the main task without removing necessary capability.
-
-## Find the excess
-
-- Identify the primary goal and the information required to complete it.
-- Remove repeated copy, duplicate actions, decorative noise, and containers that do not clarify grouping.
-- Reduce unnecessary variation in colors, type sizes, button styles, spacing, and surface treatments.
-- Prefer one obvious primary action and a small number of clearly subordinate actions.
-- Use progressive disclosure for advanced or infrequent controls, but keep essential information visible.
-
-## Preserve clarity
-
-- Do not hide required actions behind mystery interactions.
-- Do not remove labels, focus states, accessibility semantics, error messages, or recovery paths.
-- Do not flatten genuinely complex information until it becomes harder to understand.
-- Prefer spacing and alignment over nested cards; prefer plain language over explanatory copy.
-
-Verify that the simplified result still supports the complete task, including its important states, at the relevant screen sizes.
-
-
----
-# DOCUMENT_SOURCE: github_awesome-copilot::skills/anti-ui-slop/reference/ios.md
-- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/anti-ui-slop/reference/ios.md
-- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/anti-ui-slop/reference/ios.md
-- **SHA256_FINGERPRINT**: `817cf6e7b79c6181658c618a4c5fe42cd06b9438f647daae86e241dfb1eea11d`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:14.925442+00:00
----
-
-# Native iOS interfaces
-
-Follow the product's existing iOS conventions first, then Apple platform conventions. A native interface should feel predictable before it feels distinctive.
-
-## Structure and controls
-
-- Use a navigation stack for hierarchy, a tab bar for a small set of top-level destinations, and sheets for self-contained tasks.
-- Preserve the edge-swipe back gesture and safe-area behavior.
-- Prefer native controls, materials, menus, alerts, sheets, pickers, and text behavior unless the product already has a coherent custom system.
-- Keep touch targets comfortable, text scalable, labels accessible, and focus order sensible.
-- Account for the keyboard, long content, dynamic type, reduced motion, dark mode, and device insets.
-
-## States
-
-Include the states the task requires: loading, empty, error, success, permission denied, offline, disabled, and recovery where applicable. Feedback should be immediate and should not depend on color alone.
-
-When a simulator or runnable build is available, inspect the relevant device class once and fix observable clipping, overlap, unsafe-area violations, unreadable text, broken navigation, or inaccessible controls. Do not require extra tooling when the environment cannot provide it.
 
 
 ---
@@ -80323,3 +79445,687 @@ tradeoffs, and make the reasoning legible to the person in front
 of you.
 
 The point is to help people make better decisions together.
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/game-engine/SKILL.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/game-engine/SKILL.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/game-engine/SKILL.md
+- **SHA256_FINGERPRINT**: `d3e8179618327ca190efaccee9a13254ed2a0a10c938c00da3ec73e042011b7c`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:28.938005+00:00
+---
+
+**description**: Expert skill for building web-based game engines and games using HTML5, Canvas, WebGL, and JavaScript. Use when asked to create games, build game engines, implement game physics, handle collision detection, set up game loops, manage sprites, add game controls, or work with 2D/3D rendering. Covers techniques for platformers, breakout-style games, maze games, tilemaps, audio, multiplayer via WebRTC, and publishing games.
+
+# Game Engine Skill
+
+Build web-based games and game engines using HTML5 Canvas, WebGL, and JavaScript. This skill includes starter templates, reference documentation, and step-by-step workflows for 2D and 3D game development with frameworks such as Phaser, Three.js, Babylon.js, and A-Frame.
+
+## When to Use This Skill
+
+- Building a game engine or game from scratch using web technologies
+- Implementing game loops, physics, collision detection, or rendering
+- Working with HTML5 Canvas, WebGL, or SVG for game graphics
+- Adding game controls (keyboard, mouse, touch, gamepad)
+- Creating 2D platformers, breakout-style games, maze games, or 3D experiences
+- Working with tilemaps, sprites, or animations
+- Adding audio to web games
+- Implementing multiplayer features with WebRTC or WebSockets
+- Optimizing game performance
+- Publishing and distributing web games
+
+## Prerequisites
+
+- Basic knowledge of HTML, CSS, and JavaScript
+- A modern web browser with Canvas/WebGL support
+- A text editor or IDE
+- Optional: Node.js for build tooling and local development servers
+
+## Core Concepts
+
+The following concepts form the foundation of every web-based game engine.
+
+### Game Loop
+
+Every game engine revolves around the game loop -- a continuous cycle of:
+
+1. **Process Input** - Read keyboard, mouse, touch, or gamepad input
+2. **Update State** - Update game object positions, physics, AI, and logic
+3. **Render** - Draw the current game state to the screen
+
+Use `requestAnimationFrame` for smooth, browser-optimized rendering.
+
+### Rendering
+
+- **Canvas 2D** - Best for 2D games, sprite-based rendering, and tilemaps
+- **WebGL** - Hardware-accelerated 3D and advanced 2D rendering
+- **SVG** - Vector-based graphics, good for UI elements
+- **CSS** - Useful for DOM-based game elements and transitions
+
+### Physics and Collision Detection
+
+- **2D Collision Detection** - AABB, circle, and SAT-based collision
+- **3D Collision Detection** - Bounding box, bounding sphere, and raycasting
+- **Velocity and Acceleration** - Basic Newtonian physics for movement
+- **Gravity** - Constant downward acceleration for platformers
+
+### Controls
+
+- **Keyboard** - Arrow keys, WASD, and custom key bindings
+- **Mouse** - Click, move, and pointer lock for FPS-style controls
+- **Touch** - Mobile touch events and virtual joysticks
+- **Gamepad** - Gamepad API for controller support
+
+### Audio
+
+- **Web Audio API** - Programmatic sound generation and spatial audio
+- **HTML5 Audio** - Simple audio playback for music and sound effects
+
+## Step-by-Step Workflows
+
+### Creating a Basic 2D Game
+
+1. Set up an HTML file with a `<canvas>` element
+2. Get the 2D rendering context
+3. Implement the game loop using `requestAnimationFrame`
+4. Create game objects with position, velocity, and size properties
+5. Handle keyboard/mouse input for player control
+6. Implement collision detection between game objects
+7. Add scoring, lives, and win/lose conditions
+8. Add sound effects and music
+
+### Building a 3D Game
+
+1. Choose a framework (Three.js, Babylon.js, A-Frame, or PlayCanvas)
+2. Set up the scene, camera, and renderer
+3. Load or create 3D models and textures
+4. Implement lighting and shaders
+5. Add physics and collision detection
+6. Implement player controls and camera movement
+7. Add audio and visual effects
+
+### Publishing a Game
+
+1. Optimize assets (compress images, minify code)
+2. Test across browsers and devices
+3. Choose distribution platform (web, app stores, game portals)
+4. Implement monetization if needed
+5. Promote through game communities and social media
+
+## Game Templates
+
+Starter templates are available in the `assets/` folder. Each template provides a complete, working example that can be used as a starting point for a new project.
+
+| Template | Description |
+|----------|-------------|
+| `paddle-game-template.md` | 2D Breakout-style game with pure JavaScript |
+| `2d-maze-game.md` | Maze game with device orientation controls |
+| `2d-platform-game.md` | Platformer game using Phaser framework |
+| `gameBase-template-repo.md` | Game base template repository structure |
+| `simple-2d-engine.md` | Simple 2D platformer engine with collisions |
+
+## Reference Documentation
+
+Detailed reference material is available in the `references/` folder. Consult these files for in-depth coverage of specific topics.
+
+| Reference | Topics Covered |
+|-----------|---------------|
+| `basics.md` | Game development introduction and anatomy |
+| `web-apis.md` | Canvas, WebGL, Web Audio, Gamepad, and other web APIs |
+| `techniques.md` | Collision detection, tilemaps, async scripts, audio |
+| `3d-web-games.md` | 3D theory, frameworks, shaders, WebXR |
+| `game-control-mechanisms.md` | Touch, keyboard, mouse, and gamepad controls |
+| `game-publishing.md` | Distribution, promotion, and monetization |
+| `algorithms.md` | Raycasting, collision, physics, vector math |
+| `terminology.md` | Game development glossary |
+| `game-engine-core-principles.md` | Core design principles for game engines |
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Canvas is blank | Check that you are calling drawing methods after getting the context and inside the game loop |
+| Game runs at different speeds | Use delta time in update calculations instead of fixed values |
+| Collision detection is inconsistent | Use continuous collision detection or reduce time steps for fast-moving objects |
+| Audio does not play | Browsers require user interaction before playing audio; trigger playback from a click handler |
+| Performance is poor | Profile with browser dev tools, reduce draw calls, use object pooling, and optimize asset sizes |
+| Touch controls are unresponsive | Prevent default touch behavior and handle touch events separately from mouse events |
+| WebGL context lost | Handle the `webglcontextlost` event and restore state on `webglcontextrestored` |
+
+
+---
+# DOCUMENT_SOURCE: github_awesome-copilot::skills/game-engine/assets/2d-maze-game.md
+- **CANONICAL_URL**: https://github.com/github/awesome-copilot/blob/main/skills/game-engine/assets/2d-maze-game.md
+- **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/awesome-copilot/main/skills/game-engine/assets/2d-maze-game.md
+- **SHA256_FINGERPRINT**: `13d33e9010ce43d2ef01a2aaa1019e18d5b3b408091bf98c1f7f14d972fb9892`
+- **LAST_VERIFIED_UTC**: 2026-10-21T03:45:28.999020+00:00
+---
+
+# 2D Maze Game Template
+
+A mobile-optimized 2D maze game where players guide a ball through a labyrinth of obstacles to reach a target hole. The game uses the **Device Orientation API** for tilt-based motion controls on mobile devices and keyboard arrow keys on desktop. Built with the **Phaser** framework (v2.x with Arcade Physics), it features multi-level progression, collision detection, audio feedback, vibration haptics, and a timer system.
+
+**Source reference:** [MDN - HTML5 Gamedev Phaser Device Orientation](https://developer.mozilla.org/en-US/docs/Games/Tutorials/HTML5_Gamedev_Phaser_Device_Orientation)
+**Live demo:** [Cyber Orb](https://orb.enclavegames.com/)
+**Source code:** [GitHub - EnclaveGames/Cyber-Orb](https://github.com/EnclaveGames/Cyber-Orb)
+
+---
+
+## Game Concept
+
+The player controls a ball (the "orb") by tilting their mobile device or pressing arrow keys. The ball rolls through a maze of horizontal and vertical wall segments. The objective on each level is to navigate the ball to a hole at the top of the screen while avoiding walls. Collisions with walls trigger a bounce, a sound effect, and optional vibration. A timer tracks how long the player takes per level and across the entire game.
+
+---
+
+## Project Structure
+
+```
+project/
+  index.html
+  src/
+    phaser-arcade-physics.2.2.2.min.js
+    Boot.js
+    Preloader.js
+    MainMenu.js
+    Howto.js
+    Game.js
+  img/
+    ball.png
+    hole.png
+    element-horizontal.png
+    element-vertical.png
+    button-start.png
+    loading-bg.png
+    loading-bar.png
+  audio/
+    bounce.ogg
+    bounce.mp3
+    bounce.m4a
+```
+
+---
+
+## Phaser Setup and Initialization
+
+### HTML Entry Point
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Cyber Orb</title>
+  <style>
+    body { margin: 0; background: #333; }
+  </style>
+  <script src="src/phaser-arcade-physics.2.2.2.min.js"></script>
+  <script src="src/Boot.js"></script>
+  <script src="src/Preloader.js"></script>
+  <script src="src/MainMenu.js"></script>
+  <script src="src/Howto.js"></script>
+  <script src="src/Game.js"></script>
+</head>
+<body>
+  <script>
+    (() => {
+      const game = new Phaser.Game(320, 480, Phaser.CANVAS, "game");
+      game.state.add("Boot", Ball.Boot);
+      game.state.add("Preloader", Ball.Preloader);
+      game.state.add("MainMenu", Ball.MainMenu);
+      game.state.add("Howto", Ball.Howto);
+      game.state.add("Game", Ball.Game);
+      game.state.start("Boot");
+    })();
+  </script>
+</body>
+</html>
+```
+
+- Canvas size: `320 x 480`
+- Renderer: `Phaser.CANVAS` (alternatives: `Phaser.WEBGL`, `Phaser.AUTO`)
+
+---
+
+## Game State Architecture
+
+The game follows a linear state flow:
+
+```
+Boot --> Preloader --> MainMenu --> Howto --> Game
+```
+
+### Boot State
+
+Loads minimal assets for the loading screen and configures scaling.
+
+```javascript
+const Ball = {
+  _WIDTH: 320,
+  _HEIGHT: 480,
+};
+
+Ball.Boot = function (game) {};
+Ball.Boot.prototype = {
+  preload() {
+    this.load.image("preloaderBg", "img/loading-bg.png");
+    this.load.image("preloaderBar", "img/loading-bar.png");
+  },
+  create() {
+    this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    this.game.scale.pageAlignHorizontally = true;
+    this.game.scale.pageAlignVertically = true;
+    this.game.state.start("Preloader");
+  },
+};
+```
+
+### Preloader State
+
+Displays a visual loading bar while loading all game assets. Audio is loaded in multiple formats for cross-browser compatibility.
+
+```javascript
+Ball.Preloader = function (game) {};
+Ball.Preloader.prototype = {
+  preload() {
+    this.preloadBg = this.add.sprite(
+      (Ball._WIDTH - 297) * 0.5,
+      (Ball._HEIGHT - 145) * 0.5,
+      "preloaderBg"
+    );
+    this.preloadBar = this.add.sprite(
+      (Ball._WIDTH - 158) * 0.5,
+      (Ball._HEIGHT - 50) * 0.5,
+      "preloaderBar"
+    );
+    this.load.setPreloadSprite(this.preloadBar);
+
+    this.load.image("ball", "img/ball.png");
+    this.load.image("hole", "img/hole.png");
+    this.load.image("element-w", "img/element-horizontal.png");
+    this.load.image("element-h", "img/element-vertical.png");
+    this.load.spritesheet("button-start", "img/button-start.png", 146, 51);
+    this.load.audio("audio-bounce", [
+      "audio/bounce.ogg",
+      "audio/bounce.mp3",
+      "audio/bounce.m4a",
+    ]);
+  },
+  create() {
+    this.game.state.start("MainMenu");
+  },
+};
+```
+
+### MainMenu State
+
+Displays the title screen with a start button.
+
+```javascript
+Ball.MainMenu = function (game) {};
+Ball.MainMenu.prototype = {
+  create() {
+    this.add.sprite(0, 0, "screen-mainmenu");
+    this.gameTitle = this.add.sprite(Ball._WIDTH * 0.5, 40, "title");
+    this.gameTitle.anchor.set(0.5, 0);
+
+    this.startButton = this.add.button(
+      Ball._WIDTH * 0.5, 200, "button-start",
+      this.startGame, this,
+      2, 0, 1  // hover, out, down frames
+    );
+    this.startButton.anchor.set(0.5, 0);
+    this.startButton.input.useHandCursor = true;
+  },
+  startGame() {
+    this.game.state.start("Howto");
+  },
+};
+```
+
+### Howto State
+
+A single-click instruction screen before gameplay begins.
+
+```javascript
+Ball.Howto = function (game) {};
+Ball.Howto.prototype = {
+  create() {
+    this.buttonContinue = this.add.button(
+      0, 0, "screen-howtoplay",
+      this.startGame, this
+    );
+  },
+  startGame() {
+    this.game.state.start("Game");
+  },
+};
+```
+
+---
+
+## Device Orientation API Usage
+
+The Device Orientation API provides real-time data about the physical tilt of a device. Two axes are used:
+
+| Property | Axis | Range | Effect |
+|----------|------|-------|--------|
+| `event.gamma` | Left/right tilt | -90 to 90 degrees | Horizontal ball velocity |
+| `event.beta` | Front/back tilt | -180 to 180 degrees | Vertical ball velocity |
+
+### Registering the Listener
+
+```javascript
+// In the Game state's create() method
+window.addEventListener("deviceorientation", this.handleOrientation);
+```
+
+### Handling Orientation Events
+
+```javascript
+handleOrientation(e) {
+  const x = e.gamma; // left-right tilt
+  const y = e.beta;  // front-back tilt
+  Ball._player.body.velocity.x += x;
+  Ball._player.body.velocity.y += y;
+}
+```
+
+### Tilt Behavior
+
+- Tilt device left: negative gamma, ball rolls left
+- Tilt device right: positive gamma, ball rolls right
+- Tilt device forward: positive beta, ball rolls down
+- Tilt device backward: negative beta, ball rolls up
+
+The tilt angle directly maps to velocity increments -- the steeper the tilt, the greater the force applied to the ball each frame.
+
+---
+
+## Core Game Mechanics
+
+### Game State Structure
+
+```javascript
+Ball.Game = function (game) {};
+Ball.Game.prototype = {
+  create() {},
+  initLevels() {},
+  showLevel(level) {},
+  updateCounter() {},
+  managePause() {},
+  manageAudio() {},
+  update() {},
+  wallCollision() {},
+  handleOrientation(e) {},
+  finishLevel() {},
+};
+```
+
+### Ball Creation and Physics
+
+```javascript
+// In create()
+this.ball = this.add.sprite(this.ballStartPos.x, this.ballStartPos.y, "ball");
+this.ball.anchor.set(0.5);
+this.physics.enable(this.ball, Phaser.Physics.ARCADE);
+this.ball.body.setSize(18, 18);
+this.ball.body.bounce.set(0.3, 0.3);
+```
+
+- Anchor at center `(0.5, 0.5)` for rotation around midpoint
+- Physics body: 18x18 pixels
+- Bounce coefficient: 0.3 (retains 30% velocity after wall collision)
+
+### Keyboard Controls (Desktop Fallback)
+
+```javascript
+// In create()
+this.keys = this.game.input.keyboard.createCursorKeys();
+
+// In update()
+if (this.keys.left.isDown) {
+  this.ball.body.velocity.x -= this.movementForce;
+} else if (this.keys.right.isDown) {
+  this.ball.body.velocity.x += this.movementForce;
+}
+if (this.keys.up.isDown) {
+  this.ball.body.velocity.y -= this.movementForce;
+} else if (this.keys.down.isDown) {
+  this.ball.body.velocity.y += this.movementForce;
+}
+```
+
+### Hole (Goal) Setup
+
+```javascript
+this.hole = this.add.sprite(Ball._WIDTH * 0.5, 90, "hole");
+this.physics.enable(this.hole, Phaser.Physics.ARCADE);
+this.hole.anchor.set(0.5);
+this.hole.body.setSize(2, 2);
+```
+
+The hole has a tiny 2x2 collision body for precise overlap detection.
+
+---
+
+## Level System
+
+### Level Data Format
+
+Each level is an array of wall segment objects with position and type:
+
+```javascript
+this.levelData = [
+  [{ x: 96, y: 224, t: "w" }],                           // Level 1
+  [
+    { x: 72, y: 320, t: "w" },
+    { x: 200, y: 320, t: "h" },
+    { x: 72, y: 150, t: "w" },
+  ],                                                       // Level 2
+  // ... more levels
+];
+```
+
+- `x, y`: Position in pixels
+- `t`: Type -- `"w"` for horizontal wall, `"h"` for vertical wall
+
+### Building Levels
+
+```javascript
+initLevels() {
+  for (let i = 0; i < this.maxLevels; i++) {
+    const newLevel = this.add.group();
+    newLevel.enableBody = true;
+    newLevel.physicsBodyType = Phaser.Physics.ARCADE;
+
+    for (const item of this.levelData[i]) {
+      newLevel.create(item.x, item.y, `element-${item.t}`);
+    }
+
+    newLevel.setAll("body.immovable", true);
+    newLevel.visible = false;
+    this.levels.push(newLevel);
+  }
+}
+```
+
+### Showing a Level
+
+```javascript
+showLevel(level) {
+  const lvl = level || this.level;
+  if (this.levels[lvl - 2]) {
+    this.levels[lvl - 2].visible = false;
+  }
+  this.levels[lvl - 1].visible = true;
+}
+```
+
+---
+
+## Collision Detection
+
+### Wall Collisions (Bounce)
+
+```javascript
+// In update()
+this.physics.arcade.collide(
+  this.ball, this.borderGroup,
+  this.wallCollision, null, this
+);
+this.physics.arcade.collide(
+  this.ball, this.levels[this.level - 1],
+  this.wallCollision, null, this
+);
+```
+
+`collide` causes the ball to bounce off walls and triggers the callback.
+
+### Hole Overlap (Pass-Through Detection)
+
+```javascript
+this.physics.arcade.overlap(
+  this.ball, this.hole,
+  this.finishLevel, null, this
+);
+```
+
+`overlap` detects intersection without physical collision response.
+
+### Wall Collision Callback
+
+```javascript
+wallCollision() {
+  if (this.audioStatus) {
+    this.bounceSound.play();
+  }
+  if ("vibrate" in window.navigator) {
+    window.navigator.vibrate(100);
+  }
+}
+```
+
+---
+
+## Audio System
+
+```javascript
+// In create()
+this.bounceSound = this.game.add.audio("audio-bounce");
+
+// Toggle
+manageAudio() {
+  this.audioStatus = !this.audioStatus;
+}
+```
+
+---
+
+## Vibration API
+
+```javascript
+if ("vibrate" in window.navigator) {
+  window.navigator.vibrate(100); // 100ms vibration pulse
+}
+```
+
+Feature-detect before calling. Provides tactile feedback on supported mobile devices.
+
+---
+
+## Timer System
+
+```javascript
+// In create()
+this.timer = 0;
+this.totalTimer = 0;
+this.timerText = this.game.add.text(15, 15, "Time: 0", this.fontBig);
+this.totalTimeText = this.game.add.text(120, 30, "Total time: 0", this.fontSmall);
+this.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);
+
+// Counter callback
+updateCounter() {
+  this.timer++;
+  this.timerText.setText(`Time: ${this.timer}`);
+  this.totalTimeText.setText(`Total time: ${this.totalTimer + this.timer}`);
+}
+```
+
+---
+
+## Level Completion
+
+```javascript
+finishLevel() {
+  if (this.level >= this.maxLevels) {
+    this.totalTimer += this.timer;
+    alert(`Congratulations, game completed!\nTotal time: ${this.totalTimer}s`);
+    this.game.state.start("MainMenu");
+  } else {
+    alert(`Level ${this.level} completed!`);
+    this.totalTimer += this.timer;
+    this.timer = 0;
+    this.level++;
+    this.timerText.setText(`Time: ${this.timer}`);
+    this.totalTimeText.setText(`Total time: ${this.totalTimer}`);
+    this.levelText.setText(`Level: ${this.level} / ${this.maxLevels}`);
+    this.ball.body.x = this.ballStartPos.x;
+    this.ball.body.y = this.ballStartPos.y;
+    this.ball.body.velocity.x = 0;
+    this.ball.body.velocity.y = 0;
+    this.showLevel();
+  }
+}
+```
+
+---
+
+## Complete Update Loop
+
+```javascript
+update() {
+  // Keyboard input
+  if (this.keys.left.isDown) {
+    this.ball.body.velocity.x -= this.movementForce;
+  } else if (this.keys.right.isDown) {
+    this.ball.body.velocity.x += this.movementForce;
+  }
+  if (this.keys.up.isDown) {
+    this.ball.body.velocity.y -= this.movementForce;
+  } else if (this.keys.down.isDown) {
+    this.ball.body.velocity.y += this.movementForce;
+  }
+
+  // Wall collisions
+  this.physics.arcade.collide(
+    this.ball, this.borderGroup, this.wallCollision, null, this
+  );
+  this.physics.arcade.collide(
+    this.ball, this.levels[this.level - 1], this.wallCollision, null, this
+  );
+
+  // Hole overlap
+  this.physics.arcade.overlap(
+    this.ball, this.hole, this.finishLevel, null, this
+  );
+}
+```
+
+---
+
+## Phaser API Quick Reference
+
+| Function | Purpose |
+|----------|---------|
+| `this.add.sprite(x, y, key)` | Create a game object |
+| `this.add.group()` | Create a container for objects |
+| `this.add.button(x, y, key, cb, ctx, over, out, down)` | Create interactive button |
+| `this.add.text(x, y, text, style)` | Create text display |
+| `this.physics.enable(obj, system)` | Enable physics on object |
+| `this.physics.arcade.collide(a, b, cb)` | Detect collision with bounce |
+| `this.physics.arcade.overlap(a, b, cb)` | Detect overlap without bounce |
+| `this.load.image(key, path)` | Load image asset |
+| `this.load.spritesheet(key, path, w, h)` | Load sprite animation sheet |
+| `this.load.audio(key, paths[])` | Load audio with format fallbacks |
+| `this.game.add.audio(key)` | Instantiate audio object |
+| `this.time.events.loop(interval, cb, ctx)` | Create repeating timer |

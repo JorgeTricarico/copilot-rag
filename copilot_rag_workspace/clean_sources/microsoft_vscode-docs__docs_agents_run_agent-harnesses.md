@@ -63,7 +63,7 @@ After selecting a harness, choose an available built-in agent from the agent pic
 
 Switching agents doesn't change the harness. You can also select [custom agents](/docs/agent-customization/custom-agents.md) from the same picker. In the Copilot harness, [Autopilot](/docs/agents/run/approvals.md#autopilot-mode) is a mode with its own workflow, not an additional built-in agent.
 
-Your harness choice is separate from where the session changes code. In the Agents window, you can also [choose between a folder and a worktree](/docs/agents/run/agents-window.md#choose-where-an-agent-makes-changes) or [run a session in a Dev Container](/docs/agents/run/agents-window.md#run-a-session-in-a-dev-container).
+Your harness choice is separate from where the session changes code. For supported sessions in either interface, [choose between a folder and a worktree](/docs/agents/run/worktrees.md#choose-folder-or-worktree-isolation). In the Agents window, you can also [run a session in a Dev Container](/docs/agents/run/agents-window.md#run-a-session-in-a-dev-container).
 
 ### Identify your current harness
 
