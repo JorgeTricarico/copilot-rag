@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
-- **Generado (UTC)**: 2026-11-25T07:44:08.079390+00:00
-- **Total Palabras**: 125,655 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-25T21:23:30.611188+00:00
+- **Total Palabras**: 125,709 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -25474,8 +25474,8 @@ declare module 'vscode' {
 # DOCUMENT_SOURCE: web::vscode_api_contribution_points
 - **CANONICAL_URL**: https://code.visualstudio.com/api/references/contribution-points
 - **RAW_SOURCE_URL**: https://code.visualstudio.com/api/references/contribution-points
-- **SHA256_FINGERPRINT**: `0356ef49ce677a8c484815349fec5c977c43343534f4407cd0f4666a91dae29d`
-- **LAST_VERIFIED_UTC**: 2026-11-23T23:37:09.452816+00:00
+- **SHA256_FINGERPRINT**: `f25dc9d1752e46c92d681a03a764d7fe59d6ec56d7f9c93fd657b9beaa07ae9b`
+- **LAST_VERIFIED_UTC**: 2026-11-25T21:23:27.739447+00:00
 ---
 
 # Contribution Points
@@ -27375,6 +27375,9 @@ Here's a command menu item:
 }
 ```
 
+The resourceLangId == markdown condition matches the language of the editor's resource, so this menu item applies to Markdown source files. It does not identify a Markdown preview webview. To add an action to a webview panel's title, use activeWebviewPanelId ; see Editor title actions in the Webview guide .
+resourceLangId == markdown
+activeWebviewPanelId
 Similarly, here's a command menu item added to a particular view. The example below contributes to an arbitrary view like the terminal:
 
 ```

@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-11-25T07:44:08.068379+00:00
-- **Total Palabras**: 167,556 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-25T21:23:30.602020+00:00
+- **Total Palabras**: 167,690 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -273,8 +273,8 @@ For a complete list of slash commands for Copilot CLI, see [Cli Command Referenc
 # DOCUMENT_SOURCE: github_docs::content/copilot/reference/copilot-cli-reference/cli-command-reference.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-command-reference.md
-- **SHA256_FINGERPRINT**: `8a68a52d03491209a4789e2a719aec7cfc2eb2c662f29f9f2ec77c37287aaeff`
-- **LAST_VERIFIED_UTC**: 2026-11-21T06:20:14.639485+00:00
+- **SHA256_FINGERPRINT**: `795842a3b757b0a2909b1f137f4a301a60a6d35562212109f65fb1d45b926eed`
+- **LAST_VERIFIED_UTC**: 2026-11-25T21:23:25.784360+00:00
 ---
 
 **title**: GitHub Copilot CLI command reference
@@ -1563,7 +1563,9 @@ MCP servers from different sources are merged in priority order (highest first).
 > [!NOTE]
 > Workspace MCP servers (`.mcp.json` and `.github/mcp.json`) are loaded in both interactive and SDK server-mode sessions, provided the working directory is trusted. For more information about folder trust, see [Allowing Tools](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/allowing-tools).
 
-If a workspace configuration file contains an invalid server entry, the CLI skips only that entry and keeps loading its valid siblings, printing `Warning: workspace MCP config "<path>": <message>` for each skipped entry. A malformed or unreadable file (invalid JSON or an invalid top-level structure) is still skipped entirely.
+Workspace `.mcp.json` and `.github/mcp.json` files support comments and trailing commas.
+
+If a workspace configuration file contains an invalid server entry, the CLI skips only that entry and keeps loading its valid siblings, printing `Warning: workspace MCP config "<path>": <message>` for each skipped entry. The CLI ignores the current contents of a file it cannot read or that has invalid syntax or an invalid top-level structure.
 
 ### Enterprise MCP allowlist
 
@@ -1687,25 +1689,23 @@ Commands are an alternative to skills stored as individual `.md` files in `.clau
 
 ## Extension modes
 
-In an interactive session, `/extensions mode` controls whether extensions run and whether Copilot can manage them.
+Extensions have an **Enabled** or **Disabled** control. Enabling extensions loads them and lets Copilot manage them, subject to activation, trust, and permission requirements.
+
+Each extension requires approval before it launches because extensions run arbitrary code. The permission prompt includes a disclosure and approval scope choices, such as session or location. Denying the launch prevents the extension from running, and the CLI does not use another copy of the extension as a fallback.
 
 | Mode | Extensions run | Agent can manage extensions |
 | --- | --- | --- |
-| **Load & Augment** (default) | Yes | Yes |
-| **Load Only** | Yes | No |
+| **Enabled** | Yes | Yes |
 | **Disabled** | No | No |
 
-In **Load & Augment** mode, the agent has tools to list discovered extensions, inspect their status and logs, scaffold a starter extension, and reload extensions after code changes. This lets the agent create and load extension code as part of your request.
+When extensions are enabled, the agent has tools to list discovered extensions, inspect their status and logs, scaffold a starter extension, and reload extensions after code changes. This lets the agent create and load extension code as part of your request.
 
-Choose **Load Only** to run an existing set of trusted extensions without giving the agent extension-management tools. The agent can still call tools supplied by running extensions.
-
-Mode changes take effect immediately in the current session:
+Changes take effect immediately in the current session:
 
 * Switching to **Disabled** stops running extension processes and removes their tools.
-* Switching from **Disabled** to either loading mode starts extensions.
-* Switching between **Load Only** and **Load & Augment** changes access to extension-management tools without stopping the extensions.
+* Switching to **Enabled** starts extensions, subject to activation, trust, and permission requirements.
 
-Disabling extensions persists for future sessions until you choose a loading mode. Other sessions that are already running are not affected.
+Disabling extensions persists for future sessions until you enable them again. Other sessions that are already running are not affected. For the setting and migration behavior, see [Cli Config Dir Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference#extensions).
 
 To inspect extensions and their status, use `/extensions manage`. For discovery locations and implementation examples, see [Create An Extension](https://docs.github.com/en/copilot/tutorials/create-an-extension).
 
@@ -2119,8 +2119,8 @@ OTel is off by default with zero overhead. It activates when any of the followin
 # DOCUMENT_SOURCE: github_docs::content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md
-- **SHA256_FINGERPRINT**: `53cc46766a15a70bb39fdee472bbcc441e280b12ef372519349ecbf1e4ce6843`
-- **LAST_VERIFIED_UTC**: 2026-11-23T23:37:07.627234+00:00
+- **SHA256_FINGERPRINT**: `7fa19addceac323a0963075225a8dc4113799a6550938fd8e2c63d4e1a9d53f3`
+- **LAST_VERIFIED_UTC**: 2026-11-25T21:23:25.772585+00:00
 ---
 
 **title**: GitHub Copilot CLI configuration directory
@@ -2527,6 +2527,8 @@ For more information, see [Use Hooks](https://docs.github.com/en/copilot/how-tos
 ### `extensions/`
 
 Store user-level extension files here. Extensions in this directory are available across sessions.
+
+The `extensions.enabled` setting controls whether extensions are enabled or disabled. Enabling extensions loads them and lets the agent manage them, subject to activation, trust, and permission requirements. Previous **Load Only** settings migrate to disabled, and the CLI displays a one-time notice.
 
 You can create files in this directory manually, or scaffold an extension and then edit the generated file.
 
@@ -7861,8 +7863,8 @@ Use these measurements as an optimization loop:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/guides/overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/guides/overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/overview.md
-- **SHA256_FINGERPRINT**: `d0d695545614cea68d592c0c805873445a28eb6a90f26b71aa6e35a63aa11892`
-- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:44.632713+00:00
+- **SHA256_FINGERPRINT**: `981bbd7e97870a48dc914619047da106b85bd59b26dd56b834e41abebfef7ea3`
+- **LAST_VERIFIED_UTC**: 2026-11-25T21:23:25.361223+00:00
 ---
 
 **MetaDescription**: Find agent tutorials and guides for VS Code by task, from a first app to testing and project workflows.
@@ -7897,12 +7899,14 @@ New to AI coding? Start by exploring your own code without changing it, or use a
     <a class="card" href="/docs/agents/agents-tutorial">
         <i class="codicon codicon-mortar-board" aria-hidden="true"></i>
         <div>
-            <p><strong>Build an app step by step</strong></p>
-            <p>Extended tutorial. Build a portfolio page in the Agents window, then continue the session in the Chat view to refine it.</p>
+            <p><strong>Build, refine, and commit an app</strong></p>
+            <p>Extended tutorial. Build a portfolio page in the Agents window, refine it in the Chat view, and review and commit your changes.</p>
             <p>Sample project. Requires Git.</p>
         </div>
     </a>
 </div>
+
+For a change to a single function, [try a focused edit with inline chat](/docs/chat/inline-chat.md#try-a-focused-edit). Compare the result with four expected outputs without starting an agent task.
 
 Already use AI coding tools? Follow the [experienced-agent fast track](#experienced-agent-fast-track) to bring your workflow to VS Code.
 
@@ -7917,27 +7921,29 @@ Or jump to a task:
 
 * [Explore a codebase](/docs/agents/guides/explore-a-codebase.md): trace a behavior without editing files and verify explanations against source references. **Setup:** your repository, Copilot in the Chat view.
 
-* [Add a feature](/docs/agents/guides/add-a-feature.md): plan, implement, and test a change. **Setup:** your repository with a working development environment and tests, Copilot in the Chat view.
-
 * [Fix an API bug](/docs/agents/guides/fix-a-bug-with-agents.md): reproduce a pagination bug, add a regression test, and review the fix. **Setup:** sample project, Node.js 22 or later, and Git.
+
+* [Add a feature](/docs/agents/guides/add-a-feature.md): continue the bug tutorial by adding filtering to the same pagination API, or plan, implement, and test a feature in your own project. **Setup:** the fixed sample or your repository with working tests, Copilot in the Chat view.
 
 * [Refactor safely](/docs/agents/guides/refactor-safely.md): change code structure in reviewable steps while preserving existing behavior. **Setup:** your repository, Copilot in the Chat view.
 
 * [Work with Jupyter notebooks](/docs/agents/guides/notebooks-with-ai.md): create or edit a notebook, run cells, and review results. **Setup:** your data, the Jupyter extension, and a notebook kernel.
 
+If the change is already written, [review uncommitted changes with AI](/docs/sourcecontrol/staging-commits.md#review-code-changes-with-ai) before you commit.
+
 ## Test and validate
 
 * [Add tests to existing code](/docs/agents/guides/test-code-with-ai.md): generate and run tests, then review assertions, failures, and coverage. **Setup:** your project, Copilot in the Chat view.
 
-* [Validate a web app with browser tools](/docs/agents/guides/browser-agent-testing-guide.md): build a calculator, reproduce a defect, and verify the fix against explicit acceptance criteria. **Setup:** sample web app, Copilot in the Chat view.
+* [Practice test-driven development](/docs/agents/guides/test-driven-development-guide.md): write a failing test for new behavior, implement it, then refactor once the test passes. **Setup:** your repository with working tests, Copilot in the Chat view. Custom agents are optional.
 
-* [Practice test-driven development](/docs/agents/guides/test-driven-development-guide.md): write a failing test, implement behavior, and refactor with a review checkpoint between phases. **Setup:** your repository with working tests, Copilot in the Chat view. Custom agents are optional.
+* [Validate a web app with browser tools](/docs/agents/guides/browser-agent-testing-guide.md): build a calculator, reproduce a defect, and verify the fix against explicit acceptance criteria. **Setup:** sample web app, Copilot in the Chat view.
 
 ## Customize and coordinate agents
 
-* [Adapt agents to your project](/docs/agents/guides/customize-copilot-guide.md): share project instructions, then add skills or custom agents where needed. **Setup:** your repository.
+* [Adapt agents to your project](/docs/agents/guides/customize-copilot-guide.md): start with one project convention the agent keeps missing. Add instructions, then compare the result on the same task. **Setup:** your repository.
 
-* [Set up a context engineering workflow](/docs/agents/guides/context-engineering-guide.md): connect project context, planning, and implementation with instructions, custom agents, and prompt files. **Setup:** your repository, Local harness `feature(local-harness)` in the Chat view.
+    If your team needs a repeatable handoff from planning to implementation, follow the [advanced context engineering example](/docs/agents/guides/context-engineering-guide.md). It uses the Local harness `feature(local-harness)` in the Chat view.
 
 * [Run independent tasks in parallel](/docs/agents/guides/delegate-two-tasks.md): work in separate Git worktrees, review each result, then integrate and retest. **Setup:** your Git repository, Copilot in the Agents window. Complete one agent task first.
 
@@ -7951,7 +7957,7 @@ Or jump to a task:
 
 * [Reduce AI credit usage](/docs/agents/guides/optimize-usage.md): compare model costs and results, focus context, and scope tools to reduce unnecessary usage.
 
-* [Find prompt examples](/docs/agents/guides/prompt-examples.md): adapt prompts for exploring code, building features, debugging, and testing.
+If you already know your task and need a prompt to adapt, browse the [prompt examples](/docs/agents/guides/prompt-examples.md).
 
 ## Experienced-agent fast track
 

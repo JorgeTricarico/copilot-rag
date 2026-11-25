@@ -1284,7 +1284,9 @@ MCP servers from different sources are merged in priority order (highest first).
 > [!NOTE]
 > Workspace MCP servers (`.mcp.json` and `.github/mcp.json`) are loaded in both interactive and SDK server-mode sessions, provided the working directory is trusted. For more information about folder trust, see [Allowing Tools](https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/allowing-tools).
 
-If a workspace configuration file contains an invalid server entry, the CLI skips only that entry and keeps loading its valid siblings, printing `Warning: workspace MCP config "<path>": <message>` for each skipped entry. A malformed or unreadable file (invalid JSON or an invalid top-level structure) is still skipped entirely.
+Workspace `.mcp.json` and `.github/mcp.json` files support comments and trailing commas.
+
+If a workspace configuration file contains an invalid server entry, the CLI skips only that entry and keeps loading its valid siblings, printing `Warning: workspace MCP config "<path>": <message>` for each skipped entry. The CLI ignores the current contents of a file it cannot read or that has invalid syntax or an invalid top-level structure.
 
 ### Enterprise MCP allowlist
 
@@ -1408,25 +1410,23 @@ Commands are an alternative to skills stored as individual `.md` files in `.clau
 
 ## Extension modes
 
-In an interactive session, `/extensions mode` controls whether extensions run and whether Copilot can manage them.
+Extensions have an **Enabled** or **Disabled** control. Enabling extensions loads them and lets Copilot manage them, subject to activation, trust, and permission requirements.
+
+Each extension requires approval before it launches because extensions run arbitrary code. The permission prompt includes a disclosure and approval scope choices, such as session or location. Denying the launch prevents the extension from running, and the CLI does not use another copy of the extension as a fallback.
 
 | Mode | Extensions run | Agent can manage extensions |
 | --- | --- | --- |
-| **Load & Augment** (default) | Yes | Yes |
-| **Load Only** | Yes | No |
+| **Enabled** | Yes | Yes |
 | **Disabled** | No | No |
 
-In **Load & Augment** mode, the agent has tools to list discovered extensions, inspect their status and logs, scaffold a starter extension, and reload extensions after code changes. This lets the agent create and load extension code as part of your request.
+When extensions are enabled, the agent has tools to list discovered extensions, inspect their status and logs, scaffold a starter extension, and reload extensions after code changes. This lets the agent create and load extension code as part of your request.
 
-Choose **Load Only** to run an existing set of trusted extensions without giving the agent extension-management tools. The agent can still call tools supplied by running extensions.
-
-Mode changes take effect immediately in the current session:
+Changes take effect immediately in the current session:
 
 * Switching to **Disabled** stops running extension processes and removes their tools.
-* Switching from **Disabled** to either loading mode starts extensions.
-* Switching between **Load Only** and **Load & Augment** changes access to extension-management tools without stopping the extensions.
+* Switching to **Enabled** starts extensions, subject to activation, trust, and permission requirements.
 
-Disabling extensions persists for future sessions until you choose a loading mode. Other sessions that are already running are not affected.
+Disabling extensions persists for future sessions until you enable them again. Other sessions that are already running are not affected. For the setting and migration behavior, see [Cli Config Dir Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference#extensions).
 
 To inspect extensions and their status, use `/extensions manage`. For discovery locations and implementation examples, see [Create An Extension](https://docs.github.com/en/copilot/tutorials/create-an-extension).
 

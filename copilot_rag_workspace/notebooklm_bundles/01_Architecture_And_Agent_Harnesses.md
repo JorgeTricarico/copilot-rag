@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-11-25T07:44:07.870122+00:00
-- **Total Palabras**: 25,675 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-25T21:23:30.600036+00:00
+- **Total Palabras**: 25,673 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -1405,8 +1405,8 @@ Neither replaces the applicable permission controls or your review of the result
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/overview.md
-- **SHA256_FINGERPRINT**: `627b5bee6e8c92d51abf6a6d3d3e22ffd240690867a26b657b020ac740848ee2`
-- **LAST_VERIFIED_UTC**: 2026-11-16T21:47:44.598720+00:00
+- **SHA256_FINGERPRINT**: `f924b0721896af28bbeae90e40f568eec64582127fbbb55c22bee0234369b77d`
+- **LAST_VERIFIED_UTC**: 2026-11-25T21:23:25.333135+00:00
 ---
 
 **MetaDescription**: Choose AI workflows, models, and agents in VS Code, from inline suggestions to remote sessions.
@@ -1441,7 +1441,7 @@ Continuity lets you pick up agent work across supported interfaces without start
 * **Prefer to start with your own code:** [Explore a codebase without changing files](/docs/agents/guides/explore-a-codebase.md), then verify the explanation against your code.
 * **New to VS Code:** First [install the editor and open a workspace](/docs/getstarted/overview.md).
 
-<video src="images/agents-overview/build-with-ai-overview.mp4" title="Video overview of building with AI in VS Code, showing inline suggestions, collaboration alongside code, and task orchestration in the Agents window." autoplay loop controls muted></video>
+<video src="images/agents-overview/build-with-ai-overview-2026112501.mp4" title="Video showing code suggestions, agent edits reviewed alongside code, parallel reviews, and a destination filter checked in the integrated browser." autoplay loop controls muted></video>
 
 ## Choose how you work
 

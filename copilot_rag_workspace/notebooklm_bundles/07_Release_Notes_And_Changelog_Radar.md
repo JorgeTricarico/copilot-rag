@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-25T07:44:08.083173+00:00
-- **Total Palabras**: 19,904 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-25T21:23:30.617567+00:00
+- **Total Palabras**: 19,887 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -776,8 +776,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_149.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_149
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_149.md
-- **SHA256_FINGERPRINT**: `7cb647055203016ddae6de950899e1159ee51855b5704b4b63f338f869a8d972`
-- **LAST_VERIFIED_UTC**: 2026-11-25T07:44:02.790686+00:00
+- **SHA256_FINGERPRINT**: `36c4dc698089b912a848919665db7fb9c1508d0a786e544174393127d640cfc6`
+- **LAST_VERIFIED_UTC**: 2026-11-25T21:23:25.343142+00:00
 ---
 
 **MetaDescription**: Learn what's new in Visual Studio Code 1.149 (Insiders)
@@ -798,7 +798,7 @@ Happy Coding!
 
 ## November 24, 2026
 
-* Feature description with link to issue. _[#issue-number](https://github.com/microsoft/vscode/issues/issue-number)_
+Updates coming soon.
 
 ---
 
@@ -1653,8 +1653,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: vscode_insiders::endgame-plan_349753
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/issues/349753
 - **RAW_SOURCE_URL**: https://github.com/microsoft/vscode/issues/349753
-- **SHA256_FINGERPRINT**: `042fa7ccd667c7301e792fb5aceb3b494ebcff0ba521d9b8c3929c8a4a6c9909`
-- **LAST_VERIFIED_UTC**: 2026-11-25T07:44:07.868320+00:00
+- **SHA256_FINGERPRINT**: `d199b8df675515e248378740b5dd9ddf49871af9934ff4939fc8f911b51147a5`
+- **LAST_VERIFIED_UTC**: 2026-11-25T21:23:30.598829+00:00
 ---
 
 # VS Code Insiders Roadmap: 1.148.0 Endgame
@@ -1738,20 +1738,20 @@ We really appreciate people trying our new features as soon as they are ready, s
 
 # Wednesday
 `@endgame-champ`:
-- [ ] Publish website so that in-product release notes are ready
-- [ ] Start Stable rollout to everyone (start percentage: `20%`, end time UTC: `6AM next Wednesday`)
-- [ ] Deploy vscode.dev
+- [x] Publish website so that in-product release notes are ready
+- [x] Start Stable rollout to everyone (start percentage: `20%`, end time UTC: `6AM next Wednesday`)
+- [x] Deploy vscode.dev
   - [x] Verify the [release candidate](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) `release/x.y` passed the sanity tests in the last step
-  - [ ] [Kick off deploy](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) (Branch `release/x.y`, Deployment Target `prod`, needs peer approval)
-- [ ] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `auto`; the release pipeline job requires two approvals)
-- [ ] Publish socials (ping Cynthia)
+  - [x] [Kick off deploy](https://dev.azure.com/monacotools/Monaco/_build?definitionId=276) (Branch `release/x.y`, Deployment Target `prod`, needs peer approval)
+- [x] [Publish @vscode/chat-lib](https://dev.azure.com/monacotools/Monaco/_build?definitionId=683) (Branch `release/x.y`, Release Version `auto`; the release pipeline job requires two approvals)
+- [x] Publish socials (ping Cynthia)
 - [x] [Publish @types/vscode](https://github.com/microsoft/vscode/wiki/Publish-vscode-types) if you find type diffs after running the steps
-- [ ] Create an official release
-  - [ ] Create a tag (make sure you pull the release branch first): `git tag <x.y.z>`
-  - [ ] Push the tag: `git push origin <x.y.z>`
-  - [ ] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right ... > Create Release. Use the version as title <x.y.z> and use the release link `https://code.visualstudio.com/updates/v<x_y>` for the description
-- [ ] Close milestone (**do not** delete it): https://github.com/microsoft/vscode/milestones
-- [ ] Move all remaining issues to "On Deck"
+- [x] Create an official release
+  - [x] Create a tag (make sure you pull the release branch first): `git tag <x.y.z>`
+  - [x] Push the tag: `git push origin <x.y.z>`
+  - [x] Create a GitHub release: [Open the GitHub tags](https://github.com/microsoft/vscode/tags), and click far right ... > Create Release. Use the version as title <x.y.z> and use the release link `https://code.visualstudio.com/updates/v<x_y>` for the description
+- [x] Close milestone (**do not** delete it): https://github.com/microsoft/vscode/milestones
+- [x] Move all remaining issues to "On Deck"
 - [x] Ensure that the latest Insiders release from main has succeeded
 
 
