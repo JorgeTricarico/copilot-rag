@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-26T07:35:26.257165+00:00",
+  "last_sync_utc": "2026-11-26T21:09:51.307731+00:00",
   "total_documents": 2115,
   "documents": {
     "anthropics_skills::README.md": {
@@ -21184,9 +21184,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "462b7385f70d083652fcf4e31cde71b7cc5bde6918a4de4fcb86acddbae60253",
-      "word_count": 15731,
-      "last_updated_utc": "2026-11-26T07:35:25.366058+00:00",
+      "content_sha256": "668e1b9f944f405ea2f726bd238817adb4e6ac4c10663d5566d980a3e6932cab",
+      "word_count": 15722,
+      "last_updated_utc": "2026-11-26T21:09:49.746964+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -21195,9 +21195,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "462b7385f70d083652fcf4e31cde71b7cc5bde6918a4de4fcb86acddbae60253",
-      "word_count": 15731,
-      "last_updated_utc": "2026-11-26T07:35:25.333200+00:00",
+      "content_sha256": "668e1b9f944f405ea2f726bd238817adb4e6ac4c10663d5566d980a3e6932cab",
+      "word_count": 15722,
+      "last_updated_utc": "2026-11-26T21:09:49.733565+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -22679,10 +22679,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_149.md",
       "canonical_web_url": "https://code.visualstudio.com/updates/v1_149",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
-      "git_blob_sha": "dadcb5b1daac6221249f912059eeabaa1037e13f",
-      "content_sha256": "36c4dc698089b912a848919665db7fb9c1508d0a786e544174393127d640cfc6",
-      "word_count": 86,
-      "last_updated_utc": "2026-11-25T21:23:25.343142+00:00",
+      "git_blob_sha": "c6881d76e0861b8f6277c255e1b55590fa20cc20",
+      "content_sha256": "b134d315e9759cb0be065123cd370cb739b8e327c0f5ff3f69adda6563041568",
+      "word_count": 135,
+      "last_updated_utc": "2026-11-26T21:09:45.467581+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__release-notes_v1_149.md"
     },
     "microsoft_vscode::extensions/copilot/.agents/skills/github-copilot-upgrader/SKILL.md": {
@@ -22756,10 +22756,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.agentSessionsWorkspace.d.ts",
       "canonical_web_url": "https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.agentSessionsWorkspace.d.ts",
       "bundle_name": "06_Extension_AI_APIs_And_Copilot_SDK",
-      "git_blob_sha": "278e4ccb7ac987d18286a888b71a80264a3c2c6b",
-      "content_sha256": "67264096ed5275c8317e8d79476f5d009628ea0ce8cd4337e6038e9f7171cadb",
-      "word_count": 86,
-      "last_updated_utc": "2026-10-21T03:44:57.273981+00:00",
+      "git_blob_sha": "ebc1c4211d027b389f902ecfb83ec14d3f305c5b",
+      "content_sha256": "46c99597efcb9e7829a5a7f72d140290e5275292bdc1f0751cf1f2197916cdae",
+      "word_count": 129,
+      "last_updated_utc": "2026-11-26T21:09:46.111700+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode__src_vscode-dts_vscode.proposed.agentSessionsWorkspace.d.ts.md"
     },
     "microsoft_vscode::src/vscode-dts/vscode.proposed.agentsWindowConfiguration.d.ts": {
@@ -23263,9 +23263,9 @@
       "canonical_web_url": "https://code.visualstudio.com/api/references/contribution-points",
       "bundle_name": "06_Extension_AI_APIs_And_Copilot_SDK",
       "git_blob_sha": null,
-      "content_sha256": "f25dc9d1752e46c92d681a03a764d7fe59d6ec56d7f9c93fd657b9beaa07ae9b",
-      "word_count": 12246,
-      "last_updated_utc": "2026-11-25T21:23:27.739447+00:00",
+      "content_sha256": "1abe78f759431833c27466836654a6c8c3a042d3684ac6983f73050cf28a9aee",
+      "word_count": 12373,
+      "last_updated_utc": "2026-11-26T21:09:48.226194+00:00",
       "local_clean_path": "clean_sources/web__vscode_api_contribution_points.md"
     }
   }

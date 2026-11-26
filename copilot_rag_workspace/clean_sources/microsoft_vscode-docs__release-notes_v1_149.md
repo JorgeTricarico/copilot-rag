@@ -6,7 +6,7 @@ Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://
 
 ---
 
-_Last updated: November 24, 2026_
+_Last updated: November 26, 2026_
 
 Welcome to the 1.149  release of Visual Studio Code.
 
@@ -14,9 +14,10 @@ Happy Coding!
 
 ---
 
-## November 24, 2026
+## November 25, 2026
 
-Updates coming soon.
+* Agents can discover, inspect, and message nested sessions during remote delegation (Experimental). _[#338718: Agent cannot find remote sub-sessions](https://github.com/microsoft/vscode/issues/338718)_
+* For remote workspaces, the **About** dialog and copied details include the connection type and, when available, the remote OS and architecture. _[#349876: "Help -> About" Should also include info about the 'remote'](https://github.com/microsoft/vscode/issues/349876)_
 
 ---
 

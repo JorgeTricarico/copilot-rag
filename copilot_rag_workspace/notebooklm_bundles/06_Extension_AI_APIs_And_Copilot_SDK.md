@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 06_Extension_AI_APIs_And_Copilot_SDK
-- **Generado (UTC)**: 2026-11-25T21:23:30.611188+00:00
-- **Total Palabras**: 125,709 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-26T21:09:51.292997+00:00
+- **Total Palabras**: 125,879 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -19087,8 +19087,8 @@ declare module 'vscode' {
 # DOCUMENT_SOURCE: microsoft_vscode::src/vscode-dts/vscode.proposed.agentSessionsWorkspace.d.ts
 - **CANONICAL_URL**: https://github.com/microsoft/vscode/blob/main/src/vscode-dts/vscode.proposed.agentSessionsWorkspace.d.ts
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode/main/src/vscode-dts/vscode.proposed.agentSessionsWorkspace.d.ts
-- **SHA256_FINGERPRINT**: `67264096ed5275c8317e8d79476f5d009628ea0ce8cd4337e6038e9f7171cadb`
-- **LAST_VERIFIED_UTC**: 2026-10-21T03:44:57.273981+00:00
+- **SHA256_FINGERPRINT**: `46c99597efcb9e7829a5a7f72d140290e5275292bdc1f0751cf1f2197916cdae`
+- **LAST_VERIFIED_UTC**: 2026-11-26T21:09:46.111700+00:00
 ---
 
 # VS Code Proposed AI API Definition: `src/vscode-dts/vscode.proposed.agentSessionsWorkspace.d.ts`
@@ -19104,12 +19104,16 @@ declare module 'vscode' {
 	export namespace workspace {
 
 		/**
-		 * Indicates whether the current workspace is an agent sessions workspace.
+		 * Whether the editor manages the workspace for agent sessions, rather than the user
+		 * opening it. A workspace that the user opened is not agent-managed, even when agents
+		 * work in it.
 		 *
-		 * Agent sessions workspace is a special workspace used for AI agent interactions
-		 * where the window is dedicated to agent session management.
+		 * The {@linkcode workspace.workspaceFolders workspace folders} of an agent-managed
+		 * workspace follow the active agent session and can change when the user switches
+		 * sessions. Sessions can span projects, so resources outside the current folders can
+		 * still be part of the user's work.
 		 */
-		export const isAgentSessionsWorkspace: boolean;
+		export const isAgentManaged: boolean;
 	}
 }
 ```
@@ -25474,8 +25478,8 @@ declare module 'vscode' {
 # DOCUMENT_SOURCE: web::vscode_api_contribution_points
 - **CANONICAL_URL**: https://code.visualstudio.com/api/references/contribution-points
 - **RAW_SOURCE_URL**: https://code.visualstudio.com/api/references/contribution-points
-- **SHA256_FINGERPRINT**: `f25dc9d1752e46c92d681a03a764d7fe59d6ec56d7f9c93fd657b9beaa07ae9b`
-- **LAST_VERIFIED_UTC**: 2026-11-25T21:23:27.739447+00:00
+- **SHA256_FINGERPRINT**: `1abe78f759431833c27466836654a6c8c3a042d3684ac6983f73050cf28a9aee`
+- **LAST_VERIFIED_UTC**: 2026-11-26T21:09:48.226194+00:00
 ---
 
 # Contribution Points
@@ -25526,6 +25530,8 @@ languageModelChatProviders
 languageModelTools
 - localizations
 localizations
+- mcpServerDefinitionProviders
+mcpServerDefinitionProviders
 - menus
 menus
 - notebookRenderer
@@ -27201,6 +27207,45 @@ id
 publisherId.extensionName
 - path - Relative path to the JSON file containing the translations for the language.
 path
+
+## contributes.mcpServerDefinitionProviders
+
+Contribute Model Context Protocol (MCP) server definition providers. Define each provider collection in contributes.mcpServerDefinitionProviders , then register its implementation with vscode.lm.registerMcpServerDefinitionProvider in your extension activation.
+contributes.mcpServerDefinitionProviders
+vscode.lm.registerMcpServerDefinitionProvider
+Here is an example mcpServerDefinitionProviders contribution:
+mcpServerDefinitionProviders
+
+```
+{
+"contributes"
+: {
+"mcpServerDefinitionProviders"
+: [
+{
+"id"
+:
+"exampleProvider"
+,
+"label"
+:
+"Example MCP Server Provider"
+}
+]
+}
+}
+```
+
+Each entry in the mcpServerDefinitionProviders array supports the following properties:
+mcpServerDefinitionProviders
+- id - (required) Unique identifier for the MCP server collection, matching the ID passed to vscode.lm.registerMcpServerDefinitionProvider .
+id
+vscode.lm.registerMcpServerDefinitionProvider
+- label - (required) Human-readable display name for the collection.
+label
+- when - (optional) A when clause controlling when the collection is enabled.
+when
+See the MCP extension guide for implementation details.
 
 ## contributes.menus
 

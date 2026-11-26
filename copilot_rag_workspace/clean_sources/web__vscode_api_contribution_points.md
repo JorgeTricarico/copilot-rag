@@ -46,6 +46,8 @@ languageModelChatProviders
 languageModelTools
 - localizations
 localizations
+- mcpServerDefinitionProviders
+mcpServerDefinitionProviders
 - menus
 menus
 - notebookRenderer
@@ -1721,6 +1723,45 @@ id
 publisherId.extensionName
 - path - Relative path to the JSON file containing the translations for the language.
 path
+
+## contributes.mcpServerDefinitionProviders
+
+Contribute Model Context Protocol (MCP) server definition providers. Define each provider collection in contributes.mcpServerDefinitionProviders , then register its implementation with vscode.lm.registerMcpServerDefinitionProvider in your extension activation.
+contributes.mcpServerDefinitionProviders
+vscode.lm.registerMcpServerDefinitionProvider
+Here is an example mcpServerDefinitionProviders contribution:
+mcpServerDefinitionProviders
+
+```
+{
+"contributes"
+: {
+"mcpServerDefinitionProviders"
+: [
+{
+"id"
+:
+"exampleProvider"
+,
+"label"
+:
+"Example MCP Server Provider"
+}
+]
+}
+}
+```
+
+Each entry in the mcpServerDefinitionProviders array supports the following properties:
+mcpServerDefinitionProviders
+- id - (required) Unique identifier for the MCP server collection, matching the ID passed to vscode.lm.registerMcpServerDefinitionProvider .
+id
+vscode.lm.registerMcpServerDefinitionProvider
+- label - (required) Human-readable display name for the collection.
+label
+- when - (optional) A when clause controlling when the collection is enabled.
+when
+See the MCP extension guide for implementation details.
 
 ## contributes.menus
 

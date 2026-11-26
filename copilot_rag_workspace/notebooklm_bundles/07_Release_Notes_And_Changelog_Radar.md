@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-26T07:35:26.243921+00:00
-- **Total Palabras**: 19,889 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-26T21:09:51.298302+00:00
+- **Total Palabras**: 19,938 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -776,8 +776,8 @@ We really appreciate people trying our new features as soon as they are ready, s
 # DOCUMENT_SOURCE: microsoft_vscode-docs::release-notes/v1_149.md
 - **CANONICAL_URL**: https://code.visualstudio.com/updates/v1_149
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/release-notes/v1_149.md
-- **SHA256_FINGERPRINT**: `36c4dc698089b912a848919665db7fb9c1508d0a786e544174393127d640cfc6`
-- **LAST_VERIFIED_UTC**: 2026-11-25T21:23:25.343142+00:00
+- **SHA256_FINGERPRINT**: `b134d315e9759cb0be065123cd370cb739b8e327c0f5ff3f69adda6563041568`
+- **LAST_VERIFIED_UTC**: 2026-11-26T21:09:45.467581+00:00
 ---
 
 **MetaDescription**: Learn what's new in Visual Studio Code 1.149 (Insiders)
@@ -788,7 +788,7 @@ Follow us on [LinkedIn](https://www.linkedin.com/showcase/vs-code), [X](https://
 
 ---
 
-_Last updated: November 24, 2026_
+_Last updated: November 26, 2026_
 
 Welcome to the 1.149  release of Visual Studio Code.
 
@@ -796,9 +796,10 @@ Happy Coding!
 
 ---
 
-## November 24, 2026
+## November 25, 2026
 
-Updates coming soon.
+* Agents can discover, inspect, and message nested sessions during remote delegation (Experimental). _[#338718: Agent cannot find remote sub-sessions](https://github.com/microsoft/vscode/issues/338718)_
+* For remote workspaces, the **About** dialog and copied details include the connection type and, when available, the remote OS and architecture. _[#349876: "Help -> About" Should also include info about the 'remote'](https://github.com/microsoft/vscode/issues/349876)_
 
 ---
 
