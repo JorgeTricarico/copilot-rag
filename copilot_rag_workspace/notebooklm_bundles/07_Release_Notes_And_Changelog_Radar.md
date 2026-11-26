@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 07_Release_Notes_And_Changelog_Radar
-- **Generado (UTC)**: 2026-11-25T21:23:30.617567+00:00
-- **Total Palabras**: 19,887 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-26T07:35:26.243921+00:00
+- **Total Palabras**: 19,889 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -2387,11 +2387,18 @@ Legend of annotations:
 # DOCUMENT_SOURCE: web::github_changelog_copilot_rss
 - **CANONICAL_URL**: https://github.blog/changelog/label/copilot/feed/
 - **RAW_SOURCE_URL**: https://github.blog/changelog/label/copilot/feed/
-- **SHA256_FINGERPRINT**: `92be5b3b64c24928c4b5570d787980d0f8e152fbab24bba88543b0f2dfb65ac2`
-- **LAST_VERIFIED_UTC**: 2026-11-19T06:41:21.910391+00:00
+- **SHA256_FINGERPRINT**: `cecc7d4593b23782514048bfaa596eebe4df1dbd0e2ff6ead502e52b6c0ee344`
+- **LAST_VERIFIED_UTC**: 2026-11-26T07:35:24.838085+00:00
 ---
 
 # GitHub Copilot Official Changelog Feed
+
+## Copilot code review billing will default to the organization
+- **Date**: Wed, 25 Nov 2026 22:18:03 +0000
+- **URL**: https://github.blog/changelog/2026-11-25-copilot-code-review-billing-will-default-to-the-organization
+
+If you haven’t chosen how to bill Copilot code review for members with a Copilot license, those reviews will be billed to your organization starting December 30, 2026. To keep...
+The post Copilot code review billing will default to the organization appeared first on The GitHub Blog .
 
 ## Connect Supabase, Box, Calendly, and more to Copilot
 - **Date**: Wed, 18 Nov 2026 22:04:50 +0000
@@ -2455,10 +2462,3 @@ The post MAI Code 2 and MAI Code 2 Flash in GitHub Copilot appeared first on The
 
 This update brings remote access, on-device voice dictation, and browser use controls to GitHub Copilot for JetBrains. Copilot users in JetBrains IDEs also get context usage shortcuts, historical diffs, simpler...
 The post GitHub Copilot in JetBrains, Ignite releases appeared first on The GitHub Blog .
-
-## Monitor GitHub Copilot activity through Microsoft Agent 365
-- **Date**: Tue, 17 Nov 2026 18:00:59 +0000
-- **URL**: https://github.blog/changelog/2026-11-17-monitor-github-copilot-activity-through-microsoft-agent-365
-
-Enterprises can now stream GitHub Copilot agent activity directly into Microsoft Agent 365. This lets you bring audit data from across GitHub Copilot clients into Microsoft’s agent control plane, where...
-The post Monitor GitHub Copilot activity through Microsoft Agent 365 appeared first on The GitHub Blog .

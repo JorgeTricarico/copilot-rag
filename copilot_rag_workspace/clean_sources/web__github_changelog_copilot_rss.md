@@ -1,5 +1,12 @@
 # GitHub Copilot Official Changelog Feed
 
+## Copilot code review billing will default to the organization
+- **Date**: Wed, 25 Nov 2026 22:18:03 +0000
+- **URL**: https://github.blog/changelog/2026-11-25-copilot-code-review-billing-will-default-to-the-organization
+
+If you haven’t chosen how to bill Copilot code review for members with a Copilot license, those reviews will be billed to your organization starting December 30, 2026. To keep...
+The post Copilot code review billing will default to the organization appeared first on The GitHub Blog .
+
 ## Connect Supabase, Box, Calendly, and more to Copilot
 - **Date**: Wed, 18 Nov 2026 22:04:50 +0000
 - **URL**: https://github.blog/changelog/2026-11-18-connect-supabase-box-calendly-and-more-to-copilot
@@ -62,10 +69,3 @@ The post MAI Code 2 and MAI Code 2 Flash in GitHub Copilot appeared first on The
 
 This update brings remote access, on-device voice dictation, and browser use controls to GitHub Copilot for JetBrains. Copilot users in JetBrains IDEs also get context usage shortcuts, historical diffs, simpler...
 The post GitHub Copilot in JetBrains, Ignite releases appeared first on The GitHub Blog .
-
-## Monitor GitHub Copilot activity through Microsoft Agent 365
-- **Date**: Tue, 17 Nov 2026 18:00:59 +0000
-- **URL**: https://github.blog/changelog/2026-11-17-monitor-github-copilot-activity-through-microsoft-agent-365
-
-Enterprises can now stream GitHub Copilot agent activity directly into Microsoft Agent 365. This lets you bring audit data from across GitHub Copilot clients into Microsoft’s agent control plane, where...
-The post Monitor GitHub Copilot activity through Microsoft Agent 365 appeared first on The GitHub Blog .

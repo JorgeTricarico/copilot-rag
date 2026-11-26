@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-25T21:23:30.627972+00:00",
+  "last_sync_utc": "2026-11-26T07:35:26.257165+00:00",
   "total_documents": 2115,
   "documents": {
     "anthropics_skills::README.md": {
@@ -21184,9 +21184,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-js",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "f8325c8246fb9c3169dcb1f03ea292504b4af0e61ddbefc432f7a3f00be5dde9",
+      "content_sha256": "462b7385f70d083652fcf4e31cde71b7cc5bde6918a4de4fcb86acddbae60253",
       "word_count": 15731,
-      "last_updated_utc": "2026-11-25T21:23:28.861757+00:00",
+      "last_updated_utc": "2026-11-26T07:35:25.366058+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-js.md"
     },
     "langgraph::changelog-py": {
@@ -21195,9 +21195,9 @@
       "canonical_web_url": "https://docs.langchain.com/oss/python/langgraph/changelog-py",
       "bundle_name": "08_Agent_Workflows_LangGraph_And_Ecosystem",
       "git_blob_sha": null,
-      "content_sha256": "f8325c8246fb9c3169dcb1f03ea292504b4af0e61ddbefc432f7a3f00be5dde9",
+      "content_sha256": "462b7385f70d083652fcf4e31cde71b7cc5bde6918a4de4fcb86acddbae60253",
       "word_count": 15731,
-      "last_updated_utc": "2026-11-25T21:23:28.794523+00:00",
+      "last_updated_utc": "2026-11-26T07:35:25.333200+00:00",
       "local_clean_path": "clean_sources/langgraph__changelog-py.md"
     },
     "langgraph::checkpointers": {
@@ -23252,9 +23252,9 @@
       "canonical_web_url": "https://github.blog/changelog/label/copilot/feed/",
       "bundle_name": "07_Release_Notes_And_Changelog_Radar",
       "git_blob_sha": null,
-      "content_sha256": "92be5b3b64c24928c4b5570d787980d0f8e152fbab24bba88543b0f2dfb65ac2",
-      "word_count": 670,
-      "last_updated_utc": "2026-11-19T06:41:21.910391+00:00",
+      "content_sha256": "cecc7d4593b23782514048bfaa596eebe4df1dbd0e2ff6ead502e52b6c0ee344",
+      "word_count": 672,
+      "last_updated_utc": "2026-11-26T07:35:24.838085+00:00",
       "local_clean_path": "clean_sources/web__github_changelog_copilot_rss.md"
     },
     "web::vscode_api_contribution_points": {
