@@ -4,6 +4,8 @@
 
 Each GitHub Copilot plan includes a monthly allowance of [AI credits](https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals). Different actions consume credits at different rates, based on the model and the number of tokens processed. This guide covers practical ways to get the most out of your AI credits in Visual Studio Code.
 
+**Project:** Any workspace. **Harness:** Copilot. **Interface:** Chat view or Agents window.
+
 ## Choose models based on evidence
 
 The lowest-cost model does not always produce the lowest-cost result. A model that needs retries or creates rework can cost more than a capable model that completes the task reliably. The inverse is also true: not every task requires a complex, reasoning model, and routing simple or repetitive tasks to a lighter model avoids paying for capability you don't need.
@@ -129,10 +131,8 @@ Use these measurements as an optimization loop:
 1. Repeat the task and compare the results.
 1. Keep the configuration that meets your quality threshold at the lowest cost.
 
-## Related content
+## Next steps
 
 * [AI credits and model costs](/docs/agents/concepts/language-models.md#ai-credits-and-model-costs)
 * [Choose and configure language models](/docs/agent-customization/language-models.md)
-* [Best practices for GitHub Copilot](/docs/agents/best-practices.md)
-* [GitHub Copilot plans](https://docs.github.com/en/copilot/get-started/plans)
-* [Usage-based billing](https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals)
+* [Best practices for using AI in VS Code](/docs/agents/best-practices.md)

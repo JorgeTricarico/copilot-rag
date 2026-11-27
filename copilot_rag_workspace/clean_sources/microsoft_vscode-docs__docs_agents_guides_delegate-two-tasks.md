@@ -8,6 +8,8 @@ In this guide, you choose two changes in your own repository, run them in separa
 
 ## Prerequisites
 
+**Project:** Your Git repository with tests. **Harness:** Copilot. **Interface:** Agents window or Chat view (Insiders with editor worktrees).
+
 To follow this guide, you need:
 
 * Visual Studio Code with [AI features set up](/docs/setup/copilot.md).

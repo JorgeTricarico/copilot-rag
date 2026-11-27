@@ -8,6 +8,8 @@ In this guide, you investigate one behavior in an existing repository without ed
 
 ## Prerequisites
 
+**Project:** Your repository. **Harness:** Copilot. **Interface:** Chat view.
+
 * [Set up GitHub Copilot](/docs/setup/copilot.md).
 * Open the repository you want to explore in VS Code.
 * Choose a question about the project, such as how a request is authorized, how a form saves data, or where an API response is assembled.

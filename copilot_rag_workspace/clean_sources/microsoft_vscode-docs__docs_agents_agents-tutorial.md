@@ -6,6 +6,8 @@ In this tutorial, you build a personal portfolio page with AI agents in Visual S
 
 You start in the **Agents window** to create the app, then continue the same session in the **Chat view** to refine it alongside your code. Along the way, you learn to open a project folder, preview your app in the integrated browser, and review and commit changes with Git.
 
+Looking for a shorter first task without Git setup? Start with the [Agents quickstart](/docs/agents/quickstart.md) instead.
+
 Get familiar with the VS Code user interface, editing features, and key productivity tools.
 
 * [Start the VS Code editing tutorial](/docs/editing/getting-started/editor-tutorial.md)
@@ -14,7 +16,7 @@ Get familiar with the VS Code user interface, editing features, and key producti
 
 * [Download and install Visual Studio Code](/download).
 
-* [Enable AI features in VS Code](/docs/getstarted/overview.md#enable-ai-features)
+* [Set up GitHub Copilot in VS Code](/docs/setup/copilot.md), or configure [other AI access options](/docs/setup/copilot.md#other-ai-access-options).
 
     If you use GitHub Copilot, learn more about [AI credits and model costs](/docs/agents/concepts/language-models.md#ai-credits-and-model-costs) and [what happens when you reach a limit](/docs/agents/agent-troubleshooting/faq.md#i-reached-my-inline-suggestions-or-ai-credits-limit).
 

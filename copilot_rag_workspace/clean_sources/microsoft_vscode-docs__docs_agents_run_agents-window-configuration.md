@@ -13,14 +13,14 @@ The Agents window uses the accounts and model credentials available in VS Code:
 * **GitHub Copilot**: select the account icon in the top-right corner, and then sign in to GitHub. To switch accounts, sign out and then authenticate with a different GitHub account.
 * **Claude**: configure a Claude API key or another supported bring-your-own-key (BYOK) option for Claude.
 * **Codex**: select the account icon, and then select **Sign in to ChatGPT**.
-* **Bring your own key (BYOK)**: add a model in the Language Models editor and enable ``chat.agentHost.byokModels.enabled`` to make it available in the desktop Agents window. Learn how to [configure BYOK models](/docs/agent-customization/language-models.md#bring-your-own-language-model-key).
+* **Bring your own key (BYOK)**: add a model in the Language Models editor and enable ``chat.agentHost.byokModels.enabled`` to make it available in the desktop Agents window. Learn how to [configure BYOK models](/docs/agent-customization/model-providers.md#bring-your-own-language-model-key).
 
 For account requirements, billing options, and integration setup, see [Agent harness requirements and setup](/docs/agents/run/agent-harnesses.md#requirements-and-setup).
 
 > [!NOTE]
 > Claude and Codex harnesses are disabled when [Copilot enterprise-managed settings apply](/docs/enterprise/manage-ai-settings.md#claude-and-codex-availability), unless your administrator explicitly permits them. Separate provider credentials don't override that restriction. Contact the IT team that deployed the settings to discuss access.
 
-[product.prodname_anthropic_claude_short], ChatGPT-backed [product.prodname_openai_codex_short], and BYOK models can run in the desktop Agents window without [product.prodname_github] sign-in when you configure the supported provider credentials. Features that require [product.prodname_github] authentication prompt you to sign in when needed. The browser-based Agents window always requires [product.prodname_github] sign-in.
+[product.prodname_anthropic_claude_short], ChatGPT-backed [product.prodname_openai_codex_short], and BYOK models can run in the desktop Agents window without [product.prodname_github] sign-in when you configure the supported provider credentials. If no provider is configured, select **Add Models** or **Sign In** in the window. Features that require [product.prodname_github] authentication prompt you to sign in when needed. The browser-based Agents window always requires [product.prodname_github] sign-in.
 
 ## Configure settings for the Agents window
 
@@ -74,6 +74,14 @@ When screen reader optimized mode is active, the heading is announced once when 
 
 With the unified workspace picker enabled, use ``Shortcut: sessions.focusNewSessionWorkspacePicker`` to focus the workspace picker or ``Shortcut: sessions.focusNewSessionHarnessPicker`` to focus the harness picker. To assign a keybinding, use the **Configure Keybinding** action in the picker's context menu.
 
+### Configure isolation defaults
+
+The ``sessions.useWorktree`` setting controls the initial isolation choice for a workspace that hasn't started a session before. After you start a session, VS Code remembers that workspace's isolation choice instead. The branch selection isn't remembered.
+
+For dependencies and ignored files, see [Prepare a worktree](/docs/agents/run/worktrees.md#prepare-a-worktree).
+
+By default, the **Chats** group remains visible in the sessions list even when empty. Set ``sessions.list.showEmptyDefaultGroups`` to `false` to hide empty default groups.
+
 ## Adjust the window layout
 
 ### Arrange chat tabs and groups
@@ -92,9 +100,35 @@ In **Multiple**, arrange chat groups with the mouse or keyboard:
 
 Moving or closing the last chat in a group closes that group and expands the remaining groups. Visible and hidden chats, their history, group assignments, active chats, and split sizes are restored when you switch sessions or reload the window.
 
-To arrange separate top-level sessions instead, see [Arrange sessions in a grid](/docs/agents/run/agents-window.md#arrange-sessions-in-a-grid).
+To arrange separate top-level sessions instead, see [Arrange sessions in a grid](#arrange-sessions-in-a-grid).
 
 To hide the sessions sidebar, select **Toggle Sidebar** in the top-left corner or press ``Shortcut: workbench.action.toggleSidebarVisibility``.
+
+### Arrange sessions in a grid
+
+To keep two sessions visible, right-click a session in the list and select **Open to the Side**. To start another session without replacing the current pane, hold ``Alt`` (``Option`` on macOS) and select **New Session**.
+
+Drag a session to the top, bottom, left, or right edge of another session to create a horizontal or vertical split. A placement preview shows where the session appears.
+
+<video src="../images/agents-window/sessions-grid.mp4" title="Video showing agent sessions arranged in a grid in the Agents window." autoplay loop controls muted></video>
+
+Only one pane is active at a time. Selecting another session in the list replaces an unpinned active view.
+
+When multiple panes are visible, use the session header's **Session Layout** menu to arrange or resize them. **Maximize** expands one pane, and **Restore Size** returns to the grid. These actions are separate from **Session Layout**.
+
+### Open chats in separate windows
+
+`feature(agents-window-chat-windows)`
+
+To keep a conversation and its files on another display, enable ``sessions.chatWindows.enabled``, then right-click a session or chat in the sessions list and select **Open in** > **New Window**. The setting is on by default in Insiders.
+
+You can also drag a chat tab or session title out of the window to open it separately, or into another chat window to move it there.
+
+Use **Configure Layout** in the new window's title bar to show chat and editors side by side or stacked. In the stacked layout, run **Agents: Toggle Chat Conversation** from the Command Palette to hide the conversation and keep only the input visible.
+
+To rearrange content, hover over the top edge of a chat, editor, or terminal area to reveal its layout handle. Drag the handle to an edge of another area, using the placement preview to choose its new position.
+
+To move the window's chats and editors back to the main window, select **More Actions** (**...**) > **Move to Main Window** in the chat header.
 
 ## View and edit Markdown files
 

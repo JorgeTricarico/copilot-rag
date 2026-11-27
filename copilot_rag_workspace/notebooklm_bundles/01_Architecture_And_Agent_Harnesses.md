@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 01_Architecture_And_Agent_Harnesses
-- **Generado (UTC)**: 2026-11-25T21:23:30.600036+00:00
-- **Total Palabras**: 25,673 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-27T07:32:25.254010+00:00
+- **Total Palabras**: 25,002 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -70,8 +70,8 @@ When auditing, ensure docs accurately cover these areas:
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/best-practices.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/best-practices
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/best-practices.md
-- **SHA256_FINGERPRINT**: `c7b6ab604bcbef0a82c872c4239c8f8ca461fbcd2a3f087e82fe7ee088855bca`
-- **LAST_VERIFIED_UTC**: 2026-11-20T19:47:38.702832+00:00
+- **SHA256_FINGERPRINT**: `31b160393d78f44216fc7f83792a0bbb6656fb14a824e46084daa5e7372c2277`
+- **LAST_VERIFIED_UTC**: 2026-11-27T07:32:19.469518+00:00
 ---
 
 **MetaDescription**: Use AI effectively in VS Code by choosing the right workflow, writing focused prompts, and reviewing results.
@@ -208,54 +208,15 @@ For more information, see [GitHub Copilot security](/docs/agents/run/security.md
 
 ## Go further when you need to
 
-You don't need the following techniques to complete a first task. Use them when a specific problem or recurring workflow calls for more control.
+You don't need these options to complete a first task. Use them when a specific problem or recurring workflow calls for more control:
 
-### Choose the right model
-
-Start with **Copilot Fusion** or **Auto** when available. If results, speed, or cost don't meet your needs, compare models on the same representative task rather than changing several options at once.
-
-For help choosing between Copilot Fusion, Auto, and individual models, see the [model selection guide](/docs/agents/guides/choose-a-model.md).
-
-* Use the [model picker](/docs/agent-customization/language-models.md) to browse available models and their requirements.
-* Use [**Compare Models**](/docs/agents/run/compare-models.md) in the Agents window to run the same prompt with multiple models and compare their results side by side.
-* For reasoning models, adjust [thinking effort](/docs/agent-customization/language-models.md#configure-thinking-effort-and-context-size) when the task needs more analysis.
-* Compare the result and verification evidence alongside [AI credit usage](/docs/agents/guides/optimize-usage.md), not only response speed.
-
-### Choose the right agent harness
-
-Keep the Copilot harness for the workflow above. When you need another provider's tools or account, [compare harness requirements](/docs/agents/run/agent-harnesses.md#requirements-and-setup) before switching. Organization policies can restrict the available choices.
-
-Changing the model doesn't change the harness. Where tools run is another decision: use [remote sessions](/docs/agents/run/remote-agent-sessions.md) for a host you manage, or [cloud sessions](/docs/agents/run/cloud-sandbox-sessions.md) `feature(cloud-sessions)` for managed execution without keeping your own machine online.
-
-### Optimize your project for AI
-
-Add customizations when the agent repeatedly misses a convention or workflow that it can't infer from your code. Run **Chat: Open Customizations** to open the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) for your selected session.
-
-VS Code supports several mechanisms to configure AI behavior for your project. Run **Chat: Open Customizations** to open the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) and create customizations for your selected harness.
-
-| Mechanism | Best for | Get started |
-|-----------|----------|-------------|
-| [Custom instructions](/docs/agent-customization/custom-instructions.md) | Project-wide coding standards and architectural context | Type `/init` to generate always-on instructions for your project |
-| [Custom agents](/docs/agent-customization/custom-agents.md) | Specialized workflows or personas (TDD, security audit) | Select **Agents**, then **New Agent** next to **Workspace** in the Agent Customizations editor |
-| [Skills](/docs/agent-customization/agent-skills.md) | Domain-specific capabilities (testing, deployment) | Select **Skills**, then **New Skill** next to **Workspace** in the Agent Customizations editor |
-| [Tools and MCP servers](/docs/agents/run/tools.md) | Connecting to external systems (databases, APIs, CLIs) | Configure in `mcp.json` |
-
-Verify one customization on a representative task before adding more. Follow the [project customization guide](/docs/agents/guides/customize-copilot-guide.md) for a before-and-after comparison.
-
-### Manage context and sessions
-
-Choose an approach based on the problem you're solving:
-
-* **A long conversation is losing focus:** [Compact the conversation](/docs/agents/run/sessions/manage-sessions.md#compact-conversation-context), specifying what to retain, or start a fresh chat with a concise summary.
-* **You want to compare approaches:** [Fork the conversation](/docs/agents/run/sessions/manage-sessions.md#fork-a-chat-session) to retain its history. A fork doesn't isolate file changes.
-* **Independent tasks need to run in parallel:** Use [separate worktrees](/docs/agents/guides/delegate-two-tasks.md) when their changes must stay separate. Review each result before integrating it.
-* **One task needs a focused investigation:** Ask a [subagent](/docs/agents/run/subagents.md#subagents-by-harness) to investigate a bounded question and report back.
-
-### Optimize AI credit usage
-
-If usage is higher than expected, first check task scope, relevant context, and repeated failed attempts. Planning before implementation and correcting the agent early can avoid work you would otherwise discard.
-
-Use the [AI credit usage guide](/docs/agents/guides/optimize-usage.md) to compare cost with result quality. If session metrics indicate low cache reuse, use the [Cache Explorer](/docs/agents/agent-troubleshooting/cache-explorer.md) to investigate it rather than treating cache tuning as a prerequisite for coding.
+| When you need to | Where to go |
+|------------------|-------------|
+| Balance quality, speed, and cost across models | Start with **Copilot Fusion** or **Auto**, or follow [Compare and choose models](/docs/agents/guides/choose-a-model.md) and [Compare model results](/docs/agents/run/compare-models.md). Adjust [thinking effort](/docs/agent-customization/language-models.md#configure-thinking-effort-and-context-size) only when a task needs deeper analysis. |
+| Switch agent harnesses or execution environments | Keep the Copilot harness by default, or compare [agent harnesses](/docs/agents/run/agent-harnesses.md#requirements-and-setup). Use [remote sessions](/docs/agents/run/remote-agent-sessions.md) or [cloud sessions](/docs/agents/run/cloud-sandbox-sessions.md) `feature(cloud-sessions)` when tools shouldn't run locally. |
+| Stop repeating project rules or team workflows | Open the [Agent Customizations editor](/docs/agent-customization/overview.md#agent-customizations-editor) (**Chat: Open Customizations**) to add instructions, skills, custom agents, or MCP servers. Follow [Adapt agents to your project](/docs/agents/guides/customize-copilot-guide.md) to verify one change at a time. |
+| Keep long or parallel conversations organized | [Compact context](/docs/agents/run/sessions/manage-sessions.md#compact-conversation-context) or start a fresh chat when a conversation loses focus, [fork a session](/docs/agents/run/sessions/manage-sessions.md#fork-a-chat-session) to explore alternatives, delegate investigations to [subagents](/docs/agents/run/subagents.md#subagents-by-harness), or [run parallel tasks in separate worktrees](/docs/agents/guides/delegate-two-tasks.md). |
+| Reduce unexpected AI credit consumption | Follow [Optimize AI credit usage](/docs/agents/guides/optimize-usage.md) to scope tasks, trim context, and compare model costs. Use the [Cache Explorer](/docs/agents/agent-troubleshooting/cache-explorer.md) if session metrics show low prompt-cache reuse. |
 
 ### Work with large codebases
 
@@ -273,8 +234,8 @@ For monorepos or projects with multiple services, use [multi-root workspaces](/d
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/agent-harnesses.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/agent-harnesses
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/agent-harnesses.md
-- **SHA256_FINGERPRINT**: `2683dc1a12d774cef5c0c2ab9fc7ca039cc71f0e95d070933546e5d14c503dee`
-- **LAST_VERIFIED_UTC**: 2026-11-25T07:44:01.206335+00:00
+- **SHA256_FINGERPRINT**: `7033f3d762afe6cf7aa35148c4d6ae625b0d8237f1d07bc7a3949a2985ac109b`
+- **LAST_VERIFIED_UTC**: 2026-11-27T07:32:19.537315+00:00
 ---
 
 **MetaDescription**: Understand agent harnesses, model access, execution environments, and code isolation in VS Code.
@@ -364,7 +325,7 @@ The execution environment determines where the harness runs workspace tools and 
 
 The diagram shows where sessions work on code, not where you connect from or where the language model runs. See [remote sessions and browser access](/docs/agents/run/remote-agent-sessions.md) for connection steps. Harness availability depends on the selected environment.
 
-Selecting a Dev Container changes the execution environment, not the harness. For supported hosts, interfaces, and setup, see [run a session in a Dev Container](/docs/agents/run/agents-window.md#run-a-session-in-a-dev-container).
+Selecting a Dev Container changes the execution environment, not the harness. For supported hosts, interfaces, and setup, see [Work with agents in Dev Containers](/docs/agents/run/dev-containers.md).
 
 For sessions that offer folder and worktree options, code isolation controls which working directory receives changes. Folder isolation applies edits directly to your current workspace. Worktree isolation gives the session a separate working directory based on committed Git state. For the comparison, requirements, and setup in either interface, see [Work with agents in worktrees](/docs/agents/run/worktrees.md).
 
@@ -381,8 +342,8 @@ A worktree is a Git code-isolation boundary, not a security boundary. It does no
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/agent-host.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/agent-host
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/agent-host.md
-- **SHA256_FINGERPRINT**: `24b73e0877d5b8601259ce981062f48fa06c16597de4147f90bd224b73894c47`
-- **LAST_VERIFIED_UTC**: 2026-11-19T20:14:43.079707+00:00
+- **SHA256_FINGERPRINT**: `5f39684ebc4406a25ffaafbe03f3b064983ad865528ba076edfd68d5d7428574`
+- **LAST_VERIFIED_UTC**: 2026-11-27T07:32:19.564762+00:00
 ---
 
 **MetaDescription**: Understand how the VS Code Agent Host manages sessions, execution environments, and connected clients.
@@ -438,7 +399,7 @@ Clients display and control sessions. The Agent Host owns them. Desktop and brow
 
 For a Dev Container session, the Agent Host runs inside the project's container. The container can run on your machine or on a supported SSH, Tunnel, or WSL host, while the Agents window remains on your machine. Workspace file edits and commands use the tools and dependencies inside the container, rather than those installed directly on the source host.
 
-Dev Container execution is an environment choice, not a different harness. See the [session execution options diagram](/docs/agents/concepts/agent-harnesses.md#relate-execution-environments-and-code-isolation) for how local, connected-host, container, and cloud execution relate. For setup steps, see [Run an agent session in a Dev Container](/docs/agents/run/agents-window.md#run-a-session-in-a-dev-container).
+Dev Container execution is an environment choice, not a different harness. See the [session execution options diagram](/docs/agents/concepts/agent-harnesses.md#relate-execution-environments-and-code-isolation) for how local, connected-host, container, and cloud execution relate. For setup steps, see [Work with agents in Dev Containers](/docs/agents/run/dev-containers.md).
 
 Like [VS Code Remote Development](/docs/remote/remote-overview.md), the user interface stays on the client while workspace operations run close to the source code and development tools.
 
@@ -501,8 +462,8 @@ The process boundary also affects how you review edits, configure the agent, and
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/agents.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/agents
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/agents.md
-- **SHA256_FINGERPRINT**: `e681ddd11075ade591afeb02c30afb4a4114195f36afcd0f62d7f6fd29f1d711`
-- **LAST_VERIFIED_UTC**: 2026-11-11T05:26:58.271742+00:00
+- **SHA256_FINGERPRINT**: `2b870612472ce8843d4d4e9f060046d8308dccd52054d8860bb10c43e2aee83a`
+- **LAST_VERIFIED_UTC**: 2026-11-27T07:32:19.555948+00:00
 ---
 
 **MetaDescription**: Understand how agents in VS Code use models, context, and tools to complete coding tasks.
@@ -526,13 +487,14 @@ Complete a short quickstart to create and validate an app with an agent in VS Co
 
 You don't need to configure every agent option before your first task. Read this article to understand the agent loop, then explore these concepts in order:
 
+1. [Agent harnesses](/docs/agents/concepts/agent-harnesses.md): how the runtime coordinates models, tools, permissions, and execution environments.
 1. [Language models](/docs/agents/concepts/language-models.md): what a model can do, its limitations, and how tokens and context limits affect your work.
 1. [Context](/docs/agents/concepts/context.md): what information the agent uses and what it remembers across conversations.
 1. [Tools](/docs/agents/concepts/tools.md): how an agent reads code, makes changes, and checks results.
 1. [Sessions and chats](/docs/agents/concepts/sessions.md): how to organize conversations and keep code changes separate.
 1. [Trust and safety](/docs/agents/concepts/trust-and-safety.md): how to control actions, review results, and understand data handling.
 
-When you need to adapt the experience, learn about [agent harnesses](/docs/agents/concepts/agent-harnesses.md) and [customization](/docs/agents/concepts/customization.md). These are deeper choices, not prerequisites for the [agents quickstart](/docs/agents/quickstart.md).
+When you have recurring team workflows, explore [agent customization](/docs/agents/concepts/customization.md). For deeper runtime internals, see [Agent Host architecture](/docs/agents/concepts/agent-host.md). These are optional next steps, not prerequisites for the [agents quickstart](/docs/agents/quickstart.md).
 
 ## How the concepts fit together
 
@@ -604,9 +566,9 @@ Where you interact with an agent and where its work happens are separate:
 
 For example, you can use a browser on your laptop to control a supported session on a remote development machine. The browser displays the session, while workspace files and commands stay on the remote machine.
 
-The diagram shows how these parts connect in Agent Host-backed sessions, with local, remote, and managed cloud examples.
+The diagram shows how these parts connect in Agent Host-backed sessions, with local, Dev Container, remote, and managed cloud examples.
 
-![Diagram of a client connected to an Agent Host, with a harness coordinating context, model requests, permissions, and workspace tools. Deployment examples distinguish where the client connects from, where workspace tools run, and where the model is hosted.](../images/concepts/agent-execution.svg)
+![Diagram of a client connected to an Agent Host, with a harness coordinating context, model requests, permissions, and workspace tools. Deployment examples distinguish execution on your machine, in a Dev Container, on another machine, and in managed cloud compute.](../images/concepts/agent-execution-2026112601.svg)
 
 Learn more about [agent harnesses and execution environments](/docs/agents/concepts/agent-harnesses.md#relate-execution-environments-and-code-isolation).
 
@@ -616,45 +578,19 @@ Agents can use additional capabilities for complex tasks and recurring workflows
 
 ### Planning
 
-Every agent decides which action to take next as part of the agent loop. For a complex task, use the built-in Plan agent to research the codebase, clarify requirements, and propose an implementation plan before code changes begin.
-
-The planning workflow separates research and review from implementation. After you approve the approach, continue with implementation using the controls available for your harness. Learn more about [planning with agents](/docs/agents/run/planning.md).
+For complex tasks, use the built-in Plan agent to research the codebase, clarify requirements, and propose an implementation plan before code changes begin. Separating research and review from implementation reduces rework. Learn more about [planning with agents](/docs/agents/run/planning.md).
 
 ### Subagents
 
-For complex tasks, the main agent can delegate focused work to subagents. A subagent performs a specific task, such as researching a topic or analyzing part of a codebase, and reports the result to the main agent.
-
-Subagents are useful when independent research would add large amounts of intermediate information to the main agent's [context window](/docs/agents/concepts/language-models.md#context-window).
-
-Key characteristics of subagents:
-
-* **Context isolation**: each subagent works in its own context. The harness determines which instructions and conversation history it receives. In the Local harness `feature(local-harness)`, subagents receive the delegated task and applicable instructions, not the main conversation history.
-* **Parallel execution**: independent subtasks can run in parallel when the harness supports concurrent subagents, such as separate correctness and performance reviews.
-* **Focused results**: the main agent uses the subagent's result without adding all of its intermediate work to the main context.
-
-Subagents make their own model requests, so a smaller main context doesn't necessarily mean lower total token usage or [cost](/docs/agents/concepts/language-models.md#ai-credits-and-model-costs).
-
-You don't need to create a custom agent to use subagents. A [custom agent](/docs/agent-customization/custom-agents.md) defines reusable instructions, tools, and model preferences that a subagent can use.
-
-For example, the [Plan agent](#planning) can use subagents to research independent parts of a task before creating a plan.
-
-Learn more about [using subagents](/docs/agents/run/subagents.md).
+A main agent can delegate bounded subtasks, such as independent code research or parallel reviews, to subagents that run in isolated contexts and return focused results. Isolating intermediate output keeps the main [context window](/docs/agents/concepts/language-models.md#context-window) clean, though subagents still make their own model requests and add to [AI credit usage](/docs/agents/concepts/language-models.md#ai-credits-and-model-costs). Learn more about [using subagents](/docs/agents/run/subagents.md).
 
 ### Memory
 
-Memory retains selected preferences and codebase knowledge separately from conversation history. It can help an agent reuse a project fact in another conversation without you repeating it. It is not a complete record of everything you discussed, and a saved fact still needs to be retrieved to inform a response.
-
-The harness determines how memory is stored, shared, and retrieved. Compare [context, instructions, and memory](/docs/agents/concepts/context.md#context-knowledge-and-memory), then learn how to [use and manage agent memory](/docs/agents/run/memory.md).
+Memory retains selected preferences and codebase knowledge separately from conversation history so an agent can reuse project facts across conversations. Saved facts are not a full transcript and must still be retrieved to inform a response. Compare [context, instructions, and memory](/docs/agents/concepts/context.md#context-knowledge-and-memory) or learn how to [use agent memory](/docs/agents/run/memory.md).
 
 ### Customization
 
-You can customize the agent loop for a project or workflow:
-
-* A [**custom agent**](/docs/agent-customization/custom-agents.md) defines instructions, available tools, a language model, and optional handoffs for a specific workflow.
-* [**Agent skills**](/docs/agent-customization/agent-skills.md) give an agent instructions and resources for a specialized task.
-* [**Hooks**](/docs/agent-customization/hooks.md) run commands at specific points in the agent's workflow, such as before or after a tool runs.
-
-Learn more about [customization concepts](/docs/agents/concepts/customization.md).
+Tailor the agent loop for recurring project needs with [custom instructions](/docs/agent-customization/custom-instructions.md), [agent skills](/docs/agent-customization/agent-skills.md), [custom agents](/docs/agent-customization/custom-agents.md), [hooks](/docs/agent-customization/hooks.md), and external tool integrations. Learn how these pieces fit together in [agent customization concepts](/docs/agents/concepts/customization.md).
 
 ## Related resources
 
@@ -939,8 +875,8 @@ The Agent Customizations editor provides a unified marketplace experience (Previ
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/language-models.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/language-models
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/language-models.md
-- **SHA256_FINGERPRINT**: `4d13b73da9607366af1ad82cb497268add544439ef94632b5a4a1583a5cf7ebf`
-- **LAST_VERIFIED_UTC**: 2026-11-25T07:44:01.362933+00:00
+- **SHA256_FINGERPRINT**: `1c0b54a2651b12908760b4c9c19e1b3d5ea11562b34554b29fa4b94111210058`
+- **LAST_VERIFIED_UTC**: 2026-11-27T07:32:19.566011+00:00
 ---
 
 **MetaDescription**: Understand language models, tokens, context limits, and model choices for AI tasks in VS Code.
@@ -1010,43 +946,42 @@ Start with Fusion, Auto, or an individual model, then evaluate results on your c
 
 * [Compare and choose models](/docs/agents/guides/choose-a-model.md)
 
-Each model has different strengths. Some are optimized for speed and work well for quick edits and simple questions. Others have larger context windows or better reasoning capabilities, making them ideal for complex tasks. As a general guideline:
+Each model balances speed, reasoning depth, context size, and cost differently. As a general guideline:
 
-* **Fast models** are best for quick code edits, boilerplate generation, and straightforward questions.
+* **Fast models** fit quick code edits, boilerplate generation, and straightforward questions.
 * **Reasoning models** excel at complex refactoring, architectural decisions, multi-step debugging, and tasks that require analyzing trade-offs.
-* **Large context models** can accommodate more source material or conversation history. The agent still needs to find and include the relevant information.
+* **Large context models** accommodate more source material or conversation history. The agent still needs to find and include the relevant information.
 
-You can switch models at any time, based on your needs for a particular task. For a detailed comparison, see [Choosing the right AI model for your task](https://docs.github.com/en/copilot/using-github-copilot/ai-models/choosing-the-right-ai-model-for-your-task) in the GitHub Copilot documentation.
+VS Code supports four approaches to choosing models, depending on how much control you want:
 
-For a practical workflow, [compare and choose models for your coding tasks](/docs/agents/guides/choose-a-model.md) using Fusion, Auto, or individual models.
+| Approach | Who chooses | How it runs | Best for |
+|----------|-------------|-------------|----------|
+| **[Auto](#auto-model-selection)** | Copilot | Selects one model per request based on task complexity and availability. | Everyday coding without manually switching models. |
+| **[Copilot Fusion](#copilot-fusion)** | Copilot | Selects one model or orchestrates multiple models (for example, drafting, reviewing, and revising) for a task. | Substantial, well-scoped tasks where extra review is worth additional time and AI credits. |
+| **[Model routers](#model-routers)** `feature(model-routers)` | Your rules | Routes requests automatically across models you specify for recurring task types. | Developers who already prefer specific models for different kinds of work. |
+| **Individual model** | You | Uses the explicit model, thinking effort, and context size you choose in the picker. | Tasks needing a specific capability, cost profile, or consistent behavior. |
+
+You can switch approaches at any time. For setup steps, see [Choose and configure language models](/docs/agent-customization/language-models.md#options-for-choosing-a-model). For a hands-on evaluation workflow on your own codebase, see [Compare and choose models for your coding tasks](/docs/agents/guides/choose-a-model.md).
 
 ### Auto model selection
 
-Auto model selection in GitHub Copilot selects a model for each request based on task complexity and model availability. Use Auto when you want the service to make that choice rather than selecting a model yourself.
+Auto model selection in GitHub Copilot routes each request to a single model based on task complexity and availability. It respects your organization's [model access settings](https://docs.github.com/en/copilot/how-tos/use-ai-models/configure-access-to-ai-models) and avoids models excluded by administrator or data-residency policies.
 
-In [Copilot harness sessions](/docs/agents/run/agent-harnesses.md#copilot), the same routing entry can appear as **Copilot Fusion** instead of **Auto**, depending on your settings and the tiers offered to your account. Fusion adds [multi-model orchestration](#copilot-fusion) alongside single-model routing.
-
-Auto selects from multiple models and respects your organization's [model access settings](https://docs.github.com/en/copilot/how-tos/use-ai-models/configure-access-to-ai-models). Auto won't select models excluded by administrator policies or models restricted by data-residency policies.
-
-For more details, see [About Copilot auto model selection](https://docs.github.com/en/copilot/concepts/auto-model-selection) in the GitHub documentation.
+In [Copilot harness sessions](/docs/agents/run/agent-harnesses.md#copilot), **Copilot Fusion** can replace **Auto** when dynamic Auto tiers are enabled and offered to your account. Learn how to [use auto model selection](/docs/agent-customization/language-models.md#use-auto-model-selection) or read [About Copilot auto model selection](https://docs.github.com/en/copilot/concepts/auto-model-selection) in the GitHub documentation.
 
 ### Copilot Fusion
 
-Copilot Fusion is a model orchestration system, not an individual language model. It chooses models and a workflow for your task, so you don't need to coordinate each step yourself. Unlike Auto, which selects one model per request, Fusion can use one model or coordinate multiple models. For example, one model can draft a solution, another can critique it, and the original model can revise it. You receive a single final response.
+Copilot Fusion is a model orchestration system rather than an individual model. Unlike Auto, which picks one model per request, Fusion can coordinate multiple models across passes, such as drafting, critiquing, and revising, and return one final response. Because each pass processes tokens, Fusion can take longer and consume more [AI credits](#ai-credits-and-model-costs) than a single-model request.
 
-Consider Fusion for substantial, well-scoped coding tasks where additional review can be worth the extra time and [AI credits](#ai-credits-and-model-costs). Availability depends on your account and organization policies.
-
-Learn how to [use Copilot Fusion](/docs/agent-customization/language-models.md#use-copilot-fusion). For details about orchestration, see [GitHub Copilot Fusion](https://docs.github.com/en/copilot/concepts/models/copilot-fusion) in the GitHub documentation.
+Learn how to [use Copilot Fusion](/docs/agent-customization/language-models.md#use-copilot-fusion) or read [GitHub Copilot Fusion](https://docs.github.com/en/copilot/concepts/models/copilot-fusion) in the GitHub documentation.
 
 ### Model routers
 
 `feature(model-routers)`
 
-A model router selects from routes you define for recurring work. Each route describes the requests it should handle and the model to use, with optional thinking effort, context size, and guidance for the agent. Unlike Auto or Fusion, which choose models for you, a router uses your own model choices and routing criteria.
+A model router applies routing criteria that you define, matching recurring task descriptions to your chosen models, thinking effort, context size, and route guidance. Routing and guidance are model-driven, so they guide model selection without guaranteeing a specific outcome or cost.
 
-Use a router when you already have model preferences for different tasks and want to reuse them. For example, choose a reasoning model for multi-file changes and a faster model for small edits. Routing and guidance are model-driven, not guarantees about the result or its cost.
-
-Model routers are available in VS Code Insiders for Copilot harness sessions. Learn how to [create and use a model router](/docs/agent-customization/language-models.md#use-model-routers).
+Learn how to [create and use a model router](/docs/agent-customization/language-models.md#use-model-routers).
 
 ### AI credits and model costs
 
@@ -1056,43 +991,36 @@ Copilot Fusion can use multiple model passes for a task, such as drafting, criti
 
 Long context, reasoning, and repeated tool-and-model steps can increase usage. Prompt caching can reduce the cost of processing input reused from an earlier request. A lower-cost model isn't always cheaper for the whole task if it needs more retries or corrective work. For practical guidance, see [optimize AI credit usage](/docs/agents/guides/optimize-usage.md).
 
-## Model access and hosting
+## Model access, hosting, and BYOK
 
-Model access determines which account or credentials provide a model and how usage is billed. Model hosting determines where it processes requests. Neither is the same as where the agent edits your code.
+Model access determines which account or credentials provide a model and how usage is billed. Model hosting determines where the model processes requests. Neither is the same as the [agent harness](/docs/agents/concepts/agent-harnesses.md#model-access) or where the agent edits your code.
 
-You can use models through a GitHub Copilot plan, another account supported by your harness, or your own API key. Supported local models process requests on your machine instead of a hosted provider. Availability, capabilities, and organization restrictions vary by access option and harness.
+* **Subscription and harness accounts:** Access models through a GitHub Copilot plan or another provider account supported by your harness. Selecting a Claude-family model through Copilot does not switch to the Claude harness.
+* **Bring your own key (BYOK):** Connect a built-in provider, marketplace extension, or custom API endpoint with your own credentials. That provider's billing, limits, tool-calling capabilities, and data-handling terms apply. BYOK applies to chat and utility tasks and doesn't replace the GitHub Copilot service for inline suggestions or semantic search.
+* **Local and on-device models:** Process model requests on your own machine through a local BYOK provider (such as Ollama) or a Copilot-managed [on-device model](/docs/agent-customization/model-providers.md#use-on-device-models) `feature(on-device-models)`. Local model execution doesn't guarantee an offline workflow, because other tools and services can still use the network. See [where information goes](/docs/agents/concepts/trust-and-safety.md#where-information-goes).
 
-For example, selecting a Claude-family model through Copilot does not switch to the Claude harness. Learn about [harness and model access](/docs/agents/concepts/agent-harnesses.md#model-access) and [configure model access](/docs/agent-customization/language-models.md#choose-how-to-access-models).
-
-For Copilot-provided models that run on supported hardware, see [on-device models](/docs/agent-customization/language-models.md#use-on-device-models) `feature(on-device-models)`. Don't assume that local model execution makes the entire workflow offline: other tools and services can still use the network. See [where information goes](/docs/agents/concepts/trust-and-safety.md#where-information-goes).
-
-## Bring your own language model key
-
-Bring your own key (BYOK) connects a supported model provider through your own credentials. Use it when you need a model or endpoint outside your existing plan, including a compatible local model provider.
-
-The provider's billing, usage limits, and data-handling terms apply. Tool calling, image input, reasoning, and output filtering depend on the model and integration. BYOK doesn't replace model access for every AI feature, such as inline suggestions.
-
-For supported providers, harness compatibility, sign-in requirements, and setup, see [bring your own language model key](/docs/agent-customization/language-models.md#bring-your-own-language-model-key).
+For setup steps and supported providers, see [Add model providers and local models](/docs/agent-customization/model-providers.md).
 
 ## Related resources
 
+* [Choose and configure language models](/docs/agent-customization/language-models.md)
+* [Add model providers and local models](/docs/agent-customization/model-providers.md)
 * [Context](/docs/agents/concepts/context.md)
-* [AI language models in VS Code](/docs/agent-customization/language-models.md)
 
 
 ---
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/sessions.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/sessions
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/sessions.md
-- **SHA256_FINGERPRINT**: `83189ccc83c8c1d9670b98ea20e338199c25ed5515ef70f6beaca8da0beeaf4d`
-- **LAST_VERIFIED_UTC**: 2026-11-25T07:44:01.370544+00:00
+- **SHA256_FINGERPRINT**: `a6b2298e3f844b611435712fb904c8d0b106ecceed7c00c1686268527e096548`
+- **LAST_VERIFIED_UTC**: 2026-11-27T07:32:19.574235+00:00
 ---
 
 **MetaDescription**: Understand sessions and chats in VS Code, and choose when to start a chat, fork, or create a session.
 
 # Understand sessions and chats
 
-A session is the unit of work with an agent in Visual Studio Code. It brings together the workspace and code changes for a task. A chat is a conversation within that session, and a session can contain multiple chats when the harness supports them.
+A session is the unit of work with an agent in Visual Studio Code. It brings together the workspace, code changes, and execution state for a task. A chat is a conversation within that session, and a session can contain multiple chats when the harness supports them.
 
 This article explains how conversations relate to the workspace and helps you choose between continuing a chat, forking a conversation, and starting a new session. It also distinguishes continuing live work from accessing saved history.
 
@@ -1113,7 +1041,7 @@ The session starts with a **main chat**. Where supported, additional conversatio
 | Conversation | Who directs it | Relationship to the other chats |
 |--------------|----------------|---------------------------------|
 | **Main chat** | You send requests to the agent. | The starting conversation for the session. |
-| **Nested session** | You prompt another conversation independently. | Grouped under the parent session. A new nested session starts without the other chats' conversation history. |
+| **Nested session** (additional chat) | You prompt another conversation independently. | An additional chat grouped under the parent session, starting without the other chats' conversation history. |
 | **Subagent chat** | An agent delegates a focused task. | The subagent works in its own context and reports a result to the delegating agent. |
 
 Grouping conversations together doesn't automatically share what the agents know. Each chat has its own history. Nested sessions use the parent session's folder or worktree by default, so they can work on the same saved files without sharing the discussion.
@@ -1156,12 +1084,9 @@ Some sessions created in other applications can also be discovered and continued
 
 Handoff continues ongoing work with a different agent configuration and carries the full conversation history and context with it. A handoff can change the [harness](/docs/agents/concepts/agent-harnesses.md), execution environment, or agent role. Use handoff when another configuration is a better fit for the next part of the task.
 
-For example, use the [Plan agent](/docs/agents/run/planning.md) to produce a reviewed plan, then hand off to an implementation agent. To work in a [cloud session](/docs/agents/run/cloud-sandbox-sessions.md), start a separate session. Cloud sessions don't receive local-session handoffs.
+For example, use the [Plan agent](/docs/agents/run/planning.md) to produce a reviewed plan, then hand off to an implementation agent. To work in a [cloud session](/docs/agents/run/cloud-sandbox-sessions.md), start a separate session because cloud sessions don't receive local-session handoffs.
 
-> [!NOTE]
-> **For Local harness sessions:** `feature(local-harness)` You can also use the **Session Target** dropdown to hand off an ongoing task to Copilot, Claude, or Codex. This dropdown is available only when starting the handoff from a Local harness session. The destination session uses the selected harness's tools, permissions, and models.
-
-Learn how to [hand off an ongoing session](/docs/agents/run/agent-harnesses.md#continue-with-a-different-harness).
+Learn how to [hand off an ongoing session](/docs/agents/run/agent-harnesses.md#continue-with-a-different-harness), including transitioning from legacy Local harness sessions `feature(local-harness)`.
 
 ## Remote and synced sessions
 
@@ -1175,13 +1100,9 @@ Saved history and live execution are different. Access to a conversation doesn't
 
 ## Close a chat or finish work
 
-Closing, marking done, and deleting serve different purposes:
+Closing a tab only hides the chat from view, archiving or marking a session done moves completed work out of the active list while keeping its history, and deleting permanently removes the conversation. These actions organize conversation history and are not substitutes for reviewing code or stopping active work.
 
-* **Close a chat tab**: hide the chat from the chat area without deleting its conversation. You can reopen it later.
-* **Mark a chat as done**: remove a completed conversation from the active sessions list while retaining its title and history. Restore it when you want to continue.
-* **Delete a chat**: permanently remove the conversation. Unlike closing or marking done, deletion can't be undone.
-
-These actions organize conversation history; they aren't substitutes for reviewing code or stopping active work. Available actions depend on the chat type and harness. See [manage chats within a session](/docs/agents/run/sessions/manage-sessions.md#run-multiple-chats-in-a-session).
+For exact steps and worktree or container cleanup behavior, see [Finish and restore sessions](/docs/agents/run/sessions/manage-sessions.md#finish-and-restore-sessions).
 
 ## Related resources
 
@@ -1273,8 +1194,8 @@ Review the tool name and inputs before you approve a call. Learn more about [tru
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/concepts/trust-and-safety.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/concepts/trust-and-safety
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/trust-and-safety.md
-- **SHA256_FINGERPRINT**: `5aaefaae7e1d80c551bcb6c9d01ecd60f31cd84bc200f16e381713a09c3a6715`
-- **LAST_VERIFIED_UTC**: 2026-11-20T19:47:38.741348+00:00
+- **SHA256_FINGERPRINT**: `9264196bb7929d1e2b0967af1c7f9ae71e656b033cf190dcd6ad0d28cb9cf92e`
+- **LAST_VERIFIED_UTC**: 2026-11-27T07:32:19.581645+00:00
 ---
 
 **MetaDescription**: Understand AI limitations, data handling, approvals, and isolation in VS Code.
@@ -1372,27 +1293,23 @@ Sandbox restrictions apply to covered processes even when their actions are auto
 
 ### How sandboxing works
 
-Sandboxing enforces two types of isolation:
+Sandboxing enforces two types of isolation on covered processes:
 
-* **File system isolation** limits read and write access to configured paths. It protects sensitive locations, such as SSH keys and shell configuration, and applies to child processes such as package managers and build scripts.
-* **Network isolation** blocks outbound connections or, where supported, limits them to configured domains. Domain-filtering capabilities vary by terminal implementation and platform.
+* **File system isolation** limits read and write access to configured paths, protecting sensitive locations such as SSH keys and shell configuration across child processes.
+* **Network isolation** blocks outbound connections or, where supported, restricts them to configured domains.
 
-Terminal and child-process restrictions use operating system protections. Other supported operations can use checks inside the process that runs the agent. The implementation and supported restrictions depend on the platform and harness. Check the [platform prerequisites](/docs/agents/run/agent-sandboxing.md#check-platform-availability) on the machine where commands run.
+Supported protections and platform prerequisites depend on the operating system and harness. See [Configure agent sandboxing](/docs/agents/run/agent-sandboxing.md#check-platform-availability) for platform details and setup.
 
 ### What sandboxing does not cover
 
-Agent sandboxing is an added layer for the processes it covers. It is not a virtual machine or user-account boundary, a standalone security boundary, or a replacement for endpoint security. The sandbox does not protect credentials that you explicitly inject. Developer-tool configuration and caches, allowed paths, unrestricted or local network access, unsandboxed fallback, and bypass also weaken its isolation.
-
-Built-in and other non-process tools are not covered by the process sandbox. The agent's read, edit, and write tools use VS Code's permission system directly.
-
-Use the [review flow](/docs/agents/run/review-code-edits.md) and [sensitive file protection](/docs/agents/run/review-code-edits.md#require-approval-before-sensitive-edits) to control these operations.
+Agent sandboxing adds an isolation layer for covered shell and server processes, not a virtual machine, user-account boundary, or replacement for endpoint security. Built-in file tools stay outside the process sandbox and use VS Code's permission system, [review flow](/docs/agents/run/review-code-edits.md), and [sensitive file protection](/docs/agents/run/review-code-edits.md#require-approval-before-sensitive-edits).
 
 Other forms of isolation serve different purposes:
 
-* A [Git worktree](/docs/agents/concepts/agent-harnesses.md#relate-execution-environments-and-code-isolation) separates code changes. It doesn't restrict commands, network access, or access to other files.
-* A [Dev Container](/docs/agents/run/agents-window.md#run-a-session-in-a-dev-container) provides a containerized development environment. Its access to the host and network depends on mounts, permissions, and networking configuration.
+* A [Git worktree](/docs/agents/concepts/agent-harnesses.md#relate-execution-environments-and-code-isolation) separates code changes, not command or network access.
+* A [Dev Container](/docs/agents/run/dev-containers.md) provides a containerized development environment whose host and network access depend on its container configuration.
 
-Neither replaces the applicable permission controls or your review of the result.
+Neither replaces permission controls or your review of the result. For detailed exclusions and caveats, see [Configure agent sandboxing](/docs/agents/run/agent-sandboxing.md).
 
 ## Related resources
 
@@ -1405,8 +1322,8 @@ Neither replaces the applicable permission controls or your review of the result
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/overview.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/overview
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/overview.md
-- **SHA256_FINGERPRINT**: `f924b0721896af28bbeae90e40f568eec64582127fbbb55c22bee0234369b77d`
-- **LAST_VERIFIED_UTC**: 2026-11-25T21:23:25.333135+00:00
+- **SHA256_FINGERPRINT**: `d21223101dc039840b5bae536c993651c6dc478fe5d428f25a60b9f28eb8b461`
+- **LAST_VERIFIED_UTC**: 2026-11-27T07:32:19.782435+00:00
 ---
 
 **MetaDescription**: Choose AI workflows, models, and agents in VS Code, from inline suggestions to remote sessions.
@@ -1438,7 +1355,10 @@ Continuity lets you pick up agent work across supported interfaces without start
     </a>
 </div>
 
+* **Need to connect an account first:** [Set up GitHub Copilot](/docs/setup/copilot.md) or review [other AI access options](/docs/setup/copilot.md#other-ai-access-options).
 * **Prefer to start with your own code:** [Explore a codebase without changing files](/docs/agents/guides/explore-a-codebase.md), then verify the explanation against your code.
+* **Have a specific coding task:** [Find a step-by-step guide](/docs/agents/guides/overview.md) for bugs, features, testing, refactoring, or customization.
+* **Not sure which AI feature to use:** Check the [AI features cheat sheet](/docs/agents/reference/ai-features-cheat-sheet.md#choose-a-feature) to match a task to its feature and first action.
 * **New to VS Code:** First [install the editor and open a workspace](/docs/getstarted/overview.md).
 
 <video src="images/agents-overview/build-with-ai-overview-2026112501.mp4" title="Video showing code suggestions, agent edits reviewed alongside code, parallel reviews, and a destination filter checked in the integrated browser." autoplay loop controls muted></video>
@@ -1473,9 +1393,16 @@ Switch between different experiences depending on your task, and [continue agent
 
 An [agent](/docs/agents/concepts/agents.md) uses a model and tools to find relevant code, make changes, and run checks. Both the Chat view and the Agents window run agents. You set the goal, guide the work, and review the results.
 
+| Interface | Best for | Workspace scope | Parallel tasks |
+|-----------|----------|-----------------|----------------|
+| [Inline suggestions](/docs/editing/ai-powered-suggestions.md) | Staying in flow while typing completions and next edits. | Active editor file. | Single edit at cursor. |
+| [Inline chat](/docs/chat/inline-chat.md) | Focused edits or terminal commands without leaving your code. | Selected code or active terminal. | One focused prompt at a time. |
+| [Chat view](/docs/agents/run/chat-view.md) | Collaborating with an agent beside your editor, debugger, tests, and terminal. | Current workspace. | Supports multiple chats and background sessions. |
+| [Agents window](/docs/agents/run/agents-window.md) | Delegating, monitoring, and reviewing agent sessions across repositories. | Multiple projects, worktrees, or remote hosts. | Designed for parallel sessions, worktrees, and PR review. |
+
 For routine work, save a prompt as an [automation](/docs/agents/run/automations.md). Run it locally on a schedule, or use cloud automations `feature(cloud-automations)` for scheduled or event-triggered repository work that continues while your computer is off. Review a manual run before enabling recurring work.
 
-For a focused edit, use [inline chat](/docs/chat/inline-chat.md) without leaving your code. To compare features for a specific task, use the [AI features cheat sheet](/docs/agents/reference/ai-features-cheat-sheet.md#choose-a-feature).
+To compare features for a specific task, use the [AI features cheat sheet](/docs/agents/reference/ai-features-cheat-sheet.md#choose-a-feature).
 
 ## Choose your models, agents, and tools
 
@@ -1483,7 +1410,7 @@ For a first agent task, [use the quickstart](/docs/agents/quickstart.md) without
 
 | Choice | Options |
 |--------|---------|
-| **Models** | Choose [models from multiple providers](/docs/agent-customization/language-models.md) through GitHub Copilot, or use your own [API key (BYOK)](/docs/agent-customization/language-models.md#bring-your-own-language-model-key) or a supported local model. For help deciding, [compare and choose models for your tasks](/docs/agents/guides/choose-a-model.md). |
+| **Models** | Choose [models from multiple providers](/docs/agent-customization/language-models.md) through GitHub Copilot, or use your own [API key (BYOK)](/docs/agent-customization/model-providers.md#bring-your-own-language-model-key) or a supported local model. For help deciding, [compare and choose models for your tasks](/docs/agents/guides/choose-a-model.md). |
 | **Agent harnesses** | Choose between Copilot, [product.prodname_anthropic_claude_short], or [product.prodname_openai_codex_short] based on its [tools and workflows](/docs/agents/run/agent-harnesses.md#compare-agent-harnesses). |
 | **Access and billing** | Use your existing GitHub Copilot plan, a supported provider account, or an API key. Check [requirements for your harness](/docs/agents/run/agent-harnesses.md#requirements-and-setup). |
 | **Customization** | Tailor agents with [plugins](/docs/agent-customization/agent-plugins.md), [project instructions](/docs/agents/guides/customize-copilot-guide.md), and [skills](/docs/agent-customization/agent-skills.md). Connect external tools through [Model Context Protocol (MCP) servers](/docs/agent-customization/mcp-servers.md). |
@@ -1527,8 +1454,8 @@ For keyboard, screen reader, and low-vision workflows, learn how to use the [Acc
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/agents/run/agent-harnesses.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/agents/run/agent-harnesses
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/agent-harnesses.md
-- **SHA256_FINGERPRINT**: `0fa84edb767db691cd03656fc5ffd3979c407f86323a56e7e96f8a677348bf65`
-- **LAST_VERIFIED_UTC**: 2026-11-25T07:44:02.072813+00:00
+- **SHA256_FINGERPRINT**: `93a28f7f34cec58096756d6ae195b2bf103bbb1dd864f8f378a3da386da5cb3c`
+- **LAST_VERIFIED_UTC**: 2026-11-27T07:32:19.857407+00:00
 ---
 
 **MetaDescription**: Compare agent harnesses and built-in agents in Visual Studio Code, select one for a session, and review provider requirements.
@@ -1596,7 +1523,7 @@ After selecting a harness, choose an available built-in agent from the agent pic
 
 Switching agents doesn't change the harness. You can also select [custom agents](/docs/agent-customization/custom-agents.md) from the same picker. In the Copilot harness, [Autopilot](/docs/agents/run/approvals.md#autopilot-mode) is a mode with its own workflow, not an additional built-in agent.
 
-Your harness choice is separate from where the session changes code. For supported sessions in either interface, [choose between a folder and a worktree](/docs/agents/run/worktrees.md#choose-folder-or-worktree-isolation). In the Agents window, you can also [run a session in a Dev Container](/docs/agents/run/agents-window.md#run-a-session-in-a-dev-container).
+Your harness choice is separate from where the session changes code. For supported sessions in either interface, [choose between a folder and a worktree](/docs/agents/run/worktrees.md#choose-folder-or-worktree-isolation). In the Agents window, you can also [run a session in a Dev Container](/docs/agents/run/dev-containers.md).
 
 ### Identify your current harness
 
@@ -1621,7 +1548,7 @@ If you're starting with an existing account or key:
 * **GitHub Copilot access**: Start with the [Copilot harness](#copilot). The [[product.prodname_anthropic_claude]](#claude) and [[product.prodname_openai_codex]](#codex) integrations also offer Copilot-routed models, subject to their requirements.
 * **[product.prodname_anthropic_claude] credentials**: Follow the [authentication options](#claude).
 * **ChatGPT account**: Follow the [Codex setup](#codex) for your chosen integration.
-* **Another model API key or local model**: [Configure a model provider](/docs/agent-customization/language-models.md#bring-your-own-language-model-key) for Local sessions or supported Experimental Copilot harness workflows.
+* **Another model API key or local model**: [Configure a model provider](/docs/agent-customization/model-providers.md#bring-your-own-language-model-key) for Local sessions or supported Experimental Copilot harness workflows.
 
 For access through a provider's own credentials, that provider's usage limits, billing, and data-handling terms apply. Organization policies can restrict the available routes, even when you have separate credentials.
 
@@ -1629,7 +1556,7 @@ For access through a provider's own credentials, that provider's usage limits, b
 
 To use models through GitHub Copilot, follow the [Copilot setup guide](/docs/setup/copilot.md). Copilot harness sessions use the same GitHub authentication context as chat in VS Code, including your GitHub Enterprise account when configured.
 
-To use supported models through your own credentials, follow the [Experimental Agent Host BYOK setup](/docs/agent-customization/language-models.md#bring-your-own-language-model-key). This is separate from configuring provider-native authentication for the [product.prodname_anthropic_claude] or [product.prodname_openai_codex] harness.
+To use supported models through your own credentials, follow the [Experimental Agent Host BYOK setup](/docs/agent-customization/model-providers.md#bring-your-own-language-model-key). This is separate from configuring provider-native authentication for the [product.prodname_anthropic_claude] or [product.prodname_openai_codex] harness.
 
 For managed user accounts on GHE.com, complete the setup in [Using GitHub Copilot with an account on GHE.com](https://docs.github.com/en/copilot/managing-copilot/configure-personal-settings/using-github-copilot-with-an-account-on-ghecom).
 
@@ -1692,7 +1619,7 @@ See [Codex approval presets](/docs/agents/run/approvals.md#codex-approval-preset
 
 The Local harness will be removed in February 2027. Use the Copilot harness for new workflows and [move existing workflows to Copilot](/docs/agents/run/move-to-copilot.md) before then.
 
-Local harness sessions use the models configured in VS Code. [Set up GitHub Copilot](/docs/setup/copilot.md) to use Copilot-provided models, or [configure your own model credentials](/docs/agent-customization/language-models.md#bring-your-own-language-model-key) for a supported model.
+Local harness sessions use the models configured in VS Code. [Set up GitHub Copilot](/docs/setup/copilot.md) to use Copilot-provided models, or [configure your own model credentials](/docs/agent-customization/model-providers.md#bring-your-own-language-model-key) for a supported model.
 
 Select **Local** `feature(local-harness)` in the Chat view and keep the editor window open while the agent works. Local harness sessions use different [customization settings](/docs/agent-customization/custom-instructions.md) from Copilot harness sessions.
 
@@ -1809,8 +1736,8 @@ Yes. In the Local session's chat input, open the **Session Target** dropdown and
 # DOCUMENT_SOURCE: microsoft_vscode-docs::docs/setup/copilot.md
 - **CANONICAL_URL**: https://code.visualstudio.com/docs/setup/copilot
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/setup/copilot.md
-- **SHA256_FINGERPRINT**: `cbe49d6efac2f885c156f8ee27bf9d085cc78e00b562eb7fc86fac8c6890f739`
-- **LAST_VERIFIED_UTC**: 2026-11-13T05:49:47.671375+00:00
+- **SHA256_FINGERPRINT**: `a219dd9dfbcebd37d4568281e173a9df71b9fac98df8d24a77d7e1fdd607d0d0`
+- **LAST_VERIFIED_UTC**: 2026-11-27T07:32:19.958054+00:00
 ---
 
 **MetaDescription**: Set up GitHub Copilot in VS Code, understand billing and data use, and manage your account.
@@ -1846,15 +1773,11 @@ Follow these steps to get started with Copilot in VS Code:
 
 1. Choose a sign-in method and follow the prompts.
 
-    * If you already have a Copilot subscription for your account, VS Code will use that subscription.
+    * If you already have a Copilot subscription for your account, VS Code uses that subscription.
 
-    * If you don't have a Copilot subscription yet, you'll be signed up for the [Copilot Free plan](https://github.com/github-copilot/signup) and get a monthly allowance of inline suggestions and AI credits. Learn more about the different [GitHub Copilot plans](https://docs.github.com/en/copilot/get-started/plans).
+    * If you don't have a Copilot subscription yet, you sign up for the [Copilot Free plan](https://github.com/github-copilot/signup) and get a monthly allowance of inline suggestions and AI credits. Learn more about the different [GitHub Copilot plans](https://docs.github.com/en/copilot/get-started/plans).
 
-1. Choose a first task:
-
-    * **Use your own project**: [explore a codebase without changing files](/docs/agents/guides/explore-a-codebase.md) and check the explanation against your code.
-
-    * **Use a practice project**: [build and validate a small app](/docs/agents/quickstart.md) with recommended defaults.
+After signing in, confirm that the Copilot icon in the Status Bar shows your active status. If you arrived here from a quickstart or guide, return to it now, or pick a starting path from [Next steps](#next-steps).
 
 > [!IMPORTANT]
 > Telemetry in your free version of GitHub Copilot is currently enabled. By default, code suggestions that match public code, including code references in the VS Code and [github.com](https://github.com/copilot) experience, are allowed. You can opt out of telemetry data collection by disabling telemetry in VS Code by setting ``telemetry.telemetryLevel`` to `off`, or you can adjust both telemetry and code suggestion settings in [Copilot Settings](https://github.com/settings/copilot).
@@ -1871,7 +1794,7 @@ If you need to switch between a GitHub.com account and a GHE account, see [Use a
 
 ## Other AI access options
 
-To use another provider's account, follow the [[product.prodname_anthropic_claude] setup](/docs/agents/run/agent-harnesses.md#claude) or [[product.prodname_openai_codex] setup](/docs/agents/run/agent-harnesses.md#codex). To connect a model with your own API key, follow the [bring your own key (BYOK) setup](/docs/agent-customization/language-models.md#bring-your-own-language-model-key). These routes have their own requirements. Some agent workflows without GitHub sign-in are experimental.
+To use another provider's account, follow the [[product.prodname_anthropic_claude] setup](/docs/agents/run/agent-harnesses.md#claude) or [[product.prodname_openai_codex] setup](/docs/agents/run/agent-harnesses.md#codex). To connect a model with your own API key, follow the [bring your own key (BYOK) setup](/docs/agent-customization/model-providers.md#bring-your-own-language-model-key). These routes have their own requirements. Some agent workflows without GitHub sign-in are experimental.
 
 Access through another provider's credentials follows that provider's usage, billing, and data-handling terms. Compare [harness authentication and billing options](/docs/agents/run/agent-harnesses.md#requirements-and-setup).
 

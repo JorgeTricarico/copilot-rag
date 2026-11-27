@@ -6,6 +6,8 @@ An AI agent might misunderstand the goal, repeat an unsuccessful action, change 
 
 This guide helps you choose the least disruptive recovery action. You learn how to redirect a running request, correct completed work, recover unwanted changes, reset conversation context, and diagnose repeated failures.
 
+**Project:** Any workspace. **Harness:** Copilot (most recovery actions also apply to other harnesses). **Interface:** Chat view or Agents window.
+
 ## Choose a recovery action
 
 Start with the symptom you observe:

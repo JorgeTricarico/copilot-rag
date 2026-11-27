@@ -1,6 +1,6 @@
 **MetaDescription**: Use chat in VS Code to ask about code, send requests, add context, and review AI-generated changes.
 
-# Use chat in VS Code
+# Work with chat messages and responses
 
 Chat in Visual Studio Code lets you use natural language for interacting with AI agents. Ask questions about your code, get help understanding complex logic, generate new features, fix bugs, and more, all through a conversational interface.
 

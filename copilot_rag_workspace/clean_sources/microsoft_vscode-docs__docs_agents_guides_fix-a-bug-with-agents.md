@@ -13,6 +13,8 @@ If you already have a bug to investigate, [apply the workflow to your own projec
 
 ## Prerequisites
 
+**Project:** Sample Node.js API (or your own repository). **Harness:** Copilot. **Interface:** Chat view.
+
 To complete this tutorial, you need:
 
 * [Download and install Visual Studio Code](/download).

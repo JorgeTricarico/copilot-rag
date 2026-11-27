@@ -10,6 +10,8 @@ The example uses the GitHub Copilot harness in Visual Studio Code, with alternat
 
 ## Before you start
 
+**Project:** Your repository. **Harness:** Copilot, [product.prodname_anthropic_claude_short], or [product.prodname_openai_codex_short]. **Interface:** Chat view or Agents window.
+
 ### Prepare your session
 
 * Open your repository root.
@@ -299,3 +301,9 @@ Discovery, inclusion, and following the guidance are different checks. If a file
 Stop when the guidance addresses the need. More instructions consume context and can introduce conflicts. For a broader comparison of quality, reliability, and resource use, follow the [usage optimization loop](/docs/agents/guides/optimize-usage.md#inspect-token-usage-and-caching).
 
 Keep useful customizations in version control with their supporting files, and update them when your project's structure or conventions change.
+
+## Next steps
+
+* [Manage all customizations in the Agent Customizations editor](/docs/agent-customization/overview.md).
+* [Set up a repeatable planning and TDD workflow](/docs/agents/guides/context-engineering-guide.md).
+* [Inspect and optimize AI credit usage](/docs/agents/guides/optimize-usage.md).

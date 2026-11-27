@@ -10,6 +10,8 @@ These interactive checks provide feedback during development. They don't automat
 
 ## Prerequisites
 
+**Project:** Sample web app (no build step). **Harness:** Copilot. **Interface:** Chat view.
+
 * [Install Visual Studio Code](/download).
 * [Set up GitHub Copilot](/docs/setup/copilot.md).
 * Leave ``workbench.browser.enableChatTools`` turned on, which is the default.

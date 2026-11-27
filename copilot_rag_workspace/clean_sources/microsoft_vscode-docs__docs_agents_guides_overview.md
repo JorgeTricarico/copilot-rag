@@ -54,9 +54,13 @@ Or jump to a task:
 
 * [Fix an API bug](/docs/agents/guides/fix-a-bug-with-agents.md): reproduce a pagination bug, add a regression test, and review the fix. **Setup:** sample project, Node.js 22 or later, and Git.
 
+* [Debug a runtime failure](/docs/agents/guides/debug-runtime-failure.md): pair an agent in the Chat view with the debugger, stack traces, and logpoints to confirm a root cause and verify a fix. **Setup:** your repository with a reproducible failure and debugger extension, Copilot in the Chat view.
+
 * [Add a feature](/docs/agents/guides/add-a-feature.md): continue the bug tutorial by adding filtering to the same pagination API, or plan, implement, and test a feature in your own project. **Setup:** the fixed sample or your repository with working tests, Copilot in the Chat view.
 
 * [Refactor safely](/docs/agents/guides/refactor-safely.md): change code structure in reviewable steps while preserving existing behavior. **Setup:** your repository, Copilot in the Chat view.
+
+* [Review a pull request](/docs/agents/guides/review-pull-request.md): inspect a pull request diff, address review comments or failing CI checks in an isolated worktree, verify fixes, and sync the branch. **Setup:** your [product.prodname_github]-backed repository, Copilot in the Agents window.
 
 * [Work with Jupyter notebooks](/docs/agents/guides/notebooks-with-ai.md): create or edit a notebook, run cells, and review results. **Setup:** your data, the Jupyter extension, and a notebook kernel.
 
@@ -64,17 +68,20 @@ If the change is already written, [review uncommitted changes with AI](/docs/sou
 
 ## Test and validate
 
-* [Add tests to existing code](/docs/agents/guides/test-code-with-ai.md): generate and run tests, then review assertions, failures, and coverage. **Setup:** your project, Copilot in the Chat view.
+Choose the testing workflow that fits your starting point:
 
-* [Practice test-driven development](/docs/agents/guides/test-driven-development-guide.md): write a failing test for new behavior, implement it, then refactor once the test passes. **Setup:** your repository with working tests, Copilot in the Chat view. Custom agents are optional.
-
-* [Validate a web app with browser tools](/docs/agents/guides/browser-agent-testing-guide.md): build a calculator, reproduce a defect, and verify the fix against explicit acceptance criteria. **Setup:** sample web app, Copilot in the Chat view.
+| Goal | Guide | Setup |
+|------|-------|-------|
+| Add tests to existing behavior | [Add tests to existing code](/docs/agents/guides/test-code-with-ai.md) | Your project, Copilot in the Chat view. |
+| Build new behavior test-first (red-green-refactor) | [Practice test-driven development](/docs/agents/guides/test-driven-development-guide.md) | Your repository with working tests, Copilot in the Chat view. |
+| Validate interactive web UI flows | [Validate a web app with browser tools](/docs/agents/guides/browser-agent-testing-guide.md) | Sample web app, Copilot in the Chat view. |
+| Reproduce a defect with a regression test | [Fix an API bug](/docs/agents/guides/fix-a-bug-with-agents.md) | Sample project (or your own repository), Node.js 22 or later, and Git. |
 
 ## Customize and coordinate agents
 
-* [Adapt agents to your project](/docs/agents/guides/customize-copilot-guide.md): start with one project convention the agent keeps missing. Add instructions, then compare the result on the same task. **Setup:** your repository.
+* [Adapt agents to your project](/docs/agents/guides/customize-copilot-guide.md): start with one project convention the agent keeps missing. Add instructions, then compare the result on the same task. **Setup:** your repository, Copilot, [product.prodname_anthropic_claude_short], or [product.prodname_openai_codex_short].
 
-    If your team needs a repeatable handoff from planning to implementation, follow the [advanced context engineering example](/docs/agents/guides/context-engineering-guide.md). It uses the Local harness `feature(local-harness)` in the Chat view.
+* [Set up a context engineering workflow](/docs/agents/guides/context-engineering-guide.md): combine custom instructions, Agent Skills, and planning and TDD custom agents for repeatable feature delivery. **Setup:** your repository, Copilot in the Chat view or Agents window.
 
 * [Run independent tasks in parallel](/docs/agents/guides/delegate-two-tasks.md): work in separate Git worktrees, review each result, then integrate and retest. **Setup:** your Git repository, Copilot in the Agents window. Complete one agent task first.
 
@@ -96,7 +103,7 @@ If you already use AI coding tools but are new to VS Code, bring your workflow t
 
 1. [Open your repository as a workspace](/docs/getstarted/overview.md#open-your-code).
 
-1. Connect your existing account by following the [setup for your agent harness](/docs/agents/run/agent-harnesses.md#requirements-and-setup), or [connect a model with your own API key](/docs/agent-customization/language-models.md#bring-your-own-language-model-key).
+1. Connect your existing account by following the [setup for your agent harness](/docs/agents/run/agent-harnesses.md#requirements-and-setup), or [connect a model with your own API key](/docs/agent-customization/model-providers.md#bring-your-own-language-model-key).
 
 1. Use the [Chat view](/docs/agents/run/chat-view.md) to work alongside your editor, tests, and debugger, or the [Agents window](/docs/agents/run/agents-window.md) to coordinate tasks across multiple projects.
 

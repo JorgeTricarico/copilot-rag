@@ -1,7 +1,7 @@
 {
   "schema_version": "2.1",
-  "last_sync_utc": "2026-11-26T21:09:51.307731+00:00",
-  "total_documents": 2115,
+  "last_sync_utc": "2026-11-27T07:32:25.473011+00:00",
+  "total_documents": 2120,
   "documents": {
     "anthropics_skills::README.md": {
       "doc_id": "anthropics_skills::README.md",
@@ -21722,10 +21722,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/agent-skills.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/agent-skills",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "b013a1177786dfab9e0ec766bbcb6ebbd5e12da2",
-      "content_sha256": "8289088d7080c237bd0d30edaabcfaf2bb30a98c63a0183b934b6a025a72a5a9",
-      "word_count": 3833,
-      "last_updated_utc": "2026-11-18T20:12:46.792956+00:00",
+      "git_blob_sha": "2534cc892be7f30dd26b7be787879d88961a6789",
+      "content_sha256": "b02fa34da2d26e5b3b27e0f8612887ce085428823ddcf00def881aa2168ca076",
+      "word_count": 2627,
+      "last_updated_utc": "2026-11-27T07:32:19.494482+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_agent-skills.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/copilot-connectors.md": {
@@ -21777,10 +21777,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/language-models.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/language-models",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "c6d6aaa6509e2660dbdfe884cc7e35c1aa3e4fb4",
-      "content_sha256": "b9fdcd064f927570d79f7594f5a122fa627ea90a1f13913ed88211b5ebe288c3",
-      "word_count": 7038,
-      "last_updated_utc": "2026-11-25T07:44:00.889352+00:00",
+      "git_blob_sha": "339eebe8c4359c492bfa9ae2737ad6e6a7445a20",
+      "content_sha256": "5655fd32496fd7c2db44cd2a6678d0f8d084928bae5aabd35beb067bd2a598f0",
+      "word_count": 3030,
+      "last_updated_utc": "2026-11-27T07:32:19.459935+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_language-models.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/mcp-servers.md": {
@@ -21805,15 +21805,26 @@
       "last_updated_utc": "2026-11-25T07:44:00.987309+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_migrate-customizations.md"
     },
+    "microsoft_vscode-docs::docs/agent-customization/model-providers.md": {
+      "doc_id": "microsoft_vscode-docs::docs/agent-customization/model-providers.md",
+      "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/model-providers.md",
+      "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/model-providers",
+      "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
+      "git_blob_sha": "e11cf0fd44613b16d410a8c43a4b9b2f668f6a8e",
+      "content_sha256": "e93ce4d83de56a6371f896858f716d063186395e5e4dd76fda5c586aa38a96a9",
+      "word_count": 4205,
+      "last_updated_utc": "2026-11-27T07:32:19.470306+00:00",
+      "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_model-providers.md"
+    },
     "microsoft_vscode-docs::docs/agent-customization/overview.md": {
       "doc_id": "microsoft_vscode-docs::docs/agent-customization/overview.md",
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agent-customization/overview.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agent-customization/overview",
       "bundle_name": "04_Customization_Skills_Hooks_And_Plugins",
-      "git_blob_sha": "b09308f8d6db660ac4c8e0e4db68b8d819f11ec1",
-      "content_sha256": "b901b23764a7b8ca4bf98e5318d9e6b979d98bcdca443e96d87ae936390c4034",
-      "word_count": 3032,
-      "last_updated_utc": "2026-11-20T19:47:38.786553+00:00",
+      "git_blob_sha": "4f0a36b52e22a93a6a914a4e7f06471717973b31",
+      "content_sha256": "491bb6b97427f47899ccd297f430e9bc7fa55a83f75d6b7efb05ea968f0f9f63",
+      "word_count": 3122,
+      "last_updated_utc": "2026-11-27T07:32:19.463274+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agent-customization_overview.md"
     },
     "microsoft_vscode-docs::docs/agent-customization/prompt-files.md": {
@@ -21865,10 +21876,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/agent-troubleshooting/faq.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/agent-troubleshooting/faq",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "474d7c88eadf482437691a883c82830581afe1cd",
-      "content_sha256": "a247fd8b442222305001e03b4b91fe7bc190e4b5e849d92c5100d3f4e8f93c78",
+      "git_blob_sha": "36f30c573794b431a24ed7903058f16eee547072",
+      "content_sha256": "924bebd0faa85d57fa79925311ca35522a8c0138100c74ccf67aecd5a5572c4e",
       "word_count": 2274,
-      "last_updated_utc": "2026-11-08T05:16:47.680244+00:00",
+      "last_updated_utc": "2026-11-27T07:32:19.484322+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_agent-troubleshooting_faq.md"
     },
     "microsoft_vscode-docs::docs/agents/agent-troubleshooting/troubleshooting.md": {
@@ -21887,10 +21898,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/agents-tutorial.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/agents-tutorial",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "7912617b31ec6d1f713b4ac954145f94a51bbc7e",
-      "content_sha256": "4f2a078822170852a294a89623026284d3c76ab54cb659986aeb65dd4ac8c9c2",
-      "word_count": 2118,
-      "last_updated_utc": "2026-10-28T18:07:35.996173+00:00",
+      "git_blob_sha": "e54b798180f5f955f3768b02101d199f60791d16",
+      "content_sha256": "72e879df3d88dff7ab72b18e0fb9fae6005077f458a587a28fb7ace389da5bde",
+      "word_count": 2140,
+      "last_updated_utc": "2026-11-27T07:32:19.477152+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_agents-tutorial.md"
     },
     "microsoft_vscode-docs::docs/agents/best-practices.md": {
@@ -21898,10 +21909,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/best-practices.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/best-practices",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "a55846c328e192601520851727b9ef1886641b73",
-      "content_sha256": "c7b6ab604bcbef0a82c872c4239c8f8ca461fbcd2a3f087e82fe7ee088855bca",
-      "word_count": 2006,
-      "last_updated_utc": "2026-11-20T19:47:38.702832+00:00",
+      "git_blob_sha": "d9fcee4b25d8e025dfd08f8694f55b3aa9b0d4c9",
+      "content_sha256": "31b160393d78f44216fc7f83792a0bbb6656fb14a824e46084daa5e7372c2277",
+      "word_count": 1660,
+      "last_updated_utc": "2026-11-27T07:32:19.469518+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_best-practices.md"
     },
     "microsoft_vscode-docs::docs/agents/cloud-continuity-tutorial.md": {
@@ -21909,10 +21920,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/cloud-continuity-tutorial.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/cloud-continuity-tutorial",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "c1b386760f6d7eac8be34fd019f2d1a44066fddb",
-      "content_sha256": "ccfdb9c46b5df320b3a9f0a20870550e121fa08d1ab34a7045db23c642f3261e",
-      "word_count": 1144,
-      "last_updated_utc": "2026-10-28T18:07:36.282426+00:00",
+      "git_blob_sha": "f364c6af815ccab3c06939fa3953c2b4091b7ac0",
+      "content_sha256": "717d1f0fa33dc06770c1de7850bd2cd6e5f91e7610181b293c1e2e416f5ba6ed",
+      "word_count": 1157,
+      "last_updated_utc": "2026-11-27T07:32:19.471250+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_cloud-continuity-tutorial.md"
     },
     "microsoft_vscode-docs::docs/agents/concepts/agent-harnesses.md": {
@@ -21920,10 +21931,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/agent-harnesses.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/concepts/agent-harnesses",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "2fe2b6db4bf31ef7800abb3ead256b03c4f5143a",
-      "content_sha256": "2683dc1a12d774cef5c0c2ab9fc7ca039cc71f0e95d070933546e5d14c503dee",
-      "word_count": 1409,
-      "last_updated_utc": "2026-11-25T07:44:01.206335+00:00",
+      "git_blob_sha": "280d721e2f71b287178692a339d2a44bfbbfa75b",
+      "content_sha256": "7033f3d762afe6cf7aa35148c4d6ae625b0d8237f1d07bc7a3949a2985ac109b",
+      "word_count": 1408,
+      "last_updated_utc": "2026-11-27T07:32:19.537315+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_concepts_agent-harnesses.md"
     },
     "microsoft_vscode-docs::docs/agents/concepts/agent-host.md": {
@@ -21931,10 +21942,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/agent-host.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/concepts/agent-host",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "2c44b410a96f10f1870629fb3d19294b82a88393",
-      "content_sha256": "24b73e0877d5b8601259ce981062f48fa06c16597de4147f90bd224b73894c47",
-      "word_count": 1454,
-      "last_updated_utc": "2026-11-19T20:14:43.079707+00:00",
+      "git_blob_sha": "f21bf9237ce6f4343154378389ac4faacf32062c",
+      "content_sha256": "5f39684ebc4406a25ffaafbe03f3b064983ad865528ba076edfd68d5d7428574",
+      "word_count": 1452,
+      "last_updated_utc": "2026-11-27T07:32:19.564762+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_concepts_agent-host.md"
     },
     "microsoft_vscode-docs::docs/agents/concepts/agents.md": {
@@ -21942,10 +21953,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/agents.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/concepts/agents",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "a364d67c1e5033c0f80906c9180b2cdf95eb1d87",
-      "content_sha256": "e681ddd11075ade591afeb02c30afb4a4114195f36afcd0f62d7f6fd29f1d711",
-      "word_count": 1717,
-      "last_updated_utc": "2026-11-11T05:26:58.271742+00:00",
+      "git_blob_sha": "325f3fa91aa51b63ed3118f9420c46a532873e69",
+      "content_sha256": "2b870612472ce8843d4d4e9f060046d8308dccd52054d8860bb10c43e2aee83a",
+      "word_count": 1488,
+      "last_updated_utc": "2026-11-27T07:32:19.555948+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_concepts_agents.md"
     },
     "microsoft_vscode-docs::docs/agents/concepts/context.md": {
@@ -21975,10 +21986,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/language-models.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/concepts/language-models",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "ac2871893c81e9e0f333a88ad99cf61428d14b80",
-      "content_sha256": "4d13b73da9607366af1ad82cb497268add544439ef94632b5a4a1583a5cf7ebf",
-      "word_count": 1698,
-      "last_updated_utc": "2026-11-25T07:44:01.362933+00:00",
+      "git_blob_sha": "1a5f9616a7295a46b6528c88e45e7c7cb5ba2e47",
+      "content_sha256": "1c0b54a2651b12908760b4c9c19e1b3d5ea11562b34554b29fa4b94111210058",
+      "word_count": 1615,
+      "last_updated_utc": "2026-11-27T07:32:19.566011+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_concepts_language-models.md"
     },
     "microsoft_vscode-docs::docs/agents/concepts/sessions.md": {
@@ -21986,10 +21997,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/sessions.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/concepts/sessions",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "e42652c1c74dd737ef36ffd6010e169478ef482d",
-      "content_sha256": "83189ccc83c8c1d9670b98ea20e338199c25ed5515ef70f6beaca8da0beeaf4d",
-      "word_count": 1449,
-      "last_updated_utc": "2026-11-25T07:44:01.370544+00:00",
+      "git_blob_sha": "1de2cc7098932b428f4414213d15ca76c51ae1fb",
+      "content_sha256": "a6b2298e3f844b611435712fb904c8d0b106ecceed7c00c1686268527e096548",
+      "word_count": 1368,
+      "last_updated_utc": "2026-11-27T07:32:19.574235+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_concepts_sessions.md"
     },
     "microsoft_vscode-docs::docs/agents/concepts/tools.md": {
@@ -22008,10 +22019,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/concepts/trust-and-safety.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/concepts/trust-and-safety",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "799be7c3a617966bdb3dd255de40146d8b0987b4",
-      "content_sha256": "5aaefaae7e1d80c551bcb6c9d01ecd60f31cd84bc200f16e381713a09c3a6715",
-      "word_count": 1667,
-      "last_updated_utc": "2026-11-20T19:47:38.741348+00:00",
+      "git_blob_sha": "f72ff1556ee64a5aabbec75589d1a3c65ffa3e81",
+      "content_sha256": "9264196bb7929d1e2b0967af1c7f9ae71e656b033cf190dcd6ad0d28cb9cf92e",
+      "word_count": 1575,
+      "last_updated_utc": "2026-11-27T07:32:19.581645+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_concepts_trust-and-safety.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/add-a-feature.md": {
@@ -22019,10 +22030,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/add-a-feature.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/add-a-feature",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "c27576f94e1948ad1180c2a721f3d651f2c0bc02",
-      "content_sha256": "af607730e98aa9be29e9c7cbcf9da48d5a7ebea5be063789e7609650681eb52c",
-      "word_count": 1288,
-      "last_updated_utc": "2026-11-13T05:49:47.602920+00:00",
+      "git_blob_sha": "916bbd66cc0e3d9d5902f0fb3b99167dfd803b97",
+      "content_sha256": "b97753feb5cdbdc7838fa14a6ac54d5f3e20fb336c66bf06a3143a293941d0ad",
+      "word_count": 1305,
+      "last_updated_utc": "2026-11-27T07:32:19.587341+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_add-a-feature.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/browser-agent-testing-guide.md": {
@@ -22030,10 +22041,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/browser-agent-testing-guide.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/browser-agent-testing-guide",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "144fc7da7f5a51821544863c5d425b809d1e5313",
-      "content_sha256": "b45dc623303012702bb75264a30f50b24348cf6d2c067dd15b502351b183d902",
-      "word_count": 1285,
-      "last_updated_utc": "2026-11-15T05:38:34.964587+00:00",
+      "git_blob_sha": "cccc68cf71b7ff007156d94ef209cd43a3507b9c",
+      "content_sha256": "3ca459ec5523c9bacf96d723d34cf987c05e8244c2c06a4e7eb120a7a1eded80",
+      "word_count": 1297,
+      "last_updated_utc": "2026-11-27T07:32:19.589597+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_browser-agent-testing-guide.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/choose-a-model.md": {
@@ -22041,10 +22052,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/choose-a-model.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/choose-a-model",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "a30d09368659d882ef8a715e1066ce41879c1378",
-      "content_sha256": "c40649478edda95b64ac89640defbc851104fa7715d19da69db2a85dda2beac2",
-      "word_count": 1548,
-      "last_updated_utc": "2026-11-25T07:44:01.475134+00:00",
+      "git_blob_sha": "c496e274d8856ba3f6e718efeb50861501c46559",
+      "content_sha256": "88e376e4e988a7835d42ff2d50329ab47d686d48b5b8d2fbfbf740445e9b44fd",
+      "word_count": 1519,
+      "last_updated_utc": "2026-11-27T07:32:19.653684+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_choose-a-model.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/context-engineering-guide.md": {
@@ -22052,10 +22063,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/context-engineering-guide.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/context-engineering-guide",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "6c953d0a3a35cd616f342a64adb1a3dadd9c1822",
-      "content_sha256": "f45b03b6e3a1b11db56475939195885e479023c854656d0df8271d151e35160a",
-      "word_count": 2691,
-      "last_updated_utc": "2026-11-11T05:26:58.477437+00:00",
+      "git_blob_sha": "0c75fa569af7670019e7a6553765808d47b29798",
+      "content_sha256": "f444cae54135e25acdd96b8c9b3ba9531efb066e3fe6e07296db38e08fd9afbf",
+      "word_count": 2296,
+      "last_updated_utc": "2026-11-27T07:32:19.691416+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_context-engineering-guide.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/customize-copilot-guide.md": {
@@ -22063,21 +22074,32 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/customize-copilot-guide.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/customize-copilot-guide",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "ccc4e04d62e788bfe858998f82e8b66f40aaee5d",
-      "content_sha256": "ffb278b808b3d40338172b812f806180c2dc75b3a6f62bb48cbaf20b6f03ca53",
-      "word_count": 3030,
-      "last_updated_utc": "2026-11-18T20:12:47.553625+00:00",
+      "git_blob_sha": "cadfab74769d5764a7660994018b30303f1d1e69",
+      "content_sha256": "9491f53be9f716d8503321d6b55b64f8e9c79b188d58044eb59483b3335dd259",
+      "word_count": 3072,
+      "last_updated_utc": "2026-11-27T07:32:19.652312+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_customize-copilot-guide.md"
+    },
+    "microsoft_vscode-docs::docs/agents/guides/debug-runtime-failure.md": {
+      "doc_id": "microsoft_vscode-docs::docs/agents/guides/debug-runtime-failure.md",
+      "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/debug-runtime-failure.md",
+      "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/debug-runtime-failure",
+      "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
+      "git_blob_sha": "21856071f0481c52393fd7788c32fceb5ceb80b6",
+      "content_sha256": "0b5d059bfabe7825522df78572aa686dcd902b94f5d83c32b37be18676586fe2",
+      "word_count": 1054,
+      "last_updated_utc": "2026-11-27T07:32:19.667514+00:00",
+      "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_debug-runtime-failure.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/delegate-two-tasks.md": {
       "doc_id": "microsoft_vscode-docs::docs/agents/guides/delegate-two-tasks.md",
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/delegate-two-tasks.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/delegate-two-tasks",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "0b19aca2a81f83918e042e3d896603e48b60b106",
-      "content_sha256": "e735a0495759978fa3bac2c5be94e0eb09a71ef9883ba13862e31a33873999d2",
-      "word_count": 2772,
-      "last_updated_utc": "2026-11-25T07:44:01.535778+00:00",
+      "git_blob_sha": "c68c6cb6270f5d9656e075fc4603f7f6a5e39d95",
+      "content_sha256": "47ad52a83c40e6fea8018e14ea72551b903ff70f2d03217e806b1c1eda75220e",
+      "word_count": 2790,
+      "last_updated_utc": "2026-11-27T07:32:19.660575+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_delegate-two-tasks.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/explore-a-codebase.md": {
@@ -22085,10 +22107,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/explore-a-codebase.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/explore-a-codebase",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "4e971f54653a7f53b56578e01cebd71ea46b4eee",
-      "content_sha256": "0bc4ff42002bee956b309603695ea0171376aac13fb4f31da48af335fdf09e22",
-      "word_count": 994,
-      "last_updated_utc": "2026-10-20T22:05:30.566140+00:00",
+      "git_blob_sha": "ef9f6cf95d848d9b1df6adac7174cc20ea47729e",
+      "content_sha256": "26535a02a8378de09876051a1d912d74b85c38faa3576d5e37ae92f3756e98ff",
+      "word_count": 1002,
+      "last_updated_utc": "2026-11-27T07:32:19.686338+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_explore-a-codebase.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/fix-a-bug-with-agents.md": {
@@ -22096,10 +22118,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/fix-a-bug-with-agents.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/fix-a-bug-with-agents",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "aa52d55411f863bd659606ebf731f53e95163b18",
-      "content_sha256": "47313df34ebeaa888af43a4467be5a2d6180284374ebddb8d2865697e1133e60",
-      "word_count": 2055,
-      "last_updated_utc": "2026-11-16T05:38:48.341664+00:00",
+      "git_blob_sha": "19965479c7006e609c0227965fc57e8aaf5fbd2e",
+      "content_sha256": "1be82b22a069b4a5c2ee71e96f6d08a4852af4426a1da35151d5cc18c8cad9e6",
+      "word_count": 2068,
+      "last_updated_utc": "2026-11-27T07:32:19.702829+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_fix-a-bug-with-agents.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/get-agent-back-on-track.md": {
@@ -22107,10 +22129,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/get-agent-back-on-track.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/get-agent-back-on-track",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "43f2cb2315e062a818b0d4de902ecd92c7a1037f",
-      "content_sha256": "151ba79576561f4159af6e85f2824ee180f5f668244b171ab96fb7fb925f893f",
-      "word_count": 1830,
-      "last_updated_utc": "2026-11-20T19:47:38.662866+00:00",
+      "git_blob_sha": "971c91dcc3ff23254be219b4354e63dbad6b37b0",
+      "content_sha256": "01d431a0fad0a6e260e0b16a220f610740b6d566f2c77e2d6e627669c9455925",
+      "word_count": 1849,
+      "last_updated_utc": "2026-11-27T07:32:19.671575+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_get-agent-back-on-track.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/monitoring-agents.md": {
@@ -22140,10 +22162,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/optimize-usage.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/optimize-usage",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "6b06975c3858e9b9e8878625df56d3cec4287e7e",
-      "content_sha256": "ad1bef2c8b659409de066e0403cf8611baa1ab3adb1ca7493ca42f57c9baf355",
-      "word_count": 1670,
-      "last_updated_utc": "2026-11-20T19:47:38.674211+00:00",
+      "git_blob_sha": "140a5e6d1211b3add981bc35f06bdae990b0e0b2",
+      "content_sha256": "cfff206cc75c5ed66e34d6c21091b4303dc3c8ca9fd55ec039c8c59eb6913579",
+      "word_count": 1677,
+      "last_updated_utc": "2026-11-27T07:32:19.731132+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_optimize-usage.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/overview.md": {
@@ -22151,10 +22173,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/overview.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/overview",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "b98fbe809c7a3441fcf0efb8fb15a2ac793fca3f",
-      "content_sha256": "981bbd7e97870a48dc914619047da106b85bd59b26dd56b834e41abebfef7ea3",
-      "word_count": 969,
-      "last_updated_utc": "2026-11-25T21:23:25.361223+00:00",
+      "git_blob_sha": "8b4e6fed163bec5e04bdc6111b1dd0927a1e7b29",
+      "content_sha256": "8183b9aedd2dd78df1f95b48747ebdcc43e1d9adbf5800e8cff6d30bf34d1f36",
+      "word_count": 1080,
+      "last_updated_utc": "2026-11-27T07:32:19.734915+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_overview.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/prompt-examples.md": {
@@ -22162,10 +22184,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/prompt-examples.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/prompt-examples",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "a91a35ea629446b6ac02709392b74d9608c79bfc",
-      "content_sha256": "41268904628b97d3a2115873a8d7d829a32ed35aa208d1272a1525e76d08b54a",
+      "git_blob_sha": "c36c0353813239e5c5b6a886329ecc8afc6b94b0",
+      "content_sha256": "d135f3236593a2524c4fd3f6d2ca44156a5c233d6e6920d4a1cf018332744fd0",
       "word_count": 1306,
-      "last_updated_utc": "2026-11-18T20:12:47.742529+00:00",
+      "last_updated_utc": "2026-11-27T07:32:19.747935+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_prompt-examples.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/refactor-safely.md": {
@@ -22173,21 +22195,32 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/refactor-safely.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/refactor-safely",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "c71e13b237ea417e915c34267c157afd16aa7298",
-      "content_sha256": "79cfde71b50015a3f64f03b619ce1d510b6c9a7109e325339209c01bcda8ca87",
-      "word_count": 1123,
-      "last_updated_utc": "2026-10-20T22:05:30.914739+00:00",
+      "git_blob_sha": "64a55e2600e3c338c762fe6f0a92f98bc9ea4c16",
+      "content_sha256": "61dcfae28459af699aa54ff5bdef1dd2bf7a77dab14fdf1c591cf444eae20275",
+      "word_count": 1131,
+      "last_updated_utc": "2026-11-27T07:32:19.761511+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_refactor-safely.md"
+    },
+    "microsoft_vscode-docs::docs/agents/guides/review-pull-request.md": {
+      "doc_id": "microsoft_vscode-docs::docs/agents/guides/review-pull-request.md",
+      "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/review-pull-request.md",
+      "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/review-pull-request",
+      "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
+      "git_blob_sha": "a477c245587968482f441ff906b6d17fbc47758b",
+      "content_sha256": "53c34d783a71bedbf4b00bd1b1f55f61cd1c0f29a81139a9577bd3278ff61f30",
+      "word_count": 1192,
+      "last_updated_utc": "2026-11-27T07:32:19.740173+00:00",
+      "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_review-pull-request.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/test-code-with-ai.md": {
       "doc_id": "microsoft_vscode-docs::docs/agents/guides/test-code-with-ai.md",
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/test-code-with-ai.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/test-code-with-ai",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "3cd1163b554b44ab3e6da603ec49fe6e8320c6fe",
-      "content_sha256": "db22265310186a8d6c8642dd492d1f992d9bdd14fcea8665f02335e73fab6ed1",
-      "word_count": 1456,
-      "last_updated_utc": "2026-11-16T05:38:48.344669+00:00",
+      "git_blob_sha": "cdc8888e6f40ad4356c0891dee41cb3dc3631f1d",
+      "content_sha256": "91ce417554d7d7487abd274f288dcf6b48f0360e2055633546d950f8d66cdbcd",
+      "word_count": 1464,
+      "last_updated_utc": "2026-11-27T07:32:19.769000+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_test-code-with-ai.md"
     },
     "microsoft_vscode-docs::docs/agents/guides/test-driven-development-guide.md": {
@@ -22195,10 +22228,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/guides/test-driven-development-guide.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/guides/test-driven-development-guide",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "53f1432fe66f3c4eda91ee3c4651cc70c4f3a337",
-      "content_sha256": "2dbddf2e00c817fcaa69e37d7f5439f1c8b8f543b265d95c49209316695d70c1",
-      "word_count": 1363,
-      "last_updated_utc": "2026-11-15T05:38:34.957444+00:00",
+      "git_blob_sha": "68bdcebe2dcaef58e476f8e0432621805490cad5",
+      "content_sha256": "03ad70e1d7fb9b3d5c0d99a215dc69bd5909b7b39f3fdbd172f3c121d3eb8fd6",
+      "word_count": 1374,
+      "last_updated_utc": "2026-11-27T07:32:19.771233+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_guides_test-driven-development-guide.md"
     },
     "microsoft_vscode-docs::docs/agents/overview.md": {
@@ -22206,10 +22239,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/overview.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/overview",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "03dbea325cd9dd8e2fe00afd92e7a8df76a10dd3",
-      "content_sha256": "f924b0721896af28bbeae90e40f568eec64582127fbbb55c22bee0234369b77d",
-      "word_count": 1102,
-      "last_updated_utc": "2026-11-25T21:23:25.333135+00:00",
+      "git_blob_sha": "7227618e7edb089037ae7ef0fa4d4189d56cdb30",
+      "content_sha256": "d21223101dc039840b5bae536c993651c6dc478fe5d428f25a60b9f28eb8b461",
+      "word_count": 1267,
+      "last_updated_utc": "2026-11-27T07:32:19.782435+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_overview.md"
     },
     "microsoft_vscode-docs::docs/agents/quickstart.md": {
@@ -22217,10 +22250,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/quickstart.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/quickstart",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "061844a359ba2c19f6641dd5387ad2ec22ca0dce",
-      "content_sha256": "a0d4e457d5668208d533c826c8b4da287fdd4346f1e46653b4f56ee5dd852a45",
-      "word_count": 1939,
-      "last_updated_utc": "2026-11-16T21:47:44.723706+00:00",
+      "git_blob_sha": "0313cbdc5f7b9654947770cd5b5f4bb4b7fe3ba2",
+      "content_sha256": "2623aeff75f2c128f5636a4c2a5f332d2271147e559d7e5b0c2881c24f7aab40",
+      "word_count": 1963,
+      "last_updated_utc": "2026-11-27T07:32:19.815059+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_quickstart.md"
     },
     "microsoft_vscode-docs::docs/agents/reference/agent-plugin-reference.md": {
@@ -22234,15 +22267,26 @@
       "last_updated_utc": "2026-11-18T20:12:47.813793+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_reference_agent-plugin-reference.md"
     },
+    "microsoft_vscode-docs::docs/agents/reference/agent-skills-reference.md": {
+      "doc_id": "microsoft_vscode-docs::docs/agents/reference/agent-skills-reference.md",
+      "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/agent-skills-reference.md",
+      "canonical_web_url": "https://code.visualstudio.com/docs/agents/reference/agent-skills-reference",
+      "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
+      "git_blob_sha": "072e902294ed6ce4cea0bea9064db634454706b1",
+      "content_sha256": "a2eb3d7801de6c1fa3c85191716d754f8c8b9286fe0f71f033883510b5c52317",
+      "word_count": 1300,
+      "last_updated_utc": "2026-11-27T07:32:19.799132+00:00",
+      "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_reference_agent-skills-reference.md"
+    },
     "microsoft_vscode-docs::docs/agents/reference/ai-features-cheat-sheet.md": {
       "doc_id": "microsoft_vscode-docs::docs/agents/reference/ai-features-cheat-sheet.md",
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/ai-features-cheat-sheet.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/reference/ai-features-cheat-sheet",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "da92fbe95f19b808bd5f6723790bd7303ae63135",
-      "content_sha256": "85495e13a038ac0d33b4228a09691290ccad74d20b269ec7828fc60fb1d8e777",
+      "git_blob_sha": "8bad63aa67958a1e9e7f95c4fe6be7e27deb88ab",
+      "content_sha256": "1f3abe0b578254535c55d958eb96a529a10e6883605023f7f0ede59c3b14c801",
       "word_count": 1376,
-      "last_updated_utc": "2026-11-19T20:14:43.110743+00:00",
+      "last_updated_utc": "2026-11-27T07:32:19.814227+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_reference_ai-features-cheat-sheet.md"
     },
     "microsoft_vscode-docs::docs/agents/reference/ai-settings.md": {
@@ -22250,10 +22294,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/reference/ai-settings.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/reference/ai-settings",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "32bb6a8696183c0c1a6436d6e5eec7a5a3498360",
-      "content_sha256": "cccc9959713e1545b1ad527861467e0a530312c2c96d496ae3f38bfc5fd87b5b",
-      "word_count": 7880,
-      "last_updated_utc": "2026-11-25T07:44:01.923360+00:00",
+      "git_blob_sha": "9872f339a6ed2cd15c063604b8f1c94c0f15b39f",
+      "content_sha256": "f7db29c3cb48b09e60fb6704350b503047521471b67ba7b05276d29a6f93bd33",
+      "word_count": 7892,
+      "last_updated_utc": "2026-11-27T07:32:19.824950+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_reference_ai-settings.md"
     },
     "microsoft_vscode-docs::docs/agents/reference/chat-pet.md": {
@@ -22338,10 +22382,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/agent-harnesses.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/run/agent-harnesses",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "a29a6e10c9e2ab62cbad5dacf444096114b59458",
-      "content_sha256": "0fa84edb767db691cd03656fc5ffd3979c407f86323a56e7e96f8a677348bf65",
+      "git_blob_sha": "81d09b8708b056c6a4754a093b4fc34cb6ba2502",
+      "content_sha256": "93a28f7f34cec58096756d6ae195b2bf103bbb1dd864f8f378a3da386da5cb3c",
       "word_count": 3101,
-      "last_updated_utc": "2026-11-25T07:44:02.072813+00:00",
+      "last_updated_utc": "2026-11-27T07:32:19.857407+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_run_agent-harnesses.md"
     },
     "microsoft_vscode-docs::docs/agents/run/agent-sandboxing.md": {
@@ -22349,10 +22393,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/agent-sandboxing.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/run/agent-sandboxing",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "2035af7819f468ad9ace1cebd0427fe7bc7ae500",
-      "content_sha256": "7bd5568977a75c1d165fb22998fbe570c476c738678e459d92a9cc7bab7e783e",
+      "git_blob_sha": "b619b8ffda4bd51c0b467645e6c637fada29d9ce",
+      "content_sha256": "3cce0c93bbd9f713484deeb4b8a4a72fa05fb5da0ff97b2a1cf73d6875767556",
       "word_count": 4148,
-      "last_updated_utc": "2026-11-19T20:14:43.265612+00:00",
+      "last_updated_utc": "2026-11-27T07:32:19.844479+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_run_agent-sandboxing.md"
     },
     "microsoft_vscode-docs::docs/agents/run/agents-window-configuration.md": {
@@ -22360,10 +22404,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/agents-window-configuration.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/run/agents-window-configuration",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "a71f2ba8ea83b5cd6fc3a35877718fae7a0e6b8c",
-      "content_sha256": "421ac73b61dd0629b73e103d6eb7eda16d01df133fea993edd81558df74ad875",
-      "word_count": 1720,
-      "last_updated_utc": "2026-11-19T20:14:43.267083+00:00",
+      "git_blob_sha": "a9a680553c1d8585e46778370efbfc1c304148f4",
+      "content_sha256": "7a2133f48e8db3168f5713c1c329b94f6aef59074d6e534052f90476db6ee143",
+      "word_count": 2123,
+      "last_updated_utc": "2026-11-27T07:32:19.884125+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_run_agents-window-configuration.md"
     },
     "microsoft_vscode-docs::docs/agents/run/agents-window.md": {
@@ -22371,10 +22415,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/agents-window.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/run/agents-window",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "db0a1104124e84415517c467057852301bf8860b",
-      "content_sha256": "88727473575ac13db700b0ae7a616c23172e074b7c72ee1ff1c0abe369315221",
-      "word_count": 5455,
-      "last_updated_utc": "2026-11-25T07:44:02.129986+00:00",
+      "git_blob_sha": "f813bf33ac82e57f294e12bf9638624158ade378",
+      "content_sha256": "38c88c1f84145ca43cb1e43e165830e5f362c00e7ee8cff3c5b4ddf8d6fc42de",
+      "word_count": 3615,
+      "last_updated_utc": "2026-11-27T07:32:19.863411+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_run_agents-window.md"
     },
     "microsoft_vscode-docs::docs/agents/run/approvals.md": {
@@ -22404,10 +22448,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/automations.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/run/automations",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "fcd4de30a9f9b2e8efe47418636b2906e2e7c33b",
-      "content_sha256": "c53b8eef0ffb0a7f4fdd5e58d9c50693846514756d8360d130903c7e5ca57f69",
-      "word_count": 4181,
-      "last_updated_utc": "2026-11-18T20:12:48.162739+00:00",
+      "git_blob_sha": "06514e7b00ff0840b9955f161084f059b81e5bf0",
+      "content_sha256": "19e6d901f6da170bc5781fba1ec4382856b2deb436c216f48b5fa2e126c0784b",
+      "word_count": 4737,
+      "last_updated_utc": "2026-11-27T07:32:19.900445+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_run_automations.md"
     },
     "microsoft_vscode-docs::docs/agents/run/browser-tools.md": {
@@ -22465,6 +22509,17 @@
       "last_updated_utc": "2026-11-25T07:44:02.321859+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_run_compare-models.md"
     },
+    "microsoft_vscode-docs::docs/agents/run/dev-containers.md": {
+      "doc_id": "microsoft_vscode-docs::docs/agents/run/dev-containers.md",
+      "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/dev-containers.md",
+      "canonical_web_url": "https://code.visualstudio.com/docs/agents/run/dev-containers",
+      "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
+      "git_blob_sha": "88d984a3e1898c04781bd246cc2948b382cbe184",
+      "content_sha256": "b87b70a3d46137887cd75f4d7f2f22fb5e5f218e607086670986c23892493c8f",
+      "word_count": 927,
+      "last_updated_utc": "2026-11-27T07:32:19.926234+00:00",
+      "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_run_dev-containers.md"
+    },
     "microsoft_vscode-docs::docs/agents/run/manage-mcp-servers.md": {
       "doc_id": "microsoft_vscode-docs::docs/agents/run/manage-mcp-servers.md",
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/manage-mcp-servers.md",
@@ -22514,10 +22569,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/remote-agent-sessions.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/run/remote-agent-sessions",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "9e0091bd2f87c646534ee7b0d1d785bbdbfc5767",
-      "content_sha256": "c91c0fbd6fcf3829d36a9cc491be7727067443bccb2a8594ddd480a581e6e075",
-      "word_count": 4782,
-      "last_updated_utc": "2026-11-25T07:44:02.451542+00:00",
+      "git_blob_sha": "c11fff9853c97898e616919a7ce7a3c1b3618fb1",
+      "content_sha256": "3f0ea20eb5a8eac7b2b13276edf260793ba4b8651a1420d0ff2a31eb7dbb8b00",
+      "word_count": 4832,
+      "last_updated_utc": "2026-11-27T07:32:19.904276+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_run_remote-agent-sessions.md"
     },
     "microsoft_vscode-docs::docs/agents/run/review-code-edits.md": {
@@ -22547,10 +22602,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/agents/run/sessions/manage-sessions.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/agents/run/sessions/manage-sessions",
       "bundle_name": "05_Workflows_Planning_And_Remote_AHP",
-      "git_blob_sha": "374bda91f660bc1cab899f4d8f362fd43b9699c8",
-      "content_sha256": "55c387d8de3c5ac17cd9067a7830b79523ae242ed4521dcd0b17788de9ace209",
-      "word_count": 4019,
-      "last_updated_utc": "2026-11-25T07:44:02.490070+00:00",
+      "git_blob_sha": "3da78a6b6e4b235fd6737725064a606a06512b36",
+      "content_sha256": "7cd41099a79c5ff40c42795fc6a82d08cb0b817166f957f58367234f86b1458c",
+      "word_count": 3899,
+      "last_updated_utc": "2026-11-27T07:32:19.910021+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_agents_run_sessions_manage-sessions.md"
     },
     "microsoft_vscode-docs::docs/agents/run/sessions/organize-sessions.md": {
@@ -22613,10 +22668,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/chat/chat-overview.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/chat/chat-overview",
       "bundle_name": "02_Context_Memory_And_Compaction",
-      "git_blob_sha": "a2295140584d0d90265bfd9b2d00313da7512b85",
-      "content_sha256": "83cd0b760f65703a5660c78e5a9deabc1b3b5ceba8b5da95e5728030955a040d",
-      "word_count": 2908,
-      "last_updated_utc": "2026-11-18T20:12:48.711031+00:00",
+      "git_blob_sha": "2b00268cacbd01bf64d91110edad85b550597ebe",
+      "content_sha256": "81edd965e8a59fd12be2896770adec337db3d3bc999669868771a4e4cdadf765",
+      "word_count": 2909,
+      "last_updated_utc": "2026-11-27T07:32:19.929400+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_chat_chat-overview.md"
     },
     "microsoft_vscode-docs::docs/chat/copilot-chat-context.md": {
@@ -22624,10 +22679,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/chat/copilot-chat-context.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/chat/copilot-chat-context",
       "bundle_name": "02_Context_Memory_And_Compaction",
-      "git_blob_sha": "8ddd9488292c2bf68a6b2559c6d9e5538707af6e",
-      "content_sha256": "094faeb2dbb158aa6524a1d5b0b66694fedabc45658a3aff60d17c164366e49f",
-      "word_count": 1677,
-      "last_updated_utc": "2026-11-18T20:12:48.712120+00:00",
+      "git_blob_sha": "73dfb83ba80ab19210231f8d706467bddd260e21",
+      "content_sha256": "2919a15c8e7bc6745c6135e59b30dd0d4f2992bd6ed71260f8b665f1b1c39fbc",
+      "word_count": 1833,
+      "last_updated_utc": "2026-11-27T07:32:19.956992+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_chat_copilot-chat-context.md"
     },
     "microsoft_vscode-docs::docs/chat/inline-chat.md": {
@@ -22646,10 +22701,10 @@
       "source_url": "https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/setup/copilot.md",
       "canonical_web_url": "https://code.visualstudio.com/docs/setup/copilot",
       "bundle_name": "01_Architecture_And_Agent_Harnesses",
-      "git_blob_sha": "a2d01339bab1bb50cccea25872b4e9e13da25619",
-      "content_sha256": "cbe49d6efac2f885c156f8ee27bf9d085cc78e00b562eb7fc86fac8c6890f739",
-      "word_count": 1157,
-      "last_updated_utc": "2026-11-13T05:49:47.671375+00:00",
+      "git_blob_sha": "89712e648487f3028b23ac66409ea8773f7e6edc",
+      "content_sha256": "a219dd9dfbcebd37d4568281e173a9df71b9fac98df8d24a77d7e1fdd607d0d0",
+      "word_count": 1155,
+      "last_updated_utc": "2026-11-27T07:32:19.958054+00:00",
       "local_clean_path": "clean_sources/microsoft_vscode-docs__docs_setup_copilot.md"
     },
     "microsoft_vscode-docs::release-notes/v1_147.md": {

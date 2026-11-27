@@ -10,6 +10,8 @@ The walkthrough uses the Copilot harness in the Chat view to collaborate over co
 
 ## Prerequisites
 
+**Project:** Your repository. **Harness:** Copilot. **Interface:** Chat view.
+
 * [Set up GitHub Copilot](/docs/setup/copilot.md).
 * Open an existing project in VS Code.
 * Install the project's dependencies and any runtime needed to run its tests.

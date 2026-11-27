@@ -10,6 +10,8 @@ If you want to cover behavior that already exists rather than develop new behavi
 
 ## Prerequisites
 
+**Project:** Your repository with working tests. **Harness:** Copilot. **Interface:** Chat view.
+
 * [Set up GitHub Copilot](/docs/setup/copilot.md).
 * Open your repository in VS Code.
 * Install the project's dependencies and confirm that its test command runs from the integrated terminal.
