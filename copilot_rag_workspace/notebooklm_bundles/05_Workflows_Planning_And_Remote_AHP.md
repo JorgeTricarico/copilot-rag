@@ -1,6 +1,6 @@
 # COMPENDIO RAG NOTEBOOKLM: 05_Workflows_Planning_And_Remote_AHP
-- **Generado (UTC)**: 2026-11-27T07:32:25.465420+00:00
-- **Total Palabras**: 171,273 / 500,000 máx.
+- **Generado (UTC)**: 2026-11-27T20:53:46.749107+00:00
+- **Total Palabras**: 171,364 / 500,000 máx.
 - **Instrucción de Citación para NotebookLM**: Al responder consultas técnicas, citar siempre el identificador `DOCUMENT_SOURCE` y la `CANONICAL_URL` declarados en el encabezado de cada sección.
 
 
@@ -2119,8 +2119,8 @@ OTel is off by default with zero overhead. It activates when any of the followin
 # DOCUMENT_SOURCE: github_docs::content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md
 - **CANONICAL_URL**: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-config-dir-reference
 - **RAW_SOURCE_URL**: https://raw.githubusercontent.com/github/docs/main/content/copilot/reference/copilot-cli-reference/cli-config-dir-reference.md
-- **SHA256_FINGERPRINT**: `7fa19addceac323a0963075225a8dc4113799a6550938fd8e2c63d4e1a9d53f3`
-- **LAST_VERIFIED_UTC**: 2026-11-25T21:23:25.772585+00:00
+- **SHA256_FINGERPRINT**: `1eea90bb98f6004bd5035474cd8f24f2dc9f8c828dd9433a69cae8da729471b0`
+- **LAST_VERIFIED_UTC**: 2026-11-27T20:53:41.777114+00:00
 ---
 
 **title**: GitHub Copilot CLI configuration directory
@@ -2241,7 +2241,7 @@ By default, this file is located at `~/.copilot/providers.json`. Override its lo
 Models in this file are available alongside the models provided by your Copilot subscription. After editing the file manually, restart Copilot CLI to load your changes. For setup instructions, see [Add Llm Models](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-llm-models).
 
 > [!WARNING]
-> API keys, bearer tokens, and header values in this file are stored as plain text. Do not commit the file to a repository or share it without removing credentials. Values such as `$MY_API_KEY` are literal strings, not references to environment variables.
+> API keys, bearer tokens, and header values in this file are stored as plain text. Do not commit the file to a repository or share it without removing credentials. To keep an API key out of the file, use `apiKeyCommand`. Values such as `$MY_API_KEY` are literal strings, not references to environment variables.
 
 #### Provider configuration structure
 
@@ -2270,6 +2270,7 @@ Each entry in `providers` accepts the following fields. Only `name` and `baseUrl
 | `providers[].wireApi` | String | No | `"completions"` | The API format for OpenAI and Azure connections: `"completions"` for Chat Completions or `"responses"` for the Responses API. Ignored for Anthropic. |
 | `providers[].transport` | String | No | `"http"` | Accepts `"http"` or `"websockets"`. WebSockets require `"type": "openai"` and `"wireApi": "responses"`, and the provider must support that transport. |
 | `providers[].apiKey` | String | Provider-dependent | Unset | The provider's API key. Can be omitted for an unauthenticated local server. |
+| `providers[].apiKeyCommand` | String | No | Unset | A command that prints the provider's API key. The CLI runs it with your shell before each request to this provider, so the key does not have to be stored in this file. The command must exit with status 0 within 30 seconds, and its output, with surrounding whitespace removed, is used as the API key. The CLI does not ask a provider that uses `apiKeyCommand` for its list of models, so declare its models in `models`. |
 | `providers[].bearerToken` | String | Provider-dependent | Unset | A bearer token, without the `Bearer ` prefix. Takes precedence over `apiKey` when both are set. This is a static token, not a token-refresh command. |
 | `providers[].headers` | Object | No | Unset | Additional HTTP headers, with header names as keys and strings as values. |
 | `providers[].headers.<header-name>` | String | No | Unset | The value of a header, for example `"X-Project": "my-project"`. Use `apiKey` or `bearerToken` for standard provider authentication. |
@@ -2279,7 +2280,7 @@ Each entry in `providers` accepts the following fields. Only `name` and `baseUrl
 | `providers[].modelProvider` | String | No | Inferred from the connection | A provider label used only for telemetry. Recognized values are `"openai"`, `"anthropic"`, `"azure_openai"`, `"ollama"`, `"lm_studio"`, `"foundry_local"`, and `"llama_cpp"`. Does not change the connection protocol or model behavior. |
 | `providers[].hasBearerTokenProvider` | Boolean | No | `false` | Indicates that an application using the SDK supplies tokens through a callback. Omit this when configuring the CLI manually. Setting it to `true` in this file does not register a token provider. |
 
-The named-provider file does not support `apiKeyCommand`. Do not put credentials or token-refresh commands in `metadata` or `localModel.args`.
+Do not put credentials or token-refresh commands in `metadata` or `localModel.args`.
 
 #### Local model server settings
 
